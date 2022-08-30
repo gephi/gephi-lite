@@ -1,7 +1,7 @@
 {
   "name": "gephi-lite",
   "version": "0.1.0",
-  "private": true,
+  "homepage": "https://gephi.github.io/gephi-lite",
   "dependencies": {
     "@react-sigma/core": "^2.0.2",
     "@testing-library/jest-dom": "^5.16.5",
