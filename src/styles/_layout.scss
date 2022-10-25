@@ -1,0 +1,13 @@
+#app-root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  header {
+    flex-shrink: 0;
+  }
+  .container {
+    flex-shrink: 1;
+    flex-grow: 1;
+  }
+}

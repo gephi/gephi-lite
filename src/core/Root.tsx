@@ -1,10 +1,11 @@
-import { FC, useRef } from "react";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { FC, useRef } from 'react';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 
-import { AppContextProvider } from "./context";
-import { HomePage } from "../views/HomePage";
-import { ErrorPage } from "../views/ErrorPage";
-import { NotFoundPage } from "../views/NotFoundPage";
+import { AppContextProvider } from './context';
+import { HomePage } from '../views/HomePage';
+import { ErrorPage } from '../views/ErrorPage';
+import { NotFoundPage } from '../views/NotFoundPage';
+import { GraphPage } from '../views/GraphPage';
 
 export const Root: FC = () => {
   const portalTarget = useRef<HTMLDivElement>(null);
@@ -13,6 +14,7 @@ export const Root: FC = () => {
       <AppContextProvider init={{ portalTarget: portalTarget.current }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/graph" element={<GraphPage />} />
 
           {/* Error pages: */}
           <Route path="/error" element={<ErrorPage />} />

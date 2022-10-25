@@ -1,11 +1,15 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import { Layout } from "./layout/index";
+import { Layout } from './layout';
 
 export const HomePage: FC = () => {
   return (
     <Layout>
-      <h1>Hello World</h1>
+      <div className="container">
+        <div className="row">
+          <h1>Hello World</h1>
+        </div>
+      </div>
     </Layout>
   );
 };

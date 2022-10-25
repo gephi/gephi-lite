@@ -1,0 +1,29 @@
+#graph-page {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  .stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .toolbar,
+  .left-panel,
+  .filler,
+  .right-panel {
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  .filler {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  .left-panel,
+  .right-panel {
+    min-width: 400px;
+  }
+}
