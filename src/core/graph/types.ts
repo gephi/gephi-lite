@@ -36,7 +36,7 @@ export interface AttributeDefinition {
  * Graphs:
  * *******
  */
-export type FullGraph = MultiGraph<{}, {}>;
+export type DatalessGraph = MultiGraph<{}, {}>;
 export type SigmaGraph = MultiGraph<NodeRenderingData, EdgeRenderingData>;
 
 /**
@@ -57,7 +57,7 @@ export interface GraphDataset {
 
   // Finally, we store here a Graphology instance that stores the graph, without
   // nodes and edges data - just for traversal:
-  fullGraph: MultiGraph<{}, {}>;
+  fullGraph: DatalessGraph;
 }
 
 export interface GraphModel {

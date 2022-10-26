@@ -1,7 +1,14 @@
 import { mapValues, omit } from 'lodash';
 import Graph, { MultiGraph } from 'graphology';
 
-import { EdgeRenderingData, GraphDataset, ItemData, NodeRenderingData, SigmaGraph } from './types';
+import {
+  DatalessGraph,
+  EdgeRenderingData,
+  GraphDataset,
+  ItemData,
+  NodeRenderingData,
+  SigmaGraph,
+} from './types';
 import { toNumber, toScalar } from '../utils/casting';
 
 export function getRandomNodeCoordinate(): number {
@@ -69,16 +76,16 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
 }
 
 /**
- * This function takes a graph dataset as input and returns a SigmaGraph:
+ * This function takes a graph dataset (and optionally a DatalessGraph as input)
+ * and returns a SigmaGraph:
  */
-export function datasetToSigmaGraph({
-  fullGraph,
-  nodeRenderingData,
-  edgeRenderingData,
-}: GraphDataset): SigmaGraph {
+export function dataGraphToSigmaGraph(
+  { fullGraph, nodeRenderingData, edgeRenderingData }: GraphDataset,
+  graph: DatalessGraph = fullGraph
+) {
   const sigmaGraph: SigmaGraph = new MultiGraph<NodeRenderingData, EdgeRenderingData>();
-  fullGraph.forEachNode((node) => sigmaGraph.addNode(node, nodeRenderingData[node]));
-  fullGraph.forEachEdge((edge, _, source, target) =>
+  graph.forEachNode((node) => sigmaGraph.addNode(node, nodeRenderingData[node]));
+  graph.forEachEdge((edge, _, source, target) =>
     sigmaGraph.addEdgeWithKey(edge, source, target, edgeRenderingData[edge])
   );
   return sigmaGraph;

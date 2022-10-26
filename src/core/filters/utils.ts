@@ -3,8 +3,8 @@ import { subgraph } from 'graphology-operators';
 
 import { Filter, FiltersState, RangeFilter, TermsFilter } from './types';
 import { toNumber, toString } from '../utils/casting';
-import { GraphDataset, SigmaGraph } from '../graph/types';
-import { datasetToSigmaGraph } from '../graph/utils';
+import { DatalessGraph, GraphDataset, SigmaGraph } from '../graph/types';
+import { dataGraphToSigmaGraph } from '../graph/utils';
 
 /**
  * Returns an empty filters state:
@@ -63,7 +63,11 @@ function filterEdge(
   return true;
 }
 
-export function filterGraph(graph: SigmaGraph, dataset: GraphDataset, filter: Filter): SigmaGraph {
+export function filterGraph<G extends DatalessGraph | SigmaGraph>(
+  graph: G,
+  dataset: GraphDataset,
+  filter: Filter
+): G {
   if (filter.type === 'topological') {
     // TODO:
     return graph;
@@ -73,9 +77,9 @@ export function filterGraph(graph: SigmaGraph, dataset: GraphDataset, filter: Fi
     return subgraph(
       graph,
       graph.filterNodes((nodeID) => filterNode(nodeID, dataset, filter))
-    );
+    ) as G;
   } else {
-    const res = graph.emptyCopy();
+    const res = graph.emptyCopy() as G;
     graph.forEachEdge((id, attributes, source, target) => {
       if (filterEdge(id, source, target, dataset, filter))
         res.addEdgeWithKey(id, source, target, attributes);
@@ -85,8 +89,8 @@ export function filterGraph(graph: SigmaGraph, dataset: GraphDataset, filter: Fi
 }
 
 export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: Filter[]): SigmaGraph {
-  return filters.reduce(
-    (graph, filter) => filterGraph(graph, dataset, filter),
-    datasetToSigmaGraph(dataset)
+  return dataGraphToSigmaGraph(
+    dataset,
+    filters.reduce((graph, filter) => filterGraph(graph, dataset, filter), dataset.fullGraph)
   );
 }
