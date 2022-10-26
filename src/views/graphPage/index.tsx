@@ -10,6 +10,7 @@ import { StatisticsPanel } from './StatisticsPanel';
 import { AppearancePanel } from './AppearancePanel';
 import { FiltersPanel } from './FiltersPanel';
 import { LayoutPanel } from './LayoutPanel';
+import { BsX } from 'react-icons/bs';
 
 type Tool = { type: 'tool'; label: string; icon: ComponentType; panel: ComponentType };
 
@@ -52,7 +53,14 @@ export const GraphPage: FC = () => {
           )}
         </div>
         {tool && (
-          <div className="left-panel border-end">
+          <div className="left-panel border-end position-relative">
+            <button
+              className="btn btn-icon position-absolute top-0 end-0"
+              aria-label="close panel"
+              onClick={() => setTool(null)}
+            >
+              <BsX />
+            </button>
             <tool.panel />
           </div>
         )}
