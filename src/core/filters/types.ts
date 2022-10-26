@@ -9,13 +9,13 @@ export type RangeFilter = BaseFilter & {
   type: 'range';
   itemType: ItemType;
   field: string;
-} & ({ min: number } | { min?: number; max: number });
+} & ({ min: number; max?: number } | { min?: number; max: number });
 
 export interface TermsFilter extends BaseFilter {
   type: 'terms';
   itemType: ItemType;
   field: string;
-  terms: [string, ...string[]];
+  terms: Set<string>;
 }
 
 export interface TopologicalFilter extends BaseFilter {
@@ -28,7 +28,7 @@ export interface TopologicalFilter extends BaseFilter {
 export interface ScriptFilter extends BaseFilter {
   type: 'script';
   itemType: ItemType;
-  script: string;
+  script: (itemID: string) => boolean;
 }
 
 export type Filter = RangeFilter | TermsFilter | TopologicalFilter | ScriptFilter;

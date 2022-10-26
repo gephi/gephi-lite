@@ -1,4 +1,5 @@
-import { filtersProducers, getEmptyFiltersState } from './index';
+import { filtersProducers } from './index';
+import { getEmptyFiltersState } from './utils';
 
 describe('Filters producers', () => {
   describe('#deleteCurrentFilter', () => {
