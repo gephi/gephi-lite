@@ -5,7 +5,7 @@ import { AppContextProvider } from './context';
 import { HomePage } from '../views/HomePage';
 import { ErrorPage } from '../views/ErrorPage';
 import { NotFoundPage } from '../views/NotFoundPage';
-import { GraphPage } from '../views/GraphPage';
+import { GraphPage } from '../views/graphPage';
 
 export const Root: FC = () => {
   const portalTarget = useRef<HTMLDivElement>(null);

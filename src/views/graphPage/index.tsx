@@ -4,19 +4,23 @@ import { ImDatabase, ImStatsDots } from 'react-icons/im';
 import { FaFilter, FaPaintBrush } from 'react-icons/fa';
 import cx from 'classnames';
 
-import { Layout } from './layout';
+import { Layout } from '../layout';
+import { GraphDataPanel } from './GraphDataPanel';
+import { StatisticsPanel } from './StatisticsPanel';
+import { AppearancePanel } from './AppearancePanel';
+import { FiltersPanel } from './FiltersPanel';
+import { LayoutPanel } from './LayoutPanel';
 
 type Tool = { type: 'tool'; label: string; icon: ComponentType; panel: ComponentType };
-const TODO = () => <div>TODO</div>;
 
 const TOOLS: (Tool | { type: 'space' })[] = [
-  { type: 'tool', label: 'Graph', icon: ImDatabase, panel: TODO },
+  { type: 'tool', label: 'Graph', icon: ImDatabase, panel: GraphDataPanel },
   { type: 'space' },
-  { type: 'tool', label: 'Statistic', icon: ImStatsDots, panel: TODO },
+  { type: 'tool', label: 'Statistic', icon: ImStatsDots, panel: StatisticsPanel },
   { type: 'space' },
-  { type: 'tool', label: 'Appearance', icon: FaPaintBrush, panel: TODO },
-  { type: 'tool', label: 'Filters', icon: FaFilter, panel: TODO },
-  { type: 'tool', label: 'Layout', icon: BiNetworkChart, panel: TODO },
+  { type: 'tool', label: 'Appearance', icon: FaPaintBrush, panel: AppearancePanel },
+  { type: 'tool', label: 'Filters', icon: FaFilter, panel: FiltersPanel },
+  { type: 'tool', label: 'Layout', icon: BiNetworkChart, panel: LayoutPanel },
 ];
 
 export const GraphPage: FC = () => {
