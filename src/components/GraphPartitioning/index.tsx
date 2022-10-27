@@ -1,17 +1,17 @@
 import { FC, useEffect, useState } from "react";
-import { NodeEdgeTabs } from "../forms/NodeEdgeTabs";
+import { NodeEdgeProps, NodeEdgeTabs } from "../forms/NodeEdgeTabs";
 import { GraphPartitioningForm } from "./GraphPartitioningForm";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
 
 export const GraphPartitioning: FC = () => {
   return (
     <NodeEdgeTabs>
-      <GraphItemPartitioning />
+      <GraphItemPartitioning nodeEdge="node" />
     </NodeEdgeTabs>
   );
 };
 
-const GraphItemPartitioning: FC<{ nodeEdge?: "node" | "edge" }> = ({ nodeEdge }) => {
+const GraphItemPartitioning: FC<NodeEdgeProps> = ({ nodeEdge }) => {
   useEffect(() => {
     setEditingNodePartition(false);
     setPartitionAttributeId(undefined);

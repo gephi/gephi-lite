@@ -1,10 +1,12 @@
-import { FC } from 'react';
+import { FC } from "react";
+import { GraphAppearance } from "../../components/GraphAppearance";
 
 export const AppearancePanel: FC = () => {
   return (
     <div>
       <h2>Appearance</h2>
-      <p>TODO</p>
+      <GraphAppearance />
+      <p>CAPTION?</p>
     </div>
   );
 };

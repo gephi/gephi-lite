@@ -1,8 +1,13 @@
 import classNames from "classnames";
 import React, { FC, ReactElement, useState } from "react";
 
-export const NodeEdgeTabs: FC<{ children: ReactElement<{ nodeEdge: "node" | "edge" } & unknown> }> = ({ children }) => {
-  const [tab, setTab] = useState<"node" | "edge">("node");
+export type NodeEdge = "node" | "edge";
+export interface NodeEdgeProps {
+  nodeEdge: NodeEdge;
+}
+
+export const NodeEdgeTabs: FC<{ children: ReactElement<NodeEdgeProps & unknown> }> = ({ children }) => {
+  const [tab, setTab] = useState<NodeEdge>("node");
   return (
     <div>
       <ul className="nav nav-tabs">

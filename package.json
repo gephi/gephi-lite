@@ -22,6 +22,7 @@
     "graphology": "^0.24.1",
     "graphology-gexf": "^0.10.3",
     "graphology-operators": "^1.6.0",
+    "iwanthue": "^2.0.0",
     "lodash": "^4.17.21",
     "prettier": "^2.7.1",
     "react": "^18.2.0",

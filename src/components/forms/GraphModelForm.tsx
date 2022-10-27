@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Attribute } from "../GraphPartitioning/GraphPartitioningForm";
-import { NodeEdgeTabs } from "./NodeEdgeTabs";
+import { NodeEdgeProps, NodeEdgeTabs } from "./NodeEdgeTabs";
 
 //TODO: replace by core.model types once done
 
@@ -11,8 +11,8 @@ const nodeAttributes: Attribute[] = [
 ];
 const edgeAttributes: Attribute[] = [{ id: "weight", qualitative: false, quantitative: true }];
 
-const NodeEdgeAttributes: FC<{ nodeEdge?: "node" | "edge" }> = ({ nodeEdge }) => {
-  const attributes = !nodeEdge || nodeEdge === "node" ? nodeAttributes : edgeAttributes;
+const NodeEdgeAttributes: FC<NodeEdgeProps> = ({ nodeEdge }) => {
+  const attributes = nodeEdge === "node" ? nodeAttributes : edgeAttributes;
   return (
     <div>
       {attributes.map((a) => (
@@ -51,7 +51,7 @@ const NodeEdgeAttributes: FC<{ nodeEdge?: "node" | "edge" }> = ({ nodeEdge }) =>
 export const GraphModelForm: FC = () => {
   return (
     <NodeEdgeTabs>
-      <NodeEdgeAttributes />
+      <NodeEdgeAttributes nodeEdge="node" />
     </NodeEdgeTabs>
   );
 };
