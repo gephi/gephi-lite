@@ -30,10 +30,12 @@ const GraphItemAppearance: FC<NodeEdgeProps> = ({ nodeEdge }) => {
       {
         // SIZE
       }
+      <h4>Size</h4>
 
       {
         // LABELS
       }
+      <h4>Labels</h4>
     </div>
   );
 };

@@ -2,8 +2,9 @@ import { FC, useState } from "react";
 import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
+import { ColorStaticEditor } from "./ColorStaticEditor";
 
-type colorMode = "fixed" | "quanti" | "quali";
+type colorMode = "fixed" | "quanti" | "quali" | "static";
 
 export const ColorItem: FC<NodeEdgeProps> = ({ nodeEdge }) => {
   const [colorMode, setColorMode] = useState<colorMode>("fixed");
@@ -21,11 +22,13 @@ export const ColorItem: FC<NodeEdgeProps> = ({ nodeEdge }) => {
         <option value="fixed">fixed color</option>
         <option value="quanti">Ranking (quantitative attribute)</option>
         <option value="quali">Partition (qualitative attribute)</option>
+        <option value="static">Static (color attribute)</option>
       </select>
 
       {colorMode === "fixed" && <input type="color" />}
       {colorMode === "quanti" && <ColorRankingEditor nodeEdge={nodeEdge} />}
       {colorMode === "quali" && <ColorPartitionEditor nodeEdge={nodeEdge} />}
+      {colorMode === "static" && <ColorStaticEditor nodeEdge={nodeEdge} />}
     </div>
   );
 };

@@ -26,6 +26,8 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
     { id: "att_dual", qualitative: true, quantitative: true },
     { id: "att_quanti", qualitative: false, quantitative: true },
     { id: "att_quali", qualitative: true, quantitative: false },
+    { id: "att_color", qualitative: true, quantitative: false },
+    { id: "att_partial_fail_color", qualitative: true, quantitative: false },
   ];
   const edgeAttributes: Attribute[] = [
     { id: "weight", qualitative: false, quantitative: true },
