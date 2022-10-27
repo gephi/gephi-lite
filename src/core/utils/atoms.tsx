@@ -226,6 +226,19 @@ export function useReadAtom<T, K extends keyof T>(atom: ReadableAtom<T>, key?: K
 }
 
 /**
+ * These are factories for the previous hooks.
+ */
+export function makeUseAtom<T>(atom: WritableAtom<T>) {
+  return () => useAtom(atom);
+}
+export function makeUseWriteAtom<T>(atom: WritableAtom<T>) {
+  return () => useWriteAtom(atom);
+}
+export function makeUseReadAtom<T>(atom: ReadableAtom<T>) {
+  return () => useReadAtom(atom);
+}
+
+/**
  * This function takes an atom as input, and returns a proper React context, and a component to use at the root that
  * will keep the context value up to date.
  */

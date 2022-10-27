@@ -9,13 +9,13 @@ import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
  * Producers:
  * **********
  */
-const setGraphMetaProducer: Producer<GraphDataset, [GraphDataset["metadata"]]> = (metadata) => {
+const setGraphMeta: Producer<GraphDataset, [GraphDataset["metadata"]]> = (metadata) => {
   return (state) => ({
     ...state,
     metadata,
   });
 };
-const editGraphMetaProducer: Producer<GraphDataset, [string, any]> = (key, value) => {
+const editGraphMeta: Producer<GraphDataset, [string, any]> = (key, value) => {
   return (state) => ({
     ...state,
     metadata: value === undefined ? omit(state.metadata, key) : { ...state.metadata, [key]: value },
@@ -23,8 +23,8 @@ const editGraphMetaProducer: Producer<GraphDataset, [string, any]> = (key, value
 };
 
 export const graphDatasetProducers = {
-  setGraphMetaProducer,
-  editGraphMetaProducer,
+  setGraphMeta,
+  editGraphMeta,
 };
 
 /**
@@ -32,11 +32,7 @@ export const graphDatasetProducers = {
  * ***********
  */
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
-
 export const sigmaGraphAtom = atom<SigmaGraph>(dataGraphToSigmaGraph(graphDatasetAtom.get()));
-
-export const setGraphMeta = producerToAction(setGraphMetaProducer, graphDatasetAtom);
-export const editGraphMeta = producerToAction(editGraphMetaProducer, graphDatasetAtom);
 
 /**
  * Bindings:

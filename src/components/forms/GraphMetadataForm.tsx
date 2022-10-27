@@ -1,8 +1,7 @@
-import { mapValues } from "lodash";
-import { FC, useMemo, useState } from "react";
+import { FC, useContext, useState } from "react";
 
-import { graphDatasetAtom, setGraphMeta } from "../../core/graph";
-import { toString } from "../../core/utils/casting";
+import { actionsContext } from "../../core/context/actionsContext";
+import { dataContext } from "../../core/context/dataContext";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
 type GraphType = typeof GraphTypeValues[number];
@@ -14,8 +13,9 @@ interface GraphMetadata {
 }
 
 export const GraphMetadataForm: FC = () => {
-  const initialMetadata = useMemo(() => mapValues(graphDatasetAtom.get()["metadata"], toString), []);
-  const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(initialMetadata);
+  const metadata = useContext(dataContext).readGraphDataset().metadata;
+  const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(metadata);
+  const { setGraphMeta } = useContext(actionsContext);
 
   return (
     <form>
