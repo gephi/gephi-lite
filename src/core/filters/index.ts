@@ -1,26 +1,26 @@
-import { dropRight, inRange } from 'lodash';
+import { dropRight, inRange } from "lodash";
 
-import { atom } from '../utils/atoms';
-import { Producer, producerToAction } from '../utils/reducers';
-import { Filter, FiltersState } from './types';
-import { getEmptyFiltersState } from './utils';
+import { atom } from "../utils/atoms";
+import { Producer, producerToAction } from "../utils/reducers";
+import { Filter, FiltersState } from "./types";
+import { getEmptyFiltersState } from "./utils";
 
 /**
  * Producers:
  * **********
  */
-const addFilter: Producer<FiltersState, [Filter]> = (filter) => {
+const addFilterProducer: Producer<FiltersState, [Filter]> = (filter) => {
   return (state) => ({
     ...state,
     past: state.past.concat(filter),
   });
 };
 
-const resetFilters: Producer<FiltersState> = () => {
+const resetFiltersProducer: Producer<FiltersState> = () => {
   return () => ({ past: [], future: [] });
 };
 
-const openPastFilter: Producer<FiltersState, [number]> = (index) => {
+const openPastFilterProducer: Producer<FiltersState, [number]> = (index) => {
   return (state) => {
     if (!inRange(index, 0, state.past.length))
       throw new Error(`openPastFilter: Index ${index} is out of bounds of past filters.`);
@@ -33,7 +33,7 @@ const openPastFilter: Producer<FiltersState, [number]> = (index) => {
   };
 };
 
-const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
+const openFutureFilterProducer: Producer<FiltersState, [number]> = (index) => {
   return (state) => {
     if (!inRange(index, 0, state.future.length))
       throw new Error(`openFutureFilter: Index ${index} is out of bounds of future filters.`);
@@ -46,7 +46,7 @@ const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
   };
 };
 
-const deleteCurrentFilter: Producer<FiltersState> = () => {
+const deleteCurrentFilterProducer: Producer<FiltersState> = () => {
   return (state) => {
     if (!state.past.length) throw new Error(`deleteCurrentFilter: There is not filter to delete.`);
 
@@ -58,11 +58,11 @@ const deleteCurrentFilter: Producer<FiltersState> = () => {
 };
 
 export const filtersProducers = {
-  addFilter,
-  resetFilters,
-  openPastFilter,
-  openFutureFilter,
-  deleteCurrentFilter,
+  addFilterProducer,
+  resetFiltersProducer,
+  openPastFilterProducer,
+  openFutureFilterProducer,
+  deleteCurrentFilterProducer,
 };
 
 /**
@@ -71,10 +71,8 @@ export const filtersProducers = {
  */
 export const filtersAtom = atom<FiltersState>(getEmptyFiltersState());
 
-export const filtersActions = {
-  addFilter: producerToAction(addFilter, filtersAtom),
-  resetFilters: producerToAction(resetFilters, filtersAtom),
-  openPastFilter: producerToAction(openPastFilter, filtersAtom),
-  openFutureFilter: producerToAction(openFutureFilter, filtersAtom),
-  deleteCurrentFilter: producerToAction(deleteCurrentFilter, filtersAtom),
-};
+export const addFilter = producerToAction(addFilterProducer, filtersAtom);
+export const resetFilters = producerToAction(resetFiltersProducer, filtersAtom);
+export const openPastFilter = producerToAction(openPastFilterProducer, filtersAtom);
+export const openFutureFilter = producerToAction(openFutureFilterProducer, filtersAtom);
+export const deleteCurrentFilter = producerToAction(deleteCurrentFilterProducer, filtersAtom);

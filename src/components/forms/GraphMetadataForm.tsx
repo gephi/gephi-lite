@@ -1,7 +1,7 @@
 import { mapValues } from "lodash";
 import { FC, useMemo, useState } from "react";
 
-import { graphDatasetActions, graphDatasetAtom } from "../../core/graph";
+import { graphDatasetAtom, setGraphMeta } from "../../core/graph";
 import { toString } from "../../core/utils/casting";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
@@ -92,7 +92,7 @@ export const GraphMetadataForm: FC = () => {
         disabled={graphMetadata === null}
         onClick={(e) => {
           e.preventDefault();
-          graphDatasetActions.setGraphMeta(graphMetadata);
+          setGraphMeta(graphMetadata);
         }}
       >
         save
