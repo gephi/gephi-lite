@@ -1,5 +1,5 @@
-import { MultiGraph } from 'graphology';
-import { Scalar } from '../types';
+import { MultiGraph } from "graphology";
+import { Scalar } from "../types";
 
 /**
  * Items data:
@@ -53,7 +53,7 @@ export interface GraphDataset {
   edgeData: Record<string, ItemData>;
 
   // We store here the graph metadata (title, author, etc...):
-  metadata: Record<string, string>;
+  metadata: Record<string, any>;
 
   // Finally, we store here a Graphology instance that stores the graph, without
   // nodes and edges data - just for traversal:

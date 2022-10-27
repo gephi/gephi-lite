@@ -1,4 +1,8 @@
-import { FC, useState } from "react";
+import { mapValues } from "lodash";
+import { FC, useMemo, useState } from "react";
+
+import { graphDatasetActions, graphDatasetAtom } from "../../core/graph";
+import { toString } from "../../core/utils/casting";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
 type GraphType = typeof GraphTypeValues[number];
@@ -10,9 +14,9 @@ interface GraphMetadata {
 }
 
 export const GraphMetadataForm: FC = () => {
-  const [graphMetadata, setGraphMetadata] = useState<GraphMetadata | null>(
-    null
-  );
+  const initialMetadata = useMemo(() => mapValues(graphDatasetAtom.get()["metadata"], toString), []);
+  const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(initialMetadata);
+
   return (
     <form>
       <div className="mb-2">
@@ -88,7 +92,7 @@ export const GraphMetadataForm: FC = () => {
         disabled={graphMetadata === null}
         onClick={(e) => {
           e.preventDefault();
-          console.log("TODO: update graphmetadata in context", graphMetadata);
+          graphDatasetActions.setGraphMeta(graphMetadata);
         }}
       >
         save
