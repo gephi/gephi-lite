@@ -1,7 +1,11 @@
-export interface Notification {
+export interface NotificationData {
   title?: string;
   message: string | JSX.Element;
   type: "success" | "info" | "warning" | "error";
 }
 
-export type NotificationState = Notification & { id: number; createdAt: Date };
+export type NotificationType = NotificationData & { id: number; createdAt: Date };
+
+export interface NotificationsState {
+  notifications: NotificationType[];
+}

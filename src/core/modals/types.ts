@@ -1,4 +1,4 @@
-import { ComponentType } from "react";
+import { ComponentType } from 'react';
 
 export interface ModalProps<ArgumentsType = unknown, SubmitArgumentsType = unknown> {
   arguments: ArgumentsType;
@@ -13,4 +13,8 @@ export interface ModalRequest<ArgumentsType = unknown, SubmitArgumentsType = unk
   afterCancel?: () => void;
   beforeSubmit?: (args: SubmitArgumentsType) => void;
   afterSubmit?: (args: SubmitArgumentsType) => void;
+}
+
+export interface ModalState {
+  modal?: ModalRequest<any, any>;
 }

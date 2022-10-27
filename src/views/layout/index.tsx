@@ -1,8 +1,8 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren } from "react";
 
-import { Notifications } from '../../core/notifications';
-import { Modals } from '../../core/modals';
-import { Header } from './Header';
+import { Header } from "./Header";
+import { Modals } from "../../components/modals";
+import Notifications from "../../components/notifications";
 
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -11,8 +11,8 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
 
       <main>{children}</main>
 
+      <Modals />
       <Notifications />
-      <Modals></Modals>
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useState } from "react";
 
-import { Reducer, reducify, ValueOrReducer } from './reducers';
+import { Reducer, reducify, ValueOrReducer } from "./reducers";
 
 /**
  * Useful types:
@@ -38,7 +38,7 @@ export function atom<T>(initialValue: T): WritableAtom<T> {
     },
     set(v: T | AtomReducer<T>): void {
       const previousValue = value;
-      if (typeof v === 'function') value = (v as AtomReducer<T>)(value);
+      if (typeof v === "function") value = (v as AtomReducer<T>)(value);
       else value = v;
       handlers.forEach((handler) => handler(value, previousValue));
     },
@@ -61,22 +61,22 @@ interface DerivedAtomOptions {
 export function derivedAtom<D, T>(
   atom: ReadableAtom<T>,
   extractor: (value: T) => D,
-  options?: DerivedAtomOptions
+  options?: DerivedAtomOptions,
 ): ReadableAtom<D>;
 export function derivedAtom<D, T1, T2>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>],
   extractor: (v1: T1, v2: T2) => D,
-  options?: DerivedAtomOptions
+  options?: DerivedAtomOptions,
 ): ReadableAtom<D>;
 export function derivedAtom<D, T1, T2, T3>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>, ReadableAtom<T3>],
   extractor: (v1: T1, v2: T2, v3: T3) => D,
-  options?: DerivedAtomOptions
+  options?: DerivedAtomOptions,
 ): ReadableAtom<D>;
 export function derivedAtom<D>(
   atoms: ReadableAtom<any> | ReadableAtom<any>[],
   extractor: (...args: any[]) => D,
-  options: DerivedAtomOptions = {}
+  options: DerivedAtomOptions = {},
 ): ReadableAtom<D> {
   const atomsArray = Array.isArray(atoms) ? atoms : [atoms];
   let lastInput: any[] = atomsArray.map((atom) => atom.get());
@@ -97,7 +97,7 @@ export function derivedAtom<D>(
           handlers.forEach((handler) => handler(value, previousValue));
         }
       }
-    })
+    }),
   );
 
   return {
@@ -120,22 +120,22 @@ export function derivedAtom<D>(
 export function bindOn<D, T>(
   atom: ReadableAtom<T>,
   extractor: (value: T) => D,
-  handler: (value: D) => void
+  handler: (value: D) => void,
 ): () => void;
 export function bindOn<D, T1, T2>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>],
   extractor: (v1: T1, v2: T2) => D,
-  handler: (value: D) => void
+  handler: (value: D) => void,
 ): () => void;
 export function bindOn<D, T1, T2, T3>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>, ReadableAtom<T3>],
   extractor: (v1: T1, v2: T2, v3: T3) => D,
-  handler: (value: D) => void
+  handler: (value: D) => void,
 ): () => void;
 export function bindOn<D>(
   atoms: ReadableAtom<any> | ReadableAtom<any>[],
   extractor: (...args: any[]) => D,
-  handler: (value: D) => void
+  handler: (value: D) => void,
 ): () => void {
   const atomsArray = Array.isArray(atoms) ? atoms : [atoms];
   let value: D = extractor(...atomsArray.map((atom) => atom.get()));
@@ -156,7 +156,7 @@ export function bindOn<D>(
  */
 export function buildSetter<T extends Object, Key extends keyof T>(
   atom: WritableAtom<T>,
-  key: Key
+  key: Key,
 ): (input: ValueOrReducer<T[Key]>) => void {
   return reducify((reducer: Reducer<T[Key]>) => {
     atom.set((state) => ({ ...state, [key]: reducer(state[key]) }));
@@ -166,10 +166,7 @@ export function buildSetter<T extends Object, Key extends keyof T>(
 /**
  * This function returns a getter for a given key inside an atom.
  */
-export function buildGetter<T extends Object, Key extends keyof T>(
-  atom: ReadableAtom<T>,
-  key: Key
-): () => T[Key] {
+export function buildGetter<T extends Object, Key extends keyof T>(atom: ReadableAtom<T>, key: Key): () => T[Key] {
   return () => atom.get()[key];
 }
 
