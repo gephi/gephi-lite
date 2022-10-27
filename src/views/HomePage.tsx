@@ -1,15 +1,27 @@
 import { FC } from "react";
-import { Link } from "react-router-dom";
+import { BsGithub } from "react-icons/bs";
 
 import { Layout } from "./layout";
+import { GithubLoginModal } from "../core/cloud/github/GithubLoginModal";
+import { useModal } from "../core/modals";
 
 export const HomePage: FC = () => {
+  const { openModal } = useModal();
   return (
     <Layout>
       <div className="container">
         <div className="row">
-          <h1>Hello World</h1>
-          <Link to="graph">graph page</Link>
+          <div className="col-12">
+            <h1>Hello World</h1>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() => openModal({ component: GithubLoginModal, arguments: {} })}
+            >
+              <BsGithub className="me-1" />
+              Login with Github
+            </button>
+          </div>
         </div>
       </div>
     </Layout>
