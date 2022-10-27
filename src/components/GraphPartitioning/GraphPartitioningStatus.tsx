@@ -2,37 +2,38 @@ import { FC } from "react";
 import { IoWarning } from "react-icons/io5";
 
 // TODO: MOVE TO CONTEXT
-type NodeAttributeValueStatistics = Record<
-  string,
-  { nbValues: number; nbMissingValues: number }
->;
-const nodeAttributesIndex: NodeAttributeValueStatistics = {
+type AttributeValueStatistics = Record<string, { nbValues: number; nbMissingValues: number }>;
+const nodeAttributesIndex: AttributeValueStatistics = {
   att_dual: { nbValues: 23, nbMissingValues: 0 },
   att_quali: { nbValues: 3, nbMissingValues: 100 },
 };
+const edgeAttributesIndex: AttributeValueStatistics = {
+  weight: { nbValues: 23, nbMissingValues: 0 },
+  type: { nbValues: 2, nbMissingValues: 3 },
+};
 
 export const GraphPartitioningStatus: FC<{
-  nodePartitionAttributeId: string;
+  nodeEdge?: "node" | "edge";
+  partitionAttributeId: string;
   preview?: boolean;
-}> = ({ nodePartitionAttributeId, preview }) => {
+}> = ({ nodeEdge, partitionAttributeId, preview }) => {
+  const attributeStats =
+    !nodeEdge || nodeEdge === "node"
+      ? nodeAttributesIndex[partitionAttributeId]
+      : edgeAttributesIndex[partitionAttributeId];
+  const itemLabel = (nodeEdge || "node") + "s"; // add translator here
   return (
     <div className="d-flex flex-column">
       <div>
-        The graph {preview ? "will have" : "has"}{" "}
-        {nodeAttributesIndex[nodePartitionAttributeId]?.nbValues +
-          (nodeAttributesIndex[nodePartitionAttributeId]?.nbMissingValues !== 0
-            ? 1
-            : 0)}{" "}
-        partitions using {nodePartitionAttributeId} attribute
+        The {itemLabel} {preview ? "will be" : "are"} grouped into{" "}
+        {attributeStats?.nbValues + (attributeStats?.nbMissingValues !== 0 ? 1 : 0)} partitions using{" "}
+        {partitionAttributeId} attribute
       </div>
-      {nodeAttributesIndex[nodePartitionAttributeId]?.nbMissingValues !== 0 && (
+      {attributeStats?.nbMissingValues !== 0 && (
         <div>
-          <IoWarning />{" "}
-          {nodeAttributesIndex[nodePartitionAttributeId]?.nbMissingValues} nodes
-          don't have a value for this attribute.
+          <IoWarning /> {attributeStats?.nbMissingValues} {itemLabel} don't have a value for this attribute.
           <br />
-          They {preview ? "will be" : "are"} partioned into a 'missing value'
-          group.
+          They {preview ? "will be" : "are"} grouped into a 'missing value' partition.
         </div>
       )}
     </div>

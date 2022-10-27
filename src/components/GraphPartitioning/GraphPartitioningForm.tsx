@@ -1,41 +1,45 @@
 import { FC, useState } from "react";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
 
-interface NodeAttribute {
+export interface Attribute {
   id: string;
   qualitative?: boolean;
   quantitative?: boolean;
 }
 
-const nodeAttributes: NodeAttribute[] = [
+const nodeAttributes: Attribute[] = [
   { id: "att_dual", qualitative: true, quantitative: true },
   { id: "att_quanti", qualitative: false, quantitative: true },
   { id: "att_quali", qualitative: true, quantitative: false },
 ];
+const edgeAttributes: Attribute[] = [
+  { id: "weight", qualitative: false, quantitative: true },
+  { id: "type", qualitative: true, quantitative: false },
+];
 
 export const GraphPartitioningForm: FC<{
-  nodePartitionAttributeId: string | undefined;
-  setNodePartitionAttributeId: (nodeAttId: string | undefined) => void;
+  nodeEdge?: "node" | "edge";
+  partitionAttributeId: string | undefined;
+  setPartitionAttributeId: (nodeAttId: string | undefined) => void;
   closeForm: () => void;
-}> = ({ nodePartitionAttributeId, setNodePartitionAttributeId, closeForm }) => {
-  const [newNodePartAttId, setNewNodePartAttId] = useState<string | undefined>(
-    nodePartitionAttributeId
+}> = ({ nodeEdge, partitionAttributeId, setPartitionAttributeId, closeForm }) => {
+  const itemLabel = (nodeEdge || "node") + "s"; // add translator here
+  const attributes = (!nodeEdge || nodeEdge === "node" ? nodeAttributes : edgeAttributes).filter(
+    (a) => a.id !== partitionAttributeId,
   );
+
+  const [newPartAttId, setNewPartAttId] = useState<string | undefined>(attributes[0]?.id);
+
   return (
     <form>
       <div>
-        <label>Partition nodes on</label>
+        <label>Partition {itemLabel} on</label>
         <select
           className="form-select"
-          value={newNodePartAttId || ""}
-          onChange={(e) =>
-            setNewNodePartAttId(
-              e.target.value === "" ? undefined : e.target.value
-            )
-          }
+          value={newPartAttId || ""}
+          onChange={(e) => setNewPartAttId(e.target.value === "" ? undefined : e.target.value)}
         >
-          <option value="">Select a node attribute</option>
-          {nodeAttributes
+          {attributes
             .filter((na) => na.qualitative)
             .map((na) => (
               <option key={na.id} value={na.id}>
@@ -43,12 +47,7 @@ export const GraphPartitioningForm: FC<{
               </option>
             ))}
         </select>
-        {newNodePartAttId && (
-          <GraphPartitioningStatus
-            nodePartitionAttributeId={newNodePartAttId}
-            preview
-          />
-        )}
+        {newPartAttId && <GraphPartitioningStatus partitionAttributeId={newPartAttId} preview nodeEdge={nodeEdge} />}
         <div>
           <button
             className="btn btn-primary"
@@ -62,9 +61,9 @@ export const GraphPartitioningForm: FC<{
           <button
             className="btn btn-primary"
             type="submit"
-            disabled={newNodePartAttId === nodePartitionAttributeId}
+            disabled={newPartAttId === partitionAttributeId}
             onClick={() => {
-              setNodePartitionAttributeId(newNodePartAttId);
+              setPartitionAttributeId(newPartAttId);
               closeForm();
             }}
           >

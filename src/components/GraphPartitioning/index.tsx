@@ -1,56 +1,63 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { NodeEdgeTabs } from "../forms/NodeEdgeTabs";
 import { GraphPartitioningForm } from "./GraphPartitioningForm";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
 
 export const GraphPartitioning: FC = () => {
-  //TODO: repalce by context
-  const [nodePartitionAttributeId, setNodePartitionAttributeId] = useState<
-    string | undefined
-  >(undefined);
+  return (
+    <NodeEdgeTabs>
+      <GraphItemPartitioning />
+    </NodeEdgeTabs>
+  );
+};
 
-  const [editingNodePartition, setEditingNodePartition] =
-    useState<boolean>(false);
-  if (editingNodePartition)
-    return (
-      <GraphPartitioningForm
-        nodePartitionAttributeId={nodePartitionAttributeId}
-        setNodePartitionAttributeId={setNodePartitionAttributeId}
-        closeForm={() => setEditingNodePartition(false)}
-      />
-    );
+const GraphItemPartitioning: FC<{ nodeEdge?: "node" | "edge" }> = ({ nodeEdge }) => {
+  useEffect(() => {
+    setEditingNodePartition(false);
+    setPartitionAttributeId(undefined);
+  }, [nodeEdge]);
+  //TODO: repalce by context
+  const [partitionAttributeId, setPartitionAttributeId] = useState<string | undefined>(undefined);
+  const [editingNodePartition, setEditingNodePartition] = useState<boolean>(false);
+  const itemsLabel = (nodeEdge || "node") + "s"; // add translator here
   return (
     <div>
-      {nodePartitionAttributeId === undefined ? (
+      {partitionAttributeId === undefined ? (
         <>
-          <div>The graph is not partitioned</div>
+          <div>{itemsLabel} are not partitioned</div>
           <div>
-            To apply appearance or filters differently on different groups of
-            nodes,
+            To apply appearance or filters differently on different groups of {itemsLabel},
             <br />
             partition your graph using any node qualitative attribute.
           </div>
         </>
       ) : (
-        <GraphPartitioningStatus
-          nodePartitionAttributeId={nodePartitionAttributeId}
-        />
+        <GraphPartitioningStatus nodeEdge={nodeEdge} partitionAttributeId={partitionAttributeId} />
       )}
       <div>
-        {nodePartitionAttributeId && (
+        {partitionAttributeId && (
           <button
             className="btn btn-primary"
-            onClick={() => setNodePartitionAttributeId(undefined)}
+            onClick={() => {
+              setPartitionAttributeId(undefined);
+              setEditingNodePartition(false);
+            }}
           >
             remove
           </button>
         )}
-        <button
-          className="btn btn-primary"
-          onClick={() => setEditingNodePartition(!editingNodePartition)}
-        >
-          {nodePartitionAttributeId ? "change" : "partition"}
+        <button className="btn btn-primary" onClick={() => setEditingNodePartition(!editingNodePartition)}>
+          {partitionAttributeId ? "edit" : "partition"}
         </button>
       </div>
+      {editingNodePartition && (
+        <GraphPartitioningForm
+          nodeEdge={nodeEdge}
+          partitionAttributeId={partitionAttributeId}
+          setPartitionAttributeId={setPartitionAttributeId}
+          closeForm={() => setEditingNodePartition(false)}
+        />
+      )}
     </div>
   );
 };
