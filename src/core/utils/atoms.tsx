@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, ReactNode, useEffect, useState } from "react";
 
 import { Reducer, reducify, ValueOrReducer } from "./reducers";
@@ -185,6 +186,24 @@ export function useAtom<T>(atom: WritableAtom<T>): [T, AtomSetter<T>] {
   }, [atom, setValue]);
 
   return [value, atom.set];
+}
+
+/**
+ * This React hook allow writing a writable atom in a React component. It prevents triggering excess renderings when the
+ * caller does not need to read the value.
+ */
+export function useWriteAtom<T>(atom: WritableAtom<T>): AtomSetter<T> {
+  const [value, setValue] = useState<T>(atom.get());
+
+  useEffect(() => {
+    const v = atom.get();
+    if (v !== value) setValue(v);
+
+    atom.bind(setValue);
+    return () => atom.unbind(setValue);
+  }, [atom, setValue]);
+
+  return atom.set;
 }
 
 /**

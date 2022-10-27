@@ -4,7 +4,11 @@
   flex-direction: row;
   align-items: stretch;
 
-  .stage {
+  width: 100%;
+  height: 100%;
+
+  .stage,
+  .sigma-container {
     position: absolute;
     inset: 0;
   }
@@ -26,5 +30,18 @@
   .right-panel {
     min-width: 400px;
     padding: 1rem;
+  }
+
+  // z-indexing management:
+  .filler {
+    z-index: 110;
+  }
+  .stage {
+    z-index: 120;
+  }
+  .toolbar,
+  .left-panel,
+  .right-panel {
+    z-index: 130;
   }
 }

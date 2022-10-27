@@ -1,13 +1,13 @@
 import { useCallback } from "react";
 
 import { NotificationData, NotificationsState } from "./types";
-import { atom, useAtom } from "../utils/atoms";
+import { atom, useWriteAtom } from "../utils/atoms";
 
 export const notificationsStateAtom = atom<NotificationsState>({ notifications: [] });
 
 let INCREMENTAL_ID = 1;
 export function useNotifications() {
-  const [, setNotificationsState] = useAtom(notificationsStateAtom);
+  const setNotificationsState = useWriteAtom(notificationsStateAtom);
 
   const notify = useCallback(
     (notif: NotificationData) => {

@@ -1,6 +1,6 @@
-import { atom } from '../utils/atoms';
-import { GraphDataset, SigmaGraph } from './types';
-import { dataGraphToSigmaGraph, getEmptyGraphDataset } from './utils';
+import { atom } from "../utils/atoms";
+import { GraphDataset, SigmaGraph } from "./types";
+import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
 
 /**
  * Public API:
@@ -9,3 +9,11 @@ import { dataGraphToSigmaGraph, getEmptyGraphDataset } from './utils';
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
 
 export const sigmaGraphAtom = atom<SigmaGraph>(dataGraphToSigmaGraph(graphDatasetAtom.get()));
+
+/**
+ * Bindings:
+ * *********
+ */
+graphDatasetAtom.bind((graphDataset) => {
+  sigmaGraphAtom.set(dataGraphToSigmaGraph(graphDataset));
+});
