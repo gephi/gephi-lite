@@ -1,0 +1,14 @@
+.user {
+  display: inline-block;
+  border: 2px solid $primary;
+  @extend .rounded-circle;
+  height: $user-avatar-size;
+  width: $user-avatar-size;
+  padding: 0.25em;
+
+  img,
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}

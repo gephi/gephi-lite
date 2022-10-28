@@ -4,7 +4,7 @@ import { createOAuthDeviceAuth } from "@octokit/auth-oauth-device";
 import { Octokit } from "@octokit/core";
 
 import { config } from "../../../config";
-import { CloudUser } from "../types";
+import { useConnectedUser } from "../../user";
 
 export function useGithubAuth() {
   // used when we ask github for the code & url
@@ -17,8 +17,8 @@ export function useGithubAuth() {
   const [code, setCode] = useState<string | null>(null);
   // if there is an error during the process
   const [error, setError] = useState<string | null>(null);
-  // the GH access token
-  const [user, setUser] = useState<CloudUser | null>(null);
+  // the connected user
+  const [user, setUser] = useConnectedUser();
 
   // Create the auth device object and rtrieve the code+url
   const auth = useMemo(() => {
@@ -66,7 +66,8 @@ export function useGithubAuth() {
         id: response.data.login,
         name: response.data.name || response.data.login,
         avatar: response.data.avatar_url,
-        token,
+        // TODO
+        provider: {} as any,
       });
     } catch (e) {
       setError((e as Error).message);
@@ -74,7 +75,7 @@ export function useGithubAuth() {
       setWaiting(false);
       setLoading(false);
     }
-  }, [auth]);
+  }, [auth, setUser]);
 
   return { login, url, code, loading, error, user, waiting };
 }
