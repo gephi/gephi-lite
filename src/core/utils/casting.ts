@@ -1,4 +1,4 @@
-import { Scalar, SCALAR_TYPES } from '../types';
+import { Scalar, SCALAR_TYPES } from "../types";
 
 export function toScalar(o: any): Scalar {
   if (SCALAR_TYPES.has(typeof o)) return o as Scalar;
@@ -7,8 +7,8 @@ export function toScalar(o: any): Scalar {
 }
 
 export function toNumber(o: any): number | undefined {
-  if (typeof o === 'number' && !isNaN(o)) return o;
-  if (typeof o === 'string') {
+  if (typeof o === "number" && !isNaN(o)) return o;
+  if (typeof o === "string") {
     const n = +o;
     if (!isNaN(n)) return n;
   }
@@ -17,8 +17,12 @@ export function toNumber(o: any): number | undefined {
 }
 
 export function toString(o: any): string | undefined {
-  if (typeof o === 'string') return o;
-  if (typeof o === 'number') return o + '';
+  if (typeof o === "string") return o;
+  if (typeof o === "number") return o + "";
 
   return undefined;
+}
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined;
 }

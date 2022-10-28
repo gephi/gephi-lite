@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import { request } from "@octokit/request";
 import { createOAuthDeviceAuth } from "@octokit/auth-oauth-device";
 import { Octokit } from "@octokit/core";
+import { GithubProvider } from "./provider";
 
 import { config } from "../../../config";
 import { useConnectedUser } from "../../user";
@@ -66,8 +67,7 @@ export function useGithubAuth() {
         id: response.data.login,
         name: response.data.name || response.data.login,
         avatar: response.data.avatar_url,
-        // TODO
-        provider: {} as any,
+        provider: new GithubProvider(token),
       });
     } catch (e) {
       setError((e as Error).message);
