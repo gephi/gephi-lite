@@ -1,4 +1,4 @@
-import { WritableAtom } from './atoms';
+import { WritableAtom } from "./atoms";
 
 export type Reducer<T> = (v: T) => T;
 
@@ -10,7 +10,7 @@ export type ValueOrReducer<T> = T | Reducer<T>;
  */
 export function reducify<T>(fn: (reducer: Reducer<T>) => void): (input: ValueOrReducer<T>) => void {
   return (input: ValueOrReducer<T>) => {
-    const reducer = typeof input === 'function' ? (input as Reducer<T>) : () => input;
+    const reducer = typeof input === "function" ? (input as Reducer<T>) : () => input;
     return fn(reducer);
   };
 }

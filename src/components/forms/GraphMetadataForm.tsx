@@ -1,7 +1,6 @@
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 
-import { actionsContext } from "../../core/context/actionsContext";
-import { dataContext } from "../../core/context/dataContext";
+import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
 type GraphType = typeof GraphTypeValues[number];
@@ -13,9 +12,9 @@ interface GraphMetadata {
 }
 
 export const GraphMetadataForm: FC = () => {
-  const metadata = useContext(dataContext).readGraphDataset().metadata;
+  const { metadata } = useGraphDataset();
+  const { setGraphMeta } = useGraphDatasetActions();
   const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(metadata);
-  const { setGraphMeta } = useContext(actionsContext);
 
   return (
     <form>

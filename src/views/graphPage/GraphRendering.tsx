@@ -1,10 +1,10 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { SigmaContainer } from "@react-sigma/core";
 
-import { dataContext } from "../../core/context/dataContext";
+import { useSigmaGraph } from "../../core/context/dataContexts";
 
 export const GraphRendering: FC = () => {
-  const sigmaGraph = useContext(dataContext).readSigmaGraph();
+  const sigmaGraph = useSigmaGraph();
 
   return (
     <div className="stage">
