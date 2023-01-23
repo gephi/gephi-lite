@@ -10,7 +10,7 @@ export const HomePage: FC = () => {
       <div className="container">
         <div className="row">
           <div className="col-12">
-            <h1>{t("home.greetings")}</h1>
+            <h1>{t("home.greeting")}</h1>
             <p>{t("home.blabla")}</p>
           </div>
         </div>
