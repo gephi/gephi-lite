@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { ColorItem } from "./color/ColorItem";
 import { ItemType } from "../../core/types";
 import { Tabs } from "../Tabs";
+import { SizeItem } from "./size/SizeItem";
 
 export const GraphAppearance: FC = () => {
   return (
@@ -34,7 +35,7 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
       {
         // SIZE
       }
-      <h4>Size</h4>
+      <SizeItem itemType={itemType} />
 
       {
         // LABELS

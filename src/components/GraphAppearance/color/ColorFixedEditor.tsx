@@ -9,6 +9,7 @@ export const ColorFixedEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <input type="color" value={fixedColor} onChange={(v) => setFixedColor(v.target.value)} />
       <button
         type="submit"
+        className="btn btn-primary"
         onClick={() => {
           console.log(`TODO: set state ${fixedColor}`);
         }}
