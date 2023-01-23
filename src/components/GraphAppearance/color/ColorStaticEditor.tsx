@@ -1,8 +1,8 @@
 import { keys } from "lodash";
 import { FC, useState } from "react";
 import { AttributeSelect } from "../../forms/AttributeSelect";
-import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 import { isColor } from "./utils";
+import { ItemType } from "../../../core/types";
 
 // TODO: MOVE TO CONTEXT
 type AttributeValueIndex = Record<string, Record<string, number>>;
@@ -17,8 +17,8 @@ const edgeAttributesIndex: AttributeValueIndex = {
   type: { knows: 12, hates: 10 },
 };
 
-export const ColorStaticEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
-  const attributeValues = nodeEdge === "nodes" ? nodeAttributesIndex : edgeAttributesIndex;
+export const ColorStaticEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
+  const attributeValues = itemType === "nodes" ? nodeAttributesIndex : edgeAttributesIndex;
   const [staticColorAttId, setStaticColorAttId] = useState<string | undefined>(keys(nodeAttributesIndex)[0]);
 
   const colors = !!staticColorAttId && keys(attributeValues[staticColorAttId]);
@@ -29,7 +29,7 @@ export const ColorStaticEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
     <div>
       <AttributeSelect
         attributeId={staticColorAttId}
-        nodeEdge={nodeEdge}
+        itemType={itemType}
         attributesFilter={(a) => !!a.qualitative}
         onChange={(aid) => setStaticColorAttId(aid)}
       />

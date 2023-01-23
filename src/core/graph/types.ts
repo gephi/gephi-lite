@@ -1,5 +1,5 @@
 import { MultiGraph } from "graphology";
-import { Scalar } from "../types";
+import { ItemType, Scalar } from "../types";
 
 /**
  * Items data:
@@ -26,10 +26,11 @@ export type ItemData = Record<string, Scalar>;
  * Model:
  * ******
  */
-export interface AttributeDefinition {
+export interface FieldModel<T extends ItemType = ItemType> {
   id: string;
-  isQuali: boolean;
-  isQuanti: boolean;
+  itemType: T;
+  quantitative: null | { unit?: string | null };
+  qualitative: null | { separator?: string | null };
 }
 
 /**
@@ -55,12 +56,11 @@ export interface GraphDataset {
   // We store here the graph metadata (title, author, etc...):
   metadata: Record<string, any>;
 
+  // We store here how the nodes/edges attributes should be interpretated:
+  nodeFields: FieldModel<"nodes">[];
+  edgeFields: FieldModel<"edges">[];
+
   // Finally, we store here a Graphology instance that stores the graph, without
   // nodes and edges data - just for traversal:
   fullGraph: DatalessGraph;
-}
-
-export interface GraphModel {
-  edgeAttributes: Record<string, AttributeDefinition>;
-  nodeAttributes: Record<string, AttributeDefinition>;
 }

@@ -1,13 +1,13 @@
 import { FC, useState } from "react";
-import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ColorStaticEditor } from "./ColorStaticEditor";
 import { ColorFixedEditor } from "./ColorFixedEditor";
+import { ItemType } from "../../../core/types";
 
 type colorMode = "fixed" | "quanti" | "quali" | "static";
 
-export const ColorItem: FC<NodeEdgeProps> = ({ nodeEdge }) => {
+export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const [colorMode, setColorMode] = useState<colorMode>("fixed");
 
   return (
@@ -26,10 +26,10 @@ export const ColorItem: FC<NodeEdgeProps> = ({ nodeEdge }) => {
         <option value="static">Static (color attribute)</option>
       </select>
 
-      {colorMode === "fixed" && <ColorFixedEditor nodeEdge={nodeEdge} />}
-      {colorMode === "quanti" && <ColorRankingEditor nodeEdge={nodeEdge} />}
-      {colorMode === "quali" && <ColorPartitionEditor nodeEdge={nodeEdge} />}
-      {colorMode === "static" && <ColorStaticEditor nodeEdge={nodeEdge} />}
+      {colorMode === "fixed" && <ColorFixedEditor itemType={itemType} />}
+      {colorMode === "quanti" && <ColorRankingEditor itemType={itemType} />}
+      {colorMode === "quali" && <ColorPartitionEditor itemType={itemType} />}
+      {colorMode === "static" && <ColorStaticEditor itemType={itemType} />}
     </form>
   );
 };

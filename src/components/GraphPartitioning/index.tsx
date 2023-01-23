@@ -1,38 +1,41 @@
 import { FC, useEffect, useState } from "react";
-import { NodeEdgeProps, NodeEdgeTabs } from "../forms/NodeEdgeTabs";
+import { Tabs } from "../Tabs";
 import { GraphPartitioningForm } from "./GraphPartitioningForm";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
+import { ItemType } from "../../core/types";
 
 export const GraphPartitioning: FC = () => {
   return (
-    <NodeEdgeTabs>
-      <GraphItemPartitioning nodeEdge="nodes" />
-    </NodeEdgeTabs>
+    <Tabs>
+      <>Nodes</>
+      <GraphItemPartitioning itemType="nodes" />
+      <>Edges</>
+      <GraphItemPartitioning itemType="edges" />
+    </Tabs>
   );
 };
 
-const GraphItemPartitioning: FC<NodeEdgeProps> = ({ nodeEdge }) => {
+const GraphItemPartitioning: FC<{ itemType: ItemType }> = ({ itemType }) => {
   useEffect(() => {
     setEditingNodePartition(false);
     setPartitionAttributeId(undefined);
-  }, [nodeEdge]);
-  //TODO: repalce by context
+  }, [itemType]);
+  //TODO: replace by context
   const [partitionAttributeId, setPartitionAttributeId] = useState<string | undefined>(undefined);
   const [editingNodePartition, setEditingNodePartition] = useState<boolean>(false);
-  const itemsLabel = (nodeEdge || "node") + "s"; // add translator here
   return (
     <div>
       {partitionAttributeId === undefined ? (
         <>
-          <div>{itemsLabel} are not partitioned</div>
+          <div>{itemType} are not partitioned</div>
           <div>
-            To apply appearance or filters differently on different groups of {itemsLabel},
+            To apply appearance or filters differently on different groups of {itemType},
             <br />
             partition your graph using any node qualitative attribute.
           </div>
         </>
       ) : (
-        <GraphPartitioningStatus nodeEdge={nodeEdge} partitionAttributeId={partitionAttributeId} />
+        <GraphPartitioningStatus itemType={itemType} partitionAttributeId={partitionAttributeId} />
       )}
       <div>
         {partitionAttributeId && (
@@ -52,7 +55,7 @@ const GraphItemPartitioning: FC<NodeEdgeProps> = ({ nodeEdge }) => {
       </div>
       {editingNodePartition && (
         <GraphPartitioningForm
-          nodeEdge={nodeEdge}
+          itemType={itemType}
           partitionAttributeId={partitionAttributeId}
           setPartitionAttributeId={setPartitionAttributeId}
           closeForm={() => setEditingNodePartition(false)}

@@ -27,10 +27,7 @@ export type Producer<T, Args extends unknown[] = []> = (...args: Args) => Reduce
  * This allows writing the logic as unit-testable producers, but spread through
  * the code simple actions.
  */
-export function producerToAction<T, Args extends unknown[] = []>(
-  producer: Producer<T, Args>,
-  atom: WritableAtom<T>
-) {
+export function producerToAction<T, Args extends unknown[] = []>(producer: Producer<T, Args>, atom: WritableAtom<T>) {
   return (...args: Args) => {
     atom.set(producer(...args));
   };

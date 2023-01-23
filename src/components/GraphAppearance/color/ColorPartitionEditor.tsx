@@ -1,9 +1,9 @@
 import { every, fromPairs, keys, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { AttributeSelect } from "../../forms/AttributeSelect";
-import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 import iwanthue from "iwanthue";
 import { isColor } from "./utils";
+import { ItemType } from "../../../core/types";
 
 interface ColorPartitionSpec {
   attributeId: string;
@@ -24,11 +24,11 @@ const edgeAttributesIndex: AttributeValueIndex = {
   type: { knows: 12, hates: 10 },
 };
 
-export const ColorPartitionEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
+export const ColorPartitionEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
   //TODO: connect to context
   const [colorPartitionSpec, setColorPartitionSpec] = useState<Partial<ColorPartitionSpec>>();
   const [palette, setPalette] = useState<string[]>([]);
-  const attributesIndex = nodeEdge === "nodes" ? nodeAttributesIndex : edgeAttributesIndex;
+  const attributesIndex = itemType === "nodes" ? nodeAttributesIndex : edgeAttributesIndex;
 
   // init palette
   useEffect(() => {
@@ -44,7 +44,7 @@ export const ColorPartitionEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
     <div>
       <h4>Partition</h4>
       <AttributeSelect
-        nodeEdge={nodeEdge}
+        itemType={itemType}
         attributeId={colorPartitionSpec?.attributeId}
         attributesFilter={(a) => !!a.qualitative}
         defaultToFirstAttribute

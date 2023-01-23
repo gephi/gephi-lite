@@ -1,23 +1,27 @@
 import { FC, useState } from "react";
-import { NodeEdgeProps, NodeEdgeTabs } from "../forms/NodeEdgeTabs";
 import { ColorItem } from "./color/ColorItem";
+import { ItemType } from "../../core/types";
+import { Tabs } from "../Tabs";
 
 export const GraphAppearance: FC = () => {
   return (
-    <NodeEdgeTabs>
-      <GraphItemAppearance nodeEdge="nodes" />
-    </NodeEdgeTabs>
+    <Tabs>
+      <>Nodes</>
+      <GraphItemAppearance itemType="nodes" />
+      <>Edges</>
+      <GraphItemAppearance itemType="edges" />
+    </Tabs>
   );
 };
 
-const GraphItemAppearance: FC<NodeEdgeProps> = ({ nodeEdge }) => {
+const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
   //TODO: retrieve partition from CONTEXT and split by partitions
   const [edgesHidden, setEdgesHidden] = useState<boolean>(false);
   //TODO: replace by core.model types once done
 
   return (
     <div>
-      {nodeEdge === "edges" && (
+      {itemType === "edges" && (
         <button className="btn btn-primary" onClick={() => setEdgesHidden(!edgesHidden)}>
           {edgesHidden ? "Show" : "Hide"} edges
         </button>
@@ -26,7 +30,7 @@ const GraphItemAppearance: FC<NodeEdgeProps> = ({ nodeEdge }) => {
       {
         // COLOR
       }
-      <ColorItem nodeEdge={nodeEdge} />
+      <ColorItem itemType={itemType} />
       {
         // SIZE
       }

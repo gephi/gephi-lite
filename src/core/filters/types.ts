@@ -1,4 +1,4 @@
-import { ItemType } from '../types';
+import { ItemType } from "../types";
 
 export interface BaseFilter {
   type: string;
@@ -6,27 +6,27 @@ export interface BaseFilter {
 }
 
 export type RangeFilter = BaseFilter & {
-  type: 'range';
+  type: "range";
   itemType: ItemType;
   field: string;
 } & ({ min: number; max?: number } | { min?: number; max: number });
 
 export interface TermsFilter extends BaseFilter {
-  type: 'terms';
+  type: "terms";
   itemType: ItemType;
   field: string;
   terms: Set<string>;
 }
 
 export interface TopologicalFilter extends BaseFilter {
-  type: 'topological';
+  type: "topological";
   itemType: ItemType;
   method: string; // TODO
   arguments: any; // TODO
 }
 
 export interface ScriptFilter extends BaseFilter {
-  type: 'script';
+  type: "script";
   itemType: ItemType;
   script: (itemID: string) => boolean;
 }

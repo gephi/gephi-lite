@@ -1,9 +1,10 @@
 import { FC, useEffect } from "react";
 import { Attribute } from "../GraphPartitioning/GraphPartitioningForm";
-import { NodeEdgeProps } from "./NodeEdgeTabs";
+import { ItemType } from "../../core/types";
 
-type AttributeSelectProps = NodeEdgeProps & {
+type AttributeSelectProps = {
   id?: string;
+  itemType: ItemType;
   attributeId: string | undefined;
   onChange: (v: string | undefined) => void;
   attributesFilter?: (a: Attribute) => boolean;
@@ -15,7 +16,7 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
   id,
   attributeId,
   onChange,
-  nodeEdge,
+  itemType,
   attributesFilter = () => true,
   disabled,
   defaultToFirstAttribute,
@@ -33,7 +34,7 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
     { id: "weight", qualitative: false, quantitative: true },
     { id: "type", qualitative: true, quantitative: false },
   ];
-  const attributes = (nodeEdge === "nodes" ? nodeAttributes : edgeAttributes).filter(attributesFilter);
+  const attributes = (itemType === "nodes" ? nodeAttributes : edgeAttributes).filter(attributesFilter);
 
   useEffect(() => {
     if (defaultToFirstAttribute && !attributeId) onChange(attributes[0]?.id);

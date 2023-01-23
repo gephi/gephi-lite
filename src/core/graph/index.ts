@@ -1,11 +1,12 @@
 import { omit } from "lodash";
 
 import { atom } from "../utils/atoms";
-import { GraphDataset, SigmaGraph } from "./types";
+import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { Producer } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
 import { filtersAtom } from "../filters";
 import { datasetToFilteredSigmaGraph } from "../filters/utils";
+import { ItemType } from "../types";
 
 /**
  * Producers:
@@ -23,10 +24,19 @@ const editGraphMeta: Producer<GraphDataset, [string, any]> = (key, value) => {
     metadata: value === undefined ? omit(state.metadata, key) : { ...state.metadata, [key]: value },
   });
 };
+const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
+  const key = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
+
+  return (state) => ({
+    ...state,
+    [key]: state[key].map((field) => (field.id === fieldModel.id ? fieldModel : field)),
+  });
+};
 
 export const graphDatasetProducers = {
   setGraphMeta,
   editGraphMeta,
+  setFieldModel,
 };
 
 /**

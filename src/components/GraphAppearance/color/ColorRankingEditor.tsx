@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
+import { ItemType } from "../../../core/types";
 import { AttributeSelect } from "../../forms/AttributeSelect";
-import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 
 interface ColorScalePointType {
   scalePoint: number;
@@ -27,7 +27,7 @@ const ColorScalePoint: FC<ColorScalePointType & { setColor: (color: string) => v
   );
 };
 
-export const ColorRankingEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
+export const ColorRankingEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
   //TODO: get Ranking Editor status from context
   const [colorRankingSpec, setColorRankingSpec] = useState<Partial<ColorRankingSpecification | null>>({
     colorScalePoints: [
@@ -42,7 +42,7 @@ export const ColorRankingEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
       <AttributeSelect
         attributeId={colorRankingSpec?.attributeId}
         onChange={(attId) => setColorRankingSpec({ ...colorRankingSpec, attributeId: attId })}
-        nodeEdge={nodeEdge}
+        itemType={itemType}
         attributesFilter={(a) => !!a.quantitative}
       />
       <div className="w-100 d-flex justify-content-between">

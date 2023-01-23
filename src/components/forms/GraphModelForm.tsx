@@ -1,32 +1,31 @@
 import { FC } from "react";
-import { Attribute } from "../GraphPartitioning/GraphPartitioningForm";
-import { NodeEdgeProps, NodeEdgeTabs } from "./NodeEdgeTabs";
 
-//TODO: replace by core.model types once done
+import { Tabs } from "../Tabs";
+import { FieldModel } from "../../core/graph/types";
+import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 
-const nodeAttributes: Attribute[] = [
-  { id: "att_dual", qualitative: true, quantitative: true },
-  { id: "att_quanti", qualitative: false, quantitative: true },
-  { id: "att_quali", qualitative: true, quantitative: false },
-];
-const edgeAttributes: Attribute[] = [{ id: "weight", qualitative: false, quantitative: true }];
+const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
+  const { setFieldModel } = useGraphDatasetActions();
 
-const NodeEdgeAttributes: FC<NodeEdgeProps> = ({ nodeEdge }) => {
-  const attributes = nodeEdge === "nodes" ? nodeAttributes : edgeAttributes;
   return (
     <div>
-      {attributes.map((a) => (
-        <div key={a.id}>
-          {a.id}
+      {fields.map((field) => (
+        <div key={field.id}>
+          {field.id}
           <div className="form-check form-check-inline">
             <input
               className="form-check-input"
               type="checkbox"
-              id={`${a.id}quali`}
-              checked={a.qualitative}
-              onChange={(e) => console.log(`TODO: set model in context ${{ ...a, qualitative: e.target.checked }}`)}
+              id={`${field.id}-quali`}
+              checked={!!field.qualitative}
+              onChange={(e) =>
+                setFieldModel({
+                  ...field,
+                  qualitative: e.target.checked ? {} : null,
+                })
+              }
             />
-            <label className="form-check-label" htmlFor={`${a.id}quali`}>
+            <label className="form-check-label" htmlFor={`${field.id}-quali`}>
               quali
             </label>
           </div>
@@ -34,11 +33,16 @@ const NodeEdgeAttributes: FC<NodeEdgeProps> = ({ nodeEdge }) => {
             <input
               className="form-check-input"
               type="checkbox"
-              id={`${a.id}quanti`}
-              checked={a.quantitative}
-              onChange={(e) => console.log(`TODO: set model in context ${{ ...a, quantitative: e.target.checked }}`)}
+              id={`${field.id}-quanti`}
+              checked={!!field.quantitative}
+              onChange={(e) =>
+                setFieldModel({
+                  ...field,
+                  quantitative: e.target.checked ? {} : null,
+                })
+              }
             />
-            <label className="form-check-label" htmlFor={`${a.id}quanti`}>
+            <label className="form-check-label" htmlFor={`${field.id}-quanti`}>
               quanti
             </label>
           </div>
@@ -49,9 +53,14 @@ const NodeEdgeAttributes: FC<NodeEdgeProps> = ({ nodeEdge }) => {
 };
 
 export const GraphModelForm: FC = () => {
+  const { nodeFields, edgeFields } = useGraphDataset();
+
   return (
-    <NodeEdgeTabs>
-      <NodeEdgeAttributes nodeEdge="nodes" />
-    </NodeEdgeTabs>
+    <Tabs>
+      <>Nodes</>
+      <FieldModelsComponent fields={nodeFields} />
+      <>Edges</>
+      <FieldModelsComponent fields={edgeFields} />
+    </Tabs>
   );
 };
