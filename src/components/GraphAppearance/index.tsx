@@ -3,6 +3,7 @@ import { ColorItem } from "./color/ColorItem";
 import { ItemType } from "../../core/types";
 import { Tabs } from "../Tabs";
 import { SizeItem } from "./size/SizeItem";
+import { LabelItem } from "./label/LabelItem";
 
 export const GraphAppearance: FC = () => {
   return (
@@ -40,7 +41,7 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
       {
         // LABELS
       }
-      <h4>Labels</h4>
+      <LabelItem itemType={itemType} />
     </div>
   );
 };

@@ -10,6 +10,7 @@ type AttributeSelectProps = {
   attributesFilter?: (a: Attribute) => boolean;
   disabled?: boolean;
   defaultToFirstAttribute?: boolean;
+  emptyOptionLabel?: string;
 };
 
 export const AttributeSelect: FC<AttributeSelectProps> = ({
@@ -20,6 +21,7 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
   attributesFilter = () => true,
   disabled,
   defaultToFirstAttribute,
+  emptyOptionLabel,
 }) => {
   //TODO: replace by core.model types once done
 
@@ -47,6 +49,11 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
       value={attributeId || ""}
       onChange={(e) => onChange(e.target.value === "" ? undefined : e.target.value)}
     >
+      {emptyOptionLabel && (
+        <option key="" value="">
+          {emptyOptionLabel}
+        </option>
+      )}
       {attributes.map((na) => (
         <option key={na.id} value={na.id}>
           {na.id}
