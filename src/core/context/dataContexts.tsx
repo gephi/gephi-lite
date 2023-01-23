@@ -1,5 +1,5 @@
 import { Context, createContext, FC, ReactNode, useContext } from "react";
-import { mapValues } from "lodash";
+import { mapValues, reduce } from "lodash";
 
 import { filtersAtom, filtersProducers } from "../filters";
 import { graphDatasetAtom, graphDatasetProducers, sigmaGraphAtom } from "../graph";
@@ -35,15 +35,18 @@ function makeUseActions<T>(producers: Record<string, Producer<T, any[]>>, atomCo
 /**
  * Declare here all atoms used in the app:
  */
-const filtersAtomContext = createContext(filtersAtom);
-const sigmaGraphAtomContext = createContext(sigmaGraphAtom);
-const graphDatasetAtomContext = createContext(graphDatasetAtom);
+const ATOMS = {
+  filters: filtersAtom,
+  sigmaGraph: sigmaGraphAtom,
+  graphDataset: graphDatasetAtom,
+};
+type AtomName = keyof typeof ATOMS;
 
-const REGISTRY = [
-  { atom: filtersAtom, context: filtersAtomContext },
-  { atom: sigmaGraphAtom, context: sigmaGraphAtomContext },
-  { atom: graphDatasetAtom, context: graphDatasetAtomContext },
-];
+const CONTEXTS = {
+  filters: createContext(ATOMS.filters),
+  sigmaGraph: createContext(ATOMS.sigmaGraph),
+  graphDataset: createContext(ATOMS.graphDataset),
+};
 
 /**
  * Public API:
@@ -51,9 +54,10 @@ const REGISTRY = [
 export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) => {
   return (
     <>
-      {REGISTRY.reduce(
-        (iter, { atom, context }) => (
-          <context.Provider value={atom as any}>{iter || null}</context.Provider>
+      {reduce(
+        CONTEXTS,
+        (iter, context, key) => (
+          <context.Provider value={ATOMS[key as AtomName] as any}>{iter || null}</context.Provider>
         ),
         children,
       )}
@@ -62,10 +66,10 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
 };
 
 // Read data:
-export const useFilters = makeUseAtom(filtersAtomContext);
-export const useSigmaGraph = makeUseAtom(sigmaGraphAtomContext);
-export const useGraphDataset = makeUseAtom(graphDatasetAtomContext);
+export const useFilters = makeUseAtom(CONTEXTS.filters);
+export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
+export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 
 // Actions:
-export const useFiltersActions = makeUseActions(filtersProducers, filtersAtomContext);
-export const useGraphDatasetActions = makeUseActions(graphDatasetProducers, graphDatasetAtomContext);
+export const useFiltersActions = makeUseActions(filtersProducers, CONTEXTS.filters);
+export const useGraphDatasetActions = makeUseActions(graphDatasetProducers, CONTEXTS.graphDataset);
