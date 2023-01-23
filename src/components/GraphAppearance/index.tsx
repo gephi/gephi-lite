@@ -29,18 +29,8 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
         </button>
       )}
 
-      {
-        // COLOR
-      }
       <ColorItem itemType={itemType} />
-      {
-        // SIZE
-      }
       <SizeItem itemType={itemType} />
-
-      {
-        // LABELS
-      }
       <LabelItem itemType={itemType} />
     </div>
   );

@@ -6,7 +6,6 @@ import { Producer } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
 import { filtersAtom } from "../filters";
 import { datasetToFilteredSigmaGraph } from "../filters/utils";
-import { ItemType } from "../types";
 
 /**
  * Producers:

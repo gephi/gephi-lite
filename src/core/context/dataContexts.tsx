@@ -2,6 +2,7 @@ import { Context, createContext, FC, ReactNode, useContext } from "react";
 import { mapValues, reduce } from "lodash";
 
 import { filtersAtom, filtersProducers } from "../filters";
+import { appearanceAtom, appearanceProducers } from "../appearance";
 import { graphDatasetAtom, graphDatasetProducers, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { Producer } from "../utils/reducers";
@@ -37,6 +38,7 @@ function makeUseActions<T>(producers: Record<string, Producer<T, any[]>>, atomCo
  */
 const ATOMS = {
   filters: filtersAtom,
+  appearance: appearanceAtom,
   sigmaGraph: sigmaGraphAtom,
   graphDataset: graphDatasetAtom,
 };
@@ -44,6 +46,7 @@ type AtomName = keyof typeof ATOMS;
 
 const CONTEXTS = {
   filters: createContext(ATOMS.filters),
+  appearance: createContext(ATOMS.appearance),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
   graphDataset: createContext(ATOMS.graphDataset),
 };
@@ -67,9 +70,11 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
 
 // Read data:
 export const useFilters = makeUseAtom(CONTEXTS.filters);
+export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 
 // Actions:
 export const useFiltersActions = makeUseActions(filtersProducers, CONTEXTS.filters);
+export const useAppearanceActions = makeUseActions(appearanceProducers, CONTEXTS.appearance);
 export const useGraphDatasetActions = makeUseActions(graphDatasetProducers, CONTEXTS.graphDataset);

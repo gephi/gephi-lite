@@ -1,20 +1,24 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { ItemType } from "../../../core/types";
+import { FixedSize } from "../../../core/appearance/types";
 
-export const SizeFixedEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
-  const [fixedSize, setFixedSize] = useState<number>(5);
+export const SizeFixedEditor: FC<{
+  itemType: ItemType;
+  size: FixedSize;
+  setSize: (newSize: FixedSize) => void;
+}> = ({ size, setSize }) => {
   return (
     <div>
-      <input type="number" value={fixedSize} onChange={(v) => setFixedSize(+v.target.value)} />
-      <button
-        type="submit"
-        className="btn btn-primary"
-        onClick={() => {
-          console.log(`TODO: set state ${itemType} ${fixedSize}`);
-        }}
-      >
-        validate
-      </button>
+      <input
+        type="number"
+        value={size.value}
+        onChange={(e) =>
+          setSize({
+            ...size,
+            value: +e.target.value,
+          })
+        }
+      />
     </div>
   );
 };
