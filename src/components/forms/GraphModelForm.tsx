@@ -12,7 +12,7 @@ const nodeAttributes: Attribute[] = [
 const edgeAttributes: Attribute[] = [{ id: "weight", qualitative: false, quantitative: true }];
 
 const NodeEdgeAttributes: FC<NodeEdgeProps> = ({ nodeEdge }) => {
-  const attributes = nodeEdge === "node" ? nodeAttributes : edgeAttributes;
+  const attributes = nodeEdge === "nodes" ? nodeAttributes : edgeAttributes;
   return (
     <div>
       {attributes.map((a) => (
@@ -51,7 +51,7 @@ const NodeEdgeAttributes: FC<NodeEdgeProps> = ({ nodeEdge }) => {
 export const GraphModelForm: FC = () => {
   return (
     <NodeEdgeTabs>
-      <NodeEdgeAttributes nodeEdge="node" />
+      <NodeEdgeAttributes nodeEdge="nodes" />
     </NodeEdgeTabs>
   );
 };

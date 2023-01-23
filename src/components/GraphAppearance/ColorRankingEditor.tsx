@@ -46,8 +46,9 @@ export const ColorRankingEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
         attributesFilter={(a) => !!a.quantitative}
       />
       <div className="w-100 d-flex justify-content-between">
-        {colorRankingSpec?.colorScalePoints?.map((sc) => (
+        {colorRankingSpec?.colorScalePoints?.map((sc, i) => (
           <ColorScalePoint
+            key={i}
             {...sc}
             setColor={(color) =>
               setColorRankingSpec({
@@ -73,6 +74,17 @@ export const ColorRankingEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
           <option disabled>spline TODO</option>
         </select>
       </div>
+      <button
+        type="submit"
+        disabled={!colorRankingSpec}
+        className="btn btn-primary"
+        onClick={(event) => {
+          // TODO: Fix event handler code
+          console.log(`TODO: update context`);
+        }}
+      >
+        validate
+      </button>
     </div>
   );
 };

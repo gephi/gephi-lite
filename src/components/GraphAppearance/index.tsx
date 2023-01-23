@@ -5,7 +5,7 @@ import { ColorItem } from "./ColorItem";
 export const GraphAppearance: FC = () => {
   return (
     <NodeEdgeTabs>
-      <GraphItemAppearance nodeEdge="node" />
+      <GraphItemAppearance nodeEdge="nodes" />
     </NodeEdgeTabs>
   );
 };
@@ -17,7 +17,7 @@ const GraphItemAppearance: FC<NodeEdgeProps> = ({ nodeEdge }) => {
 
   return (
     <div>
-      {nodeEdge === "edge" && (
+      {nodeEdge === "edges" && (
         <button className="btn btn-primary" onClick={() => setEdgesHidden(!edgesHidden)}>
           {edgesHidden ? "Show" : "Hide"} edges
         </button>

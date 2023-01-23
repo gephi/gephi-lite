@@ -3,6 +3,7 @@ import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ColorStaticEditor } from "./ColorStaticEditor";
+import { ColorFixedEditor } from "./ColorFixedEditor";
 
 type colorMode = "fixed" | "quanti" | "quali" | "static";
 
@@ -10,7 +11,7 @@ export const ColorItem: FC<NodeEdgeProps> = ({ nodeEdge }) => {
   const [colorMode, setColorMode] = useState<colorMode>("fixed");
 
   return (
-    <div>
+    <form onSubmit={(e) => e.preventDefault()}>
       <h3>Color</h3>
       <label htmlFor="colorMode">Set color from</label>
       <select
@@ -25,10 +26,10 @@ export const ColorItem: FC<NodeEdgeProps> = ({ nodeEdge }) => {
         <option value="static">Static (color attribute)</option>
       </select>
 
-      {colorMode === "fixed" && <input type="color" />}
+      {colorMode === "fixed" && <ColorFixedEditor nodeEdge={nodeEdge} />}
       {colorMode === "quanti" && <ColorRankingEditor nodeEdge={nodeEdge} />}
       {colorMode === "quali" && <ColorPartitionEditor nodeEdge={nodeEdge} />}
       {colorMode === "static" && <ColorStaticEditor nodeEdge={nodeEdge} />}
-    </div>
+    </form>
   );
 };

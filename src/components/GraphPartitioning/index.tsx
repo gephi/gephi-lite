@@ -6,7 +6,7 @@ import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
 export const GraphPartitioning: FC = () => {
   return (
     <NodeEdgeTabs>
-      <GraphItemPartitioning nodeEdge="node" />
+      <GraphItemPartitioning nodeEdge="nodes" />
     </NodeEdgeTabs>
   );
 };

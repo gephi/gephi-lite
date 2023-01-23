@@ -20,7 +20,7 @@ export const GraphPartitioningStatus: FC<
   }
 > = ({ nodeEdge, partitionAttributeId, preview }) => {
   const attributeStats =
-    nodeEdge === "node" ? nodeAttributesIndex[partitionAttributeId] : edgeAttributesIndex[partitionAttributeId];
+    nodeEdge === "nodes" ? nodeAttributesIndex[partitionAttributeId] : edgeAttributesIndex[partitionAttributeId];
   const itemLabel = nodeEdge + "s"; // add translator here
   return (
     <div className="d-flex flex-column">

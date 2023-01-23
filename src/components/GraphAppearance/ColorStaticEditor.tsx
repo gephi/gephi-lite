@@ -2,6 +2,7 @@ import { keys } from "lodash";
 import { FC, useState } from "react";
 import { AttributeSelect } from "../forms/AttributeSelect";
 import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
+import { isColor } from "./utils";
 
 // TODO: MOVE TO CONTEXT
 type AttributeValueIndex = Record<string, Record<string, number>>;
@@ -16,18 +17,13 @@ const edgeAttributesIndex: AttributeValueIndex = {
   type: { knows: 12, hates: 10 },
 };
 
-const isValidColor = (color: string) => {
-  const hexColorRE = /^#[1-9A-Fa-f]{3}|[1-9A-Fa-f]{6}|[1-9A-Fa-f]{8}$/;
-  return hexColorRE.test(color);
-};
-
 export const ColorStaticEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
-  const [staticColorAttId, setStaticColorAttId] = useState<string | undefined>();
-  const attributeValues = nodeEdge === "node" ? nodeAttributesIndex : edgeAttributesIndex;
-  const colors = !!staticColorAttId && keys(attributeValues[staticColorAttId]);
+  const attributeValues = nodeEdge === "nodes" ? nodeAttributesIndex : edgeAttributesIndex;
+  const [staticColorAttId, setStaticColorAttId] = useState<string | undefined>(keys(nodeAttributesIndex)[0]);
 
-  const validColors = colors && colors.filter((c) => isValidColor(c));
-  const inValidColors = colors && colors.filter((c) => !isValidColor(c));
+  const colors = !!staticColorAttId && keys(attributeValues[staticColorAttId]);
+  const validColors = colors && colors.filter((c) => isColor(c));
+  const inValidColors = colors && colors.filter((c) => !isColor(c));
 
   return (
     <div>
@@ -41,7 +37,7 @@ export const ColorStaticEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
         <div>
           <div className="d-flex">
             {colors
-              .filter((c) => isValidColor(c))
+              .filter((c) => isColor(c))
               .map((c) => (
                 <div
                   style={{ margin: "2px", border: "solid grey 1px", backgroundColor: c, width: "20px", height: "20px" }}
@@ -65,6 +61,7 @@ export const ColorStaticEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
             </div>
           )}
           <button
+            type="submit"
             disabled={!validColors || validColors.length === 0}
             className="btn btn-primary"
             onClick={() => {

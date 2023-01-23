@@ -33,7 +33,7 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
     { id: "weight", qualitative: false, quantitative: true },
     { id: "type", qualitative: true, quantitative: false },
   ];
-  const attributes = (nodeEdge === "node" ? nodeAttributes : edgeAttributes).filter(attributesFilter);
+  const attributes = (nodeEdge === "nodes" ? nodeAttributes : edgeAttributes).filter(attributesFilter);
 
   useEffect(() => {
     if (defaultToFirstAttribute && !attributeId) onChange(attributes[0]?.id);
