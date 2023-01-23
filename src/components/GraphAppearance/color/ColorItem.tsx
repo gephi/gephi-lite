@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
+import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ColorStaticEditor } from "./ColorStaticEditor";

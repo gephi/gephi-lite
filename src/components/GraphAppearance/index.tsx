@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { NodeEdgeProps, NodeEdgeTabs } from "../forms/NodeEdgeTabs";
-import { ColorItem } from "./ColorItem";
+import { ColorItem } from "./color/ColorItem";
 
 export const GraphAppearance: FC = () => {
   return (

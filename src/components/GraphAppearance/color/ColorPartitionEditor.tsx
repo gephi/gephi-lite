@@ -1,7 +1,7 @@
 import { every, fromPairs, keys, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
-import { AttributeSelect } from "../forms/AttributeSelect";
-import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
+import { AttributeSelect } from "../../forms/AttributeSelect";
+import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 import iwanthue from "iwanthue";
 import { isColor } from "./utils";
 

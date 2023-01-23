@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
-import { AttributeSelect } from "../forms/AttributeSelect";
-import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
+import { AttributeSelect } from "../../forms/AttributeSelect";
+import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 
 interface ColorScalePointType {
   scalePoint: number;

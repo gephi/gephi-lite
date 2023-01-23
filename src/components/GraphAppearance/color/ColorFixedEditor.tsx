@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { NodeEdgeProps } from "../forms/NodeEdgeTabs";
+import { NodeEdgeProps } from "../../forms/NodeEdgeTabs";
 
 export const ColorFixedEditor: FC<NodeEdgeProps> = ({ nodeEdge }) => {
   const [fixedColor, setFixedColor] = useState<string>("#EEEEEE");
