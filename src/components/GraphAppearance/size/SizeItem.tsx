@@ -50,7 +50,9 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       >
         <option value="fixed">fixed size</option>
         {fields.map((field) => (
-          <option value={`field::${field.id}`}>{field.id}</option>
+          <option key={field.id} value={`field::${field.id}`}>
+            {field.id}
+          </option>
         ))}
       </select>
 

@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { ItemType } from "../../../core/types";
 import { AttributeSelect } from "../../forms/AttributeSelect";
+import { RankingColor } from "../../../core/appearance/types";
 
 interface ColorScalePointType {
   scalePoint: number;
@@ -27,35 +28,25 @@ const ColorScalePoint: FC<ColorScalePointType & { setColor: (color: string) => v
   );
 };
 
-export const ColorRankingEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
-  //TODO: get Ranking Editor status from context
-  const [colorRankingSpec, setColorRankingSpec] = useState<Partial<ColorRankingSpecification | null>>({
-    colorScalePoints: [
-      { scalePoint: 0, color: "#FFFFFF" },
-      { scalePoint: 1, color: "#11EE33" },
-    ],
-  });
-
+export const ColorRankingEditor: FC<{
+  itemType: ItemType;
+  color: RankingColor;
+  setColor: (newColor: RankingColor) => void;
+}> = ({ color, setColor }) => {
   return (
     <div>
       <h4>Ranking</h4>
-      <AttributeSelect
-        attributeId={colorRankingSpec?.attributeId}
-        onChange={(attId) => setColorRankingSpec({ ...colorRankingSpec, attributeId: attId })}
-        itemType={itemType}
-        attributesFilter={(a) => !!a.quantitative}
-      />
       <div className="w-100 d-flex justify-content-between">
-        {colorRankingSpec?.colorScalePoints?.map((sc, i) => (
+        {color.colorScalePoints.map((sc, i) => (
           <ColorScalePoint
             key={i}
             {...sc}
-            setColor={(color) =>
-              setColorRankingSpec({
-                ...colorRankingSpec,
+            setColor={(value) =>
+              setColor({
+                ...color,
                 colorScalePoints: [
-                  ...(colorRankingSpec?.colorScalePoints?.filter((ssc) => ssc.scalePoint !== sc.scalePoint) || []),
-                  { scalePoint: sc.scalePoint, color },
+                  ...(color.colorScalePoints.filter((ssc) => ssc.scalePoint !== sc.scalePoint) || []),
+                  { scalePoint: sc.scalePoint, color: value },
                 ],
               })
             }
@@ -74,17 +65,6 @@ export const ColorRankingEditor: FC<{ itemType: ItemType }> = ({ itemType }) => 
           <option disabled>spline TODO</option>
         </select>
       </div>
-      <button
-        type="submit"
-        disabled={!colorRankingSpec}
-        className="btn btn-primary"
-        onClick={(event) => {
-          // TODO: Fix event handler code
-          console.log(`TODO: update context`);
-        }}
-      >
-        validate
-      </button>
     </div>
   );
 };

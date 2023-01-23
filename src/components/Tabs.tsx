@@ -7,11 +7,10 @@ export interface Tab {
   content: ComponentType;
 }
 
-export const Tabs: FC<{ children: ReactNode[] }> = ({ children }) => {
+export const Tabs: FC<{ children: [ReactNode, ReactNode, ...ReactNode[]] }> = ({ children }) => {
   const tabs = chunk(children, 2) as [ReactNode, ReactNode][];
 
   if (children.length % 2) throw new Error("Tabs: This component should have an even number of children.");
-  if (!tabs.length) throw new Error("Tabs: This component should have at least two children.");
 
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
 

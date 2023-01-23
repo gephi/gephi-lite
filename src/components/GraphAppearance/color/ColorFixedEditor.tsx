@@ -1,21 +1,15 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { ItemType } from "../../../core/types";
+import { FixedColor } from "../../../core/appearance/types";
 
-export const ColorFixedEditor: FC<{ itemType: ItemType }> = ({ itemType }) => {
-  const [fixedColor, setFixedColor] = useState<string>("#EEEEEE");
-
+export const ColorFixedEditor: FC<{
+  itemType: ItemType;
+  color: FixedColor;
+  setColor: (newColor: FixedColor) => void;
+}> = ({ color, setColor }) => {
   return (
     <div>
-      <input type="color" value={fixedColor} onChange={(v) => setFixedColor(v.target.value)} />
-      <button
-        type="submit"
-        className="btn btn-primary"
-        onClick={() => {
-          console.log(`TODO: set state ${fixedColor}`);
-        }}
-      >
-        validate
-      </button>
+      <input type="color" value={color.value} onChange={(v) => setColor({ ...color, value: v.target.value })} />
     </div>
   );
 };
