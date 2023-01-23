@@ -2,8 +2,10 @@ import { omit } from "lodash";
 
 import { atom } from "../utils/atoms";
 import { GraphDataset, SigmaGraph } from "./types";
-import { Producer, producerToAction } from "../utils/reducers";
+import { Producer } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
+import { filtersAtom } from "../filters";
+import { datasetToFilteredSigmaGraph } from "../filters/utils";
 
 /**
  * Producers:
@@ -47,10 +49,18 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph")) {
-    sigmaGraphAtom.set(dataGraphToSigmaGraph(graphDataset));
+    const filtersState = filtersAtom.get();
+
+    sigmaGraphAtom.set(datasetToFilteredSigmaGraph(graphDataset, filtersState.past));
     return;
   }
 
   // TODO:
   // Refresh sigmaGraph when `nodeRenderingData` or `edgeRenderingData` is updated
+});
+
+filtersAtom.bind((filtersState) => {
+  const graphDataset = graphDatasetAtom.get();
+
+  sigmaGraphAtom.set(datasetToFilteredSigmaGraph(graphDataset, filtersState.past));
 });
