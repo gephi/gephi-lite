@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { isNil } from "lodash";
 import { useNavigate } from "react-router-dom";
-import { FaLock, FaFolderOpen, FaExternalLinkAlt } from "react-icons/fa";
+import { FaLock, FaFolderOpen, FaExternalLinkAlt, FaSync } from "react-icons/fa";
 import byteSize from "byte-size";
 
 import { displayDateTime } from "../../utils/date";
@@ -13,6 +13,8 @@ import { useLoadGexf } from "../../core/graph/userLoadGexf";
 import { Modal } from "../modals";
 import { Loader, Spinner } from "../Loader";
 
+const PAGINATION_SIZE = 10;
+
 export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const [user] = useConnectedUser();
   const navigate = useNavigate();
@@ -20,6 +22,9 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { loading, error, getFiles, getFile } = useCloudFiles();
   const { loading: ldGexf, error: errorGexf, load: loadGexf } = useLoadGexf();
   const [files, setFiles] = useState<Array<CloudFile>>([]);
+  // for the pagination
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(0);
 
   /**
    * When user change
@@ -34,8 +39,11 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
    *  => load files
    */
   useEffect(() => {
-    getFiles().then((files) => setFiles(files));
-  }, [getFiles]);
+    getFiles(page * PAGINATION_SIZE, PAGINATION_SIZE).then((result) => {
+      setFiles((files) => (page > 0 ? [...files, ...result] : result));
+      setHasMore(result.length === PAGINATION_SIZE);
+    });
+  }, [getFiles, page]);
 
   return (
     <Modal title={`Open a file from ${user?.provider.type}`} onClose={() => cancel()} className="modal-lg">
@@ -53,46 +61,56 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         )}
 
         {files.length > 0 && (
-          <table className="table  table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Filename</th>
-                <th scope="col">Created</th>
-                <th scope="col">Updated</th>
-                <th scope="col">Size</th>
-              </tr>
-            </thead>
-            <tbody>
-              {files.map((file) => (
-                <tr
-                  key={file.id}
-                  title={file.description}
-                  className={selected && selected.id === file.id ? "table-active" : ""}
-                  onClick={() => {
-                    setSelected(selected && selected.id === file.id ? null : file);
-                  }}
-                >
-                  <td>{!file.isPublic && <FaLock />}</td>
-                  <td>
-                    {file.filename}
-                    <a
-                      className="link-dark m-2"
-                      href={file.webUrl}
-                      title={`See the file on ${user?.provider.type}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FaExternalLinkAlt size="0.7em" />
-                    </a>
-                  </td>
-                  <td>{displayDateTime(file.createdAt)}</td>
-                  <td>{displayDateTime(file.updatedAt)}</td>
-                  <td>{`${byteSize(file.size)}`}</td>
+          <>
+            <table className="table  table-hover">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Filename</th>
+                  <th scope="col">Created</th>
+                  <th scope="col">Updated</th>
+                  <th scope="col">Size</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {files.map((file) => (
+                  <tr
+                    key={file.id}
+                    title={file.description}
+                    className={selected && selected.id === file.id ? "table-active" : ""}
+                    onClick={() => {
+                      setSelected(selected && selected.id === file.id ? null : file);
+                    }}
+                  >
+                    <td>{!file.isPublic && <FaLock />}</td>
+                    <td>
+                      {file.filename}
+                      <a
+                        className="link-dark m-2"
+                        href={file.webUrl}
+                        title={`See the file on ${user?.provider.type}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FaExternalLinkAlt size="0.7em" />
+                      </a>
+                    </td>
+                    <td>{displayDateTime(file.createdAt)}</td>
+                    <td>{displayDateTime(file.updatedAt)}</td>
+                    <td>{`${byteSize(file.size)}`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {hasMore && (
+              <div className="d-flex justify-content-center">
+                <button title="Load next page" className="btn btn-primary btn-sm" onClick={() => setPage(page + 1)}>
+                  <FaSync className="me-1" />
+                  Load more
+                </button>
+              </div>
+            )}
+          </>
         )}
         {!loading && files.length === 0 && (
           <p className="text-info">You have no GEXF file saved on {user?.provider.type}</p>

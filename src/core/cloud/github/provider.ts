@@ -19,7 +19,7 @@ export class GithubProvider implements CloudProvider {
   /**
    * Get Gist GEXF files.
    */
-  async getFiles(skip = 0, limit = 5): Promise<Array<CloudFile>> {
+  async getFiles(skip: number, limit: number): Promise<Array<CloudFile>> {
     let result: Array<CloudFile> = [];
     let ghPage = 0;
     let reachEnd = false;

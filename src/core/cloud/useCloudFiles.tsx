@@ -10,20 +10,23 @@ export function useCloudFiles() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const getFiles = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    let result: Array<CloudFile> = [];
-    try {
-      if (isNil(user)) throw new Error("You must be logged !");
-      result = await user.provider.getFiles();
-    } catch (e) {
-      setError(e as Error);
-    } finally {
-      setLoading(false);
-    }
-    return result;
-  }, [user]);
+  const getFiles = useCallback(
+    async (skip: number, limit: number) => {
+      setLoading(true);
+      setError(null);
+      let result: Array<CloudFile> = [];
+      try {
+        if (isNil(user)) throw new Error("You must be logged !");
+        result = await user.provider.getFiles(skip, limit);
+      } catch (e) {
+        setError(e as Error);
+      } finally {
+        setLoading(false);
+      }
+      return result;
+    },
+    [user],
+  );
 
   const getFile = useCallback(
     async (file: CloudFile) => {
