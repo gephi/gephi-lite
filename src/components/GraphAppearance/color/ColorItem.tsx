@@ -3,19 +3,19 @@ import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ItemType } from "../../../core/types";
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, useSetColorAppearance } from "../../../core/context/dataContexts";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
 import { FieldModel } from "../../../core/graph/types";
 
-type colorMode = "fixed" | "quanti" | "quali" | "static";
+const STATIC_MODES = new Set(["fixed", "source", "target", "data"]);
 
 export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { nodeFields, edgeFields } = useGraphDataset();
   const appearance = useAppearance();
-  const { setColorAppearance } = useAppearanceActions();
+  const setColorAppearance = useSetColorAppearance();
 
   const color = itemType === "nodes" ? appearance.nodesColor : appearance.edgesColor;
-  const colorValue = color.type === "fixed" ? "fixed" : `${color.type}::${color.field}`;
+  const colorValue = STATIC_MODES.has(color.type) ? color.type : `${color.type}::${color.field}`;
   const baseValue = itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
   const fieldOptions = useMemo(() => {
     const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
@@ -49,6 +49,10 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 value: baseValue,
               });
             }
+          } else if (value === "data" || value === "source" || value === "target") {
+            setColorAppearance(itemType, {
+              type: value as "data", // this is here to trick TS for nodes
+            });
           } else {
             const field = value.replace(/^[^:]+::/, "");
             const type = value.split("::")[0];
@@ -57,11 +61,16 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
               setColorAppearance(itemType, {
                 type,
                 field,
-                colorScalePoints: [],
+                colorScalePoints: [
+                  { scalePoint: 0, color: "#fc8d59" },
+                  { scalePoint: 0.5, color: "#ffffbf" },
+                  { scalePoint: 1, color: "#91bfdb" },
+                ],
+                missingColor: baseValue,
               });
             } else {
               setColorAppearance(itemType, {
-                type,
+                type: "partition",
                 field,
                 colorPalette: {},
                 missingColor: baseValue,
@@ -70,9 +79,14 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           }
         }}
       >
-        <option value="fixed">fixed size</option>
+        <option value="data">colors from input file</option>
+        {itemType === "edges" && <option value="source">use source node color</option>}
+        {itemType === "edges" && <option value="target">use target node color</option>}
+        <option value="fixed">fixed color</option>
         {fieldOptions.map(({ id, label }) => (
-          <option value={id} key={id}>{label}</option>
+          <option value={id} key={id}>
+            {label}
+          </option>
         ))}
       </select>
 

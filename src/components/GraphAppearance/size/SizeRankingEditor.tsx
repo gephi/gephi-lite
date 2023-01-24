@@ -17,8 +17,8 @@ export const SizeRankingEditor: FC<{
           <input
             id="min-size"
             type="number"
-            value={size.min}
-            onChange={(e) => setSize({ ...size, min: +e.target.value })}
+            value={size.minSize}
+            onChange={(e) => setSize({ ...size, minSize: +e.target.value })}
           />
         </div>
         <div className="d-flex flex-column align-items-center">
@@ -26,8 +26,8 @@ export const SizeRankingEditor: FC<{
           <input
             id="max-size"
             type="number"
-            value={size.max}
-            onChange={(e) => setSize({ ...size, max: +e.target.value })}
+            value={size.maxSize}
+            onChange={(e) => setSize({ ...size, maxSize: +e.target.value })}
           />
         </div>
       </div>

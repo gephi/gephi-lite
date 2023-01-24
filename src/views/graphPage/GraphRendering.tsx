@@ -1,7 +1,22 @@
-import { FC } from "react";
-import { SigmaContainer } from "@react-sigma/core";
+import { FC, useEffect } from "react";
+import { SigmaContainer, useSigma } from "@react-sigma/core";
 
-import { useSigmaGraph } from "../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { getReducer } from "../../core/appearance/utils";
+
+const SettingsController: FC = () => {
+  const sigma = useSigma();
+  const graphDataset = useGraphDataset();
+  const graphAppearance = useAppearance();
+
+  useEffect(() => {
+    console.log(graphAppearance);
+    sigma.setSetting("nodeReducer", getReducer("nodes", sigma, graphDataset, graphAppearance));
+    sigma.setSetting("edgeReducer", getReducer("edges", sigma, graphDataset, graphAppearance));
+  }, [graphAppearance, graphDataset, sigma]);
+
+  return null;
+};
 
 export const GraphRendering: FC = () => {
   const sigmaGraph = useSigmaGraph();
@@ -14,7 +29,9 @@ export const GraphRendering: FC = () => {
         initialSettings={{
           allowInvalidContainer: true,
         }}
-      />
+      >
+        <SettingsController />
+      </SigmaContainer>
     </div>
   );
 };

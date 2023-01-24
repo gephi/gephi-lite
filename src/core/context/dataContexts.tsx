@@ -22,14 +22,15 @@ function makeUseAtom<T>(atomContext: ReadableAtomContext<T> | WritableAtomContex
     return useReadAtom(atom);
   };
 }
-function makeUseActions<T>(producers: Record<string, Producer<T, any[]>>, atomContext: WritableAtomContext<T>) {
+function makeUseAction<T, Args extends unknown[] = []>(
+  producer: Producer<T, Args>,
+  atomContext: WritableAtomContext<T>,
+) {
   return () => {
     const atom = useContext(atomContext);
-    return mapValues(producers, <Args extends unknown[]>(producer: Producer<T, Args>) => {
-      return (...args: Args) => {
-        atom.set(producer(...args));
-      };
-    });
+    return (...args: Args) => {
+      atom.set(producer(...args));
+    };
   };
 }
 
@@ -75,6 +76,15 @@ export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 
 // Actions:
-export const useFiltersActions = makeUseActions(filtersProducers, CONTEXTS.filters);
-export const useAppearanceActions = makeUseActions(appearanceProducers, CONTEXTS.appearance);
-export const useGraphDatasetActions = makeUseActions(graphDatasetProducers, CONTEXTS.graphDataset);
+export const useAddFilter = makeUseAction(filtersProducers.addFilter, CONTEXTS.filters);
+export const useResetFilters = makeUseAction(filtersProducers.resetFilters, CONTEXTS.filters);
+export const useOpenPastFilter = makeUseAction(filtersProducers.openPastFilter, CONTEXTS.filters);
+export const useOpenFutureFilter = makeUseAction(filtersProducers.openFutureFilter, CONTEXTS.filters);
+export const useDeleteCurrentFilter = makeUseAction(filtersProducers.deleteCurrentFilter, CONTEXTS.filters);
+
+export const useSetSizeAppearance = makeUseAction(appearanceProducers.setSizeAppearance, CONTEXTS.appearance);
+export const useSetColorAppearance = makeUseAction(appearanceProducers.setColorAppearance, CONTEXTS.appearance);
+
+export const useSetGraphMeta = makeUseAction(graphDatasetProducers.setGraphMeta, CONTEXTS.graphDataset);
+export const useEditGraphMeta = makeUseAction(graphDatasetProducers.editGraphMeta, CONTEXTS.graphDataset);
+export const useSetFieldModel = makeUseAction(graphDatasetProducers.setFieldModel, CONTEXTS.graphDataset);

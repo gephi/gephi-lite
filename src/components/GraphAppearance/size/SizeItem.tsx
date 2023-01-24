@@ -5,12 +5,12 @@ import { SizeFixedEditor } from "./SizeFixedEditor";
 import { ItemType } from "../../../core/types";
 import { FieldModel } from "../../../core/graph/types";
 import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, useSetSizeAppearance } from "../../../core/context/dataContexts";
 
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { nodeFields, edgeFields } = useGraphDataset();
   const appearance = useAppearance();
-  const { setSizeAppearance } = useAppearanceActions();
+  const setSizeAppearance = useSetSizeAppearance();
 
   const size = itemType === "nodes" ? appearance.nodesSize : appearance.edgesSize;
   const sizeValue = size.type === "fixed" ? "fixed" : `ranking::${size.field}`;
@@ -37,20 +37,26 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 value: baseValue,
               });
             }
+          } else if (value === "data") {
+            setSizeAppearance(itemType, {
+              type: "data",
+            });
           } else {
             const field = value.replace(/^ranking::/, "");
             setSizeAppearance(itemType, {
               type: "ranking",
               field,
-              min: baseValue / 2,
-              max: baseValue * 2,
+              minSize: baseValue / 2,
+              maxSize: baseValue * 2,
+              missingSize: baseValue / 3,
             });
           }
         }}
       >
+        <option value="data">sizes from input file</option>
         <option value="fixed">fixed size</option>
         {fields.map((field) => (
-          <option key={field.id} value={`field::${field.id}`}>
+          <option key={field.id} value={`ranking::${field.id}`}>
             {field.id}
           </option>
         ))}

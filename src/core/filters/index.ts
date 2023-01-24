@@ -9,18 +9,18 @@ import { getEmptyFiltersState } from "./utils";
  * Producers:
  * **********
  */
-const addFilter: Producer<FiltersState, [Filter]> = (filter) => {
+export const addFilter: Producer<FiltersState, [Filter]> = (filter) => {
   return (state) => ({
     ...state,
     past: state.past.concat(filter),
   });
 };
 
-const resetFilters: Producer<FiltersState> = () => {
+export const resetFilters: Producer<FiltersState> = () => {
   return () => ({ past: [], future: [] });
 };
 
-const openPastFilter: Producer<FiltersState, [number]> = (index) => {
+export const openPastFilter: Producer<FiltersState, [number]> = (index) => {
   return (state) => {
     if (!inRange(index, 0, state.past.length))
       throw new Error(`openPastFilter: Index ${index} is out of bounds of past filters.`);
@@ -33,7 +33,7 @@ const openPastFilter: Producer<FiltersState, [number]> = (index) => {
   };
 };
 
-const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
+export const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
   return (state) => {
     if (!inRange(index, 0, state.future.length))
       throw new Error(`openFutureFilter: Index ${index} is out of bounds of future filters.`);
@@ -46,7 +46,7 @@ const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
   };
 };
 
-const deleteCurrentFilter: Producer<FiltersState> = () => {
+export const deleteCurrentFilter: Producer<FiltersState> = () => {
   return (state) => {
     if (!state.past.length) throw new Error(`deleteCurrentFilter: There is not filter to delete.`);
 

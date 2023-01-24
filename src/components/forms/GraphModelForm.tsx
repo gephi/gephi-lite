@@ -2,10 +2,10 @@ import { FC } from "react";
 
 import { Tabs } from "../Tabs";
 import { FieldModel } from "../../core/graph/types";
-import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { useGraphDataset, useSetFieldModel } from "../../core/context/dataContexts";
 
 const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
-  const { setFieldModel } = useGraphDatasetActions();
+  const setFieldModel = useSetFieldModel();
 
   return (
     <div>
