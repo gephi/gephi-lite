@@ -14,7 +14,6 @@ import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { GraphRendering } from "./GraphRendering";
-import { t } from "i18next";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
