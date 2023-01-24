@@ -31,7 +31,7 @@ type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Er
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
   const [state, setState] = useState<State>({ type: "idle" });
-  const { error, fetch } = useLoadGexf();
+  const { fetch } = useLoadGexf();
 
   useEffect(() => {
     if (state.type === "idle") {
