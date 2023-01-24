@@ -4,6 +4,7 @@ import { BsX } from "react-icons/bs";
 import { BiNetworkChart } from "react-icons/bi";
 import { FaFilter, FaPaintBrush } from "react-icons/fa";
 import { ImDatabase, ImStatsDots } from "react-icons/im";
+import { t } from "i18next";
 
 import { useImportGexf } from "../../core/graph/useImportGexf";
 import { Layout } from "../layout";
@@ -13,7 +14,6 @@ import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { GraphRendering } from "./GraphRendering";
-import { t } from "i18next";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
