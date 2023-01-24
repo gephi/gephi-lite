@@ -1,7 +1,5 @@
 import { ComponentType, FC, useEffect, useState } from "react";
 import cx from "classnames";
-import Graph from "graphology";
-import { parse } from "graphology-gexf";
 import { BsX } from "react-icons/bs";
 import { BiNetworkChart } from "react-icons/bi";
 import { FaFilter, FaPaintBrush } from "react-icons/fa";
@@ -13,10 +11,8 @@ import { StatisticsPanel } from "./StatisticsPanel";
 import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutPanel } from "./LayoutPanel";
-import { useWriteAtom } from "../../core/utils/atoms";
-import { graphDatasetAtom } from "../../core/graph";
-import { initializeGraphDataset } from "../../core/graph/utils";
 import { GraphRendering } from "./GraphRendering";
+import { useLoadGexf } from "../../core/graph/userLoadGexf";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
@@ -33,20 +29,13 @@ const TOOLS: (Tool | { type: "space" })[] = [
 type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Error };
 
 export const GraphPage: FC = () => {
-  const setGraphDataset = useWriteAtom(graphDatasetAtom);
   const [tool, setTool] = useState<Tool | null>(null);
   const [state, setState] = useState<State>({ type: "idle" });
+  const { error, fetch } = useLoadGexf();
 
   useEffect(() => {
     if (state.type === "idle") {
-      // TODO:
-      // Remove hardcoded graph source
-      fetch("./arctic.gexf")
-        .then((res) => res.text())
-        .then((gexf) => parse(Graph, gexf))
-        .then((graph) => {
-          setGraphDataset(initializeGraphDataset(graph));
-        })
+      fetch("/gephi-lite/arctic.gexf")
         .then(() => {
           setState({ type: "ready" });
         })
@@ -54,7 +43,7 @@ export const GraphPage: FC = () => {
           setState({ type: "error", error });
         });
     }
-  }, [setGraphDataset, state.type]);
+  }, [state.type, fetch]);
 
   return (
     <Layout>
