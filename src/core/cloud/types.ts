@@ -11,7 +11,7 @@ export interface CloudFile {
 
 export interface CloudProvider {
   type: string;
-  getFiles(): Promise<Array<CloudFile>>;
+  getFiles(skip?: number, limit?: number): Promise<Array<CloudFile>>;
   getFile(id: string): Promise<CloudFile | null>;
   getFileContent(id: string): Promise<string>;
   saveFile(file: Pick<CloudFile, "id" | "filename">, content: string): Promise<CloudFile>;

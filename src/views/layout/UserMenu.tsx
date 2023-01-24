@@ -20,18 +20,19 @@ export const UserMenu: FC = () => {
       <ul className="nav nav-pills">
         {user && (
           <li className="nav-item dropdown">
-            <button className="nav-link dropdown-toggle p-0">
+            <button className="nav-link dropdown-toggle p-0" title="Open menu">
               <UserAvatar className="user-sm" />
             </button>
             <ul className="dropdown-menu end-0">
               <li>
                 <button
                   className="dropdown-item"
+                  title="Open a file"
                   onClick={() => {
                     openModal({ component: OpenFileModal, arguments: {} });
                   }}
                 >
-                  <BsFolder className="me-1" /> Open a graph
+                  <BsFolder className="me-1" /> Open a file
                 </button>
               </li>
               <li>
@@ -40,6 +41,7 @@ export const UserMenu: FC = () => {
               <li>
                 <button
                   className="dropdown-item"
+                  title="Sign-out"
                   onClick={() => {
                     setUser(null);
                     notify({
@@ -59,6 +61,7 @@ export const UserMenu: FC = () => {
             <button
               className="nav-link"
               type="button"
+              title="Sign-in"
               onClick={() => openModal({ component: SignInModal, arguments: {} })}
             >
               <MdLogin className="me-1" /> Sign-in
