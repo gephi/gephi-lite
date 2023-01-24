@@ -11,15 +11,22 @@ export function useLoadGexf() {
   const [error, setError] = useState<Error | null>(null);
   const setGraphDataset = useWriteAtom(graphDatasetAtom);
 
-  const fetchUrl = useCallback(
+  const parseAndLoadGexf = useCallback(
+    (xml: string) => {
+      const graph = parse(Graph, xml);
+      setGraphDataset(initializeGraphDataset(graph));
+    },
+    [setGraphDataset],
+  );
+
+  const loadFromUrl = useCallback(
     async (url: string) => {
       setLoading(true);
       setError(null);
       try {
         const response = await fetch(url);
         const gexf = await response.text();
-        const graph = parse(Graph, gexf);
-        setGraphDataset(initializeGraphDataset(graph));
+        parseAndLoadGexf(gexf);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -27,16 +34,15 @@ export function useLoadGexf() {
         setLoading(false);
       }
     },
-    [setGraphDataset],
+    [parseAndLoadGexf],
   );
 
-  const load = useCallback(
+  const loadFromData = useCallback(
     async (data: string) => {
       setLoading(true);
       setError(null);
       try {
-        const graph = parse(Graph, data);
-        setGraphDataset(initializeGraphDataset(graph));
+        parseAndLoadGexf(data);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -44,8 +50,25 @@ export function useLoadGexf() {
         setLoading(false);
       }
     },
-    [setGraphDataset],
+    [parseAndLoadGexf],
   );
 
-  return { loading, error, fetch: fetchUrl, load };
+  const loadFromFile = useCallback(
+    async (file: File) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const content = await file.text();
+        parseAndLoadGexf(content);
+      } catch (e) {
+        setError(e as Error);
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [parseAndLoadGexf],
+  );
+
+  return { loading, error, loadFromUrl, loadFromData, loadFromFile };
 }

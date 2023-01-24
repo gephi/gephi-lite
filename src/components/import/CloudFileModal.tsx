@@ -20,6 +20,7 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<CloudFile | null>(null);
   const { loading, error, getFiles, getFile } = useCloudFiles();
+
   const { loading: ldGexf, error: errorGexf, importFromContent: loadGexf } = useImportGexf();
   const [files, setFiles] = useState<Array<CloudFile>>([]);
   // for the pagination
