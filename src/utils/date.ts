@@ -1,4 +1,4 @@
-export function displayStringDateTime(value: string, options?: { time: boolean }): string | undefined {
+export function displayDateTime(value: string | Date, options?: { time: boolean }): string | undefined {
   try {
     const date = new Date(value);
     if (date)

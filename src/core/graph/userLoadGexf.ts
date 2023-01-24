@@ -22,6 +22,7 @@ export function useLoadGexf() {
         setGraphDataset(initializeGraphDataset(graph));
       } catch (e) {
         setError(e as Error);
+        throw e;
       } finally {
         setLoading(false);
       }
@@ -38,6 +39,7 @@ export function useLoadGexf() {
         setGraphDataset(initializeGraphDataset(graph));
       } catch (e) {
         setError(e as Error);
+        throw e;
       } finally {
         setLoading(false);
       }

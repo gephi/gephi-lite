@@ -34,7 +34,7 @@ export class GithubProvider implements CloudProvider {
         result = result.concat(
           response.data
             .map((item) => {
-              if (this.getGexfFilename(item)) {
+              if (this.getGexfFile(item)) {
                 return this.gistToCloudFile(item);
               }
               return null;
@@ -57,8 +57,8 @@ export class GithubProvider implements CloudProvider {
     });
 
     if (response.data) {
-      const filename = this.getGexfFilename(response.data);
-      if (filename) return this.gistToCloudFile(response.data);
+      const file = this.getGexfFile(response.data);
+      if (file) return this.gistToCloudFile(response.data);
     }
 
     return null;
@@ -73,9 +73,9 @@ export class GithubProvider implements CloudProvider {
     });
 
     if (response.data && response.data.files) {
-      const filename = this.getGexfFilename(response.data);
-      if (filename) {
-        const file = response.data.files[filename];
+      const gistFile = this.getGexfFile(response.data);
+      if (gistFile) {
+        const file = response.data.files[gistFile.filename];
         if (file?.truncated && file?.raw_url) {
           const response = await fetch(file?.raw_url);
           const content = await response.text();
@@ -143,30 +143,40 @@ export class GithubProvider implements CloudProvider {
     created_at?: string;
     updated_at?: string;
     files?: { [key: string]: any };
+    html_url?: string;
   }): CloudFile {
     if (!gist.id) throw new Error(`Gist ${JSON.stringify(gist)} has no ID`);
-    const filename = this.getGexfFilename(gist);
-    if (!filename) throw new Error(`File ${filename} can't be find on gist ${gist.id}`);
+    const file = this.getGexfFile(gist);
+    if (!file) throw new Error(`File can't be find on gist ${gist.id}`);
     return {
       id: gist.id,
       description: gist.description ?? undefined,
-      filename: filename,
+      filename: file.filename,
       createdAt: gist.created_at ? new Date(gist.created_at) : new Date(),
       updatedAt: gist.updated_at ? new Date(gist.updated_at) : new Date(),
       isPublic: gist.public !== undefined ? gist.public : false,
+      size: file.size,
+      webUrl: file.webUrl,
     };
   }
 
   /**
    * Given a gist, check if it has a GEXF file.
-   * If so, it return the filename, otherwise null
+   * If so, it return the file, otherwise null
    */
-  private getGexfFilename(gist: { files?: { [key: string]: any } }): string | null {
-    let result: string | null = null;
+  private getGexfFile(gist: {
+    files?: { [key: string]: any };
+    html_url?: string;
+  }): { filename: string; size: number; webUrl?: string } | null {
+    let result: { filename: string; size: number; webUrl?: string } | null = null;
     Object.keys(gist.files || []).forEach((filename: string) => {
       const file = (gist.files || [])[filename];
       if (file && file.filename.endsWith(".gexf")) {
-        result = file.filename;
+        result = {
+          filename: file.filename,
+          size: file.size,
+          webUrl: gist.html_url,
+        };
       }
     });
     return result;

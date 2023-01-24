@@ -5,6 +5,8 @@ export interface CloudFile {
   createdAt: Date;
   updatedAt: Date;
   isPublic: boolean;
+  size: number;
+  webUrl?: string;
 }
 
 export interface CloudProvider {

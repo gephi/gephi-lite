@@ -20,7 +20,7 @@ export const UserMenu: FC = () => {
       <ul className="nav nav-pills">
         {user && (
           <li className="nav-item dropdown">
-            <button className="nav-link dropdown-toggle">
+            <button className="nav-link dropdown-toggle p-0">
               <UserAvatar className="user-sm" />
             </button>
             <ul className="dropdown-menu end-0">
