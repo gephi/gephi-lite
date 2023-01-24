@@ -6,12 +6,12 @@ import { useWriteAtom } from "../utils/atoms";
 import { initializeGraphDataset } from "../graph/utils";
 import { graphDatasetAtom } from "../graph";
 
-export function useLoadGexf() {
+export function useImportGexf() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const setGraphDataset = useWriteAtom(graphDatasetAtom);
 
-  const parseAndLoadGexf = useCallback(
+  const importGexf = useCallback(
     (xml: string) => {
       const graph = parse(Graph, xml);
       setGraphDataset(initializeGraphDataset(graph));
@@ -19,14 +19,14 @@ export function useLoadGexf() {
     [setGraphDataset],
   );
 
-  const loadFromUrl = useCallback(
+  const importFromUrl = useCallback(
     async (url: string) => {
       setLoading(true);
       setError(null);
       try {
         const response = await fetch(url);
         const gexf = await response.text();
-        parseAndLoadGexf(gexf);
+        importGexf(gexf);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -34,15 +34,15 @@ export function useLoadGexf() {
         setLoading(false);
       }
     },
-    [parseAndLoadGexf],
+    [importGexf],
   );
 
-  const loadFromData = useCallback(
+  const importFromContent = useCallback(
     async (data: string) => {
       setLoading(true);
       setError(null);
       try {
-        parseAndLoadGexf(data);
+        importGexf(data);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -50,16 +50,16 @@ export function useLoadGexf() {
         setLoading(false);
       }
     },
-    [parseAndLoadGexf],
+    [importGexf],
   );
 
-  const loadFromFile = useCallback(
+  const importFromFile = useCallback(
     async (file: File) => {
       setLoading(true);
       setError(null);
       try {
         const content = await file.text();
-        parseAndLoadGexf(content);
+        importGexf(content);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -67,8 +67,8 @@ export function useLoadGexf() {
         setLoading(false);
       }
     },
-    [parseAndLoadGexf],
+    [importGexf],
   );
 
-  return { loading, error, loadFromUrl, loadFromData, loadFromFile };
+  return { loading, error, importFromUrl, importFromContent, importFromFile };
 }

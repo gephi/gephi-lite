@@ -9,7 +9,7 @@ import { ModalProps } from "../../core/modals/types";
 import { useConnectedUser } from "../../core/user";
 import { CloudFile } from "../../core/cloud/types";
 import { useCloudFiles } from "../../core/cloud/useCloudFiles";
-import { useLoadGexf } from "../../core/graph/userLoadGexf";
+import { useImportGexf } from "../../core/graph/useImportGexf";
 import { Modal } from "../modals";
 import { Loader, Spinner } from "../Loader";
 
@@ -20,7 +20,7 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<CloudFile | null>(null);
   const { loading, error, getFiles, getFile } = useCloudFiles();
-  const { loading: ldGexf, error: errorGexf, loadFromData: loadGexf } = useLoadGexf();
+  const { loading: ldGexf, error: errorGexf, importFromContent: loadGexf } = useImportGexf();
   const [files, setFiles] = useState<Array<CloudFile>>([]);
   // for the pagination
   const [hasMore, setHasMore] = useState<boolean>(true);

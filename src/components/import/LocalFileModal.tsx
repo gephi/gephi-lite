@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FaFolderOpen } from "react-icons/fa";
 
 import { ModalProps } from "../../core/modals/types";
-import { useLoadGexf } from "../../core/graph/userLoadGexf";
+import { useImportGexf } from "../../core/graph/useImportGexf";
 import { Modal } from "../modals";
 import { Loader } from "../Loader";
 import { DropInput } from "../DropInput";
 
 export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const navigate = useNavigate();
-  const { loading, error, loadFromFile } = useLoadGexf();
+  const { loading, error, importFromFile } = useImportGexf();
   const [file, setFile] = useState<File | null>(null);
 
   return (
@@ -37,7 +37,7 @@ export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
           onClick={async () => {
             if (file) {
               try {
-                await loadFromFile(file);
+                await importFromFile(file);
                 navigate("/graph");
                 cancel();
               } catch (e) {

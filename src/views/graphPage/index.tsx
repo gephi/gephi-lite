@@ -5,6 +5,7 @@ import { BiNetworkChart } from "react-icons/bi";
 import { FaFilter, FaPaintBrush } from "react-icons/fa";
 import { ImDatabase, ImStatsDots } from "react-icons/im";
 
+import { useImportGexf } from "../../core/graph/useImportGexf";
 import { Layout } from "../layout";
 import { GraphDataPanel } from "./GraphDataPanel";
 import { StatisticsPanel } from "./StatisticsPanel";
@@ -12,7 +13,6 @@ import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { GraphRendering } from "./GraphRendering";
-import { useLoadGexf } from "../../core/graph/userLoadGexf";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
@@ -31,11 +31,11 @@ type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Er
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
   const [state, setState] = useState<State>({ type: "idle" });
-  const { loadFromUrl } = useLoadGexf();
+  const { importFromUrl } = useImportGexf();
 
   useEffect(() => {
     if (state.type === "idle") {
-      loadFromUrl("/gephi-lite/arctic.gexf")
+      importFromUrl("/gephi-lite/arctic.gexf")
         .then(() => {
           setState({ type: "ready" });
         })
@@ -43,7 +43,7 @@ export const GraphPage: FC = () => {
           setState({ type: "error", error: error as Error });
         });
     }
-  }, [state.type, loadFromUrl]);
+  }, [state.type, importFromUrl]);
 
   return (
     <Layout>
