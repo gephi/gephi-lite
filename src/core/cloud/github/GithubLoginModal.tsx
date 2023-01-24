@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react";
 import copy from "copy-to-clipboard";
 import { BsGithub, BsClipboard } from "react-icons/bs";
 
-import { useModal } from "../../modals";
 import { ModalProps } from "../../modals/types";
 import { Modal } from "../../../components/modals";
 import { useNotifications } from "../../notifications";

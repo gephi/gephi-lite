@@ -89,12 +89,29 @@ export class GithubProvider implements CloudProvider {
   }
 
   /**
-   * Save or create a file on github
+   * Create a gist on github
    */
-  async saveFile(
-    file: { id?: string; filename: string; description?: string; isPublic?: boolean },
+  async createFile(
+    file: Pick<CloudFile, "filename" | "description" | "isPublic">,
     content: string,
   ): Promise<CloudFile> {
+    const body = {
+      description: file.description || file.filename,
+      public: file.isPublic || false,
+      files: {
+        [file.filename]: {
+          content,
+        },
+      },
+    };
+    const result = await this.octokit.request("POST /gists", body);
+    return this.gistToCloudFile(result.data);
+  }
+
+  /**
+   * Save (ie.update) a file on github
+   */
+  async saveFile(file: CloudFile, content: string): Promise<CloudFile> {
     const body = {
       description: file.description,
       public: file.isPublic || false,
@@ -104,16 +121,11 @@ export class GithubProvider implements CloudProvider {
         },
       },
     };
-    if (!file.id) {
-      const result = await this.octokit.request("POST /gists", body);
-      return this.gistToCloudFile(result.data);
-    } else {
-      const result = await this.octokit.request("PATCH /gists/{gist_id}", {
-        gist_id: file.id,
-        ...body,
-      });
-      return this.gistToCloudFile(result.data);
-    }
+    const result = await this.octokit.request("PATCH /gists/{gist_id}", {
+      gist_id: file.id,
+      ...body,
+    });
+    return this.gistToCloudFile(result.data);
   }
 
   /**
