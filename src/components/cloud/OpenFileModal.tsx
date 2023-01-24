@@ -76,7 +76,13 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                   <td>{!file.isPublic && <FaLock />}</td>
                   <td>
                     {file.filename}
-                    <a className="link-dark m-2" href={file.webUrl} title="See the file" target="_blank">
+                    <a
+                      className="link-dark m-2"
+                      href={file.webUrl}
+                      title={`See the file on ${user?.provider.type}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <FaExternalLinkAlt size="0.7em" />
                     </a>
                   </td>
@@ -97,6 +103,7 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         <button
           className="btn btn-primary"
           disabled={!selected}
+          title={selected ? `Open file ${selected.filename}` : "Select a file"}
           onClick={async () => {
             if (selected) {
               try {
