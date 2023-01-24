@@ -38,6 +38,9 @@ export const UserMenu: FC = () => {
                 </button>
               </li>
               <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
                 <button
                   className="dropdown-item"
                   title="Open a file"
