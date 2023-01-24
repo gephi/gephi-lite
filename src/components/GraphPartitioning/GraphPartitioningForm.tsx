@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import { AttributeSelect } from "../forms/AttributeSelect";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
 import { ItemType } from "../../core/types";
+import { useTranslation } from "react-i18next";
 
 export interface Attribute {
   id: string;
@@ -16,12 +17,17 @@ export const GraphPartitioningForm: FC<{
   setPartitionAttributeId: (nodeAttId: string | undefined) => void;
   closeForm: () => void;
 }> = ({ itemType, partitionAttributeId, setPartitionAttributeId, closeForm }) => {
+  const { t } = useTranslation();
   const [newPartAttId, setNewPartAttId] = useState<string | undefined>();
 
   return (
     <form>
       <div>
-        <label>Partition {itemType} on</label>
+        <label>
+          {t("graph.partitioning.partition", {
+            items: itemType === "nodes" ? t("graph.model.nodes") : t("graph.model.edges"),
+          })}
+        </label>
         <AttributeSelect
           attributeId={newPartAttId}
           itemType={itemType}
@@ -37,7 +43,7 @@ export const GraphPartitioningForm: FC<{
               closeForm();
             }}
           >
-            cancel
+            {t("button.cancel")}
           </button>
           <button
             className="btn btn-primary"
@@ -48,7 +54,7 @@ export const GraphPartitioningForm: FC<{
               closeForm();
             }}
           >
-            confirm
+            {t("button.confirm")}
           </button>
         </div>
       </div>

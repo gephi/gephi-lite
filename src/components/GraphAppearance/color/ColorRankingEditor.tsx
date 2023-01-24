@@ -2,6 +2,8 @@ import { FC, useState } from "react";
 import { ItemType } from "../../../core/types";
 import { AttributeSelect } from "../../forms/AttributeSelect";
 import { RankingColor } from "../../../core/appearance/types";
+import { useTranslation } from "react-i18next";
+import { TransformationMethodsSelect } from "../TransformationMethodSelect";
 
 interface ColorScalePointType {
   scalePoint: number;
@@ -33,9 +35,10 @@ export const ColorRankingEditor: FC<{
   color: RankingColor;
   setColor: (newColor: RankingColor) => void;
 }> = ({ color, setColor }) => {
+  const { t } = useTranslation();
   return (
     <div>
-      <h4>Ranking</h4>
+      <h4>{t("appearance.ranking")}</h4>
       <div className="w-100 d-flex justify-content-between">
         {color.colorScalePoints.map((sc, i) => (
           <ColorScalePoint
@@ -55,15 +58,7 @@ export const ColorRankingEditor: FC<{
       </div>
       <div>
         TODO:
-        <label htmlFor="transformation-method">transformation method</label>
-        <select id="transformation-method" className="form-select">
-          <option value="">linear</option>
-          <option>pow 2</option>
-          <option>pow 3</option>
-          <option>sqrt</option>
-          <option>log</option>
-          <option disabled>spline TODO</option>
-        </select>
+        <TransformationMethodsSelect />
       </div>
     </div>
   );

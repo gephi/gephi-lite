@@ -10,6 +10,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Root } from "./core/Root";
 
 import "./styles/index.scss";
+import { capitalize } from "lodash";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
@@ -18,11 +19,20 @@ i18n
   .use(LngDetector)
   .init({
     debug: true,
+    fallbackLng: "en",
     resources: locales,
     detection: {
       order: ["querystring", "navigator"],
       lookupQuerystring: "lng",
     },
+  })
+  .then(() => {
+    i18n.services.formatter?.add("lowercase", (value, lng, options) => {
+      return value.toLowerCase();
+    });
+    i18n.services.formatter?.add("capitalize", (value, lng, options) => {
+      return capitalize(value);
+    });
   });
 
 root.render(

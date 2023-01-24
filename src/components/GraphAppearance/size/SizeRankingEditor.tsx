@@ -2,18 +2,21 @@ import { FC } from "react";
 
 import { ItemType } from "../../../core/types";
 import { RankingSize } from "../../../core/appearance/types";
+import { useTranslation } from "react-i18next";
+import { TransformationMethodsSelect } from "../TransformationMethodSelect";
 
 export const SizeRankingEditor: FC<{
   itemType: ItemType;
   size: RankingSize;
   setSize: (newSize: RankingSize) => void;
 }> = ({ size, setSize }) => {
+  const { t } = useTranslation();
   return (
     <div>
       <h4>Ranking</h4>
       <div className="w-100 d-flex justify-content-between">
         <div className="d-flex flex-column align-items-center">
-          <label htmlFor="min-size">Min</label>
+          <label htmlFor="min-size">{t("appearance.size.min")}</label>
           <input
             id="min-size"
             type="number"
@@ -22,7 +25,7 @@ export const SizeRankingEditor: FC<{
           />
         </div>
         <div className="d-flex flex-column align-items-center">
-          <label htmlFor="max-size">Max</label>
+          <label htmlFor="max-size">{t("appearance.size.max")}</label>
           <input
             id="max-size"
             type="number"
@@ -33,15 +36,7 @@ export const SizeRankingEditor: FC<{
       </div>
       <div>
         TODO:
-        <label htmlFor="transformation-method">transformation method</label>
-        <select id="transformation-method" className="form-select">
-          <option value="">linear</option>
-          <option>pow 2</option>
-          <option>pow 3</option>
-          <option>sqrt</option>
-          <option>log</option>
-          <option disabled>spline TODO</option>
-        </select>
+        <TransformationMethodsSelect />
       </div>
     </div>
   );

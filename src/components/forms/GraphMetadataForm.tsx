@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useSetGraphMeta } from "../../core/context/dataContexts";
 
@@ -15,12 +16,12 @@ export const GraphMetadataForm: FC = () => {
   const { metadata } = useGraphDataset();
   const setGraphMeta = useSetGraphMeta();
   const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(metadata);
-
+  const { t } = useTranslation();
   return (
     <form>
       <div className="mb-2">
         <label htmlFor="graph-title" className="form-label">
-          Title
+          {t("graph.metadata.graph-title")}
         </label>
         <input
           className="form-control"
@@ -34,7 +35,7 @@ export const GraphMetadataForm: FC = () => {
       </div>
       <div className="mb-2">
         <label htmlFor="graph-description" className="form-label">
-          Description
+          {t("graph.metadata.description")}
         </label>
         <textarea
           className="form-control"
@@ -50,7 +51,7 @@ export const GraphMetadataForm: FC = () => {
       </div>
       <div className="mb-2">
         <label htmlFor="graph-authors" className="form-label">
-          Authors
+          {t("graph.metadata.authors")}
         </label>
         <input
           className="form-control"
@@ -64,7 +65,7 @@ export const GraphMetadataForm: FC = () => {
       </div>
       <div className="mb-2">
         <label htmlFor="graph-type" className="form-label">
-          Edge type
+          {t("graph.metadata.graph-type")}
         </label>
         <select
           className="form-select"
@@ -87,14 +88,14 @@ export const GraphMetadataForm: FC = () => {
       <button
         className="btn btn-primary"
         type="submit"
-        aria-label="save Graph Metadata"
+        aria-label={`${t("button.save")} ${t("graph.metadata.title")}`}
         disabled={graphMetadata === null}
         onClick={(e) => {
           e.preventDefault();
           setGraphMeta(graphMetadata);
         }}
       >
-        save
+        {t("button.save")}
       </button>
     </form>
   );

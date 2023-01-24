@@ -8,7 +8,7 @@ module.exports = {
     },
 
     // Create and update files `en.json`, `fr.json`, `es.json`
-    lngs: ["en", "fr"],
+    lngs: ["en"],
     defaultLng: "en",
 
     // Put a blank string as initial translation

@@ -1,4 +1,5 @@
 import { FC, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { SizeRankingEditor } from "./SizeRankingEditor";
 import { SizeFixedEditor } from "./SizeFixedEditor";
@@ -8,6 +9,7 @@ import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/u
 import { useAppearance, useGraphDataset, useSetSizeAppearance } from "../../../core/context/dataContexts";
 
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
+  const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
   const appearance = useAppearance();
   const setSizeAppearance = useSetSizeAppearance();
@@ -22,8 +24,8 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <h3>Size</h3>
-      <label htmlFor="sizeMode">Set size from</label>
+      <h3>{t("appearance.size.title")}</h3>
+      <label htmlFor="sizeMode">{t("appearance.size.set_size_from")}</label>
       <select
         id="sizeMode"
         className="form-select"

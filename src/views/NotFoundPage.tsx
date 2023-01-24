@@ -1,13 +1,15 @@
 import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Layout } from "./layout";
 
 export const NotFoundPage: FC = () => {
+  const { t } = useTranslation("translation");
   return (
     <Layout>
-      <h1>Not Found</h1>
-      <h2>The page you were looking for doesn't exist </h2>
-      <p>You may have mistyped the address or the page may have moved.</p>
+      <h1>{t("error.not_found.title")}</h1>
+      <h2>{t("error.not_found.subtitle")} </h2>
+      <p>{t("error.not_found.paragraph")}</p>
     </Layout>
   );
 };

@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Tabs } from "../Tabs";
 import { FieldModel } from "../../core/graph/types";
@@ -6,6 +7,7 @@ import { useGraphDataset, useSetFieldModel } from "../../core/context/dataContex
 
 const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
   const setFieldModel = useSetFieldModel();
+  const { t } = useTranslation();
 
   return (
     <div>
@@ -26,7 +28,7 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
               }
             />
             <label className="form-check-label" htmlFor={`${field.id}-quali`}>
-              quali
+              {t("graph.model.attribute.qualitative")}
             </label>
           </div>
           <div className="form-check form-check-inline">
@@ -43,7 +45,7 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
               }
             />
             <label className="form-check-label" htmlFor={`${field.id}-quanti`}>
-              quanti
+              {t("graph.model.attribute.quantitative")}
             </label>
           </div>
         </div>
@@ -54,12 +56,12 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
 
 export const GraphModelForm: FC = () => {
   const { nodeFields, edgeFields } = useGraphDataset();
-
+  const { t } = useTranslation();
   return (
     <Tabs>
-      <>Nodes</>
+      <>{t("graph.model.nodes")}</>
       <FieldModelsComponent fields={nodeFields} />
-      <>Edges</>
+      <>{t("graph.model.edges")}</>
       <FieldModelsComponent fields={edgeFields} />
     </Tabs>
   );

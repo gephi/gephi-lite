@@ -5,12 +5,14 @@ import { isColor } from "./utils";
 import { ItemType } from "../../../core/types";
 import { PartitionColor } from "../../../core/appearance/types";
 import { graphDatasetAtom } from "../../../core/graph";
+import { useTranslation } from "react-i18next";
 
 export const ColorPartitionEditor: FC<{
   itemType: ItemType;
   color: PartitionColor;
   setColor: (newColor: PartitionColor) => void;
 }> = ({ itemType, color, setColor }) => {
+  const { t } = useTranslation();
   // init palette
   useEffect(() => {
     const values = uniq(
@@ -37,7 +39,7 @@ export const ColorPartitionEditor: FC<{
 
   return (
     <div>
-      <h4>Partition</h4>
+      <h4>{t("appearance.partition")}</h4>
       {map(color.colorPalette, (c, value) => {
         return (
           <div key={value}>

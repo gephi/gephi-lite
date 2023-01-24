@@ -55,7 +55,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "translations-scan": "i18next-scanner --config i18next-scanner.config.ts src/**/*.{ts,tsx}"
+    "translations-scan": "i18next-scanner --config i18next-scanner.dev.config.ts src/**/*.{ts,tsx}",
+    "translations-scan-prod": "i18next-scanner --config i18next-scanner.prod.config.ts src/**/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [

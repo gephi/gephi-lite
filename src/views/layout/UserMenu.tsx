@@ -2,6 +2,7 @@ import { FC } from "react";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { FaRegSave, FaRegFolderOpen } from "react-icons/fa";
 import { isNil } from "lodash";
+import { useTranslation } from "react-i18next";
 
 import { useModal } from "../../core/modals";
 import { useConnectedUser } from "../../core/user";
@@ -16,6 +17,7 @@ export const UserMenu: FC = () => {
   const { openModal } = useModal();
   const [user, setUser] = useConnectedUser();
   const { notify } = useNotifications();
+  const { t } = useTranslation("translation");
 
   return (
     <nav className="d-inline-flex mt-2 mt-md-0 ms-md-auto">
@@ -34,7 +36,7 @@ export const UserMenu: FC = () => {
                     openModal({ component: SaveCloudFileModal, arguments: {} });
                   }}
                 >
-                  <FaRegSave className="me-1" /> Save as a gist
+                  <FaRegSave className="me-1" /> {t("menu.save_gist")}
                 </button>
               </li>
               <li>
@@ -72,12 +74,12 @@ export const UserMenu: FC = () => {
                   onClick={() => {
                     setUser(null);
                     notify({
-                      message: "Unauthentication successfull",
+                      message: t("auth.unauth_sucess").toString(),
                       type: "success",
                     });
                   }}
                 >
-                  <MdLogout className="me-1" /> Sign-out
+                  <MdLogout className="me-1" /> {t("auth.sign_out")}
                 </button>
               </li>
             </ul>
@@ -91,7 +93,7 @@ export const UserMenu: FC = () => {
               title="Sign-in"
               onClick={() => openModal({ component: SignInModal, arguments: {} })}
             >
-              <MdLogin className="me-1" /> Sign-in
+              <MdLogin className="me-1" /> {t("auth.sign_in")}
             </button>
           </li>
         )}

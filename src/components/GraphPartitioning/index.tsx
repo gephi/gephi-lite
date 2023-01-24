@@ -3,13 +3,15 @@ import { Tabs } from "../Tabs";
 import { GraphPartitioningForm } from "./GraphPartitioningForm";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
 import { ItemType } from "../../core/types";
+import { useTranslation } from "react-i18next";
 
 export const GraphPartitioning: FC = () => {
+  const { t } = useTranslation();
   return (
     <Tabs>
-      <>Nodes</>
+      {t("graph.model.nodes")}
       <GraphItemPartitioning itemType="nodes" />
-      <>Edges</>
+      {t("graph.model.edges")}
       <GraphItemPartitioning itemType="edges" />
     </Tabs>
   );
@@ -20,6 +22,7 @@ const GraphItemPartitioning: FC<{ itemType: ItemType }> = ({ itemType }) => {
     setEditingNodePartition(false);
     setPartitionAttributeId(undefined);
   }, [itemType]);
+  const { t } = useTranslation();
   //TODO: replace by context
   const [partitionAttributeId, setPartitionAttributeId] = useState<string | undefined>(undefined);
   const [editingNodePartition, setEditingNodePartition] = useState<boolean>(false);
@@ -27,11 +30,15 @@ const GraphItemPartitioning: FC<{ itemType: ItemType }> = ({ itemType }) => {
     <div>
       {partitionAttributeId === undefined ? (
         <>
-          <div>{itemType} are not partitioned</div>
           <div>
-            To apply appearance or filters differently on different groups of {itemType},
-            <br />
-            partition your graph using any node qualitative attribute.
+            {t("graph.partitioning.status_no_partition", {
+              items: itemType === "nodes" ? t("graph.model.nodes") : t("graph.model.edges"),
+            })}
+          </div>
+          <div>
+            {t("graph.partitioning.description", {
+              items: itemType === "nodes" ? t("graph.model.nodes") : t("graph.model.edges"),
+            })}
           </div>
         </>
       ) : (
@@ -46,7 +53,7 @@ const GraphItemPartitioning: FC<{ itemType: ItemType }> = ({ itemType }) => {
               setEditingNodePartition(false);
             }}
           >
-            remove
+            {t("button.remove")}
           </button>
         )}
         <button className="btn btn-primary" onClick={() => setEditingNodePartition(!editingNodePartition)}>

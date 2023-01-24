@@ -1,9 +1,11 @@
-import { FC } from 'react';
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export const LayoutPanel: FC = () => {
+  const { t } = useTranslation();
   return (
     <div>
-      <h2>Layout</h2>
+      <h2>{t("layout.title")}</h2>
       <p>TODO</p>
     </div>
   );

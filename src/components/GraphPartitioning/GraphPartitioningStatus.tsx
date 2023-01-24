@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { FC } from "react";
 import { IoWarning } from "react-icons/io5";
 import { ItemType } from "../../core/types";
@@ -23,15 +24,24 @@ export const GraphPartitioningStatus: FC<{
   return (
     <div className="d-flex flex-column">
       <div>
-        The {itemType} {preview ? "will be" : "are"} grouped into{" "}
-        {attributeStats?.nbValues + (attributeStats?.nbMissingValues !== 0 ? 1 : 0)} partitions using{" "}
-        {partitionAttributeId} attribute
+        {t("graph.partitioning.status_item", {
+          context: preview && "preview",
+          items: itemType === "nodes" ? t("graph.model.nodes") : t("graph.model.edges"),
+        })}{" "}
+        {t("graph.partitioning.status_partition", {
+          nbPartitions: attributeStats?.nbValues + (attributeStats?.nbMissingValues !== 0 ? 1 : 0),
+          attribute: partitionAttributeId,
+        })}
       </div>
       {attributeStats?.nbMissingValues !== 0 && (
         <div>
-          <IoWarning /> {attributeStats?.nbMissingValues} {itemType} don't have a value for this attribute.
+          <IoWarning />{" "}
+          {t("graph.partitioning.warning_nbMissing", {
+            nbMissingValues: attributeStats?.nbMissingValues,
+            items: itemType === "nodes" ? t("graph.model.nodes") : t("graph.model.edges"),
+          })}
           <br />
-          They {preview ? "will be" : "are"} grouped into a 'missing value' partition.
+          {t("graph.partitioning.missing_partition", { context: preview && "preview" })}
         </div>
       )}
     </div>

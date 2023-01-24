@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { isNil } from "lodash";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { ModalProps } from "../../core/modals/types";
 import { useConnectedUser } from "../../core/user";
@@ -16,6 +17,7 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { loading, error, getFiles, getFile } = useCloudFiles();
   const { loading: ldGexf, load: loadGexf, error: errorGexf } = useLoadGexf();
   const [files, setFiles] = useState<Array<CloudFile>>([]);
+  const { t } = useTranslation();
 
   /**
    * When user change
@@ -38,7 +40,7 @@ export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   if (errorGexf) console.error(errorGexf);
 
   return (
-    <Modal title={"Open a graph"} onClose={() => cancel()}>
+    <Modal title={t("menu.open_graph").toString()} onClose={() => cancel()}>
       <>
         {files && (
           <ul>

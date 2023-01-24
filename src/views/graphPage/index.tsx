@@ -13,17 +13,18 @@ import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { GraphRendering } from "./GraphRendering";
+import { t } from "i18next";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
 const TOOLS: (Tool | { type: "space" })[] = [
-  { type: "tool", label: "Graph", icon: ImDatabase, panel: GraphDataPanel },
+  { type: "tool", label: t("graph.title"), icon: ImDatabase, panel: GraphDataPanel },
   { type: "space" },
-  { type: "tool", label: "Statistic", icon: ImStatsDots, panel: StatisticsPanel },
+  { type: "tool", label: t("statistics.title"), icon: ImStatsDots, panel: StatisticsPanel },
   { type: "space" },
-  { type: "tool", label: "Appearance", icon: FaPaintBrush, panel: AppearancePanel },
-  { type: "tool", label: "Filters", icon: FaFilter, panel: FiltersPanel },
-  { type: "tool", label: "Layout", icon: BiNetworkChart, panel: LayoutPanel },
+  { type: "tool", label: t("appearance.title"), icon: FaPaintBrush, panel: AppearancePanel },
+  { type: "tool", label: t("filters.title"), icon: FaFilter, panel: FiltersPanel },
+  { type: "tool", label: t("layout.title"), icon: BiNetworkChart, panel: LayoutPanel },
 ];
 
 type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Error };

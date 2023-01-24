@@ -6,10 +6,12 @@ import { ItemType } from "../../../core/types";
 import { useAppearance, useGraphDataset, useSetColorAppearance } from "../../../core/context/dataContexts";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
 import { FieldModel } from "../../../core/graph/types";
+import { useTranslation } from "react-i18next";
 
 const STATIC_MODES = new Set(["fixed", "source", "target", "data"]);
 
 export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
+  const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
   const appearance = useAppearance();
   const setColorAppearance = useSetColorAppearance();
@@ -34,8 +36,8 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <h3>Color</h3>
-      <label htmlFor="colorMode">Set color from</label>
+      <h3>{t("appearance.color.title")}</h3>
+      <label htmlFor="colorMode">{t("appearance.color.set_color_from")}</label>
       <select
         id="colorMode"
         className="form-select"

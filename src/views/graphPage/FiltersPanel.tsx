@@ -1,9 +1,11 @@
-import { FC } from 'react';
+import { FC } from "react";
+import { useTranslation } from "react-i18next";
 
 export const FiltersPanel: FC = () => {
+  const { t } = useTranslation();
   return (
     <div>
-      <h2>Filters</h2>
+      <h2>{t("filters.title")}</h2>
       <p>TODO</p>
     </div>
   );

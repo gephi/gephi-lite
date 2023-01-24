@@ -2,5 +2,103 @@
   "home": {
     "greeting": "Hi",
     "blabla": "Pleased to meet you"
+  },
+  "error": {
+    "title": "Error",
+    "not_found": {
+      "title": "Page Not Found",
+      "subtitle": "The page you were looking for doesn't exist.",
+      "paragraph": "You may have mistyped the address or the page may have moved."
+    }
+  },
+  "menu": {
+    "open_graph": "Open a graph"
+  },
+  "auth": {
+    "unauth_sucess": "Unauthentication successfull",
+    "sign_out": "Sign-out",
+    "sign_in": "Sign-in"
+  },
+  "button": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "show": "Show",
+    "hide": "Hide",
+    "remove": "Remove"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "partition": "Partition",
+    "ranking": "Ranking",
+    "transformation_methods": {
+      "title": "Transformation methods",
+      "linear": "linear",
+      "pow-2": "pow 2",
+      "pow-3": "pow 3",
+      "sqrt": "sqrt",
+      "log": "log",
+      "spline": "spline"
+    },
+    "color": {
+      "title": "Color",
+      "set_color_from": "Set color from"
+    },
+    "labels": {
+      "title": "Labels",
+      "size_labels_from": "Set label from",
+      "fixed_size": "fixed size",
+      "size": "{{items}} size"
+    },
+    "size": {
+      "title": "Size",
+      "set_size_from": "Set size from",
+      "min": "Min",
+      "max": "Max"
+    }
+  },
+  "filters": {
+    "title": "Filters"
+  },
+  "graph": {
+    "metadata": {
+      "title": "Metadata",
+      "graph-title": "Title",
+      "description": "Description",
+      "authors": "Authors",
+      "graph-type": "Graph Type"
+    },
+    "partitioning": {
+      "title": "Partitioning",
+      "description": " To apply appearance or filters differently on different groups of {{items}}, partition your graph using any node qualitative attribute.",
+      "partition": "Partition {{items}} on",
+      "status_no_partition": "{{items}} are not partitioned",
+      "status_item_preview": "The {{items}} will be grouped into",
+      "status_item": "The {{items}} are grouped into",
+      "status_partition": "{{nbPartitions}} partitions using the '{{attribute}}' attribute.",
+      "warning_nbMissing": "{{nbMissingValues}} {{items}} don't have a value for this attribute.",
+      "missing_partition_preview": "They will be grouped into a 'missing value' partition.",
+      "missing_partition": "They are grouped into a 'missing value' partition."
+    },
+    "model": {
+      "title": "Model",
+      "attribute": {
+        "qualitative": "Qualitative",
+        "quantitative": "Quantitative"
+      },
+      "nodes_one": "node",
+      "nodes_zero": "node",
+      "nodes": "nodes",
+      "edges_one": "edge",
+      "edges_zero": "edge",
+      "edges": "edges"
+    },
+    "title": "Graph"
+  },
+  "statistics": {
+    "title": "Statistics"
+  },
+  "layout": {
+    "title": "Layout"
   }
 }

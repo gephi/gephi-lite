@@ -1,6 +1,7 @@
 import React, { FC, PropsWithChildren } from "react";
 import { BsQuestionCircleFill } from "react-icons/bs";
 import cx from "classnames";
+import { useTranslation } from "react-i18next";
 
 import { Spinner } from "./Loader";
 import { useModal } from "../core/modals";
@@ -79,6 +80,7 @@ export const ConfirmModal: FC<
     loading?: boolean;
   }>
 > = ({ title, onConfirm, onCancel, loading, children }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       title={
@@ -91,10 +93,10 @@ export const ConfirmModal: FC<
       <>{children}</>
       <>
         <button type="button" className="btn btn-outline-secondary me-2" onClick={onCancel} disabled={loading === true}>
-          Cancel
+          {t("button.cancel")}
         </button>
         <button type="submit" className="btn btn-primary" onClick={onConfirm} disabled={loading === true}>
-          Confirm
+          {t("button.confirm")}
           {loading && <Spinner className="ms-2 spinner-border-sm" />}
         </button>
       </>
