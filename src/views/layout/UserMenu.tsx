@@ -50,7 +50,7 @@ export const UserMenu: FC = () => {
                     openModal({ component: CloudFileModal, arguments: {} });
                   }}
                 >
-                  <FaRegFolderOpen className="me-1" /> Open a file
+                  <FaRegFolderOpen className="me-1" /> {t("menu.open_file")}
                 </button>
               </li>
               <li>
