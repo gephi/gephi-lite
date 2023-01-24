@@ -4,7 +4,12 @@
   @extend .rounded-circle;
   height: $user-avatar-size;
   width: $user-avatar-size;
-  padding: 0.25em;
+  padding: 0;
+
+  &.user-sm {
+    height: 0.8 * $user-avatar-size;
+    width: 0.8 * $user-avatar-size;
+  }
 
   img,
   svg {

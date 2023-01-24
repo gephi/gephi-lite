@@ -1,5 +1,7 @@
-import { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { FC } from "react";
+import { Link } from "react-router-dom";
+
+import { UserMenu } from "./UserMenu";
 
 export const Header: FC = () => {
   return (
@@ -9,7 +11,9 @@ export const Header: FC = () => {
           Gephi-lite
         </Link>
 
-        <div className="text-end flex-grow-1 text-light">TODO: menu</div>
+        <div className="text-end flex-grow-1 text-light">
+          <UserMenu />
+        </div>
       </div>
     </header>
   );

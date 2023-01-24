@@ -5,6 +5,16 @@
 
   header {
     flex-shrink: 0;
+
+    nav {
+      li.dropdown {
+        &:hover {
+          ul.dropdown-menu {
+            display: block;
+          }
+        }
+      }
+    }
   }
   main {
     flex-shrink: 1;

@@ -1,12 +1,16 @@
+import { isNil } from "lodash";
 import { Octokit } from "@octokit/core";
 import { CloudProvider, CloudFile } from "../types";
 
 import { notEmpty } from "../../utils/casting";
 
 export class GithubProvider implements CloudProvider {
+  type = "github";
   octokit: Octokit;
+  token: string;
 
   constructor(token: string) {
+    this.token = token;
     this.octokit = new Octokit({
       auth: token,
     });
@@ -121,6 +125,13 @@ export class GithubProvider implements CloudProvider {
     });
   }
 
+  serialize(): string {
+    return JSON.stringify({
+      type: this.type,
+      token: this.token,
+    });
+  }
+
   /**
    * Convert a gist to a CloudFile.
    * If the gist has no gexf file, this function throw an error
@@ -160,4 +171,14 @@ export class GithubProvider implements CloudProvider {
     });
     return result;
   }
+}
+
+/**
+ * Deserialize.
+ */
+export function ghProviderDeserialize(json: string): GithubProvider {
+  const params = JSON.parse(json);
+  if (params.type !== "github") throw new Error("Not a GithubProvider serialization");
+  if (isNil(params.token)) throw new Error("Token is mandatory in GithubProvider serialization");
+  return new GithubProvider(params.token);
 }

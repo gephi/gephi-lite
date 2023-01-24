@@ -2,17 +2,17 @@ import { FC, useEffect, useState } from "react";
 import copy from "copy-to-clipboard";
 import { BsGithub, BsClipboard } from "react-icons/bs";
 
-import { useGithubAuth } from "./useGithubAuth";
 import { useModal } from "../../modals";
+import { ModalProps } from "../../modals/types";
 import { Modal } from "../../../components/modals";
 import { useNotifications } from "../../notifications";
 import { Loader, Spinner } from "../../../components/Loader";
+import { useGithubAuth } from "./useGithubAuth";
 
-export const GithubLoginModal: FC = () => {
+export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const [hasBeenClick, setHasBeenClick] = useState<boolean>(false);
   const { code, loading, url, login, user, error, waiting } = useGithubAuth();
   const { notify } = useNotifications();
-  const { closeModal } = useModal();
 
   useEffect(() => {
     const id = setTimeout(() => login(), 0);
@@ -24,12 +24,20 @@ export const GithubLoginModal: FC = () => {
   useEffect(() => {
     if (user) {
       // TODO: SAVE USER IN THE CONTEXT
-      closeModal();
+      submit({});
     }
-  }, [user, closeModal]);
+  }, [user, submit]);
 
   return (
-    <Modal title="Github authentification" onClose={() => closeModal()}>
+    <Modal
+      title={
+        <>
+          <BsGithub className="me-1" />
+          Github authentification
+        </>
+      }
+      onClose={() => cancel()}
+    >
       <>
         {/* Display the error*/}
         {error && <p className="text-danger">{error}</p>}
@@ -74,7 +82,6 @@ export const GithubLoginModal: FC = () => {
               window.open(url, "_blank");
             }}
           >
-            <BsGithub className="me-1" />
             {(!hasBeenClick || !waiting) && <>Open github</>}
             {hasBeenClick && waiting && (
               <>
