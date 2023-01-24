@@ -13,7 +13,8 @@
   },
   "menu": {
     "open_graph": "Open a graph",
-    "open_file": "Open a file"
+    "open_file": "Open a file",
+    "save_gist": "Save a gist"
   },
   "auth": {
     "unauth_sucess": "Unauthentication successfull",
