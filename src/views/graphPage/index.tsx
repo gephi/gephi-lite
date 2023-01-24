@@ -31,19 +31,19 @@ type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Er
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
   const [state, setState] = useState<State>({ type: "idle" });
-  const { fetch } = useLoadGexf();
+  const { loadFromUrl } = useLoadGexf();
 
   useEffect(() => {
     if (state.type === "idle") {
-      fetch("/gephi-lite/arctic.gexf")
+      loadFromUrl("/gephi-lite/arctic.gexf")
         .then(() => {
           setState({ type: "ready" });
         })
         .catch((error) => {
-          setState({ type: "error", error });
+          setState({ type: "error", error: error as Error });
         });
     }
-  }, [state.type, fetch]);
+  }, [state.type, loadFromUrl]);
 
   return (
     <Layout>

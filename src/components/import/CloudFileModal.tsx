@@ -15,12 +15,12 @@ import { Loader, Spinner } from "../Loader";
 
 const PAGINATION_SIZE = 10;
 
-export const OpenFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const [user] = useConnectedUser();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<CloudFile | null>(null);
   const { loading, error, getFiles, getFile } = useCloudFiles();
-  const { loading: ldGexf, error: errorGexf, load: loadGexf } = useLoadGexf();
+  const { loading: ldGexf, error: errorGexf, loadFromData: loadGexf } = useLoadGexf();
   const [files, setFiles] = useState<Array<CloudFile>>([]);
   // for the pagination
   const [hasMore, setHasMore] = useState<boolean>(true);

@@ -7,7 +7,8 @@ import { useModal } from "../../core/modals";
 import { useConnectedUser } from "../../core/user";
 import { SignInModal } from "../../components/user/SignInModal";
 import { UserAvatar } from "../../components/user/UserAvatar";
-import { OpenFileModal } from "../../components/cloud/OpenFileModal";
+import { CloudFileModal } from "../../components/import/CloudFileModal";
+import { LocalFileModal } from "../../components/import/LocalFileModal";
 import { useNotifications } from "../../core/notifications";
 
 export const UserMenu: FC = () => {
@@ -29,10 +30,21 @@ export const UserMenu: FC = () => {
                   className="dropdown-item"
                   title="Open a file"
                   onClick={() => {
-                    openModal({ component: OpenFileModal, arguments: {} });
+                    openModal({ component: CloudFileModal, arguments: {} });
                   }}
                 >
                   <BsFolder className="me-1" /> Open a file
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  title="Open a local file"
+                  onClick={() => {
+                    openModal({ component: LocalFileModal, arguments: {} });
+                  }}
+                >
+                  <BsFolder className="me-1" /> Open local file
                 </button>
               </li>
               <li>
