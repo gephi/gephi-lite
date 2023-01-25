@@ -2,7 +2,7 @@ import { omit } from "lodash";
 
 import { atom } from "../utils/atoms";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
-import { Producer } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
 import { filtersAtom } from "../filters";
 import { datasetToFilteredSigmaGraph } from "../filters/utils";
@@ -32,18 +32,18 @@ const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
   });
 };
 
-export const graphDatasetProducers = {
-  setGraphMeta,
-  editGraphMeta,
-  setFieldModel,
-};
-
 /**
  * Public API:
  * ***********
  */
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
 export const sigmaGraphAtom = atom<SigmaGraph>(dataGraphToSigmaGraph(graphDatasetAtom.get()));
+
+export const graphDatasetActions = {
+  setGraphMeta: producerToAction(setGraphMeta, graphDatasetAtom),
+  editGraphMeta: producerToAction(editGraphMeta, graphDatasetAtom),
+  setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
+};
 
 /**
  * Bindings:

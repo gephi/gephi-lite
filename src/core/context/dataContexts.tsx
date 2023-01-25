@@ -1,11 +1,10 @@
 import { Context, createContext, FC, ReactNode, useContext } from "react";
-import { mapValues, reduce } from "lodash";
+import { reduce } from "lodash";
 
-import { filtersAtom, filtersProducers } from "../filters";
-import { appearanceAtom, appearanceProducers } from "../appearance";
-import { graphDatasetAtom, graphDatasetProducers, sigmaGraphAtom } from "../graph";
+import { filtersActions, filtersAtom } from "../filters";
+import { appearanceActions, appearanceAtom } from "../appearance";
+import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
-import { Producer } from "../utils/reducers";
 
 /**
  * Helpers:
@@ -22,15 +21,9 @@ function makeUseAtom<T>(atomContext: ReadableAtomContext<T> | WritableAtomContex
     return useReadAtom(atom);
   };
 }
-function makeUseAction<T, Args extends unknown[] = []>(
-  producer: Producer<T, Args>,
-  atomContext: WritableAtomContext<T>,
-) {
+function makeUseActions<T>(actionsCollection: T) {
   return () => {
-    const atom = useContext(atomContext);
-    return (...args: Args) => {
-      atom.set(producer(...args));
-    };
+    return actionsCollection;
   };
 }
 
@@ -75,16 +68,6 @@ export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 
-// Actions:
-export const useAddFilter = makeUseAction(filtersProducers.addFilter, CONTEXTS.filters);
-export const useResetFilters = makeUseAction(filtersProducers.resetFilters, CONTEXTS.filters);
-export const useOpenPastFilter = makeUseAction(filtersProducers.openPastFilter, CONTEXTS.filters);
-export const useOpenFutureFilter = makeUseAction(filtersProducers.openFutureFilter, CONTEXTS.filters);
-export const useDeleteCurrentFilter = makeUseAction(filtersProducers.deleteCurrentFilter, CONTEXTS.filters);
-
-export const useSetSizeAppearance = makeUseAction(appearanceProducers.setSizeAppearance, CONTEXTS.appearance);
-export const useSetColorAppearance = makeUseAction(appearanceProducers.setColorAppearance, CONTEXTS.appearance);
-
-export const useSetGraphMeta = makeUseAction(graphDatasetProducers.setGraphMeta, CONTEXTS.graphDataset);
-export const useEditGraphMeta = makeUseAction(graphDatasetProducers.editGraphMeta, CONTEXTS.graphDataset);
-export const useSetFieldModel = makeUseAction(graphDatasetProducers.setFieldModel, CONTEXTS.graphDataset);
+export const useFiltersActions = makeUseActions(filtersActions);
+export const useAppearanceActions = makeUseActions(appearanceActions);
+export const useGraphDatasetActions = makeUseActions(graphDatasetActions);

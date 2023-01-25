@@ -1,7 +1,7 @@
 import { atom } from "../utils/atoms";
 import { AppearanceState, Color, Size } from "./types";
 import { getEmptyAppearanceState } from "./utils";
-import { Producer } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/reducers";
 import { ItemType } from "../types";
 
 const setSizeAppearance: Producer<AppearanceState, [ItemType, Size]> = (itemType, size) => {
@@ -12,13 +12,13 @@ const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemTy
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
 };
 
-export const appearanceProducers = {
-  setSizeAppearance,
-  setColorAppearance,
-} as const;
-
 /**
  * Public API:
  * ***********
  */
 export const appearanceAtom = atom<AppearanceState>(getEmptyAppearanceState());
+
+export const appearanceActions = {
+  setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
+  setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),
+} as const;

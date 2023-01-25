@@ -3,7 +3,7 @@ import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ItemType } from "../../../core/types";
-import { useAppearance, useGraphDataset, useSetColorAppearance } from "../../../core/context/dataContexts";
+import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
 import { FieldModel } from "../../../core/graph/types";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
   const appearance = useAppearance();
-  const setColorAppearance = useSetColorAppearance();
+  const { setColorAppearance } = useAppearanceActions();
 
   const color = itemType === "nodes" ? appearance.nodesColor : appearance.edgesColor;
   const colorValue = STATIC_MODES.has(color.type) ? color.type : `${color.type}::${color.field}`;

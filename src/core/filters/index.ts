@@ -1,7 +1,7 @@
 import { dropRight, inRange } from "lodash";
 
 import { atom } from "../utils/atoms";
-import { Producer } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/reducers";
 import { Filter, FiltersState } from "./types";
 import { getEmptyFiltersState } from "./utils";
 
@@ -57,16 +57,16 @@ export const deleteCurrentFilter: Producer<FiltersState> = () => {
   };
 };
 
-export const filtersProducers = {
-  addFilter,
-  resetFilters,
-  openPastFilter,
-  openFutureFilter,
-  deleteCurrentFilter,
-} as const;
-
 /**
  * Public API:
  * ***********
  */
 export const filtersAtom = atom<FiltersState>(getEmptyFiltersState());
+
+export const filtersActions = {
+  addFilter: producerToAction(addFilter, filtersAtom),
+  resetFilters: producerToAction(resetFilters, filtersAtom),
+  openPastFilter: producerToAction(openPastFilter, filtersAtom),
+  openFutureFilter: producerToAction(openFutureFilter, filtersAtom),
+  deleteCurrentFilter: producerToAction(deleteCurrentFilter, filtersAtom),
+} as const;

@@ -6,13 +6,13 @@ import { SizeFixedEditor } from "./SizeFixedEditor";
 import { ItemType } from "../../../core/types";
 import { FieldModel } from "../../../core/graph/types";
 import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
-import { useAppearance, useGraphDataset, useSetSizeAppearance } from "../../../core/context/dataContexts";
+import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
   const appearance = useAppearance();
-  const setSizeAppearance = useSetSizeAppearance();
+  const { setSizeAppearance } = useAppearanceActions();
 
   const size = itemType === "nodes" ? appearance.nodesSize : appearance.edgesSize;
   const sizeValue = size.type === "fixed" ? "fixed" : `ranking::${size.field}`;

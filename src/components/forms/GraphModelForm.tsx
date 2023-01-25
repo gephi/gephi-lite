@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import { Tabs } from "../Tabs";
 import { FieldModel } from "../../core/graph/types";
-import { useGraphDataset, useSetFieldModel } from "../../core/context/dataContexts";
+import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 
 const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
-  const setFieldModel = useSetFieldModel();
+  const { setFieldModel } = useGraphDatasetActions();
   const { t } = useTranslation();
 
   return (
