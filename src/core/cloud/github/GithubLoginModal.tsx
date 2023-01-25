@@ -78,7 +78,7 @@ export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
             disabled={hasBeenClick && waiting}
             onClick={() => {
               setHasBeenClick(true);
-              window.open(url, "_blank");
+              window.open(url, "_blank", "popup");
             }}
           >
             {(!hasBeenClick || !waiting) && <>Open github</>}
