@@ -11,13 +11,16 @@
       "paragraph": "You may have mistyped the address or the page may have moved."
     }
   },
+  "user": {
+    "avatar_alt": "{{name}}'s avatar"
+  },
   "menu": {
     "open_graph": "Open a graph",
     "open_file": "Open a file",
     "save_gist": "Save a gist"
   },
   "auth": {
-    "unauth_sucess": "Unauthentication successfull",
+    "unauth_success": "Unauthentication successfull",
     "sign_out": "Sign-out",
     "sign_in": "Sign-in"
   },

@@ -22,26 +22,30 @@ export const UserMenu: FC = () => {
   return (
     <nav className="d-inline-flex mt-2 mt-md-0 ms-md-auto">
       <ul className="nav nav-pills">
-        {user && (
-          <li className="nav-item dropdown">
-            <button className="nav-link dropdown-toggle p-0" title="Open menu">
-              <UserAvatar className="user-sm" />
-            </button>
-            <ul className="dropdown-menu end-0">
-              <li>
-                <button
-                  className="dropdown-item"
-                  title="Save in cloud"
-                  onClick={() => {
-                    openModal({ component: SaveCloudFileModal, arguments: {} });
-                  }}
-                >
-                  <FaRegSave className="me-1" /> {t("menu.save_gist")}
-                </button>
-              </li>
-              <li>
-                <hr className="dropdown-divider" />
-              </li>
+        <li className="nav-item dropdown">
+          <button className="nav-link dropdown-toggle p-0" title="Open menu">
+            <UserAvatar className="user-sm" />
+          </button>
+          <ul className="dropdown-menu end-0">
+            {user && (
+              <>
+                <li>
+                  <button
+                    className="dropdown-item"
+                    title="Save in cloud"
+                    onClick={() => {
+                      openModal({ component: SaveCloudFileModal, arguments: {} });
+                    }}
+                  >
+                    <FaRegSave className="me-1" /> {t("menu.save_gist")}
+                  </button>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+              </>
+            )}
+            {user && (
               <li>
                 <button
                   className="dropdown-item"
@@ -53,20 +57,22 @@ export const UserMenu: FC = () => {
                   <FaRegFolderOpen className="me-1" /> {t("menu.open_file")}
                 </button>
               </li>
-              <li>
-                <button
-                  className="dropdown-item"
-                  title="Open a local file"
-                  onClick={() => {
-                    openModal({ component: LocalFileModal, arguments: {} });
-                  }}
-                >
-                  <FaRegFolderOpen className="me-1" /> Open local file
-                </button>
-              </li>
-              <li>
-                <hr className="dropdown-divider" />
-              </li>
+            )}
+            <li>
+              <button
+                className="dropdown-item"
+                title="Open a local file"
+                onClick={() => {
+                  openModal({ component: LocalFileModal, arguments: {} });
+                }}
+              >
+                <FaRegFolderOpen className="me-1" /> Open local file
+              </button>
+            </li>
+            <li>
+              <hr className="dropdown-divider" />
+            </li>
+            {user && (
               <li>
                 <button
                   className="dropdown-item"
@@ -74,7 +80,7 @@ export const UserMenu: FC = () => {
                   onClick={() => {
                     setUser(null);
                     notify({
-                      message: t("auth.unauth_sucess").toString(),
+                      message: t("auth.unauth_success").toString(),
                       type: "success",
                     });
                   }}
@@ -82,21 +88,21 @@ export const UserMenu: FC = () => {
                   <MdLogout className="me-1" /> {t("auth.sign_out")}
                 </button>
               </li>
-            </ul>
-          </li>
-        )}
-        {isNil(user) && (
-          <li className="nav-item">
-            <button
-              className="nav-link"
-              type="button"
-              title="Sign-in"
-              onClick={() => openModal({ component: SignInModal, arguments: {} })}
-            >
-              <MdLogin className="me-1" /> {t("auth.sign_in")}
-            </button>
-          </li>
-        )}
+            )}
+            {isNil(user) && (
+              <li className="nav-item">
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  title="Sign-in"
+                  onClick={() => openModal({ component: SignInModal, arguments: {} })}
+                >
+                  <MdLogin className="me-1" /> {t("auth.sign_in")}
+                </button>
+              </li>
+            )}
+          </ul>
+        </li>
       </ul>
     </nav>
   );

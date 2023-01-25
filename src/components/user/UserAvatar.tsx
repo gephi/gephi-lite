@@ -1,20 +1,22 @@
 import { FC, CSSProperties } from "react";
 import cx from "classnames";
-import { BsPerson } from "react-icons/bs";
+import { FaUser } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 import { useConnectedUser } from "../../core/user";
 
 export const UserAvatar: FC<{ className?: string; style?: CSSProperties }> = ({ className, style }) => {
   const [user] = useConnectedUser();
+  const { t } = useTranslation();
 
   return (
-    <>
-      {user && (
-        <div className={cx("user", className)} style={style}>
-          {user.avatar ? <img src={user.avatar} alt={`${user.name}'s avatar'`} /> : <BsPerson />}
-          <span className="invisible">{user.name}</span>
-        </div>
+    <div className={cx("user", className)} style={style}>
+      {user && user.avatar ? (
+        <img src={user.avatar} alt={t("user.avatar_alt", { name: user.name }).toString()} />
+      ) : (
+        <FaUser className="default" />
       )}
-    </>
+      {user && user.name && <span className="invisible">{user.name}</span>}
+    </div>
   );
 };
