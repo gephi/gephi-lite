@@ -1,7 +1,7 @@
 import { inRange } from "lodash";
 import { subgraph } from "graphology-operators";
 
-import { Filter, FiltersState, RangeFilter, TermsFilter } from "./types";
+import { FilterType, FiltersState, RangeFilterType, TermsFilterType } from "./types";
 import { toNumber, toString } from "../utils/casting";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToSigmaGraph } from "../graph/utils";
@@ -19,7 +19,7 @@ export function getEmptyFiltersState(): FiltersState {
 /**
  * Actual filtering helpers:
  */
-function filterValue(value: any, filter: RangeFilter | TermsFilter): boolean {
+function filterValue(value: any, filter: RangeFilterType | TermsFilterType): boolean {
   switch (filter.type) {
     case "range":
       const number = toNumber(value);
@@ -32,32 +32,37 @@ function filterValue(value: any, filter: RangeFilter | TermsFilter): boolean {
         )
       );
     case "terms":
+      if (!filter.terms) return true;
       const string = toString(value);
       return typeof string === "string" && filter.terms.has(string);
   }
 }
-function filterNode(id: string, dataset: GraphDataset, filter: Filter): boolean {
+function filterNode(id: string, dataset: GraphDataset, filter: FilterType): boolean {
   switch (filter.type) {
     case "range":
     case "terms":
       return filterValue(dataset.nodeData[id][filter.field], filter);
     case "script":
-      return filter.script(id);
+      if (filter.script) return filter.script(id);
   }
   return true;
 }
-function filterEdge(id: string, source: string, target: string, dataset: GraphDataset, filter: Filter): boolean {
+function filterEdge(id: string, source: string, target: string, dataset: GraphDataset, filter: FilterType): boolean {
   switch (filter.type) {
     case "range":
     case "terms":
       return filterValue(dataset.edgeData[id][filter.field], filter);
     case "script":
-      return filter.script(id);
+      if (filter.script) return filter.script(id);
   }
   return true;
 }
 
-export function filterGraph<G extends DatalessGraph | SigmaGraph>(graph: G, dataset: GraphDataset, filter: Filter): G {
+export function filterGraph<G extends DatalessGraph | SigmaGraph>(
+  graph: G,
+  dataset: GraphDataset,
+  filter: FilterType,
+): G {
   if (filter.type === "topological") {
     // TODO:
     return graph;
@@ -77,7 +82,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(graph: G, data
   }
 }
 
-export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: Filter[]): SigmaGraph {
+export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: FilterType[]): SigmaGraph {
   return dataGraphToSigmaGraph(
     dataset,
     filters.reduce((graph, filter) => filterGraph(graph, dataset, filter), dataset.fullGraph),

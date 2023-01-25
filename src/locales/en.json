@@ -60,7 +60,10 @@
     }
   },
   "filters": {
-    "title": "Filters"
+    "title": "Filters",
+    "custom_script": "Custom script",
+    "filter_graph_on": "Filter the graph on:",
+    "topological": "Topology"
   },
   "graph": {
     "metadata": {

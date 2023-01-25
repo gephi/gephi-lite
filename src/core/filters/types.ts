@@ -5,35 +5,34 @@ export interface BaseFilter {
   itemType: ItemType;
 }
 
-export type RangeFilter = BaseFilter & {
+export type RangeFilterType = BaseFilter & {
   type: "range";
   itemType: ItemType;
   field: string;
-} & ({ min: number; max?: number } | { min?: number; max: number });
+} & { min?: number; max?: number };
 
-export interface TermsFilter extends BaseFilter {
+export interface TermsFilterType extends BaseFilter {
   type: "terms";
   itemType: ItemType;
   field: string;
-  terms: Set<string>;
+  terms?: Set<string>;
 }
 
-export interface TopologicalFilter extends BaseFilter {
+export interface TopologicalFilterType {
   type: "topological";
-  itemType: ItemType;
-  method: string; // TODO
-  arguments: any; // TODO
+  method?: string; // TODO
+  arguments?: any; // TODO
 }
 
-export interface ScriptFilter extends BaseFilter {
+export interface ScriptFilterType extends BaseFilter {
   type: "script";
   itemType: ItemType;
-  script: (itemID: string) => boolean;
+  script?: (itemID: string) => boolean;
 }
 
-export type Filter = RangeFilter | TermsFilter | TopologicalFilter | ScriptFilter;
+export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterType | ScriptFilterType;
 
 export interface FiltersState {
-  past: Filter[];
-  future: Filter[];
+  past: FilterType[];
+  future: FilterType[];
 }

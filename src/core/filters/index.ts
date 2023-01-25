@@ -2,14 +2,14 @@ import { dropRight, inRange } from "lodash";
 
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/reducers";
-import { Filter, FiltersState } from "./types";
+import { FilterType, FiltersState } from "./types";
 import { getEmptyFiltersState } from "./utils";
 
 /**
  * Producers:
  * **********
  */
-export const addFilter: Producer<FiltersState, [Filter]> = (filter) => {
+export const addFilter: Producer<FiltersState, [FilterType]> = (filter) => {
   return (state) => ({
     ...state,
     past: state.past.concat(filter),
@@ -22,13 +22,13 @@ export const resetFilters: Producer<FiltersState> = () => {
 
 export const openPastFilter: Producer<FiltersState, [number]> = (index) => {
   return (state) => {
-    if (!inRange(index, 0, state.past.length))
+    if (!inRange(index, 0, state.past.length - 1))
       throw new Error(`openPastFilter: Index ${index} is out of bounds of past filters.`);
 
     return {
       ...state,
-      past: state.past.slice(0, index),
-      future: state.past.slice(index).concat(state.future),
+      past: state.past.slice(0, index + 1),
+      future: state.past.slice(index + 1).concat(state.future),
     };
   };
 };
@@ -40,8 +40,8 @@ export const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
 
     return {
       ...state,
-      past: state.past.concat(state.future.slice(0, index)),
-      future: state.future.slice(index),
+      past: state.past.concat(state.future.slice(0, index + 1)),
+      future: state.future.slice(index + 1),
     };
   };
 };
@@ -57,6 +57,13 @@ export const deleteCurrentFilter: Producer<FiltersState> = () => {
   };
 };
 
+export const replaceCurrentFilter: Producer<FiltersState, [FilterType]> = (filter) => {
+  return (state) => ({
+    ...state,
+    past: dropRight(state.past, 1).concat(filter),
+  });
+};
+
 /**
  * Public API:
  * ***********
@@ -68,5 +75,6 @@ export const filtersActions = {
   resetFilters: producerToAction(resetFilters, filtersAtom),
   openPastFilter: producerToAction(openPastFilter, filtersAtom),
   openFutureFilter: producerToAction(openFutureFilter, filtersAtom),
+  replaceCurrentFilter: producerToAction(replaceCurrentFilter, filtersAtom),
   deleteCurrentFilter: producerToAction(deleteCurrentFilter, filtersAtom),
 } as const;
