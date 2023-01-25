@@ -10,7 +10,6 @@ const SettingsController: FC = () => {
   const graphAppearance = useAppearance();
 
   useEffect(() => {
-    console.log(graphAppearance);
     sigma.setSetting("nodeReducer", getReducer("nodes", sigma, graphDataset, graphAppearance));
     sigma.setSetting("edgeReducer", getReducer("edges", sigma, graphDataset, graphAppearance));
   }, [graphAppearance, graphDataset, sigma]);

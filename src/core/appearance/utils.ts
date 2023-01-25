@@ -79,13 +79,11 @@ export function getReducer<
   if (itemType === "edges") {
     switch ((colorsDef as EdgeColor).type) {
       case "source":
-        console.log("huhuhu");
         getColor = (edgeId: string) => {
           return sigma.getNodeDisplayData(fullGraph.source(edgeId))!.color;
         };
         break;
       case "target":
-        console.log("huhuhu");
         getColor = (edgeId: string) => {
           return sigma.getNodeDisplayData(fullGraph.target(edgeId))!.color;
         };

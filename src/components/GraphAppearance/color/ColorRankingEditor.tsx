@@ -1,20 +1,8 @@
-import { FC, useState } from "react";
-import { ItemType } from "../../../core/types";
-import { AttributeSelect } from "../../forms/AttributeSelect";
-import { RankingColor } from "../../../core/appearance/types";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
+import { ItemType } from "../../../core/types";
+import { ColorScalePointType, RankingColor } from "../../../core/appearance/types";
 import { TransformationMethodsSelect } from "../TransformationMethodSelect";
-
-interface ColorScalePointType {
-  scalePoint: number;
-  color: string;
-}
-
-interface ColorRankingSpecification {
-  attributeId: string;
-  colorScalePoints: ColorScalePointType[];
-  transformationMethod?: "sqrt" | { pow: number } | "log" | { spline: [[number, number], [number, number]] };
-}
 
 const ColorScalePoint: FC<ColorScalePointType & { setColor: (color: string) => void }> = ({
   scalePoint,

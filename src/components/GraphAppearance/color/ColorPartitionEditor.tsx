@@ -11,8 +11,9 @@ export const ColorPartitionEditor: FC<{
   itemType: ItemType;
   color: PartitionColor;
   setColor: (newColor: PartitionColor) => void;
-}> = ({ itemType, color, setColor }) => {
+}> = ({ color, setColor }) => {
   const { t } = useTranslation();
+
   // init palette
   useEffect(() => {
     const values = uniq(
@@ -35,6 +36,7 @@ export const ColorPartitionEditor: FC<{
         colorPalette: values.reduce((iter, v, i) => ({ ...iter, [v]: palette[i] }), {}),
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color.field]);
 
   return (
