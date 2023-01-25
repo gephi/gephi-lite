@@ -1,5 +1,5 @@
 // Fonts:
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&display=swap');
 
 // Custom bootstrap variables tuning:
 @import "variables";
@@ -7,6 +7,9 @@
 // Bootstrap files:
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
+
+@import "variables-override";
+
 @import "~bootstrap/scss/maps";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/utilities";

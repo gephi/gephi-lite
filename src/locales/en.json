@@ -27,12 +27,17 @@
     "save": "Save",
     "show": "Show",
     "hide": "Hide",
-    "remove": "Remove"
+    "remove": "Remove",
+    "delete": "Delete",
+    "add": "Add",
+    "show_more": "Show more",
+    "show_less": "Show less"
   },
   "appearance": {
     "title": "Appearance",
     "partition": "Partition",
     "ranking": "Ranking",
+    "show_edges": "Show edges",
     "transformation_methods": {
       "title": "Transformation methods",
       "linear": "linear",
@@ -44,17 +49,25 @@
     },
     "color": {
       "title": "Color",
-      "set_color_from": "Set color from"
+      "set_color_from": "Set color from...",
+      "data": "Input data",
+      "fixed": "A fixed color",
+      "source": "Source nodes",
+      "target": "Source nodes",
+      "quanti": "as numbers",
+      "quali": "as strings",
+      "color_all_items": "Color for all {{items}}",
+      "data_description": "All {{items}} colors are as they are in the input data file."
     },
     "labels": {
       "title": "Labels",
-      "size_labels_from": "Set label from",
+      "size_labels_from": "Set label from...",
       "fixed_size": "fixed size",
       "size": "{{items}} size"
     },
     "size": {
       "title": "Size",
-      "set_size_from": "Set size from",
+      "set_size_from": "Set size from...",
       "min": "Min",
       "max": "Max"
     }

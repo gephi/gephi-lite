@@ -7,8 +7,10 @@ import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../c
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
 import { FieldModel } from "../../../core/graph/types";
 import { useTranslation } from "react-i18next";
+import Select from "react-select";
+import { Color } from "../../../core/appearance/types";
 
-const STATIC_MODES = new Set(["fixed", "source", "target", "data"]);
+type ColorOption = { value: string; label: string | JSX.Element; field?: string; type: string };
 
 export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -17,52 +19,74 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { setColorAppearance } = useAppearanceActions();
 
   const color = itemType === "nodes" ? appearance.nodesColor : appearance.edgesColor;
-  const colorValue = STATIC_MODES.has(color.type) ? color.type : `${color.type}::${color.field}`;
   const baseValue = itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
-  const fieldOptions = useMemo(() => {
+
+  const options: ColorOption[] = useMemo(() => {
     const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
-    return allFields.flatMap((field) => {
-      const options = [];
-      if (!!field.quantitative)
-        options.push({ id: `ranking::${field.id}`, label: !!field.qualitative ? `${field.id} (ranking)` : field.id });
-      if (!!field.qualitative)
-        options.push({
-          id: `partition::${field.id}`,
-          label: !!field.quantitative ? `${field.id} (partition)` : field.id,
-        });
-      return options;
-    });
-  }, [edgeFields, itemType, nodeFields]);
+    return [
+      { value: "data", type: "data", label: t("appearance.color.data") as string },
+      { value: "fixed", type: "data", label: t("appearance.color.fixed") as string },
+      ...(itemType === "edges"
+        ? [
+            { value: "source", type: "source", label: t("appearance.color.source") as string },
+            { value: "target", type: "target", label: t("appearance.color.target") as string },
+          ]
+        : []),
+      ...allFields.flatMap((field) => {
+        const options = [];
+        if (!!field.quantitative)
+          options.push({
+            value: `ranking::${field.id}`,
+            field: field.id,
+            type: "ranking",
+            label: (
+              <>
+                {field.id} <span className="text-muted">({t("appearance.color.quanti")})</span>
+              </>
+            ),
+          });
+        if (!!field.qualitative)
+          options.push({
+            value: `partition::${field.id}`,
+            field: field.id,
+            type: "partition",
+            label: (
+              <>
+                {field.id} <span className="text-muted">({t("appearance.color.quali")})</span>
+              </>
+            ),
+          });
+        return options;
+      }),
+    ];
+  }, [edgeFields, itemType, nodeFields, t]);
+  const selectedOption =
+    options.find((option) => option.type === color.type && option.field === color.field) || options[0];
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <h3>{t("appearance.color.title")}</h3>
+    <>
+      <h3 className="fs-5 mt-3">{t("appearance.color.title")}</h3>
       <label htmlFor="colorMode">{t("appearance.color.set_color_from")}</label>
-      <select
-        id="colorMode"
-        className="form-select"
-        value={colorValue}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (value === "fixed") {
+      <Select<ColorOption>
+        options={options}
+        value={selectedOption}
+        onChange={(option) => {
+          if (!option || option.value === "fixed") {
             if (color.type !== "fixed") {
               setColorAppearance(itemType, {
                 type: "fixed",
                 value: baseValue,
               });
             }
-          } else if (value === "data" || value === "source" || value === "target") {
+          } else if (!option.field) {
             setColorAppearance(itemType, {
-              type: value as "data", // this is here to trick TS for nodes
-            });
+              type: option.type, // this is here to trick TS for nodes
+            } as Color);
           } else {
-            const field = value.replace(/^[^:]+::/, "");
-            const type = value.split("::")[0];
-
-            if (type === "ranking") {
+            if (option.type === "ranking") {
               setColorAppearance(itemType, {
-                type,
-                field,
+                type: "ranking",
+                field: option.field,
                 colorScalePoints: [
                   { scalePoint: 0, color: "#fc8d59" },
                   { scalePoint: 0.5, color: "#ffffbf" },
@@ -73,25 +97,20 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             } else {
               setColorAppearance(itemType, {
                 type: "partition",
-                field,
+                field: option.field,
                 colorPalette: {},
                 missingColor: baseValue,
               });
             }
           }
         }}
-      >
-        <option value="data">colors from input file</option>
-        {itemType === "edges" && <option value="source">use source node color</option>}
-        {itemType === "edges" && <option value="target">use target node color</option>}
-        <option value="fixed">fixed color</option>
-        {fieldOptions.map(({ id, label }) => (
-          <option value={id} key={id}>
-            {label}
-          </option>
-        ))}
-      </select>
+      />
 
+      {color.type === "data" && (
+        <p className="fst-italic text-muted">
+          {t("appearance.color.data_description", { items: t(`graph.model.${itemType}`) })}
+        </p>
+      )}
       {color.type === "fixed" && (
         <ColorFixedEditor
           itemType={itemType}
@@ -113,6 +132,6 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           setColor={(newColor) => setColorAppearance(itemType, newColor)}
         />
       )}
-    </form>
+    </>
   );
 };

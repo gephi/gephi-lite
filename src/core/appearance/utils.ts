@@ -20,6 +20,7 @@ export const DEFAULT_EDGE_LABEL_SIZE = 14;
 
 export function getEmptyAppearanceState(): AppearanceState {
   return {
+    showEdges: true,
     nodesSize: {
       type: "data",
     },
@@ -55,12 +56,15 @@ export function getReducer<
   itemType: T["itemType"],
   sigma: Sigma,
   { nodeData, edgeData, fullGraph }: GraphDataset,
-  { nodesSize, nodesColor, nodesLabel, edgesSize, edgesColor, edgesLabel }: AppearanceState,
+  { showEdges, nodesSize, nodesColor, nodesLabel, edgesSize, edgesColor, edgesLabel }: AppearanceState,
 ): (itemId: string, data: ItemData) => Partial<T["displayData"]> & { rawSize?: number } {
   const colorsDef = itemType === "nodes" ? nodesColor : edgesColor;
   const sizesDef = itemType === "nodes" ? nodesSize : edgesSize;
   const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
   const itemsValues = itemType === "nodes" ? nodeData : edgeData;
+
+  // Early exit for "showEdges: false":
+  if (itemType === "edges" && !showEdges) return () => ({ hidden: true } as Partial<EdgeDisplayData>);
 
   // Handle colors:
   let getColor: ((itemId: string, data: ItemData) => string) | null = null;
@@ -197,7 +201,6 @@ export function getDrawHover({ nodesLabelSize }: AppearanceState): typeof drawHo
 
 export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState): typeof drawEdgeLabel {
   if (edgesLabelSize.type === "fixed") {
-    console.log("huhu", edgesLabelSize.value);
     return (context, data, sourceData, targetData, settings: Settings) =>
       drawEdgeLabel(context, data, sourceData, targetData, { ...settings, edgeLabelSize: edgesLabelSize.value });
   } else {

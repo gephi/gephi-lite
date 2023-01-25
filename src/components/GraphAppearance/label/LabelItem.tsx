@@ -37,8 +37,8 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   );
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <h3>{t("appearance.labels.title")}</h3>
+    <>
+      <h3 className="fs-5 mt-3">{t("appearance.labels.title")}</h3>
       <Select<LabelOption>
         options={labelOptions}
         value={selectedLabelOption}
@@ -65,6 +65,6 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           }
         }}
       />
-    </form>
+    </>
   );
 };

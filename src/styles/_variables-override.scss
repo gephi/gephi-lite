@@ -1,0 +1,20 @@
+@use "sass:map";
+
+$toolbar-bg: $gray-400;
+$panels-bg: $gray-200;
+
+// Bootstrap variables:
+$position-values: map.merge(
+  $position-values,
+  (
+    5: 0.5em,
+  )
+);
+
+// Switch customization:
+$form-switch-checked-color: $form-switch-color;
+$form-switch-checked-bg-image: $form-switch-bg-image;
+.form-switch .form-check-input:checked {
+  background-color: $input-bg;
+  border-color: $input-border-color;
+}

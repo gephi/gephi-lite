@@ -23,8 +23,8 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   }, [edgeFields, itemType, nodeFields]);
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <h3>{t("appearance.size.title")}</h3>
+    <>
+      <h3 className="fs-5 mt-3">{t("appearance.size.title")}</h3>
       <label htmlFor="sizeMode">{t("appearance.size.set_size_from")}</label>
       <select
         id="sizeMode"
@@ -74,6 +74,6 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           setSize={(newSize) => setSizeAppearance(itemType, newSize)}
         />
       )}
-    </form>
+    </>
   );
 };

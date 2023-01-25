@@ -32,7 +32,7 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   );
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <>
       <label htmlFor="sizeMethod">{t("appearance.labels.size_labels_from")}</label>
       <Select
         options={labelSizeOptions}
@@ -100,6 +100,6 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           </div>
         </>
       )}
-    </form>
+    </>
   );
 };

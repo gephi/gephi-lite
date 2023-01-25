@@ -8,3 +8,15 @@
   border: 3px dotted black;
   width: 100%;
 }
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+.w-33 {
+  width: 33% !important;
+}
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

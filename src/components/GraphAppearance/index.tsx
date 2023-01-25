@@ -2,40 +2,67 @@ import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ColorItem } from "./color/ColorItem";
 import { ItemType } from "../../core/types";
-import { Tabs } from "../Tabs";
 import { SizeItem } from "./size/SizeItem";
 import { LabelItem } from "./label/LabelItem";
 import { LabelSizeItem } from "./label/LabelSizeItem";
+import { Toggle } from "../Toggle";
+import { EdgeIcon, NodeIcon } from "../common-icons";
+import { useAppearance, useAppearanceActions } from "../../core/context/dataContexts";
 
 export const GraphAppearance: FC = () => {
   const { t } = useTranslation();
+  const [showEdges, setShowEdges] = useState(false);
+
   return (
-    <Tabs>
-      <>{t("graph.model.nodes")}</>
-      <GraphItemAppearance itemType="nodes" />
-      <>{t("graph.model.edges")}</>
-      <GraphItemAppearance itemType="edges" />
-    </Tabs>
+    <>
+      <Toggle
+        value={showEdges}
+        onChange={setShowEdges}
+        leftLabel={
+          <>
+            <NodeIcon className="me-1" /> {t("graph.model.nodes")}
+          </>
+        }
+        rightLabel={
+          <>
+            <EdgeIcon className="me-1" /> {t("graph.model.edges")}
+          </>
+        }
+      />
+      <hr />
+      {showEdges ? <GraphItemAppearance itemType="edges" /> : <GraphItemAppearance itemType="nodes" />}
+    </>
   );
 };
 
 const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
-  //TODO: retrieve partition from CONTEXT and split by partitions
-  const [edgesHidden, setEdgesHidden] = useState<boolean>(false);
-  //TODO: replace by core.model types once done
   const { t } = useTranslation();
+  const { showEdges } = useAppearance();
+  const { setShowEdges } = useAppearanceActions();
+
   return (
-    <div>
+    <>
       {itemType === "edges" && (
-        <button className="btn btn-primary" onClick={() => setEdgesHidden(!edgesHidden)}>
-          {edgesHidden ? t("button.show") : t("button.hide")} {t("graph.model.edges")}
-        </button>
+        <div className="form-check">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={showEdges}
+            onChange={(e) => setShowEdges(e.target.checked)}
+            id="show-edges"
+          />
+          <label className="form-check-label" htmlFor="show-edges">
+            {t("appearance.show_edges")}
+          </label>
+        </div>
       )}
 
       <ColorItem itemType={itemType} />
+      <hr />
       <SizeItem itemType={itemType} />
+      <hr />
       <LabelItem itemType={itemType} />
       <LabelSizeItem itemType={itemType} />
-    </div>
+    </>
   );
 };

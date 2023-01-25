@@ -61,6 +61,7 @@ export type ItemLabelSize = NoFieldValue<"item"> & { coef: number; adaptsToZoom:
 export type LabelSize = FixedLabelSize | ItemLabelSize;
 
 export interface AppearanceState {
+  showEdges: boolean;
   nodesSize: Size;
   edgesSize: Size;
   nodesColor: Color;

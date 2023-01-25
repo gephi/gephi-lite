@@ -81,7 +81,7 @@ export function inferFieldType<T extends ItemType = ItemType>(
 
   const uniqValues = uniq(values);
   const uniqValuesCount = uniqValues.length;
-  if (uniqValuesCount > 1 && uniqValuesCount < Math.max(Math.pow(nodesCount, 0.75), 5)) {
+  if (uniqValuesCount > 1 && uniqValuesCount < 50 && uniqValuesCount < Math.max(Math.pow(nodesCount, 0.75), 5)) {
     const separator = guessSeparator(
       take(
         uniqValues.map((v) => "" + v),
