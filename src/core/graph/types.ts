@@ -1,5 +1,25 @@
 import { MultiGraph } from "graphology";
 import { ItemType, Scalar } from "../types";
+import { CloudFile } from "../cloud/types";
+
+/**
+ * Graph origin:
+ * *************
+ */
+export interface GraphFile {
+  type: string;
+  filename: string;
+}
+export interface RemoteFile extends GraphFile {
+  type: "remote";
+  url: string;
+}
+export interface LocalFile extends GraphFile, File {
+  type: "local";
+  updatedAt: Date;
+  size: number;
+}
+export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
 
 /**
  * Items data:
@@ -63,4 +83,8 @@ export interface GraphDataset {
   // Finally, we store here a Graphology instance that stores the graph, without
   // nodes and edges data - just for traversal:
   fullGraph: DatalessGraph;
+
+  // Origin of the current graph
+  // Ex: is it a local or a remote file
+  origin: GraphOrigin;
 }

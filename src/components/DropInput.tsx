@@ -2,6 +2,7 @@ import cx from "classnames";
 import React, { FC } from "react";
 import { useDropzone, Accept } from "react-dropzone";
 import { FaTimes } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface DropInputProperties {
   value: File | null;
@@ -11,6 +12,7 @@ interface DropInputProperties {
 }
 
 export const DropInput: FC<DropInputProperties> = ({ value, onChange, accept, helpText }) => {
+  const { t } = useTranslation();
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: accept,
@@ -36,7 +38,7 @@ export const DropInput: FC<DropInputProperties> = ({ value, onChange, accept, he
             onChange(null);
           }}
         >
-          <FaTimes /> Clear
+          <FaTimes /> {t("common.clear").toString()}
         </button>
       )}
     </div>

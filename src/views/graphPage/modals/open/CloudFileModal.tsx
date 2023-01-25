@@ -1,38 +1,31 @@
 import { FC, useEffect, useState } from "react";
-import { isNil } from "lodash";
 import { useNavigate } from "react-router-dom";
-import { FaLock, FaFolderOpen, FaExternalLinkAlt, FaSync } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { FaLock, FaFolderOpen, FaExternalLinkAlt, FaSync, FaTimes } from "react-icons/fa";
 import byteSize from "byte-size";
 
-import { displayDateTime } from "../../utils/date";
-import { ModalProps } from "../../core/modals/types";
-import { useConnectedUser } from "../../core/user";
-import { CloudFile } from "../../core/cloud/types";
-import { useCloudFiles } from "../../core/cloud/useCloudFiles";
-import { useImportGexf } from "../../core/graph/useImportGexf";
-import { Modal } from "../modals";
-import { Loader, Spinner } from "../Loader";
+import { displayDateTime } from "../../../../utils/date";
+import { ModalProps } from "../../../../core/modals/types";
+import { useConnectedUser } from "../../../../core/user";
+import { CloudFile } from "../../../../core/cloud/types";
+import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
+import { Modal } from "../../../../components/modals";
+import { Loader } from "../../../../components/Loader";
 
 const PAGINATION_SIZE = 10;
 
 export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const [user] = useConnectedUser();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<CloudFile | null>(null);
-  const { loading, error, getFiles, getFile } = useCloudFiles();
-  const { loading: ldGexf, error: errorGexf, importFromContent: loadGexf } = useImportGexf();
+  const { t } = useTranslation();
+  const { loading, error, getFiles, openFile } = useCloudProvider();
+  // list files retrived from the cloud
   const [files, setFiles] = useState<Array<CloudFile>>([]);
+  // the selected file by the user
+  const [selected, setSelected] = useState<CloudFile | null>(null);
   // for the pagination
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
-
-  /**
-   * When user change
-   *  => if disconnected, close the modal
-   */
-  useEffect(() => {
-    if (isNil(user)) cancel();
-  }, [user, cancel]);
 
   /**
    * When component mount
@@ -46,30 +39,24 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   }, [getFiles, page]);
 
   return (
-    <Modal title={`Open a file from ${user?.provider.type}`} onClose={() => cancel()} className="modal-lg">
+    <Modal
+      title={t("graph.open.cloud.title", { provider: user?.provider.type || "" }).toString()}
+      onClose={() => cancel()}
+      className="modal-lg"
+    >
       <>
-        {error && (
-          <p className="text-error">
-            A technical error occured while searching files on the provider. Please check your connectivity or try
-            later.
-          </p>
-        )}
-        {errorGexf && (
-          <p className="text-error">
-            An error occured while opening the file. Please check your connectivity and that the file is a valid GEXF.
-          </p>
-        )}
+        {error && <p className="text-center text-danger">{t("graph.open.cloud.error")}</p>}
 
         {files.length > 0 && (
           <>
-            <table className="table  table-hover">
+            <table className="table table-hover">
               <thead>
                 <tr>
                   <th scope="col"></th>
-                  <th scope="col">Filename</th>
-                  <th scope="col">Created</th>
-                  <th scope="col">Updated</th>
-                  <th scope="col">Size</th>
+                  <th scope="col">{t("common.filename").toString()}</th>
+                  <th scope="col">{t("common.created").toString()}</th>
+                  <th scope="col">{t("common.updated").toString()}</th>
+                  <th scope="col">{t("common.size").toString()}</th>
                 </tr>
               </thead>
               <tbody>
@@ -88,7 +75,10 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                       <a
                         className="link-dark m-2"
                         href={file.webUrl}
-                        title={`See the file on ${user?.provider.type}`}
+                        title={t("graph.open.cloud.file-open-external", {
+                          filename: file.filename,
+                          provider: user?.provider.type || "",
+                        }).toString()}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -106,39 +96,46 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
               <div className="d-flex justify-content-center">
                 <button title="Load next page" className="btn btn-primary btn-sm" onClick={() => setPage(page + 1)}>
                   <FaSync className="me-1" />
-                  Load more
+                  {t("common.load-more").toString()}
                 </button>
               </div>
             )}
           </>
         )}
         {!loading && files.length === 0 && (
-          <p className="text-info">You have no GEXF file saved on {user?.provider.type}</p>
+          <p className="text-info">
+            {t("graph.open.cloud.no-data", { provider: user?.provider.type || "" }).toString()}
+          </p>
         )}
-        {(loading || ldGexf) && <Loader />}
+        {loading && <Loader />}
       </>
       <>
+        <button title="Cancel" className="btn btn-outline-danger" onClick={() => cancel()}>
+          <FaTimes className="me-1" />
+          {t("common.cancel").toString()}
+        </button>
         <button
           className="btn btn-primary"
           disabled={!selected}
-          title={selected ? `Open file ${selected.filename}` : "Select a file"}
+          title={
+            selected
+              ? t("common.open_file", { filename: selected.filename }).toString()
+              : t("graph.open.cloud.select-file").toString()
+          }
           onClick={async () => {
             if (selected) {
               try {
-                const content = await getFile(selected);
-                if (content) {
-                  await loadGexf(content);
-                  navigate("/graph");
-                  cancel();
-                }
+                await openFile(selected);
+                navigate("/graph");
+                cancel();
               } catch (e) {
                 console.error(e);
               }
             }
           }}
         >
-          {ldGexf ? <Spinner className="me-1" /> : <FaFolderOpen className="me-1" />}
-          Open
+          <FaFolderOpen className="me-1" />
+          {t("common.open").toString()}
         </button>
       </>
     </Modal>

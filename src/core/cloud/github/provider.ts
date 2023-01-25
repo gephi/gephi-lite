@@ -95,11 +95,12 @@ export class GithubProvider implements CloudProvider {
     file: Pick<CloudFile, "filename" | "description" | "isPublic">,
     content: string,
   ): Promise<CloudFile> {
+    const fileWithExt = file.filename.endsWith(".gexf") ? file.filename : `${file.filename}.gexf`;
     const body = {
       description: file.description || file.filename,
       public: file.isPublic || false,
       files: {
-        [file.filename]: {
+        [fileWithExt]: {
           content,
         },
       },
@@ -131,9 +132,9 @@ export class GithubProvider implements CloudProvider {
   /**
    * Delete a gist on github.
    */
-  async deleteFile(id: string): Promise<void> {
+  async deleteFile(file: CloudFile): Promise<void> {
     await this.octokit.request("DELETE /gists/{gist_id}", {
-      gist_id: id,
+      gist_id: file.id,
     });
   }
 
@@ -161,6 +162,7 @@ export class GithubProvider implements CloudProvider {
     const file = this.getGexfFile(gist);
     if (!file) throw new Error(`File can't be find on gist ${gist.id}`);
     return {
+      type: "cloud",
       id: gist.id,
       description: gist.description ?? undefined,
       filename: file.filename,

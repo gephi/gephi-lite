@@ -3,7 +3,7 @@ import cx from "classnames";
 import { BsX } from "react-icons/bs";
 import { useTranslation } from "react-i18next";
 
-import { useImportGexf } from "../../core/graph/useImportGexf";
+import { useOpenGexf } from "../../core/graph/useOpenGexf";
 import { Layout } from "../layout";
 import { GraphDataPanel } from "./GraphDataPanel";
 import { StatisticsPanel } from "./StatisticsPanel";
@@ -21,7 +21,7 @@ type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Er
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
   const [state, setState] = useState<State>({ type: "idle" });
-  const { importFromUrl } = useImportGexf();
+  const { openRemoteFile } = useOpenGexf();
   const { t } = useTranslation();
 
   const TOOLS: (Tool | { type: "space" })[] = useMemo(
@@ -39,7 +39,7 @@ export const GraphPage: FC = () => {
 
   useEffect(() => {
     if (state.type === "idle") {
-      importFromUrl("/gephi-lite/arctic.gexf")
+      openRemoteFile({ type: "remote", filename: "arctic.gexf", url: "/gephi-lite/arctic.gexf" })
         .then(() => {
           setState({ type: "ready" });
         })
@@ -47,7 +47,7 @@ export const GraphPage: FC = () => {
           setState({ type: "error", error: error as Error });
         });
     }
-  }, [state.type, importFromUrl]);
+  }, [state.type, openRemoteFile]);
 
   return (
     <Layout>

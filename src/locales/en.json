@@ -15,9 +15,15 @@
     "avatar_alt": "{{name}}'s avatar"
   },
   "menu": {
-    "open_graph": "Open a graph",
-    "open_file": "Open a file",
-    "save_gist": "Save a gist"
+    "open": {
+      "cloud": "Open graph from {{provider}}",
+      "remote": "Open remote graph",
+      "local": "Open local graph"
+    },
+    "save": {
+      "default": "Save",
+      "cloud": "Save on {{provider}} as ..."
+    }
   },
   "auth": {
     "unauth_success": "Unauthentication successfull",
@@ -82,6 +88,7 @@
     "topological": "Topology"
   },
   "graph": {
+    "title": "Graph",
     "metadata": {
       "title": "Metadata",
       "graph-title": "Title",
@@ -114,12 +121,58 @@
       "edges_zero": "edge",
       "edges": "edges"
     },
-    "title": "Graph"
+    "open": {
+      "local": {
+        "title": "Open a local file",
+        "dragndrop_text": "Drag'n'drop a GEXF file",
+        "success": "File {{filename}} has been successfully loaded",
+        "error": "An error occured while opening the file. Please check that the file is a valid GEXF."
+      },
+      "remote": {
+        "title": "Open an url",
+        "url-field": "Url of the GEXF file",
+        "success": "File {{filename}} has been successfully loaded",
+        "error": "An error occured while opening the file. Please check your connectivity and that the file is a valid GEXF."
+      },
+      "cloud": {
+        "title": "Open a file from {{provider}}",
+        "no-data": "You have no GEXF file saved on {{provider}}",
+        "file-open-external": "Open {{filename}} on {{provider}}",
+        "select-file": "Select a file",
+        "success": "File {{filename}} has been successfully loaded",
+        "error": "A technical error occured. Please check your connectivity or try later."
+      }
+    },
+    "save": {
+      "cloud": {
+        "title": "Save in {{provider}} as ...",
+        "field": {
+          "filename": "Filename",
+          "description": "Description",
+          "isPublic": "Create a public gist"
+        },
+        "success": "File {{filename}} has been successfully saved",
+        "error": "An error occured while saving your graph. Please check your connectivity or try later."
+      }
+    }
   },
   "statistics": {
     "title": "Statistics"
   },
   "layout": {
     "title": "Layout"
+  },
+  "common": {
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "open": "Open",
+    "open_file": "Open {{filename}}",
+    "filename": "Filename",
+    "created": "Created",
+    "updated": "Updated",
+    "size": "Size",
+    "load-more": "Load more",
+    "save": "Save"
   }
 }

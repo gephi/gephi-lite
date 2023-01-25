@@ -27,6 +27,7 @@ export function getEmptyGraphDataset(): GraphDataset {
     nodeFields: [],
     edgeFields: [],
     fullGraph: new MultiGraph<{}, {}>(),
+    origin: null,
   };
 }
 
