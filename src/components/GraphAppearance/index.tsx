@@ -1,10 +1,11 @@
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ColorItem } from "./color/ColorItem";
 import { ItemType } from "../../core/types";
 import { Tabs } from "../Tabs";
 import { SizeItem } from "./size/SizeItem";
 import { LabelItem } from "./label/LabelItem";
-import { useTranslation } from "react-i18next";
+import { LabelSizeItem } from "./label/LabelSizeItem";
 
 export const GraphAppearance: FC = () => {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <ColorItem itemType={itemType} />
       <SizeItem itemType={itemType} />
       <LabelItem itemType={itemType} />
+      <LabelSizeItem itemType={itemType} />
     </div>
   );
 };

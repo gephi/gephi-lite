@@ -1,88 +1,70 @@
-import { FC, useState } from "react";
+import { FC, useMemo } from "react";
+import Select from "react-select";
 import { useTranslation } from "react-i18next";
+
 import { ItemType } from "../../../core/types";
-import { AttributeSelect } from "../../forms/AttributeSelect";
+import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import { FieldModel } from "../../../core/graph/types";
 
-type LabelSizeMethodType = "itemSize" | "fixed";
-
-interface LabelSpecification {
-  attributeId?: string;
-  sizeMethod: LabelSizeMethodType;
-  size: {
-    fixed: number;
-    min: number;
-    max: number;
-  };
-  // TODO: zoom factor
-  // TODO: label density
-  // TODO: font
-}
+type LabelOption =
+  | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
+  | { value: string; type: "field"; field: string; label: string };
 
 export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
-  const [labelSpecification, setLabelSpecification] = useState<LabelSpecification>({
-    sizeMethod: "itemSize",
-    size: { fixed: 5, min: 1, max: 10 },
-  });
+  const { nodeFields, edgeFields } = useGraphDataset();
+  const { nodesLabel, edgesLabel } = useAppearance();
+  const { setLabelAppearance } = useAppearanceActions();
+
+  const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
+  const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
+  const labelOptions = useMemo(() => {
+    return [
+      ...allFields.map((field) => ({
+        value: `field::${field.id}`,
+        type: "field",
+        field: field.id,
+        label: field.id,
+      })),
+      { value: "fixed", type: "fixed", label: "Fixed label" },
+      { value: "data", type: "data", label: "As they appear in the original data" },
+      { value: "none", type: "none", label: "None" },
+    ] as LabelOption[];
+  }, [allFields]);
+  const selectedLabelOption: LabelOption | null = useMemo(
+    () => labelOptions.find((option) => option.type === labelsDef.type && option.field === labelsDef.field) || null,
+    [labelOptions, labelsDef.field, labelsDef.type],
+  );
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <h3>{t("appearance.labels.title")}</h3>
-      <AttributeSelect
-        attributeId={labelSpecification?.attributeId}
-        onChange={(attId) => setLabelSpecification({ ...labelSpecification, attributeId: attId })}
-        itemType={itemType}
-        attributesFilter={(a) => !!a.qualitative}
-        emptyOptionLabel="No labels"
+      <Select<LabelOption>
+        options={labelOptions}
+        value={selectedLabelOption}
+        onChange={(option) => {
+          if (!option) {
+            setLabelAppearance(itemType, {
+              type: "none",
+            });
+          } else if (option.type === "field") {
+            setLabelAppearance(itemType, {
+              type: "field",
+              field: option.field,
+              missingLabel: null,
+            });
+          } else if (option.type === "fixed") {
+            setLabelAppearance(itemType, {
+              type: "fixed",
+              value: "label",
+            });
+          } else {
+            setLabelAppearance(itemType, {
+              type: option.type,
+            });
+          }
+        }}
       />
-      <label htmlFor="sizeMethod">{t("appearance.labels.size_labels_from")}</label>
-      {labelSpecification?.attributeId && (
-        <>
-          <select
-            id="sizeMethod"
-            className="form-select"
-            value={labelSpecification.sizeMethod}
-            onChange={(e) =>
-              setLabelSpecification({ ...labelSpecification, sizeMethod: e.target.value as LabelSizeMethodType })
-            }
-          >
-            <option value="itemSize">{t(`appearance.labels.size`, { items: t(`graph.model.${itemType}`) })}</option>
-            <option value="fixed">{t("appearance.labels.fixed_size")}</option>
-          </select>
-          {labelSpecification.sizeMethod === "fixed" && (
-            <input type="number" id="fixedSize" value={labelSpecification.size.fixed} />
-          )}
-          {labelSpecification.sizeMethod === "itemSize" && (
-            <div>
-              <input
-                type="number"
-                id="minSize"
-                value={labelSpecification.size.min}
-                min="1"
-                max={labelSpecification.size.max}
-                onChange={(e) =>
-                  setLabelSpecification({
-                    ...labelSpecification,
-                    size: { ...labelSpecification.size, min: +e.target.value },
-                  })
-                }
-              />
-              <input
-                type="number"
-                id="maxSize"
-                value={labelSpecification.size.max}
-                min={labelSpecification.size.min}
-                onChange={(e) =>
-                  setLabelSpecification({
-                    ...labelSpecification,
-                    size: { ...labelSpecification.size, max: +e.target.value },
-                  })
-                }
-              />
-            </div>
-          )}
-        </>
-      )}
     </form>
   );
 };

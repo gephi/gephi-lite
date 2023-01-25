@@ -1,9 +1,11 @@
-interface StaticSize<T extends string> {
+interface NoFieldValue<T extends string> {
   type: T;
   field?: undefined;
 }
-export type DataSize = StaticSize<"data">;
-export interface FixedSize extends StaticSize<"fixed"> {
+
+// Sizes management:
+export type DataSize = NoFieldValue<"data">;
+export interface FixedSize extends NoFieldValue<"fixed"> {
   value: number;
 }
 export interface RankingSize {
@@ -16,14 +18,11 @@ export interface RankingSize {
 }
 export type Size = DataSize | RankingSize | FixedSize;
 
-interface StaticColor<T extends string> {
-  type: T;
-  field?: undefined;
-}
-export type DataColor = StaticColor<"data">;
-export type SourceNodeColor = StaticColor<"source">;
-export type TargetNodeColor = StaticColor<"target">;
-export interface FixedColor extends StaticColor<"fixed"> {
+// Colors management:
+export type DataColor = NoFieldValue<"data">;
+export type SourceNodeColor = NoFieldValue<"source">;
+export type TargetNodeColor = NoFieldValue<"target">;
+export interface FixedColor extends NoFieldValue<"fixed"> {
   value: string;
 }
 export interface ColorScalePointType {
@@ -46,9 +45,28 @@ export interface PartitionColor {
 export type Color = DataColor | RankingColor | FixedColor | PartitionColor;
 export type EdgeColor = Color | SourceNodeColor | TargetNodeColor;
 
+// Labels management:
+export type NoLabel = NoFieldValue<"none">;
+export type DataLabel = NoFieldValue<"data">;
+export type FixedLabel = NoFieldValue<"fixed"> & { value: string };
+export interface FieldLabel {
+  type: "field";
+  field: string;
+  missingLabel: string | null;
+}
+export type Label = NoLabel | DataLabel | FixedLabel | FieldLabel;
+
+export type FixedLabelSize = NoFieldValue<"fixed"> & { value: number };
+export type ItemLabelSize = NoFieldValue<"item"> & { coef: number; adaptsToZoom: boolean };
+export type LabelSize = FixedLabelSize | ItemLabelSize;
+
 export interface AppearanceState {
   nodesSize: Size;
   edgesSize: Size;
   nodesColor: Color;
   edgesColor: EdgeColor;
+  nodesLabel: Label;
+  edgesLabel: Label;
+  nodesLabelSize: LabelSize;
+  edgesLabelSize: LabelSize;
 }
