@@ -16,7 +16,6 @@ export const UserAvatar: FC<{ className?: string; style?: CSSProperties }> = ({ 
       ) : (
         <FaUser className="default" />
       )}
-      {user && user.name && <span className="invisible">{user.name}</span>}
     </div>
   );
 };

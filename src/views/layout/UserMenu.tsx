@@ -28,13 +28,13 @@ export const UserMenu: FC = () => {
   const { loading: ldExportGexf, downloadAsGexf } = useExportAsGexf();
 
   return (
-    <nav className="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+    <>
       <ul className="nav nav-pills">
         <li className="nav-item dropdown">
           <button className="nav-link dropdown-toggle p-0" title="Open menu">
             <UserAvatar className="user-sm" />
           </button>
-          <ul className="dropdown-menu end-0">
+          <ul className="dropdown-menu">
             {/* Save links */}
             {user && user.provider && (
               <>
@@ -182,6 +182,6 @@ export const UserMenu: FC = () => {
         </li>
       </ul>
       {(loading || ldExportGexf) && <Loader />}
-    </nav>
+    </>
   );
 };

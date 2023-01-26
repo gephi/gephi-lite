@@ -11,7 +11,7 @@ export const Header: FC = () => {
           Gephi-lite
         </Link>
 
-        <div className="d-flex flex-grow-1 align-items-center">
+        <div className="d-flex flex-grow-1 align-items-center justify-content-end">
           <UserMenu />
         </div>
       </div>

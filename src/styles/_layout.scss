@@ -6,8 +6,11 @@
   header {
     flex-shrink: 0;
 
-    nav {
+    ul.nav {
       li.dropdown {
+        ul.dropdown-menu {
+          inset: 40px 0px auto auto;
+        }
         &:hover {
           ul.dropdown-menu {
             display: block;
