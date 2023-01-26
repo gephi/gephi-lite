@@ -58,7 +58,6 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
               count: Object.values(attributeNames).length,
             }) as string,
             title: t("statistics.title") as string,
-
           });
           onClose();
         } catch (e) {

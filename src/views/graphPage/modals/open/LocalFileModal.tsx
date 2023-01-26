@@ -2,11 +2,9 @@ import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import { omit } from "lodash";
 
 import { ModalProps } from "../../../../core/modals/types";
 import { useOpenGexf } from "../../../../core/graph/useOpenGexf";
-import { LocalFile } from "../../../../core/graph/types";
 import { useNotifications } from "../../../../core/notifications";
 import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
