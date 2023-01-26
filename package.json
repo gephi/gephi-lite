@@ -28,6 +28,7 @@
     "copy-to-clipboard": "^3.3.2",
     "graphology": "^0.24.1",
     "graphology-gexf": "^0.10.3",
+    "graphology-metrics": "^2.1.0",
     "graphology-operators": "^1.6.0",
     "http-proxy-middleware": "^2.0.6",
     "i18next": "^22.4.9",

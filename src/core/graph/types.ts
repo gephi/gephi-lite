@@ -59,6 +59,7 @@ export interface FieldModel<T extends ItemType = ItemType> {
  */
 export type DatalessGraph = MultiGraph<{}, {}>;
 export type SigmaGraph = MultiGraph<NodeRenderingData, EdgeRenderingData>;
+export type DataGraph = MultiGraph<Record<string, ItemData>, Record<string, ItemData>>;
 
 /**
  * States:
