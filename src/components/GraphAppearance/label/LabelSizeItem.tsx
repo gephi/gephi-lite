@@ -33,15 +33,18 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <>
-      <label htmlFor="sizeMethod">{t("appearance.labels.size_labels_from")}</label>
+      <label className="mt-2" htmlFor={`${itemType}-labelSizesMode`}>
+        {t("appearance.labels.set_labels_size_from")}
+      </label>
       <Select
+        id={`${itemType}-labelSizesMode`}
         options={labelSizeOptions}
         value={selectedOption}
         onChange={(option) => {
           if (!option || option.value === "fixed") {
             setLabelSizeAppearance(itemType, {
               type: "fixed",
-              value: baseItemSize,
+              value: baseLabelSize,
             });
           } else {
             setLabelSizeAppearance(itemType, {
@@ -52,33 +55,36 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           }
         }}
       />
+
       {labelSizeDef.type === "fixed" && (
-        <input
-          type="number"
-          value={labelSizeDef.value}
-          onChange={(e) =>
-            setLabelSizeAppearance(itemType, {
-              ...labelSizeDef,
-              type: "fixed",
-              value: +e.target.value,
-            })
-          }
-        />
+        <div className="d-flex align-items-center mt-1">
+          <input
+            className="form-control form-control-sm w-5"
+            type="number"
+            value={labelSizeDef.value}
+            min={0}
+            onChange={(v) => setLabelSizeAppearance(itemType, { ...labelSizeDef, value: +v.target.value })}
+            id={`${itemType}-fixedLabelSizeValue`}
+          />
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedLabelSizeValue`}>
+            {t("appearance.labels.fixed_label_size", { items: t(`graph.model.${itemType}`) })}
+          </label>
+        </div>
       )}
       {labelSizeDef.type === "item" && (
         <>
-          <div>
+          <div className="d-flex align-items-center mt-1">
             <input
+              className="form-control form-control-sm w-5"
               type="number"
               value={labelSizeDef.coef}
-              onChange={(e) =>
-                setLabelSizeAppearance(itemType, {
-                  ...labelSizeDef,
-                  type: "item",
-                  coef: +e.target.value,
-                })
-              }
+              min={0}
+              onChange={(v) => setLabelSizeAppearance(itemType, { ...labelSizeDef, coef: +v.target.value })}
+              id={`${itemType}-fixedLabelSizeValue`}
             />
+            <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedLabelSizeValue`}>
+              {t("appearance.labels.size_coef")}
+            </label>
           </div>
           <div className="mb-3 form-check">
             <input
@@ -95,7 +101,7 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
               }
             />
             <label className="form-check-label" htmlFor={`${itemType}-labelsSize-adaptsToZoom`}>
-              Adapts sizes to zoom
+              {t("appearance.labels.adapts_to_zoom")}
             </label>
           </div>
         </>

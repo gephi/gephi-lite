@@ -66,8 +66,9 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   return (
     <>
       <h3 className="fs-5 mt-3">{t("appearance.color.title")}</h3>
-      <label htmlFor="colorMode">{t("appearance.color.set_color_from")}</label>
+      <label htmlFor={`${itemType}-colorMode`}>{t("appearance.color.set_color_from")}</label>
       <Select<ColorOption>
+        id={`${itemType}-colorMode`}
         options={options}
         value={selectedOption}
         onChange={(option) => {

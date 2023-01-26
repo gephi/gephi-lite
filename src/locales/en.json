@@ -71,9 +71,20 @@
     },
     "labels": {
       "title": "Labels",
-      "size_labels_from": "Set label from...",
-      "fixed_size": "fixed size",
-      "size": "{{items}} size"
+      "set_labels_from": "Set label from...",
+      "set_labels_size_from": "Set label sizes from...",
+      "data": "Input data",
+      "fixed": "A constant text",
+      "fixed_label": "Label for every {{items}}",
+      "fixed_label_size": "Label size for every {{items}}",
+      "none": "No label",
+      "fixed_size": "Fixed size",
+      "size": "{{items}} size",
+      "default_value": "Label for {{items}} with no valid value",
+      "size_coef": "Labels sizes (higher makes labels appear bigger)",
+      "adapts_to_zoom": "Adapts sizes to zoom",
+      "data_description": "All {{items}} labels are as they are in the input data file.",
+      "none_description": "All {{items}} have no displayed label."
     },
     "size": {
       "title": "Size",

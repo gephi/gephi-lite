@@ -45,8 +45,9 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   return (
     <>
       <h3 className="fs-5 mt-3">{t("appearance.size.title")}</h3>
-      <label htmlFor="sizeMode">{t("appearance.size.set_size_from")}</label>
+      <label htmlFor={`${itemType}-sizeMode`}>{t("appearance.size.set_size_from")}</label>
       <Select<SizeOption>
+        id={`${itemType}-sizeMode`}
         options={options}
         value={selectedOption}
         onChange={(option) => {
