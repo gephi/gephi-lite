@@ -12,9 +12,9 @@ export const ColorFixedEditor: FC<{
   const id = `${itemType}-fixedColorInput`;
 
   return (
-    <div className="form-check mt-1">
+    <div className="d-flex align-items-center mt-1">
       <input
-        className="form-check-input"
+        className="form-control form-control-sm form-control-color d-inline-block"
         type="color"
         value={color.value}
         onChange={(v) => setColor({ ...color, value: v.target.value })}

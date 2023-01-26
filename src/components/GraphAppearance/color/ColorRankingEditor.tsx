@@ -1,29 +1,14 @@
 import { FC } from "react";
+import chroma from "chroma-js";
 import { useTranslation } from "react-i18next";
 import { ItemType } from "../../../core/types";
-import { ColorScalePointType, RankingColor } from "../../../core/appearance/types";
-import { TransformationMethodsSelect } from "../TransformationMethodSelect";
-import chroma from "chroma-js";
-
-const ColorScalePoint: FC<ColorScalePointType & { setColor: (color: string) => void }> = ({
-  scalePoint,
-  color,
-  setColor,
-}) => {
-  //TODO: make a proper colro scale component which allow to add/move intermediary points
-  return (
-    <div className="d-flex flex-column align-items-center">
-      <label htmlFor={`${scalePoint}-color`}>{scalePoint}</label>
-      <input id={`${scalePoint}-color`} type="color" value={color} onChange={(e) => setColor(e.target.value)} />
-    </div>
-  );
-};
+import { RankingColor } from "../../../core/appearance/types";
 
 export const ColorRankingEditor: FC<{
   itemType: ItemType;
   color: RankingColor;
   setColor: (newColor: RankingColor) => void;
-}> = ({ color, setColor }) => {
+}> = ({ itemType, color, setColor }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -73,6 +58,19 @@ export const ColorRankingEditor: FC<{
         >
           + {t("button.add")}
         </button>
+
+        <div className="d-flex align-items-center mt-1">
+          <input
+            className="form-control form-control-sm form-control-color d-inline-block flex-grow-0 flex-shrink-0"
+            type="color"
+            value={color.missingColor}
+            onChange={(v) => setColor({ ...color, missingColor: v.target.value })}
+            id={`${itemType}-defaultColor`}
+          />
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-defaultColor`}>
+            {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}
+          </label>
+        </div>
       </div>
       {/*<div>*/}
       {/*  TODO:*/}

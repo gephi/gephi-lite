@@ -70,6 +70,19 @@ export const ColorPartitionEditor: FC<{
           );
         })}
 
+        <div className="d-flex align-items-center mt-1">
+          <input
+            className="form-control form-control-sm form-control-color d-inline-block flex-grow-0 flex-shrink-0"
+            type="color"
+            value={color.missingColor}
+            onChange={(v) => setColor({ ...color, missingColor: v.target.value })}
+            id={`${itemType}-defaultColor`}
+          />
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-defaultColor`}>
+            {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}
+          </label>
+        </div>
+
         <div className="pb-5" />
 
         {!expanded && <div className="filler-fade-out position-absolute bottom-0" />}

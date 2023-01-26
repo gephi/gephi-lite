@@ -85,7 +85,7 @@ export function getReducer<
           max = Math.max(max, value);
         }
       });
-      const delta = max - min;
+      const delta = max - min || 1;
       // TODO: Handle irregular domains
       const colorScale = chroma.scale(colorsDef.colorScalePoints.map((point) => point.color));
       getColor = (_itemId: string, data: ItemData) => {
@@ -129,7 +129,8 @@ export function getReducer<
           max = Math.max(max, value);
         }
       });
-      const ratio = (sizesDef.maxSize - sizesDef.minSize) / (max - min);
+      const delta = max - min || 1;
+      const ratio = (sizesDef.maxSize - sizesDef.minSize) / delta;
       getSize = (_itemId: string, data: ItemData) => {
         const value = toNumber(data[sizesDef.field]);
         if (typeof value === "number") {

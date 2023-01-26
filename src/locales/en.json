@@ -60,11 +60,12 @@
       "title": "Color",
       "set_color_from": "Set color from...",
       "data": "Input data",
-      "fixed": "A fixed color",
+      "fixed": "A constant color",
       "source": "Source nodes",
       "target": "Source nodes",
       "quanti": "as numbers",
       "quali": "as strings",
+      "default_value": "Color for {{items}} with no valid value",
       "color_all_items": "Color for all {{items}}",
       "data_description": "All {{items}} colors are as they are in the input data file."
     },
@@ -77,8 +78,11 @@
     "size": {
       "title": "Size",
       "set_size_from": "Set size from...",
-      "min": "Min",
-      "max": "Max"
+      "data": "Input data",
+      "fixed": "A constant size",
+      "default_value": "Size for {{items}} with no valid value",
+      "size_all_items": "Size for all {{items}}",
+      "data_description": "All {{items}} sizes are as they are in the input data file."
     }
   },
   "filters": {
@@ -173,6 +177,8 @@
     "updated": "Updated",
     "size": "Size",
     "load-more": "Load more",
-    "save": "Save"
+    "save": "Save",
+    "min": "Min",
+    "max": "Max"
   }
 }
