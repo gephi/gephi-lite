@@ -30,17 +30,19 @@ export const ColorRankingEditor: FC<{
                   })
                 }
               />
-              <button
-                className="btn btn-outline-dark btn-sm ms-2"
-                onClick={() =>
-                  setColor({
-                    ...color,
-                    colorScalePoints: color.colorScalePoints.filter((ssc, i) => i !== index) || [],
-                  })
-                }
-              >
-                - {t("common.delete")}
-              </button>
+              {color.colorScalePoints.length > 1 && (
+                <button
+                  className="btn btn-outline-dark btn-sm ms-2"
+                  onClick={() =>
+                    setColor({
+                      ...color,
+                      colorScalePoints: color.colorScalePoints.filter((ssc, i) => i !== index) || [],
+                    })
+                  }
+                >
+                  - {t("common.delete")}
+                </button>
+              )}
             </div>
           );
         })}

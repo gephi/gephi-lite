@@ -4,11 +4,56 @@ import { disparity, simmelianStrength } from "graphology-metrics/edge";
 
 import { Metric } from "./types";
 import { DataGraph, EdgeRenderingData } from "../graph/types";
+import louvain from "graphology-communities-louvain";
 
 export const NODE_METRICS: Metric<"nodes", any, any>[] = [
   {
+    id: "louvain",
+    description: true,
+    types: { modularityClass: "number" },
+    itemType: "nodes",
+    parameters: [
+      {
+        id: "getEdgeWeight",
+        type: "attribute",
+        itemType: "edges",
+        restriction: "quantitative",
+        description: true,
+      },
+      {
+        id: "fastLocalMoves",
+        type: "boolean",
+        defaultValue: true,
+        description: true,
+      },
+      {
+        id: "randomWalk",
+        type: "boolean",
+        defaultValue: true,
+        description: true,
+      },
+      {
+        id: "resolution",
+        type: "number",
+        defaultValue: 1,
+        description: true,
+      },
+    ],
+    fn(
+      parameters: {
+        getEdgeWeight?: keyof EdgeRenderingData;
+        fastLocalMoves?: boolean;
+        randomWalk?: boolean;
+        resolution?: number;
+      },
+      graph: DataGraph,
+    ) {
+      return { modularityClass: louvain(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
+    },
+  },
+  {
     id: "pagerank",
-    types: { score: "number" },
+    types: { pagerank: "number" },
     itemType: "nodes",
     parameters: [
       {
@@ -34,7 +79,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         defaultValue: 1e-6,
       },
     ],
-    metric(
+    fn(
       parameters: {
         getEdgeWeight?: keyof EdgeRenderingData;
         alpha?: number;
@@ -43,12 +88,12 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
       },
       graph: DataGraph,
     ) {
-      return { score: pagerank(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
+      return { pagerank: pagerank(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
     },
   },
   {
     id: "betweennessCentrality",
-    types: { score: "number" },
+    types: { betweennessCentrality: "number" },
     itemType: "nodes",
     parameters: [
       {
@@ -63,7 +108,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         defaultValue: true,
       },
     ],
-    metric(
+    fn(
       parameters: {
         getEdgeWeight?: keyof EdgeRenderingData;
         normalize?: boolean;
@@ -71,7 +116,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
       graph: DataGraph,
     ) {
       return {
-        score: betweennessCentrality(graph, {
+        betweennessCentrality: betweennessCentrality(graph, {
           ...parameters,
           getEdgeWeight: parameters.getEdgeWeight || null,
           normalized: parameters.normalize,
@@ -106,7 +151,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         defaultValue: true,
       },
     ],
-    metric(
+    fn(
       parameters: {
         getEdgeWeight?: keyof EdgeRenderingData;
         maxIterations?: number;
@@ -123,7 +168,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
 export const EDGE_METRICS: Metric<"edges", any, any>[] = [
   {
     id: "disparity",
-    types: { score: "number" },
+    types: { disparity: "number" },
     itemType: "edges",
     parameters: [
       {
@@ -133,22 +178,22 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
         restriction: "quantitative",
       },
     ],
-    metric(
+    fn(
       parameters: {
         getEdgeWeight?: keyof EdgeRenderingData;
       },
       graph: DataGraph,
     ) {
-      return { score: disparity(graph, parameters) };
+      return { disparity: disparity(graph, parameters) };
     },
   },
   {
     id: "simmelianStrength",
-    types: { score: "number" },
+    types: { simmelianStrength: "number" },
     itemType: "edges",
     parameters: [],
-    metric(parameters: {}, graph: DataGraph) {
-      return { score: simmelianStrength(graph) };
+    fn(parameters: {}, graph: DataGraph) {
+      return { simmelianStrength: simmelianStrength(graph) };
     },
   },
 ];

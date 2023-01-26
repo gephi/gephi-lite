@@ -1,5 +1,5 @@
-import { capitalize, map, mapValues } from "lodash";
-import { FC, InputHTMLAttributes, useMemo, useState } from "react";
+import { capitalize, keyBy, map, mapValues } from "lodash";
+import { FC, Fragment, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
 
@@ -9,8 +9,9 @@ import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Metric } from "../../core/metrics/types";
 import { useNotifications } from "../../core/notifications";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
-import { useGraphDataset } from "../../core/context/dataContexts";
+import { useGraphDataset, useGraphDatasetActions, useSigmaGraph } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
+import { computeMetric } from "../../core/metrics";
 
 type MetricOption = {
   value: string;
@@ -19,13 +20,13 @@ type MetricOption = {
   metric: Metric<any, any, any>;
 };
 
-export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => void; onCancel: () => void }> = ({
-  metric,
-  onSuccess,
-  onCancel,
-}) => {
+export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void }> = ({ metric, onClose }) => {
   const { t } = useTranslation();
-  const { nodeFields, edgeFields } = useGraphDataset();
+  const { notify } = useNotifications();
+  const sigmaGraph = useSigmaGraph();
+  const dataset = useGraphDataset();
+  const { nodeFields, edgeFields } = dataset;
+  const { setGraphDataset } = useGraphDatasetActions();
   const [paramsState, setParamsState] = useState<Record<string, unknown>>(
     metric.parameters.reduce(
       (iter, param) => ({
@@ -35,6 +36,8 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
       {},
     ),
   );
+
+  const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
   const [attributeNames, setAttributeNames] = useState<Record<string, string>>(
     mapValues(metric.types, (type, value) => value),
   );
@@ -43,10 +46,29 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        // TODO:
-        // Compute metric
 
-        onSuccess();
+        try {
+          const res = computeMetric(metric, paramsState, attributeNames, sigmaGraph, dataset);
+          setGraphDataset(res.dataset);
+          notify({
+            type: "success",
+            message: t("statistics.success", {
+              items: metric.itemType,
+              metrics: Object.values(attributeNames).join(", "),
+              count: Object.values(attributeNames).length,
+            }) as string,
+            title: t("statistics.title") as string,
+
+          });
+          onClose();
+        } catch (e) {
+          const message = e instanceof Error ? e.message : "unknown error";
+          notify({
+            type: "error",
+            message,
+            title: t("statistics.title") as string,
+          });
+        }
       }}
     >
       <h3 className="fs-5 mt-3">{t(`statistics.${metric.itemType}.${metric.id}.title`)}</h3>
@@ -56,13 +78,20 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
 
       <div className="my-3">
         {map(metric.types, (_type, value) => (
-          <StringInput
-            key={value}
-            id={`statistics-${metric.itemType}-${metric.id}-params-${value}`}
-            label={t(`statistics.${metric.itemType}.${metric.id}.attributes.${value}`) as string}
-            value={attributeNames[value]}
-            onChange={(v) => setAttributeNames((s) => ({ ...s, [value]: v }))}
-          />
+          <Fragment key={value}>
+            <StringInput
+              required
+              id={`statistics-${metric.itemType}-${metric.id}-params-${value}`}
+              label={t(`statistics.${metric.itemType}.${metric.id}.attributes.${value}`) as string}
+              value={attributeNames[value]}
+              onChange={(v) => setAttributeNames((s) => ({ ...s, [value]: v }))}
+            />
+            {!!fieldsIndex[attributeNames[value]] && (
+              <div className="small text-primary">
+                {t(`statistics.${metric.itemType}_attribute_already_exists`, { field: attributeNames[value] })}
+              </div>
+            )}
+          </Fragment>
         ))}
       </div>
 
@@ -74,6 +103,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
               <NumberInput
                 id={id}
                 label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                required={param.required}
                 description={
                   param.description
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
@@ -87,6 +117,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
               <BooleanInput
                 id={id}
                 label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                required={param.required}
                 description={
                   param.description
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
@@ -100,6 +131,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
               <EnumInput
                 id={id}
                 label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                required={param.required}
                 description={
                   param.description
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
@@ -117,6 +149,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
               <EnumInput
                 id={id}
                 label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                required={param.required}
                 description={
                   param.description
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
@@ -138,11 +171,11 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onSuccess: () => vo
       })}
 
       <div className="text-end mt-2">
-        <button type="button" className="btn btn-secondary ms-2" onClick={() => onCancel()}>
+        <button type="button" className="btn btn-outline-secondary ms-2" onClick={() => onClose()}>
           {t("common.cancel")}
         </button>
         <button type="submit" className="btn btn-primary ms-2">
-          {t("common.submit")}
+          {t("statistics.compute", { count: Object.keys(attributeNames).length })}
         </button>
       </div>
     </form>
@@ -195,14 +228,7 @@ export const StatisticsPanel: FC = () => {
       {option?.metric && (
         <>
           <hr />
-          <MetricForm
-            metric={option.metric}
-            onSuccess={() => {
-              notify({ type: "success", message: "SUCCESS TODO", title: t("statistics.title") as string });
-              setOption(null);
-            }}
-            onCancel={() => setOption(null)}
-          />
+          <MetricForm key={option.metric.id} metric={option.metric} onClose={() => setOption(null)} />
         </>
       )}
     </div>

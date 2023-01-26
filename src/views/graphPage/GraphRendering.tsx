@@ -1,14 +1,21 @@
+import Sigma from "sigma";
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { SigmaContainer, useSigma, ControlsContainer, ZoomControl, FullScreenControl } from "@react-sigma/core";
 
 import { useAppearance, useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
 import { getDrawEdgeLabel, getDrawHover, getDrawLabel, getReducer } from "../../core/appearance/utils";
+import { sigmaAtom } from "../../core/graph";
+import { SigmaGraph } from "../../core/graph/types";
 
 const SettingsController: FC = () => {
   const sigma = useSigma();
   const graphDataset = useGraphDataset();
   const graphAppearance = useAppearance();
+
+  useEffect(() => {
+    sigmaAtom.set(sigma as Sigma<SigmaGraph>);
+  }, [sigma]);
 
   useEffect(() => {
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");

@@ -26,11 +26,11 @@
     },
     "download": {
       "gexf": "Download as GEXF",
-      "gexf-error": "An error occured while generating GEXF file"
+      "gexf-error": "An error occurred while generating GEXF file"
     }
   },
   "auth": {
-    "unauth_success": "Unauthentication successfull",
+    "unauth_success": "Unauthentication successful",
     "sign_out": "Sign-out",
     "sign_in": "Sign-in"
   },
@@ -143,13 +143,13 @@
         "title": "Open a local file",
         "dragndrop_text": "Drag'n'drop a GEXF file",
         "success": "File {{filename}} has been successfully loaded",
-        "error": "An error occured while opening the file. Please check that the file is a valid GEXF."
+        "error": "An error occurred while opening the file. Please check that the file is a valid GEXF."
       },
       "remote": {
         "title": "Open an url",
         "url-field": "Url of the GEXF file",
         "success": "File {{filename}} has been successfully loaded",
-        "error": "An error occured while opening the file. Please check your connectivity and that the file is a valid GEXF."
+        "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid GEXF."
       },
       "cloud": {
         "title": "Open a file from {{provider}}",
@@ -157,7 +157,7 @@
         "file-open-external": "Open {{filename}} on {{provider}}",
         "select-file": "Select a file",
         "success": "File {{filename}} has been successfully loaded",
-        "error": "A technical error occured. Please check your connectivity or try later."
+        "error": "A technical error occurred. Please check your connectivity or try later."
       }
     },
     "save": {
@@ -169,20 +169,51 @@
           "isPublic": "Create a public gist"
         },
         "success": "File {{filename}} has been successfully saved",
-        "error": "An error occured while saving your graph. Please check your connectivity or try later."
+        "error": "An error occurred while saving your graph. Please check your connectivity or try later."
       }
     }
   },
   "statistics": {
     "title": "Statistics",
+    "compute_one": "Compute metric",
+    "compute": "Compute metrics",
+    "success_one": "The {{items}} metric {{metrics}} has been added to the data. It is now available in other panels.",
+    "success": "The {{items}} metrics {{metrics}} have been added to the data. They are now available in other panels.",
     "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
     "placeholder": "Select an algorithm",
     "attributes_placeholder": "None",
+    "nodes_attribute_already_exists": "A node attribute named \"{{field}}\" already exists. Its values will be overridden.",
+    "edges_attribute_already_exists": "An edge attribute named \"{{field}}\" already exists. Its values will be overridden.",
     "nodes": {
+      "louvain": {
+        "title": "Louvain community detection",
+        "description": "This algorithm aims at splitting the nodes as densely connected groups.",
+        "attributes": {
+          "modularityClass": "Modularity class attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute",
+            "description": "An edge attribute that would represent edge weights."
+          },
+          "fastLocalMoves": {
+            "title": "Fast local moves",
+            "description": "Whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently."
+          },
+          "randomWalk": {
+            "title": "Random walk",
+            "description": "Whether to traverse the graph randomly."
+          },
+          "resolution": {
+            "title": "Resolution",
+            "description": "An increased resolution should produce more communities."
+          }
+        }
+      },
       "pagerank": {
         "title": "PageRank",
         "attributes": {
-          "score": "PageRank attribute name"
+          "pagerank": "PageRank attribute name"
         },
         "parameters": {
           "getEdgeWeight": {
@@ -202,7 +233,7 @@
       "betweennessCentrality": {
         "title": "Betweenness centrality",
         "attributes": {
-          "score": "Betweenness centrality attribute name"
+          "betweennessCentrality": "Betweenness centrality attribute name"
         },
         "parameters": {
           "getEdgeWeight": {
@@ -239,7 +270,7 @@
       "disparity": {
         "title": "Disparity",
         "attributes": {
-          "score": "Disparity attribute name"
+          "disparity": "Disparity attribute name"
         },
         "parameters": {
           "getEdgeWeight": {
@@ -250,7 +281,7 @@
       "simmelianStrength": {
         "title": "Simmelian strength",
         "attributes": {
-          "score": "Simmelian strength attribute name"
+          "simmelianStrength": "Simmelian strength attribute name"
         }
       }
     }

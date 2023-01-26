@@ -1,10 +1,13 @@
 import { forEach, isNumber, mapValues, omit, sortBy, take, uniq } from "lodash";
 import Graph, { MultiGraph } from "graphology";
+import Sigma from "sigma";
 
 import {
+  DataGraph,
   DatalessGraph,
   EdgeRenderingData,
   FieldModel,
+  FullGraph,
   GraphDataset,
   ItemData,
   NodeRenderingData,
@@ -68,7 +71,7 @@ export function guessSeparator(values: string[]): string | null {
 export function inferFieldType<T extends ItemType = ItemType>(
   model: Omit<FieldModel<T>, "quantitative" | "qualitative">,
   values: Scalar[],
-  nodesCount: number,
+  itemsCount: number,
 ): FieldModel<T> {
   const res: FieldModel<T> = {
     ...model,
@@ -82,7 +85,7 @@ export function inferFieldType<T extends ItemType = ItemType>(
 
   const uniqValues = uniq(values);
   const uniqValuesCount = uniqValues.length;
-  if (uniqValuesCount > 1 && uniqValuesCount < 50 && uniqValuesCount < Math.max(Math.pow(nodesCount, 0.75), 5)) {
+  if (uniqValuesCount > 1 && uniqValuesCount < 50 && uniqValuesCount < Math.max(Math.pow(itemsCount, 0.75), 5)) {
     const separator = guessSeparator(
       take(
         uniqValues.map((v) => "" + v),
@@ -189,4 +192,56 @@ export function dataGraphToSigmaGraph(
     sigmaGraph.addEdgeWithKey(edge, source, target, edgeRenderingData[edge]),
   );
   return sigmaGraph;
+}
+
+/**
+ * This function takes a full GraphDataset and a filtered SigmaGraph, and
+ * returns a filtered DataGraph (with only the filtered nodes and edges, but
+ * each item has all its data attributes):
+ */
+export function getFilteredDataGraph({ nodeData, edgeData }: GraphDataset, graph: SigmaGraph): DataGraph {
+  const res = new MultiGraph<ItemData, ItemData>();
+
+  graph.forEachNode((node) => {
+    res.addNode(node, nodeData[node] || {});
+  });
+  graph.forEachEdge((edge, _, source, target) => {
+    res.addEdgeWithKey(edge, source, target, edgeData[edge] || {});
+  });
+
+  return res;
+}
+
+/**
+ * This function takes a full GraphDataset and a filtered SigmaGraph, and
+ * returns a filtered DataGraph (with only the filtered nodes and edges, but
+ * each item has all its data attributes AND its visible attributes, mapped
+ * using the proper reducers):
+ */
+export function getFullVisibleGraph(
+  { nodeData, edgeData, metadata }: GraphDataset,
+  sigma: Sigma<SigmaGraph>,
+): FullGraph {
+  const res = new MultiGraph<ItemData & NodeRenderingData, ItemData & EdgeRenderingData>();
+  const graph = sigma.getGraph();
+  const nodeReducer = sigma.getSetting("nodeReducer");
+  const edgeReducer = sigma.getSetting("edgeReducer");
+
+  console.log(graph.order, graph.size);
+
+  res.updateAttributes((attr) => ({
+    ...attr,
+    ...metadata,
+  }));
+
+  graph.forEachNode((node, attributes) => {
+    const reducedAttributes = nodeReducer ? (nodeReducer(node, attributes) as NodeRenderingData) : attributes;
+    res.addNode(node, { ...(nodeData[node] || {}), ...reducedAttributes });
+  });
+  graph.forEachEdge((edge, attributes, source, target) => {
+    const reducedAttributes = edgeReducer ? (edgeReducer(edge, attributes) as EdgeRenderingData) : attributes;
+    res.addEdgeWithKey(edge, source, target, { ...(edgeData[edge] || {}), ...reducedAttributes });
+  });
+
+  return res;
 }

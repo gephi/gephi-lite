@@ -1,4 +1,5 @@
 import { omit } from "lodash";
+import Sigma from "sigma";
 
 import { atom } from "../utils/atoms";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
@@ -11,6 +12,9 @@ import { datasetToFilteredSigmaGraph } from "../filters/utils";
  * Producers:
  * **********
  */
+const setGraphDataset: Producer<GraphDataset, [GraphDataset]> = (dataset) => {
+  return () => dataset;
+};
 const setGraphMeta: Producer<GraphDataset, [GraphDataset["metadata"]]> = (metadata) => {
   return (state) => ({
     ...state,
@@ -38,11 +42,15 @@ const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
  */
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
 export const sigmaGraphAtom = atom<SigmaGraph>(dataGraphToSigmaGraph(graphDatasetAtom.get()));
+export const sigmaAtom = atom<Sigma<SigmaGraph>>(
+  new Sigma(sigmaGraphAtom.get(), document.createElement("div"), { allowInvalidContainer: true }),
+);
 
 export const graphDatasetActions = {
   setGraphMeta: producerToAction(setGraphMeta, graphDatasetAtom),
   editGraphMeta: producerToAction(editGraphMeta, graphDatasetAtom),
   setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
+  setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
 };
 
 /**

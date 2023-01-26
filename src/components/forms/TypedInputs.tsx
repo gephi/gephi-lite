@@ -87,8 +87,9 @@ export const EnumInput: FC<
     onChange: (v: string | null) => void;
     className?: string;
     placeholder?: string;
+    required?: boolean;
   } & BaseTypedInputProps
-> = ({ id, label, description, value, options, onChange, className, placeholder }) => {
+> = ({ id, label, description, required, value, options, onChange, className, placeholder }) => {
   const option = options.find((o) => o.value === value);
 
   return (

@@ -55,5 +55,12 @@ export interface Metric<
   itemType: Items;
   parameters: MetricParameter[];
   description?: boolean;
-  metric: (parameters: Record<string, unknown>, sigma: DataGraph) => { [Key in keyof Types]: Types[Key]["type"] };
+  fn: (
+    parameters: Record<string, unknown>,
+    sigma: DataGraph,
+  ) => { [Key in keyof Types]: Record<string, Types[Key]["type"]> };
+}
+
+export interface MetricReport {
+  // TODO
 }
