@@ -9,10 +9,10 @@ import { GraphDataPanel } from "./GraphDataPanel";
 import { StatisticsPanel } from "./StatisticsPanel";
 import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
-import { LayoutPanel } from "./LayoutPanel";
+import { LayoutsPanel } from "./LayoutsPanel";
 import { GraphRendering } from "./GraphRendering";
 import { isEqual } from "lodash";
-import { AppearanceIcon, FiltersIcon, GraphIcon, LayoutIcon, StatisticsIcon } from "../../components/common-icons";
+import { AppearanceIcon, FiltersIcon, GraphIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
@@ -32,7 +32,7 @@ export const GraphPage: FC = () => {
       { type: "space" },
       { type: "tool", label: t("appearance.title"), icon: AppearanceIcon, panel: AppearancePanel },
       { type: "tool", label: t("filters.title"), icon: FiltersIcon, panel: FiltersPanel },
-      { type: "tool", label: t("layout.title"), icon: LayoutIcon, panel: LayoutPanel },
+      { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
     ],
     [t],
   );

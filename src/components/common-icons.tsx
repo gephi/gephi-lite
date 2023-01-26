@@ -7,7 +7,7 @@ export const GraphIcon = ImDatabase;
 export const StatisticsIcon = ImStatsDots;
 export const AppearanceIcon = FaPaintBrush;
 export const FiltersIcon = FaFilter;
-export const LayoutIcon = BiNetworkChart;
+export const LayoutsIcon = BiNetworkChart;
 
 export const NodeIcon = BsCircle;
 export const EdgeIcon = BsSlashLg;

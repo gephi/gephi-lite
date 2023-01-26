@@ -286,8 +286,109 @@
       }
     }
   },
-  "layout": {
-    "title": "Layout"
+  "layouts": {
+    "title": "Layouts",
+    "description": "This panel allows computing new coordintaes to nodes of the graph. ",
+    "placeholder": "Select a layout algorithm",
+
+    "random": {
+      "title": "Random",
+      "description": "Random layout positioning every node by choosing each coordinates uniformly at random on the interval [0, 1)"
+    },
+    "circular": {
+      "title": "Circular",
+      "description": "Arranges the node in a circle"
+    },
+    "circlePack": {
+      "title": "CirclePack",
+      "description": "Arranges the nodes as a bubble chart, according to specified attributes"
+    },
+    "fa2": {
+      "title": "ForceAtlas2",
+      "parameters": {
+        "adjustSizes": {
+          "title": "Adjust sizes?",
+          "description": "Should the node’s sizes be taken into account?"
+        },
+        "barnesHutOptimize": {
+          "title": "barnesHutOptimize",
+          "description": "Whether to use the Barnes-Hut approximation to compute repulsion in O(n*log(n)) rather than default O(n^2), n being the number of nodes"
+        },
+        "barnesHutTheta": {
+          "title": "barnesHutTheta",
+          "description": "Barnes-Hut approximation theta parameter"
+        },
+        "edgeWeightInfluence": {
+          "title": "Edge weight influence",
+          "description": "Influence of the edge’s weights on the layout"
+        },
+        "gravity": {
+          "title": "Gravity",
+          "description": "Strength of the layout’s gravity"
+        },
+        "linLogMode": {
+          "title": "linLog mode",
+          "description": "Whether to use Noack’s LinLog model."
+        },
+        "outboundAttractionDistribution": {
+          "title": "Out bound attraction distribution"
+        },
+        "scalingRatio": {
+          "title": "Scaling ratio"
+        },
+        "slowDown": {
+          "title": "Slow down?"
+        },
+        "strongGravityMode": {
+          "title": "Strong gravity mode?"
+        }
+      }
+    },
+    "force": {
+      "title": "Force directed",
+      "parameters": {
+        "attraction": {
+          "title": "Attraction",
+          "description": "Importance of the attraction force, that attracts each pair of connected nodes like elastics"
+        },
+        "repulsion": {
+          "title": "Repulsion",
+          "description": "Importance of the repulsion force, that attracts each pair of nodes like magnets"
+        },
+        "gravity": {
+          "title": "Gravity",
+          "description": "Importance of the gravity force, that attracts all nodes to the center"
+        },
+        "inertia": {
+          "title": "Inertia",
+          "description": "Percentage of a node vector displacement that is preserved at each step. 0 means no inertia, 1 means no friction"
+        },
+        "maxMove": {
+          "title": "Maximum move",
+          "description": "Maximum length a node can travel at each step, in pixel"
+        }
+      }
+    },
+    "noverlap": {
+      "title": "Noverlap",
+      "description": "Anti-collision layout algorithm",
+      "parameters": {
+        "gridSize": {
+          "title": "Grid size",
+          "description": "Number of grid cells horizontally and vertically subdivising the graph’s space. This is used as an optimization scheme. Set it to 1 and you will have O(n²) time complexity, which can sometimes perform better with very few nodes."
+        },
+        "margin": { "title": "Margin", "description": "Margin to keep between nodes" },
+        "expansion": {
+          "title": "Expansion",
+          "description": "Percentage of current space that nodes could attempt to move outside of"
+        },
+        "ratio": { "title": "Ratio", "description": "Ratio scaling node sizes" },
+        "speed": {
+          "title": "Speed",
+          "description": "Dampening factor that will slow down node movements to ease the overall process"
+        }
+      }
+    }
   },
   "common": {
     "add": "Add",
