@@ -60,6 +60,7 @@ export const GraphPage: FC = () => {
             ) : (
               <button
                 key={i}
+                title={t.label}
                 type="button"
                 className={cx("text-center", isEqual(t, tool) && "active")}
                 onClick={() => (t === tool ? setTool(null) : setTool(t))}
