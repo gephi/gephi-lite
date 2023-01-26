@@ -173,7 +173,86 @@
     }
   },
   "statistics": {
-    "title": "Statistics"
+    "title": "Statistics",
+    "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
+    "placeholder": "Select an algorithm",
+    "attributes_placeholder": "None",
+    "nodes": {
+      "pagerank": {
+        "title": "PageRank",
+        "attributes": {
+          "score": "PageRank attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "alpha": {
+            "title": "Alpha"
+          },
+          "maxIterations": {
+            "title": "Max iterations"
+          },
+          "tolerance": {
+            "title": "Tolerance"
+          }
+        }
+      },
+      "betweennessCentrality": {
+        "title": "Betweenness centrality",
+        "attributes": {
+          "score": "Betweenness centrality attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "normalize": {
+            "title": "Normalize output?"
+          }
+        }
+      },
+      "hits": {
+        "title": "HITS",
+        "attributes": {
+          "authorities": "Authority score attribute name",
+          "hubs": "Hub score attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "maxIterations": {
+            "title": "Max iterations"
+          },
+          "normalize": {
+            "title": "Normalize output?"
+          },
+          "tolerance": {
+            "title": "Tolerance"
+          }
+        }
+      }
+    },
+    "edges": {
+      "disparity": {
+        "title": "Disparity",
+        "attributes": {
+          "score": "Disparity attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          }
+        }
+      },
+      "simmelianStrength": {
+        "title": "Simmelian strength",
+        "attributes": {
+          "score": "Simmelian strength attribute name"
+        }
+      }
+    }
   },
   "layout": {
     "title": "Layout"
@@ -181,6 +260,7 @@
   "common": {
     "add": "Add",
     "cancel": "Cancel",
+    "submit": "Submit",
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
@@ -192,6 +272,7 @@
     "loading": "Loading",
     "min": "Min",
     "max": "Max",
+    "none": "None",
     "open": "Open",
     "open_file": "Open {{filename}}",
     "remove": "Remove",

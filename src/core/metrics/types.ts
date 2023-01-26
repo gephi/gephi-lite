@@ -1,37 +1,37 @@
 import { DataGraph } from "../graph/types";
 import { ItemType } from "../types";
 
-export interface MetricBooleanParameter {
+interface BaseMetricParameter {
   id: string;
-  type: "boolean";
+  type: string;
+  description?: boolean;
   required?: boolean;
-  defaultValue?: boolean;
+  defaultValue?: unknown;
 }
 
-export interface MetricNumberParameter {
-  id: string;
+export interface MetricBooleanParameter extends BaseMetricParameter {
+  type: "boolean";
+  defaultValue: boolean;
+}
+
+export interface MetricNumberParameter extends BaseMetricParameter {
   type: "number";
-  required?: boolean;
   min?: number;
   max?: number;
   step?: number;
-  defaultValue?: number;
+  defaultValue: number;
 }
 
-export interface MetricEnumParameter {
-  id: string;
+export interface MetricEnumParameter extends BaseMetricParameter {
   type: "enum";
-  required?: boolean;
   values: { id: string }[];
-  defaultValue?: string;
+  defaultValue: string;
 }
 
-export interface MetricAttributeParameter {
-  id: string;
+export interface MetricAttributeParameter extends BaseMetricParameter {
   type: "attribute";
-  required?: boolean;
   itemType: ItemType;
-  restriction?: "quali" | "quanti";
+  restriction?: "qualitative" | "quantitative";
 }
 
 export type MetricParameter =
@@ -54,5 +54,6 @@ export interface Metric<
   types: { [Key in keyof Types]: Types[Key]["string"] };
   itemType: Items;
   parameters: MetricParameter[];
+  description?: boolean;
   metric: (parameters: Record<string, unknown>, sigma: DataGraph) => { [Key in keyof Types]: Types[Key]["type"] };
 }

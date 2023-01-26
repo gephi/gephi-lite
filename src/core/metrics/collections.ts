@@ -15,6 +15,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         id: "getEdgeWeight",
         type: "attribute",
         itemType: "edges",
+        restriction: "quantitative",
       },
       {
         id: "alpha",
@@ -54,10 +55,10 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         id: "getEdgeWeight",
         type: "attribute",
         itemType: "edges",
-        restriction: "quanti",
+        restriction: "quantitative",
       },
       {
-        id: "normalized",
+        id: "normalize",
         type: "boolean",
         defaultValue: true,
       },
@@ -65,12 +66,16 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
     metric(
       parameters: {
         getEdgeWeight?: keyof EdgeRenderingData;
-        normalized?: boolean;
+        normalize?: boolean;
       },
       graph: DataGraph,
     ) {
       return {
-        score: betweennessCentrality(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }),
+        score: betweennessCentrality(graph, {
+          ...parameters,
+          getEdgeWeight: parameters.getEdgeWeight || null,
+          normalized: parameters.normalize,
+        }),
       };
     },
   },
@@ -83,6 +88,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         id: "getEdgeWeight",
         type: "attribute",
         itemType: "edges",
+        restriction: "quantitative",
       },
       {
         id: "maxIterations",
@@ -90,14 +96,14 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         defaultValue: 100,
       },
       {
-        id: "normalize",
-        type: "boolean",
-        defaultValue: true,
-      },
-      {
         id: "tolerance",
         type: "number",
         defaultValue: 1e-8,
+      },
+      {
+        id: "normalize",
+        type: "boolean",
+        defaultValue: true,
       },
     ],
     metric(
@@ -124,6 +130,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
         id: "getEdgeWeight",
         type: "attribute",
         itemType: "edges",
+        restriction: "quantitative",
       },
     ],
     metric(
