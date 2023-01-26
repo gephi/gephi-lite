@@ -23,6 +23,10 @@
     "save": {
       "default": "Save",
       "cloud": "Save on {{provider}} as ..."
+    },
+    "download": {
+      "gexf": "Download as GEXF",
+      "gexf-error": "An error occured while generating GEXF file"
     }
   },
   "auth": {

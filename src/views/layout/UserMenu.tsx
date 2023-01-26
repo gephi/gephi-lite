@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { MdLogin, MdLogout } from "react-icons/md";
-import { FaRegSave, FaRegFolderOpen } from "react-icons/fa";
+import { FaRegSave, FaRegFolderOpen, FaDownload } from "react-icons/fa";
 import { isNil } from "lodash";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +9,7 @@ import { useConnectedUser } from "../../core/user";
 import { useNotifications } from "../../core/notifications";
 import { useGraphDataset } from "../../core/context/dataContexts";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
+import { useExportAsGexf } from "../../core/graph/useExportAsGexf";
 import { SignInModal } from "../../components/user/SignInModal";
 import { UserAvatar } from "../../components/user/UserAvatar";
 import { Loader } from "../../components/Loader";
@@ -24,6 +25,7 @@ export const UserMenu: FC = () => {
   const { t } = useTranslation("translation");
   const { origin } = useGraphDataset();
   const { loading, saveFile } = useCloudProvider();
+  const { loading: ldExportGexf, downloadAsGexf } = useExportAsGexf();
 
   return (
     <nav className="d-inline-flex mt-2 mt-md-0 ms-md-auto">
@@ -33,6 +35,7 @@ export const UserMenu: FC = () => {
             <UserAvatar className="user-sm" />
           </button>
           <ul className="dropdown-menu end-0">
+            {/* Save links */}
             {user && user.provider && (
               <>
                 {origin && origin.type === "cloud" && (
@@ -74,6 +77,34 @@ export const UserMenu: FC = () => {
                 </li>
               </>
             )}
+
+            {/* Download links */}
+            {origin !== null && (
+              <>
+                <li>
+                  <button
+                    title={t("menu.download.gexf").toString()}
+                    className="dropdown-item"
+                    onClick={async () => {
+                      try {
+                        await downloadAsGexf();
+                      } catch (e) {
+                        console.error(e);
+                        notify({ type: "error", message: t("menu.download.gexf-error").toString() });
+                      }
+                    }}
+                  >
+                    <FaDownload className="me-1" />
+                    {t("menu.download.gexf").toString()}
+                  </button>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+              </>
+            )}
+
+            {/* Open links */}
             {user && user.provider && (
               <li>
                 <button
@@ -112,9 +143,12 @@ export const UserMenu: FC = () => {
                 {t(`menu.open.remote`).toString()}
               </button>
             </li>
+
             <li>
               <hr className="dropdown-divider" />
             </li>
+
+            {/* Auth links */}
             {user && (
               <li>
                 <button
@@ -147,7 +181,7 @@ export const UserMenu: FC = () => {
           </ul>
         </li>
       </ul>
-      {loading && <Loader />}
+      {(loading || ldExportGexf) && <Loader />}
     </nav>
   );
 };
