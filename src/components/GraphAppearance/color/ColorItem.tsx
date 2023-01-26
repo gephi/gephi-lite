@@ -107,9 +107,9 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         }}
       />
 
-      {color.type === "data" && (
+      {(color.type === "data" || color.type === "source" || color.type === "target") && (
         <p className="fst-italic text-muted small mt-1">
-          {t("appearance.color.data_description", { items: t(`graph.model.${itemType}`) })}
+          {t(`appearance.color.${color.type}_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
       {color.type === "fixed" && (
