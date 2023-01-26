@@ -1,10 +1,11 @@
+import louvain from "graphology-communities-louvain";
+import toSimple from "graphology-operators/to-simple";
 import { hits, pagerank } from "graphology-metrics/centrality";
-import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 import { disparity, simmelianStrength } from "graphology-metrics/edge";
+import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
 import { Metric } from "./types";
 import { DataGraph, EdgeRenderingData } from "../graph/types";
-import louvain from "graphology-communities-louvain";
 
 export const NODE_METRICS: Metric<"nodes", any, any>[] = [
   {
@@ -160,7 +161,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
       },
       graph: DataGraph,
     ) {
-      return hits(graph, parameters);
+      return hits(toSimple(graph), parameters);
     },
   },
 ];
@@ -184,7 +185,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
       },
       graph: DataGraph,
     ) {
-      return { disparity: disparity(graph, parameters) };
+      return { disparity: disparity(toSimple(graph), parameters) };
     },
   },
   {
