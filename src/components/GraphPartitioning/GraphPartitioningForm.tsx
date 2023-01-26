@@ -43,7 +43,7 @@ export const GraphPartitioningForm: FC<{
               closeForm();
             }}
           >
-            {t("button.cancel")}
+            {t("common.cancel")}
           </button>
           <button
             className="btn btn-primary"
@@ -54,7 +54,7 @@ export const GraphPartitioningForm: FC<{
               closeForm();
             }}
           >
-            {t("button.confirm")}
+            {t("common.confirm")}
           </button>
         </div>
       </div>

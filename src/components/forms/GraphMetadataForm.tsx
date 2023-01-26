@@ -88,14 +88,14 @@ export const GraphMetadataForm: FC = () => {
       <button
         className="btn btn-primary"
         type="submit"
-        aria-label={`${t("button.save")} ${t("graph.metadata.title")}`}
+        title={`${t("common.save")} ${t("graph.metadata.title")}`}
         disabled={graphMetadata === null}
         onClick={(e) => {
           e.preventDefault();
           setGraphMeta(graphMetadata);
         }}
       >
-        {t("button.save")}
+        {t("common.save")}
       </button>
     </form>
   );

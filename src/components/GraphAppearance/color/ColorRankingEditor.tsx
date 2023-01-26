@@ -39,7 +39,7 @@ export const ColorRankingEditor: FC<{
                   })
                 }
               >
-                - {t("button.delete")}
+                - {t("common.delete")}
               </button>
             </div>
           );
@@ -56,7 +56,7 @@ export const ColorRankingEditor: FC<{
             })
           }
         >
-          + {t("button.add")}
+          + {t("common.add")}
         </button>
 
         <div className="d-flex align-items-center mt-1">

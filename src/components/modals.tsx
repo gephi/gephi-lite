@@ -25,6 +25,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   className,
   bodyClassName,
 }) => {
+  const { t } = useTranslation();
   const childrenArray = Array.isArray(children) ? children : [children];
   const body = childrenArray[0];
   const footer = childrenArray[1];
@@ -41,7 +42,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
               <div className="modal-header">
                 {title && <h5 className="modal-title d-flex align-items-center">{title}</h5>}
                 <button
-                  type="button"
+                  title={t("common.close").toString()}
                   className="btn-close"
                   aria-label="Close"
                   onClick={() => onClose && onClose()}
@@ -92,11 +93,21 @@ export const ConfirmModal: FC<
     >
       <>{children}</>
       <>
-        <button type="button" className="btn btn-outline-secondary me-2" onClick={onCancel} disabled={loading === true}>
-          {t("button.cancel")}
+        <button
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-secondary me-2"
+          onClick={onCancel}
+          disabled={loading === true}
+        >
+          {t("common.cancel")}
         </button>
-        <button type="submit" className="btn btn-primary" onClick={onConfirm} disabled={loading === true}>
-          {t("button.confirm")}
+        <button
+          title={t("common.confirm").toString()}
+          className="btn btn-primary"
+          onClick={onConfirm}
+          disabled={loading === true}
+        >
+          {t("common.confirm")}
           {loading && <Spinner className="ms-2 spinner-border-sm" />}
         </button>
       </>

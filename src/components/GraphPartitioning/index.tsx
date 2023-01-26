@@ -48,12 +48,13 @@ const GraphItemPartitioning: FC<{ itemType: ItemType }> = ({ itemType }) => {
         {partitionAttributeId && (
           <button
             className="btn btn-primary"
+            title={t("common.remove").toString()}
             onClick={() => {
               setPartitionAttributeId(undefined);
               setEditingNodePartition(false);
             }}
           >
-            {t("button.remove")}
+            {t("common.remove")}
           </button>
         )}
         <button className="btn btn-primary" onClick={() => setEditingNodePartition(!editingNodePartition)}>

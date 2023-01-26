@@ -34,18 +34,6 @@
     "sign_out": "Sign-out",
     "sign_in": "Sign-in"
   },
-  "button": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "save": "Save",
-    "show": "Show",
-    "hide": "Hide",
-    "remove": "Remove",
-    "delete": "Delete",
-    "add": "Add",
-    "show_more": "Show more",
-    "show_less": "Show less"
-  },
   "appearance": {
     "title": "Appearance",
     "partition": "Partition",
@@ -191,18 +179,27 @@
     "title": "Layout"
   },
   "common": {
-    "loading": "Loading",
+    "add": "Add",
     "cancel": "Cancel",
     "clear": "Clear",
+    "close": "Close",
+    "confirm": "Confirm",
+    "created": "Created",
+    "delete": "Delete",
+    "filename": "Filename",
+    "hide": "Hide",
+    "load-more": "Load more",
+    "loading": "Loading",
+    "min": "Min",
+    "max": "Max",
     "open": "Open",
     "open_file": "Open {{filename}}",
-    "filename": "Filename",
-    "created": "Created",
-    "updated": "Updated",
-    "size": "Size",
-    "load-more": "Load more",
+    "remove": "Remove",
     "save": "Save",
-    "min": "Min",
-    "max": "Max"
+    "size": "Size",
+    "show": "Show",
+    "show_more": "Show more",
+    "show_less": "Show less",
+    "updated": "Updated"
   }
 }

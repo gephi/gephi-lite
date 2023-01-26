@@ -18,7 +18,7 @@ const FilterInStack: FC<
     <div className="d-flex">
       {current ? (
         <button className="btn btn-primary" onClick={() => deleteCurrentFilter()}>
-          {t("button.remove")}
+          {t("common.remove")}
         </button>
       ) : (
         <button
