@@ -110,6 +110,13 @@
   },
   "graph": {
     "title": "Graph",
+    "control": {
+      "zoomIn": "Zoom In",
+      "zoomOut": "Zoom Out",
+      "zoomReset": "See the whole graph",
+      "fullscreenEnter": "Enter fullscreen mode",
+      "fullscreenExit": "Exit fullscreen"
+    },
     "metadata": {
       "title": "Metadata",
       "graph-title": "Title",

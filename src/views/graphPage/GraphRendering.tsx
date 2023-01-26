@@ -1,5 +1,6 @@
 import { FC, useEffect } from "react";
-import { SigmaContainer, useSigma } from "@react-sigma/core";
+import { useTranslation } from "react-i18next";
+import { SigmaContainer, useSigma, ControlsContainer, ZoomControl, FullScreenControl } from "@react-sigma/core";
 
 import { useAppearance, useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
 import { getDrawEdgeLabel, getDrawHover, getDrawLabel, getReducer } from "../../core/appearance/utils";
@@ -22,6 +23,7 @@ const SettingsController: FC = () => {
 };
 
 export const GraphRendering: FC = () => {
+  const { t } = useTranslation();
   const sigmaGraph = useSigmaGraph();
 
   return (
@@ -29,11 +31,27 @@ export const GraphRendering: FC = () => {
       <SigmaContainer
         className="position-absolute inset-0"
         graph={sigmaGraph}
-        initialSettings={{
+        settings={{
           allowInvalidContainer: true,
         }}
       >
         <SettingsController />
+
+        <ControlsContainer position={"bottom-right"}>
+          <ZoomControl
+            labels={{
+              zoomIn: t("graph.control.zoomIn").toString(),
+              zoomOut: t("graph.control.zoomOut").toString(),
+              reset: t("graph.control.zoomReset").toString(),
+            }}
+          />
+          <FullScreenControl
+            labels={{
+              enter: t("graph.control.fullscreenEnter").toString(),
+              exit: t("graph.control.fullscreenExit").toString(),
+            }}
+          />
+        </ControlsContainer>
       </SigmaContainer>
     </div>
   );
