@@ -46,6 +46,16 @@ export const openFutureFilter: Producer<FiltersState, [number]> = (index) => {
   };
 };
 
+export const openAllFutureFilters: Producer<FiltersState> = () => {
+  return (state) => {
+    return {
+      ...state,
+      past: state.past.concat(state.future),
+      future: [],
+    };
+  };
+};
+
 export const deleteCurrentFilter: Producer<FiltersState> = () => {
   return (state) => {
     if (!state.past.length) throw new Error(`deleteCurrentFilter: There is not filter to delete.`);
@@ -75,6 +85,7 @@ export const filtersActions = {
   resetFilters: producerToAction(resetFilters, filtersAtom),
   openPastFilter: producerToAction(openPastFilter, filtersAtom),
   openFutureFilter: producerToAction(openFutureFilter, filtersAtom),
+  openAllFutureFilters: producerToAction(openAllFutureFilters, filtersAtom),
   replaceCurrentFilter: producerToAction(replaceCurrentFilter, filtersAtom),
   deleteCurrentFilter: producerToAction(deleteCurrentFilter, filtersAtom),
 } as const;

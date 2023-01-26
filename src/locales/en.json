@@ -93,7 +93,8 @@
   "filters": {
     "title": "Filters",
     "custom_script": "Custom script",
-    "filter_graph_on": "Filter the graph on:",
+    "filter": "Filter",
+    "using": "Using",
     "topological": "Topology"
   },
   "graph": {
@@ -264,6 +265,7 @@
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
+    "edit": "Edit",
     "created": "Created",
     "delete": "Delete",
     "filename": "Filename",
@@ -281,6 +283,7 @@
     "show": "Show",
     "show_more": "Show more",
     "show_less": "Show less",
-    "updated": "Updated"
+    "updated": "Updated",
+    "all": "All"
   }
 }

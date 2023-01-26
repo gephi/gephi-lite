@@ -1,5 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CgAddR } from "react-icons/cg";
+import { RiFilterFill } from "react-icons/ri";
+import Select from "react-select";
 
 import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
@@ -7,7 +10,7 @@ import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
 
 interface FilterOption {
-  id: string;
+  value: string;
   label: string;
   disabled?: boolean;
   field?: string;
@@ -21,15 +24,17 @@ export const FilterCreator: FC = () => {
 
   const [filterApplicationType, setFilterApplicationType] = useState<ItemType | "topological">("nodes");
   const [filterOptions, setFilterOptions] = useState<FilterOption[]>([]);
+  const [selectedFilterOption, setSelectedFilterOption] = useState<FilterOption | null>(null);
   const [filterCreation, setFilterCreation] = useState<FilterType | null>(null);
 
   useEffect(() => {
+    setSelectedFilterOption(null);
     if (filterApplicationType === "topological") {
       // TODO: topological filters
       const topologicalFiltersOptions: FilterOption[] = [
-        { id: "topological::degree", label: "Topological on Degree (TODO)", disabled: true, type: "topological" },
+        { value: "degree", label: "Topological on Degree (TODO)", disabled: true, type: "topological" },
         {
-          id: "topological::main_connected_component",
+          value: "main_connected_component",
           label: "Main connected component (TODO)",
           disabled: true,
           type: "topological",
@@ -43,14 +48,14 @@ export const FilterCreator: FC = () => {
         const options = [];
         if (field.quantitative)
           options.push({
-            id: `range::${field.id}`,
+            value: `range::${field.id}`,
             label: `${field.id} (range)`,
             type: "range",
             field: field.id,
           });
         if (!!field.qualitative)
           options.push({
-            id: `term::${field.id}`,
+            value: `term::${field.id}`,
             label: `${field.id} (term)`,
             type: "terms",
             field: field.id,
@@ -58,7 +63,12 @@ export const FilterCreator: FC = () => {
         return options;
       });
 
-      const scriptFilterOption: FilterOption = { id: "script", label: t("filters.custom_script"), type: "script" };
+      const scriptFilterOption: FilterOption = {
+        value: "script",
+        label: t("filters.custom_script"),
+        type: "script",
+        disabled: true,
+      };
       setFilterOptions([...fieldFiltersOptions, scriptFilterOption]);
     }
   }, [filterApplicationType, edgeFields, nodeFields, t]);
@@ -69,54 +79,57 @@ export const FilterCreator: FC = () => {
         e.preventDefault();
         if (filterCreation !== null) addFilter(filterCreation);
       }}
+      className="d-flex align-items-center "
     >
-      {t("filters.filter_graph_on")}
-      <select onChange={(o) => setFilterApplicationType(o.currentTarget.value as ItemType | "topological")}>
-        <option value="nodes" selected={filterApplicationType === "nodes"}>
-          {t("graph.model.nodes")}
-        </option>
-        <option value="edges" selected={filterApplicationType === "edges"}>
-          {t("graph.model.edges")}
-        </option>
-        <option value="topological" selected={filterApplicationType === "topological"}>
-          {t("filters.topological")}
-        </option>
-      </select>
-      {filterOptions.length > 0 && (
-        <select
-          onChange={(e) => {
-            if (e.target.value === "") setFilterCreation(null);
-            else {
-              const dataset = e.target.options[e.target.selectedIndex].dataset;
-              switch (filterApplicationType) {
-                case "nodes":
-                case "edges": {
-                  if (dataset.type !== "script" && dataset.field)
-                    setFilterCreation({
-                      itemType: filterApplicationType as ItemType,
-                      type: dataset.type as "terms" | "range",
-                      field: dataset.field,
-                    });
-                  else setFilterCreation({ itemType: filterApplicationType, type: "script" });
-                  break;
-                }
-                case "topological":
-                  setFilterCreation({ type: "topological", method: e.target.value });
-              }
-            }
-          }}
-        >
-          <option value=""></option>
-          {filterOptions.map((o) => (
-            <option key={o.id} value={o.id} disabled={!!o.disabled} data-type={o.type} data-field={o.field}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      )}
-      <button type="submit" className="btn btn-primay" disabled={filterCreation === null}>
-        Add
+      <RiFilterFill className="flex-shrink-0" />
+      <button type="submit" className="btn btn-icon" disabled={filterCreation === null}>
+        <CgAddR />
       </button>
+      <div className="d-flex flex-column ms-2 w-100">
+        <div>
+          {t("filters.filter")}{" "}
+          <Select
+            onChange={(o) => setFilterApplicationType(o?.value as ItemType | "topological")}
+            options={[
+              { label: t("graph.model.nodes").toString(), value: "nodes" },
+              { label: t("graph.model.edges").toString(), value: "edges" },
+              { label: t("filters.topological").toString(), value: "topological" },
+            ]}
+          />
+        </div>
+        <div>
+          {t("filters.using")}
+          {filterOptions.length > 0 && (
+            <Select
+              value={selectedFilterOption}
+              isClearable={true}
+              onChange={(selectedOption) => {
+                setSelectedFilterOption(selectedOption);
+                if (!selectedOption) setFilterCreation(null);
+                else {
+                  switch (filterApplicationType) {
+                    case "nodes":
+                    case "edges": {
+                      if (selectedOption.type !== "script" && selectedOption.field)
+                        setFilterCreation({
+                          itemType: filterApplicationType as ItemType,
+                          type: selectedOption.type as "terms" | "range",
+                          field: selectedOption.field,
+                        });
+                      else setFilterCreation({ itemType: filterApplicationType, type: "script" });
+                      break;
+                    }
+                    case "topological":
+                      setFilterCreation({ type: "topological", method: selectedOption.value });
+                  }
+                }
+              }}
+              options={filterOptions}
+              isOptionDisabled={(option) => !!option.disabled}
+            />
+          )}
+        </div>
+      </div>
     </form>
   );
 };
