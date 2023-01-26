@@ -36,7 +36,7 @@ export function useOpenGexf() {
       setLoading(true);
       setError(null);
       try {
-        const content = await file.text();
+        const content = await file.source.text();
         const graph = parse(Graph, content);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
       } catch (e) {

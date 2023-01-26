@@ -17,7 +17,7 @@ export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { notify } = useNotifications();
   const { t } = useTranslation();
   const { loading, error, openLocalFile } = useOpenGexf();
-  const [file, setFile] = useState<LocalFile | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   return (
     <Modal title={t("graph.open.local.title").toString()} onClose={() => cancel()}>
@@ -25,18 +25,7 @@ export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         {error && <p className="text-center text-danger">{t("graph.open.local.error").toString()}</p>}
         <DropInput
           value={file}
-          onChange={(file) =>
-            setFile(
-              file
-                ? {
-                    type: "local",
-                    filename: file.name,
-                    updatedAt: new Date(file.lastModified),
-                    ...omit(file, ["type"]),
-                  }
-                : null,
-            )
-          }
+          onChange={(file) => setFile(file)}
           helpText={t("graph.open.local.dragndrop_text").toString()}
           accept={{ "application/graph": [".gexf"] }}
         />
@@ -50,13 +39,22 @@ export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         <button
           className="btn btn-primary"
           disabled={!file}
-          title={file ? t("common.open_file", { filename: file.filename }).toString() : ""}
+          title={file ? t("common.open_file", { filename: file.name }).toString() : ""}
           onClick={async () => {
             if (file) {
               try {
-                await openLocalFile(file);
+                await openLocalFile({
+                  type: "local",
+                  filename: file.name,
+                  updatedAt: new Date(file.lastModified),
+                  size: file.size,
+                  source: file,
+                });
                 navigate("/graph");
-                notify({ type: "success", message: t("graph.open.local.success", { filename: file.name }).toString() });
+                notify({
+                  type: "success",
+                  message: t("graph.open.local.success", { filename: file.name }).toString(),
+                });
                 cancel();
               } catch (e) {
                 console.error(e);

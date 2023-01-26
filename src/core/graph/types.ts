@@ -14,10 +14,11 @@ export interface RemoteFile extends GraphFile {
   type: "remote";
   url: string;
 }
-export interface LocalFile extends GraphFile, File {
+export interface LocalFile extends GraphFile {
   type: "local";
   updatedAt: Date;
   size: number;
+  source: File;
 }
 export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
 
