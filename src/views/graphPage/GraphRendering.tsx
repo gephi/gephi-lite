@@ -1,5 +1,5 @@
 import Sigma from "sigma";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SigmaContainer, useSigma, ControlsContainer, ZoomControl, FullScreenControl } from "@react-sigma/core";
 
@@ -7,8 +7,9 @@ import { useAppearance, useGraphDataset, useSigmaGraph } from "../../core/contex
 import { getDrawEdgeLabel, getDrawHover, getDrawLabel, getReducer } from "../../core/appearance/utils";
 import { sigmaAtom } from "../../core/graph";
 import { SigmaGraph } from "../../core/graph/types";
+import cx from "classnames";
 
-const SettingsController: FC = () => {
+const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma();
   const graphDataset = useGraphDataset();
   const graphAppearance = useAppearance();
@@ -24,6 +25,7 @@ const SettingsController: FC = () => {
     sigma.setSetting("labelRenderer", getDrawLabel(graphAppearance));
     sigma.setSetting("hoverRenderer", getDrawHover(graphAppearance));
     sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance));
+    setIsReady();
   }, [graphAppearance, graphDataset, sigma]);
 
   return null;
@@ -32,17 +34,18 @@ const SettingsController: FC = () => {
 export const GraphRendering: FC = () => {
   const { t } = useTranslation();
   const sigmaGraph = useSigmaGraph();
+  const [isReady, setIsReady] = useState(false);
 
   return (
     <div className="stage">
       <SigmaContainer
-        className="position-absolute inset-0"
+        className={cx("position-absolute inset-0", !isReady && "visually-hidden")}
         graph={sigmaGraph}
         settings={{
           allowInvalidContainer: true,
         }}
       >
-        <SettingsController />
+        <SettingsController setIsReady={() => setIsReady(true)} />
 
         <ControlsContainer position={"bottom-right"}>
           <ZoomControl

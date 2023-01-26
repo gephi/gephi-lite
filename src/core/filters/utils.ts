@@ -17,6 +17,22 @@ export function getEmptyFiltersState(): FiltersState {
 }
 
 /**
+ * Filters lifecycle helpers (state serialization / deserialization):
+ */
+export function serializeFiltersState(filters: FiltersState): string {
+  return JSON.stringify(filters);
+}
+export function parseFiltersState(rawFilters: string): FiltersState | null {
+  try {
+    // TODO:
+    // Validate the actual data
+    return JSON.parse(rawFilters);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Actual filtering helpers:
  */
 function filterValue(value: any, filter: RangeFilterType | TermsFilterType): boolean {

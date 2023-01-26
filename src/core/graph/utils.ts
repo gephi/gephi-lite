@@ -35,6 +35,28 @@ export function getEmptyGraphDataset(): GraphDataset {
 }
 
 /**
+ * Appearance lifecycle helpers (state serialization / deserialization):
+ */
+export function serializeDataset(dataset: GraphDataset): string {
+  return JSON.stringify({ ...dataset, fullGraph: dataset.fullGraph.export() });
+}
+export function parseDataset(rawDataset: string): GraphDataset | null {
+  try {
+    // TODO:
+    // Validate the actual data
+    const parsed = JSON.parse(rawDataset);
+    const fullGraph = new MultiGraph<{}, {}>();
+    fullGraph.import(parsed.fullGraph);
+    return {
+      ...parsed,
+      fullGraph,
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * This function takes an array of string values, and tries various separators
  * to see if one does match enough values.
  */
@@ -226,8 +248,6 @@ export function getFullVisibleGraph(
   const graph = sigma.getGraph();
   const nodeReducer = sigma.getSetting("nodeReducer");
   const edgeReducer = sigma.getSetting("edgeReducer");
-
-  console.log(graph.order, graph.size);
 
   res.updateAttributes((attr) => ({
     ...attr,

@@ -50,6 +50,25 @@ export function getEmptyAppearanceState(): AppearanceState {
   };
 }
 
+/**
+ * Appearance lifecycle helpers (state serialization / deserialization):
+ */
+export function serializeAppearanceState(appearance: AppearanceState): string {
+  return JSON.stringify(appearance);
+}
+export function parseAppearanceState(rawAppearance: string): AppearanceState | null {
+  try {
+    // TODO:
+    // Validate the actual data
+    return JSON.parse(rawAppearance);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Actual appearance helpers:
+ */
 export function getReducer<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(

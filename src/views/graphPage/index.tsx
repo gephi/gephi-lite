@@ -13,6 +13,13 @@ import { LayoutsPanel } from "./LayoutsPanel";
 import { GraphRendering } from "./GraphRendering";
 import { isEqual } from "lodash";
 import { AppearanceIcon, FiltersIcon, GraphIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
+import { graphDatasetAtom, refreshSigmaGraph } from "../../core/graph";
+import { filtersAtom } from "../../core/filters";
+import { appearanceAtom } from "../../core/appearance";
+import { useNotifications } from "../../core/notifications";
+import { parseDataset } from "../../core/graph/utils";
+import { getEmptyFiltersState, parseFiltersState } from "../../core/filters/utils";
+import { parseAppearanceState } from "../../core/appearance/utils";
 
 type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
 
@@ -23,6 +30,7 @@ export const GraphPage: FC = () => {
   const [state, setState] = useState<State>({ type: "idle" });
   const { openRemoteFile } = useOpenGexf();
   const { t } = useTranslation();
+  const { notify } = useNotifications();
 
   const TOOLS: (Tool | { type: "space" })[] = useMemo(
     () => [
@@ -39,15 +47,53 @@ export const GraphPage: FC = () => {
 
   useEffect(() => {
     if (state.type === "idle") {
-      openRemoteFile({ type: "remote", filename: "arctic.gexf", url: "/gephi-lite/arctic.gexf" })
-        .then(() => {
-          setState({ type: "ready" });
-        })
-        .catch((error) => {
-          setState({ type: "error", error: error as Error });
+      let isSessionStorageValid = false;
+
+      try {
+        const rawDataset = sessionStorage.getItem("dataset");
+        const rawFilters = sessionStorage.getItem("filters");
+        const rawAppearance = sessionStorage.getItem("appearance");
+
+        if (rawDataset) {
+          const dataset = parseDataset(rawDataset);
+
+          if (dataset) {
+            const appearance = rawAppearance ? parseAppearanceState(rawAppearance) : null;
+            const filters = rawFilters ? parseFiltersState(rawFilters) : null;
+            refreshSigmaGraph(dataset, filters || getEmptyFiltersState());
+
+            graphDatasetAtom.set(dataset);
+            if (filters) filtersAtom.set(filters);
+            if (appearance) appearanceAtom.set(appearance);
+
+            isSessionStorageValid = true;
+            setState({ type: "ready" });
+            notify({
+              type: "success",
+              message: t("storage.restore_successful") as string,
+              title: t("gephi-lite.title") as string,
+            });
+          }
+        }
+      } catch (e) {
+        notify({
+          type: "warning",
+          message: t("storage.cannot_restore") as string,
+          title: t("gephi-lite.title") as string,
         });
+      } finally {
+        if (!isSessionStorageValid)
+          openRemoteFile({ type: "remote", filename: "arctic.gexf", url: "/gephi-lite/arctic.gexf" })
+            .then(() => {
+              setState({ type: "ready" });
+            })
+            .catch((error) => {
+              setState({ type: "error", error: error as Error });
+            });
+      }
     }
-  }, [state.type, openRemoteFile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.type]);
 
   return (
     <Layout>

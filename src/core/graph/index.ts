@@ -4,9 +4,10 @@ import Sigma from "sigma";
 import { atom } from "../utils/atoms";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
-import { dataGraphToSigmaGraph, getEmptyGraphDataset } from "./utils";
+import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
 import { filtersAtom } from "../filters";
 import { datasetToFilteredSigmaGraph } from "../filters/utils";
+import { FiltersState } from "../filters/types";
 
 /**
  * Producers:
@@ -53,6 +54,10 @@ export const graphDatasetActions = {
   setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
 };
 
+export function refreshSigmaGraph(dataset: GraphDataset, filters: FiltersState) {
+  sigmaGraphAtom.set(datasetToFilteredSigmaGraph(dataset, filters.past));
+}
+
 /**
  * Bindings:
  * *********
@@ -66,18 +71,12 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph")) {
-    const filtersState = filtersAtom.get();
-
-    sigmaGraphAtom.set(datasetToFilteredSigmaGraph(graphDataset, filtersState.past));
+    refreshSigmaGraph(graphDataset, filtersAtom.get());
     return;
   }
 
+  sessionStorage.setItem("dataset", serializeDataset(graphDataset));
+
   // TODO:
   // Refresh sigmaGraph when `nodeRenderingData` or `edgeRenderingData` is updated
-});
-
-filtersAtom.bind((filtersState) => {
-  const graphDataset = graphDatasetAtom.get();
-
-  sigmaGraphAtom.set(datasetToFilteredSigmaGraph(graphDataset, filtersState.past));
 });

@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useEffect, useState } from "react";
+import { FC, PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { BsCheckSquare } from "react-icons/bs";
 import { CgRemoveR } from "react-icons/cg";

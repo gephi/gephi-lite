@@ -1,6 +1,6 @@
 import { atom } from "../utils/atoms";
 import { AppearanceState, Color, Label, LabelSize, Size } from "./types";
-import { getEmptyAppearanceState } from "./utils";
+import { getEmptyAppearanceState, serializeAppearanceState } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
 import { ItemType } from "../types";
 
@@ -37,3 +37,11 @@ export const appearanceActions = {
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
 } as const;
+
+/**
+ * Bindings:
+ * *********
+ */
+appearanceAtom.bind((appearanceState) => {
+  sessionStorage.setItem("appearance", serializeAppearanceState(appearanceState));
+});

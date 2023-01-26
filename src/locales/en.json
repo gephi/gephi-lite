@@ -3,6 +3,9 @@
     "greeting": "Hi",
     "blabla": "Pleased to meet you"
   },
+  "gephi-lite": {
+    "title": "Gephi Lite"
+  },
   "error": {
     "title": "Error",
     "not_found": {
@@ -33,6 +36,10 @@
     "unauth_success": "Unauthentication successful",
     "sign_out": "Sign-out",
     "sign_in": "Sign-in"
+  },
+  "storage": {
+    "cannot_restore": "Your graph cannot be restored.",
+    "restore_successful": "Your work graph has been restored."
   },
   "appearance": {
     "title": "Appearance",

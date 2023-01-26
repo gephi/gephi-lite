@@ -183,7 +183,6 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
 
 export const StatisticsPanel: FC = () => {
   const { t } = useTranslation();
-  const { notify } = useNotifications();
 
   const options: GroupBase<MetricOption>[] = useMemo(
     () => [
