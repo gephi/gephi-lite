@@ -139,6 +139,20 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         {error && <p className="text-center text-danger">{t("graph.open.remote.error").toString()}</p>}
         {loading && <Loader />}
       </div>
+      <div className="d-flex align-items-center w-100">
+        <div className="text-muted small flex-grow-1 flex-shrink-1">
+          <div>{t("welcome.disclaimer-1")}</div>
+          <div>{t("welcome.disclaimer-2")}</div>
+        </div>
+        <a
+          href="https://github.com/gephi/gephi-lite"
+          target="_blank"
+          rel="noreferrer"
+          className="flex-shrink-0 btn btn-ico"
+        >
+          <GitHubIcon />
+        </a>
+      </div>
     </Modal>
   );
 };

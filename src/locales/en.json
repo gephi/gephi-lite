@@ -1,6 +1,8 @@
 {
   "welcome": {
     "title": "Welcome to Gephi Lite",
+    "disclaimer-1": "Gephi Lite is currently a work in progress.",
+    "disclaimer-2": "Feel free to check the GitHub project to see more about the upcoming features or to report bugs.",
     "logo": "Gephi logo",
     "open_recent": "Open recent",
     "open_graph": "Open graph file",
