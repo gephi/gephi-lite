@@ -12,7 +12,14 @@ export const UserAvatar: FC<{ className?: string; style?: CSSProperties }> = ({ 
   return (
     <div className={cx("user", className)} style={style}>
       {user && user.avatar ? (
-        <img src={user.avatar} alt={t("user.avatar_alt", { name: user.name }).toString()} />
+        <>
+          <img src={user.avatar} alt={t("user.avatar_alt", { name: user.name }).toString()} />
+          {user.provider && (
+            <span style={{ padding: "2px" }} className="position-absolute translate-middle badge rounded-pill bg-dark">
+              {user.provider.icon}
+            </span>
+          )}
+        </>
       ) : (
         <FaUser className="default" />
       )}

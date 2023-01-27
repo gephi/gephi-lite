@@ -1,11 +1,13 @@
 import { isNil } from "lodash";
 import { Octokit } from "@octokit/core";
-import { CloudProvider, CloudFile } from "../types";
+import { FaGithub } from "react-icons/fa";
 
+import { CloudProvider, CloudFile } from "../types";
 import { notEmpty } from "../../utils/casting";
 
 export class GithubProvider implements CloudProvider {
   type = "github";
+  icon = (<FaGithub />);
   octokit: Octokit;
   token: string;
 

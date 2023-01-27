@@ -16,6 +16,10 @@ export interface CloudProvider {
    * type is use for TS but also displayed on the application
    */
   type: string;
+  /**
+   * Icon is use for TS but also displayed on the application
+   */
+  icon: JSX.Element;
 
   /**
    * Make a call to the provider to find files
