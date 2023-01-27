@@ -1,3 +1,4 @@
+import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CgAddR } from "react-icons/cg";
@@ -10,7 +11,7 @@ import { ItemType } from "../../core/types";
 
 interface FilterOption {
   value: string;
-  label: string;
+  label: string | JSX.Element;
   disabled?: boolean;
   field?: string;
   type: string;
@@ -49,14 +50,22 @@ export const FilterCreator: FC = () => {
         if (field.quantitative)
           options.push({
             value: `range::${field.id}`,
-            label: `${field.id} (range)`,
+            label: (
+              <>
+                {field.id} <span className="text-muted">({t("filters.range")})</span>
+              </>
+            ),
             type: "range",
             field: field.id,
           });
         if (!!field.qualitative)
           options.push({
             value: `term::${field.id}`,
-            label: `${field.id} (term)`,
+            label: (
+              <>
+                {field.id} <span className="text-muted">({t("filters.terms")})</span>
+              </>
+            ),
             type: "terms",
             field: field.id,
           });
@@ -65,7 +74,7 @@ export const FilterCreator: FC = () => {
 
       const scriptFilterOption: FilterOption = {
         value: "script",
-        label: t("filters.custom_script"),
+        label: t("filters.custom_script") as string,
         type: "script",
         disabled: true,
       };
@@ -89,13 +98,13 @@ export const FilterCreator: FC = () => {
           <Select
             onChange={(o) => setFilterApplicationType(o?.value as ItemType | "topological")}
             options={[
-              { label: t("graph.model.nodes").toString(), value: "nodes" },
-              { label: t("graph.model.edges").toString(), value: "edges" },
+              { label: capitalize(t("graph.model.nodes").toString()), value: "nodes" },
+              { label: capitalize(t("graph.model.edges").toString()), value: "edges" },
               { label: t("filters.topological").toString(), value: "topological" },
             ]}
           />
         </div>
-        <div>
+        <div className="mt-1">
           {t("filters.using")}
           {filterOptions.length > 0 && (
             <Select

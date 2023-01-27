@@ -119,7 +119,9 @@
     "using": "Using",
     "topological": "Topology",
     "desactivated": "Downstream filters are desactivated during upstream filter edition",
-    "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter."
+    "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
+    "range": "range",
+    "terms": "exact values"
   },
   "graph": {
     "title": "Graph",
