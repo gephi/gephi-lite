@@ -1,7 +1,8 @@
 {
   "name": "gephi-lite",
   "version": "0.1.0",
-  "homepage": "https://gephi.github.io/gephi-lite",
+  "homepage": "https://gephi.org/gephi-lite",
+  "license": "gpl-3.0",
   "dependencies": {
     "@axa-fr/react-oidc": "^6.9.6",
     "@octokit/auth-oauth-app": "^5.0.2",
