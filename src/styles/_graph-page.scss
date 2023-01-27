@@ -8,10 +8,17 @@
   height: 100%;
   overflow: hidden;
 
-  .stage,
-  .sigma-container {
+  .stage {
     position: absolute;
     inset: 0;
+  }
+  .sigma-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    margin-left: 50%;
+    top: 0;
+    transform: translateX(-50%);
   }
 
   .toolbar,
@@ -54,6 +61,7 @@
   .filler {
     flex-grow: 1;
     flex-shrink: 1;
+    position: relative;
   }
 
   .left-panel,

@@ -1,8 +1,8 @@
 import Sigma from "sigma";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
+import { SigmaContainer, useSigma } from "@react-sigma/core";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { SigmaContainer, useSigma, useCamera } from "@react-sigma/core";
 
 import { FaRegDotCircle } from "react-icons/fa";
 import { BsZoomIn, BsZoomOut } from "react-icons/bs";
@@ -10,7 +10,7 @@ import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 
 import { sigmaAtom } from "../../core/graph";
 import { SigmaGraph } from "../../core/graph/types";
-import { useAppearance, useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, useSigmaAtom, useSigmaGraph } from "../../core/context/dataContexts";
 import { getDrawEdgeLabel, getDrawHover, getDrawLabel, getReducer } from "../../core/appearance/utils";
 
 const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
@@ -64,19 +64,32 @@ function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
 const InteractionsController: FC = () => {
   const { t } = useTranslation();
   const { isFullScreen, toggle } = useFullScreen();
-  const { zoomIn, zoomOut, reset } = useCamera({ duration: 200, factor: 1.5 });
+  const sigma = useSigmaAtom();
 
   const btnClassName = "btn btn-ico btn-dark btn-sm mt-1";
+  const zoomOptions = { duration: 200, factor: 1.5 };
 
   return (
     <div className="position-absolute d-flex flex-column" style={{ right: 10, bottom: 10 }}>
-      <button className={btnClassName} onClick={() => zoomIn()} title={t("graph.control.zoomIn").toString()}>
+      <button
+        className={btnClassName}
+        onClick={() => sigma.getCamera().animatedZoom(zoomOptions)}
+        title={t("graph.control.zoomIn").toString()}
+      >
         <BsZoomIn />
       </button>
-      <button className={btnClassName} onClick={() => zoomOut()} title={t("graph.control.zoomOut").toString()}>
+      <button
+        className={btnClassName}
+        onClick={() => sigma.getCamera().animatedUnzoom(zoomOptions)}
+        title={t("graph.control.zoomOut").toString()}
+      >
         <BsZoomOut />
       </button>
-      <button className={btnClassName} onClick={() => reset()} title={t("graph.control.zoomReset").toString()}>
+      <button
+        className={btnClassName}
+        onClick={() => sigma.getCamera().animatedReset(zoomOptions)}
+        title={t("graph.control.zoomReset").toString()}
+      >
         <FaRegDotCircle />
       </button>
       <button
@@ -107,8 +120,8 @@ export const GraphRendering: FC = () => {
         }}
       >
         <SettingsController setIsReady={() => setIsReady(true)} />
-        <InteractionsController />
       </SigmaContainer>
+      <InteractionsController />
     </div>
   );
 };

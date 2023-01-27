@@ -74,7 +74,6 @@ export const GraphPage: FC = () => {
       },
       { type: "space" },
       { type: "tool", label: t("file.title"), icon: FileIcon, panel: FilePanel },
-      { type: "space" },
       { type: "tool", label: t("graph.title"), icon: GraphIcon, panel: GraphDataPanel },
       { type: "tool", label: t("statistics.title"), icon: StatisticsIcon, panel: StatisticsPanel },
       { type: "space" },
@@ -139,7 +138,6 @@ export const GraphPage: FC = () => {
   return (
     <Layout>
       <div id="graph-page">
-        <GraphRendering />
         <div className="toolbar d-flex flex-column pt-2 pb-1">
           {TOOLS.map((t, i) =>
             t.type === "space" ? (
@@ -189,7 +187,9 @@ export const GraphPage: FC = () => {
             <tool.panel />
           </div>
         )}
-        <div className="filler"></div>
+        <div className="filler">
+          <GraphRendering />
+        </div>
       </div>
     </Layout>
   );

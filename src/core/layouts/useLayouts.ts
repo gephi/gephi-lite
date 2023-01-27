@@ -4,7 +4,6 @@ import { clone, pick } from "lodash";
 
 import { useAtom } from "../utils/atoms";
 import { graphDatasetAtom } from "../graph";
-import { GraphDataset } from "../graph/types";
 import { useSigmaGraph } from "../context/dataContexts";
 import { useNotifications } from "../notifications";
 import { WorkerSupervisorInterface } from "./types";

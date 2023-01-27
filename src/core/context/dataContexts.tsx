@@ -3,7 +3,7 @@ import { reduce } from "lodash";
 
 import { filtersActions, filtersAtom } from "../filters";
 import { appearanceActions, appearanceAtom } from "../appearance";
-import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
+import { graphDatasetActions, graphDatasetAtom, sigmaAtom, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
 
@@ -32,6 +32,7 @@ function makeUseActions<T>(actionsCollection: T) {
  * Declare here all atoms used in the app:
  */
 const ATOMS = {
+  sigma: sigmaAtom,
   filters: filtersAtom,
   appearance: appearanceAtom,
   sigmaGraph: sigmaGraphAtom,
@@ -41,6 +42,7 @@ const ATOMS = {
 type AtomName = keyof typeof ATOMS;
 
 const CONTEXTS = {
+  sigma: createContext(ATOMS.sigma),
   filters: createContext(ATOMS.filters),
   appearance: createContext(ATOMS.appearance),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
@@ -67,6 +69,7 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
 
 // Read data:
 export const useFilters = makeUseAtom(CONTEXTS.filters);
+export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
