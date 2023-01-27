@@ -42,7 +42,9 @@ export const SaveCloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
 
   return (
     <Modal
-      title={t("graph.save.cloud.title", { provider: user?.provider.type || "" }).toString()}
+      title={t("graph.save.cloud.title", {
+        provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+      }).toString()}
       onClose={() => cancel()}
       className="modal"
     >

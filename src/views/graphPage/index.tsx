@@ -11,7 +11,14 @@ import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutsPanel } from "./LayoutsPanel";
 import { GraphRendering } from "./GraphRendering";
-import { AppearanceIcon, FiltersIcon, GraphIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
+import {
+  AppearanceIcon,
+  FileIcon,
+  FiltersIcon,
+  GraphIcon,
+  LayoutsIcon,
+  StatisticsIcon,
+} from "../../components/common-icons";
 import { graphDatasetAtom, refreshSigmaGraph } from "../../core/graph";
 import { filtersAtom } from "../../core/filters";
 import { appearanceAtom } from "../../core/appearance";
@@ -22,6 +29,9 @@ import { getEmptyFiltersState, parseFiltersState } from "../../core/filters/util
 import { getEmptyAppearanceState, parseAppearanceState } from "../../core/appearance/utils";
 import { useModal } from "../../core/modals";
 import { WelcomeModal } from "./modals/WelcomeModal";
+import { FilePanel } from "./FilePanel";
+import { GitHubPanel } from "./GitHubPanel";
+import { UserAvatar } from "../../components/user/UserAvatar";
 
 type Tool = {
   type: "tool";
@@ -48,7 +58,7 @@ export const GraphPage: FC = () => {
   const { openModal } = useModal();
   const filterState = useFilters();
 
-  const TOOLS: (Tool | Button | { type: "space" })[] = useMemo(
+  const TOOLS: (Tool | Button | { type: "space" } | { type: "filler" })[] = useMemo(
     () => [
       {
         type: "button",
@@ -62,8 +72,9 @@ export const GraphPage: FC = () => {
         },
       },
       { type: "space" },
-      { type: "tool", label: t("graph.title"), icon: GraphIcon, panel: GraphDataPanel },
+      { type: "tool", label: t("file.title"), icon: FileIcon, panel: FilePanel },
       { type: "space" },
+      { type: "tool", label: t("graph.title"), icon: GraphIcon, panel: GraphDataPanel },
       { type: "tool", label: t("statistics.title"), icon: StatisticsIcon, panel: StatisticsPanel },
       { type: "space" },
       { type: "tool", label: t("appearance.title"), icon: AppearanceIcon, panel: AppearancePanel },
@@ -75,6 +86,8 @@ export const GraphPage: FC = () => {
         count: filterState.future.length + filterState.past.length,
       },
       { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
+      { type: "filler" },
+      { type: "tool", label: t("github.title"), icon: UserAvatar, panel: GitHubPanel },
     ],
     [openModal, t, filterState],
   );
@@ -125,16 +138,18 @@ export const GraphPage: FC = () => {
     <Layout>
       <div id="graph-page">
         <GraphRendering />
-        <div className="toolbar d-flex flex-column pt-2">
+        <div className="toolbar d-flex flex-column pt-2 pb-1">
           {TOOLS.map((t, i) =>
             t.type === "space" ? (
               <br key={i} className="my-3" />
+            ) : t.type === "filler" ? (
+              <div key={i} className="flex-grow-1" />
             ) : (
               <button
                 key={i}
                 title={t.label}
                 type="button"
-                className={cx("text-center fs-5 position-relative", isEqual(t, tool) && "active")}
+                className={cx("d-flex justify-content-center fs-5 position-relative", isEqual(t, tool) && "active")}
                 onClick={() => {
                   if (t.type === "tool") {
                     if (t === tool) setTool(null);

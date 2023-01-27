@@ -74,13 +74,13 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
               <li className="mb-1">
                 <button
                   className="btn btn-sm btn-outline-dark"
-                  title={t(`menu.open.cloud`, { provider: user.provider.type }).toString()}
+                  title={t(`menu.open.cloud`, { provider: t(`providers.${user.provider.type}`) }).toString()}
                   onClick={() => {
                     openModal({ component: CloudFileModal, arguments: {} });
                   }}
                 >
-                  <FaRegFolderOpen className="me-1" />{" "}
-                  {t(`menu.open.cloud`, { provider: user.provider.type }).toString()}
+                  <FaRegFolderOpen className="me-1" />
+                  {t(`menu.open.cloud`, { provider: t(`providers.${user.provider.type}`) }).toString()}
                 </button>
               </li>
             )}

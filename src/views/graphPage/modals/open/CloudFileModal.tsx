@@ -38,7 +38,9 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
 
   return (
     <Modal
-      title={t("graph.open.cloud.title", { provider: user?.provider.type || "" }).toString()}
+      title={t("graph.open.cloud.title", {
+        provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+      }).toString()}
       onClose={() => cancel()}
       className="modal-lg"
     >
@@ -75,7 +77,7 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                         href={file.webUrl}
                         title={t("graph.open.cloud.file-open-external", {
                           filename: file.filename,
-                          provider: user?.provider.type || "",
+                          provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
                         }).toString()}
                         target="_blank"
                         rel="noreferrer"
@@ -102,7 +104,9 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         )}
         {!loading && files.length === 0 && (
           <p className="text-info">
-            {t("graph.open.cloud.no-data", { provider: user?.provider.type || "" }).toString()}
+            {t("graph.open.cloud.no-data", {
+              provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+            }).toString()}
           </p>
         )}
         {loading && <Loader />}

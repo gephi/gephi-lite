@@ -1,10 +1,13 @@
 .user {
   @extend .rounded-circle;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 2px solid $primary;
   height: $user-avatar-size;
   width: $user-avatar-size;
   background-color: $light;
+  overflow: hidden;
 
   &.user-sm {
     height: 0.8 * $user-avatar-size;
@@ -13,7 +16,6 @@
 
   img,
   svg {
-    padding: 2px;
     height: 100%;
     width: 100%;
 

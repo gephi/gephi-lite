@@ -29,17 +29,25 @@
     },
     "save": {
       "default": "Save",
-      "cloud": "Save on {{provider}} as ..."
+      "cloud": "Save on {{provider}} as..."
     },
     "download": {
-      "gexf": "Download as GEXF",
+      "gexf": "Save graph locally",
       "gexf-error": "An error occurred while generating GEXF file"
     }
   },
+  "providers": {
+    "github": "GitHub"
+  },
+  "github": {
+    "title": "GitHub authentication",
+    "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
+    "logged_as": "You are currently logged into GitHub as {{username}}."
+  },
   "auth": {
     "unauth_success": "Unauthentication successful",
-    "sign_out": "Sign-out",
-    "sign_in": "Sign-in"
+    "sign_out": "Sign-out from GitHub",
+    "sign_in": "Sign-in to GitHub"
   },
   "storage": {
     "cannot_restore": "Your graph cannot be restored.",
@@ -129,7 +137,7 @@
     },
     "partitioning": {
       "title": "Partitioning",
-      "description": " To apply appearance or filters differently on different groups of {{items}}, partition your graph using any node qualitative attribute.",
+      "description": "To apply appearance or filters differently on different groups of {{items}}, partition your graph using any node qualitative attribute.",
       "partition": "Partition {{items}} on",
       "status_no_partition": "{{items}} are not partitioned",
       "status_item_preview": "The {{items}} will be grouped into",
@@ -153,6 +161,7 @@
       "edges": "edges"
     },
     "open": {
+      "title": "Open a graph file",
       "local": {
         "title": "Open a local file",
         "dragndrop_text": "Drag'n'drop a GEXF file",
@@ -175,8 +184,9 @@
       }
     },
     "save": {
+      "title": "Save graph",
       "cloud": {
-        "title": "Save in {{provider}} as ...",
+        "title": "Save in {{provider}} as...",
         "field": {
           "filename": "Filename",
           "description": "Description",
@@ -437,6 +447,10 @@
         }
       }
     }
+  },
+  "file": {
+    "title": "Data management",
+    "login_capabilities": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists:"
   },
   "common": {
     "add": "Add",
