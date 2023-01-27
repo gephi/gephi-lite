@@ -136,7 +136,10 @@ export const LayoutsPanel: FC = () => {
       <Select<LayoutOption, false>
         options={options}
         value={option}
-        onChange={setOption}
+        onChange={(option) => {
+          setOption(option);
+          stop();
+        }}
         placeholder={t("layouts.placeholder")}
       />
 

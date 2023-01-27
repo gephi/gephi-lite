@@ -23,7 +23,8 @@ export function useLayouts() {
       if (supervisor) {
         supervisor.stop();
         supervisor.kill();
-        // Save it
+
+        // Save data
         setGraphDataset((graphDataset) => {
           const nodeRenderingData = sigmaGraph.reduceNodes((acc, nodeId, attrs) => {
             acc[nodeId] = {
