@@ -26,7 +26,7 @@ const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
     sigma.setSetting("hoverRenderer", getDrawHover(graphAppearance));
     sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance));
     setIsReady();
-  }, [graphAppearance, graphDataset, sigma]);
+  }, [graphAppearance, graphDataset, sigma, setIsReady]);
 
   return null;
 };

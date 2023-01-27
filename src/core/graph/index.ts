@@ -70,16 +70,10 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   );
 
   // When the fullGraph ref changes, reindex everything:
-  if (updatedKeys.has("fullGraph")) {
+  if (updatedKeys.has("fullGraph") || updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
     refreshSigmaGraph(graphDataset, filtersAtom.get());
     return;
   }
 
   sessionStorage.setItem("dataset", serializeDataset(graphDataset));
-
-  // TODO:
-  // Refresh sigmaGraph when `nodeRenderingData` or `edgeRenderingData` is updated
-  if (updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
-    sigmaGraphAtom.set(dataGraphToSigmaGraph(graphDataset));
-  }
 });

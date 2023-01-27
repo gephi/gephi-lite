@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Modal } from "../../../components/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useTranslation } from "react-i18next";
