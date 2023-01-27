@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Modal } from "../../../components/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,7 @@ import { Loader } from "../../../components/Loader";
 import { useOpenGexf } from "../../../core/graph/useOpenGexf";
 import { useNotifications } from "../../../core/notifications";
 import { usePreferences } from "../../../core/context/dataContexts";
+import { GitHubIcon } from "../../../components/common-icons";
 
 const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 
@@ -23,6 +24,16 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { recentRemoteFiles } = usePreferences();
 
   const { loading, error, openRemoteFile } = useOpenGexf();
+
+  useEffect(() => {
+    if (error) {
+      notify({
+        type: "error",
+        message: t("graph.open.remote.error") as string,
+        title: t("gephi-lite.title") as string,
+      });
+    }
+  }, [error, notify, t]);
 
   return (
     <Modal
@@ -45,8 +56,8 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
           <h3 className="fs-6">{t("welcome.open_recent")}</h3>
           {!!recentRemoteFiles.length && (
             <ul className="list-unstyled">
-              {recentRemoteFiles.map((remoteFile) => (
-                <li className="mb-1" key={remoteFile.filename}>
+              {recentRemoteFiles.map((remoteFile, i) => (
+                <li className="mb-1" key={i}>
                   <button
                     className="btn btn-sm btn-outline-dark"
                     onClick={async () => {
@@ -136,7 +147,6 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
             ))}
           </ul>
         </div>
-        {error && <p className="text-center text-danger">{t("graph.open.remote.error").toString()}</p>}
         {loading && <Loader />}
       </div>
       <div className="d-flex align-items-center w-100">
