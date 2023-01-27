@@ -28,7 +28,12 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
     <Modal
       title={
         <>
-          <img src="gephi-logo.svg" style={{ width: "1em" }} alt={t("welcome.logo") as string} className="me-2" />{" "}
+          <img
+            src={`${process.env.PUBLIC_URL}/gephi-logo.svg`}
+            style={{ width: "1em" }}
+            alt={t("welcome.logo") as string}
+            className="me-2"
+          />{" "}
           {t("welcome.title")}
         </>
       }
@@ -112,7 +117,11 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                 <button
                   className="btn btn-sm btn-outline-dark"
                   onClick={async () => {
-                    await openRemoteFile({ type: "remote", url: `samples/${sample}`, filename: sample });
+                    await openRemoteFile({
+                      type: "remote",
+                      url: `${process.env.PUBLIC_URL}/samples/${sample}`,
+                      filename: sample,
+                    });
                     notify({
                       type: "success",
                       message: t("graph.open.remote.success", { filename: sample }) as string,

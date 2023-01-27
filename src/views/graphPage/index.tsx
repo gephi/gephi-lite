@@ -28,7 +28,9 @@ type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Er
 
 const GephiLiteButton: FC = () => {
   const { t } = useTranslation();
-  return <img src="gephi-logo.svg" style={{ width: "2em" }} alt={t("welcome.logo") as string} />;
+  return (
+    <img src={`${process.env.PUBLIC_URL}/gephi-logo.svg`} style={{ width: "2em" }} alt={t("welcome.logo") as string} />
+  );
 };
 
 export const GraphPage: FC = () => {
@@ -86,11 +88,6 @@ export const GraphPage: FC = () => {
 
             isSessionStorageValid = true;
             setState({ type: "ready" });
-            notify({
-              type: "success",
-              message: t("storage.restore_successful") as string,
-              title: t("gephi-lite.title") as string,
-            });
           }
         }
       } catch (e) {

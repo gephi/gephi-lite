@@ -1,7 +1,6 @@
 import { FC, useRef } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
-import { HomePage } from "../views/HomePage";
 import { ErrorPage } from "../views/ErrorPage";
 import { NotFoundPage } from "../views/NotFoundPage";
 import { GraphPage } from "../views/graphPage";
@@ -22,8 +21,7 @@ export const Root: FC = () => {
         <AtomsContextsRoot>
           <AuthInit />
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/graph" element={<GraphPage />} />
+            <Route path="/" element={<GraphPage />} />
 
             {/* Error pages: */}
             <Route path="/error" element={<ErrorPage />} />
