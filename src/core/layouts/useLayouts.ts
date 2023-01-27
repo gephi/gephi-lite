@@ -1,14 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { clone, pick } from "lodash";
 
 import { useAtom } from "../utils/atoms";
 import { graphDatasetAtom } from "../graph";
 import { GraphDataset } from "../graph/types";
 import { useSigmaGraph } from "../context/dataContexts";
+import { useNotifications } from "../notifications";
 import { WorkerSupervisorInterface } from "./types";
 import { LAYOUTS } from "./collection";
 
 export function useLayouts() {
+  const { t } = useTranslation();
+  const { notify } = useNotifications();
   const sigmaGraph = useSigmaGraph();
   const [, setGraphDataset] = useAtom(graphDatasetAtom);
   const [supervisor, setSupervisor] = useState<WorkerSupervisorInterface | null>(null);
@@ -38,9 +42,15 @@ export function useLayouts() {
             nodeRenderingData,
           };
         });
+
+        notify({
+          type: "info",
+          message: t("layouts.exec.stopped", { layout: "" }).toString(),
+          title: t("layouts.title") as string,
+        });
       }
     };
-  }, [supervisor, setGraphDataset, sigmaGraph]);
+  }, [supervisor, setGraphDataset, sigmaGraph, t, notify]);
 
   const stop = useCallback(() => {
     setSupervisor(null);
