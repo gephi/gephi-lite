@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CgAddR } from "react-icons/cg";
-import { RiFilterFill } from "react-icons/ri";
 import Select from "react-select";
 
 import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
