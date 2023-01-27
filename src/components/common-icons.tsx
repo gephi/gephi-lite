@@ -1,14 +1,14 @@
+import { TbCircles } from "react-icons/tb";
 import { RiFilterFill } from "react-icons/ri";
-import { FaPaintBrush } from "react-icons/fa";
+import { ImFilesEmpty } from "react-icons/im";
 import { BiNetworkChart } from "react-icons/bi";
-import { BsSlashLg, BsCircle, BsGithub } from "react-icons/bs";
-import { ImFilesEmpty, ImDatabase, ImStatsDots } from "react-icons/im";
+import { BsSlashLg, BsCircle, BsGithub, BsPalette, BsCodeSlash } from "react-icons/bs";
 
-export const GraphIcon = ImDatabase;
-export const StatisticsIcon = ImStatsDots;
-export const AppearanceIcon = FaPaintBrush;
+export const GraphIcon = BiNetworkChart;
+export const StatisticsIcon = BsCodeSlash;
+export const AppearanceIcon = BsPalette;
 export const FiltersIcon = RiFilterFill;
-export const LayoutsIcon = BiNetworkChart;
+export const LayoutsIcon = TbCircles;
 export const FileIcon = ImFilesEmpty;
 export const GitHubIcon = BsGithub;
 
