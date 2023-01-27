@@ -111,15 +111,6 @@ const GraphFilters: FC = () => {
   const filters = useFilters();
 
   const { openAllFutureFilters, closeAllPastFilters } = useFiltersActions();
-  const [filtersActive, setFiltersActive] = useState<boolean>(filters.past.length > 0 || filters.future.length === 0);
-
-  useEffect(() => {
-    if (filtersActive) {
-      openAllFutureFilters();
-    } else {
-      closeAllPastFilters();
-    }
-  }, [filtersActive, openAllFutureFilters, closeAllPastFilters]);
 
   return (
     <div>
@@ -129,16 +120,22 @@ const GraphFilters: FC = () => {
             (filters.future.length > 0 && filters.past.length > 0) ||
             (filters.future.length === 0 && filters.past.length === 0)
           }
-          value={filtersActive}
-          onChange={setFiltersActive}
+          value={filters.past.length === 0 && filters.future.length > 0}
+          onChange={(inactive) => {
+            if (inactive) {
+              closeAllPastFilters();
+            } else {
+              openAllFutureFilters();
+            }
+          }}
           leftLabel={
             <>
-              <RiFilterOffLine className="me-1" /> inactive
+              <FiltersIcon className="me-1" /> active
             </>
           }
           rightLabel={
             <>
-              <FiltersIcon className="me-1" /> active
+              <RiFilterOffLine className="me-1" /> inactive
             </>
           }
         />

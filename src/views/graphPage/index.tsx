@@ -39,6 +39,7 @@ type Tool = {
   icon: ComponentType<{ className?: string }>;
   panel: ComponentType;
   count?: number;
+  countStatus?: "danger" | "warning" | "success" | "secondary";
 };
 type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
 type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Error };
@@ -84,6 +85,7 @@ export const GraphPage: FC = () => {
         icon: FiltersIcon,
         panel: FiltersPanel,
         count: filterState.future.length + filterState.past.length,
+        countStatus: filterState.past.length === 0 && filterState.future.length > 0 ? "secondary" : "warning",
       },
       { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
       { type: "filler" },
@@ -163,7 +165,10 @@ export const GraphPage: FC = () => {
                 {t.type === "tool" && (t?.count || 0) > 0 && (
                   <span
                     style={{ fontSize: "10px !important" }}
-                    className="position-absolute translate-middle badge rounded-pill bg-danger"
+                    className={cx(
+                      "position-absolute translate-middle badge rounded-pill",
+                      t.countStatus && `bg-${t.countStatus}`,
+                    )}
                   >
                     {t.count}
                   </span>
