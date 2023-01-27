@@ -38,13 +38,7 @@ export const GraphRendering: FC = () => {
 
   return (
     <div className="stage">
-      <SigmaContainer
-        className={cx("position-absolute inset-0", !isReady && "visually-hidden")}
-        graph={sigmaGraph}
-        settings={{
-          allowInvalidContainer: true,
-        }}
-      >
+      <SigmaContainer className={cx("position-absolute inset-0", !isReady && "visually-hidden")} graph={sigmaGraph}>
         <SettingsController setIsReady={() => setIsReady(true)} />
 
         <ControlsContainer position={"bottom-right"}>

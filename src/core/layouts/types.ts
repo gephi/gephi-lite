@@ -1,3 +1,9 @@
+import Graph from "graphology";
+
+/**
+ * Type for layout parameters
+ * **************************
+ */
 interface BaseLayoutParameter {
   id: string;
   type: string;
@@ -21,27 +27,43 @@ export interface LayoutNumberParameter extends BaseLayoutParameter {
 
 export type LayoutParameter = LayoutBooleanParameter | LayoutNumberParameter;
 
-export interface Layout {
+/**
+ * Layout types
+ * ************
+ */
+export interface BaseLayout {
   id: string;
-  isWorker?: boolean;
+  type: string;
   description?: boolean;
   parameters: Array<LayoutParameter>;
 }
 
-/**
- * State for the layout panel.
- */
-export interface LayoutsState {
-  /**
-   * It's a map where the key is the id of a layout and value is the layout parameter.
-   */
-  layoutsParamaters: { [key: string]: Array<LayoutsState> };
-  /**
-   * Id of the selected layout
-   */
-  selected: string;
-  /**
-   * To know if the layout is running or not
-   */
-  isRunning: boolean;
+type LayoutMapping = { [node: string]: { [dimension: string]: number } };
+
+export interface SyncLayout<P = {}> {
+  id: string;
+  type: "sync";
+  description?: boolean;
+  parameters: Array<LayoutParameter>;
+  run: (graph: Graph, options?: P) => LayoutMapping;
 }
+
+export interface WorkerSupervisorInterface {
+  start: () => void;
+  stop: () => void;
+  kill: () => void;
+  isRunning: () => boolean;
+}
+export interface WorkerSupervisorConstructor<P = unknown> {
+  new (graph: Graph, options?: P): WorkerSupervisorInterface;
+}
+
+export interface WorkerLayout<P = {}> {
+  id: string;
+  type: "worker";
+  description?: boolean;
+  parameters: Array<LayoutParameter>;
+  supervisor: WorkerSupervisorConstructor;
+}
+
+export type Layout = WorkerLayout | SyncLayout;

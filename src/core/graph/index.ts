@@ -79,4 +79,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
   // TODO:
   // Refresh sigmaGraph when `nodeRenderingData` or `edgeRenderingData` is updated
+  if (updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
+    sigmaGraphAtom.set(dataGraphToSigmaGraph(graphDataset));
+  }
 });

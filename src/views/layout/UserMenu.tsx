@@ -41,7 +41,7 @@ export const UserMenu: FC = () => {
                 {origin && origin.type === "cloud" && (
                   <li>
                     <button
-                      title={t("menu.save").toString()}
+                      title={t("menu.save.default").toString()}
                       className="dropdown-item"
                       onClick={async () => {
                         try {

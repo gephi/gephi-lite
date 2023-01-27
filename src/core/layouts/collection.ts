@@ -1,7 +1,11 @@
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/reducers";
-import { LayoutsState, Layout } from "./types";
-import { getEmptyLayoutState } from "./utils";
+import random, { RandomLayoutOptions } from "graphology-layout/random";
+import circular, { CircularLayoutOptions } from "graphology-layout/circular";
+import circlepack, { CirclePackLayoutOptions } from "graphology-layout/circlepack";
+import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
+import FA2Layout from "graphology-layout-forceatlas2/worker";
+import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
+import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
+import { Layout, SyncLayout, WorkerLayout } from "./types";
 
 /**
  * List of available layouts
@@ -9,25 +13,29 @@ import { getEmptyLayoutState } from "./utils";
 export const LAYOUTS: Array<Layout> = [
   {
     id: "random",
-    isWorker: false,
+    type: "sync",
     description: true,
     parameters: [],
-  },
+    run: random,
+  } as SyncLayout<RandomLayoutOptions>,
   {
     id: "circular",
-    isWorker: false,
+    type: "sync",
     description: true,
     parameters: [],
-  },
+    run: circular,
+  } as SyncLayout<CircularLayoutOptions>,
   {
     id: "circlePack",
-    isWorker: false,
+    type: "sync",
     description: true,
     parameters: [],
-  },
+    run: circlepack,
+  } as SyncLayout<CirclePackLayoutOptions>,
   {
     id: "fa2",
-    isWorker: true,
+    type: "worker",
+    supervisor: FA2Layout,
     parameters: [
       {
         id: "adjustSizes",
@@ -55,10 +63,11 @@ export const LAYOUTS: Array<Layout> = [
       { id: "slowDown", type: "number", defaultValue: 1 },
       { id: "strongGravityMode", type: "boolean", defaultValue: false },
     ],
-  },
+  } as WorkerLayout<ForceAtlas2LayoutParameters>,
   {
     id: "force",
-    isWorker: true,
+    type: "worker",
+    supervisor: ForceSupervisor,
     parameters: [
       { id: "attraction", type: "number", description: true, defaultValue: 0.0005 },
       { id: "repulsion", type: "number", description: true, defaultValue: 0.1 },
@@ -66,11 +75,12 @@ export const LAYOUTS: Array<Layout> = [
       { id: "inertia", type: "number", description: true, defaultValue: 0.6 },
       { id: "maxMove", type: "number", description: true, defaultValue: 200 },
     ],
-  },
+  } as WorkerLayout<ForceLayoutSupervisorParameters>,
   {
     id: "noverlap",
-    isWorker: true,
+    type: "worker",
     description: true,
+    supervisor: NoverlapLayout,
     parameters: [
       { id: "gridSize", type: "number", description: true, defaultValue: 0.0005 },
       { id: "margin", type: "number", description: true, defaultValue: 5 },
@@ -78,62 +88,5 @@ export const LAYOUTS: Array<Layout> = [
       { id: "ratio", type: "number", description: true, defaultValue: 1 },
       { id: "speed", type: "number", description: true, defaultValue: 3 },
     ],
-  },
+  } as WorkerLayout<NoverlapLayoutSupervisorParameters>,
 ];
-
-/**
- * Producers:
- * **********
- */
-export const selectLayout: Producer<LayoutsState, [string]> = (layoutId) => {
-  return (state) => ({
-    ...state,
-    selected: layoutId,
-  });
-};
-
-export const startLayout: Producer<LayoutsState, [string]> = (layoutId) => {
-  // TODO: check if id exist in layout list
-  return (state) => ({
-    ...state,
-    isRunning: true,
-  });
-};
-
-export const stopLayout: Producer<LayoutsState, [string]> = (layoutId) => {
-  // TODO: check if id exist in layout list
-  return (state) => ({
-    ...state,
-    isRunning: false,
-  });
-};
-
-export const setParameterLayout: Producer<LayoutsState, [string]> = (layoutId) => {
-  // TODO: check if id exist in layout list
-  return (state) => ({
-    ...state,
-    selected: layoutId,
-  });
-};
-
-export const reinitParameterLayout: Producer<LayoutsState, [string]> = (layoutId) => {
-  // TODO: check if id exist in layout list
-  return (state) => ({
-    ...state,
-    selected: layoutId,
-  });
-};
-
-/**
- * Public API:
- * ***********
- */
-export const layoutsAtom = atom<LayoutsState>(getEmptyLayoutState());
-
-export const layoutsActions = {
-  selectLayout: producerToAction(selectLayout, layoutsAtom),
-  startLayout: producerToAction(startLayout, layoutsAtom),
-  stopLayout: producerToAction(stopLayout, layoutsAtom),
-  setParameterLayout: producerToAction(setParameterLayout, layoutsAtom),
-  reinitParameterLayout: producerToAction(reinitParameterLayout, layoutsAtom),
-} as const;

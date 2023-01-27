@@ -298,10 +298,14 @@
     }
   },
   "layouts": {
-    "title": "Layouts",
+    "title": "Layout",
     "description": "This panel allows computing new coordintaes to nodes of the graph. ",
     "placeholder": "Select a layout algorithm",
-
+    "exec": {
+      "success": "Layout {{layout}} has been applied",
+      "started": "Layout {{layout}} is running",
+      "stopped": "Layout {{layout}} has been stopped"
+    },
     "random": {
       "title": "Random",
       "description": "Random layout positioning every node by choosing each coordinates uniformly at random on the interval [0, 1)"
@@ -403,6 +407,8 @@
   },
   "common": {
     "add": "Add",
+    "all": "All",
+    "apply": "Apply",
     "cancel": "Cancel",
     "submit": "Submit",
     "clear": "Clear",
@@ -422,11 +428,12 @@
     "open_file": "Open {{filename}}",
     "remove": "Remove",
     "save": "Save",
+    "start": "Start",
+    "stop": "Stop",
     "size": "Size",
     "show": "Show",
     "show_more": "Show more",
     "show_less": "Show less",
-    "updated": "Updated",
-    "all": "All"
+    "updated": "Updated"
   }
 }

@@ -1,10 +1,12 @@
 import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
+import { FaPlay, FaStop } from "react-icons/fa";
 
 import { LayoutsIcon } from "../../components/common-icons";
-import { LAYOUTS } from "../../core/layouts";
+import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout } from "../../core/layouts/types";
+import { useLayouts } from "../../core/layouts/useLayouts";
 import { useNotifications } from "../../core/notifications";
 import { BooleanInput, NumberInput } from "../../components/forms/TypedInputs";
 
@@ -14,11 +16,13 @@ type LayoutOption = {
   layout: Layout;
 };
 
-export const LayoutForm: FC<{ layout: Layout; onSuccess: () => void; onCancel: () => void }> = ({
-  layout,
-  onSuccess,
-  onCancel,
-}) => {
+export const LayoutForm: FC<{
+  layout: Layout;
+  onCancel: () => void;
+  onStart: (params: Record<string, unknown>) => void;
+  onStop: () => void;
+  isRunning: boolean;
+}> = ({ layout, onCancel, onStart, onStop, isRunning }) => {
   const { t } = useTranslation();
   const [paramsState, setParamsState] = useState<Record<string, unknown>>(
     layout.parameters.reduce(
@@ -34,7 +38,8 @@ export const LayoutForm: FC<{ layout: Layout; onSuccess: () => void; onCancel: (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSuccess();
+        if (isRunning) onStop();
+        else onStart(paramsState);
       }}
     >
       <h3 className="fs-5 mt-3">{t(`layouts.${layout.id}.title`)}</h3>
@@ -79,7 +84,22 @@ export const LayoutForm: FC<{ layout: Layout; onSuccess: () => void; onCancel: (
           {t("common.cancel")}
         </button>
         <button type="submit" className="btn btn-primary ms-2">
-          {t("common.submit")}
+          {layout.type === "sync" && <>{t("common.apply")}</>}
+          {layout.type === "worker" && (
+            <>
+              {isRunning ? (
+                <>
+                  <FaStop className="me-1" />
+                  {t("common.stop")}
+                </>
+              ) : (
+                <>
+                  <FaPlay className="me-1" />
+                  {t("common.start")}
+                </>
+              )}
+            </>
+          )}
         </button>
       </div>
     </form>
@@ -89,6 +109,7 @@ export const LayoutForm: FC<{ layout: Layout; onSuccess: () => void; onCancel: (
 export const LayoutsPanel: FC = () => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
+  const { isRunning, start, stop } = useLayouts();
 
   const options: Array<LayoutOption> = useMemo(
     () =>
@@ -120,11 +141,41 @@ export const LayoutsPanel: FC = () => {
           <hr />
           <LayoutForm
             layout={option.layout}
-            onSuccess={() => {
-              notify({ type: "success", message: "SUCCESS TODO", title: t("statistics.title") as string });
+            onStart={() => {
+              start(option.layout.id, {});
+              if (option.layout.type === "sync") {
+                notify({
+                  type: "success",
+                  message: t("layouts.exec.success", {
+                    layout: t(`layouts.${option.layout.id}.title`).toString(),
+                  }).toString(),
+                  title: t("layouts.title") as string,
+                });
+              } else {
+                notify({
+                  type: "info",
+                  message: t("layouts.exec.started", {
+                    layout: t(`layouts.${option.layout.id}.title`).toString(),
+                  }).toString(),
+                  title: t("layouts.title") as string,
+                });
+              }
+            }}
+            onStop={() => {
+              stop();
+              notify({
+                type: "info",
+                message: t("layouts.exec.stopped", {
+                  layout: t(`layouts.${option.layout.id}.title`).toString(),
+                }).toString(),
+                title: t("layouts.title") as string,
+              });
+            }}
+            isRunning={isRunning}
+            onCancel={() => {
+              stop();
               setOption(null);
             }}
-            onCancel={() => setOption(null)}
           />
         </>
       )}
