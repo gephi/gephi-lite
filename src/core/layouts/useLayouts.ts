@@ -74,7 +74,6 @@ export function useLayouts() {
               };
             }
           });
-          console.log(nodeRenderingData);
           return {
             ...graphDataset,
             nodeRenderingData,

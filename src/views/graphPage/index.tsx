@@ -16,13 +16,20 @@ import { graphDatasetAtom, refreshSigmaGraph } from "../../core/graph";
 import { filtersAtom } from "../../core/filters";
 import { appearanceAtom } from "../../core/appearance";
 import { useNotifications } from "../../core/notifications";
+import { useFilters } from "../../core/context/dataContexts";
 import { parseDataset } from "../../core/graph/utils";
 import { getEmptyFiltersState, parseFiltersState } from "../../core/filters/utils";
 import { getEmptyAppearanceState, parseAppearanceState } from "../../core/appearance/utils";
 import { useModal } from "../../core/modals";
 import { WelcomeModal } from "./modals/WelcomeModal";
 
-type Tool = { type: "tool"; label: string; icon: ComponentType<{ className?: string }>; panel: ComponentType };
+type Tool = {
+  type: "tool";
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  panel: ComponentType;
+  count?: number;
+};
 type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
 type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Error };
 
@@ -39,6 +46,7 @@ export const GraphPage: FC = () => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
+  const filterState = useFilters();
 
   const TOOLS: (Tool | Button | { type: "space" })[] = useMemo(
     () => [
@@ -59,10 +67,16 @@ export const GraphPage: FC = () => {
       { type: "tool", label: t("statistics.title"), icon: StatisticsIcon, panel: StatisticsPanel },
       { type: "space" },
       { type: "tool", label: t("appearance.title"), icon: AppearanceIcon, panel: AppearancePanel },
-      { type: "tool", label: t("filters.title"), icon: FiltersIcon, panel: FiltersPanel },
+      {
+        type: "tool",
+        label: t("filters.title"),
+        icon: FiltersIcon,
+        panel: FiltersPanel,
+        count: filterState.future.length + filterState.past.length,
+      },
       { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
     ],
-    [openModal, t],
+    [openModal, t, filterState],
   );
 
   useEffect(() => {
@@ -120,7 +134,7 @@ export const GraphPage: FC = () => {
                 key={i}
                 title={t.label}
                 type="button"
-                className={cx("text-center fs-5", isEqual(t, tool) && "active")}
+                className={cx("text-center fs-5 position-relative", isEqual(t, tool) && "active")}
                 onClick={() => {
                   if (t.type === "tool") {
                     if (t === tool) setTool(null);
@@ -131,6 +145,14 @@ export const GraphPage: FC = () => {
                 }}
               >
                 <t.icon />
+                {t.type === "tool" && (t?.count || 0) > 0 && (
+                  <span
+                    style={{ fontSize: "10px !important" }}
+                    className="position-absolute translate-middle badge rounded-pill bg-danger"
+                  >
+                    {t.count}
+                  </span>
+                )}
               </button>
             ),
           )}
