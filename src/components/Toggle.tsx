@@ -13,7 +13,8 @@ export const Toggle: FC<{
   leftLabel: JSX.Element | string;
   rightLabel: JSX.Element | string;
   className?: string;
-}> = ({ value, onChange, leftLabel, rightLabel, className }) => {
+  disabled?: boolean;
+}> = ({ value, onChange, leftLabel, rightLabel, className, disabled }) => {
   return (
     <div className={cx("text-nowrap form-switch d-flex align-items-center ps-0", className)}>
       <button
@@ -21,6 +22,7 @@ export const Toggle: FC<{
         onClick={() => {
           onChange(false);
         }}
+        disabled={disabled}
       >
         {leftLabel}
       </button>
@@ -31,6 +33,7 @@ export const Toggle: FC<{
         className="form-check-input d-inline-block position-relative mx-2 cursor-pointer"
         checked={value}
         onChange={(e) => onChange(e.target.checked)}
+        disabled={disabled}
       />
 
       <button
@@ -38,6 +41,7 @@ export const Toggle: FC<{
         onClick={() => {
           onChange(true);
         }}
+        disabled={disabled}
       >
         {rightLabel}
       </button>

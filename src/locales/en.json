@@ -103,10 +103,13 @@
   },
   "filters": {
     "title": "Filters",
+    "description": "This panel allows to filter the graph by stacking filters.",
     "custom_script": "Custom script",
     "filter": "Filter",
     "using": "Using",
-    "topological": "Topology"
+    "topological": "Topology",
+    "desactivated": "Downstream filters are desactivated during upstream filter edition",
+    "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter."
   },
   "graph": {
     "title": "Graph",

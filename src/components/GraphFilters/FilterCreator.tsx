@@ -29,6 +29,7 @@ export const FilterCreator: FC = () => {
 
   useEffect(() => {
     setSelectedFilterOption(null);
+    setFilterCreation(null);
     if (filterApplicationType === "topological") {
       // TODO: topological filters
       const topologicalFiltersOptions: FilterOption[] = [
@@ -77,14 +78,12 @@ export const FilterCreator: FC = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (filterCreation !== null) addFilter(filterCreation);
+        if (filterCreation !== null) {
+          addFilter(filterCreation);
+        }
       }}
       className="d-flex align-items-center "
     >
-      <RiFilterFill className="flex-shrink-0" />
-      <button type="submit" className="btn btn-icon" disabled={filterCreation === null}>
-        <CgAddR />
-      </button>
       <div className="d-flex flex-column ms-2 w-100">
         <div>
           {t("filters.filter")}{" "}
@@ -128,6 +127,11 @@ export const FilterCreator: FC = () => {
               isOptionDisabled={(option) => !!option.disabled}
             />
           )}
+        </div>
+        <div className="d-flex justify-content-end mt-3">
+          <button type="submit" className="btn btn-primary" disabled={filterCreation === null}>
+            <CgAddR /> {t("common.add")} {t("filters.filter")}
+          </button>
         </div>
       </div>
     </form>

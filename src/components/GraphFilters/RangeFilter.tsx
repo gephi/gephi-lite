@@ -35,12 +35,13 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
       <div className="d-flex">
         <div className="d-flex align-items-center mt-1">
           <input
-            className="form-control form-control-sm w-5"
+            className="form-control form-control-sm"
             id="min"
             type="number"
             min={dataMinMax.min}
             max={filterMinMax.max}
             value={filterMinMax.min}
+            placeholder={"" + dataMinMax.min}
             onChange={(e) => {
               const newMin = e.target.value ? +e.target.value : undefined;
               setFilterMinMax({ min: newMin, max: filterMinMax.max });
@@ -53,11 +54,12 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         </div>
         <div className="d-flex align-items-center mt-1 ms-1">
           <input
-            className="form-control form-control-sm w-5"
+            className="form-control form-control-sm "
             id="max"
             type="number"
             min={filterMinMax.min}
             max={dataMinMax.max}
+            placeholder={"" + dataMinMax.max}
             value={filterMinMax.max}
             onChange={(e) => {
               const newMax = e.target.value ? +e.target.value : undefined;
