@@ -36,7 +36,7 @@ export function useLayouts() {
               ...pick(attrs, ["x", "y"]),
             };
             return acc;
-          }, {} as GraphDataset["nodeRenderingData"]);
+          }, graphDataset.nodeRenderingData);
           return {
             ...graphDataset,
             nodeRenderingData,
@@ -84,6 +84,7 @@ export function useLayouts() {
               };
             }
           });
+
           return {
             ...graphDataset,
             nodeRenderingData,
