@@ -1,5 +1,4 @@
 import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +10,6 @@ import { Loader } from "../../../../components/Loader";
 import { DropInput } from "../../../../components/DropInput";
 
 export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
-  const navigate = useNavigate();
   const { notify } = useNotifications();
   const { t } = useTranslation();
   const { loading, error, openLocalFile } = useOpenGexf();
@@ -48,7 +46,6 @@ export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                   size: file.size,
                   source: file,
                 });
-                navigate("/graph");
                 notify({
                   type: "success",
                   message: t("graph.open.local.success", { filename: file.name }).toString(),

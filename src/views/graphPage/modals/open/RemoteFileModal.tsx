@@ -1,5 +1,4 @@
 import { FC, useCallback, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
@@ -16,7 +15,6 @@ function extractFilename(url: string): string {
 }
 
 export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
-  const navigate = useNavigate();
   const { notify } = useNotifications();
   const { t } = useTranslation();
   const { loading, error, openRemoteFile } = useOpenGexf();
@@ -31,14 +29,13 @@ export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
       try {
         const file: RemoteFile = { type: "remote", url, filename: extractFilename(url) };
         await openRemoteFile(file);
-        navigate("/graph");
         notify({ type: "success", message: t("graph.open.remote.success", { filename: file.filename }).toString() });
         cancel();
       } catch (e) {
         console.error(e);
       }
     }
-  }, [isFormValid, url, cancel, notify, navigate, t, openRemoteFile]);
+  }, [isFormValid, url, cancel, notify, t, openRemoteFile]);
 
   return (
     <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()}>

@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaLock, FaFolderOpen, FaExternalLinkAlt, FaSync, FaTimes } from "react-icons/fa";
 import byteSize from "byte-size";
@@ -16,7 +15,6 @@ const PAGINATION_SIZE = 10;
 
 export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const [user] = useConnectedUser();
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const { loading, error, getFiles, openFile } = useCloudProvider();
   // list files retrived from the cloud
@@ -126,7 +124,6 @@ export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
             if (selected) {
               try {
                 await openFile(selected);
-                navigate("/graph");
                 cancel();
               } catch (e) {
                 console.error(e);
