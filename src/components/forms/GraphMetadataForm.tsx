@@ -85,18 +85,20 @@ export const GraphMetadataForm: FC = () => {
           ))}
         </select>
       </div>
-      <button
-        className="btn btn-primary"
-        type="submit"
-        title={`${t("common.save")} ${t("graph.metadata.title")}`}
-        disabled={graphMetadata === null}
-        onClick={(e) => {
-          e.preventDefault();
-          setGraphMeta(graphMetadata);
-        }}
-      >
-        {t("common.save")}
-      </button>
+      <div className="d-flex justify-content-end">
+        <button
+          className="btn btn-primary"
+          type="submit"
+          title={`${t("common.save")} ${t("graph.metadata.title")}`}
+          disabled={graphMetadata === null}
+          onClick={(e) => {
+            e.preventDefault();
+            setGraphMeta(graphMetadata);
+          }}
+        >
+          {t("common.save")}
+        </button>
+      </div>
     </form>
   );
 };

@@ -152,7 +152,7 @@
       "missing_partition": "They are grouped into a 'missing value' partition."
     },
     "model": {
-      "title": "Model",
+      "title": "Attributes' Model",
       "attribute": {
         "qualitative": "Qualitative",
         "quantitative": "Quantitative"
