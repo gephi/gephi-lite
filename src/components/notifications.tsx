@@ -63,7 +63,7 @@ const Notification: FC<{
 
   return (
     <div
-      className={cx("toast fade", show ? "show" : "hide", CLASSES_TOAST[notification.type])}
+      className={cx("toast fade m-2", show ? "show" : "hide", CLASSES_TOAST[notification.type])}
       onMouseEnter={cancel}
       onMouseLeave={reschedule}
     >

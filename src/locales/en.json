@@ -1,7 +1,11 @@
 {
-  "home": {
-    "greeting": "Hi",
-    "blabla": "Pleased to meet you"
+  "welcome": {
+    "title": "Welcome to Gephi Lite",
+    "logo": "Gephi logo",
+    "open_recent": "Open recent",
+    "open_graph": "Open graph file",
+    "no_recent": "No remote file has been opened in that browser yet.",
+    "samples": "Samples"
   },
   "gephi-lite": {
     "title": "Gephi Lite"

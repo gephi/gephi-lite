@@ -5,6 +5,7 @@ import { filtersActions, filtersAtom } from "../filters";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
+import { preferencesActions, preferencesAtom } from "../preferences";
 
 /**
  * Helpers:
@@ -35,6 +36,7 @@ const ATOMS = {
   appearance: appearanceAtom,
   sigmaGraph: sigmaGraphAtom,
   graphDataset: graphDatasetAtom,
+  preferences: preferencesAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -43,6 +45,7 @@ const CONTEXTS = {
   appearance: createContext(ATOMS.appearance),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
   graphDataset: createContext(ATOMS.graphDataset),
+  preferences: createContext(ATOMS.preferences),
 };
 
 /**
@@ -67,7 +70,9 @@ export const useFilters = makeUseAtom(CONTEXTS.filters);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
+export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 
 export const useFiltersActions = makeUseActions(filtersActions);
 export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
+export const usePreferencesActions = makeUseActions(preferencesActions);

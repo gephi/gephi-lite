@@ -6,11 +6,19 @@ import { useWriteAtom } from "../utils/atoms";
 import { RemoteFile, LocalFile } from "../graph/types";
 import { initializeGraphDataset } from "../graph/utils";
 import { graphDatasetAtom } from "../graph";
+import { usePreferencesActions } from "../context/dataContexts";
+import { filtersAtom } from "../filters";
+import { appearanceAtom } from "../appearance";
+import { getEmptyFiltersState } from "../filters/utils";
+import { getEmptyAppearanceState } from "../appearance/utils";
 
 export function useOpenGexf() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const setGraphDataset = useWriteAtom(graphDatasetAtom);
+  const setFilters = useWriteAtom(filtersAtom);
+  const setAppearance = useWriteAtom(appearanceAtom);
+  const { addRemoteFile } = usePreferencesActions();
 
   const openRemoteFile = useCallback(
     async (remote: RemoteFile) => {
@@ -21,6 +29,9 @@ export function useOpenGexf() {
         const gexf = await response.text();
         const graph = parse(Graph, gexf);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
+        setFilters(getEmptyFiltersState());
+        setAppearance(getEmptyAppearanceState());
+        addRemoteFile(remote);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -28,7 +39,7 @@ export function useOpenGexf() {
         setLoading(false);
       }
     },
-    [setGraphDataset],
+    [addRemoteFile, setAppearance, setFilters, setGraphDataset],
   );
 
   const openLocalFile = useCallback(
@@ -39,6 +50,8 @@ export function useOpenGexf() {
         const content = await file.source.text();
         const graph = parse(Graph, content);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
+        setFilters(getEmptyFiltersState());
+        setAppearance(getEmptyAppearanceState());
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -46,7 +59,7 @@ export function useOpenGexf() {
         setLoading(false);
       }
     },
-    [setGraphDataset],
+    [setAppearance, setFilters, setGraphDataset],
   );
 
   return { loading, error, openRemoteFile, openLocalFile };

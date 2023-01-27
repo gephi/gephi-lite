@@ -1,9 +1,9 @@
+import { isEqual } from "lodash";
 import { ComponentType, FC, useEffect, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
 import { useTranslation } from "react-i18next";
 
-import { useOpenGexf } from "../../core/graph/useOpenGexf";
 import { Layout } from "../layout";
 import { GraphDataPanel } from "./GraphDataPanel";
 import { StatisticsPanel } from "./StatisticsPanel";
@@ -11,7 +11,6 @@ import { AppearancePanel } from "./AppearancePanel";
 import { FiltersPanel } from "./FiltersPanel";
 import { LayoutsPanel } from "./LayoutsPanel";
 import { GraphRendering } from "./GraphRendering";
-import { isEqual } from "lodash";
 import { AppearanceIcon, FiltersIcon, GraphIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
 import { graphDatasetAtom, refreshSigmaGraph } from "../../core/graph";
 import { filtersAtom } from "../../core/filters";
@@ -19,21 +18,40 @@ import { appearanceAtom } from "../../core/appearance";
 import { useNotifications } from "../../core/notifications";
 import { parseDataset } from "../../core/graph/utils";
 import { getEmptyFiltersState, parseFiltersState } from "../../core/filters/utils";
-import { parseAppearanceState } from "../../core/appearance/utils";
+import { getEmptyAppearanceState, parseAppearanceState } from "../../core/appearance/utils";
+import { useModal } from "../../core/modals";
+import { WelcomeModal } from "./modals/WelcomeModal";
 
-type Tool = { type: "tool"; label: string; icon: ComponentType; panel: ComponentType };
-
+type Tool = { type: "tool"; label: string; icon: ComponentType<{ className?: string }>; panel: ComponentType };
+type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
 type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Error };
+
+const GephiLiteButton: FC = () => {
+  const { t } = useTranslation();
+  return <img src="gephi-logo.svg" style={{ width: "2em" }} alt={t("welcome.logo") as string} />;
+};
 
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
   const [state, setState] = useState<State>({ type: "idle" });
-  const { openRemoteFile } = useOpenGexf();
   const { t } = useTranslation();
   const { notify } = useNotifications();
+  const { openModal } = useModal();
 
-  const TOOLS: (Tool | { type: "space" })[] = useMemo(
+  const TOOLS: (Tool | Button | { type: "space" })[] = useMemo(
     () => [
+      {
+        type: "button",
+        label: t("gephi-lite.title"),
+        icon: GephiLiteButton,
+        onClick: () => {
+          openModal({
+            component: WelcomeModal,
+            arguments: {},
+          });
+        },
+      },
+      { type: "space" },
       { type: "tool", label: t("graph.title"), icon: GraphIcon, panel: GraphDataPanel },
       { type: "space" },
       { type: "tool", label: t("statistics.title"), icon: StatisticsIcon, panel: StatisticsPanel },
@@ -42,7 +60,7 @@ export const GraphPage: FC = () => {
       { type: "tool", label: t("filters.title"), icon: FiltersIcon, panel: FiltersPanel },
       { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
     ],
-    [t],
+    [openModal, t],
   );
 
   useEffect(() => {
@@ -63,8 +81,8 @@ export const GraphPage: FC = () => {
             refreshSigmaGraph(dataset, filters || getEmptyFiltersState());
 
             graphDatasetAtom.set(dataset);
-            if (filters) filtersAtom.set(filters);
-            if (appearance) appearanceAtom.set(appearance);
+            filtersAtom.set(filters || getEmptyFiltersState());
+            appearanceAtom.set(appearance || getEmptyAppearanceState());
 
             isSessionStorageValid = true;
             setState({ type: "ready" });
@@ -83,13 +101,10 @@ export const GraphPage: FC = () => {
         });
       } finally {
         if (!isSessionStorageValid)
-          openRemoteFile({ type: "remote", filename: "arctic.gexf", url: "/gephi-lite/arctic.gexf" })
-            .then(() => {
-              setState({ type: "ready" });
-            })
-            .catch((error) => {
-              setState({ type: "error", error: error as Error });
-            });
+          openModal({
+            component: WelcomeModal,
+            arguments: {},
+          });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,8 +123,15 @@ export const GraphPage: FC = () => {
                 key={i}
                 title={t.label}
                 type="button"
-                className={cx("text-center", isEqual(t, tool) && "active")}
-                onClick={() => (t === tool ? setTool(null) : setTool(t))}
+                className={cx("text-center fs-5", isEqual(t, tool) && "active")}
+                onClick={() => {
+                  if (t.type === "tool") {
+                    if (t === tool) setTool(null);
+                    else setTool(t);
+                  } else if (t.type === "button") {
+                    t.onClick();
+                  }
+                }}
               >
                 <t.icon />
               </button>
@@ -129,7 +151,6 @@ export const GraphPage: FC = () => {
           </div>
         )}
         <div className="filler"></div>
-        {/*<div className="right-panel border-start bg-white"></div>*/}
       </div>
     </Layout>
   );

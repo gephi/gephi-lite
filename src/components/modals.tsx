@@ -32,7 +32,14 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
 
   return (
     <>
-      <div role="dialog" className="modal fade show" style={{ display: "block" }}>
+      <div
+        role="dialog"
+        className="modal fade show"
+        style={{ display: "block" }}
+        onClick={(e) => {
+          if (onClose && e.target === e.currentTarget) onClose();
+        }}
+      >
         <div
           role="document"
           className={cx("modal-dialog", "modal-dialog-centered", "modal-dialog-scrollable", className)}

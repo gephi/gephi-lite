@@ -2,12 +2,12 @@ import { omit } from "lodash";
 import Sigma from "sigma";
 
 import { atom } from "../utils/atoms";
+import { filtersAtom } from "../filters";
+import { FiltersState } from "../filters/types";
+import { datasetToFilteredSigmaGraph } from "../filters/utils";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
-import { filtersAtom } from "../filters";
-import { datasetToFilteredSigmaGraph } from "../filters/utils";
-import { FiltersState } from "../filters/types";
 
 /**
  * Producers:
