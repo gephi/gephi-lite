@@ -4,17 +4,19 @@ import Select from "react-select";
 import { TermsFilterType } from "../../core/filters/types";
 import { graphDatasetAtom } from "../../core/graph";
 import { useFiltersActions } from "../../core/context/dataContexts";
-import { flatMap, uniq } from "lodash";
+import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { toString } from "../../core/utils/casting";
 import { useTranslation } from "react-i18next";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   const { replaceCurrentFilter } = useFiltersActions();
 
-  const [dataTerms, setDataTerms] = useState<string[]>([]);
+  const { t } = useTranslation();
+
+  const [dataTerms, setDataTerms] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const terms = uniq(
+    const terms = countBy(
       flatMap(
         filter.itemType === "nodes" ? graphDatasetAtom.get().nodeData : graphDatasetAtom.get().edgeData,
         (nodeData) => {
@@ -22,6 +24,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           return [toString(v)];
         },
       ) as string[],
+      identity,
     );
     setDataTerms(terms);
   }, [filter]);
@@ -34,7 +37,10 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           replaceCurrentFilter({ ...filter, terms: new Set(options.map((o) => o.value)) });
         }}
         isMulti
-        options={dataTerms.map((term) => ({ label: term, value: term }))}
+        options={sortBy(toPairs(dataTerms), ([term, nbOcc]) => -1 * nbOcc).map(([term, nbOcc]) => ({
+          label: `${term} (${nbOcc} ${t(`graph.model.${filter.itemType}`)})`,
+          value: term,
+        }))}
       />
     </>
   );
