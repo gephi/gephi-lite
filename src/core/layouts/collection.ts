@@ -15,21 +15,60 @@ export const LAYOUTS: Array<Layout> = [
     id: "random",
     type: "sync",
     description: true,
-    parameters: [],
+    parameters: [
+      {
+        id: "center",
+        type: "number",
+        description: true,
+        defaultValue: 0.5,
+      },
+      {
+        id: "scale",
+        type: "number",
+        description: true,
+        defaultValue: 1,
+      },
+    ],
     run: random,
   } as SyncLayout<RandomLayoutOptions>,
   {
     id: "circular",
     type: "sync",
     description: true,
-    parameters: [],
+    parameters: [
+      {
+        id: "center",
+        type: "number",
+        description: true,
+        defaultValue: 0.5,
+      },
+      {
+        id: "scale",
+        type: "number",
+        description: true,
+        defaultValue: 1,
+      },
+    ],
     run: circular,
   } as SyncLayout<CircularLayoutOptions>,
   {
     id: "circlePack",
     type: "sync",
     description: true,
-    parameters: [],
+    parameters: [
+      {
+        id: "center",
+        type: "number",
+        description: true,
+        defaultValue: 0.5,
+      },
+      {
+        id: "scale",
+        type: "number",
+        description: true,
+        defaultValue: 1,
+      },
+    ],
     run: circlepack,
   } as SyncLayout<CirclePackLayoutOptions>,
   {
@@ -72,7 +111,7 @@ export const LAYOUTS: Array<Layout> = [
       { id: "attraction", type: "number", description: true, defaultValue: 0.0005 },
       { id: "repulsion", type: "number", description: true, defaultValue: 0.1 },
       { id: "gravity", type: "number", description: true, defaultValue: 0.0001 },
-      { id: "inertia", type: "number", description: true, defaultValue: 0.6 },
+      { id: "inertia", type: "number", description: true, defaultValue: 0.6, min: 0, max: 1 },
       { id: "maxMove", type: "number", description: true, defaultValue: 200 },
     ],
   } as WorkerLayout<ForceLayoutSupervisorParameters>,
@@ -82,7 +121,7 @@ export const LAYOUTS: Array<Layout> = [
     description: true,
     supervisor: NoverlapLayout,
     parameters: [
-      { id: "gridSize", type: "number", description: true, defaultValue: 0.0005 },
+      { id: "gridSize", type: "number", description: true, defaultValue: 20 },
       { id: "margin", type: "number", description: true, defaultValue: 5 },
       { id: "expansion", type: "number", description: true, defaultValue: 1.1 },
       { id: "ratio", type: "number", description: true, defaultValue: 1 },

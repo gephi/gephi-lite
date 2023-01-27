@@ -40,7 +40,7 @@ export function useLayouts() {
         });
       }
     };
-  }, [supervisor]);
+  }, [supervisor, setGraphDataset, sigmaGraph]);
 
   const stop = useCallback(() => {
     setSupervisor(null);
@@ -48,7 +48,7 @@ export function useLayouts() {
   }, []);
 
   const start = useCallback(
-    (id: string, param: any) => {
+    (id: string, params: any) => {
       setIsRunning(true);
       setSupervisor(null);
 
@@ -58,7 +58,7 @@ export function useLayouts() {
       // Sync layout
       if (layout && layout.type === "sync") {
         // generate positions
-        const positions = layout.run(sigmaGraph, param);
+        const positions = layout.run(sigmaGraph, { settings: params });
 
         // Save it
         setGraphDataset((graphDataset) => {
@@ -86,7 +86,7 @@ export function useLayouts() {
 
       // Sync layout
       if (layout && layout.type === "worker") {
-        const worker = new layout.supervisor(sigmaGraph, param);
+        const worker = new layout.supervisor(sigmaGraph, { settings: params });
         worker.start();
         setSupervisor(worker);
       }

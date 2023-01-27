@@ -9,7 +9,6 @@ export function getEmptyPreferences(): Preferences {
 export function getCurrentPreferences(): Preferences {
   try {
     const rawPreferences = localStorage.getItem("preferences");
-    console.log(rawPreferences);
     const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
     return preferences || getEmptyPreferences();
   } catch (e) {

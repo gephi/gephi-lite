@@ -308,15 +308,45 @@
     },
     "random": {
       "title": "Random",
-      "description": "Random layout positioning every node by choosing each coordinates uniformly at random on the interval [0, 1)"
+      "description": "Random layout positioning every node by choosing each coordinates uniformly at random on the interval [0, 1)",
+      "parameters": {
+        "scale": {
+          "title": "Scale",
+          "description": "Scale of the layout"
+        },
+        "center": {
+          "title": "Center",
+          "description": "Center of the layout"
+        }
+      }
     },
     "circular": {
       "title": "Circular",
-      "description": "Arranges the node in a circle"
+      "description": "Arranges the node in a circle",
+      "parameters": {
+        "scale": {
+          "title": "Scale",
+          "description": "Scale of the layout"
+        },
+        "center": {
+          "title": "Center",
+          "description": "Center of the layout"
+        }
+      }
     },
     "circlePack": {
       "title": "CirclePack",
-      "description": "Arranges the nodes as a bubble chart, according to specified attributes"
+      "description": "Arranges the nodes as a bubble chart, according to specified attributes",
+      "parameters": {
+        "scale": {
+          "title": "Scale",
+          "description": "Scale of the layout"
+        },
+        "center": {
+          "title": "Center",
+          "description": "Center of the layout"
+        }
+      }
     },
     "fa2": {
       "title": "ForceAtlas2",

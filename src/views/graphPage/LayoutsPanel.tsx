@@ -2,6 +2,7 @@ import { FC, useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
+import { isNil } from "lodash";
 
 import { LayoutsIcon } from "../../components/common-icons";
 import { LAYOUTS } from "../../core/layouts/collection";
@@ -31,7 +32,7 @@ export const LayoutForm: FC<{
       layout.parameters.reduce(
         (iter, param) => ({
           ...iter,
-          [param.id]: param.defaultValue || undefined,
+          [param.id]: !isNil(param.defaultValue) ? param.defaultValue : undefined,
         }),
         {},
       ),
@@ -63,6 +64,7 @@ export const LayoutForm: FC<{
                     : undefined
                 }
                 value={paramsState[param.id] as number}
+                disabled={isRunning}
                 onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
               />
             )}
@@ -76,6 +78,7 @@ export const LayoutForm: FC<{
                     : undefined
                 }
                 value={paramsState[param.id] as boolean}
+                disabled={isRunning}
                 onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
               />
             )}
@@ -148,8 +151,8 @@ export const LayoutsPanel: FC = () => {
           <hr />
           <LayoutForm
             layout={option.layout}
-            onStart={() => {
-              start(option.layout.id, {});
+            onStart={(params) => {
+              start(option.layout.id, params);
               if (option.layout.type === "sync") {
                 notify({
                   type: "success",
