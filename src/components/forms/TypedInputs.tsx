@@ -64,8 +64,8 @@ export const BooleanInput: FC<
           type="checkbox"
           className={cx("form-check-input", className)}
           id={id}
-          checked={!!value}
-          onChange={(e) => onChange(!!e.target.value)}
+          checked={value ?? false}
+          onChange={(e) => onChange(!!e.target.checked)}
         />
         <label htmlFor={id} className="form-check-label small ms-1">
           {label}

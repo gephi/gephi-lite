@@ -21,7 +21,6 @@ export function useLayouts() {
   useEffect(() => {
     return () => {
       if (supervisor) {
-        console.log("kill");
         supervisor.stop();
         supervisor.kill();
         // Save it
@@ -86,7 +85,6 @@ export function useLayouts() {
 
       // Sync layout
       if (layout && layout.type === "worker") {
-        console.log("create worker");
         const worker = new layout.supervisor(sigmaGraph, param);
         worker.start();
         setSupervisor(worker);

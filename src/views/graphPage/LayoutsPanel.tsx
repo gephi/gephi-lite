@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
@@ -24,15 +24,19 @@ export const LayoutForm: FC<{
   isRunning: boolean;
 }> = ({ layout, onCancel, onStart, onStop, isRunning }) => {
   const { t } = useTranslation();
-  const [paramsState, setParamsState] = useState<Record<string, unknown>>(
-    layout.parameters.reduce(
-      (iter, param) => ({
-        ...iter,
-        [param.id]: param.defaultValue || undefined,
-      }),
-      {},
-    ),
-  );
+  const [paramsState, setParamsState] = useState<Record<string, unknown>>({});
+
+  useEffect(() => {
+    setParamsState(
+      layout.parameters.reduce(
+        (iter, param) => ({
+          ...iter,
+          [param.id]: param.defaultValue || undefined,
+        }),
+        {},
+      ),
+    );
+  }, [layout]);
 
   return (
     <form
