@@ -1,12 +1,10 @@
-import { every, flatMap, map, uniq } from "lodash";
-import { FC, useEffect, useState } from "react";
-import iwanthue from "iwanthue";
-import { isColor } from "./utils";
-import { ItemType } from "../../../core/types";
-import { PartitionColor } from "../../../core/appearance/types";
-import { graphDatasetAtom } from "../../../core/graph";
+import { map } from "lodash";
+import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AnimateHeight from "react-animate-height";
+
+import { ItemType } from "../../../core/types";
+import { PartitionColor } from "../../../core/appearance/types";
 
 export const ColorPartitionEditor: FC<{
   itemType: ItemType;
@@ -15,31 +13,6 @@ export const ColorPartitionEditor: FC<{
 }> = ({ itemType, color, setColor }) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
-
-  // init palette
-  useEffect(() => {
-    const values = uniq(
-      flatMap(graphDatasetAtom.get().nodeData, (nodeData) => {
-        const v = nodeData[color.field];
-        if (typeof v === "number" || (typeof v === "string" && !!v)) return [v + ""];
-        return [];
-      }),
-    ) as string[];
-
-    if (every(values, (v) => isColor(v))) {
-      setColor({
-        ...color,
-        colorPalette: values.reduce((iter, v) => ({ ...iter, [v]: v }), {}),
-      });
-    } else {
-      const palette = iwanthue(values.length);
-      setColor({
-        ...color,
-        colorPalette: values.reduce((iter, v, i) => ({ ...iter, [v]: palette[i] }), {}),
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [color.field]);
 
   return (
     <div className="mt-1">

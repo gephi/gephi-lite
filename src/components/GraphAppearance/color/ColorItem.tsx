@@ -1,4 +1,8 @@
+import Select from "react-select";
 import { FC, useMemo } from "react";
+import { flatMap, uniq } from "lodash";
+import { useTranslation } from "react-i18next";
+
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ColorFixedEditor } from "./ColorFixedEditor";
@@ -6,9 +10,9 @@ import { ItemType } from "../../../core/types";
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
 import { FieldModel } from "../../../core/graph/types";
-import { useTranslation } from "react-i18next";
-import Select from "react-select";
 import { Color } from "../../../core/appearance/types";
+import { graphDatasetAtom } from "../../../core/graph";
+import { getPalette } from "./utils";
 
 type ColorOption = { value: string; label: string | JSX.Element; field?: string; type: string };
 
@@ -96,10 +100,19 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 missingColor: baseValue,
               });
             } else {
+              const field = option.field as string;
+              const values = uniq(
+                flatMap(graphDatasetAtom.get().nodeData, (nodeData) => {
+                  const v = nodeData[field];
+                  if (typeof v === "number" || (typeof v === "string" && !!v)) return [v + ""];
+                  return [];
+                }),
+              ) as string[];
+
               setColorAppearance(itemType, {
                 type: "partition",
-                field: option.field,
-                colorPalette: {},
+                field,
+                colorPalette: getPalette(values),
                 missingColor: baseValue,
               });
             }
