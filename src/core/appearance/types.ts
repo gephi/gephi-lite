@@ -1,3 +1,5 @@
+import { ItemData } from "../graph/types";
+
 interface NoFieldValue<T extends string> {
   type: T;
   field?: undefined;
@@ -60,6 +62,9 @@ export type FixedLabelSize = NoFieldValue<"fixed"> & { value: number };
 export type ItemLabelSize = NoFieldValue<"item"> & { coef: number; adaptsToZoom: boolean };
 export type LabelSize = FixedLabelSize | ItemLabelSize;
 
+/**
+ * This state contains everything needed to generate the visual getters:
+ */
 export interface AppearanceState {
   showEdges: boolean;
   nodesSize: Size;
@@ -70,4 +75,21 @@ export interface AppearanceState {
   edgesLabel: Label;
   nodesLabelSize: LabelSize;
   edgesLabelSize: LabelSize;
+}
+
+export type SizeGetter = (itemId: string, data: ItemData) => number;
+export type ColorGetter = (itemId: string, data: ItemData) => string;
+export type LabelGetter = (itemId: string, data: ItemData) => string | null;
+
+/**
+ * This state contains the visual getters, ie. the functions to get a node or
+ * edge size, color or label:
+ */
+export interface VisualGetters {
+  getNodeSize: SizeGetter | null;
+  getNodeColor: ColorGetter | null;
+  getNodeLabel: LabelGetter | null;
+  getEdgeSize: SizeGetter | null;
+  getEdgeColor: ColorGetter | null;
+  getEdgeLabel: LabelGetter | null;
 }

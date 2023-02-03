@@ -1,6 +1,5 @@
 import { forEach, isNumber, mapValues, omit, sortBy, take, uniq } from "lodash";
 import Graph, { MultiGraph } from "graphology";
-import Sigma from "sigma";
 
 import {
   DataGraph,
@@ -240,28 +239,13 @@ export function getFilteredDataGraph({ nodeData, edgeData }: GraphDataset, graph
  * each item has all its data attributes AND its visible attributes, mapped
  * using the proper reducers):
  */
-export function getFullVisibleGraph(
-  { nodeData, edgeData, metadata }: GraphDataset,
-  sigma: Sigma<SigmaGraph>,
-): FullGraph {
+export function getFullVisibleGraph({ metadata }: GraphDataset): FullGraph {
   const res = new MultiGraph<ItemData & NodeRenderingData, ItemData & EdgeRenderingData>();
-  const graph = sigma.getGraph();
-  const nodeReducer = sigma.getSetting("nodeReducer");
-  const edgeReducer = sigma.getSetting("edgeReducer");
 
   res.updateAttributes((attr) => ({
     ...attr,
     ...metadata,
   }));
-
-  graph.forEachNode((node, attributes) => {
-    const reducedAttributes = nodeReducer ? (nodeReducer(node, attributes) as NodeRenderingData) : attributes;
-    res.addNode(node, { ...(nodeData[node] || {}), ...reducedAttributes });
-  });
-  graph.forEachEdge((edge, attributes, source, target) => {
-    const reducedAttributes = edgeReducer ? (edgeReducer(edge, attributes) as EdgeRenderingData) : attributes;
-    res.addEdgeWithKey(edge, source, target, { ...(edgeData[edge] || {}), ...reducedAttributes });
-  });
 
   return res;
 }

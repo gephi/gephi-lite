@@ -10,8 +10,8 @@ import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 
 import { sigmaAtom } from "../../core/graph";
 import { SigmaGraph } from "../../core/graph/types";
+import { getDrawEdgeLabel, getDrawHover, getDrawLabel } from "../../core/appearance/utils";
 import { useAppearance, useGraphDataset, useSigmaAtom, useSigmaGraph } from "../../core/context/dataContexts";
-import { getDrawEdgeLabel, getDrawHover, getDrawLabel, getReducer } from "../../core/appearance/utils";
 
 const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma();
@@ -24,8 +24,6 @@ const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
 
   useEffect(() => {
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
-    sigma.setSetting("nodeReducer", getReducer("nodes", sigma, graphDataset, graphAppearance));
-    sigma.setSetting("edgeReducer", getReducer("edges", sigma, graphDataset, graphAppearance));
     sigma.setSetting("labelRenderer", getDrawLabel(graphAppearance));
     sigma.setSetting("hoverRenderer", getDrawHover(graphAppearance));
     sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance));

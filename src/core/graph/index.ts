@@ -8,6 +8,8 @@ import { applyFilters } from "../filters/utils";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
+import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
+import { appearanceAtom } from "../appearance";
 
 /**
  * Producers:
@@ -49,10 +51,15 @@ export const filteredGraphAtom = derivedAtom(
     return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
   },
 );
-export const sigmaGraphAtom = derivedAtom(filteredGraphAtom, (filteredGraph) => {
-  const dataset = graphDatasetAtom.get();
-  return dataGraphToSigmaGraph(dataset, filteredGraph);
-});
+export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom], getAllVisualGetters);
+export const sigmaGraphAtom = derivedAtom(
+  [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
+  (dataset, filteredGraph, visualGetters) => {
+    const graph = dataGraphToSigmaGraph(dataset, filteredGraph);
+    applyVisualProperties(graph, dataset, visualGetters);
+    return graph;
+  },
+);
 export const sigmaAtom = atom<Sigma<SigmaGraph>>(
   new Sigma(sigmaGraphAtom.get(), document.createElement("div"), { allowInvalidContainer: true }),
 );

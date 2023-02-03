@@ -1,14 +1,13 @@
-import Sigma from "sigma";
 import { Settings } from "sigma/settings";
 import drawLabel from "sigma/rendering/canvas/label";
 import drawHover from "sigma/rendering/canvas/hover";
 import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
+import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 import chroma from "chroma-js";
 import { forEach } from "lodash";
 
-import { AppearanceState, EdgeColor } from "./types";
-import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
-import { GraphDataset, ItemData } from "../graph/types";
+import { AppearanceState, ColorGetter, EdgeColor, LabelGetter, SizeGetter, VisualGetters } from "./types";
+import { EdgeRenderingData, GraphDataset, ItemData, NodeRenderingData, SigmaGraph } from "../graph/types";
 import { toNumber, toString } from "../utils/casting";
 
 export const DEFAULT_NODE_COLOR = "#999999";
@@ -50,6 +49,17 @@ export function getEmptyAppearanceState(): AppearanceState {
   };
 }
 
+export function getEmptyVisualGetters(): VisualGetters {
+  return {
+    getNodeSize: null,
+    getNodeColor: null,
+    getNodeLabel: null,
+    getEdgeSize: null,
+    getEdgeColor: null,
+    getEdgeLabel: null,
+  };
+}
+
 /**
  * Appearance lifecycle helpers (state serialization / deserialization):
  */
@@ -69,23 +79,58 @@ export function parseAppearanceState(rawAppearance: string): AppearanceState | n
 /**
  * Actual appearance helpers:
  */
-export function getReducer<
+export function makeGetSize<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
-  sigma: Sigma,
   { nodeData, edgeData, fullGraph }: GraphDataset,
-  { showEdges, nodesSize, nodesColor, nodesLabel, edgesSize, edgesColor, edgesLabel }: AppearanceState,
-): (itemId: string, data: ItemData) => Partial<T["displayData"]> & { rawSize?: number } {
-  const colorsDef = itemType === "nodes" ? nodesColor : edgesColor;
-  const sizesDef = itemType === "nodes" ? nodesSize : edgesSize;
-  const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
+  { nodesSize, edgesSize }: AppearanceState,
+): null | SizeGetter {
   const itemsValues = itemType === "nodes" ? nodeData : edgeData;
+  const sizesDef = itemType === "nodes" ? nodesSize : edgesSize;
 
-  // Early exit for "showEdges: false":
-  if (itemType === "edges" && !showEdges) return () => ({ hidden: true } as Partial<EdgeDisplayData>);
+  let getSize: SizeGetter | null = null;
+  switch (sizesDef.type) {
+    case "ranking": {
+      let min = Infinity,
+        max = -Infinity;
+      forEach(itemsValues, (data) => {
+        const value = toNumber(data[sizesDef.field]);
+        if (typeof value === "number") {
+          min = Math.min(min, value);
+          max = Math.max(max, value);
+        }
+      });
+      const delta = max - min || 1;
+      const ratio = (sizesDef.maxSize - sizesDef.minSize) / delta;
+      getSize = (_itemId: string, data: ItemData) => {
+        const value = toNumber(data[sizesDef.field]);
+        if (typeof value === "number") {
+          // TODO: Handle transformation method
+          return (value - min) * ratio + sizesDef.minSize;
+        }
+        return sizesDef.missingSize;
+      };
+      break;
+    }
+    case "fixed":
+      getSize = () => sizesDef.value;
+  }
 
-  // Handle colors:
+  return getSize;
+}
+
+export function makeGetColor<
+  T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
+>(
+  itemType: T["itemType"],
+  { nodeData, edgeData, fullGraph }: GraphDataset,
+  { nodesColor, edgesColor }: AppearanceState,
+  getters?: VisualGetters,
+): ColorGetter | null {
+  const itemsValues = itemType === "nodes" ? nodeData : edgeData;
+  const colorsDef = itemType === "nodes" ? nodesColor : edgesColor;
+
   let getColor: ((itemId: string, data: ItemData) => string) | null = null;
   switch (colorsDef.type) {
     case "partition":
@@ -121,51 +166,36 @@ export function getReducer<
   }
 
   if (itemType === "edges") {
+    const getNodeColor = (getters as VisualGetters | undefined)?.getNodeColor;
     switch ((colorsDef as EdgeColor).type) {
       case "source":
         getColor = (edgeId: string) => {
-          return sigma.getNodeDisplayData(fullGraph.source(edgeId))!.color;
+          const node = fullGraph.source(edgeId);
+          return getNodeColor ? getNodeColor(node, nodeData[node]) : DEFAULT_NODE_COLOR;
         };
         break;
       case "target":
         getColor = (edgeId: string) => {
-          return sigma.getNodeDisplayData(fullGraph.target(edgeId))!.color;
+          const node = fullGraph.target(edgeId);
+          return getNodeColor ? getNodeColor(node, nodeData[node]) : DEFAULT_NODE_COLOR;
         };
         break;
     }
   }
 
-  // Handle sizes:
-  let getSize: ((itemId: string, data: ItemData) => number) | null = null;
-  switch (sizesDef.type) {
-    case "ranking": {
-      let min = Infinity,
-        max = -Infinity;
-      forEach(itemsValues, (data) => {
-        const value = toNumber(data[sizesDef.field]);
-        if (typeof value === "number") {
-          min = Math.min(min, value);
-          max = Math.max(max, value);
-        }
-      });
-      const delta = max - min || 1;
-      const ratio = (sizesDef.maxSize - sizesDef.minSize) / delta;
-      getSize = (_itemId: string, data: ItemData) => {
-        const value = toNumber(data[sizesDef.field]);
-        if (typeof value === "number") {
-          // TODO: Handle transformation method
-          return (value - min) * ratio + sizesDef.minSize;
-        }
-        return sizesDef.missingSize;
-      };
-      break;
-    }
-    case "fixed":
-      getSize = () => sizesDef.value;
-  }
+  return getColor;
+}
 
-  // Handle labels:
-  let getLabel: ((itemId: string, data: ItemData) => string | null) | null = null;
+export function makeGetLabel<
+  T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
+>(
+  itemType: T["itemType"],
+  { nodeData, edgeData, fullGraph, nodeRenderingData }: GraphDataset,
+  { nodesLabel, edgesLabel }: AppearanceState,
+): LabelGetter | null {
+  const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
+
+  let getLabel: LabelGetter | null = null;
   switch (labelsDef.type) {
     case "none":
       getLabel = () => null;
@@ -181,20 +211,47 @@ export function getReducer<
       break;
   }
 
-  const defaultSize = itemType === "nodes" ? DEFAULT_NODE_SIZE : DEFAULT_EDGE_SIZE;
-  return (itemId: string, displayData: ItemData) => {
-    const data = itemsValues[itemId];
-    const res = { ...displayData } as Partial<NodeDisplayData> & { rawSize?: number };
-
-    if (getColor) res.color = getColor(itemId, data);
-    if (getSize) res.size = getSize(itemId, data);
-    if (getLabel) res.label = getLabel(itemId, data);
-    res.rawSize = res.size || defaultSize;
-
-    return res;
-  };
+  return getLabel;
 }
 
+export function getAllVisualGetters(dataset: GraphDataset, appearance: AppearanceState): VisualGetters {
+  const nodeVisualGetters: VisualGetters = {
+    getNodeSize: makeGetSize("nodes", dataset, appearance),
+    getNodeColor: makeGetColor("nodes", dataset, appearance),
+    getNodeLabel: makeGetLabel("nodes", dataset, appearance),
+    getEdgeSize: null,
+    getEdgeColor: null,
+    getEdgeLabel: null,
+  };
+
+  return {
+    ...nodeVisualGetters,
+    getEdgeSize: makeGetSize("edges", dataset, appearance),
+    getEdgeColor: makeGetColor("edges", dataset, appearance, nodeVisualGetters),
+    getEdgeLabel: makeGetLabel("edges", dataset, appearance),
+  };
+}
+export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, getters: VisualGetters): void {
+  graph.forEachNode((node) => {
+    const attr: Partial<NodeRenderingData> = {};
+    if (getters.getNodeSize) attr.size = getters.getNodeSize(node, dataset.nodeData[node]);
+    if (getters.getNodeColor) attr.color = getters.getNodeColor(node, dataset.nodeData[node]);
+    if (getters.getNodeLabel) attr.label = getters.getNodeLabel(node, dataset.nodeData[node]);
+    graph.mergeNodeAttributes(node, attr);
+  });
+
+  graph.forEachEdge((edge) => {
+    const attr: Partial<EdgeRenderingData> = {};
+    if (getters.getEdgeSize) attr.size = getters.getEdgeSize(edge, dataset.edgeData[edge]);
+    if (getters.getEdgeColor) attr.color = getters.getEdgeColor(edge, dataset.edgeData[edge]);
+    if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(edge, dataset.edgeData[edge]);
+    graph.mergeEdgeAttributes(edge, attr);
+  });
+}
+
+/**
+ * Rendering helpers:
+ */
 export function getDrawLabel({ nodesLabelSize }: AppearanceState): typeof drawLabel {
   if (nodesLabelSize.type === "fixed") {
     return (context, data, settings) => drawLabel(context, data, { ...settings, labelSize: nodesLabelSize.value });

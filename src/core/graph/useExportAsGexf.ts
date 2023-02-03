@@ -2,14 +2,13 @@ import { useCallback, useState } from "react";
 import { write } from "graphology-gexf";
 
 import { useReadAtom } from "../utils/atoms";
-import { graphDatasetAtom, sigmaAtom } from "./index";
+import { graphDatasetAtom } from "./index";
 import { getFullVisibleGraph } from "./utils";
 
 export function useExportAsGexf() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const graphDataset = useReadAtom(graphDatasetAtom);
-  const sigma = useReadAtom(sigmaAtom);
 
   /**
    * Export the current graph as a GEXF.
@@ -20,7 +19,7 @@ export function useExportAsGexf() {
       setError(null);
       // We take the sigma instance, so it already has all the graph structure
       // plus what is needed to render it
-      const graphToExport = getFullVisibleGraph(graphDataset, sigma);
+      const graphToExport = getFullVisibleGraph(graphDataset);
 
       return write(graphToExport, {});
     } catch (e) {
@@ -29,7 +28,7 @@ export function useExportAsGexf() {
     } finally {
       setLoading(false);
     }
-  }, [graphDataset, sigma]);
+  }, [graphDataset]);
 
   /**
    * Download the current graph as a GEXF file

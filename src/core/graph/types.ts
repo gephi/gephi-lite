@@ -28,12 +28,12 @@ export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
  * ***********
  */
 export interface EdgeRenderingData {
-  label?: string;
+  label?: string | null;
   size?: number;
   color?: string;
 }
 export interface NodeRenderingData {
-  label?: string;
+  label?: string | null;
   color?: string;
   size?: number;
   x: number;
