@@ -1,9 +1,9 @@
-import { FC, PropsWithChildren, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BsCheckSquare } from "react-icons/bs";
 import { CgRemoveR } from "react-icons/cg";
 import { FiEdit } from "react-icons/fi";
-import { RiFilterOffLine } from "react-icons/ri";
+import { RiFilterLine, RiFilterOffLine } from "react-icons/ri";
 import cx from "classnames";
 
 import { useFilters, useFiltersActions } from "../../core/context/dataContexts";
@@ -13,18 +13,15 @@ import { FilterType } from "../../core/filters/types";
 import { FilterCreator } from "./FilterCreator";
 import { RangeFilter } from "./RangeFilter";
 import { TermsFilter } from "./TermsFilter";
-import { Toggle } from "../Toggle";
-import { FiltersIcon } from "../common-icons";
+import { GraphIcon } from "../common-icons";
 
-const FilterInStack: FC<
-  PropsWithChildren & {
-    filter: FilterType;
-    active?: boolean;
-    filterIndex: number;
-  }
-> = ({ children, filter, filterIndex, active }) => {
+const FilterInStack: FC<{
+  filter: FilterType;
+  active?: boolean;
+  filterIndex: number;
+}> = ({ filter, filterIndex, active }) => {
   const filters = useFilters();
-  const { openAllFutureFilters, openPastFilter, deleteFutureFilter, deletePastFilter } = useFiltersActions();
+  const { openPastFilter, deleteFutureFilter, deletePastFilter, openFutureFilter } = useFiltersActions();
   const { t } = useTranslation();
 
   const editMode = !!active && filterIndex === filters.past.length - 1;
@@ -36,44 +33,40 @@ const FilterInStack: FC<
   return (
     <div
       className={cx(
-        "d-flex align-items-top justify-content-between mt-2 border  px-1 py-2",
-        active ? "border-secondary" : "text-muted",
+        "filter-item",
+        (!active || filterIndex !== filters.past.length - 1) && "cursor-pointer",
+        !active && "inactive",
       )}
+      onClick={() => {
+        if (active) {
+          if (filterIndex !== filters.past.length - 1) openPastFilter(filterIndex);
+        } else openFutureFilter(filterIndex);
+      }}
     >
       <div className="d-flex align-items-center">
         {/*  filter downstream ongoing edition => disabled */}
-        {!active && <RiFilterOffLine title={t("filters.desactivated").toString()} style={{ margin: "0 0.75rem" }} />}
+        {!active && <RiFilterOffLine title={t("filters.desactivated").toString()} className="icon" />}
+        {active && filterIndex !== filters.past.length - 1 && (
+          <RiFilterLine title={t("filters.activated").toString()} className="icon" />
+        )}
         {/* upstream filters => can be edited  only if no other edit ongoing*/}
-        {(!editMode || !internalEditMode) && active && (
-          <div title={filters.future.length === 0 ? undefined : t("filters.no_concurrent_edit").toString()}>
+        {active && filterIndex === filters.past.length - 1 && (
+          <div title={filterIndex === filters.past.length - 1 ? undefined : t("filters.no_concurrent_edit").toString()}>
             <button
               className="btn btn-icon"
-              onClick={() => {
-                if (filters.future.length === 0 && editMode) setInternalEditMode(!internalEditMode);
-                else openPastFilter(filterIndex);
+              onClick={(e) => {
+                e.stopPropagation();
+                setInternalEditMode(!internalEditMode);
               }}
               title={t("common.edit").toString()}
-              disabled={filters.future.length > 0}
+              disabled={filterIndex !== filters.past.length - 1}
             >
-              <FiEdit />
+              {internalEditMode ? <BsCheckSquare /> : <FiEdit />}
             </button>
           </div>
         )}
-        {/* ongoing edition => button to confirm */}
-        {editMode && internalEditMode && (
-          <button
-            className="btn btn-icon"
-            onClick={() => {
-              openAllFutureFilters();
-              if (filters.future.length === 0 && editMode) setInternalEditMode(!internalEditMode);
-            }}
-            title={t("common.confirm").toString()}
-          >
-            <BsCheckSquare />
-          </button>
-        )}
       </div>
-      <div className={"flex-grow-1 ms-2"}>
+      <div className={"flex-grow-1"}>
         {filter.type === "range" && (
           <RangeFilter filter={filter} editMode={editMode && internalEditMode} active={active} />
         )}
@@ -110,35 +103,18 @@ const FiltersStack: FC<{ filters: FilterType[]; active?: boolean }> = ({ filters
 const GraphFilters: FC = () => {
   const filters = useFilters();
 
-  const { openAllFutureFilters, closeAllPastFilters } = useFiltersActions();
+  const { closeAllPastFilters } = useFiltersActions();
 
   return (
     <div>
-      <div className="d-flex justify-content-center mb-4">
-        <Toggle
-          disabled={
-            (filters.future.length > 0 && filters.past.length > 0) ||
-            (filters.future.length === 0 && filters.past.length === 0)
-          }
-          value={filters.past.length === 0 && filters.future.length > 0}
-          onChange={(inactive) => {
-            if (inactive) {
-              closeAllPastFilters();
-            } else {
-              openAllFutureFilters();
-            }
-          }}
-          leftLabel={
-            <>
-              <FiltersIcon className="me-1" /> active
-            </>
-          }
-          rightLabel={
-            <>
-              <RiFilterOffLine className="me-1" /> inactive
-            </>
-          }
-        />
+      <div
+        className={cx("filter-item", filters.past.length !== 0 && "cursor-pointer")}
+        onClick={() => {
+          if (filters.past.length !== 0) closeAllPastFilters();
+        }}
+      >
+        <GraphIcon className="icon" />
+        <div className="fs-5">Full Graph</div>
       </div>
 
       <FiltersStack filters={filters.past} active />
