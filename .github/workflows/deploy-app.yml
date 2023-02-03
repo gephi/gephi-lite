@@ -9,6 +9,7 @@ jobs:
     env:
       CI: false
       PUBLIC_URL: "/gephi-lite"
+      REACT_APP_GITHUB_PROXY: "https://gephi-lite.ouestware.com"
     steps:
       - name: Checkout
         uses: actions/checkout@v2

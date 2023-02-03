@@ -34,7 +34,7 @@ export function useGithubAuth() {
         return false;
       },
       request: request.defaults({
-        baseUrl: "/_github",
+        baseUrl: config.github_proxy,
       }),
     });
   }, []);
