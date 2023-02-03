@@ -1,4 +1,5 @@
 import { ItemType } from "../types";
+import { DatalessGraph } from "../graph/types";
 
 export interface BaseFilter {
   type: string;
@@ -35,4 +36,13 @@ export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterTy
 export interface FiltersState {
   past: FilterType[];
   future: FilterType[];
+}
+
+/**
+ * Filtering steps:
+ * ****************
+ */
+export interface FilteredGraph {
+  filterFingerprint: string;
+  graph: DatalessGraph;
 }

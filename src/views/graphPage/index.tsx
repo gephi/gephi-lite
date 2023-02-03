@@ -19,7 +19,7 @@ import {
   LayoutsIcon,
   StatisticsIcon,
 } from "../../components/common-icons";
-import { graphDatasetAtom, refreshSigmaGraph } from "../../core/graph";
+import { graphDatasetAtom } from "../../core/graph";
 import { filtersAtom } from "../../core/filters";
 import { appearanceAtom } from "../../core/appearance";
 import { useNotifications } from "../../core/notifications";
@@ -108,7 +108,6 @@ export const GraphPage: FC = () => {
           if (dataset) {
             const appearance = rawAppearance ? parseAppearanceState(rawAppearance) : null;
             const filters = rawFilters ? parseFiltersState(rawFilters) : null;
-            refreshSigmaGraph(dataset, filters || getEmptyFiltersState());
 
             graphDatasetAtom.set(dataset);
             filtersAtom.set(filters || getEmptyFiltersState());

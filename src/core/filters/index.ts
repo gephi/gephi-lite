@@ -4,7 +4,6 @@ import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/reducers";
 import { FilterType, FiltersState } from "./types";
 import { getEmptyFiltersState, serializeFiltersState } from "./utils";
-import { graphDatasetAtom, refreshSigmaGraph } from "../graph";
 
 /**
  * Producers:
@@ -134,6 +133,4 @@ export const filtersActions = {
  */
 filtersAtom.bind((filtersState) => {
   sessionStorage.setItem("filters", serializeFiltersState(filtersState));
-
-  refreshSigmaGraph(graphDatasetAtom.get(), filtersState);
 });

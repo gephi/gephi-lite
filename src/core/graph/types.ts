@@ -1,4 +1,5 @@
 import { MultiGraph } from "graphology";
+
 import { ItemType, Scalar } from "../types";
 import { CloudFile } from "../cloud/types";
 
@@ -79,7 +80,7 @@ export interface GraphDataset {
   // We store here the graph metadata (title, author, etc...):
   metadata: Record<string, any>;
 
-  // We store here how the nodes/edges attributes should be interpretated:
+  // We store here how the nodes/edges attributes should be interpreted:
   nodeFields: FieldModel<"nodes">[];
   edgeFields: FieldModel<"edges">[];
 

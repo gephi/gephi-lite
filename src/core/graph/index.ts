@@ -1,10 +1,10 @@
-import { omit } from "lodash";
+import { last, omit } from "lodash";
 import Sigma from "sigma";
 
-import { atom } from "../utils/atoms";
+import { atom, derivedAtom } from "../utils/atoms";
 import { filtersAtom } from "../filters";
-import { FiltersState } from "../filters/types";
-import { datasetToFilteredSigmaGraph } from "../filters/utils";
+import { FilteredGraph } from "../filters/types";
+import { applyFilters } from "../filters/utils";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
@@ -42,7 +42,17 @@ const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
  * ***********
  */
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
-export const sigmaGraphAtom = atom<SigmaGraph>(dataGraphToSigmaGraph(graphDatasetAtom.get()));
+export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
+export const filteredGraphAtom = derivedAtom(
+  [graphDatasetAtom, filteredGraphsAtom],
+  (graphDataset, filteredGraphCache) => {
+    return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
+  },
+);
+export const sigmaGraphAtom = derivedAtom(filteredGraphAtom, (filteredGraph) => {
+  const dataset = graphDatasetAtom.get();
+  return dataGraphToSigmaGraph(dataset, filteredGraph);
+});
 export const sigmaAtom = atom<Sigma<SigmaGraph>>(
   new Sigma(sigmaGraphAtom.get(), document.createElement("div"), { allowInvalidContainer: true }),
 );
@@ -53,10 +63,6 @@ export const graphDatasetActions = {
   setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
   setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
 };
-
-export function refreshSigmaGraph(dataset: GraphDataset, filters: FiltersState) {
-  sigmaGraphAtom.set(datasetToFilteredSigmaGraph(dataset, filters.past));
-}
 
 /**
  * Bindings:
@@ -71,9 +77,19 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph") || updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
-    refreshSigmaGraph(graphDataset, filtersAtom.get());
+    const filtersState = filtersAtom.get();
+    const newCache = applyFilters(graphDataset, filtersState.past, []);
+    filteredGraphsAtom.set(newCache);
     return;
   }
 
   sessionStorage.setItem("dataset", serializeDataset(graphDataset));
+});
+
+filtersAtom.bind((filtersState) => {
+  const cache = filteredGraphsAtom.get();
+  const dataset = graphDatasetAtom.get();
+
+  const newCache = applyFilters(dataset, filtersState.past, cache);
+  filteredGraphsAtom.set(newCache);
 });

@@ -1,7 +1,7 @@
 import { inRange } from "lodash";
 import { subgraph } from "graphology-operators";
 
-import { FilterType, FiltersState, RangeFilterType, TermsFilterType } from "./types";
+import { FilterType, FiltersState, RangeFilterType, TermsFilterType, FilteredGraph } from "./types";
 import { toNumber, toString } from "../utils/casting";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToSigmaGraph } from "../graph/utils";
@@ -98,9 +98,35 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
   }
 }
 
+export function getFilterFingerprint(filter: FilterType): string {
+  return JSON.stringify(filter);
+}
+
 export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: FilterType[]): SigmaGraph {
   return dataGraphToSigmaGraph(
     dataset,
     filters.reduce((graph, filter) => filterGraph(graph, dataset, filter), dataset.fullGraph),
   );
+}
+
+export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache: FilteredGraph[]): FilteredGraph[] {
+  const steps: FilteredGraph[] = [];
+
+  filters.reduce((graph, filter, i) => {
+    const filterFingerprint = getFilterFingerprint(filter);
+    const cacheStep = cache[i];
+    let subgraph: DatalessGraph;
+
+    if (cacheStep?.filterFingerprint === filterFingerprint) {
+      subgraph = cacheStep.graph;
+    } else {
+      cache = [];
+      subgraph = filterGraph(graph, dataset, filter);
+    }
+
+    steps.push({ filterFingerprint, graph: subgraph });
+    return subgraph;
+  }, dataset.fullGraph);
+
+  return steps;
 }
