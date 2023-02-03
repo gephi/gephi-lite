@@ -272,6 +272,25 @@
           }
         }
       },
+      "degree": {
+        "title": "Degree",
+        "attributes": {
+          "degree": "Degree attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "kind": {
+            "title": "Type of degree",
+            "values": {
+              "degree": "Degree",
+              "inDegree": "Incoming degree",
+              "outDegree": "Outgoing degree"
+            }
+          }
+        }
+      },
       "hits": {
         "title": "HITS",
         "attributes": {
