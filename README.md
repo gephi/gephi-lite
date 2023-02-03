@@ -34,3 +34,45 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Deploy the application
+
+To deploy the application, you need to build it, by following those steps :
+
+```
+$> REACT_APP_GITHUB_PROXY=mydomain.for.github.auth.proxy.com
+$> npm install
+$> npm run build
+```
+
+For the github auth to work, you need to have a reverse proxy somewhere (for CORS reason). That's why you need to define the env variable `REACT_APP_GITHUB_PROXY` before to build the application.
+
+On https://gephi.org/gephi-lite we use this settings : `REACT_APP_GITHUB_PROXY: "https://gephi-lite.ouestware.com"`
+
+Then on our server we configured nginx with this following settings :
+
+```
+server {
+    listen       443 ssl;
+    server_name  https://gephi-lite.ouestware.com;
+
+    ssl_certificate /etc/letsencrypt/live/XXXXX/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/XXXXX/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+   location /login {
+     add_header Access-Control-Allow-Origin "https://gephi.org";
+     add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+     add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, user-agent";
+     if ($request_method = OPTIONS) {
+        return 204;
+     }
+     proxy_pass https://github.com/login;
+   }
+
+   location / {
+     return 404;
+   }
+}
+```
