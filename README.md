@@ -37,7 +37,9 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Deploy the application
 
-To deploy the application, you need to build it, by following those steps :
+To allow users to synchronize their data with GitHub, Gephi Lite needs a reverse proxy to avoid CORS issues. When working locally in development, [we use `http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/src/setupProxy.js) to make that work.
+
+To deploy the application, you need to define the env variable `REACT_APP_GITHUB_PROXY` before building it, by following those steps:
 
 ```
 $> REACT_APP_GITHUB_PROXY=mydomain.for.github.auth.proxy.com
@@ -45,13 +47,11 @@ $> npm install
 $> npm run build
 ```
 
-For the github auth to work, you need to have a reverse proxy somewhere (for CORS reason). That's why you need to define the env variable `REACT_APP_GITHUB_PROXY` before to build the application.
+On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this settings : `REACT_APP_GITHUB_PROXY: "https://gephi-lite.ouestware.com"`.
 
-On https://gephi.org/gephi-lite we use this settings : `REACT_APP_GITHUB_PROXY: "https://gephi-lite.ouestware.com"`
+Then on our server, we configured NGINX with this following settings:
 
-Then on our server we configured nginx with this following settings :
-
-```
+```nginx
 server {
     listen       443 ssl;
     server_name  https://gephi-lite.ouestware.com;

@@ -81,7 +81,7 @@ export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
               window.open(url, "_blank", "popup");
             }}
           >
-            {(!hasBeenClick || !waiting) && <>Open github</>}
+            {(!hasBeenClick || !waiting) && <>Open GitHub</>}
             {hasBeenClick && waiting && (
               <>
                 Waiting validation <Spinner className="spinner-border-sm " />{" "}
