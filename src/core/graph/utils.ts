@@ -202,18 +202,18 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
 
 /**
  * This function takes a graph dataset (and optionally a DatalessGraph as input)
- * and returns a SigmaGraph:
+ * and returns a FullGraph:
  */
-export function dataGraphToSigmaGraph(
-  { fullGraph, nodeRenderingData, edgeRenderingData }: GraphDataset,
+export function dataGraphToFullGraph(
+  { fullGraph, nodeRenderingData, edgeRenderingData, nodeData, edgeData }: GraphDataset,
   graph: DatalessGraph = fullGraph,
 ) {
-  const sigmaGraph: SigmaGraph = new MultiGraph<NodeRenderingData, EdgeRenderingData>();
-  graph.forEachNode((node) => sigmaGraph.addNode(node, nodeRenderingData[node]));
+  const res: FullGraph = new MultiGraph<NodeRenderingData & ItemData, EdgeRenderingData & ItemData>();
+  graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...nodeRenderingData[node] }));
   graph.forEachEdge((edge, _, source, target) =>
-    sigmaGraph.addEdgeWithKey(edge, source, target, edgeRenderingData[edge]),
+    res.addEdgeWithKey(edge, source, target, { ...edgeData[edge], ...edgeRenderingData[edge] }),
   );
-  return sigmaGraph;
+  return res;
 }
 
 /**
@@ -230,23 +230,6 @@ export function getFilteredDataGraph({ nodeData, edgeData }: GraphDataset, graph
   graph.forEachEdge((edge, _, source, target) => {
     res.addEdgeWithKey(edge, source, target, edgeData[edge] || {});
   });
-
-  return res;
-}
-
-/**
- * This function takes a full GraphDataset and a filtered SigmaGraph, and
- * returns a filtered DataGraph (with only the filtered nodes and edges, but
- * each item has all its data attributes AND its visible attributes, mapped
- * using the proper reducers):
- */
-export function getFullVisibleGraph({ metadata }: GraphDataset): FullGraph {
-  const res = new MultiGraph<ItemData & NodeRenderingData, ItemData & EdgeRenderingData>();
-
-  res.updateAttributes((attr) => ({
-    ...attr,
-    ...metadata,
-  }));
 
   return res;
 }

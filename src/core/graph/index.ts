@@ -7,7 +7,7 @@ import { FilteredGraph } from "../filters/types";
 import { applyFilters } from "../filters/utils";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
-import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
+import { dataGraphToFullGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { appearanceAtom } from "../appearance";
 
@@ -55,7 +55,7 @@ export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom],
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters) => {
-    const graph = dataGraphToSigmaGraph(dataset, filteredGraph);
+    const graph = dataGraphToFullGraph(dataset, filteredGraph);
     applyVisualProperties(graph, dataset, visualGetters);
     return graph;
   },

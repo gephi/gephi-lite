@@ -88,8 +88,9 @@ export const EnumInput: FC<
     className?: string;
     placeholder?: string;
     required?: boolean;
+    disabled?: boolean;
   } & BaseTypedInputProps
-> = ({ id, label, description, required, value, options, onChange, className, placeholder }) => {
+> = ({ id, label, description, required, disabled, value, options, onChange, className, placeholder }) => {
   const option = options.find((o) => o.value === value);
 
   return (
@@ -99,6 +100,8 @@ export const EnumInput: FC<
           {label}
         </label>
         <Select<EnumOption>
+          isDisabled={disabled}
+          isClearable={!required}
           className={className}
           placeholder={placeholder}
           value={option}

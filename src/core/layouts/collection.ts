@@ -1,10 +1,12 @@
-import random, { RandomLayoutOptions } from "graphology-layout/random";
-import circular, { CircularLayoutOptions } from "graphology-layout/circular";
-import circlepack, { CirclePackLayoutOptions } from "graphology-layout/circlepack";
-import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
+import Graph from "graphology";
+import circlepack from "graphology-layout/circlepack";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
+import random, { RandomLayoutOptions } from "graphology-layout/random";
+import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
+import circular, { CircularLayoutOptions } from "graphology-layout/circular";
 import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
+
 import { Layout, SyncLayout, WorkerLayout } from "./types";
 
 /**
@@ -57,6 +59,12 @@ export const LAYOUTS: Array<Layout> = [
     description: true,
     parameters: [
       {
+        id: "groupingField",
+        type: "attribute",
+        itemType: "nodes",
+        required: false,
+      },
+      {
         id: "center",
         type: "number",
         description: true,
@@ -69,8 +77,16 @@ export const LAYOUTS: Array<Layout> = [
         defaultValue: 1,
       },
     ],
-    run: circlepack,
-  } as SyncLayout<CirclePackLayoutOptions>,
+    run(graph: Graph, options) {
+      const { groupingField, center, scale } = options?.settings || {};
+
+      return circlepack(graph, {
+        center,
+        scale,
+        hierarchyAttributes: groupingField ? [groupingField] : [],
+      });
+    },
+  } as SyncLayout<{ scale?: number; groupingField?: string; center?: number }>,
   {
     id: "fa2",
     type: "worker",

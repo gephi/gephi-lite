@@ -379,6 +379,10 @@
           "title": "Scale",
           "description": "Scale of the layout"
         },
+        "groupingField": {
+          "title": "Hierarchy attribute",
+          "description": "An optional attribute to use to group the nodes"
+        },
         "center": {
           "title": "Center",
           "description": "Center of the layout"

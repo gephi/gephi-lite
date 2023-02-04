@@ -9,7 +9,9 @@ import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout } from "../../core/layouts/types";
 import { useLayouts } from "../../core/layouts/useLayouts";
 import { useNotifications } from "../../core/notifications";
-import { BooleanInput, NumberInput } from "../../components/forms/TypedInputs";
+import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
+import { FieldModel } from "../../core/graph/types";
+import { useGraphDataset } from "../../core/context/dataContexts";
 
 type LayoutOption = {
   value: string;
@@ -26,6 +28,8 @@ export const LayoutForm: FC<{
 }> = ({ layout, onCancel, onStart, onStop, isRunning }) => {
   const { t } = useTranslation();
   const [paramsState, setParamsState] = useState<Record<string, unknown>>({});
+  const dataset = useGraphDataset();
+  const { nodeFields, edgeFields } = dataset;
 
   useEffect(() => {
     setParamsState(
@@ -80,6 +84,28 @@ export const LayoutForm: FC<{
                 value={paramsState[param.id] as boolean}
                 disabled={isRunning}
                 onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+              />
+            )}
+            {param.type === "attribute" && (
+              <EnumInput
+                id={id}
+                label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                required={param.required}
+                description={
+                  param.description
+                    ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
+                    : undefined
+                }
+                placeholder={t("common.none") as string}
+                value={paramsState[param.id] as string}
+                disabled={isRunning}
+                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
+                  .filter((field) => (param.restriction ? !!field[param.restriction] : true))
+                  .map((field) => ({
+                    value: field.id,
+                    label: field.id,
+                  }))}
               />
             )}
           </div>

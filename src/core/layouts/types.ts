@@ -1,4 +1,5 @@
 import Graph from "graphology";
+import { ItemType } from "../types";
 
 /**
  * Type for layout parameters
@@ -25,7 +26,13 @@ export interface LayoutNumberParameter extends BaseLayoutParameter {
   defaultValue: number;
 }
 
-export type LayoutParameter = LayoutBooleanParameter | LayoutNumberParameter;
+export interface LayoutAttributeParameter extends BaseLayoutParameter {
+  type: "attribute";
+  itemType: ItemType;
+  restriction?: "qualitative" | "quantitative";
+}
+
+export type LayoutParameter = LayoutBooleanParameter | LayoutNumberParameter | LayoutAttributeParameter;
 
 /**
  * Layout types
@@ -45,7 +52,7 @@ export interface SyncLayout<P = {}> {
   type: "sync";
   description?: boolean;
   parameters: Array<LayoutParameter>;
-  run: (graph: Graph, options?: P) => LayoutMapping;
+  run: (graph: Graph, options?: { settings: P }) => LayoutMapping;
 }
 
 export interface WorkerSupervisorInterface {

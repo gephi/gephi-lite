@@ -4,7 +4,7 @@ import { subgraph } from "graphology-operators";
 import { FilterType, FiltersState, RangeFilterType, TermsFilterType, FilteredGraph } from "./types";
 import { toNumber, toString } from "../utils/casting";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
-import { dataGraphToSigmaGraph } from "../graph/utils";
+import { dataGraphToFullGraph } from "../graph/utils";
 import { parse, stringify } from "../utils/json";
 
 /**
@@ -104,7 +104,7 @@ export function getFilterFingerprint(filter: FilterType): string {
 }
 
 export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: FilterType[]): SigmaGraph {
-  return dataGraphToSigmaGraph(
+  return dataGraphToFullGraph(
     dataset,
     filters.reduce((graph, filter) => filterGraph(graph, dataset, filter), dataset.fullGraph),
   );
