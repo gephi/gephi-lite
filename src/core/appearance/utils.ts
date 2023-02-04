@@ -9,6 +9,7 @@ import { forEach } from "lodash";
 import { AppearanceState, ColorGetter, EdgeColor, LabelGetter, SizeGetter, VisualGetters } from "./types";
 import { EdgeRenderingData, GraphDataset, ItemData, NodeRenderingData, SigmaGraph } from "../graph/types";
 import { toNumber, toString } from "../utils/casting";
+import { parse, stringify } from "../utils/json";
 
 export const DEFAULT_NODE_COLOR = "#999999";
 export const DEFAULT_EDGE_COLOR = "#cccccc";
@@ -64,13 +65,13 @@ export function getEmptyVisualGetters(): VisualGetters {
  * Appearance lifecycle helpers (state serialization / deserialization):
  */
 export function serializeAppearanceState(appearance: AppearanceState): string {
-  return JSON.stringify(appearance);
+  return stringify(appearance);
 }
 export function parseAppearanceState(rawAppearance: string): AppearanceState | null {
   try {
     // TODO:
     // Validate the actual data
-    return JSON.parse(rawAppearance);
+    return parse(rawAppearance);
   } catch (e) {
     return null;
   }

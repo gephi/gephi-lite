@@ -14,6 +14,7 @@ import {
 } from "./types";
 import { toNumber, toScalar } from "../utils/casting";
 import { ItemType, Scalar } from "../types";
+import { parse, stringify } from "../utils/json";
 
 export function getRandomNodeCoordinate(): number {
   return Math.random() * 100;
@@ -37,13 +38,13 @@ export function getEmptyGraphDataset(): GraphDataset {
  * Appearance lifecycle helpers (state serialization / deserialization):
  */
 export function serializeDataset(dataset: GraphDataset): string {
-  return JSON.stringify({ ...dataset, fullGraph: dataset.fullGraph.export() });
+  return stringify({ ...dataset, fullGraph: dataset.fullGraph.export() });
 }
 export function parseDataset(rawDataset: string): GraphDataset | null {
   try {
     // TODO:
     // Validate the actual data
-    const parsed = JSON.parse(rawDataset);
+    const parsed = parse(rawDataset);
     const fullGraph = new MultiGraph<{}, {}>();
     fullGraph.import(parsed.fullGraph);
     return {

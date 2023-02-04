@@ -1,3 +1,4 @@
+import { parse, stringify } from "../utils/json";
 import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
@@ -20,13 +21,13 @@ export function getCurrentPreferences(): Preferences {
  * Preferences lifecycle helpers (state serialization / deserialization):
  */
 export function serializePreferences(preferences: Preferences): string {
-  return JSON.stringify(preferences);
+  return stringify(preferences);
 }
 export function parsePreferences(rawPreferences: string): Preferences | null {
   try {
     // TODO:
     // Validate the actual data
-    return JSON.parse(rawPreferences);
+    return parse(rawPreferences);
   } catch (e) {
     return null;
   }

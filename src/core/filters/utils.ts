@@ -5,6 +5,7 @@ import { FilterType, FiltersState, RangeFilterType, TermsFilterType, FilteredGra
 import { toNumber, toString } from "../utils/casting";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToSigmaGraph } from "../graph/utils";
+import { parse, stringify } from "../utils/json";
 
 /**
  * Returns an empty filters state:
@@ -20,13 +21,13 @@ export function getEmptyFiltersState(): FiltersState {
  * Filters lifecycle helpers (state serialization / deserialization):
  */
 export function serializeFiltersState(filters: FiltersState): string {
-  return JSON.stringify(filters);
+  return stringify(filters);
 }
 export function parseFiltersState(rawFilters: string): FiltersState | null {
   try {
     // TODO:
     // Validate the actual data
-    return JSON.parse(rawFilters);
+    return parse(rawFilters);
   } catch (e) {
     return null;
   }
@@ -99,7 +100,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
 }
 
 export function getFilterFingerprint(filter: FilterType): string {
-  return JSON.stringify(filter);
+  return stringify(filter);
 }
 
 export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: FilterType[]): SigmaGraph {
