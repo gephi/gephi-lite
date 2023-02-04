@@ -47,17 +47,17 @@ $> npm install
 $> npm run build
 ```
 
-On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this settings : `REACT_APP_GITHUB_PROXY: "https://gephi-lite.ouestware.com"`.
+On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this settings : `REACT_APP_GITHUB_PROXY: "https://githubapi.gephi.org"`.
 
 Then on our server, we configured NGINX with this following settings:
 
 ```nginx
 server {
     listen       443 ssl;
-    server_name  https://gephi-lite.ouestware.com;
+    server_name githubapi.gephi.org;
 
-    ssl_certificate /etc/letsencrypt/live/XXXXX/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/XXXXX/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/githubapi.gephi.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/githubapi.gephi.org/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -76,3 +76,5 @@ server {
    }
 }
 ```
+
+PS: On this configuration you should change the `server_name` with its ssl configuration, as well as the `add_header Access-Control-Allow-Origin` value.
