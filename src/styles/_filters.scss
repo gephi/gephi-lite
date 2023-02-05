@@ -1,8 +1,4 @@
 .filter-item {
-  display: flex;
-  align-items: center;
-  justify-content: between;
-
   @extend .mt-2;
   @extend .border;
   @extend .px-1;

@@ -116,6 +116,7 @@
     "description": "This panel allows to filter the graph by stacking filters.",
     "custom_script": "Custom script",
     "filter": "Filter",
+    "full_graph": "Full graph",
     "using": "Using",
     "topological": "Topology",
     "desactivated": "Desactivated filter, click to reactivate",
