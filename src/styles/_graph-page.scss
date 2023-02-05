@@ -16,9 +16,9 @@
     position: absolute;
     width: 100vw;
     height: 100vh;
-    margin-left: 50%;
+    left: 50%;
     top: 0;
-    transform: translateX(-50%);
+    margin-left: -50vw;
   }
 
   .toolbar,
