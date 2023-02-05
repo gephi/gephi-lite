@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/gephi-lite/static/css/main.7f7a5970.css",
-    "main.js": "/gephi-lite/static/js/main.76fd3611.js",
+    "main.css": "/gephi-lite/static/css/main.207a533e.css",
+    "main.js": "/gephi-lite/static/js/main.a6a265ef.js",
     "static/js/787.2284c812.chunk.js": "/gephi-lite/static/js/787.2284c812.chunk.js",
     "index.html": "/gephi-lite/index.html",
-    "main.7f7a5970.css.map": "/gephi-lite/static/css/main.7f7a5970.css.map",
-    "main.76fd3611.js.map": "/gephi-lite/static/js/main.76fd3611.js.map",
+    "main.207a533e.css.map": "/gephi-lite/static/css/main.207a533e.css.map",
+    "main.a6a265ef.js.map": "/gephi-lite/static/js/main.a6a265ef.js.map",
     "787.2284c812.chunk.js.map": "/gephi-lite/static/js/787.2284c812.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7f7a5970.css",
-    "static/js/main.76fd3611.js"
+    "static/css/main.207a533e.css",
+    "static/js/main.a6a265ef.js"
   ]
 }
