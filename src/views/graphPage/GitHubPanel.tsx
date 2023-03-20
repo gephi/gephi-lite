@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GitHubIcon } from "../../components/common-icons";
-import { MdLogin, MdLogout } from "react-icons/md";
+import { GitHubIcon, SingInIcon, SignOutIcon } from "../../components/common-icons";
 import { useConnectedUser } from "../../core/user";
 import { useNotifications } from "../../core/notifications";
 import { SignInModal } from "../../components/user/SignInModal";
@@ -30,7 +29,7 @@ export const GitHubPanel: FC = () => {
             title={t("auth.sign_in").toString()}
             onClick={() => openModal({ component: SignInModal, arguments: {} })}
           >
-            <MdLogin className="me-1" />
+            <SingInIcon className="me-1" />
             {t("auth.sign_in")}
           </button>
         </>
@@ -49,7 +48,7 @@ export const GitHubPanel: FC = () => {
               });
             }}
           >
-            <MdLogout className="me-1" /> {t("auth.sign_out")}
+            <SignOutIcon className="me-1" /> {t("auth.sign_out")}
           </button>
         </>
       )}

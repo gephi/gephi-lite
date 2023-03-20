@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
-
-import { FileIcon } from "../../components/common-icons";
+import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SaveCloudFileModal } from "./modals/save/SaveCloudFileModal";
 import { CloudFileModal } from "./modals/open/CloudFileModal";
 import { LocalFileModal } from "./modals/open/LocalFileModal";
@@ -40,7 +39,7 @@ export const FilePanel: FC = () => {
               className="btn btn-sm btn-outline-dark mb-1"
               onClick={() => openModal({ component: SignInModal, arguments: {} })}
             >
-              <FaRegSave className="me-1" />
+              <SingInIcon className="me-1" />
               {t("auth.sign_in")}
             </button>
           </div>
