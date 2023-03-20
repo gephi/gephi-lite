@@ -11,4 +11,6 @@ export interface Preferences {
       attributeNames: Record<string, string>;
     };
   };
+  // current locale
+  locale: string;
 }

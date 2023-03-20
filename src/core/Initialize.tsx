@@ -14,12 +14,13 @@ import { parseFiltersState } from "./filters/utils";
 import { appearanceAtom } from "./appearance";
 import { parseAppearanceState } from "./appearance/utils";
 import { preferencesAtom } from "./preferences";
-import { parsePreferences } from "./preferences/utils";
+import { getCurrentPreferences } from "./preferences/utils";
 import { sessionAtom } from "./session";
 import { parseSession, getEmptySession } from "./session/utils";
 import { useModal } from "./modals";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { resetCamera } from "./sigma";
+import { I18n } from "../locales/provider";
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
@@ -66,17 +67,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     });
 
     // Load preferences from local storage
-    preferencesAtom.set((prev) => {
-      const raw = localStorage.getItem("preferences");
-      const parsed = raw ? parsePreferences(raw) : null;
-      if (parsed) {
-        return {
-          ...prev,
-          ...parsed,
-        };
-      }
-      return prev;
-    });
+    preferencesAtom.set(getCurrentPreferences());
 
     // Load a graph
     // ~~~~~~~~~~~~
@@ -159,9 +150,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   }, [initialize]);
 
   return (
-    <>
+    <I18n>
       <AuthInit />
       {loading ? <Loader /> : children}
-    </>
+    </I18n>
   );
 };

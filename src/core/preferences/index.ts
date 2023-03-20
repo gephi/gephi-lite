@@ -1,10 +1,10 @@
 import { isEqual } from "lodash";
 
-import { atom } from "../utils/atoms";
-import { Preferences } from "./types";
-import { RemoteFile } from "../graph/types";
 import { Producer, producerToAction } from "../utils/producers";
-import { getEmptyPreferences, serializePreferences } from "./utils";
+import { atom } from "../utils/atoms";
+import { RemoteFile } from "../graph/types";
+import { getCurrentPreferences, getEmptyPreferences, serializePreferences } from "./utils";
+import { Preferences } from "./types";
 
 /**
  * Producers:
@@ -17,14 +17,23 @@ const addRemoteFile: Producer<Preferences, [RemoteFile]> = (file) => {
   });
 };
 
+const changeLocale: Producer<Preferences, [string]> = (locale) => {
+  // save the new locale in the state
+  return (preferences) => ({
+    ...preferences,
+    locale,
+  });
+};
+
 /**
  * Public API:
  * ***********
  */
-export const preferencesAtom = atom<Preferences>(getEmptyPreferences());
+export const preferencesAtom = atom<Preferences>(getCurrentPreferences());
 
 export const preferencesActions = {
   addRemoteFile: producerToAction(addRemoteFile, preferencesAtom),
+  changeLocale: producerToAction(changeLocale, preferencesAtom),
 };
 
 /**

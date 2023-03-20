@@ -6,7 +6,18 @@ export function getEmptyPreferences(): Preferences {
     recentRemoteFiles: [],
     layoutsParameters: {},
     metrics: {},
+    locale: "en",
   };
+}
+
+export function getCurrentPreferences(): Preferences {
+  try {
+    const rawPreferences = localStorage.getItem("preferences");
+    const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
+    return preferences || getEmptyPreferences();
+  } catch (e) {
+    return getEmptyPreferences();
+  }
 }
 
 /**

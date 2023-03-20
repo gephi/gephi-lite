@@ -45,6 +45,7 @@
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-scanner": "^4.1.1",
     "iwanthue": "^2.0.0",
+    "locale-emoji": "^0.3.0",
     "lodash": "^4.17.21",
     "minisearch": "^6.1.0",
     "prettier": "^2.7.1",
