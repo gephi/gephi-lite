@@ -1,4 +1,6 @@
 #graph-page {
+  $panel-width: 400px;
+
   position: relative;
   display: flex;
   flex-direction: row;
@@ -23,9 +25,9 @@
 
   .toolbar,
   .contextbar,
-  .left-panel,
   .filler,
-  .right-panel {
+  .left-panel-wrapper,
+  .right-panel-wrapper {
     flex-shrink: 0;
   }
 
@@ -45,7 +47,7 @@
       background: none;
 
       &.active {
-        background: $gray-200 !important;
+        background: $panels-bg !important;
       }
     }
   }
@@ -55,9 +57,22 @@
     }
   }
 
+  .left-panel-wrapper,
+  .right-panel-wrapper {
+    width: 0;
+    overflow-x: hidden;
+    transition: 0.3s width;
+    background: $panels-bg;
+    position: relative;
+
+    &.deployed {
+      width: $panel-width;
+    }
+  }
+
   .left-panel,
   .right-panel {
-    background: $panels-bg;
+    width: $panel-width;
     padding: 1.5rem 1rem 1rem 1rem;
     height: 100%;
     overflow-y: auto;
@@ -80,6 +95,26 @@
     }
   }
 
+  .left-panel {
+    position: absolute;
+    right: 0;
+  }
+
+  .right-panel-btn {
+    border: none;
+    outline: none;
+    background: $toolbar-bg;
+    border-radius: $border-radius 0 0 $border-radius;
+    width: 2.5em;
+    text-align: center;
+    padding: 0.6em 0;
+    font-size: $h5-font-size;
+
+    position: absolute;
+    top: 20px;
+    right: 0;
+  }
+
   .filler {
     flex-grow: 1;
     flex-shrink: 1;
@@ -87,7 +122,6 @@
   }
 
   .right-panel {
-    text-align: right;
     .btn-close-panel {
       left: 0;
     }
@@ -96,7 +130,6 @@
     .btn-close-panel {
       right: 0;
     }
-    width: 400px;
   }
 
   // z-indexing management:
@@ -108,8 +141,8 @@
   }
   .toolbar,
   .contextbar,
-  .left-panel,
-  .right-panel {
+  .left-panel-wrapper,
+  .right-panel-wrapper {
     z-index: 130;
   }
 }

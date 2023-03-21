@@ -88,7 +88,7 @@ export const GraphRendering: FC = () => {
   const [isReady, setIsReady] = useState(false);
 
   return (
-    <div className="stage">
+    <>
       <SigmaContainer
         className={cx("position-absolute inset-0", !isReady && "visually-hidden")}
         graph={sigmaGraph}
@@ -105,6 +105,6 @@ export const GraphRendering: FC = () => {
         <SettingsController setIsReady={() => setIsReady(true)} />
       </SigmaContainer>
       <InteractionsController />
-    </div>
+    </>
   );
 };

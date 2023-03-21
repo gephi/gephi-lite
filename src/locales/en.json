@@ -58,6 +58,22 @@
   "context": {
     "title": "Context"
   },
+  "selection": {
+    "nodes_zero": "No selected item",
+    "nodes_one": "One selected node",
+    "nodes": "{{count}} selected nodes",
+    "edges_zero": "No selected item",
+    "edges_one": "One selected edge",
+    "edges": "{{count}} selected edges",
+    "select_all": "Select all",
+    "unselect_all": "Unselect all",
+    "unselect_nodes": "Unselect this node",
+    "unselect_edges": "Unselect this edge",
+    "focus_nodes": "Focus this node",
+    "focus_edges": "Focus this edge",
+    "empty_nodes": "This node has no attribute",
+    "empty_edges": "This edge has no attribute"
+  },
   "appearance": {
     "title": "Appearance",
     "partition": "Partition",

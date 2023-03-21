@@ -36,7 +36,9 @@ export const toggle: Producer<SelectionState, [{ type: ItemType; item: string }]
     ...state,
     type,
     items:
-      state.type === type && state.items.has(item)
+      state.type !== type
+        ? new Set([item])
+        : state.items.has(item)
         ? new Set(without(Array.from(state.items), item))
         : new Set(Array.from(state.items).concat(item)),
   });

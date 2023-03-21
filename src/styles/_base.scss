@@ -29,3 +29,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.circle {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 1em;
+  background-color: $gray-400;
+}

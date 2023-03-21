@@ -20,12 +20,10 @@ export const EventsController: FC = () => {
             type: "nodes",
             item: node,
           });
-        }
-
-        if (selection.type === "nodes" && selection.items.has(node) && selection.items.size === 1) {
+        } else if (selection.type === "nodes" && selection.items.has(node) && selection.items.size === 1) {
           reset();
         } else {
-          select({ type: "nodes", items: new Set([node]) });
+          select({ type: "nodes", items: new Set([node]), replace: true });
         }
       },
     });

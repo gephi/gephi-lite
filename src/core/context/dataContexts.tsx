@@ -3,7 +3,7 @@ import { reduce } from "lodash";
 
 import { filtersActions, filtersAtom } from "../filters";
 import { appearanceActions, appearanceAtom } from "../appearance";
-import { graphDatasetActions, graphDatasetAtom, sigmaAtom, sigmaGraphAtom } from "../graph";
+import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaAtom, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { selectionActions, selectionAtom } from "../selection";
@@ -40,6 +40,7 @@ const ATOMS = {
   sigmaGraph: sigmaGraphAtom,
   preferences: preferencesAtom,
   graphDataset: graphDatasetAtom,
+  filteredGraph: filteredGraphAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -51,6 +52,7 @@ const CONTEXTS = {
   sigmaGraph: createContext(ATOMS.sigmaGraph),
   preferences: createContext(ATOMS.preferences),
   graphDataset: createContext(ATOMS.graphDataset),
+  filteredGraph: createContext(ATOMS.filteredGraph),
 };
 
 /**
@@ -76,8 +78,9 @@ export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
 export const useSelection = makeUseAtom(CONTEXTS.selection);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
-export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const usePreferences = makeUseAtom(CONTEXTS.preferences);
+export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
+export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 
 export const useFiltersActions = makeUseActions(filtersActions);
 export const useSelectionActions = makeUseActions(selectionActions);

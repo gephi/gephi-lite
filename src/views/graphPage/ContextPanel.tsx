@@ -1,6 +1,9 @@
 import { FC } from "react";
+import { capitalize } from "lodash";
 import { useTranslation } from "react-i18next";
 
+import { Selection } from "./Selection";
+import { ContextIcon } from "../../components/common-icons";
 import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
 
 const GraphStat: FC<{ label: string; current: number; total: number }> = ({ label, current, total }) => (
@@ -9,9 +12,9 @@ const GraphStat: FC<{ label: string; current: number; total: number }> = ({ labe
       {label} {current}
       {current !== total && (
         <>
-          <span style={{ verticalAlign: "sub", fontSize: "1rem" }}>
+          <span className="small">
             /{total}
-            <span className="ms-2">{((current / total) * 100).toFixed(0)}%</span>
+            <span className="ms-2 text-muted">({((current / total) * 100).toFixed(0)}%)</span>
           </span>
         </>
       )}{" "}
@@ -20,14 +23,31 @@ const GraphStat: FC<{ label: string; current: number; total: number }> = ({ labe
 );
 
 export const ContextPanel: FC = () => {
+  const { t } = useTranslation();
   const { fullGraph, metadata } = useGraphDataset();
   const sigmaGraph = useSigmaGraph();
-  const { t } = useTranslation();
+
   return (
     <>
-      <h2 className="fs-4">{metadata.title || t("context.title")}</h2>
-      <GraphStat label={t("graph.model.nodes")} current={sigmaGraph.order} total={fullGraph.order} />
-      <GraphStat label={t("graph.model.edges")} current={sigmaGraph.size} total={fullGraph.size} />
+      <h2 className="fs-4">
+        <ContextIcon className="me-1" />
+        {metadata.title || t("context.title")}
+      </h2>
+      <hr />
+
+      <GraphStat
+        label={capitalize(t("graph.model.nodes") as string) + ":"}
+        current={sigmaGraph.order}
+        total={fullGraph.order}
+      />
+      <GraphStat
+        label={capitalize(t("graph.model.edges") as string) + ":"}
+        current={sigmaGraph.size}
+        total={fullGraph.size}
+      />
+
+      <hr />
+      <Selection />
     </>
   );
 };
