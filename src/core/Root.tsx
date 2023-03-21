@@ -6,7 +6,7 @@ import { NotFoundPage } from "../views/NotFoundPage";
 import { GraphPage } from "../views/graphPage";
 import { UIContext, emptyUIContext } from "./context/uiContext";
 import { AtomsContextsRoot } from "./context/dataContexts";
-import { AuthInit } from "./user/AuthInit";
+import { Initialize } from "./Initialize";
 
 export const Root: FC = () => {
   const portalTarget = useRef<HTMLDivElement>(null);
@@ -19,14 +19,15 @@ export const Root: FC = () => {
         }}
       >
         <AtomsContextsRoot>
-          <AuthInit />
-          <Routes>
-            <Route path="/" element={<GraphPage />} />
+          <Initialize>
+            <Routes>
+              <Route path="/" element={<GraphPage />} />
 
-            {/* Error pages: */}
-            <Route path="/error" element={<ErrorPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+              {/* Error pages: */}
+              <Route path="/error" element={<ErrorPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Initialize>
           <div id="portal-target" ref={portalTarget} />
         </AtomsContextsRoot>
       </UIContext.Provider>

@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import { ComponentType, FC, useEffect, useMemo, useState } from "react";
+import { ComponentType, FC, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
@@ -20,14 +20,7 @@ import {
   LayoutsIcon,
   StatisticsIcon,
 } from "../../components/common-icons";
-import { graphDatasetAtom } from "../../core/graph";
-import { filtersAtom } from "../../core/filters";
-import { appearanceAtom } from "../../core/appearance";
-import { useNotifications } from "../../core/notifications";
 import { useFilters } from "../../core/context/dataContexts";
-import { parseDataset } from "../../core/graph/utils";
-import { getEmptyFiltersState, parseFiltersState } from "../../core/filters/utils";
-import { getEmptyAppearanceState, parseAppearanceState } from "../../core/appearance/utils";
 import { useModal } from "../../core/modals";
 import { WelcomeModal } from "./modals/WelcomeModal";
 import { FilePanel } from "./FilePanel";
@@ -44,7 +37,6 @@ type Tool = {
   countStatus?: "danger" | "warning" | "success" | "secondary";
 };
 type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
-type State = { type: "idle" | "loading" | "ready" } | { type: "error"; error: Error };
 
 const GephiLiteButton: FC = () => {
   const { t } = useTranslation();
@@ -56,10 +48,7 @@ const GephiLiteButton: FC = () => {
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
   const [contextOpened, setContextOpened] = useState<boolean>(false);
-
-  const [state, setState] = useState<State>({ type: "idle" });
   const { t } = useTranslation();
-  const { notify } = useNotifications();
   const { openModal } = useModal();
   const filterState = useFilters();
 
@@ -96,47 +85,6 @@ export const GraphPage: FC = () => {
     ],
     [openModal, t, filterState],
   );
-
-  useEffect(() => {
-    if (state.type === "idle") {
-      let isSessionStorageValid = false;
-
-      try {
-        const rawDataset = sessionStorage.getItem("dataset");
-        const rawFilters = sessionStorage.getItem("filters");
-        const rawAppearance = sessionStorage.getItem("appearance");
-
-        if (rawDataset) {
-          const dataset = parseDataset(rawDataset);
-
-          if (dataset) {
-            const appearance = rawAppearance ? parseAppearanceState(rawAppearance) : null;
-            const filters = rawFilters ? parseFiltersState(rawFilters) : null;
-
-            graphDatasetAtom.set(dataset);
-            filtersAtom.set(filters || getEmptyFiltersState());
-            appearanceAtom.set(appearance || getEmptyAppearanceState());
-
-            isSessionStorageValid = true;
-            setState({ type: "ready" });
-          }
-        }
-      } catch (e) {
-        notify({
-          type: "warning",
-          message: t("storage.cannot_restore") as string,
-          title: t("gephi-lite.title") as string,
-        });
-      } finally {
-        if (!isSessionStorageValid)
-          openModal({
-            component: WelcomeModal,
-            arguments: {},
-          });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.type]);
 
   return (
     <Layout>

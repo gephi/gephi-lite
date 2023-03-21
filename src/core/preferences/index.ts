@@ -4,7 +4,7 @@ import { atom } from "../utils/atoms";
 import { Preferences } from "./types";
 import { RemoteFile } from "../graph/types";
 import { Producer, producerToAction } from "../utils/reducers";
-import { getCurrentPreferences, serializePreferences } from "./utils";
+import { getEmptyPreferences, serializePreferences } from "./utils";
 
 /**
  * Producers:
@@ -21,7 +21,7 @@ const addRemoteFile: Producer<Preferences, [RemoteFile]> = (file) => {
  * Public API:
  * ***********
  */
-export const preferencesAtom = atom<Preferences>(getCurrentPreferences());
+export const preferencesAtom = atom<Preferences>(getEmptyPreferences());
 
 export const preferencesActions = {
   addRemoteFile: producerToAction(addRemoteFile, preferencesAtom),

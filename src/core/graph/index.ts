@@ -87,7 +87,6 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     const filtersState = filtersAtom.get();
     const newCache = applyFilters(graphDataset, filtersState.past, []);
     filteredGraphsAtom.set(newCache);
-    return;
   }
 
   sessionStorage.setItem("dataset", serializeDataset(graphDataset));

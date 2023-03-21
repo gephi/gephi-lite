@@ -54,6 +54,7 @@ function filterValue(value: any, filter: RangeFilterType | TermsFilterType): boo
       return typeof string === "string" && filter.terms.has(string);
   }
 }
+
 function filterNode(id: string, dataset: GraphDataset, filter: FilterType): boolean {
   switch (filter.type) {
     case "range":
@@ -64,6 +65,7 @@ function filterNode(id: string, dataset: GraphDataset, filter: FilterType): bool
   }
   return true;
 }
+
 function filterEdge(id: string, source: string, target: string, dataset: GraphDataset, filter: FilterType): boolean {
   switch (filter.type) {
     case "range":

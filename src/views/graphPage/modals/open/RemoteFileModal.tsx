@@ -3,16 +3,13 @@ import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
 import { isUrl } from "../../../../utils/check";
+import { extractFilename } from "../../../../utils/url";
 import { ModalProps } from "../../../../core/modals/types";
 import { useOpenGexf } from "../../../../core/graph/useOpenGexf";
 import { RemoteFile } from "../../../../core/graph/types";
 import { useNotifications } from "../../../../core/notifications";
 import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
-
-function extractFilename(url: string): string {
-  return url.split("/").pop() || url;
-}
 
 export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { notify } = useNotifications();
