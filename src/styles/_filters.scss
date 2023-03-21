@@ -13,3 +13,52 @@
     margin: 0 0.75rem;
   }
 }
+
+.range-filter {
+  margin-top: 0.8rem;
+  height: 80px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .bar {
+    position: relative;
+    height: 100%;
+    flex-grow: 1;
+
+    &:not(:last-child) {
+      margin-right: 1px;
+    }
+  }
+
+  .global,
+  .filtered {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: height ease-in-out 0.2s;
+  }
+
+  .global {
+    background: $gray-400;
+  }
+  .filtered {
+    background: $gray-800;
+  }
+  .label {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size: 0.8em;
+
+    &.inside {
+      top: 0;
+    }
+    &.outside {
+      bottom: 100%;
+      color: $text-muted;
+    }
+  }
+}
