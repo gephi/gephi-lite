@@ -14,6 +14,7 @@ import { ItemType } from "../../core/types";
 import { ItemData, EdgeRenderingData, NodeRenderingData } from "../../core/graph/types";
 import { isEmpty, toPairs } from "lodash";
 import { NodeComponent } from "../../components/Node";
+import { EdgeComponent } from "../../components/Edge";
 
 function SelectedItem<
   T extends { key: "nodes"; type: NodeRenderingData & ItemData } | { key: "edges"; type: EdgeRenderingData & ItemData },
@@ -24,6 +25,9 @@ function SelectedItem<
   const itemAttributes: T["type"] =
     type === "nodes" ? sigmaGraph.getNodeAttributes(id) : sigmaGraph.getEdgeAttributes(id);
 
+  const sourceAttributes = type === "edges" ? sigmaGraph.getNodeAttributes(sigmaGraph.source(id)) : null;
+  const targetAttributes = type === "edges" ? sigmaGraph.getNodeAttributes(sigmaGraph.target(id)) : null;
+
   return (
     <li className={`selected-${type}-item mt-2`}>
       <h4 className="fs-6 d-flex flex-row align-items-center">
@@ -31,7 +35,18 @@ function SelectedItem<
           {type === "nodes" ? (
             <NodeComponent label={itemAttributes.label} color={itemAttributes.color as string} />
           ) : (
-            itemAttributes.label
+            <EdgeComponent
+              label={itemAttributes.label}
+              color={itemAttributes.color as string}
+              source={{
+                label: sourceAttributes!.label,
+                color: sourceAttributes!.color as string,
+              }}
+              target={{
+                label: targetAttributes!.label,
+                color: targetAttributes!.color as string,
+              }}
+            />
           )}
         </div>
 

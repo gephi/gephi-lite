@@ -1,20 +1,34 @@
 import { FC, useEffect } from "react";
+import { MouseCoords } from "sigma/types";
 import { useRegisterEvents } from "@react-sigma/core";
 
-import { useSelection, useSelectionActions } from "../../../core/context/dataContexts";
+import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
 
 export const EventsController: FC = () => {
   const registerEvents = useRegisterEvents();
 
   const selection = useSelection();
   const { select, toggle, reset } = useSelectionActions();
+  const { setHoveredNode, resetHoveredNode, setHoveredEdge, resetHoveredEdge } = useSigmaActions();
 
   useEffect(() => {
     registerEvents({
-      clickStage: () => {
+      enterEdge({ edge }) {
+        setHoveredEdge(edge);
+      },
+      leaveEdge() {
+        resetHoveredEdge();
+      },
+      enterNode({ node }) {
+        setHoveredNode(node);
+      },
+      leaveNode() {
+        resetHoveredNode();
+      },
+      clickStage() {
         reset();
       },
-      clickNode: ({ node, event }) => {
+      clickNode({ node, event }) {
         if (event.original.ctrlKey) {
           toggle({
             type: "nodes",
@@ -26,8 +40,33 @@ export const EventsController: FC = () => {
           select({ type: "nodes", items: new Set([node]), replace: true });
         }
       },
+      clickEdge({ edge, event }) {
+        if (event.original.ctrlKey) {
+          toggle({
+            type: "edges",
+            item: edge,
+          });
+        } else if (selection.type === "edges" && selection.items.has(edge) && selection.items.size === 1) {
+          reset();
+        } else {
+          select({ type: "edges", items: new Set([edge]), replace: true });
+        }
+      },
+      doubleClick(event: MouseCoords) {
+        event.preventSigmaDefault();
+      },
     });
-  }, [registerEvents, reset, select, selection, toggle]);
+  }, [
+    registerEvents,
+    reset,
+    resetHoveredEdge,
+    resetHoveredNode,
+    select,
+    selection,
+    setHoveredEdge,
+    setHoveredNode,
+    toggle,
+  ]);
 
   return null;
 };

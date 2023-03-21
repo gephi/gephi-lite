@@ -7,6 +7,7 @@ import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaAtom, si
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { selectionActions, selectionAtom } from "../selection";
+import { sigmaActions, sigmaStateAtom } from "../sigma";
 
 /**
  * Helpers:
@@ -37,6 +38,7 @@ const ATOMS = {
   filters: filtersAtom,
   selection: selectionAtom,
   appearance: appearanceAtom,
+  sigmaState: sigmaStateAtom,
   sigmaGraph: sigmaGraphAtom,
   preferences: preferencesAtom,
   graphDataset: graphDatasetAtom,
@@ -49,6 +51,7 @@ const CONTEXTS = {
   filters: createContext(ATOMS.filters),
   selection: createContext(ATOMS.selection),
   appearance: createContext(ATOMS.appearance),
+  sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
   preferences: createContext(ATOMS.preferences),
   graphDataset: createContext(ATOMS.graphDataset),
@@ -77,11 +80,13 @@ export const useFilters = makeUseAtom(CONTEXTS.filters);
 export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
 export const useSelection = makeUseAtom(CONTEXTS.selection);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
+export const useSigmaState = makeUseAtom(CONTEXTS.sigmaState);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 
+export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
 export const useSelectionActions = makeUseActions(selectionActions);
 export const useAppearanceActions = makeUseActions(appearanceActions);

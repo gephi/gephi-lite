@@ -20,7 +20,7 @@ import {
   LayoutsIcon,
   StatisticsIcon,
 } from "../../components/common-icons";
-import { useFilters } from "../../core/context/dataContexts";
+import { useFilters, useSelection } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { WelcomeModal } from "./modals/WelcomeModal";
 import { FilePanel } from "./FilePanel";
@@ -51,6 +51,7 @@ export const GraphPage: FC = () => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const filterState = useFilters();
+  const selection = useSelection();
 
   const TOOLS: (Tool | Button | { type: "space" } | { type: "filler" })[] = useMemo(
     () => [
@@ -141,10 +142,15 @@ export const GraphPage: FC = () => {
             <GraphRendering />
             <button
               type="button"
-              className="right-panel-btn"
+              className="right-panel-btn d-flex justify-content-center align-items-center"
               onClick={() => setContextOpened((v) => !v)}
             >
               {contextOpened ? <HiChevronDoubleRight /> : <HiChevronDoubleLeft />}
+              {!!selection.items.size && (
+                <span className="position-absolute translate-middle badge rounded-pill bg-warning">
+                  {selection.items.size}
+                </span>
+              )}
             </button>
           </div>
         </div>

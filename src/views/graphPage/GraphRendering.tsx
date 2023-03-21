@@ -7,7 +7,7 @@ import { FaRegDotCircle } from "react-icons/fa";
 import { BsZoomIn, BsZoomOut } from "react-icons/bs";
 import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 
-import { useSigmaAtom, useSigmaGraph } from "../../core/context/dataContexts";
+import { useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { SettingsController } from "./controllers/SettingsController";
 import { EventsController } from "./controllers/EventsController";
@@ -85,16 +85,23 @@ const InteractionsController: FC = () => {
 
 export const GraphRendering: FC = () => {
   const sigmaGraph = useSigmaGraph();
+  const { hoveredNode, hoveredEdge } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
 
   return (
     <>
       <SigmaContainer
-        className={cx("position-absolute inset-0", !isReady && "visually-hidden")}
+        className={cx(
+          "position-absolute inset-0",
+          !isReady && "visually-hidden",
+          (hoveredNode || hoveredEdge) && "cursor-pointer",
+        )}
         graph={sigmaGraph}
         settings={{
           labelFont: "Poppins, Arial, Helvetica, Geneva",
           edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
+          enableEdgeClickEvents: true,
+          enableEdgeHoverEvents: true,
           nodeProgramClasses: {
             circle: NodeProgramBorder,
           },
