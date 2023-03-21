@@ -4,8 +4,6 @@
   "homepage": "https://gephi.org/gephi-lite",
   "license": "gpl-3.0",
   "dependencies": {
-    "@axa-fr/react-oidc": "^6.9.6",
-    "@octokit/auth-oauth-app": "^5.0.2",
     "@octokit/auth-oauth-device": "^4.0.3",
     "@octokit/core": "^4.0.5",
     "@react-sigma/core": "^3.2.0",
@@ -25,7 +23,6 @@
     "byte-size": "^8.1.0",
     "chroma-js": "^2.4.2",
     "classnames": "^2.3.2",
-    "client-oauth2": "^4.3.3",
     "copy-to-clipboard": "^3.3.2",
     "graphology": "^0.25.1",
     "graphology-communities-louvain": "^2.0.1",
