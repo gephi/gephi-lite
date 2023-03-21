@@ -6,6 +6,7 @@ import { appearanceActions, appearanceAtom } from "../appearance";
 import { graphDatasetActions, graphDatasetAtom, sigmaAtom, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
+import { selectionActions, selectionAtom } from "../selection";
 
 /**
  * Helpers:
@@ -34,20 +35,22 @@ function makeUseActions<T>(actionsCollection: T) {
 const ATOMS = {
   sigma: sigmaAtom,
   filters: filtersAtom,
+  selection: selectionAtom,
   appearance: appearanceAtom,
   sigmaGraph: sigmaGraphAtom,
-  graphDataset: graphDatasetAtom,
   preferences: preferencesAtom,
+  graphDataset: graphDatasetAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
 const CONTEXTS = {
   sigma: createContext(ATOMS.sigma),
   filters: createContext(ATOMS.filters),
+  selection: createContext(ATOMS.selection),
   appearance: createContext(ATOMS.appearance),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
-  graphDataset: createContext(ATOMS.graphDataset),
   preferences: createContext(ATOMS.preferences),
+  graphDataset: createContext(ATOMS.graphDataset),
 };
 
 /**
@@ -70,12 +73,14 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
 // Read data:
 export const useFilters = makeUseAtom(CONTEXTS.filters);
 export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
+export const useSelection = makeUseAtom(CONTEXTS.selection);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 
 export const useFiltersActions = makeUseActions(filtersActions);
+export const useSelectionActions = makeUseActions(selectionActions);
 export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);

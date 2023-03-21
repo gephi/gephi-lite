@@ -1,37 +1,17 @@
-import Sigma from "sigma";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
-import { SigmaContainer, useSigma } from "@react-sigma/core";
+import { SigmaContainer } from "@react-sigma/core";
 import React, { FC, useCallback, useEffect, useState } from "react";
 
 import { FaRegDotCircle } from "react-icons/fa";
 import { BsZoomIn, BsZoomOut } from "react-icons/bs";
 import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 
-import { sigmaAtom } from "../../core/graph";
-import { SigmaGraph } from "../../core/graph/types";
-import { getDrawEdgeLabel, getDrawHover, getDrawLabel } from "../../core/appearance/utils";
-import { useAppearance, useGraphDataset, useSigmaAtom, useSigmaGraph } from "../../core/context/dataContexts";
-
-const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
-  const sigma = useSigma();
-  const graphDataset = useGraphDataset();
-  const graphAppearance = useAppearance();
-
-  useEffect(() => {
-    sigmaAtom.set(sigma as Sigma<SigmaGraph>);
-  }, [sigma]);
-
-  useEffect(() => {
-    sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
-    sigma.setSetting("labelRenderer", getDrawLabel(graphAppearance));
-    sigma.setSetting("hoverRenderer", getDrawHover(graphAppearance));
-    sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance));
-    setIsReady();
-  }, [graphAppearance, graphDataset, setIsReady, sigma]);
-
-  return null;
-};
+import { useSigmaAtom, useSigmaGraph } from "../../core/context/dataContexts";
+import { AppearanceController } from "./controllers/AppearanceController";
+import { SettingsController } from "./controllers/SettingsController";
+import { EventsController } from "./controllers/EventsController";
+import NodeProgramBorder from "../../utils/bordered-node-program";
 
 function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
   const [isFullScreen, setFullScreen] = useState<boolean>(false);
@@ -115,8 +95,13 @@ export const GraphRendering: FC = () => {
         settings={{
           labelFont: "Poppins, Arial, Helvetica, Geneva",
           edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
+          nodeProgramClasses: {
+            circle: NodeProgramBorder,
+          },
         }}
       >
+        <EventsController />
+        <AppearanceController />
         <SettingsController setIsReady={() => setIsReady(true)} />
       </SigmaContainer>
       <InteractionsController />

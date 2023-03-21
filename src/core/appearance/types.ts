@@ -1,3 +1,5 @@
+import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
+
 import { ItemData } from "../graph/types";
 
 interface NoFieldValue<T extends string> {
@@ -93,3 +95,28 @@ export interface VisualGetters {
   getEdgeColor: ColorGetter | null;
   getEdgeLabel: LabelGetter | null;
 }
+
+/**
+ * This types override RenderingData from sigma, with additional attributes used
+ * in Gephi Lite:
+ */
+export interface EdgeRenderingData {
+  label?: string | null;
+  color?: string;
+  size?: number;
+}
+export interface NodeRenderingData {
+  label?: string | null;
+  color?: string;
+  size?: number;
+  x: number;
+  y: number;
+}
+
+export type CustomNodeDisplayData = NodeDisplayData & {
+  borderColor?: string;
+  hideLabel?: boolean;
+  fixed?: boolean;
+  boldLabel?: boolean;
+};
+export type CustomEdgeDisplayData = EdgeDisplayData;
