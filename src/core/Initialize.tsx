@@ -34,7 +34,13 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     preferencesAtom.set((prev) => {
       const raw = localStorage.getItem("preferences");
       const parsed = raw ? parsePreferences(raw) : null;
-      return parsed ?? prev;
+      if (parsed) {
+        return {
+          ...prev,
+          ...parsed,
+        };
+      }
+      return prev;
     });
 
     // Load a graph

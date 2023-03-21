@@ -1,9 +1,11 @@
-import { capitalize, keyBy, map, mapValues } from "lodash";
-import { FC, Fragment, useMemo, useState } from "react";
+import { capitalize, keyBy, map, mapValues, isNil, cloneDeep } from "lodash";
+import { FC, Fragment, useMemo, useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
 
 import { ItemType } from "../../core/types";
+import { useAtom } from "../../core/utils/atoms";
+import { preferencesAtom } from "../../core/preferences";
 import { StatisticsIcon } from "../../components/common-icons";
 import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Metric } from "../../core/metrics/types";
@@ -27,20 +29,81 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
   const { setGraphDataset } = useGraphDatasetActions();
-  const [paramsState, setParamsState] = useState<Record<string, unknown>>(
-    metric.parameters.reduce(
-      (iter, param) => ({
-        ...iter,
-        [param.id]: param.defaultValue || undefined,
-      }),
-      {},
-    ),
+  const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
+
+  // get metric config from the preference if it exists
+  const [preferences, setPreferences] = useAtom(preferencesAtom);
+  const metricConfig = preferences.metrics[metric.id] || {
+    parameters: {},
+    attributeNames: {},
+  };
+
+  // default metric config
+  const metricDefaultConfig = useMemo(
+    () => ({
+      parameters: metric.parameters.reduce(
+        (iter, param) => ({
+          ...iter,
+          [param.id]: !isNil(param.defaultValue) ? param.defaultValue : undefined,
+        }),
+        {},
+      ),
+      attributeNames: mapValues(metric.types, (type, value) => value),
+    }),
+    [metric],
   );
 
-  const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
-  const [attributeNames, setAttributeNames] = useState<Record<string, string>>(
-    mapValues(metric.types, (type, value) => value),
+  /**
+   * When the metric change
+   * => we load the metric config
+   */
+  useEffect(() => {
+    setPreferences((prev) => {
+      const next = cloneDeep(prev);
+      if (!next.metrics[metric.id]) {
+        next.metrics[metric.id] = metricDefaultConfig;
+        return next;
+      }
+      next.metrics[metric.id] = {
+        parameters: {
+          ...metricDefaultConfig.parameters,
+          ...prev.metrics[metric.id].parameters,
+        },
+        attributeNames: {
+          ...metricDefaultConfig.attributeNames,
+          ...prev.metrics[metric.id].attributeNames,
+        },
+      };
+      return next;
+    });
+  }, [metric, metricDefaultConfig, setPreferences]);
+
+  /**
+   * OnChange function for parameters
+   */
+  const onChange = useCallback(
+    (type: "parameters" | "attributeNames", key: string, value: unknown) => {
+      setPreferences((prev) => {
+        const next = cloneDeep(prev);
+        next.metrics[metric.id][type][key] = value;
+        return next;
+      });
+    },
+    [metric.id, setPreferences],
   );
+
+  /**
+   * Reset parameters for the current metric
+   */
+  const resetParameters = useCallback(() => {
+    setPreferences((prev) => ({
+      ...prev,
+      metrics: {
+        ...prev.metrics,
+        [metric.id]: metricDefaultConfig,
+      },
+    }));
+  }, [metric.id, metricDefaultConfig, setPreferences]);
 
   return (
     <form
@@ -48,18 +111,17 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
         e.preventDefault();
 
         try {
-          const res = computeMetric(metric, paramsState, attributeNames, sigmaGraph, dataset);
+          const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, sigmaGraph, dataset);
           setGraphDataset(res.dataset);
           notify({
             type: "success",
             message: t("statistics.success", {
               items: metric.itemType,
-              metrics: Object.values(attributeNames).join(", "),
-              count: Object.values(attributeNames).length,
+              metrics: Object.values(metricConfig.attributeNames).join(", "),
+              count: Object.values(metricConfig.attributeNames).length,
             }) as string,
             title: t("statistics.title") as string,
           });
-          onClose();
         } catch (e) {
           const message = e instanceof Error ? e.message : "unknown error";
           notify({
@@ -82,12 +144,14 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
               required
               id={`statistics-${metric.itemType}-${metric.id}-params-${value}`}
               label={t(`statistics.${metric.itemType}.${metric.id}.attributes.${value}`) as string}
-              value={attributeNames[value]}
-              onChange={(v) => setAttributeNames((s) => ({ ...s, [value]: v }))}
+              value={metricConfig.attributeNames[value]}
+              onChange={(v) => onChange("attributeNames", value, v)}
             />
-            {!!fieldsIndex[attributeNames[value]] && (
+            {!!fieldsIndex[metricConfig.attributeNames[value]] && (
               <div className="small text-primary">
-                {t(`statistics.${metric.itemType}_attribute_already_exists`, { field: attributeNames[value] })}
+                {t(`statistics.${metric.itemType}_attribute_already_exists`, {
+                  field: metricConfig.attributeNames[value],
+                })}
               </div>
             )}
           </Fragment>
@@ -108,8 +172,8 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
                     : undefined
                 }
-                value={paramsState[param.id] as number}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                value={metricConfig.parameters[param.id] as number}
+                onChange={(v) => onChange("parameters", param.id, v)}
               />
             )}
             {param.type === "boolean" && (
@@ -122,8 +186,8 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
                     : undefined
                 }
-                value={paramsState[param.id] as boolean}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                value={metricConfig.parameters[param.id] as boolean}
+                onChange={(v) => onChange("parameters", param.id, v)}
               />
             )}
             {param.type === "enum" && (
@@ -136,8 +200,8 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                     ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
                     : undefined
                 }
-                value={paramsState[param.id] as string}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                value={metricConfig.parameters[param.id] as string}
+                onChange={(v) => onChange("parameters", param.id, v)}
                 options={param.values.map(({ id }) => ({
                   value: id,
                   label: t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.values.${id}`) as string,
@@ -155,8 +219,8 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                     : undefined
                 }
                 placeholder={t("common.none") as string}
-                value={paramsState[param.id] as string}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                value={metricConfig.parameters[param.id] as string}
+                onChange={(v) => onChange("parameters", param.id, v)}
                 options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
                   .filter((field) => (param.restriction ? !!field[param.restriction] : true))
                   .map((field) => ({
@@ -170,11 +234,11 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
       })}
 
       <div className="text-end mt-2">
-        <button type="button" className="btn btn-outline-secondary ms-2" onClick={() => onClose()}>
-          {t("common.cancel")}
+        <button type="reset" className="btn btn-outline-secondary ms-2" onClick={() => resetParameters()}>
+          {t("common.reset")}
         </button>
         <button type="submit" className="btn btn-primary ms-2">
-          {t("statistics.compute", { count: Object.keys(attributeNames).length })}
+          {t("statistics.compute", { count: Object.keys(metricConfig.attributeNames).length })}
         </button>
       </div>
     </form>

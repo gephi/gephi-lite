@@ -1,10 +1,12 @@
-import { FC, useMemo, useState, useEffect } from "react";
+import { FC, useMemo, useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
 import { isNil } from "lodash";
 
 import { LayoutsIcon } from "../../components/common-icons";
+import { useAtom } from "../../core/utils/atoms";
+import { preferencesAtom } from "../../core/preferences";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout } from "../../core/layouts/types";
 import { useLayouts } from "../../core/layouts/useLayouts";
@@ -27,12 +29,15 @@ export const LayoutForm: FC<{
   isRunning: boolean;
 }> = ({ layout, onCancel, onStart, onStop, isRunning }) => {
   const { t } = useTranslation();
-  const [paramsState, setParamsState] = useState<Record<string, unknown>>({});
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
+  // get layout parameter from the preference if it exists
+  const [preferences, setPreferences] = useAtom(preferencesAtom);
+  const layoutParameters = preferences.layoutsParameters[layout.id] || {};
 
-  useEffect(() => {
-    setParamsState(
+  // default layout parameters
+  const layoutDefaultParameters = useMemo(
+    () =>
       layout.parameters.reduce(
         (iter, param) => ({
           ...iter,
@@ -40,15 +45,64 @@ export const LayoutForm: FC<{
         }),
         {},
       ),
-    );
-  }, [layout]);
+    [layout],
+  );
+
+  /**
+   * When the layout change
+   * => we load the layout paramaters
+   */
+  useEffect(() => {
+    setPreferences((prev) => ({
+      ...prev,
+      layoutsParameters: {
+        ...prev.layoutsParameters,
+        [layout.id]: {
+          ...layoutDefaultParameters,
+          ...(prev.layoutsParameters[layout.id] || {}),
+        },
+      },
+    }));
+  }, [layout, layoutDefaultParameters, setPreferences]);
+
+  /**
+   * OnChange function for parameters
+   */
+  const onChangeParameters = useCallback(
+    (key: string, value: unknown) => {
+      setPreferences((prev) => ({
+        ...prev,
+        layoutsParameters: {
+          ...prev.layoutsParameters,
+          [layout.id]: {
+            ...(prev.layoutsParameters[layout.id] || {}),
+            ...{ [key]: value },
+          },
+        },
+      }));
+    },
+    [layout.id, setPreferences],
+  );
+
+  /**
+   * Reset parameters for the current layout
+   */
+  const resetParameters = useCallback(() => {
+    setPreferences((prev) => ({
+      ...prev,
+      layoutsParameters: {
+        ...prev.layoutsParameters,
+        [layout.id]: layoutDefaultParameters,
+      },
+    }));
+  }, [layout.id, layoutDefaultParameters, setPreferences]);
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         if (isRunning) onStop();
-        else onStart(paramsState);
+        else onStart(layoutParameters);
       }}
     >
       <h3 className="fs-5 mt-3">{t(`layouts.${layout.id}.title`)}</h3>
@@ -67,9 +121,9 @@ export const LayoutForm: FC<{
                     ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
                     : undefined
                 }
-                value={paramsState[param.id] as number}
+                value={layoutParameters[param.id] as number}
                 disabled={isRunning}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                onChange={(v) => onChangeParameters(param.id, v)}
               />
             )}
             {param.type === "boolean" && (
@@ -81,9 +135,9 @@ export const LayoutForm: FC<{
                     ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
                     : undefined
                 }
-                value={paramsState[param.id] as boolean}
+                value={layoutParameters[param.id] as boolean}
                 disabled={isRunning}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                onChange={(v) => onChangeParameters(param.id, v)}
               />
             )}
             {param.type === "attribute" && (
@@ -97,9 +151,9 @@ export const LayoutForm: FC<{
                     : undefined
                 }
                 placeholder={t("common.none") as string}
-                value={paramsState[param.id] as string}
+                value={layoutParameters[param.id] as string}
                 disabled={isRunning}
-                onChange={(v) => setParamsState((s) => ({ ...s, [param.id]: v }))}
+                onChange={(v) => onChangeParameters(param.id, v)}
                 options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
                   .filter((field) => (param.restriction ? !!field[param.restriction] : true))
                   .map((field) => ({
@@ -113,8 +167,8 @@ export const LayoutForm: FC<{
       })}
 
       <div className="text-end mt-2">
-        <button type="button" className="btn btn-secondary ms-2" onClick={() => onCancel()}>
-          {t("common.cancel")}
+        <button type="reset" className="btn btn-secondary ms-2" onClick={() => resetParameters()}>
+          {t("common.reset")}
         </button>
         <button type="submit" className="btn btn-primary ms-2">
           {layout.type === "sync" && <>{t("common.apply")}</>}

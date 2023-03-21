@@ -528,6 +528,7 @@
     "open": "Open",
     "open_file": "Open {{filename}}",
     "remove": "Remove",
+    "reset": "Reset",
     "save": "Save",
     "start": "Start",
     "stop": "Stop",

@@ -104,7 +104,7 @@ export const EnumInput: FC<
           isClearable={!required}
           className={className}
           placeholder={placeholder}
-          value={option}
+          value={option || null}
           options={options}
           onChange={(o) => onChange(o?.value || null)}
         />

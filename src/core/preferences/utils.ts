@@ -4,6 +4,8 @@ import { Preferences } from "./types";
 export function getEmptyPreferences(): Preferences {
   return {
     recentRemoteFiles: [],
+    layoutsParameters: {},
+    metrics: {},
   };
 }
 
