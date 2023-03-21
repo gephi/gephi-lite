@@ -235,7 +235,11 @@ export function getAllVisualGetters(dataset: GraphDataset, appearance: Appearanc
 export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, getters: VisualGetters): void {
   graph.forEachNode((node) => {
     const attr: Partial<NodeRenderingData> = {};
-    if (getters.getNodeSize) attr.size = getters.getNodeSize(node, dataset.nodeData[node]);
+    if (getters.getNodeSize) {
+      attr.size = getters.getNodeSize(node, dataset.nodeData[node]);
+      // store raw size to compute label size independent to zoom
+      attr.rawSize = attr.size;
+    }
     if (getters.getNodeColor) attr.color = getters.getNodeColor(node, dataset.nodeData[node]);
     if (getters.getNodeLabel) attr.label = getters.getNodeLabel(node, dataset.nodeData[node]);
     graph.mergeNodeAttributes(node, attr);
@@ -243,7 +247,11 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
 
   graph.forEachEdge((edge) => {
     const attr: Partial<EdgeRenderingData> = {};
-    if (getters.getEdgeSize) attr.size = getters.getEdgeSize(edge, dataset.edgeData[edge]);
+    if (getters.getEdgeSize) {
+      attr.size = getters.getEdgeSize(edge, dataset.edgeData[edge]);
+      // store raw size to compute label size independent to zoom
+      attr.rawSize = attr.size;
+    }
     if (getters.getEdgeColor) attr.color = getters.getEdgeColor(edge, dataset.edgeData[edge]);
     if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(edge, dataset.edgeData[edge]);
     graph.mergeEdgeAttributes(edge, attr);

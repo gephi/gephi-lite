@@ -31,6 +31,7 @@ export interface EdgeRenderingData {
   label?: string | null;
   size?: number;
   color?: string;
+  rawSize?: number;
 }
 export interface NodeRenderingData {
   label?: string | null;
@@ -38,6 +39,7 @@ export interface NodeRenderingData {
   size?: number;
   x: number;
   y: number;
+  rawSize?: number;
 }
 
 // At the moment, all other attributes must be stored as scalar values, for
