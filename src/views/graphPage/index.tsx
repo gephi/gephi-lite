@@ -2,6 +2,7 @@ import { isEqual } from "lodash";
 import { ComponentType, FC, useEffect, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
+import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 
 import { Layout } from "../layout";
@@ -32,6 +33,7 @@ import { WelcomeModal } from "./modals/WelcomeModal";
 import { FilePanel } from "./FilePanel";
 import { GitHubPanel } from "./GitHubPanel";
 import { UserAvatar } from "../../components/user/UserAvatar";
+import { ContextPanel } from "./ContextPanel";
 
 type Tool = {
   type: "tool";
@@ -53,6 +55,8 @@ const GephiLiteButton: FC = () => {
 
 export const GraphPage: FC = () => {
   const [tool, setTool] = useState<Tool | null>(null);
+  const [contextOpened, setContextOpened] = useState<boolean>(false);
+
   const [state, setState] = useState<State>({ type: "idle" });
   const { t } = useTranslation();
   const { notify } = useNotifications();
@@ -176,11 +180,7 @@ export const GraphPage: FC = () => {
         </div>
         {tool && (
           <div className="left-panel border-end position-relative">
-            <button
-              className="btn btn-icon position-absolute top-5 end-5"
-              aria-label="close panel"
-              onClick={() => setTool(null)}
-            >
+            <button className="btn btn-icon btn-close-panel" aria-label="close panel" onClick={() => setTool(null)}>
               <BsX />
             </button>
             <tool.panel />
@@ -188,6 +188,29 @@ export const GraphPage: FC = () => {
         )}
         <div className="filler">
           <GraphRendering />
+        </div>
+        {contextOpened && (
+          <div className="right-panel position-relative border-start">
+            <button
+              className="btn btn-icon btn-close-panel"
+              aria-label="close panel"
+              onClick={() => setContextOpened(false)}
+            >
+              <BsX />
+            </button>
+            <ContextPanel />
+          </div>
+        )}
+        <div className="contextbar">
+          <button
+            className="btn btn-icon open-contextbar"
+            aria-label="open context panel"
+            onClick={() => {
+              setContextOpened(!contextOpened);
+            }}
+          >
+            {contextOpened ? <HiChevronDoubleRight /> : <HiChevronDoubleLeft />}
+          </button>
         </div>
       </div>
     </Layout>

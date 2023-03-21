@@ -55,6 +55,9 @@
     "cannot_restore": "Your graph cannot be restored.",
     "restore_successful": "Your work graph has been restored."
   },
+  "context": {
+    "title": "Context"
+  },
   "appearance": {
     "title": "Appearance",
     "partition": "Partition",

@@ -22,13 +22,14 @@
   }
 
   .toolbar,
+  .contextbar,
   .left-panel,
   .filler,
   .right-panel {
-    z-index: 1;
     flex-shrink: 0;
   }
 
+  .contextbar,
   .toolbar {
     overflow-x: hidden;
     background: $toolbar-bg;
@@ -48,13 +49,34 @@
       }
     }
   }
-  .left-panel {
+  .contextbar {
+    .open-contextbar {
+      height: 100%;
+    }
+  }
+
+  .left-panel,
+  .right-panel {
     background: $panels-bg;
+    padding: 1.5rem 1rem 1rem 1rem;
+    height: 100%;
+    overflow-y: auto;
 
     .filler-fade-out {
       height: 100px;
       width: 100%;
       background: linear-gradient(transparent, $panels-bg);
+    }
+
+    .btn-close-panel {
+      position: absolute;
+      top: 0;
+
+      padding: 0.1rem 0.2rem;
+      svg {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+      }
     }
   }
 
@@ -64,12 +86,17 @@
     position: relative;
   }
 
-  .left-panel,
   .right-panel {
+    text-align: right;
+    .btn-close-panel {
+      left: 0;
+    }
+  }
+  .left-panel {
+    .btn-close-panel {
+      right: 0;
+    }
     width: 400px;
-    padding: 1rem;
-    height: 100%;
-    overflow-y: auto;
   }
 
   // z-indexing management:
@@ -80,6 +107,7 @@
     z-index: 120;
   }
   .toolbar,
+  .contextbar,
   .left-panel,
   .right-panel {
     z-index: 130;
