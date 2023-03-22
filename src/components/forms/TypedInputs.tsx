@@ -22,7 +22,7 @@ export const NumberInput: FC<
         type="number"
         className={cx("form-control form-control-sm", className)}
         id={id}
-        value={value || ""}
+        value={typeof value === "number" ? value : ""}
         onChange={(e) => onChange(+e.target.value)}
       />
       {description && <div className="form-text small text-muted">{description}</div>}
