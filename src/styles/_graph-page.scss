@@ -25,14 +25,12 @@
   }
 
   .toolbar,
-  .contextbar,
   .filler,
   .left-panel-wrapper,
   .right-panel-wrapper {
     flex-shrink: 0;
   }
 
-  .contextbar,
   .toolbar {
     overflow-x: hidden;
     background: $toolbar-bg;
@@ -50,11 +48,6 @@
       &.active {
         background: $panels-bg !important;
       }
-    }
-  }
-  .contextbar {
-    .open-contextbar {
-      height: 100%;
     }
   }
 
@@ -144,7 +137,7 @@
     z-index: 130;
   }
   .toolbar,
-  .contextbar,
+  .sigma-controls,
   .left-panel-wrapper,
   .right-panel-btn,
   .right-panel-wrapper {

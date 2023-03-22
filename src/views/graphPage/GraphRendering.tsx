@@ -50,7 +50,7 @@ const InteractionsController: FC = () => {
   const zoomOptions = { duration: 200, factor: 1.5 };
 
   return (
-    <div className="position-absolute d-flex flex-column" style={{ right: 10, bottom: 10 }}>
+    <div className="position-absolute d-flex flex-column sigma-controls" style={{ right: 10, bottom: 10 }}>
       <button
         className={btnClassName}
         onClick={() => sigma.getCamera().animatedZoom(zoomOptions)}
