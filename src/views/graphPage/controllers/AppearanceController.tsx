@@ -1,13 +1,13 @@
 import { FC, useEffect } from "react";
-import { useSetSettings } from "@react-sigma/core";
+import { useSigma } from "@react-sigma/core";
 
 import { memoizedBrighten } from "../../../utils/colors";
 import { useSelection, useSigmaState } from "../../../core/context/dataContexts";
 import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appearance/types";
-import { DEFAULT_EDGE_COLOR, DEFAULT_EDGE_SIZE, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
+import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
 
 export const AppearanceController: FC = () => {
-  const setSettings = useSetSettings();
+  const sigma = useSigma();
   const selection = useSelection();
   const { highlightedNodes, highlightedEdges, hoveredNode, hoveredEdge } = useSigmaState();
 
@@ -26,37 +26,31 @@ export const AppearanceController: FC = () => {
     const hasHighlightedNodes = !!allHighlightedNodes.size;
     const hasHighlightedEdges = !!allHighlightedEdges.size;
 
-    setSettings({
-      nodeReducer: (id, attr) => {
-        const res = { ...attr } as Partial<CustomNodeDisplayData>;
+    sigma.setSetting("nodeReducer", (id, attr) => {
+      const res = { ...attr } as Partial<CustomNodeDisplayData>;
 
-        if (hasHighlightedNodes && !allHighlightedNodes.has(id)) {
-          res.hideLabel = true;
-          res.borderColor = res.color;
-          res.color = memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
-        }
+      if (hasHighlightedNodes && !allHighlightedNodes.has(id)) {
+        res.hideLabel = true;
+        res.borderColor = res.color;
+        res.color = memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
+      }
 
-        if (allHighlightedNodes.has(id)) {
-          res.boldLabel = true;
-        }
+      if (allHighlightedNodes.has(id)) {
+        res.boldLabel = true;
+      }
 
-        return res;
-      },
-      edgeReducer: (id, attr) => {
-        const res = { ...attr } as Partial<CustomEdgeDisplayData>;
-
-        if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
-          res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
-        }
-
-        if (allHighlightedEdges.has(id)) {
-          res.size = (res.size || DEFAULT_EDGE_SIZE) * 2;
-        }
-
-        return attr;
-      },
+      return res;
     });
-  }, [highlightedEdges, highlightedNodes, hoveredEdge, hoveredNode, selection, setSettings]);
+    sigma.setSetting("edgeReducer", (id, attr) => {
+      const res = { ...attr } as Partial<CustomEdgeDisplayData>;
+
+      if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
+        res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
+      }
+
+      return res;
+    });
+  }, [highlightedEdges, highlightedNodes, hoveredEdge, hoveredNode, selection, sigma]);
 
   return null;
 };

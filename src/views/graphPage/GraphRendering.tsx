@@ -102,6 +102,7 @@ export const GraphRendering: FC = () => {
           edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
           enableEdgeClickEvents: true,
           enableEdgeHoverEvents: true,
+          renderEdgeLabels: true,
           nodeProgramClasses: {
             circle: NodeProgramBorder,
           },
