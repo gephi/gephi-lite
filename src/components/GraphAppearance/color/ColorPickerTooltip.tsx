@@ -43,9 +43,9 @@ const ColorPickerTooltip: FC<{
 
   return (
     <TetherComponent
-      //attachment={"top center"}
+      attachment={"top center"}
       className="over-modal shadow"
-      //constraints={[{ to: "window", attachment: "together", pin: true }]}
+      constraints={[{ to: "window", attachment: "together", pin: true }]}
       renderTarget={(ref) => (
         <div
           ref={ref}
