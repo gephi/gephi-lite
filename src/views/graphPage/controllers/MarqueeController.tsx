@@ -3,6 +3,7 @@ import { pick } from "lodash";
 import { Coordinates } from "sigma/types";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
+
 import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
 
 const MarqueeDisplay: FC<{ firstCorner: Coordinates; lastCorner: Coordinates }> = ({ firstCorner, lastCorner }) => {
