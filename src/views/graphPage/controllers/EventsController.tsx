@@ -88,7 +88,7 @@ export const EventsController: FC = () => {
           setDragState({ type: "idle" });
         }
       },
-      mousemove: (e) => {
+      mousemovebody: (e) => {
         if (dragState.type === "dragging") {
           setDragEventsCount((n) => n + 1);
           const graph = sigma.getGraph();
