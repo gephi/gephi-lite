@@ -3,11 +3,11 @@ import { reduce } from "lodash";
 
 import { filtersActions, filtersAtom } from "../filters";
 import { appearanceActions, appearanceAtom } from "../appearance";
-import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaAtom, sigmaGraphAtom } from "../graph";
+import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { selectionActions, selectionAtom } from "../selection";
-import { sigmaActions, sigmaStateAtom } from "../sigma";
+import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
 
 /**
  * Helpers:
@@ -92,3 +92,12 @@ export const useSelectionActions = makeUseActions(selectionActions);
 export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);
+
+export const useResetStates = () => {
+  return () => {
+    filtersActions.resetFilters();
+    selectionActions.reset();
+    appearanceActions.resetState();
+    sigmaActions.resetState();
+  };
+};

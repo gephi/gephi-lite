@@ -10,9 +10,10 @@ import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 import { useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { SettingsController } from "./controllers/SettingsController";
+import { MarqueeController } from "./controllers/MarqueeController";
 import { EventsController } from "./controllers/EventsController";
 import NodeProgramBorder from "../../utils/bordered-node-program";
-import { MarqueeController } from "./controllers/MarqueeController";
+import { resetCamera } from "../../core/sigma";
 
 function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
   const [isFullScreen, setFullScreen] = useState<boolean>(false);
@@ -64,11 +65,7 @@ const InteractionsController: FC = () => {
       >
         <BsZoomOut />
       </button>
-      <button
-        className={btnClassName}
-        onClick={() => sigma.getCamera().animatedReset(zoomOptions)}
-        title={t("graph.control.zoomReset").toString()}
-      >
+      <button className={btnClassName} onClick={() => resetCamera()} title={t("graph.control.zoomReset").toString()}>
         <FaRegDotCircle />
       </button>
       <button
@@ -105,6 +102,8 @@ export const GraphRendering: FC = () => {
           enableEdgeHoverEvents: true,
           renderEdgeLabels: true,
           zIndex: true,
+          itemSizesReference: "positions",
+          zoomToSizeRatioFunction: (x) => x,
           nodeProgramClasses: {
             circle: NodeProgramBorder,
           },

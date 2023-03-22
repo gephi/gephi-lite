@@ -17,7 +17,7 @@ export const addFilter: Producer<FiltersState, [FilterType]> = (filter) => {
 };
 
 export const resetFilters: Producer<FiltersState> = () => {
-  return () => ({ past: [], future: [] });
+  return () => getEmptyFiltersState();
 };
 
 export const openPastFilter: Producer<FiltersState, [number]> = (index) => {

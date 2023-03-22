@@ -57,7 +57,7 @@
     "web-vitals": "^2.1.4"
   },
   "overrides": {
-    "sigma": "^3.0.0-alpha2"
+    "sigma": "3.0.0-alpha3"
   },
   "scripts": {
     "start": "react-scripts start",

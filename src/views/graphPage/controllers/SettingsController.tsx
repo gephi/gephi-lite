@@ -2,7 +2,7 @@ import Sigma from "sigma";
 import { FC, useEffect } from "react";
 import { useSigma } from "@react-sigma/core";
 
-import { sigmaAtom } from "../../../core/graph";
+import { sigmaAtom } from "../../../core/sigma";
 import { SigmaGraph } from "../../../core/graph/types";
 import { useAppearance, useGraphDataset } from "../../../core/context/dataContexts";
 import { getDrawEdgeLabel, getDrawHover, getDrawLabel } from "../../../core/appearance/utils";

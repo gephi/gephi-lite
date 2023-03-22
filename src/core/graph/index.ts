@@ -1,15 +1,14 @@
 import { last, omit } from "lodash";
-import Sigma from "sigma";
 
-import { atom, derivedAtom } from "../utils/atoms";
 import { filtersAtom } from "../filters";
-import { FilteredGraph } from "../filters/types";
-import { applyFilters } from "../filters/utils";
-import { FieldModel, GraphDataset, SigmaGraph } from "./types";
-import { Producer, producerToAction } from "../utils/reducers";
-import { dataGraphToFullGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
-import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { appearanceAtom } from "../appearance";
+import { applyFilters } from "../filters/utils";
+import { FilteredGraph } from "../filters/types";
+import { atom, derivedAtom } from "../utils/atoms";
+import { FieldModel, FullGraph, GraphDataset } from "./types";
+import { Producer, producerToAction } from "../utils/reducers";
+import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
+import { dataGraphToFullGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
 
 /**
  * Producers:
@@ -54,14 +53,18 @@ export const filteredGraphAtom = derivedAtom(
 export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom], getAllVisualGetters);
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
-  (dataset, filteredGraph, visualGetters) => {
-    const graph = dataGraphToFullGraph(dataset, filteredGraph);
-    applyVisualProperties(graph, dataset, visualGetters);
-    return graph;
+  (dataset, filteredGraph, visualGetters, graph: FullGraph | undefined) => {
+    const newGraph = dataGraphToFullGraph(dataset, filteredGraph);
+    applyVisualProperties(newGraph, dataset, visualGetters);
+
+    if (graph) {
+      graph.clear();
+      graph.import(newGraph);
+      return graph;
+    }
+
+    return newGraph;
   },
-);
-export const sigmaAtom = atom<Sigma<SigmaGraph>>(
-  new Sigma(sigmaGraphAtom.get(), document.createElement("div"), { allowInvalidContainer: true }),
 );
 
 export const graphDatasetActions = {

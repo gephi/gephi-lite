@@ -1,5 +1,9 @@
+import Sigma from "sigma";
+
 import { SigmaState } from "./types";
 import { atom } from "../utils/atoms";
+import { sigmaGraphAtom } from "../graph";
+import { SigmaGraph } from "../graph/types";
 import { getEmptySigmaState } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
 
@@ -7,6 +11,10 @@ import { Producer, producerToAction } from "../utils/reducers";
  * Producers:
  * **********
  */
+export const resetState: Producer<SigmaState, []> = () => {
+  return () => getEmptySigmaState();
+};
+
 export const setHighlightedNodes: Producer<SigmaState, [Set<string> | null]> = (items) => {
   return (state) => ({
     ...state,
@@ -63,9 +71,19 @@ export const resetHoveredEdge: Producer<SigmaState, []> = () => {
  * Public API:
  * ***********
  */
+export const sigmaAtom = atom<Sigma<SigmaGraph>>(
+  new Sigma(sigmaGraphAtom.get(), document.createElement("div"), { allowInvalidContainer: true }),
+);
 export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
 
+export const resetCamera = () => {
+  const sigma = sigmaAtom.get();
+  sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
+  sigma.setCustomBBox(sigma.getBBox());
+};
+
 export const sigmaActions = {
+  resetState: producerToAction(resetState, sigmaStateAtom),
   setHighlightedNodes: producerToAction(setHighlightedNodes, sigmaStateAtom),
   resetHighlightedNodes: producerToAction(resetHighlightedNodes, sigmaStateAtom),
   setHighlightedEdges: producerToAction(setHighlightedEdges, sigmaStateAtom),

@@ -61,17 +61,17 @@ interface DerivedAtomOptions {
 }
 export function derivedAtom<D, T>(
   atom: ReadableAtom<T>,
-  extractor: (value: T) => D,
+  extractor: (value: T, previousValue: D | undefined) => D,
   options?: DerivedAtomOptions,
 ): ReadableAtom<D>;
 export function derivedAtom<D, T1, T2>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>],
-  extractor: (v1: T1, v2: T2) => D,
+  extractor: (v1: T1, v2: T2, previousValue: D | undefined) => D,
   options?: DerivedAtomOptions,
 ): ReadableAtom<D>;
 export function derivedAtom<D, T1, T2, T3>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>, ReadableAtom<T3>],
-  extractor: (v1: T1, v2: T2, v3: T3) => D,
+  extractor: (v1: T1, v2: T2, v3: T3, previousValue: D | undefined) => D,
   options?: DerivedAtomOptions,
 ): ReadableAtom<D>;
 export function derivedAtom<D>(
@@ -90,7 +90,7 @@ export function derivedAtom<D>(
 
       if (!options.checkInput || input.some((v, i) => v !== lastInput[i])) {
         lastInput = input;
-        const newValue = extractor(...atomsArray.map((atom) => atom.get()));
+        const newValue = extractor(...atomsArray.map((atom) => atom.get()), value);
 
         if (!options.checkOutput || newValue !== value) {
           const previousValue = value;

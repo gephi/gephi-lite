@@ -6,6 +6,7 @@ import { graphDatasetAtom } from "../graph";
 import { useSigmaGraph } from "../context/dataContexts";
 import { WorkerSupervisorInterface } from "./types";
 import { LAYOUTS } from "./collection";
+import { resetCamera } from "../sigma";
 
 export function useLayouts() {
   const sigmaGraph = useSigmaGraph();
@@ -81,6 +82,7 @@ export function useLayouts() {
         });
 
         setIsRunning(false);
+        resetCamera();
       }
 
       // Sync layout

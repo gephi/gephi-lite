@@ -2,22 +2,16 @@ import { useCallback, useState } from "react";
 import { parse } from "graphology-gexf";
 import Graph from "graphology";
 
-import { useWriteAtom } from "../utils/atoms";
-import { RemoteFile, LocalFile } from "../graph/types";
-import { initializeGraphDataset } from "../graph/utils";
-import { graphDatasetAtom } from "../graph";
-import { usePreferencesActions } from "../context/dataContexts";
-import { filtersAtom } from "../filters";
-import { appearanceAtom } from "../appearance";
-import { getEmptyFiltersState } from "../filters/utils";
-import { getEmptyAppearanceState } from "../appearance/utils";
+import { RemoteFile, LocalFile } from "./types";
+import { initializeGraphDataset } from "./utils";
+import { useGraphDatasetActions, usePreferencesActions, useResetStates } from "../context/dataContexts";
+import { resetCamera } from "../sigma";
 
 export function useOpenGexf() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const setGraphDataset = useWriteAtom(graphDatasetAtom);
-  const setFilters = useWriteAtom(filtersAtom);
-  const setAppearance = useWriteAtom(appearanceAtom);
+  const { setGraphDataset } = useGraphDatasetActions();
+  const resetStates = useResetStates();
   const { addRemoteFile } = usePreferencesActions();
 
   const openRemoteFile = useCallback(
@@ -29,9 +23,9 @@ export function useOpenGexf() {
         const gexf = await response.text();
         const graph = parse(Graph, gexf);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
-        setFilters(getEmptyFiltersState());
-        setAppearance(getEmptyAppearanceState());
+        resetStates();
         addRemoteFile(remote);
+        resetCamera();
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -39,7 +33,7 @@ export function useOpenGexf() {
         setLoading(false);
       }
     },
-    [addRemoteFile, setAppearance, setFilters, setGraphDataset],
+    [addRemoteFile, resetStates, setGraphDataset],
   );
 
   const openLocalFile = useCallback(
@@ -50,8 +44,8 @@ export function useOpenGexf() {
         const content = await file.source.text();
         const graph = parse(Graph, content);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
-        setFilters(getEmptyFiltersState());
-        setAppearance(getEmptyAppearanceState());
+        resetStates();
+        resetCamera();
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -59,7 +53,7 @@ export function useOpenGexf() {
         setLoading(false);
       }
     },
-    [setAppearance, setFilters, setGraphDataset],
+    [resetStates, setGraphDataset],
   );
 
   return { loading, error, openRemoteFile, openLocalFile };

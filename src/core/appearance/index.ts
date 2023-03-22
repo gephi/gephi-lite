@@ -4,6 +4,10 @@ import { getEmptyAppearanceState, serializeAppearanceState } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
 import { ItemType } from "../types";
 
+const resetState: Producer<AppearanceState, []> = () => {
+  return () => getEmptyAppearanceState();
+};
+
 const setShowEdges: Producer<AppearanceState, [boolean]> = (showEdges) => {
   return (state) => ({ ...state, showEdges });
 };
@@ -31,6 +35,7 @@ const setLabelSizeAppearance: Producer<AppearanceState, [ItemType, LabelSize]> =
 export const appearanceAtom = atom<AppearanceState>(getEmptyAppearanceState());
 
 export const appearanceActions = {
+  resetState: producerToAction(resetState, appearanceAtom),
   setShowEdges: producerToAction(setShowEdges, appearanceAtom),
   setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
   setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),
