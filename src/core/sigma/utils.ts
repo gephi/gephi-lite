@@ -5,8 +5,8 @@ import { SigmaState } from "./types";
  */
 export function getEmptySigmaState(): SigmaState {
   return {
-    highlightedNodes: new Set<string>(),
-    highlightedEdges: new Set<string>(),
+    highlightedNodes: null,
+    highlightedEdges: null,
     hoveredNode: null,
     hoveredEdge: null,
   };

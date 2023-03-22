@@ -25,9 +25,6 @@ export const EventsController: FC = () => {
       leaveNode() {
         resetHoveredNode();
       },
-      clickStage() {
-        reset();
-      },
       clickNode({ node, event }) {
         if (event.original.ctrlKey) {
           toggle({

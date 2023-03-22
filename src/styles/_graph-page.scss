@@ -14,7 +14,8 @@
     position: absolute;
     inset: 0;
   }
-  .sigma-container {
+  .sigma-container,
+  .sigma-layers {
     position: absolute;
     width: 100vw;
     height: 100vh;
@@ -139,10 +140,14 @@
   .stage {
     z-index: 120;
   }
+  .sigma-mouse {
+    z-index: 130;
+  }
   .toolbar,
   .contextbar,
   .left-panel-wrapper,
+  .right-panel-btn,
   .right-panel-wrapper {
-    z-index: 130;
+    z-index: 140;
   }
 }

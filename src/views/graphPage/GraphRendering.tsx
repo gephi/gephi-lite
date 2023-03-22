@@ -12,6 +12,7 @@ import { AppearanceController } from "./controllers/AppearanceController";
 import { SettingsController } from "./controllers/SettingsController";
 import { EventsController } from "./controllers/EventsController";
 import NodeProgramBorder from "../../utils/bordered-node-program";
+import { MarqueeController } from "./controllers/MarqueeController";
 
 function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
   const [isFullScreen, setFullScreen] = useState<boolean>(false);
@@ -103,6 +104,7 @@ export const GraphRendering: FC = () => {
           enableEdgeClickEvents: true,
           enableEdgeHoverEvents: true,
           renderEdgeLabels: true,
+          zIndex: true,
           nodeProgramClasses: {
             circle: NodeProgramBorder,
           },
@@ -111,6 +113,9 @@ export const GraphRendering: FC = () => {
         <EventsController />
         <AppearanceController />
         <SettingsController setIsReady={() => setIsReady(true)} />
+        <div className="sigma-layers">
+          <MarqueeController />
+        </div>
       </SigmaContainer>
       <InteractionsController />
     </>

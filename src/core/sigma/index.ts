@@ -7,29 +7,29 @@ import { Producer, producerToAction } from "../utils/reducers";
  * Producers:
  * **********
  */
-export const setHighlightedNodes: Producer<SigmaState, [Set<string> | undefined]> = (items) => {
+export const setHighlightedNodes: Producer<SigmaState, [Set<string> | null]> = (items) => {
   return (state) => ({
     ...state,
-    highlightedNodes: items || new Set<string>(),
+    highlightedNodes: items,
   });
 };
 export const resetHighlightedNodes: Producer<SigmaState, []> = () => {
   return (state) => ({
     ...state,
-    highlightedNodes: new Set<string>(),
+    highlightedNodes: null,
   });
 };
 
-export const setHighlightedEdges: Producer<SigmaState, [Set<string> | undefined]> = (items) => {
+export const setHighlightedEdges: Producer<SigmaState, [Set<string> | null]> = (items) => {
   return (state) => ({
     ...state,
-    highlightedEdges: items || new Set<string>(),
+    highlightedEdges: items,
   });
 };
 export const resetHighlightedEdges: Producer<SigmaState, []> = () => {
   return (state) => ({
     ...state,
-    highlightedEdges: new Set<string>(),
+    highlightedEdges: null,
   });
 };
 
