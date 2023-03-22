@@ -1,6 +1,8 @@
-import { FC, HTMLProps, LegacyRef, useEffect, useRef, useState } from "react";
+import { FC, HTMLProps, useContext, useEffect, useRef, useState } from "react";
 import { SketchPicker } from "react-color";
 import TetherComponent from "react-tether";
+
+import { UIContext } from "../../../core/context/uiContext";
 
 const ColorPickerTooltip: FC<{
   id?: string;
@@ -18,6 +20,7 @@ const ColorPickerTooltip: FC<{
   const [color, setColor] = useState(value);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [isDraggingThumb, setIsDraggingThumb] = useState<boolean>(false);
+  const { portalTarget } = useContext(UIContext);
 
   const pickerWrapper = useRef<HTMLDivElement>(null);
 
@@ -47,44 +50,46 @@ const ColorPickerTooltip: FC<{
       className="over-modal shadow"
       constraints={[{ to: "window", attachment: "together", pin: true }]}
       renderTarget={(ref) => (
-        <div
-          ref={ref}
-          {...targetProps}
-          style={{
-            ...targetProps.style,
-            backgroundColor: value,
-            left:
-              targetState.index === 0
-                ? 0
-                : targetState.index === targetState.value.length - 1
-                ? undefined
-                : targetProps.style?.left,
-            right: targetState.index === targetState.value.length - 1 ? 0 : undefined,
-          }}
-          onClick={(e) => {
-            if (isDraggingThumb === false) {
-              console.log("sho picker");
-              setShowPicker(!showPicker);
-            }
-            e.stopPropagation();
-            e.preventDefault();
-            setIsDraggingThumb(false);
-          }}
-          onMouseMove={(e) => {
-            if (!isDraggingThumb && e.buttons === 1) {
-              if ([0, targetState.value.length - 1].includes(targetState.index)) {
-                e.preventDefault();
-                e.stopPropagation();
+        <div ref={ref}>
+          <div
+            {...targetProps}
+            style={{
+              ...targetProps.style,
+              backgroundColor: value,
+              left:
+                targetState.index === 0
+                  ? 0
+                  : targetState.index === targetState.value.length - 1
+                  ? undefined
+                  : targetProps.style?.left,
+              right: targetState.index === targetState.value.length - 1 ? 0 : undefined,
+            }}
+            onClick={(e) => {
+              if (isDraggingThumb === false) {
+                console.log("sho picker");
+                setShowPicker(!showPicker);
               }
-              setIsDraggingThumb(true);
-            }
-          }}
-        />
+              e.stopPropagation();
+              e.preventDefault();
+              setIsDraggingThumb(false);
+            }}
+            onMouseMove={(e) => {
+              if (!isDraggingThumb && e.buttons === 1) {
+                if ([0, targetState.value.length - 1].includes(targetState.index)) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                setIsDraggingThumb(true);
+              }
+            }}
+          />
+        </div>
       )}
+      renderElementTo={portalTarget}
       renderElement={(ref) =>
         showPicker && (
           // We use two divs here to allow having "two refs":
-          <div ref={ref as LegacyRef<HTMLDivElement>}>
+          <div ref={ref}>
             <div ref={pickerWrapper} className="custom-color-picker">
               <SketchPicker
                 color={color}

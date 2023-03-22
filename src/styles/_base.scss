@@ -44,3 +44,6 @@
   height: 1em;
   background-color: $gray-400;
 }
+.over-modal {
+  z-index: $zindex-modal + 1;
+}
