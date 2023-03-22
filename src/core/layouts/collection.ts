@@ -31,7 +31,7 @@ export const LAYOUTS: Array<Layout> = [
         defaultValue: 100,
       },
     ],
-    run: random,
+    run: (graph, options) => random(graph, options?.settings),
   } as SyncLayout<RandomLayoutOptions>,
   {
     id: "circular",
@@ -51,7 +51,7 @@ export const LAYOUTS: Array<Layout> = [
         defaultValue: 100,
       },
     ],
-    run: circular,
+    run: (graph, options) => circular(graph, options?.settings),
   } as SyncLayout<CircularLayoutOptions>,
   {
     id: "circlePack",
