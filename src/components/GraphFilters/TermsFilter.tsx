@@ -9,10 +9,8 @@ import { toString } from "../../core/utils/casting";
 import { useTranslation } from "react-i18next";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
-  const { replaceCurrentFilter } = useFiltersActions();
-
   const { t } = useTranslation();
-
+  const { replaceCurrentFilter } = useFiltersActions();
   const [dataTerms, setDataTerms] = useState<Record<string, number>>({});
 
   useEffect(() => {

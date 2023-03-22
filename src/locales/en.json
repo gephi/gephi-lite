@@ -142,6 +142,7 @@
     "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
     "range": "range",
     "terms": "exact values",
+    "script": "Custom script",
     "activated": "Activated filter"
   },
   "graph": {
@@ -527,6 +528,7 @@
     "none": "None",
     "open": "Open",
     "open_file": "Open {{filename}}",
+    "open_code_editor": "Open code editor",
     "remove": "Remove",
     "reset": "Reset",
     "save": "Save",

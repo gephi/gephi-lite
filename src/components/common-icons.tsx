@@ -5,7 +5,7 @@ import { ImFilesEmpty } from "react-icons/im";
 import { BiNetworkChart } from "react-icons/bi";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { GrOverview, GrScorecard } from "react-icons/gr";
-import { BsSlashLg, BsCircle, BsGithub, BsPalette } from "react-icons/bs";
+import { BsSlashLg, BsCircle, BsGithub, BsPalette, BsCodeSlash } from "react-icons/bs";
 
 import { ItemType } from "../core/types";
 
@@ -26,3 +26,5 @@ export const ItemIcons: Record<ItemType, IconType> = {
   nodes: NodeIcon,
   edges: EdgeIcon,
 };
+
+export const CodeEditorIcon = BsCodeSlash;

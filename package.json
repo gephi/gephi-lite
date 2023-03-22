@@ -4,6 +4,7 @@
   "homepage": "https://gephi.org/gephi-lite",
   "license": "gpl-3.0",
   "dependencies": {
+    "@monaco-editor/react": "^4.4.6",
     "@octokit/auth-oauth-device": "^4.0.3",
     "@octokit/core": "^4.0.5",
     "@react-sigma/core": "^3.2.0",

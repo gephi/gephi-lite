@@ -13,6 +13,7 @@ import { FilterType } from "../../core/filters/types";
 import { FilterCreator } from "./FilterCreator";
 import { RangeFilter } from "./RangeFilter";
 import { TermsFilter } from "./TermsFilter";
+import { ScriptFilter } from "./ScriptFilter";
 import { GraphIcon } from "../common-icons";
 import { filteredGraphsAtom } from "../../core/graph";
 import { useReadAtom } from "../../core/utils/atoms";
@@ -79,6 +80,9 @@ const FilterInStack: FC<{
           )}
           {filter.type === "terms" && (
             <TermsFilter filter={filter} editMode={editMode && internalEditMode} active={active} />
+          )}
+          {filter.type === "script" && (
+            <ScriptFilter filter={filter} editMode={editMode && internalEditMode} active={active} />
           )}
           {active && relatedGraph && (
             <div className="small text-muted">

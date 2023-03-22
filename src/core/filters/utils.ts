@@ -60,8 +60,9 @@ function filterNode(id: string, dataset: GraphDataset, filter: FilterType): bool
     case "range":
     case "terms":
       return filterValue(dataset.nodeData[id][filter.field], filter);
-    case "script":
-      if (filter.script) return filter.script(id);
+    case "script": {
+      if (filter.script) return filter.script(id, dataset.nodeData[id], dataset);
+    }
   }
   return true;
 }
@@ -72,7 +73,7 @@ function filterEdge(id: string, source: string, target: string, dataset: GraphDa
     case "terms":
       return filterValue(dataset.edgeData[id][filter.field], filter);
     case "script":
-      if (filter.script) return filter.script(id);
+      if (filter.script) return filter.script(id, dataset.edgeData[id], dataset);
   }
   return true;
 }
@@ -114,7 +115,6 @@ export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: Filt
 
 export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache: FilteredGraph[]): FilteredGraph[] {
   const steps: FilteredGraph[] = [];
-
   filters.reduce((graph, filter, i) => {
     const filterFingerprint = getFilterFingerprint(filter);
     const cacheStep = cache[i];
