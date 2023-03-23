@@ -25,7 +25,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
     return [
       { value: "data", type: "data", label: t("appearance.size.data") as string },
-      { value: "fixed", type: "data", label: t("appearance.size.fixed") as string },
+      { value: "fixed", type: "fixed", label: t("appearance.size.fixed") as string },
       ...allFields.flatMap((field) => {
         const options = [];
         if (!!field.quantitative)
@@ -39,6 +39,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       }),
     ];
   }, [edgeFields, itemType, nodeFields, t]);
+
   const selectedOption =
     options.find((option) => option.type === size.type && option.field === size.field) || options[0];
 
