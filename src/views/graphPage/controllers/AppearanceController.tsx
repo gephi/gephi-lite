@@ -3,7 +3,12 @@ import { useSigma } from "@react-sigma/core";
 
 import { memoizedBrighten } from "../../../utils/colors";
 import { useSelection, useSigmaState } from "../../../core/context/dataContexts";
-import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
+import {
+  DEFAULT_EDGE_COLOR,
+  DEFAULT_EDGE_SIZE,
+  DEFAULT_NODE_COLOR,
+  DEFAULT_NODE_SIZE,
+} from "../../../core/appearance/utils";
 import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appearance/types";
 
 export const AppearanceController: FC = () => {
@@ -37,6 +42,7 @@ export const AppearanceController: FC = () => {
     sigma.setSetting("nodeReducer", (id, attr) => {
       const res = { ...attr } as Partial<CustomNodeDisplayData>;
       res.zIndex = 0;
+      res.rawSize = res.size || DEFAULT_NODE_SIZE;
 
       if (hasHighlightedNodes && !allHighlightedNodes.has(id)) {
         res.hideLabel = true;
@@ -55,6 +61,7 @@ export const AppearanceController: FC = () => {
     sigma.setSetting("edgeReducer", (id, attr) => {
       const res = { ...attr } as Partial<CustomEdgeDisplayData>;
       res.zIndex = 0;
+      res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
       if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
         res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);

@@ -1,11 +1,16 @@
 import Sigma from "sigma";
 import { FC, useEffect } from "react";
 import { useSigma } from "@react-sigma/core";
+import { DEFAULT_SETTINGS } from "sigma/settings";
+import drawLabel from "sigma/rendering/canvas/label";
+import drawHover from "sigma/rendering/canvas/hover";
+import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
 
 import { sigmaAtom } from "../../../core/sigma";
 import { SigmaGraph } from "../../../core/graph/types";
 import { useAppearance, useGraphDataset } from "../../../core/context/dataContexts";
-import { getDrawEdgeLabel, getDrawHover, getDrawLabel } from "../../../core/appearance/utils";
+import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
+import { inputToStateThreshold } from "../../../utils/labels";
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma();
@@ -18,9 +23,15 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
 
   useEffect(() => {
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
-    sigma.setSetting("labelRenderer", getDrawLabel(graphAppearance));
-    sigma.setSetting("hoverRenderer", getDrawHover(graphAppearance));
-    sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance));
+    sigma.setSetting("labelRenderer", getNodeDrawFunction(graphAppearance, drawLabel));
+    sigma.setSetting("hoverRenderer", getNodeDrawFunction(graphAppearance, drawHover));
+    sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance, drawEdgeLabel));
+
+    const labelThreshold = inputToStateThreshold(graphAppearance.nodesLabelSize.density);
+    const labelDensity = labelThreshold === 0 ? Infinity : DEFAULT_SETTINGS.labelDensity;
+    sigma.setSetting("labelRenderedSizeThreshold", labelThreshold);
+    sigma.setSetting("labelDensity", labelDensity);
+
     setIsReady();
   }, [graphAppearance, graphDataset, setIsReady, sigma]);
 

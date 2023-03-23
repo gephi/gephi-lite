@@ -116,7 +116,8 @@
       "size": "{{items}} size",
       "default_value": "Label for {{items}} with no valid value",
       "size_coef": "Labels sizes (higher makes labels appear bigger)",
-      "adapts_to_zoom": "Sizes increase with zoom",
+      "adapts_to_zoom": "How much labels should grow with zoom",
+      "density": "How many labels should appear any time",
       "data_description": "All {{items}} labels are as they are in the input data file.",
       "none_description": "All {{items}} have no displayed label."
     },

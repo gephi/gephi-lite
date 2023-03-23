@@ -1,12 +1,25 @@
 import cx from "classnames";
 import Select from "react-select";
-import { FC, InputHTMLAttributes } from "react";
+import { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
+import Slider from "rc-slider";
+import { SliderProps } from "rc-slider/lib/Slider";
+import { clamp } from "lodash";
+import * as React from "react";
+import { MarkObj } from "rc-slider/lib/Marks";
 
 interface BaseTypedInputProps {
   id: string;
-  label: string;
-  description?: string;
+  label: ReactNode;
+  description?: ReactNode;
 }
+
+export const SLIDER_STYLE = {
+  dotStyle: { borderColor: "#ccc" },
+  railStyle: { backgroundColor: "#ccc" },
+  activeDotStyle: { borderColor: "black" },
+  trackStyle: { backgroundColor: "black" },
+  handleStyle: { backgroundColor: "white", borderColor: "black" },
+};
 
 export const NumberInput: FC<
   { value: number | null; onChange: (v: number) => void } & BaseTypedInputProps &
@@ -25,6 +38,54 @@ export const NumberInput: FC<
         value={typeof value === "number" ? value : ""}
         onChange={(e) => onChange(+e.target.value)}
       />
+      {description && <div className="form-text small text-muted">{description}</div>}
+    </div>
+  );
+};
+
+export const SliderInput: FC<
+  {
+    value: number | null;
+    onChange: (v: number) => void;
+    className?: string;
+    min: number;
+    max: number;
+    step: number;
+    marks?: Record<string | number, React.ReactNode | MarkObj>;
+  } & Omit<BaseTypedInputProps, "id">
+> = ({ label, description, value, onChange, min, max, marks, step, className }) => {
+  const validMin = useMemo(() => Math.min(min, max), [min, max]);
+  const validMax = useMemo(() => Math.max(min, max), [min, max]);
+  const validValue = useMemo(() => {
+    if (typeof value !== "number") return validMin;
+    return clamp(value, validMin, validMax);
+  }, [value, validMin, validMax]);
+
+  return (
+    <div className={cx("mt-1 px-2", className)}>
+      <label className="form-check-label small">{label}</label>
+      <div className="pb-3">
+        <Slider
+          value={validValue}
+          min={validMin}
+          max={validMax}
+          step={step}
+          marks={
+            marks || {
+              [validMin]: validMin,
+              [validMax]: validMax,
+              [validValue]: validValue,
+            }
+          }
+          onChange={
+            ((v: number) => {
+              onChange(v);
+            }) as SliderProps["onChange"]
+          }
+          // Styles:
+          {...SLIDER_STYLE}
+        />
+      </div>
       {description && <div className="form-text small text-muted">{description}</div>}
     </div>
   );

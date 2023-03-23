@@ -1,12 +1,19 @@
-import { Settings } from "sigma/settings";
-import drawLabel from "sigma/rendering/canvas/label";
-import drawHover from "sigma/rendering/canvas/hover";
-import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
-import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 import chroma from "chroma-js";
 import { forEach } from "lodash";
+import drawLabel from "sigma/rendering/canvas/label";
+import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
+import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { AppearanceState, ColorGetter, EdgeColor, LabelGetter, SizeGetter, VisualGetters } from "./types";
+import {
+  AppearanceState,
+  ColorGetter,
+  CustomEdgeDisplayData,
+  CustomNodeDisplayData,
+  EdgeColor,
+  LabelGetter,
+  SizeGetter,
+  VisualGetters,
+} from "./types";
 import { EdgeRenderingData, GraphDataset, ItemData, NodeRenderingData, SigmaGraph } from "../graph/types";
 import { toNumber, toString } from "../utils/casting";
 import { parse, stringify } from "../utils/json";
@@ -42,10 +49,14 @@ export function getEmptyAppearanceState(): AppearanceState {
     nodesLabelSize: {
       type: "fixed",
       value: DEFAULT_NODE_LABEL_SIZE,
+      zoomCorrelation: 1,
+      density: 0.1,
     },
     edgesLabelSize: {
       type: "fixed",
       value: DEFAULT_EDGE_LABEL_SIZE,
+      zoomCorrelation: 1,
+      density: 0.1,
     },
   };
 }
@@ -261,39 +272,27 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
 /**
  * Rendering helpers:
  */
-export function getDrawLabel({ nodesLabelSize }: AppearanceState): typeof drawLabel {
-  if (nodesLabelSize.type === "fixed") {
-    return (context, data, settings) => drawLabel(context, data, { ...settings, labelSize: nodesLabelSize.value });
-  } else {
-    return (context, data, settings) =>
-      drawLabel(context, data, {
-        ...settings,
-        labelSize: (nodesLabelSize.adaptsToZoom ? data.size : (data.rawSize as number)) * nodesLabelSize.coef,
-      });
-  }
+export function getNodeDrawFunction({ nodesLabelSize }: AppearanceState, draw: typeof drawLabel) {
+  return ((context, data: CustomNodeDisplayData, settings) => {
+    let labelSize =
+      nodesLabelSize.type === "fixed"
+        ? nodesLabelSize.value
+        : ((data.rawSize as number) * nodesLabelSize.sizeCorrelation) / DEFAULT_NODE_LABEL_SIZE;
+    if (nodesLabelSize.zoomCorrelation >= 1) labelSize = (labelSize * data.size) / data.rawSize;
+    else if (nodesLabelSize.zoomCorrelation >= 0)
+      labelSize = labelSize * Math.pow(data.size / data.rawSize, nodesLabelSize.zoomCorrelation);
+    console.log(labelSize, data);
+    return draw(context, data, { ...settings, labelSize });
+  }) as typeof drawLabel;
 }
 
-export function getDrawHover({ nodesLabelSize }: AppearanceState): typeof drawHover {
-  if (nodesLabelSize.type === "fixed") {
-    return (context, data, settings) => drawHover(context, data, { ...settings, labelSize: nodesLabelSize.value });
-  } else {
-    return (context, data, settings) =>
-      drawHover(context, data, {
-        ...settings,
-        labelSize: (nodesLabelSize.adaptsToZoom ? data.size : (data.rawSize as number)) * nodesLabelSize.coef,
-      });
-  }
-}
-
-export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState): typeof drawEdgeLabel {
-  if (edgesLabelSize.type === "fixed") {
-    return (context, data, sourceData, targetData, settings: Settings) =>
-      drawEdgeLabel(context, data, sourceData, targetData, { ...settings, edgeLabelSize: edgesLabelSize.value });
-  } else {
-    return (context, data, sourceData, targetData, settings: Settings) =>
-      drawEdgeLabel(context, data, sourceData, targetData, {
-        ...settings,
-        edgeLabelSize: (edgesLabelSize.adaptsToZoom ? data.size : (data.rawSize as number)) * edgesLabelSize.coef,
-      });
-  }
+export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState, draw: typeof drawEdgeLabel) {
+  return ((context, data: CustomEdgeDisplayData, sourceData, targetData, settings) => {
+    let edgeLabelSize =
+      edgesLabelSize.type === "fixed" ? edgesLabelSize.value : data.rawSize * edgesLabelSize.sizeCorrelation;
+    if (edgesLabelSize.zoomCorrelation >= 1) edgeLabelSize = (edgeLabelSize * data.size) / data.rawSize;
+    else if (edgesLabelSize.zoomCorrelation >= 0)
+      edgeLabelSize = edgeLabelSize * Math.pow(data.size / data.rawSize, edgesLabelSize.zoomCorrelation);
+    return draw(context, data, sourceData, targetData, { ...settings, edgeLabelSize });
+  }) as typeof drawEdgeLabel;
 }

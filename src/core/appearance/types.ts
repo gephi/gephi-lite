@@ -60,8 +60,9 @@ export interface FieldLabel {
 }
 export type Label = NoLabel | DataLabel | FixedLabel | FieldLabel;
 
-export type FixedLabelSize = NoFieldValue<"fixed"> & { value: number };
-export type ItemLabelSize = NoFieldValue<"item"> & { coef: number; adaptsToZoom: boolean };
+export type BaseLabelSize = { density: number; zoomCorrelation: number };
+export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: number };
+export type ItemLabelSize = NoFieldValue<"item"> & BaseLabelSize & { sizeCorrelation: number };
 export type LabelSize = FixedLabelSize | ItemLabelSize;
 
 /**
@@ -84,7 +85,7 @@ export type ColorGetter = (itemId: string, data: ItemData) => string;
 export type LabelGetter = (itemId: string, data: ItemData) => string | null;
 
 /**
- * This state contains the visual getters, ie. the functions to get a node or
+ * This state contains the visual getters, i.e. the functions to get a node or
  * edge size, color or label:
  */
 export interface VisualGetters {
@@ -114,9 +115,12 @@ export interface NodeRenderingData {
 }
 
 export type CustomNodeDisplayData = NodeDisplayData & {
+  rawSize: number;
   borderColor?: string;
   hideLabel?: boolean;
   fixed?: boolean;
   boldLabel?: boolean;
 };
-export type CustomEdgeDisplayData = EdgeDisplayData;
+export type CustomEdgeDisplayData = EdgeDisplayData & {
+  rawSize: number;
+};

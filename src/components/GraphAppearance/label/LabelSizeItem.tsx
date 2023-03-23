@@ -1,28 +1,24 @@
 import Select from "react-select";
 import { FC, useMemo } from "react";
+import { capitalize } from "lodash";
 import { useTranslation } from "react-i18next";
 
 import { ItemType } from "../../../core/types";
 import { useAppearance, useAppearanceActions } from "../../../core/context/dataContexts";
-import {
-  DEFAULT_EDGE_LABEL_SIZE,
-  DEFAULT_EDGE_SIZE,
-  DEFAULT_NODE_LABEL_SIZE,
-  DEFAULT_NODE_SIZE,
-} from "../../../core/appearance/utils";
+import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_NODE_LABEL_SIZE } from "../../../core/appearance/utils";
+import { SliderInput } from "../../forms/TypedInputs";
 
 export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
   const { nodesLabelSize, edgesLabelSize } = useAppearance();
   const { setLabelSizeAppearance } = useAppearanceActions();
   const labelSizeDef = itemType === "nodes" ? nodesLabelSize : edgesLabelSize;
-  const baseItemSize = itemType === "nodes" ? DEFAULT_NODE_SIZE : DEFAULT_EDGE_SIZE;
   const baseLabelSize = itemType === "nodes" ? DEFAULT_NODE_LABEL_SIZE : DEFAULT_EDGE_LABEL_SIZE;
 
   const labelSizeOptions = useMemo(
     () => [
       { value: "fixed", label: t("appearance.labels.fixed_size") },
-      { value: "item", label: t(`appearance.labels.size`, { items: t(`graph.model.${itemType}`) }) },
+      { value: "item", label: capitalize(t(`appearance.labels.size`, { items: t(`graph.model.${itemType}`) }) + "") },
     ],
     [itemType, t],
   );
@@ -43,14 +39,15 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         onChange={(option) => {
           if (!option || option.value === "fixed") {
             setLabelSizeAppearance(itemType, {
+              ...labelSizeDef,
               type: "fixed",
               value: baseLabelSize,
             });
           } else {
             setLabelSizeAppearance(itemType, {
+              ...labelSizeDef,
               type: "item",
-              coef: baseLabelSize / baseItemSize,
-              adaptsToZoom: false,
+              sizeCorrelation: baseLabelSize,
             });
           }
         }}
@@ -77,35 +74,60 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             <input
               className="form-control form-control-sm w-5"
               type="number"
-              value={labelSizeDef.coef}
+              value={labelSizeDef.sizeCorrelation}
               min={0}
-              onChange={(v) => setLabelSizeAppearance(itemType, { ...labelSizeDef, coef: +v.target.value })}
+              onChange={(v) => setLabelSizeAppearance(itemType, { ...labelSizeDef, sizeCorrelation: +v.target.value })}
               id={`${itemType}-fixedLabelSizeValue`}
             />
             <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedLabelSizeValue`}>
               {t("appearance.labels.size_coef")}
             </label>
           </div>
-          <div className="mb-3 form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id={`${itemType}-labelsSize-adaptsToZoom`}
-              checked={labelSizeDef.adaptsToZoom}
-              onChange={(e) =>
-                setLabelSizeAppearance(itemType, {
-                  ...labelSizeDef,
-                  type: "item",
-                  adaptsToZoom: e.target.checked,
-                })
-              }
-            />
-            <label className="form-check-label" htmlFor={`${itemType}-labelsSize-adaptsToZoom`}>
-              {t("appearance.labels.adapts_to_zoom")}
-            </label>
-          </div>
         </>
       )}
+      <SliderInput
+        className="mb-3"
+        value={labelSizeDef.zoomCorrelation}
+        min={0}
+        max={1}
+        step={0.1}
+        onChange={(v) =>
+          setLabelSizeAppearance(itemType, {
+            ...labelSizeDef,
+            zoomCorrelation: v,
+          })
+        }
+        label={t("appearance.labels.adapts_to_zoom")}
+      />
+      <SliderInput
+        className="mb-3"
+        value={labelSizeDef.density}
+        min={0.1}
+        max={10}
+        step={0.1}
+        onChange={(v) =>
+          setLabelSizeAppearance(itemType, {
+            ...labelSizeDef,
+            density: v,
+          })
+        }
+        marks={{
+          0.1: {
+            label: "(less labels)",
+            style: {
+              transform: "translateX(0)",
+            },
+          },
+          10: {
+            label: "(more labels)",
+            style: {
+              whiteSpace: "nowrap",
+              transform: "translateX(-100%)",
+            },
+          },
+        }}
+        label={t("appearance.labels.density")}
+      />
     </>
   );
 };
