@@ -134,7 +134,6 @@
   "filters": {
     "title": "Filters",
     "description": "This panel allows to filter the graph by stacking filters.",
-    "custom_script": "Custom script",
     "filter": "Filter",
     "full_graph": "Full graph",
     "using": "Using",
@@ -143,7 +142,7 @@
     "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
     "range": "range",
     "terms": "exact values",
-    "script": "Custom script",
+    "script": "Custom filter",
     "activated": "Activated filter"
   },
   "graph": {
@@ -502,6 +501,11 @@
           "description": "Dampening factor that will slow down node movements to ease the overall process"
         }
       }
+    },
+    "script": {
+      "title": "Custom layout",
+      "description": "Write your own layout by creating a function that returns a {x,y} object for each node",
+      "parameters": {}
     }
   },
   "file": {

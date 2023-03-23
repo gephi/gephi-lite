@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
 import { SigmaContainer } from "@react-sigma/core";
+import { Settings } from "sigma/settings";
 import React, { FC, useCallback, useEffect, useState } from "react";
 
 import { FaRegDotCircle } from "react-icons/fa";
@@ -95,19 +96,21 @@ export const GraphRendering: FC = () => {
           (hoveredNode || hoveredEdge) && "cursor-pointer",
         )}
         graph={sigmaGraph}
-        settings={{
-          labelFont: "Poppins, Arial, Helvetica, Geneva",
-          edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
-          enableEdgeClickEvents: true,
-          enableEdgeHoverEvents: true,
-          renderEdgeLabels: true,
-          zIndex: true,
-          itemSizesReference: "positions",
-          zoomToSizeRatioFunction: (x) => x,
-          nodeProgramClasses: {
-            circle: NodeProgramBorder,
-          },
-        }}
+        settings={
+          {
+            labelFont: "Poppins, Arial, Helvetica, Geneva",
+            edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
+            enableEdgeClickEvents: true,
+            enableEdgeHoverEvents: true,
+            renderEdgeLabels: true,
+            zIndex: true,
+            itemSizesReference: "positions",
+            zoomToSizeRatioFunction: (x) => x,
+            nodeProgramClasses: {
+              circle: NodeProgramBorder,
+            },
+          } as Partial<Settings>
+        }
       >
         <EventsController />
         <AppearanceController />

@@ -74,7 +74,7 @@ export const FilterCreator: FC = () => {
 
       const scriptFilterOption: FilterOption = {
         value: "script",
-        label: t("filters.custom_script") as string,
+        label: t("filters.script") as string,
         type: "script",
       };
       setFilterOptions([...fieldFiltersOptions, scriptFilterOption]);

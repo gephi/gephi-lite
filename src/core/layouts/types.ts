@@ -1,5 +1,6 @@
 import Graph from "graphology";
 import { ItemType } from "../types";
+import { ItemData } from "../graph/types";
 
 /**
  * Type for layout parameters
@@ -32,7 +33,15 @@ export interface LayoutAttributeParameter extends BaseLayoutParameter {
   restriction?: "qualitative" | "quantitative";
 }
 
-export type LayoutParameter = LayoutBooleanParameter | LayoutNumberParameter | LayoutAttributeParameter;
+export interface LayoutScriptParameter extends BaseLayoutParameter {
+  type: "script";
+  defaultValue: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
+}
+export type LayoutParameter =
+  | LayoutScriptParameter
+  | LayoutBooleanParameter
+  | LayoutNumberParameter
+  | LayoutAttributeParameter;
 
 /**
  * Layout types

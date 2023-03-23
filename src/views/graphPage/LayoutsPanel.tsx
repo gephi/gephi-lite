@@ -2,18 +2,21 @@ import { FC, useMemo, useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
-import { isNil } from "lodash";
+import { isNil, isObject } from "lodash";
 
-import { LayoutsIcon } from "../../components/common-icons";
+import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
 import { useAtom } from "../../core/utils/atoms";
 import { preferencesAtom } from "../../core/preferences";
 import { LAYOUTS } from "../../core/layouts/collection";
-import { Layout } from "../../core/layouts/types";
+import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
 import { useLayouts } from "../../core/layouts/useLayouts";
 import { useNotifications } from "../../core/notifications";
+import { useModal } from "../../core/modals";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { FieldModel } from "../../core/graph/types";
+import { graphDatasetAtom } from "../../core/graph";
 import { useGraphDataset } from "../../core/context/dataContexts";
+import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
 
 type LayoutOption = {
   value: string;
@@ -29,6 +32,7 @@ export const LayoutForm: FC<{
   isRunning: boolean;
 }> = ({ layout, onCancel, onStart, onStop, isRunning }) => {
   const { t } = useTranslation();
+  const { openModal } = useModal();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
   // get layout parameter from the preference if it exists
@@ -161,6 +165,49 @@ export const LayoutForm: FC<{
                     label: field.id,
                   }))}
               />
+            )}
+            {param.type === "script" && (
+              <button
+                type="button"
+                className="btn btn-outline-dark mx-auto d-block m-3"
+                onClick={() =>
+                  openModal({
+                    component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
+                    arguments: {
+                      title: "Custom layout",
+                      functionJsDoc: `/**
+ * Function that return coordinates for the specified node.
+ *
+ * @param {string} id The ID of the node
+ * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+ * @param {number} index The index position of the node in the graph
+ * @param {Graph} graph The graphology instance
+ * @returns {x: number, y: number} The computed coordinates of the node
+ */`,
+                      defaultFunction: param.defaultValue,
+                      value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
+                      checkFunction: (fn) => {
+                        if (!fn) throw new Error("Function is not defined");
+                        // Check/test the function
+                        const graphDataset = graphDatasetAtom.get();
+                        const id = graphDataset.fullGraph.nodes()[0];
+                        const attributs = graphDataset.nodeData[id];
+                        const result = fn(id, attributs, 0, graphDataset.fullGraph);
+                        if (!isObject(result)) throw new Error("Function must returned an object");
+                        if (isNil(result.x)) throw new Error("Function must returned an object with a `x` property");
+                        if (isNil(result.y)) throw new Error("Function must returned an object with a `y` property");
+                      },
+                    },
+                    beforeSubmit: (script) => {
+                      onChangeParameters(param.id, script);
+                    },
+                  })
+                }
+                title={t("common.open_code_editor").toString()}
+              >
+                <CodeEditorIcon className="me-1" />
+                {t("common.open_code_editor")}
+              </button>
             )}
           </div>
         );
