@@ -5,7 +5,7 @@ import ReactSlider from "react-slider";
 
 import { ItemType } from "../../../core/types";
 import { RankingColor } from "../../../core/appearance/types";
-import { max, sortBy } from "lodash";
+import { last, sortBy } from "lodash";
 import ColorPickerTooltip from "./ColorPickerTooltip";
 
 export const ColorRankingEditor: FC<{
@@ -29,17 +29,26 @@ export const ColorRankingEditor: FC<{
   ) => JSX.Element | null = useCallback(
     (props, state) => (
       <ColorPickerTooltip
-        value={color.colorScalePoints[state.index].color}
+        key={state.index}
+        colorScalePoint={color.colorScalePoints[state.index]}
         targetProps={props}
-        targetState={state}
-        onChange={() => {
-          console.log("TODO");
+        onChange={(newColorScalePoint) => {
+          const newColors = {
+            ...color,
+            colorScalePoints: color.colorScalePoints.map((csp, i) => {
+              if (i === state.index) return newColorScalePoint;
+              else return csp;
+            }),
+          };
+          setColor(newColors);
+        }}
+        onDelete={() => {
+          setColor({ ...color, colorScalePoints: color.colorScalePoints.filter((_, i) => i !== state.index) });
         }}
       />
     ),
-    [color.colorScalePoints],
+    [color, setColor],
   );
-
   return (
     <>
       <ReactSlider
@@ -50,18 +59,23 @@ export const ColorRankingEditor: FC<{
         snapDragDisabled
         renderThumb={thumbRenderer}
         onSliderClick={(position) => {
+          // create new thumb on track click only if no dragging
           if (!isDraggingTrack) {
+            const colorScale = chroma
+              .scale(color.colorScalePoints.map((point) => point.color))
+              .domain(color.colorScalePoints.map((csp) => csp.scalePoint));
             setColor({
               ...color,
               colorScalePoints: sortBy(
                 color.colorScalePoints.concat({
-                  color: chroma.random().hex(),
+                  color: colorScale(position).hex(),
                   scalePoint: position,
                 }),
                 (csp) => csp.scalePoint,
               ),
             });
           }
+          //stop track dragging
           setIsDraggingTrack(false);
         }}
         renderTrack={(props, state) => (
@@ -70,88 +84,44 @@ export const ColorRankingEditor: FC<{
             style={{
               ...props.style,
               background:
-                state.index > 0 && state.index < color.colorScalePoints.length
+                state.index > 0 && state.index < state.value.length
                   ? `linear-gradient(90deg, ${color.colorScalePoints[state.index - 1].color}, ${
                       color.colorScalePoints[state.index].color
                     })`
+                  : state.index === 0
+                  ? color.colorScalePoints[0].color
+                  : state.index === state.value.length
+                  ? last(color.colorScalePoints)?.color
                   : undefined,
-              right: max([0, props.style?.right]),
             }}
             onMouseMove={(e) => {
-              if (e.buttons === 1) {
-                e.stopPropagation();
-                e.preventDefault();
+              //detect track dragging
+              if (!isDraggingTrack && e.buttons === 1) {
                 setIsDraggingTrack(true);
               }
             }}
           />
         )}
         value={values}
-        min={0.01}
-        max={0.99}
+        min={0}
+        max={1}
         step={0.01}
         pearling
+        minDistance={0.05}
         onAfterChange={(values) => {
+          //TODO: use onChange + debounce?
           if (Array.isArray(values))
             setColor({
               ...color,
               colorScalePoints: color.colorScalePoints.map((csp, i) => ({
                 ...csp,
-                scalePoint: i === 0 ? 0 : i === values.length - 1 ? 1 : values[i],
+                scalePoint: values[i],
               })),
             });
         }}
       />
 
       <div>
-        {color.colorScalePoints.map((sc, index) => {
-          return (
-            <div key={index} className="d-flex align-items-center mt-1">
-              <input
-                className="form-control form-control-sm form-control-color d-inline-block"
-                type="color"
-                value={sc.color}
-                onChange={(e) =>
-                  setColor({
-                    ...color,
-                    colorScalePoints:
-                      color.colorScalePoints.map((ssc, i) =>
-                        i === index ? { scalePoint: sc.scalePoint, color: e.target.value } : ssc,
-                      ) || [],
-                  })
-                }
-              />
-              {color.colorScalePoints.length > 1 && (
-                <button
-                  className="btn btn-outline-dark btn-sm ms-2"
-                  onClick={() =>
-                    setColor({
-                      ...color,
-                      colorScalePoints: color.colorScalePoints.filter((ssc, i) => i !== index) || [],
-                    })
-                  }
-                >
-                  - {t("common.delete")}
-                </button>
-              )}
-            </div>
-          );
-        })}
-        <button
-          className="btn btn-outline-dark btn-sm mt-2"
-          onClick={() =>
-            setColor({
-              ...color,
-              colorScalePoints: color.colorScalePoints.concat({
-                color: chroma.random().hex(),
-                scalePoint: 1,
-              }),
-            })
-          }
-        >
-          + {t("common.add")}
-        </button>
-
         <div className="d-flex align-items-center mt-1">
           <input
             className="form-control form-control-sm form-control-color d-inline-block flex-grow-0 flex-shrink-0"

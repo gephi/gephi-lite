@@ -162,8 +162,9 @@ export function makeGetColor<
         }
       });
       const delta = max - min || 1;
-      // TODO: Handle irregular domains
-      const colorScale = chroma.scale(colorsDef.colorScalePoints.map((point) => point.color));
+      const colorScale = chroma
+        .scale(colorsDef.colorScalePoints.map((point) => point.color))
+        .domain(colorsDef.colorScalePoints.map((csp) => csp.scalePoint));
       getColor = (_itemId: string, data: ItemData) => {
         const value = toNumber(data[colorsDef.field]);
         if (typeof value === "number") {
