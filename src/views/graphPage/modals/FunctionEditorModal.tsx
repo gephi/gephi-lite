@@ -59,7 +59,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
             editor.onKeyDown((e) => {
               if (!["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.code)) {
                 const fnHeaderRange = new monaco.Range(0, 0, functionJsDoc.split("\n").length + 2, 0);
-                const nbLines = code.split("\n").length;
+                const nbLines = editor.getValue().split("\n").length;
                 const fnFooterRange = new monaco.Range(nbLines, 0, nbLines + 1, 0);
                 const contains = (editor.getSelections() ?? []).findIndex(
                   (range) => fnHeaderRange.intersectRanges(range) || fnFooterRange.intersectRanges(range),

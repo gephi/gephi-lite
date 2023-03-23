@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
 import { isNil, isObject } from "lodash";
+import Highlight from "react-highlight";
+import cx from "classnames";
 
 import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
 import { useAtom } from "../../core/utils/atoms";
@@ -167,15 +169,28 @@ export const LayoutForm: FC<{
               />
             )}
             {param.type === "script" && (
-              <button
-                type="button"
-                className="btn btn-outline-dark mx-auto d-block m-3"
-                onClick={() =>
-                  openModal({
-                    component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
-                    arguments: {
-                      title: "Custom layout",
-                      functionJsDoc: `/**
+              <div className="position-relative">
+                <>
+                  {layoutParameters[param.id] && (
+                    <>
+                      <div className="code-thumb mt-1">
+                        <Highlight className="javascript">
+                          {(layoutParameters[param.id] as LayoutScriptParameter["defaultValue"]).toString()}
+                        </Highlight>
+                      </div>
+                      <div className="filler-fade-out position-absolute bottom-0"></div>
+                    </>
+                  )}
+                  <div className={cx(layoutParameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
+                    <button
+                      type="button"
+                      className="btn btn-dark mx-auto d-block m-3"
+                      onClick={() =>
+                        openModal({
+                          component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
+                          arguments: {
+                            title: "Custom layout",
+                            functionJsDoc: `/**
  * Function that return coordinates for the specified node.
  *
  * @param {string} id The ID of the node
@@ -184,30 +199,35 @@ export const LayoutForm: FC<{
  * @param {Graph} graph The graphology instance
  * @returns {x: number, y: number} The computed coordinates of the node
  */`,
-                      defaultFunction: param.defaultValue,
-                      value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
-                      checkFunction: (fn) => {
-                        if (!fn) throw new Error("Function is not defined");
-                        // Check/test the function
-                        const graphDataset = graphDatasetAtom.get();
-                        const id = graphDataset.fullGraph.nodes()[0];
-                        const attributs = graphDataset.nodeData[id];
-                        const result = fn(id, attributs, 0, graphDataset.fullGraph);
-                        if (!isObject(result)) throw new Error("Function must returned an object");
-                        if (isNil(result.x)) throw new Error("Function must returned an object with a `x` property");
-                        if (isNil(result.y)) throw new Error("Function must returned an object with a `y` property");
-                      },
-                    },
-                    beforeSubmit: (script) => {
-                      onChangeParameters(param.id, script);
-                    },
-                  })
-                }
-                title={t("common.open_code_editor").toString()}
-              >
-                <CodeEditorIcon className="me-1" />
-                {t("common.open_code_editor")}
-              </button>
+                            defaultFunction: param.defaultValue,
+                            value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
+                            checkFunction: (fn) => {
+                              if (!fn) throw new Error("Function is not defined");
+                              // Check/test the function
+                              const graphDataset = graphDatasetAtom.get();
+                              const id = graphDataset.fullGraph.nodes()[0];
+                              const attributs = graphDataset.nodeData[id];
+                              const result = fn(id, attributs, 0, graphDataset.fullGraph);
+                              if (!isObject(result)) throw new Error("Function must returned an object");
+                              if (isNil(result.x))
+                                throw new Error("Function must returned an object with a `x` property");
+                              if (isNil(result.y))
+                                throw new Error("Function must returned an object with a `y` property");
+                            },
+                          },
+                          beforeSubmit: (script) => {
+                            onChangeParameters(param.id, script);
+                          },
+                        })
+                      }
+                      title={t("common.open_code_editor").toString()}
+                    >
+                      <CodeEditorIcon className="me-1" />
+                      {t("common.open_code_editor")}
+                    </button>
+                  </div>
+                </>
+              </div>
             )}
           </div>
         );

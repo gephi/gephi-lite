@@ -1,6 +1,9 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { isBoolean } from "lodash";
+import Editor from "@monaco-editor/react";
+import Highlight from "react-highlight";
+import cx from "classnames";
 
 import { ItemData, GraphDataset } from "../../core/graph/types";
 import { graphDatasetAtom } from "../../core/graph";
@@ -36,52 +39,63 @@ export const ScriptFilter: FC<{ filter: ScriptFilterType; active?: boolean; edit
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { replaceCurrentFilter } = useFiltersActions();
+
   return (
     <div>
       <div className="fs-5">
         {t("filters.script")} ({t(`graph.model.${filter.itemType}`)})
       </div>
-      {editMode && (
-        <div>
-          <button
-            className="btn btn-outline-dark mx-auto d-block m-1"
-            title={t("common.open_code_editor").toString()}
-            onClick={() =>
-              openModal({
-                component: FunctionEditorModal<ScriptFilterType["script"]>,
-                arguments: {
-                  title: "Custom filter",
-                  functionJsDoc: SCRIPT_JS_DOC,
-                  defaultFunction: filter.itemType === "nodes" ? nodeFilter : edgeFilter,
-                  value: filter.script,
-                  checkFunction: (fn) => {
-                    if (!fn) throw new Error("Function is not defined");
-                    // Check/test the function
-                    let id = null;
-                    let attributs = null;
-                    const graphDataset = graphDatasetAtom.get();
-                    if (filter.itemType === "nodes" && graphDataset.fullGraph.order > 0) {
-                      id = graphDataset.fullGraph.nodes()[0];
-                      attributs = graphDataset.nodeData[id];
-                    }
-                    if (filter.itemType && graphDataset.fullGraph.size > 0) {
-                      id = graphDataset.fullGraph.edges()[0];
-                      attributs = graphDataset.edgeData[id];
-                    }
-                    const result = fn(id ?? "0", attributs ?? {}, graphDataset);
-                    if (!isBoolean(result)) throw new Error("Function must returned a boolean");
+      <div className="position-relative">
+        {filter.script && (
+          <>
+            <div className="code-thumb mt-1">
+              <Highlight className="javascript">{filter.script.toString()}</Highlight>
+            </div>
+            <div className="filler-fade-out position-absolute bottom-0"></div>
+          </>
+        )}
+        {editMode && (
+          <div className={cx(filter.script && "bottom-0 position-absolute w-100")}>
+            <button
+              className="btn btn-dark mx-auto d-block m-1"
+              title={t("common.open_code_editor").toString()}
+              onClick={() =>
+                openModal({
+                  component: FunctionEditorModal<ScriptFilterType["script"]>,
+                  arguments: {
+                    title: "Custom filter",
+                    functionJsDoc: SCRIPT_JS_DOC,
+                    defaultFunction: filter.itemType === "nodes" ? nodeFilter : edgeFilter,
+                    value: filter.script,
+                    checkFunction: (fn) => {
+                      if (!fn) throw new Error("Function is not defined");
+                      // Check/test the function
+                      let id = null;
+                      let attributs = null;
+                      const graphDataset = graphDatasetAtom.get();
+                      if (filter.itemType === "nodes" && graphDataset.fullGraph.order > 0) {
+                        id = graphDataset.fullGraph.nodes()[0];
+                        attributs = graphDataset.nodeData[id];
+                      }
+                      if (filter.itemType && graphDataset.fullGraph.size > 0) {
+                        id = graphDataset.fullGraph.edges()[0];
+                        attributs = graphDataset.edgeData[id];
+                      }
+                      const result = fn(id ?? "0", attributs ?? {}, graphDataset);
+                      if (!isBoolean(result)) throw new Error("Function must returned a boolean");
+                    },
                   },
-                },
-                beforeSubmit: (fn) => {
-                  replaceCurrentFilter({ ...filter, script: fn });
-                },
-              })
-            }
-          >
-            <CodeEditorIcon className="me-1" /> {t("common.open_code_editor")}
-          </button>
-        </div>
-      )}
+                  beforeSubmit: (fn) => {
+                    replaceCurrentFilter({ ...filter, script: fn });
+                  },
+                })
+              }
+            >
+              <CodeEditorIcon className="me-1" /> {t("common.open_code_editor")}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -37,6 +37,7 @@
     "graphology-layout-noverlap": "^0.4.2",
     "graphology-metrics": "^2.1.0",
     "graphology-operators": "^1.6.0",
+    "highlight.js": "^11.7.0",
     "http-proxy-middleware": "^2.0.6",
     "i18next": "^22.4.9",
     "i18next-browser-languagedetector": "^7.0.1",
@@ -50,6 +51,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-highlight": "^0.15.0",
     "react-i18next": "^12.1.4",
     "react-icons": "^4.6.0",
     "react-router": "^6.3.0",
@@ -90,5 +92,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-highlight": "^0.12.5"
   }
 }
