@@ -13,7 +13,8 @@ varying vec4 v_color;
 varying vec4 v_borderColor;
 varying vec2 v_diffVector;
 varying float v_radius;
-varying float v_border;
+varying float v_borderThickness;
+varying float v_antiAliasingBorder;
 
 const float bias = 255.0 / 254.0;
 const float marginRatio = 1.05;
@@ -28,9 +29,10 @@ void main() {
     1
   );
 
-  v_border = u_correctionRatio;
+  v_antiAliasingBorder = u_correctionRatio;
   v_diffVector = diffVector;
   v_radius = size / 2.0 / marginRatio;
+  v_borderThickness = min(5.0 * u_correctionRatio, v_radius / 2.0);
 
   v_color = a_color;
   v_color.a *= bias;
