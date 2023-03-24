@@ -213,6 +213,48 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
       return hits(toSimple(graph), parameters);
     },
   },
+  {
+    id: "nodescript",
+    types: { custom: "number" },
+    itemType: "nodes",
+    parameters: [
+      {
+        id: "script",
+        type: "script",
+        functionJsDoc: `/**
+* Function that return the metric value for the specified node.
+*
+* @param {string} id The ID of the node
+* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {number} index The index position of the node in the graph
+* @param {Graph} graph The graphology instance
+* @returns number The computed metric of the node
+*/`,
+        defaultValue: function nodeMetric(id, attributes, index, graph) {
+          // Your code here
+          return Math.random();
+        },
+      },
+    ],
+    fn(parameters: { script?: Function }, graph: DataGraph) {
+      const fn = parameters.script;
+      if (fn) {
+        return {
+          custom: graph
+            .nodes()
+            .map((key, index) => {
+              const attributes = graph.getNodeAttributes(key);
+              const value = fn(key, attributes, index, graph);
+              return { key, value };
+            })
+            .reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {} as any),
+        };
+      }
+      return {
+        custom: {},
+      };
+    },
+  },
 ];
 
 export const EDGE_METRICS: Metric<"edges", any, any>[] = [
@@ -244,6 +286,48 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
     parameters: [],
     fn(parameters: {}, graph: DataGraph) {
       return { simmelianStrength: simmelianStrength(graph) };
+    },
+  },
+  {
+    id: "edgescript",
+    types: { custom: "number" },
+    itemType: "edges",
+    parameters: [
+      {
+        id: "script",
+        type: "script",
+        functionJsDoc: `/**
+* Function that return the metric value for the specified edge.
+*
+* @param {string} id The ID of the edge
+* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {number} index The index position of the node in the graph
+* @param {Graph} graph The graphology instance
+* @returns number The computed metric of the edge
+*/`,
+        defaultValue: function edgeMetric(id, attributes, index, graph) {
+          // Your code here
+          return Math.random();
+        },
+      },
+    ],
+    fn(parameters: { script?: Function }, graph: DataGraph) {
+      const fn = parameters.script;
+      if (fn) {
+        return {
+          custom: graph
+            .edges()
+            .map((key, index) => {
+              const attributes = graph.getEdgeAttributes(key);
+              const value = fn(key, attributes, index, graph);
+              return { key, value };
+            })
+            .reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {} as any),
+        };
+      }
+      return {
+        custom: {},
+      };
     },
   },
 ];

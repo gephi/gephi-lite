@@ -35,6 +35,7 @@ export interface LayoutAttributeParameter extends BaseLayoutParameter {
 
 export interface LayoutScriptParameter extends BaseLayoutParameter {
   type: "script";
+  functionJsDoc: string;
   defaultValue: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
 }
 export type LayoutParameter =

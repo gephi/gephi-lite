@@ -2,18 +2,22 @@ import { capitalize, keyBy, map, mapValues, isNil, cloneDeep } from "lodash";
 import { FC, Fragment, useMemo, useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
+import Highlight from "react-highlight";
+import cx from "classnames";
 
 import { ItemType } from "../../core/types";
 import { useAtom } from "../../core/utils/atoms";
 import { preferencesAtom } from "../../core/preferences";
-import { StatisticsIcon } from "../../components/common-icons";
-import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
-import { Metric } from "../../core/metrics/types";
 import { useNotifications } from "../../core/notifications";
+import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
+import { Metric, MetricScriptParameter } from "../../core/metrics/types";
+import { computeMetric } from "../../core/metrics";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
 import { useGraphDataset, useGraphDatasetActions, useSigmaGraph } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
-import { computeMetric } from "../../core/metrics";
+import { useModal } from "../../core/modals";
+import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
+import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type MetricOption = {
   value: string;
@@ -25,6 +29,7 @@ type MetricOption = {
 export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void }> = ({ metric, onClose }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
+  const { openModal } = useModal();
   const sigmaGraph = useSigmaGraph();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
@@ -228,6 +233,47 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                     label: field.id,
                   }))}
               />
+            )}
+            {param.type === "script" && (
+              <div className="position-relative">
+                <>
+                  {metricConfig.parameters[param.id] && (
+                    <>
+                      <div className="code-thumb mt-1">
+                        <Highlight className="javascript">
+                          {(metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"]).toString()}
+                        </Highlight>
+                      </div>
+                      <div className="filler-fade-out position-absolute bottom-0"></div>
+                    </>
+                  )}
+                  <div className={cx(metricConfig.parameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
+                    <button
+                      type="button"
+                      className="btn btn-dark mx-auto d-block m-3"
+                      onClick={() =>
+                        openModal({
+                          component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
+                          arguments: {
+                            title: "Custom metric",
+                            functionJsDoc: param.functionJsDoc,
+                            defaultFunction: param.defaultValue,
+                            value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
+                            checkFunction: (fn) => {},
+                          },
+                          beforeSubmit: (script) => {
+                            onChange("parameters", param.id, script);
+                          },
+                        })
+                      }
+                      title={t("common.open_code_editor").toString()}
+                    >
+                      <CodeEditorIcon className="me-1" />
+                      {t("common.open_code_editor")}
+                    </button>
+                  </div>
+                </>
+              </div>
             )}
           </div>
         );

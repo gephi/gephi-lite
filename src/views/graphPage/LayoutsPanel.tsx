@@ -18,7 +18,7 @@ import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/Typ
 import { FieldModel } from "../../core/graph/types";
 import { graphDatasetAtom } from "../../core/graph";
 import { useGraphDataset } from "../../core/context/dataContexts";
-import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
+import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type LayoutOption = {
   value: string;
@@ -190,15 +190,7 @@ export const LayoutForm: FC<{
                           component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
                           arguments: {
                             title: "Custom layout",
-                            functionJsDoc: `/**
- * Function that return coordinates for the specified node.
- *
- * @param {string} id The ID of the node
- * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
- * @param {number} index The index position of the node in the graph
- * @param {Graph} graph The graphology instance
- * @returns {x: number, y: number} The computed coordinates of the node
- */`,
+                            functionJsDoc: param.functionJsDoc,
                             defaultFunction: param.defaultValue,
                             value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
                             checkFunction: (fn) => {

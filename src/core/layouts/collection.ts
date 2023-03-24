@@ -153,6 +153,15 @@ export const LAYOUTS: Array<Layout> = [
       {
         id: "script",
         type: "script",
+        functionJsDoc: `/**
+* Function that return coordinates for the specified node.
+*
+* @param {string} id The ID of the node
+* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {number} index The index position of the node in the graph
+* @param {Graph} graph The graphology instance
+* @returns {x: number, y: number} The computed coordinates of the node
+*/`,
         defaultValue: function nodeCoordinates(id, attributes, index, graph) {
           // Your code here
           return { x: Math.random() * 100, y: Math.random() * 100 };

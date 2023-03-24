@@ -335,6 +335,13 @@
             "title": "Tolerance"
           }
         }
+      },
+      "nodescript": {
+        "title": "Custom metric",
+        "description": "Define a function that compute a metric for a node.",
+        "attributes": {
+          "custom": "Attribute name on which to store the metric"
+        }
       }
     },
     "edges": {
@@ -353,6 +360,13 @@
         "title": "Simmelian strength",
         "attributes": {
           "simmelianStrength": "Simmelian strength attribute name"
+        }
+      },
+      "edgescript": {
+        "title": "Custom metric",
+        "description": "Define a function that compute a metric for an edge.",
+        "attributes": {
+          "custom": "Attribute name on which to store the metric"
         }
       }
     }

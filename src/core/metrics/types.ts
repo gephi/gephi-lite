@@ -1,5 +1,6 @@
-import { DataGraph } from "../graph/types";
+import { DataGraph, ItemData } from "../graph/types";
 import { ItemType } from "../types";
+import Graph from "graphology";
 
 interface BaseMetricParameter {
   id: string;
@@ -34,11 +35,18 @@ export interface MetricAttributeParameter extends BaseMetricParameter {
   restriction?: "qualitative" | "quantitative";
 }
 
+export interface MetricScriptParameter extends BaseMetricParameter {
+  type: "script";
+  functionJsDoc: string;
+  defaultValue: (id: string, attributes: ItemData, index: number, graph: Graph) => number;
+}
+
 export type MetricParameter =
   | MetricBooleanParameter
   | MetricNumberParameter
   | MetricEnumParameter
-  | MetricAttributeParameter;
+  | MetricAttributeParameter
+  | MetricScriptParameter;
 
 export type MetricType =
   | { string: "number"; type: number }
