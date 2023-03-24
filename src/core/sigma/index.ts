@@ -2,10 +2,12 @@ import Sigma from "sigma";
 
 import { SigmaState } from "./types";
 import { atom } from "../utils/atoms";
-import { sigmaGraphAtom } from "../graph";
+import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaGraph } from "../graph/types";
 import { getEmptySigmaState } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
+import { nodeExtent } from "graphology-metrics/graph";
+import { dataGraphToFullGraph } from "../graph/utils";
 
 /**
  * Producers:
@@ -79,7 +81,12 @@ export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
 export const resetCamera = () => {
   const sigma = sigmaAtom.get();
   sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
-  sigma.setCustomBBox(sigma.getBBox());
+
+  const dataset = graphDatasetAtom.get();
+  const filteredGraph = filteredGraphAtom.get();
+  const graph = dataGraphToFullGraph(dataset, filteredGraph);
+  const bbox = { x: nodeExtent(graph, "x"), y: nodeExtent(graph, "y") };
+  sigma.setCustomBBox(bbox);
 };
 
 export const sigmaActions = {

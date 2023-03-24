@@ -9,6 +9,7 @@ import { graphDatasetAtom } from "../graph";
 import { useExportAsGexf } from "../graph/useExportAsGexf";
 import { useConnectedUser } from "../user/index";
 import { CloudFile } from "./types";
+import { resetCamera } from "../sigma";
 
 export function useCloudProvider() {
   const [user] = useConnectedUser();
@@ -46,6 +47,7 @@ export function useCloudProvider() {
         const content = await user.provider.getFileContent(file.id);
         const graph = parse(Graph, content);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
+        resetCamera();
       } catch (e) {
         setError(e as Error);
         throw e;

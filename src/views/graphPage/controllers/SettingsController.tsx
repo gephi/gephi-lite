@@ -6,11 +6,11 @@ import drawLabel from "sigma/rendering/canvas/label";
 import drawHover from "sigma/rendering/canvas/hover";
 import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
 
-import { sigmaAtom } from "../../../core/sigma";
 import { SigmaGraph } from "../../../core/graph/types";
+import { resetCamera, sigmaAtom } from "../../../core/sigma";
+import { inputToStateThreshold } from "../../../utils/labels";
 import { useAppearance, useGraphDataset } from "../../../core/context/dataContexts";
 import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
-import { inputToStateThreshold } from "../../../utils/labels";
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma();
@@ -19,6 +19,7 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
 
   useEffect(() => {
     sigmaAtom.set(sigma as Sigma<SigmaGraph>);
+    resetCamera();
   }, [sigma]);
 
   useEffect(() => {

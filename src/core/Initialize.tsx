@@ -16,6 +16,7 @@ import { preferencesAtom } from "./preferences";
 import { parsePreferences } from "./preferences/utils";
 import { useModal } from "./modals";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
+import { resetCamera } from "./sigma";
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * - local storage
    * - ...
    */
-  const intialize = useCallback(async () => {
+  const initialize = useCallback(async () => {
     // Load preferences from local storage
     preferencesAtom.set((prev) => {
       const raw = localStorage.getItem("preferences");
@@ -99,6 +100,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           graphDatasetAtom.set(dataset);
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
+          resetCamera();
 
           graphFound = true;
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
@@ -119,14 +121,13 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * => run the initialize function
    */
   useEffect(() => {
-    intialize();
-  }, [intialize]);
+    initialize();
+  }, [initialize]);
 
   return (
     <>
       <AuthInit />
-      {children}
-      {loading && <Loader />}
+      {loading ? <Loader /> : children}
     </>
   );
 };

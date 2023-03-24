@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import { ComponentType, FC, useMemo, useState } from "react";
+import { ComponentType, FC, useEffect, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
 import { useTranslation } from "react-i18next";
