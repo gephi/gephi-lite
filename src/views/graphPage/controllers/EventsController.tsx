@@ -1,5 +1,5 @@
 import { mapValues, pick } from "lodash";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 
@@ -21,8 +21,7 @@ export const EventsController: FC = () => {
   const { select, toggle, reset } = useSelectionActions();
   const { setHoveredNode, resetHoveredNode, setHoveredEdge, resetHoveredEdge } = useSigmaActions();
 
-  const [dragEventsCount, setDragEventsCount] = useState(0);
-  const [dragState, setDragState] = useState<
+  const dragStateRef = useRef<
     | { type: "idle" }
     | {
         type: "dragging";
@@ -30,27 +29,28 @@ export const EventsController: FC = () => {
         initialNodesPosition: Record<string, Coordinates>;
       }
   >({ type: "idle" });
+  const dragEventsCountRef = useRef(0);
 
   useEffect(() => {
     registerEvents({
       enterEdge({ edge }) {
-        if (dragState.type !== "idle") return;
+        if (dragStateRef.current.type !== "idle") return;
         setHoveredEdge(edge);
       },
       leaveEdge() {
-        if (dragState.type !== "idle") return;
+        if (dragStateRef.current.type !== "idle") return;
         resetHoveredEdge();
       },
       enterNode({ node }) {
-        if (dragState.type !== "idle") return;
+        if (dragStateRef.current.type !== "idle") return;
         setHoveredNode(node);
       },
       leaveNode() {
-        if (dragState.type !== "idle") return;
+        if (dragStateRef.current.type !== "idle") return;
         resetHoveredNode();
       },
       clickNode({ node, event }) {
-        if (dragEventsCount >= DRAG_EVENTS_TOLERANCE) return;
+        if (dragEventsCountRef.current >= DRAG_EVENTS_TOLERANCE) return;
 
         if (event.original.ctrlKey) {
           toggle({
@@ -83,19 +83,20 @@ export const EventsController: FC = () => {
         const nodes = selection.type === "nodes" && selection.items.has(node) ? Array.from(selection.items) : [node];
         const { x, y } = sigma.viewportToGraph(event);
 
-        setDragEventsCount(0);
-        setDragState({
+        dragEventsCountRef.current = 0;
+        dragStateRef.current = {
           type: "dragging",
           initialMousePosition: { x, y },
           initialNodesPosition: nodes.reduce(
             (iter, n) => ({ ...iter, [n]: pick(graph.getNodeAttributes(n), ["x", "y"]) }),
             {},
           ),
-        });
+        };
 
         nodes.forEach((node) => graph.setNodeAttribute(node, "fixed", true));
       },
       mouseup: () => {
+        const dragState = dragStateRef.current;
         if (dragState.type === "dragging") {
           // Save new positions in graph dataset:
           const graph = sigma.getGraph();
@@ -105,15 +106,16 @@ export const EventsController: FC = () => {
           );
           setNodePositions(positions);
 
-          setDragState({ type: "idle" });
+          dragStateRef.current = { type: "idle" };
 
           resetHoveredNode();
           resetHoveredEdge();
         }
       },
       mousemovebody: (e) => {
+        const dragState = dragStateRef.current;
         if (dragState.type === "dragging") {
-          setDragEventsCount((n) => n + 1);
+          dragEventsCountRef.current++;
           const graph = sigma.getGraph();
 
           // Set new positions for nodes:
@@ -136,8 +138,6 @@ export const EventsController: FC = () => {
       },
     });
   }, [
-    dragState,
-    dragEventsCount,
     registerEvents,
     reset,
     resetHoveredEdge,
@@ -154,7 +154,7 @@ export const EventsController: FC = () => {
   // DOM events not handled by sigma:
   useEffect(() => {
     const leaveHandle = () => {
-      if (dragState.type !== "idle") return;
+      if (dragStateRef.current.type !== "idle") return;
 
       resetHoveredNode();
       resetHoveredEdge();
@@ -165,7 +165,7 @@ export const EventsController: FC = () => {
     return () => {
       container.removeEventListener("mouseleave", leaveHandle);
     };
-  }, [dragState.type, resetHoveredEdge, resetHoveredNode, sigma]);
+  }, [resetHoveredEdge, resetHoveredNode, sigma]);
 
   return null;
 };
