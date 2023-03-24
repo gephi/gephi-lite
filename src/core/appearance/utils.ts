@@ -49,14 +49,14 @@ export function getEmptyAppearanceState(): AppearanceState {
     nodesLabelSize: {
       type: "fixed",
       value: DEFAULT_NODE_LABEL_SIZE,
-      zoomCorrelation: 1,
-      density: 0.1,
+      zoomCorrelation: 0,
+      density: 1,
     },
     edgesLabelSize: {
       type: "fixed",
       value: DEFAULT_EDGE_LABEL_SIZE,
-      zoomCorrelation: 1,
-      density: 0.1,
+      zoomCorrelation: 0,
+      density: 1,
     },
   };
 }
