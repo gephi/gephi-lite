@@ -35,11 +35,14 @@ export interface LayoutAttributeParameter extends BaseLayoutParameter {
   restriction?: "qualitative" | "quantitative";
 }
 
+type LayoutScriptFunction = (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
 export interface LayoutScriptParameter extends BaseLayoutParameter {
   type: "script";
+  defaultValue: LayoutScriptFunction;
   functionJsDoc: string;
-  defaultValue: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
+  functionCheck: (fn?: LayoutScriptFunction) => void;
 }
+
 export type LayoutParameter =
   | LayoutScriptParameter
   | LayoutBooleanParameter

@@ -2,9 +2,9 @@ import { FC, useMemo, useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
-import { isNil, isObject } from "lodash";
 import Highlight from "react-highlight";
 import cx from "classnames";
+import { isNil } from "lodash";
 
 import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
 import { useAtom } from "../../core/utils/atoms";
@@ -16,7 +16,6 @@ import { useNotifications } from "../../core/notifications";
 import { useModal } from "../../core/modals";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { FieldModel } from "../../core/graph/types";
-import { graphDatasetAtom } from "../../core/graph";
 import { useGraphDataset } from "../../core/context/dataContexts";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
@@ -193,19 +192,7 @@ export const LayoutForm: FC<{
                             functionJsDoc: param.functionJsDoc,
                             defaultFunction: param.defaultValue,
                             value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
-                            checkFunction: (fn) => {
-                              if (!fn) throw new Error("Function is not defined");
-                              // Check/test the function
-                              const graphDataset = graphDatasetAtom.get();
-                              const id = graphDataset.fullGraph.nodes()[0];
-                              const attributs = graphDataset.nodeData[id];
-                              const result = fn(id, attributs, 0, graphDataset.fullGraph);
-                              if (!isObject(result)) throw new Error("Function must returned an object");
-                              if (isNil(result.x))
-                                throw new Error("Function must returned an object with a `x` property");
-                              if (isNil(result.y))
-                                throw new Error("Function must returned an object with a `y` property");
-                            },
+                            checkFunction: param.functionCheck,
                           },
                           beforeSubmit: (script) => {
                             onChangeParameters(param.id, script);

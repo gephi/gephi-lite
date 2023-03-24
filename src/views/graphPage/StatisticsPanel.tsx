@@ -259,7 +259,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                             functionJsDoc: param.functionJsDoc,
                             defaultFunction: param.defaultValue,
                             value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
-                            checkFunction: (fn) => {},
+                            checkFunction: param.functionCheck,
                           },
                           beforeSubmit: (script) => {
                             onChange("parameters", param.id, script);

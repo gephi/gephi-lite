@@ -1,3 +1,4 @@
+import { isNil, isObject } from "lodash";
 import Graph from "graphology";
 import circlepack from "graphology-layout/circlepack";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
@@ -6,8 +7,10 @@ import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
 import circular, { CircularLayoutOptions } from "graphology-layout/circular";
 import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
+import { dataGraphToFullGraph } from "../graph/utils";
 
 import { ItemData } from "../../core/graph/types";
+import { graphDatasetAtom } from "../../core/graph";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
 
 /**
@@ -159,12 +162,23 @@ export const LAYOUTS: Array<Layout> = [
 * @param {string} id The ID of the node
 * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance
+* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/ )
 * @returns {x: number, y: number} The computed coordinates of the node
 */`,
         defaultValue: function nodeCoordinates(id, attributes, index, graph) {
           // Your code here
           return { x: Math.random() * 100, y: Math.random() * 100 };
+        },
+        functionCheck: (fn) => {
+          if (!fn) throw new Error("Function is not defined");
+          // Check & test the function
+          const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
+          const id = fullGraph.nodes()[0];
+          const attributs = fullGraph.getNodeAttributes(id);
+          const result = fn(id, attributs, 0, fullGraph);
+          if (!isObject(result)) throw new Error("Function must returned an object");
+          if (isNil(result.x)) throw new Error("Function must returned an object with a `x` property");
+          if (isNil(result.y)) throw new Error("Function must returned an object with a `y` property");
         },
       },
     ],
@@ -178,7 +192,7 @@ export const LAYOUTS: Array<Layout> = [
       const graphCopy = graph.copy();
       Object.freeze(graphCopy);
 
-      const result = graph
+      return graph
         .nodes()
         .map((id, index) => ({
           id,

@@ -1,3 +1,4 @@
+import { isNumber } from "lodash";
 import louvain from "graphology-communities-louvain";
 import toSimple from "graphology-operators/to-simple";
 import { hits, pagerank } from "graphology-metrics/centrality";
@@ -5,7 +6,9 @@ import { disparity, simmelianStrength } from "graphology-metrics/edge";
 import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
 import { Metric } from "./types";
+import { graphDatasetAtom } from "../graph";
 import { DataGraph, EdgeRenderingData } from "../graph/types";
+import { dataGraphToFullGraph } from "../graph/utils";
 import { toNumber } from "../utils/casting";
 
 export const NODE_METRICS: Metric<"nodes", any, any>[] = [
@@ -227,9 +230,17 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
 * @param {string} id The ID of the node
 * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance
+* @param {Graph} graph The graphology instance (documentation:https://graphology.github.io/)
 * @returns number The computed metric of the node
 */`,
+        functionCheck: (fn) => {
+          if (!fn) throw new Error("Function is not defined");
+          const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
+          const id = fullGraph.nodes()[0];
+          const attributs = fullGraph.getNodeAttributes(id);
+          const result = fn(id, attributs, 0, fullGraph);
+          if (!isNumber(result)) throw new Error("Function must returns a number");
+        },
         defaultValue: function nodeMetric(id, attributes, index, graph) {
           // Your code here
           return Math.random();
@@ -306,9 +317,17 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
 * @param {string} id The ID of the edge
 * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance
+* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
 * @returns number The computed metric of the edge
 */`,
+        functionCheck: (fn) => {
+          if (!fn) throw new Error("Function is not defined");
+          const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
+          const id = fullGraph.edges()[0];
+          const attributs = fullGraph.getEdgeAttributes(id);
+          const result = fn(id, attributs, 0, fullGraph);
+          if (!isNumber(result)) throw new Error("Function must returns a number");
+        },
         defaultValue: function edgeMetric(id, attributes, index, graph) {
           // Your code here
           return Math.random();

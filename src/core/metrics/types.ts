@@ -35,10 +35,12 @@ export interface MetricAttributeParameter extends BaseMetricParameter {
   restriction?: "qualitative" | "quantitative";
 }
 
+type MetricScriptFunction = (id: string, attributes: ItemData, index: number, graph: Graph) => number;
 export interface MetricScriptParameter extends BaseMetricParameter {
   type: "script";
-  functionJsDoc: string;
   defaultValue: (id: string, attributes: ItemData, index: number, graph: Graph) => number;
+  functionJsDoc: string;
+  functionCheck: (fn?: MetricScriptFunction) => void;
 }
 
 export type MetricParameter =
