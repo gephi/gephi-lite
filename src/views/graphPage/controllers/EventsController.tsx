@@ -92,11 +92,14 @@ export const EventsController: FC = () => {
             {},
           ),
         });
+
+        nodes.forEach((node) => graph.setNodeAttribute(node, "fixed", true));
       },
       mouseup: () => {
         if (dragState.type === "dragging") {
           // Save new positions in graph dataset:
           const graph = sigma.getGraph();
+          graph.forEachNode((node) => graph.setNodeAttribute(node, "fixed", false));
           const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) =>
             pick(graph.getNodeAttributes(id), ["x", "y"]),
           );
