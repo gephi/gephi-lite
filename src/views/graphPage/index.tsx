@@ -1,4 +1,3 @@
-import { isEqual } from "lodash";
 import { ComponentType, FC, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
@@ -46,7 +45,6 @@ const GephiLiteButton: FC = () => {
 };
 
 export const GraphPage: FC = () => {
-  const [tool, setTool] = useState<Tool | null>(null);
   const [contextOpened, setContextOpened] = useState<boolean>(false);
   const { t } = useTranslation();
   const { openModal } = useModal();
@@ -87,6 +85,13 @@ export const GraphPage: FC = () => {
     [openModal, t, filterState],
   );
 
+  const [toolIndex, setToolIndex] = useState<number | null>(null);
+  const tool = useMemo(() => {
+    if (toolIndex === null) return null;
+    const toolAt = TOOLS[toolIndex];
+    return toolAt.type === "tool" ? toolAt : null;
+  }, [TOOLS, toolIndex]);
+
   return (
     <Layout>
       <div id="graph-page">
@@ -101,11 +106,11 @@ export const GraphPage: FC = () => {
                 key={i}
                 title={t.label}
                 type="button"
-                className={cx("d-flex justify-content-center fs-5 position-relative", isEqual(t, tool) && "active")}
+                className={cx("d-flex justify-content-center fs-5 position-relative", toolIndex === i && "active")}
                 onClick={() => {
                   if (t.type === "tool") {
-                    if (t === tool) setTool(null);
-                    else setTool(t);
+                    if (t === tool) setToolIndex(null);
+                    else setToolIndex(i);
                   } else if (t.type === "button") {
                     t.onClick();
                   }
@@ -130,7 +135,11 @@ export const GraphPage: FC = () => {
         <div className={cx("left-panel-wrapper", tool && "deployed")}>
           {tool && (
             <div className="left-panel border-end">
-              <button className="btn btn-icon btn-close-panel" aria-label="close panel" onClick={() => setTool(null)}>
+              <button
+                className="btn btn-icon btn-close-panel"
+                aria-label="close panel"
+                onClick={() => setToolIndex(null)}
+              >
                 <BsX />
               </button>
               <tool.panel />
