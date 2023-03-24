@@ -337,7 +337,7 @@
         }
       },
       "nodescript": {
-        "title": "Custom metric",
+        "title": "Custom node metric",
         "description": "Define a function that compute a metric for a node.",
         "attributes": {
           "custom": "Attribute name on which to store the metric"
@@ -363,7 +363,7 @@
         }
       },
       "edgescript": {
-        "title": "Custom metric",
+        "title": "Custom edge metric",
         "description": "Define a function that compute a metric for an edge.",
         "attributes": {
           "custom": "Attribute name on which to store the metric"
