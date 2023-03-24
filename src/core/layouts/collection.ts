@@ -75,7 +75,7 @@ export const LAYOUTS: Array<Layout> = [
         id: "scale",
         type: "number",
         description: true,
-        defaultValue: 100,
+        defaultValue: 1,
       },
     ],
     run(graph: Graph, options) {
