@@ -3,7 +3,7 @@ import { reduce } from "lodash";
 
 import { filtersActions, filtersAtom } from "../filters";
 import { appearanceActions, appearanceAtom } from "../appearance";
-import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
+import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
 import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { selectionActions, selectionAtom } from "../selection";
@@ -43,6 +43,7 @@ const ATOMS = {
   preferences: preferencesAtom,
   graphDataset: graphDatasetAtom,
   filteredGraph: filteredGraphAtom,
+  visualGetters: visualGettersAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -56,6 +57,7 @@ const CONTEXTS = {
   preferences: createContext(ATOMS.preferences),
   graphDataset: createContext(ATOMS.graphDataset),
   filteredGraph: createContext(ATOMS.filteredGraph),
+  visualGetters: createContext(ATOMS.visualGetters),
 };
 
 /**
@@ -85,6 +87,7 @@ export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
 export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
+export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);

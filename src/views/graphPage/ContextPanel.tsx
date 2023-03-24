@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Selection } from "./Selection";
 import { ContextIcon } from "../../components/common-icons";
-import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { useFilteredGraph, useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
 
 const GraphStat: FC<{ label: string; current: number; total: number }> = ({ label, current, total }) => (
   <div>
@@ -25,7 +25,7 @@ const GraphStat: FC<{ label: string; current: number; total: number }> = ({ labe
 export const ContextPanel: FC = () => {
   const { t } = useTranslation();
   const { fullGraph, metadata } = useGraphDataset();
-  const sigmaGraph = useSigmaGraph();
+  const filteredGraph = useFilteredGraph();
 
   return (
     <>
@@ -37,12 +37,12 @@ export const ContextPanel: FC = () => {
 
       <GraphStat
         label={capitalize(t("graph.model.nodes") as string) + ":"}
-        current={sigmaGraph.order}
+        current={filteredGraph.order}
         total={fullGraph.order}
       />
       <GraphStat
         label={capitalize(t("graph.model.edges") as string) + ":"}
-        current={sigmaGraph.size}
+        current={filteredGraph.size}
         total={fullGraph.size}
       />
 

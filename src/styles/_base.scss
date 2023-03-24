@@ -30,19 +30,32 @@
   text-overflow: ellipsis;
 }
 
+.disc,
 .circle {
+  position: relative;
   display: inline-block;
   width: 1em;
   height: 1em;
   border-radius: 1em;
   background-color: $gray-400;
 }
-.dash {
+.circle::after {
+  position: absolute;
+  content: " ";
+  inset: 2px;
+  border-radius: 1em;
+  background: white;
+}
+.dash,
+.dotted {
   display: inline-block;
-  width: 0.2em;
+  width: 0;
   margin: 0 0.4em;
   height: 1em;
-  background-color: $gray-400;
+  border: 2px solid $gray-400;
+}
+.dotted {
+  border-style: dotted;
 }
 .over-modal {
   z-index: $zindex-modal + 1;
