@@ -14,11 +14,11 @@ import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditor
 import { useReadAtom } from "../../core/utils/atoms";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 
-function nodeFilter(id: string, attributes: ItemData, fullGraph: FullGraph) {
+function nodeFilter(id: string, attributes: ItemData, graph: FullGraph) {
   // Your code goes here
   return true;
 }
-function edgeFilter(id: string, attributes: ItemData, fullGraph: FullGraph) {
+function edgeFilter(id: string, attributes: ItemData, graph: FullGraph) {
   // Your code goes here
   return true;
 }

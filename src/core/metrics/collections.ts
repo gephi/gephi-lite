@@ -7,9 +7,18 @@ import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
 import { Metric } from "./types";
 import { graphDatasetAtom } from "../graph";
-import { DataGraph, EdgeRenderingData } from "../graph/types";
+import { DataGraph, EdgeRenderingData, FullGraph, ItemData } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { toNumber } from "../utils/casting";
+
+function nodeMetric(id: string, attributes: ItemData, index: number, graph: FullGraph) {
+  // Your code here
+  return Math.random();
+}
+function edgeMetric(id: string, attributes: ItemData, index: number, graph: FullGraph) {
+  // Your code here
+  return Math.random();
+}
 
 export const NODE_METRICS: Metric<"nodes", any, any>[] = [
   {
@@ -230,7 +239,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
 * @param {string} id The ID of the node
 * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation:https://graphology.github.io/)
+* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
 * @returns number The computed metric of the node
 */`,
         functionCheck: (fn) => {
@@ -241,10 +250,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
           const result = fn(id, attributs, 0, fullGraph);
           if (!isNumber(result)) throw new Error("Function must returns a number");
         },
-        defaultValue: function nodeMetric(id, attributes, index, graph) {
-          // Your code here
-          return Math.random();
-        },
+        defaultValue: nodeMetric,
       },
     ],
     fn(parameters: { script?: Function }, graph: DataGraph) {
@@ -328,10 +334,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
           const result = fn(id, attributs, 0, fullGraph);
           if (!isNumber(result)) throw new Error("Function must returns a number");
         },
-        defaultValue: function edgeMetric(id, attributes, index, graph) {
-          // Your code here
-          return Math.random();
-        },
+        defaultValue: edgeMetric,
       },
     ],
     fn(parameters: { script?: Function }, graph: DataGraph) {

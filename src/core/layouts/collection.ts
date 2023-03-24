@@ -9,9 +9,14 @@ import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-lay
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 import { dataGraphToFullGraph } from "../graph/utils";
 
-import { ItemData } from "../../core/graph/types";
-import { graphDatasetAtom } from "../../core/graph";
+import { FullGraph, ItemData } from "../graph/types";
+import { graphDatasetAtom } from "../graph";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
+
+function nodeCoordinates(id: string, attributes: ItemData, index: number, graph: FullGraph) {
+  // Your code here
+  return { x: Math.random() * 1000, y: Math.random() * 1000 };
+}
 
 /**
  * List of available layouts
@@ -165,10 +170,7 @@ export const LAYOUTS: Array<Layout> = [
 * @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/ )
 * @returns {x: number, y: number} The computed coordinates of the node
 */`,
-        defaultValue: function nodeCoordinates(id, attributes, index, graph) {
-          // Your code here
-          return { x: Math.random() * 100, y: Math.random() * 100 };
-        },
+        defaultValue: nodeCoordinates,
         functionCheck: (fn) => {
           if (!fn) throw new Error("Function is not defined");
           // Check & test the function
