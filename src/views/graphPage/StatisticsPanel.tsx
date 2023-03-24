@@ -35,7 +35,6 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
   const { nodeFields, edgeFields } = dataset;
   const { setGraphDataset } = useGraphDatasetActions();
   const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
-
   // get metric config from the preference if it exists
   const [session, setSession] = useAtom(sessionAtom);
   const metricConfig = session.metrics[metric.id] || {
@@ -110,31 +109,34 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
     }));
   }, [metric.id, metricDefaultConfig, setSession]);
 
+  const submit = useCallback(() => {
+    try {
+      const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, sigmaGraph, dataset);
+      setGraphDataset(res.dataset);
+      notify({
+        type: "success",
+        message: t("statistics.success", {
+          items: metric.itemType,
+          metrics: Object.values(metricConfig.attributeNames).join(", "),
+          count: Object.values(metricConfig.attributeNames).length,
+        }) as string,
+        title: t("statistics.title") as string,
+      });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "unknown error";
+      notify({
+        type: "error",
+        message,
+        title: t("statistics.title") as string,
+      });
+    }
+  }, [notify, setGraphDataset, dataset, metric, metricConfig.attributeNames, metricConfig.parameters, sigmaGraph, t]);
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-
-        try {
-          const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, sigmaGraph, dataset);
-          setGraphDataset(res.dataset);
-          notify({
-            type: "success",
-            message: t("statistics.success", {
-              items: metric.itemType,
-              metrics: Object.values(metricConfig.attributeNames).join(", "),
-              count: Object.values(metricConfig.attributeNames).length,
-            }) as string,
-            title: t("statistics.title") as string,
-          });
-        } catch (e) {
-          const message = e instanceof Error ? e.message : "unknown error";
-          notify({
-            type: "error",
-            message,
-            title: t("statistics.title") as string,
-          });
-        }
+        submit();
       }}
     >
       <h3 className="fs-5 mt-3">{t(`statistics.${metric.itemType}.${metric.id}.title`)}</h3>
@@ -256,13 +258,15 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                           component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
                           arguments: {
                             title: "Custom metric",
+                            withSaveAndRun: true,
                             functionJsDoc: param.functionJsDoc,
                             defaultFunction: param.defaultValue,
                             value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
                             checkFunction: param.functionCheck,
                           },
-                          beforeSubmit: (script) => {
+                          beforeSubmit: ({ run, script }) => {
                             onChange("parameters", param.id, script);
+                            if (run) setTimeout(submit, 0);
                           },
                         })
                       }

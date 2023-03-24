@@ -565,6 +565,7 @@
     "remove": "Remove",
     "reset": "Reset",
     "save": "Save",
+    "save-and-run": "Save and run",
     "start": "Start",
     "stop": "Stop",
     "size": "Size",

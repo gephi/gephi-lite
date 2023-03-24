@@ -1,37 +1,44 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Editor from "@monaco-editor/react";
 
 import { ModalProps } from "../../../core/modals/types";
 import { Modal } from "../../../components/modals";
-import { CodeEditorIcon } from "../../../components/common-icons";
+import { CodeEditorIcon, RunIcon, SaveIcon, CloseIcon } from "../../../components/common-icons";
 
 interface FunctionEditorModalProps<T = Function> {
   title: string;
+  withSaveAndRun?: Boolean;
   functionJsDoc: string;
   defaultFunction: T;
   value?: T;
   checkFunction: (fn: T) => void; // throw error for unvalid
 }
 
-export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProps<T>, T>) {
+export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProps<T>, { run: boolean; script: T }>) {
   const { t } = useTranslation();
   const { cancel, submit } = props;
-  const { title, checkFunction, functionJsDoc, defaultFunction, value } = props.arguments;
+  const { title, withSaveAndRun, checkFunction, functionJsDoc, defaultFunction, value } = props.arguments;
 
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState<string>(
     `${functionJsDoc}\n${value?.toString() || defaultFunction?.toString() || ""}`,
   );
 
-  /**
-   * Transform code as string into a callable function
-   */
-  function codeToFunction(code: string): T {
-    if (code.trim().length === 0) throw new Error("Code is required");
-    // eslint-disable-next-line no-new-func
-    return new Function(`return ( ${code} )`)() as T;
-  }
+  const save = useCallback(
+    (run: boolean, code: string) => {
+      try {
+        if (code.trim().length === 0) throw new Error("Code is required");
+        // eslint-disable-next-line no-new-func
+        const script = new Function(`return ( ${code} )`)() as T;
+        checkFunction(script);
+        submit({ run, script });
+      } catch (e) {
+        setError(`${e}`);
+      }
+    },
+    [checkFunction, submit],
+  );
 
   return (
     <Modal
@@ -86,24 +93,29 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
           className="btn btn-secondary"
           onClick={() => cancel()}
         >
+          <CloseIcon className="me-1" />
           {t("common.cancel")}
         </button>
         <button
           type="button"
           title={t("common.save").toString()}
           className="btn btn-primary"
-          onClick={() => {
-            try {
-              const fn = codeToFunction(code);
-              checkFunction(fn);
-              submit(fn);
-            } catch (e) {
-              setError(`${e}`);
-            }
-          }}
+          onClick={() => save(false, code)}
         >
+          <SaveIcon className="me-1" />
           {t("common.save")}
         </button>
+        {withSaveAndRun && (
+          <button
+            type="button"
+            title={t("common.save-and-run").toString()}
+            className="btn btn-primary"
+            onClick={() => save(true, code)}
+          >
+            <RunIcon className="me-1" />
+            {t("common.save-and-run")}
+          </button>
+        )}
       </>
     </Modal>
   );

@@ -102,12 +102,16 @@ export const LayoutForm: FC<{
     }));
   }, [layout.id, layoutDefaultParameters, setSession]);
 
+  function submit() {
+    if (isRunning) onStop();
+    else onStart(layoutParameters);
+  }
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (isRunning) onStop();
-        else onStart(layoutParameters);
+        submit();
       }}
     >
       <h3 className="fs-5 mt-3">{t(`layouts.${layout.id}.title`)}</h3>
@@ -189,13 +193,15 @@ export const LayoutForm: FC<{
                           component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
                           arguments: {
                             title: "Custom layout",
+                            withSaveAndRun: true,
                             functionJsDoc: param.functionJsDoc,
                             defaultFunction: param.defaultValue,
                             value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
                             checkFunction: param.functionCheck,
                           },
-                          beforeSubmit: (script) => {
+                          beforeSubmit: ({ run, script }) => {
                             onChangeParameters(param.id, script);
+                            if (run) setTimeout(submit, 0);
                           },
                         })
                       }

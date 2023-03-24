@@ -91,8 +91,8 @@ export const ScriptFilter: FC<{
                       if (!isBoolean(result)) throw new Error("Function must returned a boolean");
                     },
                   },
-                  beforeSubmit: (fn) => {
-                    replaceCurrentFilter({ ...filter, script: fn });
+                  beforeSubmit: ({ script }) => {
+                    replaceCurrentFilter({ ...filter, script });
                   },
                 });
               }}

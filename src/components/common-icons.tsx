@@ -3,9 +3,10 @@ import { TbCircles } from "react-icons/tb";
 import { RiFilterFill } from "react-icons/ri";
 import { ImFilesEmpty } from "react-icons/im";
 import { BiNetworkChart } from "react-icons/bi";
-import { MdLogin, MdLogout } from "react-icons/md";
+import { MdLogin, MdLogout, MdOutlineSaveAlt, MdClose } from "react-icons/md";
 import { GrOverview, GrScorecard } from "react-icons/gr";
-import { BsSlashLg, BsCircle, BsGithub, BsPalette, BsCodeSlash } from "react-icons/bs";
+import { BsSlashLg, BsCircle, BsGithub, BsPalette, BsCodeSlash, BsFillPlayFill } from "react-icons/bs";
+import { FaPlay } from "react-icons/fa";
 
 import { ItemType } from "../core/types";
 
@@ -28,3 +29,6 @@ export const ItemIcons: Record<ItemType, IconType> = {
 };
 
 export const CodeEditorIcon = BsCodeSlash;
+export const SaveIcon = MdOutlineSaveAlt;
+export const RunIcon = BsFillPlayFill;
+export const CloseIcon = MdClose;
