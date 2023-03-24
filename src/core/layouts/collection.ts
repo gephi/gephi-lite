@@ -174,11 +174,15 @@ export const LAYOUTS: Array<Layout> = [
         console.error("[layout] Custom function is not defined");
         return {};
       }
-      return graph
+      // we copy the graph to avoid user to modify it
+      const graphCopy = graph.copy();
+      Object.freeze(graphCopy);
+
+      const result = graph
         .nodes()
         .map((id, index) => ({
           id,
-          coords: script(id, graph.getNodeAttributes(id), index, graph),
+          coords: script(id, graph.getNodeAttributes(id), index, graphCopy),
         }))
         .reduce((acc, curr) => ({ ...acc, [curr.id]: curr.coords }), {} as { [key: string]: { x: number; y: number } });
     },

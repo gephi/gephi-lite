@@ -239,12 +239,16 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
     fn(parameters: { script?: Function }, graph: DataGraph) {
       const fn = parameters.script;
       if (fn) {
+        // we copy the graph to avoid user to modify it
+        const graphCopy = graph.copy();
+        Object.freeze(graphCopy);
+
         return {
           custom: graph
             .nodes()
             .map((key, index) => {
               const attributes = graph.getNodeAttributes(key);
-              const value = fn(key, attributes, index, graph);
+              const value = fn(key, attributes, index, graphCopy);
               return { key, value };
             })
             .reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {} as any),
