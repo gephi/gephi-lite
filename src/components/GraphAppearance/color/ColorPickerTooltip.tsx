@@ -7,10 +7,10 @@ import { ColorScalePointType } from "../../../core/appearance/types";
 const ColorPickerTooltip: FC<{
   targetProps: HTMLProps<HTMLDivElement>;
   colorScalePoint: ColorScalePointType;
-
+  scalePointBounds: [number, number];
   onChange: (newColorScalePoint: ColorScalePointType) => void;
   onDelete: () => void;
-}> = ({ onChange, targetProps, colorScalePoint, onDelete }) => {
+}> = ({ onChange, targetProps, colorScalePoint, onDelete, scalePointBounds }) => {
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [isDraggingThumb, setIsDraggingThumb] = useState<boolean>(false);
 
@@ -112,9 +112,9 @@ const ColorPickerTooltip: FC<{
                     className="form-control form-control-sm w-5 ms-2"
                     type="number"
                     value={colorScalePoint.scalePoint}
-                    min={0}
-                    max={1}
-                    step={0.05}
+                    min={scalePointBounds[0]}
+                    max={scalePointBounds[1]}
+                    step={0.01}
                     onChange={(e) => {
                       if (e.target.value !== "") onChange({ ...colorScalePoint, scalePoint: +e.target.value });
                     }}

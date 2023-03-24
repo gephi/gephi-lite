@@ -8,6 +8,8 @@ import { RankingColor } from "../../../core/appearance/types";
 import { last, sortBy } from "lodash";
 import ColorPickerTooltip from "./ColorPickerTooltip";
 
+const minDistance = 0.05;
+
 export const ColorRankingEditor: FC<{
   itemType: ItemType;
   color: RankingColor;
@@ -42,6 +44,10 @@ export const ColorRankingEditor: FC<{
           };
           setColor(newColors);
         }}
+        scalePointBounds={[
+          color.colorScalePoints[state.index - 1]?.scalePoint + minDistance || 0.0,
+          color.colorScalePoints[state.index + 1]?.scalePoint - minDistance || 1.0,
+        ]}
         onDelete={() => {
           setColor({ ...color, colorScalePoints: color.colorScalePoints.filter((_, i) => i !== state.index) });
         }}
@@ -108,7 +114,7 @@ export const ColorRankingEditor: FC<{
         max={1}
         step={0.01}
         pearling
-        minDistance={0.05}
+        minDistance={minDistance}
         onAfterChange={(values) => {
           //TODO: use onChange + debounce?
           if (Array.isArray(values))
