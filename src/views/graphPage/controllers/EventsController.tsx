@@ -148,6 +148,7 @@ export const EventsController: FC = () => {
     setHoveredNode,
     sigma,
     toggle,
+    setNodePositions,
   ]);
 
   // DOM events not handled by sigma:

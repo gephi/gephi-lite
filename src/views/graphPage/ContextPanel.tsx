@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Selection } from "./Selection";
 import { ContextIcon } from "../../components/common-icons";
-import { useFilteredGraph, useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 
 const GraphStat: FC<{ label: string; current: number; total: number }> = ({ label, current, total }) => (
   <div>
