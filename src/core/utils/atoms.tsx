@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { debounce, isEqual } from "lodash";
 import React, { FC, ReactNode, useEffect, useState } from "react";
 
 import { Reducer, reducify, ValueOrReducer } from "./reducers";
@@ -58,6 +59,7 @@ export function atom<T>(initialValue: T): WritableAtom<T> {
 interface DerivedAtomOptions {
   checkInput?: boolean;
   checkOutput?: boolean;
+  debounce?: boolean;
 }
 export function derivedAtom<D, T>(
   atom: ReadableAtom<T>,
@@ -84,22 +86,24 @@ export function derivedAtom<D>(
   let value: D = extractor(...lastInput);
   let handlers: AtomHandler<D>[] = [];
 
-  atomsArray.map((atom) =>
-    atom.bind(() => {
-      const input = atomsArray.map((atom) => atom.get());
+  let extract = () => {
+    const input = atomsArray.map((atom) => atom.get());
 
-      if (!options.checkInput || input.some((v, i) => v !== lastInput[i])) {
-        lastInput = input;
-        const newValue = extractor(...atomsArray.map((atom) => atom.get()), value);
+    if (!options.checkInput || input.some((v, i) => !isEqual(v, lastInput[i]))) {
+      lastInput = input;
+      const newValue = extractor(...atomsArray.map((atom) => atom.get()), value);
 
-        if (!options.checkOutput || newValue !== value) {
-          const previousValue = value;
-          value = newValue;
-          handlers.forEach((handler) => handler(value, previousValue));
-        }
+      if (!options.checkOutput || !isEqual(newValue, value)) {
+        const previousValue = value;
+        value = newValue;
+        handlers.forEach((handler) => handler(value, previousValue));
       }
-    }),
-  );
+    }
+  };
+
+  if (options.debounce) extract = debounce(extract, 100);
+
+  atomsArray.map((atom) => atom.bind(extract));
 
   return {
     get() {

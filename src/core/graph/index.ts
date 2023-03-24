@@ -77,6 +77,7 @@ export const sigmaGraphAtom = derivedAtom(
 
     return newGraph;
   },
+  { debounce: true },
 );
 
 export const graphDatasetActions = {

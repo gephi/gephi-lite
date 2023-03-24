@@ -100,8 +100,8 @@ export const GraphRendering: FC = () => {
           {
             labelFont: "Poppins, Arial, Helvetica, Geneva",
             edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
+            enableEdgeHoverEvents: "debounce",
             enableEdgeClickEvents: true,
-            enableEdgeHoverEvents: true,
             renderEdgeLabels: true,
             zIndex: true,
             itemSizesReference: "positions",
