@@ -51,6 +51,8 @@ export const AppearanceController: FC = () => {
         res.zIndex = -1;
       }
 
+      if (id === hoveredNode) res.highlighted = true;
+
       if (allHighlightedNodes.has(id)) {
         res.boldLabel = true;
         res.zIndex = 1;

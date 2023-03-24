@@ -127,7 +127,7 @@ export const MarqueeController: FC = () => {
           sigma.getCamera().disable();
         }
       },
-      clickStage: (e) => {
+      click: () => {
         if (selectionState.type !== "idle") {
           select({ items: new Set(selectionState.capturedNodes), type: "nodes", replace: !selectionState.ctrlKeyDown });
           cleanup();

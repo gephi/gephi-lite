@@ -1,7 +1,9 @@
-import { last, omit } from "lodash";
+import { last, mapValues, omit } from "lodash";
+import { Coordinates } from "sigma/types";
 
 import { filtersAtom } from "../filters";
 import { appearanceAtom } from "../appearance";
+import { clearGraph } from "../../utils/graph";
 import { applyFilters } from "../filters/utils";
 import { FilteredGraph } from "../filters/types";
 import { atom, derivedAtom } from "../utils/atoms";
@@ -37,6 +39,15 @@ const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
     [key]: state[key].map((field) => (field.id === fieldModel.id ? fieldModel : field)),
   });
 };
+const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = (positions) => {
+  return (state) => ({
+    ...state,
+    nodeRenderingData: mapValues(state.nodeRenderingData, (data, id) => ({
+      ...data,
+      ...(positions[id] || {}),
+    })),
+  });
+};
 
 /**
  * Public API:
@@ -58,8 +69,9 @@ export const sigmaGraphAtom = derivedAtom(
     applyVisualProperties(newGraph, dataset, visualGetters);
 
     if (graph) {
-      graph.clear();
+      clearGraph(graph);
       graph.import(newGraph);
+
       return graph;
     }
 
@@ -72,6 +84,7 @@ export const graphDatasetActions = {
   editGraphMeta: producerToAction(editGraphMeta, graphDatasetAtom),
   setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
   setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
+  setNodePositions: producerToAction(setNodePositions, graphDatasetAtom),
 };
 
 /**

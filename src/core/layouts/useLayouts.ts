@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { clone, pick } from "lodash";
+import { pick } from "lodash";
 
-import { useAtom } from "../utils/atoms";
-import { graphDatasetAtom } from "../graph";
-import { useSigmaGraph } from "../context/dataContexts";
+import { useGraphDatasetActions, useSigmaGraph } from "../context/dataContexts";
 import { WorkerSupervisorInterface } from "./types";
 import { LAYOUTS } from "./collection";
 import { resetCamera } from "../sigma";
 
 export function useLayouts() {
   const sigmaGraph = useSigmaGraph();
-  const [, setGraphDataset] = useAtom(graphDatasetAtom);
+  const { setNodePositions } = useGraphDatasetActions();
   const [supervisor, setSupervisor] = useState<WorkerSupervisorInterface | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
@@ -25,22 +23,18 @@ export function useLayouts() {
         supervisor.kill();
 
         // Save data
-        setGraphDataset((graphDataset) => {
-          const nodeRenderingData = sigmaGraph.reduceNodes((acc, nodeId, attrs) => {
-            acc[nodeId] = {
-              ...(graphDataset.nodeRenderingData[nodeId] || {}),
-              ...pick(attrs, ["x", "y"]),
-            };
-            return acc;
-          }, graphDataset.nodeRenderingData);
-          return {
-            ...graphDataset,
-            nodeRenderingData,
-          };
-        });
+        setNodePositions(
+          sigmaGraph.reduceNodes(
+            (acc, nodeId, attrs) => ({
+              ...acc,
+              [nodeId]: pick(attrs, ["x", "y"]),
+            }),
+            {},
+          ),
+        );
       }
     };
-  }, [supervisor, setGraphDataset, sigmaGraph]);
+  }, [supervisor, setNodePositions, sigmaGraph]);
 
   const stop = useCallback(() => {
     setSupervisor(null);
@@ -61,25 +55,7 @@ export function useLayouts() {
         const positions = layout.run(sigmaGraph, { settings: params });
 
         // Save it
-        setGraphDataset((graphDataset) => {
-          // write them into NodeRenderingData
-          const nodeRenderingData = clone(graphDataset.nodeRenderingData);
-
-          // Iterate over position
-          Object.keys(positions).forEach((nodeId) => {
-            if (nodeRenderingData[nodeId] && positions[nodeId]) {
-              nodeRenderingData[nodeId] = {
-                ...nodeRenderingData[nodeId],
-                ...positions[nodeId],
-              };
-            }
-          });
-
-          return {
-            ...graphDataset,
-            nodeRenderingData,
-          };
-        });
+        setNodePositions(positions);
 
         setIsRunning(false);
         resetCamera();
@@ -92,7 +68,7 @@ export function useLayouts() {
         setSupervisor(worker);
       }
     },
-    [sigmaGraph, setGraphDataset],
+    [sigmaGraph, setNodePositions],
   );
 
   return { isRunning, start, stop };

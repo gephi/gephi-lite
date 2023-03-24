@@ -1,4 +1,6 @@
 import Graph from "graphology";
+import { Coordinates } from "sigma/types";
+
 import { ItemType } from "../types";
 import { ItemData } from "../graph/types";
 
@@ -55,7 +57,7 @@ export interface BaseLayout {
   parameters: Array<LayoutParameter>;
 }
 
-type LayoutMapping = { [node: string]: { [dimension: string]: number } };
+export type LayoutMapping = { [node: string]: Coordinates };
 
 export interface SyncLayout<P = {}> {
   id: string;

@@ -1,9 +1,14 @@
-import { pick } from "lodash";
+import { mapValues, pick } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 
-import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
+import {
+  useGraphDatasetActions,
+  useSelection,
+  useSelectionActions,
+  useSigmaActions,
+} from "../../../core/context/dataContexts";
 
 const DRAG_EVENTS_TOLERANCE = 3;
 
@@ -12,6 +17,7 @@ export const EventsController: FC = () => {
   const registerEvents = useRegisterEvents();
 
   const selection = useSelection();
+  const { setNodePositions } = useGraphDatasetActions();
   const { select, toggle, reset } = useSelectionActions();
   const { setHoveredNode, resetHoveredNode, setHoveredEdge, resetHoveredEdge } = useSigmaActions();
 
@@ -28,15 +34,19 @@ export const EventsController: FC = () => {
   useEffect(() => {
     registerEvents({
       enterEdge({ edge }) {
+        if (dragState.type !== "idle") return;
         setHoveredEdge(edge);
       },
       leaveEdge() {
+        if (dragState.type !== "idle") return;
         resetHoveredEdge();
       },
       enterNode({ node }) {
+        if (dragState.type !== "idle") return;
         setHoveredNode(node);
       },
       leaveNode() {
+        if (dragState.type !== "idle") return;
         resetHoveredNode();
       },
       clickNode({ node, event }) {
@@ -85,7 +95,17 @@ export const EventsController: FC = () => {
       },
       mouseup: () => {
         if (dragState.type === "dragging") {
+          // Save new positions in graph dataset:
+          const graph = sigma.getGraph();
+          const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) =>
+            pick(graph.getNodeAttributes(id), ["x", "y"]),
+          );
+          setNodePositions(positions);
+
           setDragState({ type: "idle" });
+
+          resetHoveredNode();
+          resetHoveredEdge();
         }
       },
       mousemovebody: (e) => {
@@ -126,6 +146,22 @@ export const EventsController: FC = () => {
     sigma,
     toggle,
   ]);
+
+  // DOM events not handled by sigma:
+  useEffect(() => {
+    const leaveHandle = () => {
+      if (dragState.type !== "idle") return;
+
+      resetHoveredNode();
+      resetHoveredEdge();
+    };
+
+    const container = sigma.getContainer();
+    container.addEventListener("mouseleave", leaveHandle);
+    return () => {
+      container.removeEventListener("mouseleave", leaveHandle);
+    };
+  }, [dragState.type, resetHoveredEdge, resetHoveredNode, sigma]);
 
   return null;
 };

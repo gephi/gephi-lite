@@ -8,7 +8,7 @@ import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-lay
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 
 import { ItemData } from "../../core/graph/types";
-import { Layout, SyncLayout, WorkerLayout } from "./types";
+import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
 
 /**
  * List of available layouts
@@ -32,7 +32,7 @@ export const LAYOUTS: Array<Layout> = [
         defaultValue: 100,
       },
     ],
-    run: (graph, options) => random(graph, options?.settings),
+    run: (graph, options) => random(graph, options?.settings) as unknown as LayoutMapping,
   } as SyncLayout<RandomLayoutOptions>,
   {
     id: "circular",
@@ -52,7 +52,7 @@ export const LAYOUTS: Array<Layout> = [
         defaultValue: 100,
       },
     ],
-    run: (graph, options) => circular(graph, options?.settings),
+    run: (graph, options) => circular(graph, options?.settings) as unknown as LayoutMapping,
   } as SyncLayout<CircularLayoutOptions>,
   {
     id: "circlePack",
@@ -174,14 +174,13 @@ export const LAYOUTS: Array<Layout> = [
         console.error("[layout] Custom function is not defined");
         return {};
       }
-      const result = graph
+      return graph
         .nodes()
         .map((id, index) => ({
           id,
           coords: script(id, graph.getNodeAttributes(id), index, graph),
         }))
         .reduce((acc, curr) => ({ ...acc, [curr.id]: curr.coords }), {} as { [key: string]: { x: number; y: number } });
-      return result;
     },
   } as SyncLayout<{
     script?: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
