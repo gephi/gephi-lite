@@ -173,7 +173,7 @@ export const LayoutForm: FC<{
                 <>
                   {layoutParameters[param.id] && (
                     <>
-                      <div className="code-thumb mt-1">
+                      <div className="code-thumb mt-1" style={{ height: "auto", maxHeight: "auto" }}>
                         <Highlight className="javascript">
                           {(layoutParameters[param.id] as LayoutScriptParameter["defaultValue"]).toString()}
                         </Highlight>

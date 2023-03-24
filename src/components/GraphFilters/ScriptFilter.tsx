@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { isBoolean } from "lodash";
-import Editor from "@monaco-editor/react";
 import Highlight from "react-highlight";
 import cx from "classnames";
 

@@ -13,7 +13,7 @@ div.code-thumb {
     word-wrap: break-word; /* Internet Explorer 5.5+ */
     code.hljs {
       background: none;
-      padding: $spacer / 4;
+      padding: calc($spacer / 4);
     }
   }
 }
