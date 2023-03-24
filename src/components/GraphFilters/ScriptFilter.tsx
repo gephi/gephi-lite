@@ -4,19 +4,21 @@ import { isBoolean } from "lodash";
 import Highlight from "react-highlight";
 import cx from "classnames";
 
-import { ItemData, GraphDataset } from "../../core/graph/types";
-import { graphDatasetAtom } from "../../core/graph";
+import { ItemData, FullGraph } from "../../core/graph/types";
+import { filteredGraphsAtom, graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
 import { useModal } from "../../core/modals";
 import { CodeEditorIcon } from "../../components/common-icons";
 import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
+import { useReadAtom } from "../../core/utils/atoms";
+import { dataGraphToFullGraph } from "../../core/graph/utils";
 
-function nodeFilter(id: string, attributes: ItemData, graphDataSet: GraphDataset) {
+function nodeFilter(id: string, attributes: ItemData, fullGraph: FullGraph) {
   // Your code goes here
   return true;
 }
-function edgeFilter(id: string, attributes: ItemData, graphDataSet: GraphDataset) {
+function edgeFilter(id: string, attributes: ItemData, fullGraph: FullGraph) {
   // Your code goes here
   return true;
 }
@@ -26,18 +28,19 @@ const SCRIPT_JS_DOC = `/**
  *
  * @param {string} id ID of the item
  * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the item
- * @param {GraphDataset} dataset Graph dataset
+ * @param {FullGraph} full graph (data and rendering attributes + topology) dataset
  * @return {boolean} TRUE if the item should be kept in the graph, FALSE to filter it
  */`;
 
-export const ScriptFilter: FC<{ filter: ScriptFilterType; active?: boolean; editMode?: boolean }> = ({
-  filter,
-  editMode,
-  active,
-}) => {
+export const ScriptFilter: FC<{
+  filter: ScriptFilterType;
+  active?: boolean;
+  editMode?: boolean;
+}> = ({ filter, editMode, active }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { replaceCurrentFilter } = useFiltersActions();
+  const parentGraph = useReadAtom(parentFilteredGraphAtom);
 
   return (
     <div>
@@ -58,7 +61,7 @@ export const ScriptFilter: FC<{ filter: ScriptFilterType; active?: boolean; edit
             <button
               className="btn btn-dark mx-auto d-block m-1"
               title={t("common.open_code_editor").toString()}
-              onClick={() =>
+              onClick={() => {
                 openModal({
                   component: FunctionEditorModal<ScriptFilterType["script"]>,
                   arguments: {
@@ -72,23 +75,27 @@ export const ScriptFilter: FC<{ filter: ScriptFilterType; active?: boolean; edit
                       let id = null;
                       let attributs = null;
                       const graphDataset = graphDatasetAtom.get();
-                      if (filter.itemType === "nodes" && graphDataset.fullGraph.order > 0) {
-                        id = graphDataset.fullGraph.nodes()[0];
-                        attributs = graphDataset.nodeData[id];
+
+                      const graphGraph = dataGraphToFullGraph(graphDataset, parentGraph);
+
+                      if (filter.itemType === "nodes" && parentGraph.order > 0) {
+                        id = parentGraph.nodes()[0];
+                        attributs = graphGraph.getNodeAttributes(id);
                       }
-                      if (filter.itemType && graphDataset.fullGraph.size > 0) {
-                        id = graphDataset.fullGraph.edges()[0];
-                        attributs = graphDataset.edgeData[id];
+                      if (filter.itemType === "edges" && parentGraph.size > 0) {
+                        id = parentGraph.edges()[0];
+                        attributs = graphGraph.getEdgeAttributes(id);
                       }
-                      const result = fn(id ?? "0", attributs ?? {}, graphDataset);
+
+                      const result = fn(id ?? "0", attributs ?? {}, graphGraph);
                       if (!isBoolean(result)) throw new Error("Function must returned a boolean");
                     },
                   },
                   beforeSubmit: (fn) => {
                     replaceCurrentFilter({ ...filter, script: fn });
                   },
-                })
-              }
+                });
+              }}
             >
               <CodeEditorIcon className="me-1" /> {t("common.open_code_editor")}
             </button>

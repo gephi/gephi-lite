@@ -61,6 +61,12 @@ export const filteredGraphAtom = derivedAtom(
     return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
   },
 );
+export const parentFilteredGraphAtom = derivedAtom(
+  [graphDatasetAtom, filteredGraphsAtom],
+  (graphDataset, filteredGraphCache) => {
+    return filteredGraphCache[filteredGraphCache.length - 2]?.graph || graphDataset.fullGraph;
+  },
+);
 export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom], getAllVisualGetters);
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],

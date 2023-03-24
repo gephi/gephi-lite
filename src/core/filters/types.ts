@@ -1,5 +1,5 @@
 import { ItemType } from "../types";
-import { DatalessGraph, ItemData, GraphDataset } from "../graph/types";
+import { DatalessGraph, ItemData, FullGraph } from "../graph/types";
 
 export interface BaseFilter {
   type: string;
@@ -28,7 +28,7 @@ export interface TopologicalFilterType {
 export interface ScriptFilterType extends BaseFilter {
   type: "script";
   itemType: ItemType;
-  script?: (itemID: string, attributes: ItemData, graphDataSet: GraphDataset) => boolean;
+  script?: (itemID: string, attributes: ItemData, fullGraph: FullGraph) => boolean;
 }
 
 export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterType | ScriptFilterType;

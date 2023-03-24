@@ -94,7 +94,8 @@ const FilterInStack: FC<{
         <div className="d-flex align-items-center">
           <button
             className="btn btn-icon"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (active) deletePastFilter(filterIndex);
               else deleteFutureFilter(filterIndex);
             }}

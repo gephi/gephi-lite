@@ -6,8 +6,9 @@ import cx from "classnames";
 
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
-import { graphDatasetAtom } from "../../core/graph";
+import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { findRanges, shortenNumber } from "./utils";
+import { useReadAtom } from "../../core/utils/atoms";
 
 interface RangeValue {
   min: number;
@@ -36,20 +37,21 @@ const RANGE_STYLE = {
 };
 
 export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) => {
+  const parentGraph = useReadAtom(parentFilteredGraphAtom);
+
   const { t } = useTranslation();
   const { replaceCurrentFilter } = useFiltersActions();
 
   const [rangeMetric, setRangeMetric] = useState<RangeMetric>();
 
   useEffect(() => {
-    const values = flatMap(
-      filter.itemType === "nodes" ? graphDatasetAtom.get().nodeData : graphDatasetAtom.get().edgeData,
-      (nodeData) => {
-        const v = nodeData[filter.field];
-        if (v && (typeof v === "number" || !isNaN(+v))) return [v];
-        return [];
-      },
-    ) as number[];
+    const attributes = filter.itemType === "nodes" ? graphDatasetAtom.get().nodeData : graphDatasetAtom.get().edgeData;
+
+    const values = flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
+      const v = attributes[itemId][filter.field];
+      if (v && (typeof v === "number" || !isNaN(+v))) return [v];
+      return [];
+    }) as number[];
     const minValue = min(values);
     const maxValue = max(values);
     if (minValue && maxValue) {
@@ -72,7 +74,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         maxCount: Math.max(...rangeValues.map((r) => r.values.length)),
       });
     }
-  }, [filter.itemType, filter.field]);
+  }, [filter.itemType, filter.field, parentGraph]);
 
   const marks: SliderProps["marks"] = rangeMetric
     ? mapValues(
@@ -194,11 +196,11 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
   );
 };
 
-export const RangeFilter: FC<{ filter: RangeFilterType; active?: boolean; editMode?: boolean }> = ({
-  filter,
-  editMode,
-  active,
-}) => {
+export const RangeFilter: FC<{
+  filter: RangeFilterType;
+  active?: boolean;
+  editMode?: boolean;
+}> = ({ filter, editMode, active }) => {
   const { t } = useTranslation();
 
   return (

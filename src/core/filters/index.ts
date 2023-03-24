@@ -80,7 +80,7 @@ export const deleteCurrentFilter: Producer<FiltersState> = () => {
 export const deletePastFilter: Producer<FiltersState, [number]> = (index) => {
   return (state) => {
     if (!inRange(index, 0, state.past.length))
-      throw new Error(`openFutureFilter: Index ${index} is out of bounds of future filters.`);
+      throw new Error(`deletePastFilter: Index ${index} is out of bounds of past filters.`);
 
     return {
       ...state,
