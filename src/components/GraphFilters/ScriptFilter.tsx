@@ -5,11 +5,11 @@ import Highlight from "react-highlight";
 import cx from "classnames";
 
 import { ItemData, FullGraph } from "../../core/graph/types";
-import { filteredGraphsAtom, graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
+import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
 import { useModal } from "../../core/modals";
-import { CodeEditorIcon } from "../../components/common-icons";
+import { CodeEditorIcon } from "../common-icons";
 import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
 import { useReadAtom } from "../../core/utils/atoms";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
