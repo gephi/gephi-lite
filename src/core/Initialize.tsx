@@ -28,10 +28,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   useKonami(
     () => {
       notify({
-        type: "error",
-        title: "NullPointerException",
-        message:
-          "We're kidding, gephi-lite is written with love in Javascript not in Java like Gephi. So now we have `undefined` errors :)",
+        type: "warning",
+        title: "Warning",
+        message: "java.lang.RuntimeException: java.lang.NullPointerException",
       });
     },
     {
