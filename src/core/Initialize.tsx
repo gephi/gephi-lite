@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import useKonami from "react-use-konami";
 
 import { extractFilename } from "../utils/url";
 import { AuthInit } from "./user/AuthInit";
@@ -23,6 +24,31 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { notify } = useNotifications();
   const { openModal } = useModal();
   const { loading, openRemoteFile } = useOpenGexf();
+
+  useKonami(
+    () => {
+      notify({
+        type: "error",
+        title: "NullPointerException",
+        message:
+          "We're kidding, gephi-lite is written with love in Javascript not in Java like Gephi. So now we have `undefined` errors :)",
+      });
+    },
+    {
+      code: [
+        "ArrowUp",
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowLeft",
+        "ArrowRight",
+        "b",
+        "a",
+      ],
+    },
+  );
 
   /**
    * Initialize the application by loading data from

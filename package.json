@@ -60,6 +60,7 @@
     "react-select": "^5.4.0",
     "react-slider": "^2.0.4",
     "react-tether": "^3.0.1",
+    "react-use-konami": "^1.1.0",
     "sass": "^1.54.6",
     "typescript": "^4.8.2",
     "web-vitals": "^2.1.4"
