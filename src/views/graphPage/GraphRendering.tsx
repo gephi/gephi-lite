@@ -66,7 +66,7 @@ const InteractionsController: FC = () => {
       >
         <BsZoomOut />
       </button>
-      <button className={btnClassName} onClick={() => resetCamera()} title={t("graph.control.zoomReset").toString()}>
+      <button className={btnClassName} onClick={() => resetCamera(true)} title={t("graph.control.zoomReset").toString()}>
         <FaRegDotCircle />
       </button>
       <button

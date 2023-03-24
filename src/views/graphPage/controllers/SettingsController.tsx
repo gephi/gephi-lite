@@ -19,7 +19,7 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
 
   useEffect(() => {
     sigmaAtom.set(sigma as Sigma<SigmaGraph>);
-    resetCamera();
+    resetCamera(true);
   }, [sigma]);
 
   useEffect(() => {

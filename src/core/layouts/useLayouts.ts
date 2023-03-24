@@ -58,7 +58,10 @@ export function useLayouts() {
         setNodePositions(positions);
 
         setIsRunning(false);
-        resetCamera();
+
+        // To prevent resetting the camera before sigma receives new data, we
+        // need to wait a frame, and also wait for it to trigger a refresh:
+        setTimeout(() => resetCamera(false), 0);
       }
 
       // Sync layout

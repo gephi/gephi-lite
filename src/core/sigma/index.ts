@@ -78,7 +78,7 @@ export const sigmaAtom = atom<Sigma<SigmaGraph>>(
 );
 export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
 
-export const resetCamera = () => {
+export const resetCamera = (forceRefresh: boolean) => {
   const sigma = sigmaAtom.get();
   sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
 
@@ -86,7 +86,9 @@ export const resetCamera = () => {
   const filteredGraph = filteredGraphAtom.get();
   const graph = dataGraphToFullGraph(dataset, filteredGraph);
   const bbox = { x: nodeExtent(graph, "x"), y: nodeExtent(graph, "y") };
+
   sigma.setCustomBBox(bbox);
+  if (forceRefresh) sigma.refresh();
 };
 
 export const sigmaActions = {

@@ -25,7 +25,7 @@ export function useOpenGexf() {
         setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
         resetStates();
         addRemoteFile(remote);
-        resetCamera();
+        resetCamera(true);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -45,7 +45,7 @@ export function useOpenGexf() {
         const graph = parse(Graph, content);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
         resetStates();
-        resetCamera();
+        resetCamera(true);
       } catch (e) {
         setError(e as Error);
         throw e;

@@ -125,7 +125,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           graphDatasetAtom.set(dataset);
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
-          resetCamera();
+          resetCamera(true);
 
           graphFound = true;
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
