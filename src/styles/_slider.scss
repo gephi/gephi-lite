@@ -6,11 +6,19 @@
     height: 50%;
     cursor: pointer;
   }
+  .track:first-child,
+  .track:nth-child(2) {
+    margin-left: 5px;
+  }
+  .track:last-child,
+  .track:nth-child(n-1) {
+    margin-right: 5px;
+  }
 }
 .thumb {
   width: 10px;
-  box-sizing: border-box;
-  border: white 1px solid;
+  border-radius: 50%;
+  border: white 2px solid;
   // /!\ changing thumb size must also change minDistance setting in ReactSlider AND slider height
   height: 18px;
   width: 18px;

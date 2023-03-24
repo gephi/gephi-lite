@@ -51,6 +51,7 @@ export const ColorRankingEditor: FC<{
   );
   return (
     <>
+      <label className="mt-2 mb-1 from-check-label small">{t("appearance.color.ranking_intro")}</label>
       <ReactSlider
         key={values.length}
         className="horizontal-slider"

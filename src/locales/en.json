@@ -102,7 +102,8 @@
       "data_description": "All {{items}} colors are as they are in the input data file.",
       "source_description": "Each edge is colored as its source.",
       "target_description": "Each edge is colored as its target.",
-      "scale_point": "Scale point"
+      "scale_point": "Scale point",
+      "ranking_intro": "Add color points on this scale"
     },
     "labels": {
       "title": "Labels",
