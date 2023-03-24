@@ -15,6 +15,8 @@ import { appearanceAtom } from "./appearance";
 import { parseAppearanceState } from "./appearance/utils";
 import { preferencesAtom } from "./preferences";
 import { parsePreferences } from "./preferences/utils";
+import { sessionAtom } from "./session";
+import { parseSession, getEmptySession } from "./session/utils";
 import { useModal } from "./modals";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { resetCamera } from "./sigma";
@@ -56,6 +58,13 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * - ...
    */
   const initialize = useCallback(async () => {
+    // Load session from local storage
+    sessionAtom.set(() => {
+      const raw = sessionStorage.getItem("session");
+      const parsed = raw ? parseSession(raw) : null;
+      return parsed ?? getEmptySession();
+    });
+
     // Load preferences from local storage
     preferencesAtom.set((prev) => {
       const raw = localStorage.getItem("preferences");

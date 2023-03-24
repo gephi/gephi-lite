@@ -8,7 +8,7 @@ import { isNil } from "lodash";
 
 import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
 import { useAtom } from "../../core/utils/atoms";
-import { preferencesAtom } from "../../core/preferences";
+import { sessionAtom } from "../../core/session";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
 import { useLayouts } from "../../core/layouts/useLayouts";
@@ -36,9 +36,9 @@ export const LayoutForm: FC<{
   const { openModal } = useModal();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
-  // get layout parameter from the preference if it exists
-  const [preferences, setPreferences] = useAtom(preferencesAtom);
-  const layoutParameters = preferences.layoutsParameters[layout.id] || {};
+  // get layout parameter from the session if it exists
+  const [session, setSession] = useAtom(sessionAtom);
+  const layoutParameters = session.layoutsParameters[layout.id] || {};
 
   // default layout parameters
   const layoutDefaultParameters = useMemo(
@@ -58,7 +58,7 @@ export const LayoutForm: FC<{
    * => we load the layout paramaters
    */
   useEffect(() => {
-    setPreferences((prev) => ({
+    setSession((prev) => ({
       ...prev,
       layoutsParameters: {
         ...prev.layoutsParameters,
@@ -68,14 +68,14 @@ export const LayoutForm: FC<{
         },
       },
     }));
-  }, [layout, layoutDefaultParameters, setPreferences]);
+  }, [layout, layoutDefaultParameters, setSession]);
 
   /**
    * OnChange function for parameters
    */
   const onChangeParameters = useCallback(
     (key: string, value: unknown) => {
-      setPreferences((prev) => ({
+      setSession((prev) => ({
         ...prev,
         layoutsParameters: {
           ...prev.layoutsParameters,
@@ -86,21 +86,21 @@ export const LayoutForm: FC<{
         },
       }));
     },
-    [layout.id, setPreferences],
+    [layout.id, setSession],
   );
 
   /**
    * Reset parameters for the current layout
    */
   const resetParameters = useCallback(() => {
-    setPreferences((prev) => ({
+    setSession((prev) => ({
       ...prev,
       layoutsParameters: {
         ...prev.layoutsParameters,
         [layout.id]: layoutDefaultParameters,
       },
     }));
-  }, [layout.id, layoutDefaultParameters, setPreferences]);
+  }, [layout.id, layoutDefaultParameters, setSession]);
 
   return (
     <form

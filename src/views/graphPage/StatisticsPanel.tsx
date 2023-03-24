@@ -7,7 +7,7 @@ import cx from "classnames";
 
 import { ItemType } from "../../core/types";
 import { useAtom } from "../../core/utils/atoms";
-import { preferencesAtom } from "../../core/preferences";
+import { sessionAtom } from "../../core/session";
 import { useNotifications } from "../../core/notifications";
 import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Metric, MetricScriptParameter } from "../../core/metrics/types";
@@ -37,8 +37,8 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
   const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
 
   // get metric config from the preference if it exists
-  const [preferences, setPreferences] = useAtom(preferencesAtom);
-  const metricConfig = preferences.metrics[metric.id] || {
+  const [session, setSession] = useAtom(sessionAtom);
+  const metricConfig = session.metrics[metric.id] || {
     parameters: {},
     attributeNames: {},
   };
@@ -63,7 +63,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
    * => we load the metric config
    */
   useEffect(() => {
-    setPreferences((prev) => {
+    setSession((prev) => {
       const next = cloneDeep(prev);
       if (!next.metrics[metric.id]) {
         next.metrics[metric.id] = metricDefaultConfig;
@@ -81,34 +81,34 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
       };
       return next;
     });
-  }, [metric, metricDefaultConfig, setPreferences]);
+  }, [metric, metricDefaultConfig, setSession]);
 
   /**
    * OnChange function for parameters
    */
   const onChange = useCallback(
     (type: "parameters" | "attributeNames", key: string, value: unknown) => {
-      setPreferences((prev) => {
+      setSession((prev) => {
         const next = cloneDeep(prev);
         next.metrics[metric.id][type][key] = value;
         return next;
       });
     },
-    [metric.id, setPreferences],
+    [metric.id, setSession],
   );
 
   /**
    * Reset parameters for the current metric
    */
   const resetParameters = useCallback(() => {
-    setPreferences((prev) => ({
+    setSession((prev) => ({
       ...prev,
       metrics: {
         ...prev.metrics,
         [metric.id]: metricDefaultConfig,
       },
     }));
-  }, [metric.id, metricDefaultConfig, setPreferences]);
+  }, [metric.id, metricDefaultConfig, setSession]);
 
   return (
     <form
