@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import copy from "copy-to-clipboard";
 import { BsGithub, BsClipboard } from "react-icons/bs";
+import { useTranslation } from "react-i18next";
 
 import { ModalProps } from "../../modals/types";
 import { Modal } from "../../../components/modals";
@@ -9,6 +10,7 @@ import { Loader, Spinner } from "../../../components/Loader";
 import { useGithubAuth } from "./useGithubAuth";
 
 export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+  const { t } = useTranslation();
   const [hasBeenClick, setHasBeenClick] = useState<boolean>(false);
   const { code, loading, url, login, user, error, waiting } = useGithubAuth();
   const { notify } = useNotifications();
@@ -32,7 +34,7 @@ export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
       title={
         <>
           <BsGithub className="me-1" />
-          Github authentification
+          {t("cloud.github.auth.title")}
         </>
       }
       onClose={() => cancel()}
@@ -43,17 +45,14 @@ export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
 
         {loading && (
           <div>
-            <p>Asking github for device code</p>
+            <p>{t("cloud.github.auth.asking_for_device_code")}</p>
             <Loader />
           </div>
         )}
 
         {!loading && url && code && (
           <div>
-            <p className="text-center mb-3">
-              Copy the code below, and click on "Open Github" button. It will opened a new tab, on which Github will ask
-              you the code.
-            </p>
+            <p className="text-center mb-3">{t("cloud.github.auth.copy_code")}</p>
             <div className="input-group mb-3">
               <input type="text" readOnly={true} className="form-control text-center" value={code} />
               <button
@@ -61,10 +60,10 @@ export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                 type="button"
                 onClick={() => {
                   copy(code);
-                  notify({ type: "success", message: "Code saved in clipboard" });
+                  notify({ type: "success", message: t("cloud.github.auth.copy_success").toString() });
                 }}
               >
-                <BsClipboard className="me-1" /> Copy
+                <BsClipboard className="me-1" /> {t("common.copy")}
               </button>
             </div>
           </div>
@@ -84,7 +83,7 @@ export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
             {(!hasBeenClick || !waiting) && <>Open GitHub</>}
             {hasBeenClick && waiting && (
               <>
-                Waiting validation <Spinner className="spinner-border-sm " />{" "}
+                {t("cloud.github.auth.waiting_validation")} <Spinner className="spinner-border-sm " />{" "}
               </>
             )}
           </button>

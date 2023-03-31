@@ -547,13 +547,13 @@
     "all": "All",
     "apply": "Apply",
     "cancel": "Cancel",
-    "submit": "Submit",
     "clear": "Clear",
     "close": "Close",
     "confirm": "Confirm",
-    "edit": "Edit",
+    "copy": "Copy",
     "created": "Created",
     "delete": "Delete",
+    "edit": "Edit",
     "filename": "Filename",
     "hide": "Hide",
     "load-more": "Load more",
@@ -574,6 +574,19 @@
     "show": "Show",
     "show_more": "Show more",
     "show_less": "Show less",
+    "submit": "Submit",
     "updated": "Updated"
+  },
+  "cloud": {
+    "github": {
+      "title": "Github",
+      "auth": {
+        "title": "Github authentification",
+        "asking_for_device_code": "Asking github for device code",
+        "copy_code": "Copy the code below, and click on \"Open Github\" button. It will opened a new tab, on which Github will ask you the code",
+        "copy_success": "Code saved in clipboard",
+        "waiting_validation": "Waiting validation"
+      }
+    }
   }
 }
