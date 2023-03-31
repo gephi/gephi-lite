@@ -157,7 +157,8 @@
     "range": "range",
     "terms": "exact values",
     "script": "Custom filter",
-    "activated": "Activated filter"
+    "activated": "Activated filter",
+    "create_filter": "Create filter"
   },
   "graph": {
     "title": "Graph",

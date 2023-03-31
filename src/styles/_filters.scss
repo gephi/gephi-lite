@@ -1,16 +1,29 @@
 .filter-item {
+  position: relative;
+
   @extend .mt-2;
-  @extend .border;
   @extend .px-1;
   @extend .py-2;
   &.inactive {
     @extend .text-muted;
   }
-  &:not(.inactive) {
-    @extend .border-secondary;
-  }
   .icon {
     margin: 0 0.75rem;
+  }
+
+  &::after {
+    content: " ";
+    position: absolute;
+    inset: 0;
+    border: 1px solid $gray-500;
+    z-index: -1;
+  }
+
+  &:not(.inactive)::after {
+    border-color: $gray-600;
+  }
+  &.edited::after {
+    border-width: 2px;
   }
 }
 

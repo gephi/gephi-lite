@@ -41,6 +41,7 @@ const FilterInStack: FC<{
         "filter-item d-flex flex-column",
         (!active || filterIndex !== filters.past.length - 1) && "cursor-pointer",
         !active && "inactive",
+        editMode && "edited",
       )}
       onClick={() => {
         if (active) {
@@ -146,9 +147,9 @@ const GraphFilters: FC = () => {
 
       <FiltersStack filters={filters.past} active />
 
-      <FiltersStack filters={filters.future} />
-      <hr />
       <FilterCreator />
+
+      <FiltersStack filters={filters.future} />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CgAddR } from "react-icons/cg";
 import Select from "react-select";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
@@ -21,11 +21,17 @@ export const FilterCreator: FC = () => {
   const { nodeFields, edgeFields } = useGraphDataset();
   const { t } = useTranslation();
   const { addFilter } = useFiltersActions();
+  const filters = useFilters();
 
+  const [isOpened, setIsOpened] = useState(false);
   const [filterApplicationType, setFilterApplicationType] = useState<ItemType | "topological">("nodes");
   const [filterOptions, setFilterOptions] = useState<FilterOption[]>([]);
   const [selectedFilterOption, setSelectedFilterOption] = useState<FilterOption | null>(null);
   const [filterCreation, setFilterCreation] = useState<FilterType | null>(null);
+
+  useEffect(() => {
+    setIsOpened(false);
+  }, [filters]);
 
   useEffect(() => {
     setSelectedFilterOption(null);
@@ -81,17 +87,29 @@ export const FilterCreator: FC = () => {
     }
   }, [filterApplicationType, edgeFields, nodeFields, t]);
 
+  if (!isOpened) {
+    return (
+      <div className="filter-item d-flex align-items-center justify-content-center">
+        <button type="button" className="btn btn-outline-dark border-0" onClick={() => setIsOpened(true)}>
+          <CgAddR /> {t("common.add")} {t("filters.filter")}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         if (filterCreation !== null) {
           addFilter(filterCreation);
+          setSelectedFilterOption(null);
+          setFilterCreation(null);
         }
       }}
-      className="d-flex align-items-center "
+      className="d-flex align-items-center filter-item"
     >
-      <div className="d-flex flex-column ms-2 w-100">
+      <div className="d-flex flex-column p-3 w-100">
         <div>
           {t("filters.filter")}{" "}
           <Select
@@ -136,8 +154,11 @@ export const FilterCreator: FC = () => {
           )}
         </div>
         <div className="d-flex justify-content-end mt-3">
-          <button type="submit" className="btn btn-primary" disabled={filterCreation === null}>
-            <CgAddR /> {t("common.add")} {t("filters.filter")}
+          <button type="button" className="btn btn-outline-dark me-2" onClick={() => setIsOpened(false)}>
+            {t("common.cancel")}
+          </button>
+          <button type="submit" className="btn btn-dark" disabled={filterCreation === null}>
+            {t("filters.create_filter")}
           </button>
         </div>
       </div>

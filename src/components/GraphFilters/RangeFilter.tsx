@@ -158,7 +158,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             min={rangeMetric?.min}
             // max={filter.max}
             step={rangeMetric?.step}
-            value={filter.min}
+            value={filter.min || ""}
             placeholder={"" + rangeMetric?.min}
             onChange={(e) => {
               const newMin = +e.target.value;
@@ -178,7 +178,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             max={rangeMetric?.max}
             step={rangeMetric?.step}
             placeholder={"" + rangeMetric?.max}
-            value={filter.max}
+            value={filter.max || ""}
             onChange={(e) => {
               const newMax = +e.target.value;
               replaceCurrentFilter({ ...filter, max: newMax });
