@@ -1,6 +1,7 @@
 import { ComponentType, FC, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
+import { BsFillInfoSquareFill } from "react-icons/bs";
 import { useTranslation } from "react-i18next";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 
@@ -26,6 +27,7 @@ import { FilePanel } from "./FilePanel";
 import { GitHubPanel } from "./GitHubPanel";
 import { UserAvatar } from "../../components/user/UserAvatar";
 import { ContextPanel } from "./ContextPanel";
+import { config } from "../../config";
 
 type Tool = {
   type: "tool";
@@ -80,6 +82,14 @@ export const GraphPage: FC = () => {
       },
       { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
       { type: "filler" },
+      {
+        type: "button",
+        label: t("gephi-lite.info"),
+        icon: BsFillInfoSquareFill,
+        onClick: () => {
+          window.open(config.website_url, "_blank", "noopener");
+        },
+      },
       { type: "tool", label: t("github.title"), icon: UserAvatar, panel: GitHubPanel },
     ],
     [openModal, t, filterState],

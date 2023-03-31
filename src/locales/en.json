@@ -10,7 +10,8 @@
     "samples": "Samples"
   },
   "gephi-lite": {
-    "title": "Gephi Lite"
+    "title": "Gephi Lite",
+    "info": "More info on Gephi Lite"
   },
   "error": {
     "title": "Error",

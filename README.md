@@ -1,16 +1,26 @@
 # Gephi Lite
 
-Gephi Lite is a web-based, lighter version of Gephi. It uses [sigma.js](https://www.sigmajs.org/) for graph rendering, and [graphology](graphology.github.io/) as the graph model as well as for graph algorithms. It is bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Gephi Lite is a free and open-source web application to visualize and explore networks and graphs. It is a web-based, lighter version of [Gephi](https://gephi.org/). You can try it here:
 
-You can read more about the intent of this project on [Gephi blog](https://gephi.wordpress.com/2022/11/15/gephi-lite/).
+**[gephi.org/gephi-lite](https://gephi.org/gephi-lite)**
+
+It is currently under active developments, so features can evolve quite quickly. Feel free to report bugs or ask for new features in the [issues board](https://github.com/gephi/gephi-lite/issues).
+
+You can read more about the intent of this project on the [Gephi blog](https://gephi.wordpress.com/2022/11/15/gephi-lite/).
 
 ## License
 
 Gephi Lite source code is distributed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html).
 
-## Available Scripts
+## Run locally
 
-In the project directory, you can run:
+Gephi Lite is a web application, written using [TypeScript](https://www.typescriptlang.org/) and [React](https://react.dev/). The styles are written using [SASS](https://sass-lang.com/), and are based on [Bootstrap v5](https://getbootstrap.com/).
+
+Gephi Lite uses [sigma.js](https://www.sigmajs.org/) for graph rendering, and [graphology](graphology.github.io/) as the graph model as well as for graph algorithms. It has been bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+To build Gephi Lite locally, you first need a recent version of [Node.js](https://nodejs.org/en) with [NPM](https://www.npmjs.com/) installed on your computer. You can then install the dependencies by running `npm install` in Gephi Lite's directory.
+
+Now, in the project directory, you can run:
 
 ### `npm start`
 
@@ -31,9 +41,7 @@ Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Your Gephi Lite is ready to be deployed!
 
 ## Deploy the application
 
