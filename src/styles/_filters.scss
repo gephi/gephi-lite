@@ -55,10 +55,11 @@
 
     &.inside {
       top: 0;
+      color: $gray-100;
     }
     &.outside {
       bottom: 100%;
-      color: $text-muted;
+      color: $gray-800;
     }
   }
 }

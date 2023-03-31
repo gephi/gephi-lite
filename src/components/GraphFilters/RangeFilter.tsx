@@ -116,11 +116,8 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
                     height: filteredHeight + "%",
                   }}
                 >
-                  {filteredCount < globalCount && (
-                    <span
-                      className={cx("label", isLabelInside ? "inside" : "outside")}
-                      //style={isLabelInside ? { color: fontColor } : undefined}
-                    >
+                  {filteredCount !== 0 && (
+                    <span className={cx("label", isLabelInside ? "inside" : "outside")}>
                       {shortenNumber(filteredCount)}
                     </span>
                   )}
