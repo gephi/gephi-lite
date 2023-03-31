@@ -41,17 +41,21 @@ function filterValue(value: any, filter: RangeFilterType | TermsFilterType): boo
     case "range":
       const number = toNumber(value);
       return (
-        typeof number === "number" &&
-        inRange(
-          number,
-          typeof filter.min === "number" ? filter.min : -Infinity,
-          typeof filter.max === "number" ? filter.max : Infinity,
-        )
+        (typeof number === "number" &&
+          inRange(
+            number,
+            typeof filter.min === "number" ? filter.min : -Infinity,
+            typeof filter.max === "number" ? filter.max : Infinity,
+          )) ||
+        (typeof number !== "number" && !!filter.keepMissingValues)
       );
     case "terms":
       if (!filter.terms) return true;
       const string = toString(value);
-      return typeof string === "string" && filter.terms.has(string);
+      return (
+        (typeof string === "string" && filter.terms.has(string)) ||
+        (typeof string !== "string" && !!filter.keepMissingValues)
+      );
   }
 }
 

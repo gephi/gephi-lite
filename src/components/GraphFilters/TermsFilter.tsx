@@ -40,6 +40,20 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           value: term,
         }))}
       />
+      <div>
+        <input
+          className="form-check-input me-2"
+          type="checkbox"
+          id="keepMissingValues"
+          checked={filter.keepMissingValues}
+          onChange={(e) => {
+            replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
+          }}
+        />
+        <label className="from-check-label" htmlFor="keepMissingValues">
+          {t("filters.keepMissingValues")}
+        </label>
+      </div>
     </>
   );
 };

@@ -30,10 +30,6 @@ const RANGE_STYLE = {
   railStyle: { backgroundColor: "#ccc" },
   activeDotStyle: { borderColor: "black" },
   trackStyle: [{ backgroundColor: "black" }, { backgroundColor: "black" }],
-  handleStyle: [
-    { backgroundColor: "white", borderColor: "black" },
-    { backgroundColor: "white", borderColor: "black" },
-  ],
 };
 
 export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) => {
@@ -95,9 +91,9 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
       )
     : {};
 
-  return (
+  return rangeMetric ? (
     <form onSubmit={(e) => e.preventDefault()}>
-      {rangeMetric && (
+      {rangeMetric.max !== rangeMetric.min ? (
         <ul className="list-unstyled range-filter">
           {(rangeMetric.ranges || []).map((range) => {
             const globalCount = range.values.length;
@@ -126,11 +122,14 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             );
           })}
         </ul>
+      ) : (
+        <div className="badge bg-warning p-2 mb-2 mt-2">{t("filters.inapplicable")}</div>
       )}
 
       <Slider
-        className="pb-4 mb-3"
+        className="pb-3"
         range
+        disabled={rangeMetric.min === rangeMetric.max}
         value={
           [
             filter.min !== undefined ? filter.min : rangeMetric?.min,
@@ -155,6 +154,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             className="form-control form-control-sm"
             id="min"
             type="number"
+            disabled={rangeMetric.min === rangeMetric.max}
             min={rangeMetric?.min}
             // max={filter.max}
             step={rangeMetric?.step}
@@ -174,6 +174,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             className="form-control form-control-sm "
             id="max"
             type="number"
+            disabled={rangeMetric.min === rangeMetric.max}
             min={filter.min}
             max={rangeMetric?.max}
             step={rangeMetric?.step}
@@ -189,8 +190,23 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
           </label>
         </div>
       </div>
+      <div>
+        <input
+          className="form-check-input me-2"
+          disabled={rangeMetric.min === rangeMetric.max}
+          type="checkbox"
+          id="keepMissingValues"
+          checked={filter.keepMissingValues}
+          onChange={(e) => {
+            replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
+          }}
+        />
+        <label className="from-check-label" htmlFor="keepMissingValues">
+          {t("filters.keepMissingValues")}
+        </label>
+      </div>
     </form>
-  );
+  ) : null;
 };
 
 export const RangeFilter: FC<{

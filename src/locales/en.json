@@ -160,7 +160,9 @@
     "terms": "exact values",
     "script": "Custom filter",
     "activated": "Activated filter",
-    "create_filter": "Create filter"
+    "create_filter": "Create filter",
+    "keepMissingValues": "Keep missing values",
+    "inapplicable": "Filter disabled: only one value available"
   },
   "graph": {
     "title": "Graph",

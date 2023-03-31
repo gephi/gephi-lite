@@ -10,6 +10,7 @@ export type RangeFilterType = BaseFilter & {
   type: "range";
   itemType: ItemType;
   field: string;
+  keepMissingValues?: boolean;
 } & { min?: number; max?: number };
 
 export interface TermsFilterType extends BaseFilter {
@@ -17,6 +18,7 @@ export interface TermsFilterType extends BaseFilter {
   itemType: ItemType;
   field: string;
   terms?: Set<string>;
+  keepMissingValues?: boolean;
 }
 
 export interface TopologicalFilterType {

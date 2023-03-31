@@ -76,3 +76,15 @@
     }
   }
 }
+.rc-slider {
+  .rc-slider-handle {
+    background-color: white;
+    border-color: black;
+  }
+}
+.rc-slider-disabled {
+  background-color: unset !important;
+  .rc-slider-handle {
+    background-color: $gray-400 !important;
+  }
+}
