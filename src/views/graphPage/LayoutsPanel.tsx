@@ -12,7 +12,6 @@ import { sessionAtom } from "../../core/session";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
 import { useLayouts } from "../../core/layouts/useLayouts";
-import { useNotifications } from "../../core/notifications";
 import { useModal } from "../../core/modals";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { FieldModel } from "../../core/graph/types";
@@ -247,7 +246,6 @@ export const LayoutForm: FC<{
 
 export const LayoutsPanel: FC = () => {
   const { t } = useTranslation();
-  const { notify } = useNotifications();
   const { isRunning, start, stop } = useLayouts();
 
   const options: Array<LayoutOption> = useMemo(
@@ -285,33 +283,9 @@ export const LayoutsPanel: FC = () => {
             layout={option.layout}
             onStart={(params) => {
               start(option.layout.id, params);
-              if (option.layout.type === "sync") {
-                notify({
-                  type: "success",
-                  message: t("layouts.exec.success", {
-                    layout: t(`layouts.${option.layout.id}.title`).toString(),
-                  }).toString(),
-                  title: t("layouts.title") as string,
-                });
-              } else {
-                notify({
-                  type: "info",
-                  message: t("layouts.exec.started", {
-                    layout: t(`layouts.${option.layout.id}.title`).toString(),
-                  }).toString(),
-                  title: t("layouts.title") as string,
-                });
-              }
             }}
             onStop={() => {
               stop();
-              notify({
-                type: "info",
-                message: t("layouts.exec.stopped", {
-                  layout: t(`layouts.${option.layout.id}.title`).toString(),
-                }).toString(),
-                title: t("layouts.title") as string,
-              });
             }}
             isRunning={isRunning}
             onCancel={() => {
