@@ -95,6 +95,12 @@ export const EventsController: FC = () => {
 
         nodes.forEach((node) => graph.setNodeAttribute(node, "fixed", true));
       },
+      clickStage(e) {
+        // Reset the selection when clicking on the stage
+        // except when ctrl is pressed to add node in selection
+        // with the marquee selector
+        if (!e.event.original.ctrlKey) reset();
+      },
       mouseup: () => {
         const dragState = dragStateRef.current;
         if (dragState.type === "dragging") {
