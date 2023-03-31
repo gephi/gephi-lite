@@ -43,7 +43,7 @@ export const SizeRankingEditor: FC<{
           {t("common.max")}
         </label>
       </div>
-      <div className="d-flex align-items-center mt-1">
+      <div className="d-flex align-items-center mt-1 pt-2">
         <input
           className="form-control form-control-sm w-5"
           type="number"
