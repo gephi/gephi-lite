@@ -237,6 +237,19 @@
         "success": "File {{filename}} has been successfully saved",
         "error": "An error occurred while saving your graph. Please check your connectivity or try later."
       }
+    },
+    "export": {
+      "title": "Export graph",
+      "png": {
+        "title": "Export PNG snapshot",
+        "success": "Your graph PNG export has successfully been saved.",
+        "fields": {
+          "filename": "Filename",
+          "width": "Width (in pixels)",
+          "height": "Height (in pixels)",
+          "preserve_camera": "Preserve current camera position"
+        }
+      }
     }
   },
   "statistics": {

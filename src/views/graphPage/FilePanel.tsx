@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
+import { BsFiletypePng } from "react-icons/bs";
+
 import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SaveCloudFileModal } from "./modals/save/SaveCloudFileModal";
 import { CloudFileModal } from "./modals/open/CloudFileModal";
@@ -14,6 +16,7 @@ import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import { useExportAsGexf } from "../../core/graph/useExportAsGexf";
 import { Loader } from "../../components/Loader";
 import { SignInModal } from "../../components/user/SignInModal";
+import { ExportPNGModal } from "./modals/save/ExportPNGModal";
 
 export const FilePanel: FC = () => {
   const { openModal } = useModal();
@@ -50,8 +53,8 @@ export const FilePanel: FC = () => {
       )}
 
       <div className="position-relative">
-        <h3 className="fs-5 mt-3">{t("graph.save.title")}</h3>
         {/* Save links */}
+        <h3 className="fs-5 mt-3">{t("graph.save.title")}</h3>
         {user && user.provider && (
           <>
             {origin && origin.type === "cloud" && (
@@ -143,6 +146,20 @@ export const FilePanel: FC = () => {
           >
             <FaRegFolderOpen className="me-1" />
             {t(`menu.open.remote`).toString()}
+          </button>
+        </div>
+
+        {/* Export links */}
+        <h3 className="fs-5 mt-3">{t("graph.export.title")}</h3>
+        <div>
+          <button
+            className="btn btn-sm btn-outline-dark mb-1"
+            onClick={() => {
+              openModal({ component: ExportPNGModal, arguments: {} });
+            }}
+          >
+            <BsFiletypePng className="me-1" />
+            {t("graph.export.png.title").toString()}
           </button>
         </div>
 
