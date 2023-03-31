@@ -7,8 +7,8 @@ import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
 import circular, { CircularLayoutOptions } from "graphology-layout/circular";
 import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
-import { dataGraphToFullGraph } from "../graph/utils";
 
+import { dataGraphToFullGraph } from "../graph/utils";
 import { FullGraph, ItemData } from "../graph/types";
 import { graphDatasetAtom } from "../graph";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
@@ -37,7 +37,7 @@ export const LAYOUTS: Array<Layout> = [
         id: "scale",
         type: "number",
         description: true,
-        defaultValue: 100,
+        defaultValue: 1000,
       },
     ],
     run: (graph, options) => random(graph, options?.settings) as unknown as LayoutMapping,
@@ -57,7 +57,7 @@ export const LAYOUTS: Array<Layout> = [
         id: "scale",
         type: "number",
         description: true,
-        defaultValue: 100,
+        defaultValue: 1000,
       },
     ],
     run: (graph, options) => circular(graph, options?.settings) as unknown as LayoutMapping,
