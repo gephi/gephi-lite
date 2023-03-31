@@ -84,7 +84,8 @@
     "focus_nodes": "Focus this node",
     "focus_edges": "Focus this edge",
     "empty_nodes": "This node has no attribute",
-    "empty_edges": "This edge has no attribute"
+    "empty_edges": "This edge has no attribute",
+    "node_no_label": "(Empty label)"
   },
   "appearance": {
     "title": "Appearance",
