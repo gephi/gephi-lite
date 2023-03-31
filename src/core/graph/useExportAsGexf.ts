@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
 import { write } from "graphology-gexf";
 
-import { useReadAtom } from "../utils/atoms";
-import { graphDatasetAtom, sigmaGraphAtom } from "./index";
+import { dataGraphToFullGraph } from "./utils";
+import { useFilteredGraph, useGraphDataset } from "../context/dataContexts";
 
 export function useExportAsGexf() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const graphDataset = useReadAtom(graphDatasetAtom);
+  const graphDataset = useGraphDataset();
+  const filteredGraph = useFilteredGraph();
 
   /**
    * Export the current graph as a GEXF.
@@ -16,7 +17,7 @@ export function useExportAsGexf() {
     try {
       setLoading(true);
       setError(null);
-      const graphToExport = sigmaGraphAtom.get();
+      const graphToExport = dataGraphToFullGraph(graphDataset, filteredGraph);
 
       return write(graphToExport, {});
     } catch (e) {
@@ -25,7 +26,7 @@ export function useExportAsGexf() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filteredGraph, graphDataset]);
 
   /**
    * Download the current graph as a GEXF file

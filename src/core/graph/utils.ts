@@ -61,7 +61,7 @@ export function parseDataset(rawDataset: string): GraphDataset | null {
  * to see if one does match enough values.
  */
 const SEPARATORS = [";", ",", "|"] as const;
-type Separator = typeof SEPARATORS[number];
+type Separator = (typeof SEPARATORS)[number];
 export function guessSeparator(values: string[]): string | null {
   const separatorsFrequencies = SEPARATORS.reduce(
     (iter, sep) => ({
@@ -212,6 +212,22 @@ export function dataGraphToFullGraph(
   graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...nodeRenderingData[node] }));
   graph.forEachEdge((edge, _, source, target) =>
     res.addEdgeWithKey(edge, source, target, { ...edgeData[edge], ...edgeRenderingData[edge] }),
+  );
+  return res;
+}
+
+/**
+ * This function takes a graph dataset (and optionally a DatalessGraph as input)
+ * and returns a SigmaGraph:
+ */
+export function dataGraphToSigmaGraph(
+  { fullGraph, nodeRenderingData, edgeRenderingData }: GraphDataset,
+  graph: DatalessGraph = fullGraph,
+) {
+  const res: FullGraph = new MultiGraph<NodeRenderingData & ItemData, EdgeRenderingData & ItemData>();
+  graph.forEachNode((node) => res.addNode(node, { ...nodeRenderingData[node] }));
+  graph.forEachEdge((edge, _, source, target) =>
+    res.addEdgeWithKey(edge, source, target, { ...edgeRenderingData[edge] }),
   );
   return res;
 }

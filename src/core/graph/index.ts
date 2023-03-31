@@ -10,7 +10,7 @@ import { atom, derivedAtom } from "../utils/atoms";
 import { FieldModel, FullGraph, GraphDataset } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
-import { dataGraphToFullGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
+import { dataGraphToFullGraph, dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
 
 /**
  * Producers:
@@ -71,7 +71,7 @@ export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom],
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters, graph: FullGraph | undefined) => {
-    const newGraph = dataGraphToFullGraph(dataset, filteredGraph);
+    const newGraph = dataGraphToSigmaGraph(dataset, filteredGraph);
     applyVisualProperties(newGraph, dataset, visualGetters);
 
     if (graph) {
