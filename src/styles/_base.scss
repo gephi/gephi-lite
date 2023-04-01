@@ -60,3 +60,10 @@
 .over-modal {
   z-index: $zindex-modal + 1;
 }
+
+/**
+ * Vendors:
+ */
+.react-select__menu {
+  z-index: $zindex-dropdown !important;
+}

@@ -18,6 +18,7 @@ import { FieldModel } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
 import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
+import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 
 type MetricOption = {
   value: string;
@@ -331,6 +332,7 @@ export const StatisticsPanel: FC = () => {
       <p className="text-muted small">{t("statistics.description")}</p>
 
       <Select<MetricOption, false>
+        {...DEFAULT_SELECT_PROPS}
         options={options}
         value={option}
         onChange={setOption}

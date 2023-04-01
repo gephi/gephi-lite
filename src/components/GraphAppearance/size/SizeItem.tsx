@@ -10,6 +10,7 @@ import { FieldModel } from "../../../core/graph/types";
 import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { Size } from "../../../core/appearance/types";
+import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type SizeOption = { value: string; label: string | JSX.Element; field?: string; type: string };
 
@@ -49,6 +50,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <h3 className="fs-5 mt-3">{t("appearance.size.title")}</h3>
       <label htmlFor={`${itemType}-sizeMode`}>{t("appearance.size.set_size_from")}</label>
       <Select<SizeOption>
+        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-sizeMode`}
         options={options}
         value={selectedOption}

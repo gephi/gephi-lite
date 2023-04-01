@@ -17,6 +17,7 @@ import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/Typ
 import { FieldModel } from "../../core/graph/types";
 import { useGraphDataset } from "../../core/context/dataContexts";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
+import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 
 type LayoutOption = {
   value: string;
@@ -267,6 +268,7 @@ export const LayoutsPanel: FC = () => {
       <p className="text-muted small">{t("layouts.description")}</p>
 
       <Select<LayoutOption, false>
+        {...DEFAULT_SELECT_PROPS}
         options={options}
         value={option}
         onChange={(option) => {

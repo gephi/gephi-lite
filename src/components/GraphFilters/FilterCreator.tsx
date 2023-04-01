@@ -8,6 +8,7 @@ import { useFilters, useFiltersActions, useGraphDataset } from "../../core/conte
 import { FilterType } from "../../core/filters/types";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
+import { DEFAULT_SELECT_PROPS } from "../consts";
 
 interface FilterOption {
   value: string;
@@ -113,6 +114,7 @@ export const FilterCreator: FC = () => {
         <div>
           {t("filters.filter")}{" "}
           <Select
+            {...DEFAULT_SELECT_PROPS}
             onChange={(o) => setFilterApplicationType(o?.value as ItemType | "topological")}
             options={[
               { label: capitalize(t("graph.model.nodes").toString()), value: "nodes" },
@@ -125,6 +127,7 @@ export const FilterCreator: FC = () => {
           {t("filters.using")}
           {filterOptions.length > 0 && (
             <Select
+              {...DEFAULT_SELECT_PROPS}
               value={selectedFilterOption}
               isClearable={true}
               onChange={(selectedOption) => {

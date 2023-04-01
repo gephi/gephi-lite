@@ -7,6 +7,8 @@ import { clamp } from "lodash";
 import * as React from "react";
 import { MarkObj } from "rc-slider/lib/Marks";
 
+import { DEFAULT_SELECT_PROPS } from "../consts";
+
 interface BaseTypedInputProps {
   id: string;
   label: ReactNode;
@@ -161,6 +163,7 @@ export const EnumInput: FC<
           {label}
         </label>
         <Select<EnumOption>
+          {...DEFAULT_SELECT_PROPS}
           isDisabled={disabled}
           isClearable={!required}
           className={className}

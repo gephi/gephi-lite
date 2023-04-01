@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ItemType } from "../../../core/types";
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
+import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type LabelOption =
   | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
@@ -41,6 +42,7 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <h3 className="fs-5 mt-3">{t("appearance.labels.title")}</h3>
       <label htmlFor={`${itemType}-labelsMode`}>{t("appearance.labels.set_labels_from")}</label>
       <Select<LabelOption>
+        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-labelsMode`}
         options={labelOptions}
         value={selectedLabelOption}

@@ -13,6 +13,7 @@ import { FieldModel } from "../../../core/graph/types";
 import { Color } from "../../../core/appearance/types";
 import { graphDatasetAtom } from "../../../core/graph";
 import { getPalette } from "./utils";
+import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type ColorOption = { value: string; label: string | JSX.Element; field?: string; type: string };
 
@@ -72,6 +73,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <h3 className="fs-5 mt-3">{t("appearance.color.title")}</h3>
       <label htmlFor={`${itemType}-colorMode`}>{t("appearance.color.set_color_from")}</label>
       <Select<ColorOption>
+        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-colorMode`}
         options={options}
         value={selectedOption}

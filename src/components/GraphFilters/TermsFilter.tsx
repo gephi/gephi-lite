@@ -8,6 +8,7 @@ import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { toString } from "../../core/utils/casting";
 import { useTranslation } from "react-i18next";
 import { useReadAtom } from "../../core/utils/atoms";
+import { DEFAULT_SELECT_PROPS } from "../consts";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   const parentGraph = useReadAtom(parentFilteredGraphAtom);
@@ -30,6 +31,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   return (
     <>
       <Select
+        {...DEFAULT_SELECT_PROPS}
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
         onChange={(options) => {
           replaceCurrentFilter({ ...filter, terms: new Set(options.map((o) => o.value)) });

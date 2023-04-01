@@ -7,6 +7,7 @@ import { ItemType } from "../../../core/types";
 import { useAppearance, useAppearanceActions } from "../../../core/context/dataContexts";
 import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_NODE_LABEL_SIZE } from "../../../core/appearance/utils";
 import { SliderInput } from "../../forms/TypedInputs";
+import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         {t("appearance.labels.set_labels_size_from")}
       </label>
       <Select
+        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-labelSizesMode`}
         options={labelSizeOptions}
         value={selectedOption}
