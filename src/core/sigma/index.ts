@@ -7,7 +7,7 @@ import { SigmaGraph } from "../graph/types";
 import { getEmptySigmaState } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
 import { nodeExtent } from "graphology-metrics/graph";
-import { dataGraphToFullGraph } from "../graph/utils";
+import { dataGraphToSigmaGraph } from "../graph/utils";
 
 /**
  * Producers:
@@ -78,16 +78,41 @@ export const sigmaAtom = atom<Sigma<SigmaGraph>>(
 );
 export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
 
-export const resetCamera = (forceRefresh: boolean) => {
+/**
+ * This function sets sigma's bounding box so that the whole graph is on screen,
+ * with default camera state.
+ *
+ * If `forceRefresh` is true, a `sigma.refresh()` is called right after.
+ *
+ * The `source` parameter matters as well, since it determines whether the
+ * bounding should be computed on the sigma graph or the dataset:
+ * - When an "iterative" layout algorithm is running (FA2 for instance), then
+ *   sigma has the latest data
+ * - When this is called right after applying a single step layout algorithm
+ *   (circular for instance), then the dataset is updated before, and using
+ *   sigma as the source would require having a first rendered frame with the
+ *   "old" bounding box
+ */
+export const resetCamera = ({
+  source = "dataset",
+  forceRefresh,
+}: {
+  forceRefresh?: boolean;
+  source?: "sigma" | "dataset";
+} = {}) => {
   const sigma = sigmaAtom.get();
   sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
 
-  const dataset = graphDatasetAtom.get();
-  const filteredGraph = filteredGraphAtom.get();
-  const graph = dataGraphToFullGraph(dataset, filteredGraph);
-  const bbox = { x: nodeExtent(graph, "x"), y: nodeExtent(graph, "y") };
+  if (source === "dataset") {
+    const dataset = graphDatasetAtom.get();
+    const filteredGraph = filteredGraphAtom.get();
+    const graph = dataGraphToSigmaGraph(dataset, filteredGraph);
+    const bbox = { x: nodeExtent(graph, "x"), y: nodeExtent(graph, "y") };
+    sigma.setCustomBBox(bbox);
+  } else {
+    sigma.setCustomBBox(sigma.getBBox());
+  }
 
-  sigma.setCustomBBox(bbox);
   if (forceRefresh) sigma.refresh();
 };
 

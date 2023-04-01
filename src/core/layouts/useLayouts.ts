@@ -74,7 +74,7 @@ export function useLayouts() {
 
         // To prevent resetting the camera before sigma receives new data, we
         // need to wait a frame, and also wait for it to trigger a refresh:
-        setTimeout(() => resetCamera(false), 0);
+        setTimeout(() => resetCamera({ forceRefresh: false }), 0);
 
         notify({
           type: "info",

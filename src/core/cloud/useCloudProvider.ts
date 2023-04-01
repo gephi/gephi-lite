@@ -47,7 +47,7 @@ export function useCloudProvider() {
         const content = await user.provider.getFileContent(file.id);
         const graph = parse(Graph, content);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
-        resetCamera(true);
+        resetCamera({ forceRefresh: true });
       } catch (e) {
         setError(e as Error);
         throw e;
