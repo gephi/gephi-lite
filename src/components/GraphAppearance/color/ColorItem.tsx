@@ -1,6 +1,6 @@
 import Select from "react-select";
 import { FC, useMemo } from "react";
-import { flatMap, uniq } from "lodash";
+import { flatMap, isEqual, uniq } from "lodash";
 import { useTranslation } from "react-i18next";
 
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
@@ -29,7 +29,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
     return [
       { value: "data", type: "data", label: t("appearance.color.data") as string },
-      { value: "fixed", type: "data", label: t("appearance.color.fixed") as string },
+      { value: "fixed", type: "fixed", label: t("appearance.color.fixed") as string },
       ...(itemType === "edges"
         ? [
             { value: "source", type: "source", label: t("appearance.color.source") as string },
@@ -76,6 +76,8 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         options={options}
         value={selectedOption}
         onChange={(option) => {
+          if (isEqual(selectedOption, option)) return;
+
           if (!option || option.value === "fixed") {
             if (color.type !== "fixed") {
               setColorAppearance(itemType, {

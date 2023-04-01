@@ -1,6 +1,7 @@
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
+import { isEqual } from "lodash";
 
 import { SizeRankingEditor } from "./SizeRankingEditor";
 import { SizeFixedEditor } from "./SizeFixedEditor";
@@ -52,6 +53,8 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         options={options}
         value={selectedOption}
         onChange={(option) => {
+          if (isEqual(selectedOption, option)) return;
+
           if (!option || option.value === "fixed") {
             if (size.type !== "fixed") {
               setSizeAppearance(itemType, {
