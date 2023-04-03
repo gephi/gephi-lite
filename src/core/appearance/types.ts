@@ -12,12 +12,15 @@ export type DataSize = NoFieldValue<"data">;
 export interface FixedSize extends NoFieldValue<"fixed"> {
   value: number;
 }
+
+export type TransformationMethod = { pow: number } | "log" | { spline: [[number, number], [number, number]] };
+
 export interface RankingSize {
   type: "ranking";
   field: string;
   minSize: number;
   maxSize: number;
-  transformationMethod?: { pow: number } | "log" | { spline: [[number, number], [number, number]] };
+  transformationMethod?: TransformationMethod;
   missingSize: number;
 }
 export type Size = DataSize | RankingSize | FixedSize;

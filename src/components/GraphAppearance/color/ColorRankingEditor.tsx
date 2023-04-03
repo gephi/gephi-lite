@@ -142,10 +142,6 @@ export const ColorRankingEditor: FC<{
           </label>
         </div>
       </div>
-      {/*<div>*/}
-      {/*  TODO:*/}
-      {/*  <TransformationMethodsSelect />*/}
-      {/*</div>*/}
     </>
   );
 };

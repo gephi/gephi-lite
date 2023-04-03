@@ -1,5 +1,5 @@
 import chroma from "chroma-js";
-import { forEach } from "lodash";
+import { forEach, identity } from "lodash";
 import drawLabel from "sigma/rendering/canvas/label";
 import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
@@ -12,6 +12,7 @@ import {
   EdgeColor,
   LabelGetter,
   SizeGetter,
+  TransformationMethod,
   VisualGetters,
 } from "./types";
 import { EdgeRenderingData, GraphDataset, ItemData, NodeRenderingData, SigmaGraph } from "../graph/types";
@@ -91,6 +92,23 @@ export function parseAppearanceState(rawAppearance: string): AppearanceState | n
 /**
  * Actual appearance helpers:
  */
+
+export const makeGetValue = (method?: TransformationMethod): ((value?: number) => number | undefined) => {
+  // linear
+  if (!method) return identity;
+  if (typeof method !== "string") {
+    //pow
+    if ("pow" in method) {
+      return (value?: number) => (value !== undefined ? Math.pow(value, method.pow) : undefined);
+    }
+    //TODO : spline
+  }
+  //log
+  if (method === "log") return (value?: number) => (value !== undefined ? Math.log(value) : undefined);
+
+  return identity;
+};
+
 export function makeGetSize<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
@@ -104,10 +122,11 @@ export function makeGetSize<
   let getSize: SizeGetter | null = null;
   switch (sizesDef.type) {
     case "ranking": {
+      const getValue = makeGetValue(sizesDef.transformationMethod);
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = toNumber(data[sizesDef.field]);
+        const value = getValue(toNumber(data[sizesDef.field]));
         if (typeof value === "number") {
           min = Math.min(min, value);
           max = Math.max(max, value);
@@ -116,9 +135,9 @@ export function makeGetSize<
       const delta = max - min || 1;
       const ratio = (sizesDef.maxSize - sizesDef.minSize) / delta;
       getSize = (_itemId: string, data: ItemData) => {
-        const value = toNumber(data[sizesDef.field]);
-        if (typeof value === "number") {
-          // TODO: Handle transformation method
+        const value = getValue(toNumber(data[sizesDef.field]));
+
+        if (typeof value === "number" && !isNaN(value) && Math.abs(value) !== Infinity) {
           return (value - min) * ratio + sizesDef.minSize;
         }
         return sizesDef.missingSize;

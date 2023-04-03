@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { ItemType } from "../../../core/types";
 import { RankingSize } from "../../../core/appearance/types";
+import { TransformationMethodsSelect } from "../TransformationMethodSelect";
 
 export const SizeRankingEditor: FC<{
   itemType: ItemType;
@@ -56,10 +57,12 @@ export const SizeRankingEditor: FC<{
           {t("appearance.size.default_value", { items: t(`graph.model.${itemType}`) })}
         </label>
       </div>
-      {/*<div>*/}
-      {/*  TODO:*/}
-      {/*  <TransformationMethodsSelect />*/}
-      {/*</div>*/}
+      <div>
+        <TransformationMethodsSelect
+          method={size.transformationMethod}
+          onChange={(method) => setSize({ ...size, transformationMethod: method || undefined })}
+        />
+      </div>
     </>
   );
 };
