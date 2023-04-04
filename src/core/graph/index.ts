@@ -10,7 +10,7 @@ import { atom, derivedAtom } from "../utils/atoms";
 import { FieldModel, FullGraph, GraphDataset } from "./types";
 import { Producer, producerToAction } from "../utils/reducers";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
-import { dataGraphToFullGraph, dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
+import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
 
 /**
  * Producers:

@@ -3,10 +3,9 @@ import { TbCircles } from "react-icons/tb";
 import { RiFilterFill } from "react-icons/ri";
 import { ImFilesEmpty } from "react-icons/im";
 import { BiNetworkChart } from "react-icons/bi";
-import { MdLogin, MdLogout, MdOutlineSaveAlt, MdClose } from "react-icons/md";
 import { GrOverview, GrScorecard } from "react-icons/gr";
+import { MdLogin, MdLogout, MdOutlineSaveAlt, MdClose } from "react-icons/md";
 import { BsSlashLg, BsCircle, BsGithub, BsPalette, BsCodeSlash, BsFillPlayFill } from "react-icons/bs";
-import { FaPlay } from "react-icons/fa";
 
 import { ItemType } from "../core/types";
 

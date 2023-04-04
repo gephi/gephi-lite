@@ -42,7 +42,7 @@ export const ExportPNGModal: FC<ModalProps<{}>> = ({ cancel }) => {
       message: t("graph.export.png.success").toString(),
     });
     cancel();
-  }, [data.filename, data.height, data.preserve_camera, data.width, notify, sigma, t]);
+  }, [cancel, data.filename, data.height, data.preserve_camera, data.width, notify, sigma, t]);
 
   return (
     <Modal title={t("graph.export.png.title").toString()} onClose={() => cancel()} className="modal">
