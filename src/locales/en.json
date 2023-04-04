@@ -82,8 +82,8 @@
     "unselect_all_hidden_edges": "Unselect all hidden edges",
     "unselect_nodes": "Unselect this node",
     "unselect_edges": "Unselect this edge",
-    "focus_nodes": "Focus this node",
-    "focus_edges": "Focus this edge",
+    "focus_nodes": "Select only this node",
+    "focus_edges": "Select only this edge",
     "empty_nodes": "This node has no attribute",
     "empty_edges": "This edge has no attribute",
     "node_no_label": "(Empty label)"

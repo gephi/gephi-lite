@@ -43,12 +43,12 @@ function SelectedItem({
   type,
   id,
   data,
-  showProperties,
+  selectionSize,
 }: {
   type: ItemType;
   id: string;
   data: ItemData;
-  showProperties?: boolean;
+  selectionSize?: number;
 }) {
   const { t } = useTranslation();
   const graphDataset = useGraphDataset();
@@ -100,12 +100,13 @@ function SelectedItem({
             title={t(`selection.focus_${type}`) as string}
             className="btn btn-sm btn-outline-dark ms-1 flex-shrink-0"
             onClick={() => select({ type, items: new Set([id]), replace: true })}
+            disabled={selectionSize === 1}
           >
             <MdFilterCenterFocus />
           </button>
         )}
       </h4>
-      {showProperties &&
+      {selectionSize === 1 &&
         (!isEmpty(data) ? (
           <ul className="ms-4 list-unstyled">
             {toPairs(data).map(([key, value]) => (
@@ -161,8 +162,8 @@ export const Selection: FC = () => {
             key={item}
             id={item}
             type={type}
+            selectionSize={items.size}
             data={type === "nodes" ? nodeData[item] : edgeData[item]}
-            showProperties={items.size === 1}
           />
         ))}
       </ul>
@@ -192,8 +193,8 @@ export const Selection: FC = () => {
                 key={item}
                 id={item}
                 type={type}
+                selectionSize={items.size}
                 data={type === "nodes" ? nodeData[item] : edgeData[item]}
-                showProperties={items.size === 1}
               />
             ))}
           </ul>
