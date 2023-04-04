@@ -112,7 +112,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     filteredGraphsAtom.set(newCache);
   }
 
-  sessionStorage.setItem("dataset", serializeDataset(graphDataset));
+  // Only "small enough" graphs are stored in the sessionStorage, because this
+  // feature only helps resisting page reloads, basically:
+  if (graphDataset.fullGraph.order < 5000 && graphDataset.fullGraph.size < 25000) {
+    try {
+      sessionStorage.setItem("dataset", serializeDataset(graphDataset));
+    } catch (_e) {}
+  }
 });
 
 filtersAtom.bind((filtersState) => {
