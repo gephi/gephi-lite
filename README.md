@@ -16,7 +16,7 @@ Gephi Lite source code is distributed under the [GNU General Public License v3](
 
 Gephi Lite is a web application, written using [TypeScript](https://www.typescriptlang.org/) and [React](https://react.dev/). The styles are written using [SASS](https://sass-lang.com/), and are based on [Bootstrap v5](https://getbootstrap.com/).
 
-Gephi Lite uses [sigma.js](https://www.sigmajs.org/) for graph rendering, and [graphology](graphology.github.io/) as the graph model as well as for graph algorithms. It has been bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Gephi Lite uses [sigma.js](https://www.sigmajs.org/) for graph rendering, and [graphology](https://graphology.github.io/) as the graph model as well as for graph algorithms. It has been bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 To build Gephi Lite locally, you first need a recent version of [Node.js](https://nodejs.org/en) with [NPM](https://www.npmjs.com/) installed on your computer. You can then install the dependencies by running `npm install` in Gephi Lite's directory.
 
