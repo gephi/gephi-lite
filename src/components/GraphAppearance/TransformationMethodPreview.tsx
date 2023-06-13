@@ -20,7 +20,7 @@ export const TransformationMethodPreview: FC<{ method?: TransformationMethod }> 
         <polyline
           fill="none"
           stroke="black"
-          stroke-width={2}
+          strokeWidth={2}
           points={range(0.1, size)
             .map(
               (n) =>
