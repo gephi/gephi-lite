@@ -14,7 +14,7 @@ import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appe
 export const AppearanceController: FC = () => {
   const sigma = useSigma();
   const selection = useSelection();
-  const { highlightedNodes, highlightedEdges, hoveredNode, hoveredEdge } = useSigmaState();
+  const { highlightedNodes, highlightedEdges, hoveredNode } = useSigmaState();
 
   // Reducers:
   useEffect(() => {
@@ -31,11 +31,7 @@ export const AppearanceController: FC = () => {
             (edge, _attr, source, target) => highlightedNodes.has(source) && highlightedNodes.has(target),
           ),
         )
-      : highlightedEdges ||
-        new Set([
-          ...(selection.type === "edges" ? Array.from(selection.items) : []),
-          ...(hoveredEdge ? [hoveredEdge] : []),
-        ]);
+      : highlightedEdges || new Set(selection.type === "edges" ? Array.from(selection.items) : []);
     const hasHighlightedNodes = !!allHighlightedNodes.size;
     const hasHighlightedEdges = !!allHighlightedEdges.size;
 
@@ -72,7 +68,7 @@ export const AppearanceController: FC = () => {
 
       return res;
     });
-  }, [highlightedEdges, highlightedNodes, hoveredEdge, hoveredNode, selection, sigma]);
+  }, [highlightedEdges, highlightedNodes, hoveredNode, selection, sigma]);
 
   return null;
 };
