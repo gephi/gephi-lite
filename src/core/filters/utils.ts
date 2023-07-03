@@ -3,7 +3,7 @@ import { subgraph } from "graphology-operators";
 
 import { FilterType, FiltersState, RangeFilterType, TermsFilterType, FilteredGraph } from "./types";
 import { toNumber, toString } from "../utils/casting";
-import { DatalessGraph, FullGraph, GraphDataset, SigmaGraph } from "../graph/types";
+import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { parse, stringify } from "../utils/json";
 
@@ -59,63 +59,51 @@ function filterValue(value: any, filter: RangeFilterType | TermsFilterType): boo
   }
 }
 
-function filterNode(id: string, fullGraph: FullGraph, filter: FilterType): boolean {
-  switch (filter.type) {
-    case "range":
-    case "terms":
-      return filterValue(fullGraph.getNodeAttributes(id)[filter.field], filter);
-    case "script": {
-      if (filter.script) return filter.script(id, fullGraph.getNodeAttributes(id), fullGraph);
-    }
-  }
-  return true;
-}
-
-function filterEdge(id: string, source: string, target: string, fullGraph: FullGraph, filter: FilterType): boolean {
-  switch (filter.type) {
-    case "range":
-    case "terms":
-      return filterValue(fullGraph.getEdgeAttributes(id)[filter.field], filter);
-    case "script":
-      if (filter.script) return filter.script(id, fullGraph.getEdgeAttributes(id), fullGraph);
-  }
-  return true;
-}
-
 export function filterGraph<G extends DatalessGraph | SigmaGraph>(
   graph: G,
   dataset: GraphDataset,
   filter: FilterType,
 ): G {
-  const fullGraph = dataGraphToFullGraph(dataset, graph);
+  const { nodeData, edgeData } = dataset;
+
   if (filter.type === "topological") {
     // TODO:
     return graph;
   }
 
+  // Nodes:
   if (filter.itemType === "nodes") {
-    return subgraph(
-      graph,
-      graph.filterNodes((nodeID) => filterNode(nodeID, fullGraph, filter)),
-    ) as G;
-  } else {
+    let nodes: string[];
+    if (filter.type === "script") {
+      const fullGraph = dataGraphToFullGraph(dataset, graph);
+      nodes = graph.filterNodes(
+        (nodeID) => filter.script && filter.script(nodeID, fullGraph.getNodeAttributes(nodeID), fullGraph),
+      );
+    } else {
+      nodes = graph.filterNodes((nodeID) => filterValue(nodeData[nodeID][filter.field], filter));
+    }
+    return subgraph(graph, nodes) as G;
+  }
+
+  // Edges:
+  else {
+    let edges: string[] = [];
+    if (filter.type === "script") {
+      const fullGraph = dataGraphToFullGraph(dataset, graph);
+      edges = graph.filterEdges(
+        (edgeID) => filter.script && filter.script(edgeID, fullGraph.getEdgeAttributes(edgeID), fullGraph),
+      );
+    } else {
+      edges = graph.filterEdges((edgeID) => filterValue(edgeData[edgeID][filter.field], filter));
+    }
     const res = graph.emptyCopy() as G;
-    graph.forEachEdge((id, attributes, source, target) => {
-      if (filterEdge(id, source, target, fullGraph, filter)) res.addEdgeWithKey(id, source, target, attributes);
-    });
+    edges.forEach((id) => res.addEdgeWithKey(id, graph.source(id), graph.target(id), graph.getEdgeAttributes(id)));
     return res;
   }
 }
 
 export function getFilterFingerprint(filter: FilterType): string {
   return stringify(filter);
-}
-
-export function datasetToFilteredSigmaGraph(dataset: GraphDataset, filters: FilterType[]): SigmaGraph {
-  return dataGraphToFullGraph(
-    dataset,
-    filters.reduce((graph, filter) => filterGraph(graph, dataset, filter), dataset.fullGraph),
-  );
 }
 
 export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache: FilteredGraph[]): FilteredGraph[] {
