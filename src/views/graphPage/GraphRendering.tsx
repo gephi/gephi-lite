@@ -90,6 +90,9 @@ export const GraphRendering: FC = () => {
   const sigmaGraph = useSigmaGraph();
   const { hoveredNode, hoveredEdge } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
+  const setReady = useCallback(() => {
+    setIsReady(true);
+  }, [setIsReady]);
 
   return (
     <>
@@ -118,7 +121,7 @@ export const GraphRendering: FC = () => {
       >
         <EventsController />
         <AppearanceController />
-        <SettingsController setIsReady={() => setIsReady(true)} />
+        <SettingsController setIsReady={setReady} />
         <div className="sigma-layers">
           <MarqueeController />
         </div>
