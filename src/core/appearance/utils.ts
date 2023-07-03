@@ -301,7 +301,14 @@ export function getNodeDrawFunction({ nodesLabelSize }: AppearanceState, draw: t
     if (nodesLabelSize.zoomCorrelation >= 1) labelSize = (labelSize * data.size) / data.rawSize;
     else if (nodesLabelSize.zoomCorrelation >= 0)
       labelSize = labelSize * Math.pow(data.size / data.rawSize, nodesLabelSize.zoomCorrelation);
-    return draw(context, data, { ...settings, labelSize });
+    return draw(
+      context,
+      {
+        ...data,
+        label: data.hideLabel ? null : data.label,
+      },
+      { ...settings, labelSize, labelWeight: data.boldLabel ? "bold" : "normal" },
+    );
   }) as typeof drawLabel;
 }
 

@@ -19,19 +19,35 @@ export const AppearanceController: FC = () => {
   // Reducers:
   useEffect(() => {
     const graph = sigma.getGraph();
+
+    // what we've got in the state,
+    //  or
+    //    the node selection,
+    //    the hover node plus its neighbor
     const allHighlightedNodes =
       highlightedNodes ||
       new Set([
         ...(selection.type === "nodes" ? Array.from(selection.items) : []),
-        ...(hoveredNode ? [hoveredNode] : []),
+        ...(hoveredNode ? [hoveredNode, ...graph.neighbors(hoveredNode)] : []),
       ]);
+
+    // What we've got in state
+    //  or edges linked to an highlightedNodes
+    //  or
+    //    edges in selection
+    //    edges hovered
+    //    edges in neighbor of the node hovered
     const allHighlightedEdges = highlightedNodes
       ? new Set(
           graph.filterEdges(
             (edge, _attr, source, target) => highlightedNodes.has(source) && highlightedNodes.has(target),
           ),
         )
-      : highlightedEdges || new Set(selection.type === "edges" ? Array.from(selection.items) : []);
+      : highlightedEdges ||
+        new Set([
+          ...(selection.type === "edges" ? Array.from(selection.items) : []),
+          ...(hoveredNode ? graph.edges(hoveredNode) : []),
+        ]);
     const hasHighlightedNodes = !!allHighlightedNodes.size;
     const hasHighlightedEdges = !!allHighlightedEdges.size;
 
@@ -50,7 +66,7 @@ export const AppearanceController: FC = () => {
       if (id === hoveredNode) res.highlighted = true;
 
       if (allHighlightedNodes.has(id)) {
-        res.boldLabel = true;
+        res.forceLabel = true;
         res.zIndex = 1;
       }
 
@@ -62,6 +78,7 @@ export const AppearanceController: FC = () => {
       res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
       if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
+        res.hidden = true;
         res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
         res.zIndex = -1;
       }
