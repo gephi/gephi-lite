@@ -1,4 +1,5 @@
 import Sigma from "sigma";
+import { Extent } from "graphology-metrics/graph/extent";
 
 import { SigmaState } from "./types";
 import { atom } from "../utils/atoms";
@@ -6,8 +7,6 @@ import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaGraph } from "../graph/types";
 import { getEmptySigmaState } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
-import { nodeExtent } from "graphology-metrics/graph";
-import { dataGraphToSigmaGraph } from "../graph/utils";
 
 /**
  * Producers:
@@ -106,8 +105,22 @@ export const resetCamera = ({
   if (source === "dataset") {
     const dataset = graphDatasetAtom.get();
     const filteredGraph = filteredGraphAtom.get();
-    const graph = dataGraphToSigmaGraph(dataset, filteredGraph);
-    const bbox = { x: nodeExtent(graph, "x"), y: nodeExtent(graph, "y") };
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    const nodes = filteredGraph.nodes();
+    for (let i = 0, l = nodes.length; i < l; i++) {
+      const node = nodes[i];
+      const { x, y } = dataset.nodeRenderingData[node];
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+
+    const bbox = { x: [minX, maxX] as Extent, y: [minY, maxY] as Extent };
     sigma.setCustomBBox(bbox);
   } else {
     sigma.setCustomBBox(sigma.getBBox());
