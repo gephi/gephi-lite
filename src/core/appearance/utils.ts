@@ -21,8 +21,8 @@ import { parse, stringify } from "../utils/json";
 
 export const DEFAULT_NODE_COLOR = "#999999";
 export const DEFAULT_EDGE_COLOR = "#cccccc";
-export const DEFAULT_NODE_SIZE = 6;
-export const DEFAULT_EDGE_SIZE = 1;
+export const DEFAULT_NODE_SIZE = 20;
+export const DEFAULT_EDGE_SIZE = 6;
 export const DEFAULT_NODE_LABEL_SIZE = 14;
 export const DEFAULT_EDGE_LABEL_SIZE = 14;
 
