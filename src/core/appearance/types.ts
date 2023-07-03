@@ -83,9 +83,9 @@ export interface AppearanceState {
   edgesLabelSize: LabelSize;
 }
 
-export type SizeGetter = (itemId: string, data: ItemData) => number;
-export type ColorGetter = (itemId: string, data: ItemData) => string;
-export type LabelGetter = (itemId: string, data: ItemData) => string | null;
+export type SizeGetter = (data: ItemData) => number;
+export type ColorGetter = (data: ItemData, edgeId?: string) => string;
+export type LabelGetter = (data: ItemData) => string | null;
 
 /**
  * This state contains the visual getters, i.e. the functions to get a node or

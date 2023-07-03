@@ -33,8 +33,8 @@ function getItemAttributes(
   const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
 
   return {
-    label: (getLabel ? getLabel(id, data) : renderingData.label) || undefined,
-    color: getColor ? getColor(id, data) : renderingData.color || defaultColor,
+    label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
+    color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
     hidden,
   };
 }
