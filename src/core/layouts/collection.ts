@@ -1,6 +1,7 @@
 import { isNil, isObject } from "lodash";
 import Graph from "graphology";
 import circlepack from "graphology-layout/circlepack";
+import { inferSettings } from "graphology-layout-forceatlas2";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
 import random, { RandomLayoutOptions } from "graphology-layout/random";
 import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
@@ -9,13 +10,13 @@ import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-lay
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 
 import { dataGraphToFullGraph } from "../graph/utils";
-import { ItemData } from "../graph/types";
+import { DataGraph, ItemData } from "../graph/types";
 import { graphDatasetAtom } from "../graph";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
 
 // definition of a custom layout function
 // eslint-disable-next-line no-new-func
-const nodeCoordinatesCustomFn = new Function(`return ( 
+const nodeCoordinatesCustomFn = new Function(`return (
 function nodeCoordinates(id, attributes, index, graph) {
   // / Your code goes here
   return { x: Math.random() * 1000, y: Math.random() * 1000 };
@@ -103,6 +104,15 @@ export const LAYOUTS: Array<Layout> = [
     id: "fa2",
     type: "worker",
     supervisor: FA2Layout,
+    buttons: [
+      {
+        id: "autoSettings",
+        description: true,
+        getSettings(currentSettings, dataGraph: DataGraph) {
+          return inferSettings(dataGraph);
+        },
+      },
+    ],
     parameters: [
       {
         id: "adjustSizes",

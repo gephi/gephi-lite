@@ -15,9 +15,10 @@ import { useLayouts } from "../../core/layouts/useLayouts";
 import { useModal } from "../../core/modals";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { FieldModel } from "../../core/graph/types";
-import { useGraphDataset } from "../../core/context/dataContexts";
+import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import { getFilteredDataGraph } from "../../core/graph/utils";
 
 type LayoutOption = {
   value: string;
@@ -35,6 +36,7 @@ export const LayoutForm: FC<{
   const { t } = useTranslation();
   const { openModal } = useModal();
   const dataset = useGraphDataset();
+  const sigmaGraph = useSigmaGraph();
   const { nodeFields, edgeFields } = dataset;
   // get layout parameter from the session if it exists
   const [session, setSession] = useAtom(sessionAtom);
@@ -92,15 +94,18 @@ export const LayoutForm: FC<{
   /**
    * Reset parameters for the current layout
    */
-  const resetParameters = useCallback(() => {
-    setSession((prev) => ({
-      ...prev,
-      layoutsParameters: {
-        ...prev.layoutsParameters,
-        [layout.id]: layoutDefaultParameters,
-      },
-    }));
-  }, [layout.id, layoutDefaultParameters, setSession]);
+  const setParameters = useCallback(
+    (newParameters?: { [layout: string]: Record<string, unknown> }) => {
+      setSession((prev) => ({
+        ...prev,
+        layoutsParameters: {
+          ...prev.layoutsParameters,
+          [layout.id]: newParameters || layoutDefaultParameters,
+        },
+      }));
+    },
+    [layout.id, layoutDefaultParameters, setSession],
+  );
 
   function submit() {
     if (isRunning) onStop();
@@ -219,7 +224,21 @@ export const LayoutForm: FC<{
       })}
 
       <div className="text-end mt-2">
-        <button type="reset" className="btn btn-secondary ms-2" onClick={() => resetParameters()}>
+        {layout.buttons?.map(({ id, description, getSettings }) => (
+          <button
+            key={id}
+            type="reset"
+            className="btn btn-secondary ms-2"
+            title={description ? (t(`layouts.${layout.id}.buttons.${id}.description`) as string) : undefined}
+            onClick={() => {
+              const graph = getFilteredDataGraph(dataset, sigmaGraph);
+              setParameters(getSettings(layoutParameters, graph));
+            }}
+          >
+            {t(`layouts.${layout.id}.buttons.${id}.title`) as string}
+          </button>
+        ))}
+        <button type="reset" className="btn btn-secondary ms-2" onClick={() => setParameters()}>
           {t("common.reset")}
         </button>
         <button type="submit" className="btn btn-primary ms-2">

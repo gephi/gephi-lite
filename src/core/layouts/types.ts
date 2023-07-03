@@ -2,7 +2,7 @@ import Graph from "graphology";
 import { Coordinates } from "sigma/types";
 
 import { ItemType } from "../types";
-import { ItemData } from "../graph/types";
+import { DataGraph, ItemData } from "../graph/types";
 
 /**
  * Type for layout parameters
@@ -49,23 +49,23 @@ export type LayoutParameter =
   | LayoutNumberParameter
   | LayoutAttributeParameter;
 
+export interface LayoutButton<P = {}> {
+  id: string;
+  description?: boolean;
+  getSettings: (currentSettings: P, dataGraph: DataGraph) => P;
+}
+
 /**
  * Layout types
  * ************
  */
-export interface BaseLayout {
-  id: string;
-  type: string;
-  description?: boolean;
-  parameters: Array<LayoutParameter>;
-}
-
 export type LayoutMapping = { [node: string]: Coordinates };
 
 export interface SyncLayout<P = {}> {
   id: string;
   type: "sync";
   description?: boolean;
+  buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
   run: (graph: Graph, options?: { settings: P }) => LayoutMapping;
 }
@@ -84,6 +84,7 @@ export interface WorkerLayout<P = {}> {
   id: string;
   type: "worker";
   description?: boolean;
+  buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
   supervisor: WorkerSupervisorConstructor;
 }

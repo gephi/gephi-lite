@@ -458,6 +458,12 @@
     },
     "fa2": {
       "title": "ForceAtlas2",
+      "buttons": {
+        "autoSettings": {
+          "title": "Guess settings",
+          "description": "Generates settings that fit the current graph the best"
+        }
+      },
       "parameters": {
         "adjustSizes": {
           "title": "Adjust sizes?",
