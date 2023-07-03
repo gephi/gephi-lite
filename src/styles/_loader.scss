@@ -9,4 +9,6 @@
   justify-content: center;
   z-index: $zindex-tooltip + 1;
   background-color: rgba(0, 0, 0, 0.25);
+  margin: 0 !important;
+  padding: 0 !important;
 }

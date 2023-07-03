@@ -45,74 +45,83 @@ export const ExportPNGModal: FC<ModalProps<{}>> = ({ cancel }) => {
   }, [cancel, data.filename, data.height, data.preserve_camera, data.width, notify, sigma, t]);
 
   return (
-    <Modal title={t("graph.export.png.title").toString()} onClose={() => cancel()} className="modal">
+    <Modal
+      title={t("graph.export.png.title").toString()}
+      onClose={() => cancel()}
+      onSubmit={handleSubmit}
+      className="modal"
+    >
       <>
-        <form className="row g-3" onSubmit={() => handleSubmit()}>
-          <div className="mb-3">
-            <label htmlFor="filename" className="form-label">
-              {t("graph.export.png.field.filename").toString()}
-            </label>
-            <input
-              id="filename"
-              className="form-control"
-              type="string"
-              value={data.filename}
-              onChange={(e) => setData((d) => ({ ...d, filename: e.target.value }))}
-              required={true}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="width" className="form-label">
-              {t("graph.export.png.field.width").toString()}
-            </label>
-            <input
-              id="width"
-              className="form-control"
-              type="number"
-              min={1}
-              value={data.width}
-              onChange={(e) => setData((d) => ({ ...d, width: +e.target.value }))}
-              required={true}
-            />
-          </div>
+        <div className="mb-3">
+          <label htmlFor="filename" className="form-label">
+            {t("graph.export.png.fields.filename").toString()}
+          </label>
+          <input
+            id="filename"
+            className="form-control"
+            type="string"
+            value={data.filename}
+            onChange={(e) => setData((d) => ({ ...d, filename: e.target.value }))}
+            required={true}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="width" className="form-label">
+            {t("graph.export.png.fields.width").toString()}
+          </label>
+          <input
+            id="width"
+            className="form-control"
+            type="number"
+            min={1}
+            value={data.width}
+            onChange={(e) => setData((d) => ({ ...d, width: +e.target.value }))}
+            required={true}
+          />
+        </div>
 
-          <div className="mb-3">
-            <label htmlFor="height" className="form-label">
-              {t("graph.export.png.field.height").toString()}
-            </label>
-            <input
-              id="width"
-              className="form-control"
-              type="number"
-              min={1}
-              value={data.height}
-              onChange={(e) => setData((d) => ({ ...d, height: +e.target.value }))}
-              required={true}
-            />
-          </div>
+        <div className="mb-3">
+          <label htmlFor="height" className="form-label">
+            {t("graph.export.png.fields.height").toString()}
+          </label>
+          <input
+            id="width"
+            className="form-control"
+            type="number"
+            min={1}
+            value={data.height}
+            onChange={(e) => setData((d) => ({ ...d, height: +e.target.value }))}
+            required={true}
+          />
+        </div>
 
-          <div className="mb-3">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="isPublic"
-                checked={data.preserve_camera}
-                onChange={(e) => setData((d) => ({ ...d, preserve_camera: e.target.checked }))}
-              />
-              <label className="form-check-label" htmlFor="isPublic">
-                {t("graph.export.png.fields.preserve_camera").toString()}
-              </label>
-            </div>
+        <div className="mb-3">
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="isPublic"
+              checked={data.preserve_camera}
+              onChange={(e) => setData((d) => ({ ...d, preserve_camera: e.target.checked }))}
+            />
+            <label className="form-check-label" htmlFor="isPublic">
+              {t("graph.export.png.fields.preserve_camera").toString()}
+            </label>
           </div>
-        </form>
+        </div>
       </>
+
       <>
-        <button title={t("common.cancel").toString()} className="btn btn-outline-danger" onClick={() => cancel()}>
+        <button
+          type="reset"
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-danger"
+          onClick={() => cancel()}
+        >
           <FaTimes className="me-1" />
           {t("common.cancel").toString()}
         </button>
-        <button title={t("common.save").toString()} className="btn btn-primary" onClick={() => handleSubmit()}>
+        <button type="submit" title={t("common.save").toString()} className="btn btn-primary ms-2">
           <FaSave className="me-1" />
           {t("common.save").toString()}
         </button>

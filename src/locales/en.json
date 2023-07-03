@@ -215,7 +215,7 @@
       },
       "remote": {
         "title": "Open an url",
-        "url-field": "Url of the GEXF file",
+        "url-field": "URL of the GEXF file",
         "success": "File {{filename}} has been successfully loaded",
         "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid GEXF."
       },

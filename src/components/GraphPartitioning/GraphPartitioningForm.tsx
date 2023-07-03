@@ -21,7 +21,9 @@ export const GraphPartitioningForm: FC<{
   const [newPartAttId, setNewPartAttId] = useState<string | undefined>();
 
   return (
-    <form>
+    <form onSubmit={(e) => {
+      e.preventDefault();
+    }}>
       <div>
         <label>
           {t("graph.partitioning.partition", {

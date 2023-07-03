@@ -35,38 +35,43 @@ export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   }, [isFormValid, url, cancel, notify, t, openRemoteFile]);
 
   return (
-    <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()}>
+    <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()} onSubmit={openRemote}>
       <>
         {error && <p className="text-center text-danger">{t("graph.open.remote.error").toString()}</p>}
 
-        <form className="row g-3" onSubmit={() => openRemote()}>
-          <div className="mb-3">
-            <label htmlFor="url" className="form-label">
-              {t("graph.open.remote.url-field")}
-            </label>
-            <input
-              id="url"
-              className="form-control"
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              required={true}
-              placeholder="https://gexf.net/data/basic.gexf"
-            />
-          </div>
-        </form>
+        <div className="mb-3">
+          <label htmlFor="url" className="form-label">
+            {t("graph.open.remote.url-field")}
+          </label>
+          <input
+            id="url"
+            className="form-control"
+            type="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            required={true}
+            placeholder="https://gexf.net/data/basic.gexf"
+          />
+        </div>
+
         {loading && <Loader />}
       </>
+
       <>
-        <button title={t("common.cancel").toString()} className="btn btn-outline-danger" onClick={() => cancel()}>
+        <button
+          type="reset"
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-danger"
+          onClick={() => cancel()}
+        >
           <FaTimes className="me-1" />
           {t("common.cancel").toString()}
         </button>
         <button
+          type="submit"
           className="btn btn-primary"
           disabled={!isFormValid || loading}
           title={url ? t("common.open_file", { filename: extractFilename(url) }).toString() : ""}
-          onClick={() => openRemote()}
         >
           <FaFolderOpen className="me-1" />
           {t("common.open").toString()}

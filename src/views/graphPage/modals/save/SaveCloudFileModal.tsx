@@ -46,62 +46,69 @@ export const SaveCloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
       }).toString()}
       onClose={() => cancel()}
+      onSubmit={() => save()}
       className="modal"
     >
       <>
         {error && <p className="text-center text-danger">{t("graph.save.cloud.error").toString()}</p>}
 
-        <form className="row g-3" onSubmit={() => save()}>
-          <div className="mb-3">
-            <label htmlFor="filename" className="form-label">
-              {t("graph.save.cloud.field.filename").toString()}
-            </label>
+        <div className="mb-3">
+          <label htmlFor="filename" className="form-label">
+            {t("graph.save.cloud.field.filename").toString()}
+          </label>
+          <input
+            id="filename"
+            className="form-control"
+            type="string"
+            value={filename}
+            onChange={(e) => setFilename(e.target.value)}
+            required={true}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">
+            {t("graph.save.cloud.field.description").toString()}
+          </label>
+          <textarea
+            id="description"
+            className="form-control"
+            value={description}
+            rows={3}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-3">
+          <div className="form-check">
             <input
-              id="filename"
-              className="form-control"
-              type="string"
-              value={filename}
-              onChange={(e) => setFilename(e.target.value)}
-              required={true}
+              className="form-check-input"
+              type="checkbox"
+              id="isPublic"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
             />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="description" className="form-label">
-              {t("graph.save.cloud.field.description").toString()}
+            <label className="form-check-label" htmlFor="isPublic">
+              {t("graph.save.cloud.field.isPublic").toString()}
             </label>
-            <textarea
-              id="description"
-              className="form-control"
-              value={description}
-              rows={3}
-              onChange={(e) => setDescription(e.target.value)}
-            />
           </div>
+        </div>
 
-          <div className="mb-3">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="isPublic"
-                checked={isPublic}
-                onChange={(e) => setIsPublic(e.target.checked)}
-              />
-              <label className="form-check-label" htmlFor="isPublic">
-                {t("graph.save.cloud.field.isPublic").toString()}
-              </label>
-            </div>
-          </div>
-        </form>
         {loading && <Loader />}
       </>
+
       <>
-        <button title={t("common.cancel").toString()} className="btn btn-outline-danger" onClick={() => cancel()}>
+        <button
+          type="reset"
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-danger"
+          onClick={() => cancel()}
+        >
           <FaTimes className="me-1" />
           {t("common.cancel").toString()}
         </button>
         <button
+          type="submit"
           title={t("common.save").toString()}
           className="btn btn-primary"
           disabled={!isValid || loading}

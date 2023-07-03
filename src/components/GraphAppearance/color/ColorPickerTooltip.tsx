@@ -102,7 +102,11 @@ const ColorPickerTooltip: FC<{
                 }}
               />
 
-              <form>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
                 <div className="d-flex align-items-baseline">
                   <label htmlFor={`scalePoint`} className="form-label">
                     {t("appearance.color.scale_point")}

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
-type GraphType = typeof GraphTypeValues[number];
+type GraphType = (typeof GraphTypeValues)[number];
 interface GraphMetadata {
   title?: string;
   authors?: string;
@@ -17,8 +17,14 @@ export const GraphMetadataForm: FC = () => {
   const { setGraphMeta } = useGraphDatasetActions();
   const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(metadata);
   const { t } = useTranslation();
+
   return (
-    <form>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setGraphMeta(graphMetadata);
+      }}
+    >
       <div className="mb-2">
         <label htmlFor="graph-title" className="form-label">
           {t("graph.metadata.graph-title")}
@@ -85,16 +91,13 @@ export const GraphMetadataForm: FC = () => {
           ))}
         </select>
       </div>
+
       <div className="d-flex justify-content-end">
         <button
           className="btn btn-primary"
           type="submit"
           title={`${t("common.save")} ${t("graph.metadata.title")}`}
           disabled={graphMetadata === null}
-          onClick={(e) => {
-            e.preventDefault();
-            setGraphMeta(graphMetadata);
-          }}
         >
           {t("common.save")}
         </button>
