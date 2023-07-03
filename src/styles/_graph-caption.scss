@@ -1,0 +1,24 @@
+.graph-caption {
+  // z-index: $zindex-caption;
+
+  .node-sizes {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .circle-wrapper {
+    height: 50px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-width: 30px;
+    justify-content: center;
+  }
+
+  .dotted-circle {
+    border-radius: 100%;
+    background: #cccccc66;
+    border: 2px dotted black;
+  }
+}

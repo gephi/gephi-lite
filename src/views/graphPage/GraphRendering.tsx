@@ -15,6 +15,7 @@ import { MarqueeController } from "./controllers/MarqueeController";
 import { EventsController } from "./controllers/EventsController";
 import NodeProgramBorder from "../../utils/bordered-node-program";
 import { resetCamera } from "../../core/sigma";
+import GraphCaption from "../../components/GraphCaption";
 
 function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
   const [isFullScreen, setFullScreen] = useState<boolean>(false);
@@ -86,6 +87,14 @@ const InteractionsController: FC = () => {
   );
 };
 
+const GraphCaptionLayer: FC = () => {
+  return (
+    <div className="position-absolute" style={{ left: 10, bottom: 10 }}>
+      <GraphCaption minimal />
+    </div>
+  );
+};
+
 export const GraphRendering: FC = () => {
   const sigmaGraph = useSigmaGraph();
   const { hoveredNode, hoveredEdge } = useSigmaState();
@@ -127,6 +136,7 @@ export const GraphRendering: FC = () => {
         </div>
       </SigmaContainer>
       <InteractionsController />
+      <GraphCaptionLayer />
     </>
   );
 };
