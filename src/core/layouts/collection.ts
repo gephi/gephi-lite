@@ -194,13 +194,11 @@ export const LAYOUTS: Array<Layout> = [
       const graphCopy = graph.copy();
       Object.freeze(graphCopy);
 
-      return graph
-        .nodes()
-        .map((id, index) => ({
-          id,
-          coords: script(id, graph.getNodeAttributes(id), index, graphCopy),
-        }))
-        .reduce((acc, curr) => ({ ...acc, [curr.id]: curr.coords }), {} as { [key: string]: { x: number; y: number } });
+      const res: LayoutMapping = {};
+      graph.nodes().forEach((id, index) => {
+        res[id] = script(id, graph.getNodeAttributes(id), index, graphCopy);
+      });
+      return res;
     },
   } as SyncLayout<{
     script?: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };

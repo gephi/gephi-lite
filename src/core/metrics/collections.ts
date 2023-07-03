@@ -260,16 +260,11 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         const graphCopy = graph.copy();
         Object.freeze(graphCopy);
 
-        return {
-          custom: graph
-            .nodes()
-            .map((key, index) => {
-              const attributes = graph.getNodeAttributes(key);
-              const value = fn(key, attributes, index, graphCopy);
-              return { key, value };
-            })
-            .reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {} as any),
-        };
+        const custom: Record<string, any> = {};
+        graph.nodes().forEach((id, index) => {
+          custom[id] = fn(id, graph.getNodeAttributes(id), index, graphCopy);
+        });
+        return { custom };
       }
       return {
         custom: {},
@@ -340,16 +335,15 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
     fn(parameters: { script?: Function }, graph: DataGraph) {
       const fn = parameters.script;
       if (fn) {
-        return {
-          custom: graph
-            .edges()
-            .map((key, index) => {
-              const attributes = graph.getEdgeAttributes(key);
-              const value = fn(key, attributes, index, graph);
-              return { key, value };
-            })
-            .reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {} as any),
-        };
+        // we copy the graph to avoid user to modify it
+        const graphCopy = graph.copy();
+        Object.freeze(graphCopy);
+
+        const custom: Record<string, any> = {};
+        graph.edges().forEach((id, index) => {
+          custom[id] = fn(id, graph.getEdgeAttributes(id), index, graphCopy);
+        });
+        return { custom };
       }
       return {
         custom: {},

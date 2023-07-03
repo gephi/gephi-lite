@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { pick } from "lodash";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDatasetActions, useSigmaGraph } from "../context/dataContexts";
 import { useNotifications } from "../notifications";
-import { WorkerSupervisorInterface } from "./types";
+import { LayoutMapping, WorkerSupervisorInterface } from "./types";
 import { LAYOUTS } from "./collection";
 import { resetCamera } from "../sigma";
 
@@ -35,15 +34,11 @@ export function useLayouts() {
         });
 
         // Save data
-        setNodePositions(
-          sigmaGraph.reduceNodes(
-            (acc, nodeId, attrs) => ({
-              ...acc,
-              [nodeId]: pick(attrs, ["x", "y"]),
-            }),
-            {},
-          ),
-        );
+        const positions: LayoutMapping = {};
+        sigmaGraph.forEachNode((node, { x, y }) => {
+          positions[node] = { x, y };
+        });
+        setNodePositions(positions);
       }
     };
   }, [supervisor, setNodePositions, sigmaGraph, layoutId, notify, t]);

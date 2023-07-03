@@ -9,6 +9,7 @@ import {
   useSelectionActions,
   useSigmaActions,
 } from "../../../core/context/dataContexts";
+import { LayoutMapping } from "../../../core/layouts/types";
 
 const DRAG_EVENTS_TOLERANCE = 3;
 
@@ -83,17 +84,19 @@ export const EventsController: FC = () => {
         const nodes = selection.type === "nodes" && selection.items.has(node) ? Array.from(selection.items) : [node];
         const { x, y } = sigma.viewportToGraph(event);
 
+        const initialNodesPosition: LayoutMapping = {};
+        nodes.forEach((node) => {
+          graph.setNodeAttribute(node, "fixed", true);
+          const { x, y } = graph.getNodeAttributes(node);
+          initialNodesPosition[node] = { x, y };
+        });
+
         dragEventsCountRef.current = 0;
         dragStateRef.current = {
           type: "dragging",
+          initialNodesPosition,
           initialMousePosition: { x, y },
-          initialNodesPosition: nodes.reduce(
-            (iter, n) => ({ ...iter, [n]: pick(graph.getNodeAttributes(n), ["x", "y"]) }),
-            {},
-          ),
         };
-
-        nodes.forEach((node) => graph.setNodeAttribute(node, "fixed", true));
       },
       clickStage(e) {
         // Reset the selection when clicking on the stage
