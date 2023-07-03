@@ -2,7 +2,7 @@ import { FC, useEffect } from "react";
 import { useSigma } from "@react-sigma/core";
 
 import { memoizedBrighten } from "../../../utils/colors";
-import { useSelection, useSigmaState } from "../../../core/context/dataContexts";
+import { useAppearance, useSelection, useSigmaState } from "../../../core/context/dataContexts";
 import {
   DEFAULT_EDGE_COLOR,
   DEFAULT_EDGE_SIZE,
@@ -14,6 +14,7 @@ import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appe
 export const AppearanceController: FC = () => {
   const sigma = useSigma();
   const selection = useSelection();
+  const { showEdges } = useAppearance();
   const { highlightedNodes, highlightedEdges, hoveredNode } = useSigmaState();
 
   // Reducers:
@@ -83,9 +84,11 @@ export const AppearanceController: FC = () => {
         res.zIndex = -1;
       }
 
+      if (!showEdges) res.hidden = true;
+
       return res;
     });
-  }, [highlightedEdges, highlightedNodes, hoveredNode, selection, sigma]);
+  }, [highlightedEdges, highlightedNodes, hoveredNode, selection, showEdges, sigma]);
 
   return null;
 };
