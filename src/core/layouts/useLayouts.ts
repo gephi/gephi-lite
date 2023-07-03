@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useGraphDatasetActions, useSigmaGraph } from "../context/dataContexts";
+import { useGraphDataset, useGraphDatasetActions, useSigmaGraph } from "../context/dataContexts";
 import { useNotifications } from "../notifications";
 import { LayoutMapping, WorkerSupervisorInterface } from "./types";
 import { LAYOUTS } from "./collection";
 import { resetCamera } from "../sigma";
+import { dataGraphToFullGraph } from "../graph/utils";
 
 export function useLayouts() {
   const { t } = useTranslation();
   const { notify } = useNotifications();
+  const dataset = useGraphDataset();
   const sigmaGraph = useSigmaGraph();
   const { setNodePositions } = useGraphDatasetActions();
   const [supervisor, setSupervisor] = useState<WorkerSupervisorInterface | null>(null);
@@ -59,8 +61,10 @@ export function useLayouts() {
 
       // Sync layout
       if (layout && layout.type === "sync") {
+        const fullGraph = dataGraphToFullGraph(dataset);
+
         // generate positions
-        const positions = layout.run(sigmaGraph, { settings: params });
+        const positions = layout.run(fullGraph, { settings: params });
 
         // Save it
         setNodePositions(positions);
@@ -94,7 +98,7 @@ export function useLayouts() {
         });
       }
     },
-    [sigmaGraph, setNodePositions, notify, t],
+    [dataset, setNodePositions, notify, t, sigmaGraph],
   );
 
   return { isRunning, start, stop };

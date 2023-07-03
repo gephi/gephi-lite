@@ -67,7 +67,7 @@ export interface SyncLayout<P = {}> {
   description?: boolean;
   buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
-  run: (graph: Graph, options?: { settings: P }) => LayoutMapping;
+  run: (graph: DataGraph, options?: { settings: P }) => LayoutMapping;
 }
 
 export interface WorkerSupervisorInterface {
