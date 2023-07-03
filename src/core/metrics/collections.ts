@@ -11,14 +11,20 @@ import { DataGraph, EdgeRenderingData, FullGraph, ItemData } from "../graph/type
 import { dataGraphToFullGraph } from "../graph/utils";
 import { toNumber } from "../utils/casting";
 
-function nodeMetric(id: string, attributes: ItemData, index: number, graph: FullGraph) {
-  // Your code here
+// definition of a custom metric function for nodes
+const nodeMetricCustomFn = new Function(`return ( 
+function nodeMetric(id, attributes, index, graph) {
+  // Your code goes here
   return Math.random();
-}
-function edgeMetric(id: string, attributes: ItemData, index: number, graph: FullGraph) {
-  // Your code here
+} 
+)`)();
+
+// definition of a custom metric function for edges
+const edgeMetricCustomFn = new Function(`return ( 
+function edgeMetric(id, attributes, index, graph) {
+  // Your code goes here
   return Math.random();
-}
+} )`)();
 
 export const NODE_METRICS: Metric<"nodes", any, any>[] = [
   {
@@ -250,7 +256,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
           const result = fn(id, attributs, 0, fullGraph);
           if (!isNumber(result)) throw new Error("Function must returns a number");
         },
-        defaultValue: nodeMetric,
+        defaultValue: nodeMetricCustomFn,
       },
     ],
     fn(parameters: { script?: Function }, graph: DataGraph) {
@@ -329,7 +335,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
           const result = fn(id, attributs, 0, fullGraph);
           if (!isNumber(result)) throw new Error("Function must returns a number");
         },
-        defaultValue: edgeMetric,
+        defaultValue: edgeMetricCustomFn,
       },
     ],
     fn(parameters: { script?: Function }, graph: DataGraph) {

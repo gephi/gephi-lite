@@ -14,14 +14,17 @@ import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditor
 import { useReadAtom } from "../../core/utils/atoms";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 
-function nodeFilter(id: string, attributes: ItemData, graph: FullGraph) {
+const nodeFilterCustomFn = new Function(`return ( 
+function nodeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
-}
-function edgeFilter(id: string, attributes: ItemData, graph: FullGraph) {
+})`)();
+
+const edgeFilterCustomFn = new Function(`return ( 
+function edgeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
-}
+})`)();
 
 const SCRIPT_JS_DOC = `/**
  * Filtering function.
@@ -67,7 +70,7 @@ export const ScriptFilter: FC<{
                   arguments: {
                     title: "Custom filter",
                     functionJsDoc: SCRIPT_JS_DOC,
-                    defaultFunction: filter.itemType === "nodes" ? nodeFilter : edgeFilter,
+                    defaultFunction: filter.itemType === "nodes" ? nodeFilterCustomFn : edgeFilterCustomFn,
                     value: filter.script,
                     checkFunction: (fn) => {
                       if (!fn) throw new Error("Function is not defined");
