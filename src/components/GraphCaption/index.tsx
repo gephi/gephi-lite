@@ -1,8 +1,8 @@
 import { FC, useMemo } from "react";
-
-import { useAppearance, useFilteredGraph, useGraphDataset, useSigmaAtom } from "../../core/context/dataContexts";
-import NodeSizeCaption from "./NodeSizeCaption";
 import { fromPairs, mapValues } from "lodash";
+
+import { useAppearance, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import NodeSizeCaption from "./NodeSizeCaption";
 import { DatalessGraph, ItemData } from "../../core/graph/types";
 
 export interface GraphCaptionProps {
