@@ -7,11 +7,12 @@ import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
 import { Metric } from "./types";
 import { graphDatasetAtom } from "../graph";
-import { DataGraph, EdgeRenderingData, FullGraph, ItemData } from "../graph/types";
+import { DataGraph, EdgeRenderingData } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { toNumber } from "../utils/casting";
 
-// definition of a custom metric function for nodes
+// Definition of a custom metric function for nodes
+// eslint-disable-next-line no-new-func
 const nodeMetricCustomFn = new Function(`return ( 
 function nodeMetric(id, attributes, index, graph) {
   // Your code goes here
@@ -19,7 +20,8 @@ function nodeMetric(id, attributes, index, graph) {
 } 
 )`)();
 
-// definition of a custom metric function for edges
+// Definition of a custom metric function for edges
+// eslint-disable-next-line no-new-func
 const edgeMetricCustomFn = new Function(`return ( 
 function edgeMetric(id, attributes, index, graph) {
   // Your code goes here

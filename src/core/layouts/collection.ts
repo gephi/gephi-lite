@@ -9,11 +9,12 @@ import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-lay
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 
 import { dataGraphToFullGraph } from "../graph/utils";
-import { FullGraph, ItemData } from "../graph/types";
+import { ItemData } from "../graph/types";
 import { graphDatasetAtom } from "../graph";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
 
 // definition of a custom layout function
+// eslint-disable-next-line no-new-func
 const nodeCoordinatesCustomFn = new Function(`return ( 
 function nodeCoordinates(id, attributes, index, graph) {
   // / Your code goes here

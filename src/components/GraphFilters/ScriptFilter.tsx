@@ -4,7 +4,6 @@ import { isBoolean } from "lodash";
 import Highlight from "react-highlight";
 import cx from "classnames";
 
-import { ItemData, FullGraph } from "../../core/graph/types";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
@@ -14,12 +13,14 @@ import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditor
 import { useReadAtom } from "../../core/utils/atoms";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 
+// eslint-disable-next-line no-new-func
 const nodeFilterCustomFn = new Function(`return ( 
 function nodeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
 })`)();
 
+// eslint-disable-next-line no-new-func
 const edgeFilterCustomFn = new Function(`return ( 
 function edgeFilter(id, attributes, graph) {
   // Your code goes here
