@@ -20,6 +20,11 @@ export const indexAll: Producer<SearchState, []> = () => {
       ...graphDataset.edgeFields.filter((f) => f.quantitative).map((f) => f.id),
     ],
     storeFields: ["itemId", "id", "type"],
+    processTerm: (term, _fieldName) =>
+      term
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase(),
   });
 
   // TODO: this can be done async or in a web worker
