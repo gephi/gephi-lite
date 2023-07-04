@@ -1,6 +1,8 @@
 import cx from "classnames";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useMemo } from "react";
 
+import { useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
+import { getItemAttributes } from "../core/appearance/utils";
 import { NodeComponent } from "./Node";
 
 export const EdgeComponent: FC<{
@@ -24,4 +26,35 @@ export const EdgeComponent: FC<{
       </div>
     </div>
   );
+};
+
+export const EdgeComponentById: FC<{ id: string }> = ({ id }) => {
+  const graphDataset = useGraphDataset();
+  const visualGetters = useVisualGetters();
+  const filteredGraph = useFilteredGraph();
+
+  const data = useMemo(() => {
+    const source = getItemAttributes(
+      "nodes",
+      graphDataset.fullGraph.source(id),
+      filteredGraph,
+      graphDataset,
+      visualGetters,
+    );
+    const target = getItemAttributes(
+      "nodes",
+      graphDataset.fullGraph.target(id),
+      filteredGraph,
+      graphDataset,
+      visualGetters,
+    );
+    const data = getItemAttributes("edges", id, filteredGraph, graphDataset, visualGetters);
+    return {
+      ...data,
+      source,
+      target,
+    };
+  }, [id, graphDataset, visualGetters, filteredGraph]);
+
+  return <EdgeComponent {...data} />;
 };

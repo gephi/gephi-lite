@@ -61,6 +61,12 @@
   z-index: $zindex-modal + 1;
 }
 
+.hoverable:hover {
+  &:not(.disabled):not(disabled) {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+}
 /**
  * Vendors:
  */

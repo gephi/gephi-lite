@@ -612,5 +612,13 @@
         "waiting_validation": "Waiting validation"
       }
     }
+  },
+  "search": {
+    "placeholder" : "Search for nodes, edges ...",
+    "no_result": "No results",
+    "help": "Type something to search",
+    "other_result": "... and {{count}} other results",
+    "select_all_nodes": "Add {{count}} nodes in the selection",
+    "select_all_edges": "Add {{count}} edges in the selection"
   }
 }

@@ -22,8 +22,8 @@ export function useOpenGexf() {
         const response = await fetch(remote.url);
         const gexf = await response.text();
         const graph = parse(Graph, gexf);
-        setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
         resetStates();
+        setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
         addRemoteFile(remote);
         resetCamera({ forceRefresh: true });
       } catch (e) {

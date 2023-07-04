@@ -8,6 +8,7 @@ import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { selectionActions, selectionAtom } from "../selection";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
+import { searchActions, searchAtom } from "../search";
 
 /**
  * Helpers:
@@ -44,6 +45,7 @@ const ATOMS = {
   graphDataset: graphDatasetAtom,
   filteredGraph: filteredGraphAtom,
   visualGetters: visualGettersAtom,
+  searchAtom: searchAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -58,6 +60,7 @@ const CONTEXTS = {
   graphDataset: createContext(ATOMS.graphDataset),
   filteredGraph: createContext(ATOMS.filteredGraph),
   visualGetters: createContext(ATOMS.visualGetters),
+  searchAtom: createContext(ATOMS.searchAtom),
 };
 
 /**
@@ -88,6 +91,7 @@ export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
+export const useSearch = makeUseAtom(CONTEXTS.searchAtom);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
@@ -95,6 +99,7 @@ export const useSelectionActions = makeUseActions(selectionActions);
 export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);
+export const useSearchActions = makeUseActions(searchActions);
 
 export const useResetStates = () => {
   return () => {
@@ -102,5 +107,6 @@ export const useResetStates = () => {
     selectionActions.reset();
     appearanceActions.resetState();
     sigmaActions.resetState();
+    searchActions.reset();
   };
 };

@@ -15,9 +15,17 @@ import {
   TransformationMethod,
   VisualGetters,
 } from "./types";
-import { EdgeRenderingData, GraphDataset, ItemData, NodeRenderingData, SigmaGraph } from "../graph/types";
+import {
+  EdgeRenderingData,
+  GraphDataset,
+  DatalessGraph,
+  ItemData,
+  NodeRenderingData,
+  SigmaGraph,
+} from "../graph/types";
 import { toNumber, toString } from "../utils/casting";
 import { parse, stringify } from "../utils/json";
+import { ItemType } from "../types";
 
 export const DEFAULT_NODE_COLOR = "#999999";
 export const DEFAULT_EDGE_COLOR = "#cccccc";
@@ -310,4 +318,25 @@ export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState, draw: type
       edgeLabelSize = edgeLabelSize * Math.pow(data.size / data.rawSize, edgesLabelSize.zoomCorrelation);
     return draw(context, data, sourceData, targetData, { ...settings, edgeLabelSize });
   }) as typeof drawEdgeLabel;
+}
+
+export function getItemAttributes(
+  type: ItemType,
+  id: string,
+  filteredGraph: DatalessGraph,
+  graphDataset: GraphDataset,
+  visualGetters: VisualGetters,
+): { label: string | undefined; color: string; hidden?: boolean } {
+  const data = type === "nodes" ? graphDataset.nodeData[id] : graphDataset.edgeData[id];
+  const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
+  const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
+  const getColor = type === "nodes" ? visualGetters.getNodeColor : visualGetters.getEdgeColor;
+  const defaultColor = type === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
+  const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
+
+  return {
+    label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
+    color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
+    hidden,
+  };
 }

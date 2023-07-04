@@ -3,6 +3,7 @@ import { Coordinates } from "sigma/types";
 
 import { filtersAtom } from "../filters";
 import { appearanceAtom } from "../appearance";
+import { searchActions } from "../search";
 import { clearGraph } from "../../utils/graph";
 import { applyFilters } from "../filters/utils";
 import { FilteredGraph } from "../filters/types";
@@ -110,6 +111,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     const filtersState = filtersAtom.get();
     const newCache = applyFilters(graphDataset, filtersState.past, []);
     filteredGraphsAtom.set(newCache);
+  }
+
+  // When graph data changed, we reindex it for the search
+  if (updatedKeys.has("fullGraph")) {
+    searchActions.indexAll();
+  }
+
+  // When fields changed, we reindex because it changes the fiels to index
+  if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
+    searchActions.indexAll();
   }
 
   // Only "small enough" graphs are stored in the sessionStorage, because this

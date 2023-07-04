@@ -1,4 +1,4 @@
-import { groupBy, isEmpty, isNil, toPairs } from "lodash";
+import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { MdDeselect, MdSelectAll, MdFilterCenterFocus } from "react-icons/md";
@@ -10,34 +10,12 @@ import {
   useSelectionActions,
   useVisualGetters,
 } from "../../core/context/dataContexts";
-import { ItemType } from "../../core/types";
 import { NodeComponent } from "../../components/Node";
 import { EdgeComponent } from "../../components/Edge";
 import { ItemIcons } from "../../components/common-icons";
-import { VisualGetters } from "../../core/appearance/types";
-import { ItemData, GraphDataset, DatalessGraph, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
-import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../core/appearance/utils";
+import { ItemData, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
 
-function getItemAttributes(
-  type: ItemType,
-  id: string,
-  filteredGraph: DatalessGraph,
-  graphDataset: GraphDataset,
-  visualGetters: VisualGetters,
-): { label: string | undefined; color: string; hidden?: boolean } {
-  const data = type === "nodes" ? graphDataset.nodeData[id] : graphDataset.edgeData[id];
-  const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
-  const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
-  const getColor = type === "nodes" ? visualGetters.getNodeColor : visualGetters.getEdgeColor;
-  const defaultColor = type === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
-  const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
-
-  return {
-    label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
-    color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
-    hidden,
-  };
-}
+import { getItemAttributes } from "../../core/appearance/utils";
 
 function SelectedItem<
   T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },
