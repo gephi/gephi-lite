@@ -128,6 +128,11 @@ export function inferFieldType<T extends ItemType = ItemType>(
 export function initializeGraphDataset(graph: Graph): GraphDataset {
   const dataset = getEmptyGraphDataset();
 
+  // setting graph meta data
+  dataset.metadata.type = graph.type;
+  if (graph.hasAttribute("creator")) dataset.metadata.authors = graph.getAttribute("creator");
+  if (graph.hasAttribute("description")) dataset.metadata.description = graph.getAttribute("description");
+
   const nodeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachNode((node, attributes) => {
     const x = toNumber(attributes.x);

@@ -67,9 +67,7 @@ function SelectedItem<
       visualGetters,
     );
 
-    content = (
-      <EdgeComponent label={item.label} color={item.color} source={source} target={target} hidden={item.hidden} />
-    );
+    content = <EdgeComponent {...item} source={source} target={target} />;
   }
 
   return (

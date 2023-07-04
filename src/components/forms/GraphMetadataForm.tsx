@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
@@ -17,6 +17,10 @@ export const GraphMetadataForm: FC = () => {
   const { setGraphMeta } = useGraphDatasetActions();
   const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(metadata);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setGraphMetadata(metadata);
+  }, [metadata]);
 
   return (
     <form

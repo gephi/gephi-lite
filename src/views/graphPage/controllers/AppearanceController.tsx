@@ -2,7 +2,7 @@ import { FC, useEffect } from "react";
 import { useSigma } from "@react-sigma/core";
 
 import { memoizedBrighten } from "../../../utils/colors";
-import { useAppearance, useSelection, useSigmaState } from "../../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, useSelection, useSigmaState } from "../../../core/context/dataContexts";
 import {
   DEFAULT_EDGE_COLOR,
   DEFAULT_EDGE_SIZE,
@@ -15,11 +15,13 @@ export const AppearanceController: FC = () => {
   const sigma = useSigma();
   const selection = useSelection();
   const { showEdges } = useAppearance();
+  const { metadata } = useGraphDataset();
   const { highlightedNodes, highlightedEdges, hoveredNode } = useSigmaState();
 
   // Reducers:
   useEffect(() => {
     const graph = sigma.getGraph();
+    const edgeArrow = metadata.type !== "undirected";
 
     // what we've got in the state,
     //  or
@@ -74,7 +76,7 @@ export const AppearanceController: FC = () => {
       return res;
     });
     sigma.setSetting("edgeReducer", (id, { weight, ...attr }) => {
-      const res = { ...attr, size: weight } as Partial<CustomEdgeDisplayData>;
+      const res = { ...attr, size: weight, type: edgeArrow ? "arrow" : "line" } as Partial<CustomEdgeDisplayData>;
       res.zIndex = 0;
       res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
@@ -88,7 +90,7 @@ export const AppearanceController: FC = () => {
 
       return res;
     });
-  }, [highlightedEdges, highlightedNodes, hoveredNode, selection, showEdges, sigma]);
+  }, [highlightedEdges, highlightedNodes, hoveredNode, selection, showEdges, sigma, metadata.type]);
 
   return null;
 };

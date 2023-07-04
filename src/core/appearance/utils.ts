@@ -326,7 +326,7 @@ export function getItemAttributes(
   filteredGraph: DatalessGraph,
   graphDataset: GraphDataset,
   visualGetters: VisualGetters,
-): { label: string | undefined; color: string; hidden?: boolean } {
+): { label: string | undefined; color: string; hidden?: boolean; directed?: boolean } {
   const data = type === "nodes" ? graphDataset.nodeData[id] : graphDataset.edgeData[id];
   const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
   const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
@@ -338,5 +338,6 @@ export function getItemAttributes(
     label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
     color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
     hidden,
+    directed: graphDataset.metadata.type !== "undirected",
   };
 }

@@ -11,14 +11,15 @@ export const EdgeComponent: FC<{
   label: ReactNode;
   color: string;
   hidden?: boolean;
-}> = ({ label, color, source, target, hidden }) => {
+  directed?: boolean;
+}> = ({ label, color, source, target, hidden, directed }) => {
   return (
     <div className="d-flex flex-column">
       <div className="text-ellipsis">
         <NodeComponent {...source} />
       </div>
       <div>
-        <span className={cx(hidden ? "dotted" : "dash")} style={{ borderColor: color }} />{" "}
+        <span className={cx(hidden ? "dotted" : "dash", directed && "arrow")} style={{ borderColor: color }} />{" "}
         {label && <span className={cx(hidden && "text-muted")}>{label}</span>}
       </div>
       <div className="text-ellipsis">
