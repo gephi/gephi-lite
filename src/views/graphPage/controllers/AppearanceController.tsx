@@ -73,8 +73,8 @@ export const AppearanceController: FC = () => {
 
       return res;
     });
-    sigma.setSetting("edgeReducer", (id, attr) => {
-      const res = { ...attr } as Partial<CustomEdgeDisplayData>;
+    sigma.setSetting("edgeReducer", (id, { weight, ...attr }) => {
+      const res = { ...attr, size: weight } as Partial<CustomEdgeDisplayData>;
       res.zIndex = 0;
       res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 

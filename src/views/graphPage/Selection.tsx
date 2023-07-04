@@ -1,5 +1,5 @@
-import { groupBy, isEmpty, toPairs } from "lodash";
-import { FC, ReactNode } from "react";
+import { groupBy, isEmpty, isNil, toPairs } from "lodash";
+import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { MdDeselect, MdSelectAll, MdFilterCenterFocus } from "react-icons/md";
 
@@ -15,7 +15,7 @@ import { NodeComponent } from "../../components/Node";
 import { EdgeComponent } from "../../components/Edge";
 import { ItemIcons } from "../../components/common-icons";
 import { VisualGetters } from "../../core/appearance/types";
-import { ItemData, GraphDataset, DatalessGraph } from "../../core/graph/types";
+import { ItemData, GraphDataset, DatalessGraph, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../core/appearance/utils";
 
 function getItemAttributes(
@@ -39,15 +39,19 @@ function getItemAttributes(
   };
 }
 
-function SelectedItem({
+function SelectedItem<
+  T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },
+>({
   type,
   id,
   data,
+  renderingData,
   selectionSize,
 }: {
-  type: ItemType;
+  type: T["type"];
   id: string;
   data: ItemData;
+  renderingData: T["data"];
   selectionSize?: number;
 }) {
   const { t } = useTranslation();
@@ -55,6 +59,15 @@ function SelectedItem({
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
   const { select, unselect } = useSelectionActions();
+  const pairs = useMemo(
+    () =>
+      selectionSize === 1
+        ? [[t(`selection.${type}_id`) as string, id], ...toPairs(data), ...toPairs(renderingData)].filter(
+            ([, value]) => !isNil(value),
+          )
+        : null,
+    [data, id, renderingData, selectionSize, t, type],
+  );
 
   const item = getItemAttributes(type, id, filteredGraph, graphDataset, visualGetters);
   let content: ReactNode;
@@ -83,7 +96,7 @@ function SelectedItem({
 
   return (
     <li className={`selected-${type}-item mt-2`}>
-      <h4 className="fs-6 d-flex flex-row align-items-center">
+      <h4 className="fs-6 d-flex flex-row align-items-center mb-0">
         <div className="flex-grow-1 flex-shrink-1 text-ellipsis" title={item.label}>
           {content}
         </div>
@@ -106,18 +119,15 @@ function SelectedItem({
           </button>
         )}
       </h4>
-      {selectionSize === 1 &&
-        (!isEmpty(data) ? (
-          <ul className="ms-4 list-unstyled">
-            {toPairs(data).map(([key, value]) => (
-              <li key={key}>
-                <span className="text-muted">{key}:</span> {value}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <span className="text-muted fst-italic">{t(`selection.empty_${type}`)}</span>
-        ))}
+      {pairs && (
+        <ul className="ms-4 list-unstyled small">
+          {pairs.map(([key, value], i) => (
+            <li key={i}>
+              <span className="text-muted">{key}:</span> {value}
+            </li>
+          ))}
+        </ul>
+      )}
     </li>
   );
 }
@@ -126,7 +136,7 @@ export const Selection: FC = () => {
   const { t } = useTranslation();
   const { type, items } = useSelection();
   const { select, reset } = useSelectionActions();
-  const { nodeData, edgeData } = useGraphDataset();
+  const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
   const filteredGraph = useFilteredGraph();
 
   const ItemIcon = ItemIcons[type];
@@ -164,6 +174,7 @@ export const Selection: FC = () => {
             type={type}
             selectionSize={items.size}
             data={type === "nodes" ? nodeData[item] : edgeData[item]}
+            renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
           />
         ))}
       </ul>
@@ -195,6 +206,7 @@ export const Selection: FC = () => {
                 type={type}
                 selectionSize={items.size}
                 data={type === "nodes" ? nodeData[item] : edgeData[item]}
+                renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
               />
             ))}
           </ul>

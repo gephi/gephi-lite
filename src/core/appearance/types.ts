@@ -104,19 +104,6 @@ export interface VisualGetters {
  * This types override RenderingData from sigma, with additional attributes used
  * in Gephi Lite:
  */
-export interface EdgeRenderingData {
-  label?: string | null;
-  color?: string;
-  size?: number;
-}
-export interface NodeRenderingData {
-  label?: string | null;
-  color?: string;
-  size?: number;
-  x: number;
-  y: number;
-}
-
 export type CustomNodeDisplayData = NodeDisplayData & {
   rawSize: number;
   borderColor?: string;

@@ -29,9 +29,9 @@ export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
  */
 export interface EdgeRenderingData {
   label?: string | null;
-  size?: number;
   color?: string;
-  rawSize?: number;
+  weight?: number;
+  rawWeight?: number;
 }
 export interface NodeRenderingData {
   label?: string | null;

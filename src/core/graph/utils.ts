@@ -157,10 +157,10 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
     const renderingData: EdgeRenderingData = {
       label: typeof attributes.label === "string" ? attributes.label : undefined,
       color: typeof attributes.color === "string" ? attributes.color : undefined,
-      size: toNumber(attributes.weight),
+      weight: toNumber(attributes.weight),
     };
 
-    const edgeData: ItemData = mapValues(omit(attributes, "label", "color", "size", "x", "y"), (v) => toScalar(v));
+    const edgeData: ItemData = mapValues(omit(attributes, "label", "color", "weight", "x", "y"), (v) => toScalar(v));
     for (const key in edgeData) {
       edgeAttributeValues[key] = edgeAttributeValues[key] || [];
       edgeAttributeValues[key].push(edgeData[key]);

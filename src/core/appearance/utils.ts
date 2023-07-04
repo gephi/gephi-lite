@@ -62,17 +62,6 @@ export function getEmptyAppearanceState(): AppearanceState {
   };
 }
 
-export function getEmptyVisualGetters(): VisualGetters {
-  return {
-    getNodeSize: null,
-    getNodeColor: null,
-    getNodeLabel: null,
-    getEdgeSize: null,
-    getEdgeColor: null,
-    getEdgeLabel: null,
-  };
-}
-
 /**
  * Appearance lifecycle helpers (state serialization / deserialization):
  */
@@ -279,9 +268,9 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
   graph.forEachEdge((edge) => {
     const attr: Partial<EdgeRenderingData> = {};
     if (getters.getEdgeSize) {
-      attr.size = getters.getEdgeSize(dataset.edgeData[edge]);
-      // store raw size to compute label size independent to zoom
-      attr.rawSize = attr.size;
+      attr.weight = getters.getEdgeSize(dataset.edgeData[edge]);
+      // store raw weight to compute label size independent to zoom
+      attr.rawWeight = attr.weight;
     }
     if (getters.getEdgeColor) attr.color = getters.getEdgeColor(dataset.edgeData[edge], edge);
     if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(dataset.edgeData[edge]);
