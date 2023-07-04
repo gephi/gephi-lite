@@ -112,7 +112,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         console.error(e);
         notify({
           type: "error",
-          message: t("init.cannot_load_remote", { url: gexfUrl }) as string,
+          message: t("graph.open.remote.error") as string,
           title: t("gephi-lite.title") as string,
         });
       }

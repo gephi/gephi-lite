@@ -32,7 +32,7 @@
     "file-saver": "^2.0.5",
     "graphology": "^0.25.1",
     "graphology-communities-louvain": "^2.0.1",
-    "graphology-gexf": "^0.10.3",
+    "graphology-gexf": "^0.11.0",
     "graphology-layout": "^0.6.1",
     "graphology-layout-force": "^0.2.4",
     "graphology-layout-forceatlas2": "^0.10.1",
