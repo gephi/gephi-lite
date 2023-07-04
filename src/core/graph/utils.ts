@@ -225,8 +225,10 @@ export function dataGraphToSigmaGraph(
   graph: DatalessGraph = fullGraph,
 ) {
   const res: SigmaGraph = new MultiGraph<NodeRenderingData, EdgeRenderingData>();
-  graph.forEachNode((node) => res.addNode(node, nodeRenderingData[node]));
-  graph.forEachEdge((edge, _, source, target) => res.addEdgeWithKey(edge, source, target, edgeRenderingData[edge]));
+  graph.forEachNode((node) => res.addNode(node, { ...nodeRenderingData[node] }));
+  graph.forEachEdge((edge, _, source, target) =>
+    res.addEdgeWithKey(edge, source, target, { ...edgeRenderingData[edge] }),
+  );
   return res;
 }
 
