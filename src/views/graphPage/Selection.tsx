@@ -2,6 +2,7 @@ import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { MdDeselect, MdSelectAll, MdFilterCenterFocus } from "react-icons/md";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 import {
   useFilteredGraph,
@@ -13,9 +14,32 @@ import {
 import { NodeComponent } from "../../components/Node";
 import { EdgeComponent } from "../../components/Edge";
 import { ItemIcons } from "../../components/common-icons";
-import { ItemData, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
+import { VisualGetters } from "../../core/appearance/types";
+import { ItemData, GraphDataset, DatalessGraph, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
+import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../core/appearance/utils";
+import Dropdown from "../../components/Dropdown";
+import { ItemType } from "../../core/types";
 
-import { getItemAttributes } from "../../core/appearance/utils";
+function getItemAttributes(
+  type: ItemType,
+  id: string,
+  filteredGraph: DatalessGraph,
+  graphDataset: GraphDataset,
+  visualGetters: VisualGetters,
+): { label: string | undefined; color: string; hidden?: boolean } {
+  const data = type === "nodes" ? graphDataset.nodeData[id] : graphDataset.edgeData[id];
+  const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
+  const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
+  const getColor = type === "nodes" ? visualGetters.getNodeColor : visualGetters.getEdgeColor;
+  const defaultColor = type === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
+  const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
+
+  return {
+    label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
+    color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
+    hidden,
+  };
+}
 
 function SelectedItem<
   T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },
@@ -77,23 +101,31 @@ function SelectedItem<
           {content}
         </div>
 
-        <button
-          title={t(`selection.unselect_${type}`) as string}
-          className="btn btn-sm btn-outline-dark ms-1 flex-shrink-0"
-          onClick={() => unselect({ type, items: new Set([id]) })}
+        <Dropdown
+          options={[
+            {
+              label: (
+                <>
+                  <MdDeselect className="me-2" /> {t(`selection.unselect_${type}`)}
+                </>
+              ),
+              onClick: () => unselect({ type, items: new Set([id]) }),
+            },
+            {
+              label: (
+                <>
+                  <MdFilterCenterFocus className="me-2" /> {t(`selection.focus_${type}`)}
+                </>
+              ),
+              onClick: () => select({ type, items: new Set([id]), replace: true }),
+              disabled: item.hidden || selectionSize === 1,
+            },
+          ]}
         >
-          <MdDeselect />
-        </button>
-        {!item.hidden && (
-          <button
-            title={t(`selection.focus_${type}`) as string}
-            className="btn btn-sm btn-outline-dark ms-1 flex-shrink-0"
-            onClick={() => select({ type, items: new Set([id]), replace: true })}
-            disabled={selectionSize === 1}
-          >
-            <MdFilterCenterFocus />
+          <button className="btn btn-sm btn-outline-dark ms-1 flex-shrink-0">
+            <BsThreeDotsVertical />
           </button>
-        )}
+        </Dropdown>
       </h4>
       {pairs && (
         <ul className="ms-4 list-unstyled small">
