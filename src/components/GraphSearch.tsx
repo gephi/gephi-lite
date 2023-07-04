@@ -6,7 +6,7 @@ import { debounce } from "lodash";
 import { useTranslation } from "react-i18next";
 
 import { ItemType } from "../core/types";
-import { useSearch, useSelectionActions } from "../core/context/dataContexts";
+import { useSearch, useSelectionActions, useAppearance } from "../core/context/dataContexts";
 import { SearchIcon } from "./common-icons";
 import { NodeComponentById } from "./Node";
 import { EdgeComponentById } from "./Edge";
@@ -66,6 +66,7 @@ export const GraphSearch: FC<{ className?: string }> = ({ className }) => {
   const { t } = useTranslation();
   const { index } = useSearch();
   const { select } = useSelectionActions();
+  const { nodesLabel, edgesLabel } = useAppearance();
 
   /**
    * What we do when user select an item in the list
@@ -89,7 +90,15 @@ export const GraphSearch: FC<{ className?: string }> = ({ className }) => {
    */
   const loadOptions = useCallback(
     (query: string, callback: (options: Option[]) => void) => {
-      const searchResult = index.search(query, { prefix: true, fuzzy: 0.2 });
+      const searchResult = index.search(query, {
+        prefix: true,
+        fuzzy: 0.2,
+        boost: {
+          ...(nodesLabel.type === "field" ? { [nodesLabel.field]: 2 } : { label: 2 }),
+          ...(edgesLabel.type === "field" ? { [edgesLabel.field]: 2 } : { label: 2 }),
+        },
+      });
+
       const result: Option[] = searchResult
         .slice(0, RESULT_MAX_SIZE - 1)
         .map((item) => ({ id: item.id, type: item.type }));
@@ -136,7 +145,7 @@ export const GraphSearch: FC<{ className?: string }> = ({ className }) => {
 
       callback(result);
     },
-    [index, select],
+    [index, select, nodesLabel, edgesLabel],
   );
 
   return (
