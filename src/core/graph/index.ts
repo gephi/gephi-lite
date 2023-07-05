@@ -1,4 +1,4 @@
-import { last, mapValues, isNil } from "lodash";
+import { last, mapValues, isNil, omit } from "lodash";
 import { Coordinates } from "sigma/types";
 import { Attributes } from "graphology-types";
 
