@@ -89,7 +89,7 @@ const InteractionsController: FC = () => {
 
 const GraphCaptionLayer: FC = () => {
   return (
-    <div className="position-absolute" style={{ left: 10, bottom: 10 }}>
+    <div className="position-absolute sigma-controls" style={{ left: 10, bottom: 10 }}>
       <GraphCaption minimal />
     </div>
   );

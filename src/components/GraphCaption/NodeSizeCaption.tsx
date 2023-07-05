@@ -1,15 +1,15 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import { GraphCaptionProps } from ".";
+import { GraphCaptionProps, RangeExtends } from ".";
 import { Size } from "../../core/appearance/types";
 import { shortenNumber } from "../GraphFilters/utils";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
 
-const NodeSizeCaption: FC<
+const NodesSizeCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
     nodesSize: Size;
-    range?: { min: number; max: number };
+    extend?: RangeExtends;
   }
-> = ({ minimal, nodesSize, range }) => {
+> = ({ minimal, nodesSize, extend }) => {
   const sigma = useSigmaAtom();
   // update nodeSize Size to camera updates from Sigma
   const { getNodeSize } = useVisualGetters();
@@ -25,15 +25,15 @@ const NodeSizeCaption: FC<
   >(undefined);
 
   const refreshState = useCallback(() => {
-    if (!sigma || !nodesSize.field || !range || !getNodeSize || !range) return null;
+    if (!sigma || !nodesSize.field || !extend || !getNodeSize || !extend) return null;
 
     setNodeSizeState({
-      minValue: range.min,
-      minRadius: sigma.scaleSize(getNodeSize({ [nodesSize.field]: range.min })),
-      maxValue: range.max,
-      maxRadius: sigma.scaleSize(getNodeSize({ [nodesSize.field]: range.max })),
+      minValue: extend.min,
+      minRadius: sigma.scaleSize(getNodeSize({ [nodesSize.field]: extend.min })),
+      maxValue: extend.max,
+      maxRadius: sigma.scaleSize(getNodeSize({ [nodesSize.field]: extend.max })),
     });
-  }, [getNodeSize, sigma, nodesSize.field, range]);
+  }, [getNodeSize, sigma, nodesSize.field, extend]);
 
   // Refresh caption when metric changes:
   useEffect(() => {
@@ -51,10 +51,10 @@ const NodeSizeCaption: FC<
   if (nodesSize.field) {
     return (
       <div className="graph-caption-item">
-        <h4 className="fs-6">{nodesSize.field}:</h4>
+        <h4 className="fs-6">{nodesSize.field}</h4>
         {nodeSizeState && (
           <div className="node-sizes">
-            <div>
+            <div className="node-size">
               <div className="circle-wrapper">
                 <div
                   className="dotted-circle"
@@ -63,7 +63,7 @@ const NodeSizeCaption: FC<
               </div>
               <div className="caption text-center">{shortenNumber(nodeSizeState?.minValue)}</div>
             </div>
-            <div className="ms-2">
+            <div className="node-size">
               <div className="circle-wrapper">
                 <div
                   className="dotted-circle"
@@ -79,4 +79,4 @@ const NodeSizeCaption: FC<
   } else return null;
 };
 
-export default NodeSizeCaption;
+export default NodesSizeCaption;
