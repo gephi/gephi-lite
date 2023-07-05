@@ -155,6 +155,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             type="number"
             id="updateNode-size"
             className="form-control flex-grow-1 ms-2"
+            step="any"
             min={0}
             {...register("size", { min: 0 })}
           />
@@ -170,13 +171,25 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
           <label htmlFor="updateNode-x" className="form-label mb-0 flex-shrink-0">
             {t("graph.model.nodes-data.x")}
           </label>
-          <input type="number" id="updateNode-x" className="form-control flex-grow-1 ms-2" {...register("x")} />
+          <input
+            type="number"
+            id="updateNode-x"
+            className="form-control flex-grow-1 ms-2"
+            step="any"
+            {...register("x")}
+          />
         </div>
         <div className="col-md-4 d-flex flex-row align-items-center">
           <label htmlFor="updateNode-y" className="form-label mb-0 flex-shrink-0">
             {t("graph.model.nodes-data.y")}
           </label>
-          <input type="number" id="updateNode-y" className="form-control flex-grow-1 ms-2" {...register("y")} />
+          <input
+            type="number"
+            id="updateNode-y"
+            className="form-control flex-grow-1 ms-2"
+            step="any"
+            {...register("y")}
+          />
         </div>
 
         {/* Other attributes */}

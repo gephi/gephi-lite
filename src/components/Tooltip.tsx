@@ -1,8 +1,11 @@
-import { FC, ReactNode, useEffect, useRef, useState } from "react";
+import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 import TetherComponent from "react-tether";
 import Tether from "tether";
 
-const Tooltip: FC<
+export type TooltipAPI = { close: () => void; open: () => void };
+
+const Tooltip = forwardRef<
+  TooltipAPI,
   {
     children: [ReactNode, ReactNode];
     hoverable?: boolean;
@@ -13,11 +16,17 @@ const Tooltip: FC<
       "attachment" | "constraints" | "offset" | "targetAttachment" | "targetOffset" | "targetModifier"
     >
   >
-> = ({ children: [target, content], hoverable, closeOnClickContent, ...tether }) => {
+>(({ children: [target, content], hoverable, closeOnClickContent, ...tether }, ref) => {
   const [showTooltip, setShowTooltip] = useState<null | "click" | "hover">(null);
 
   const targetWrapper = useRef<HTMLDivElement>(null);
   const tooltipWrapper = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const value = { close: () => setShowTooltip(null), open: () => setShowTooltip("click") };
+    if (typeof ref === "function") ref(value);
+    else if (ref) ref.current = value;
+  }, [ref]);
 
   // Handle interactions:
   useEffect(() => {
@@ -83,6 +92,6 @@ const Tooltip: FC<
       }
     />
   );
-};
+});
 
 export default Tooltip;

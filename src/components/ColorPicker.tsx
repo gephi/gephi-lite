@@ -1,14 +1,17 @@
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { SketchPicker } from "react-color";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
-import Tooltip from "./Tooltip";
+import Tooltip, { TooltipAPI } from "./Tooltip";
 
 const ColorPicker: FC<
   | { color: string | undefined; onChange: (color: string | undefined) => void; clearable: true }
   | { color: string; onChange: (color: string) => void; clearable?: false }
 > = ({ color, onChange, clearable }) => {
+  const tooltipRef = useRef<TooltipAPI>(null);
+
   return (
-    <Tooltip attachment="top middle" targetAttachment="bottom middle">
+    <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle">
       <button
         type="button"
         className="btn btn-sm btn-outline-dark d-inline-block h-100 rounded-pill"
@@ -19,9 +22,7 @@ const ColorPicker: FC<
       <div className="custom-color-picker">
         <SketchPicker
           color={color}
-          onChangeComplete={(color) => {
-            onChange(color.hex);
-          }}
+          onChange={(color) => onChange(color.hex)}
           styles={{
             default: {
               picker: {
@@ -31,6 +32,16 @@ const ColorPicker: FC<
             },
           }}
         />
+        <div className="text-end">
+          {clearable && (
+            <button className="btn btn-sm btn-outline-dark ms-2" onClick={() => onChange(undefined)}>
+              <AiOutlineClose />
+            </button>
+          )}
+          <button className="btn btn-sm btn-primary ms-2" onClick={() => tooltipRef.current?.close()}>
+            <AiOutlineCheck />
+          </button>
+        </div>
       </div>
     </Tooltip>
   );

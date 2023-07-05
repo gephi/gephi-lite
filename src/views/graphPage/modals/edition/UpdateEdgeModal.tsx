@@ -208,6 +208,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             id="updateEdge-weight"
             className="form-control flex-grow-1 ms-2"
             min={0}
+            step="any"
             {...register("weight", { min: 0 })}
           />
           <button
