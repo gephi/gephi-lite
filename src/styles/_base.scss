@@ -73,30 +73,29 @@
   z-index: $zindex-dropdown !important;
 }
 
-
 .edge {
   display: flex;
   flex-direction: column;
   align-items: center;
   flex-grow: 0;
   flex-shrink: 0;
-  width:1em;
+  width: 1em;
 
   .edge-body {
     flex-grow: 1;
     flex-shrink: 1;
-    min-height: .6em;
+    min-height: 0.6em;
   }
   .edge-arrow {
     width: 0;
     height: 0;
-    border-left: .3em solid transparent;
+    border-left: 0.3em solid transparent;
     border-left-width: 0.3em;
-    border-right: .3em solid transparent;
+    border-right: 0.3em solid transparent;
     border-right-width: 0.3em;
-    border-top: .6em solid red;
+    border-top: 0.6em solid red;
     flex-shrink: 0;
-    border-left-width: .3em;
-    border-right-width: .3em; 
+    border-left-width: 0.3em;
+    border-right-width: 0.3em;
   }
 }

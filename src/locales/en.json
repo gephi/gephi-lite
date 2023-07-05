@@ -88,6 +88,7 @@
     "empty_nodes": "This node has no attribute",
     "empty_edges": "This edge has no attribute",
     "node_no_label": "(Empty label)",
+    "edge_no_label": "(Empty label)",
     "locate_on_graph": "Locate on the graph"
   },
   "appearance": {
@@ -662,7 +663,7 @@
     }
   },
   "search": {
-    "placeholder" : "Search for nodes, edges ...",
+    "placeholder": "Search for nodes, edges ...",
     "no_result": "No results",
     "help": "Type something to search",
     "other_result": "... and {{count}} other results",

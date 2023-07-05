@@ -18,36 +18,13 @@ import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 import { NodeComponent } from "../../components/Node";
 import { EdgeComponent } from "../../components/Edge";
 import { ItemIcons } from "../../components/common-icons";
-import { VisualGetters } from "../../core/appearance/types";
-import { ItemData, GraphDataset, DatalessGraph, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
-import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../core/appearance/utils";
+import { ItemData, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
+import { getItemAttributes } from "../../core/appearance/utils";
 import Dropdown from "../../components/Dropdown";
-import { ItemType } from "../../core/types";
 import { useModal } from "../../core/modals";
 import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
 import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
 import ConfirmModal from "./modals/ConfirmModal";
-
-function getItemAttributes(
-  type: ItemType,
-  id: string,
-  filteredGraph: DatalessGraph,
-  graphDataset: GraphDataset,
-  visualGetters: VisualGetters,
-): { label: string | undefined; color: string; hidden?: boolean } {
-  const data = type === "nodes" ? graphDataset.nodeData[id] : graphDataset.edgeData[id];
-  const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
-  const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
-  const getColor = type === "nodes" ? visualGetters.getNodeColor : visualGetters.getEdgeColor;
-  const defaultColor = type === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
-  const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
-
-  return {
-    label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
-    color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
-    hidden,
-  };
-}
 
 function SelectedItem<
   T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },
@@ -218,7 +195,7 @@ export const Selection: FC = () => {
   return (
     <>
       <h3 className="fs-5 d-flex flex-row align-items-center mb-0">
-        <div className="flex-grow-1 flex-shrink-1 text-ellipsis">
+        <div className="flex-grow-1 flex-shrink-1 text-ellipsis d-flex flex-row align-items-center ">
           <ItemIcon className="me-1" />
           {t(hidden.length ? `selection.visible_${type}` : `selection.${type}`, { count: visible.length })}
         </div>
