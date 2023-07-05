@@ -22,6 +22,7 @@ export function useOpenGexf() {
         const response = await fetch(remote.url);
         const gexf = await response.text();
         const graph = parse(Graph, gexf, { allowUndeclaredAttributes: true });
+        graph.setAttribute("title", remote.filename);
         resetStates();
         setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
         addRemoteFile(remote);
@@ -43,6 +44,7 @@ export function useOpenGexf() {
       try {
         const content = await file.source.text();
         const graph = parse(Graph, content, { allowUndeclaredAttributes: true });
+        graph.setAttribute("title", file.filename);
         setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
         resetStates();
         resetCamera({ forceRefresh: true });

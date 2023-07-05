@@ -130,6 +130,8 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
 
   // setting graph meta data
   dataset.metadata.type = graph.type;
+  if (graph.hasAttribute("title")) dataset.metadata.title = graph.getAttribute("title");
+  if (graph.hasAttribute("keywords")) dataset.metadata.keywords = graph.getAttribute("keywords");
   if (graph.hasAttribute("creator")) dataset.metadata.authors = graph.getAttribute("creator");
   if (graph.hasAttribute("description")) dataset.metadata.description = graph.getAttribute("description");
 

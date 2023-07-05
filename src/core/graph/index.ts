@@ -1,4 +1,4 @@
-import { last, mapValues } from "lodash";
+import { last, mapValues, isNil } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { filtersAtom } from "../filters";
@@ -121,6 +121,11 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When fields changed, we reindex because it changes the fiels to index
   if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
     searchActions.indexAll();
+  }
+
+  // When graph meta change, we set the page meta data
+  if (updatedKeys.has("metadata")) {
+    document.title = ["Gephi Lite", graphDataset.metadata.title].filter((s) => !isNil(s)).join(" - ");
   }
 
   // Only "small enough" graphs are stored in the sessionStorage, because this
