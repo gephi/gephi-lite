@@ -47,7 +47,7 @@ const GephiLiteButton: FC = () => {
 };
 
 export const GraphPage: FC = () => {
-  const [contextOpened, setContextOpened] = useState<boolean>(false);
+  const [contextOpened, setContextOpened] = useState<boolean>(window.innerWidth >= 1200);
   const { t } = useTranslation();
   const { openModal } = useModal();
   const filterState = useFilters();
