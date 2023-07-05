@@ -45,7 +45,7 @@ const ATOMS = {
   graphDataset: graphDatasetAtom,
   filteredGraph: filteredGraphAtom,
   visualGetters: visualGettersAtom,
-  searchAtom: searchAtom,
+  search: searchAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -60,7 +60,7 @@ const CONTEXTS = {
   graphDataset: createContext(ATOMS.graphDataset),
   filteredGraph: createContext(ATOMS.filteredGraph),
   visualGetters: createContext(ATOMS.visualGetters),
-  searchAtom: createContext(ATOMS.searchAtom),
+  search: createContext(ATOMS.search),
 };
 
 /**
@@ -91,7 +91,7 @@ export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
-export const useSearch = makeUseAtom(CONTEXTS.searchAtom);
+export const useSearch = makeUseAtom(CONTEXTS.search);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
