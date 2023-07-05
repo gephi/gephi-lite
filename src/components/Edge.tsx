@@ -13,16 +13,20 @@ export const EdgeComponent: FC<{
   hidden?: boolean;
   directed?: boolean;
 }> = ({ label, color, source, target, hidden, directed }) => {
+  const vizSize = "0.7em";
   return (
     <div className="d-flex flex-column">
-      <div className="text-ellipsis">
+      <div className="text-ellipsis small">
         <NodeComponent {...source} />
       </div>
-      <div>
-        <span className={cx(hidden ? "dotted" : "dash", directed && "arrow")} style={{ borderColor: color }} />{" "}
-        {label && <span className={cx(hidden && "text-muted")}>{label}</span>}
+      <div className="d-flex justify-content-start align-items-center">
+        <div className="edge flex-grow-0 me-1 ">
+          <span className={cx(hidden ? "dotted" : "dash", "edge-body")} style={{ borderColor: color }} />{" "}
+          {directed && <span className={cx("edge-arrow")} style={{ borderTopColor: color }} />}
+        </div>
+        {label && <span className={cx(hidden && "text-muted flex-grow-1")}>{label}</span>}
       </div>
-      <div className="text-ellipsis">
+      <div className="text-ellipsis small">
         <NodeComponent {...target} />
       </div>
     </div>
