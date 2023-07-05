@@ -12,6 +12,7 @@ import { Producer, producerToAction } from "../utils/reducers";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
+import { ItemType } from "../types";
 
 /**
  * Producers:
@@ -47,6 +48,13 @@ const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = 
       ...data,
       ...(positions[id] || {}),
     })),
+  });
+};
+
+const deleteItems: Producer<GraphDataset, [ItemType, string[]]> = (type, ids) => {
+  console.log("TODO: Delete items", type, ids);
+  return (state) => ({
+    ...state,
   });
 };
 
@@ -93,6 +101,7 @@ export const graphDatasetActions = {
   setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
   setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
   setNodePositions: producerToAction(setNodePositions, graphDatasetAtom),
+  deleteItems: producerToAction(deleteItems, graphDatasetAtom),
 };
 
 /**

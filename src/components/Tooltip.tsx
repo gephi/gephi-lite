@@ -21,10 +21,8 @@ const Tooltip: FC<{
         setShowTooltip(null);
       }
     };
-    const handleClickBody = (e: MouseEvent) => {
-      if (showTooltip && tooltipWrapper.current && !tooltipWrapper.current.contains(e.target as Node)) {
-        setShowTooltip(null);
-      }
+    const handleClickBody = () => {
+      setShowTooltip(null);
     };
 
     setTimeout(() => {

@@ -1,27 +1,56 @@
 import { FC } from "react";
 import { capitalize } from "lodash";
 import { useTranslation } from "react-i18next";
+import { AiOutlinePlus } from "react-icons/ai";
 
 import { Selection } from "./Selection";
 import { GraphSearch } from "../../components/GraphSearch";
 import { ContextIcon } from "../../components/common-icons";
 import { useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { ItemType } from "../../core/types";
+import { useModal } from "../../core/modals";
+import CreateNodeModal from "./modals/edition/CreateNodeModal";
+import CreateEdgeModal from "./modals/edition/CreateEdgeModal";
 
-const GraphStat: FC<{ label: string; current: number; total: number }> = ({ label, current, total }) => (
-  <div>
-    <span className="fs-5">
-      {label} {current}
-      {current !== total && (
-        <>
-          <span className="small">
-            /{total}
-            <span className="ms-2 text-muted">({((current / total) * 100).toFixed(0)}%)</span>
-          </span>
-        </>
-      )}{" "}
-    </span>
-  </div>
-);
+const GraphStat: FC<{ type: ItemType; current: number; total: number }> = ({ type, current, total }) => {
+  const { t } = useTranslation();
+  const { openModal } = useModal();
+
+  return (
+    <div className="d-flex flex-row mb-2">
+      <span className="fs-5 flex-grow-1">
+        {capitalize(t(`graph.model.${type}`) as string) + ":"} {current}
+        {current !== total && (
+          <>
+            <span className="small">
+              /{total}
+              <span className="ms-2 text-muted">({((current / total) * 100).toFixed(0)}%)</span>
+            </span>
+          </>
+        )}
+      </span>
+      <button
+        className="btn btn-outline-dark btn-sm ms-1 flex-shrink-0"
+        title={t(`edition.create_${type}`) as string}
+        onClick={() => {
+          openModal(
+            type === "nodes"
+              ? {
+                  component: CreateNodeModal,
+                  arguments: {},
+                }
+              : {
+                  component: CreateEdgeModal,
+                  arguments: {},
+                },
+          );
+        }}
+      >
+        <AiOutlinePlus />
+      </button>
+    </div>
+  );
+};
 
 export const ContextPanel: FC = () => {
   const { t } = useTranslation();
@@ -35,16 +64,9 @@ export const ContextPanel: FC = () => {
         {metadata.title || t("context.title")}
       </h2>
       <hr />
-      <GraphStat
-        label={capitalize(t("graph.model.nodes") as string) + ":"}
-        current={filteredGraph.order}
-        total={fullGraph.order}
-      />
-      <GraphStat
-        label={capitalize(t("graph.model.edges") as string) + ":"}
-        current={filteredGraph.size}
-        total={fullGraph.size}
-      />
+
+      <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} />
+      <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
       <hr />
 
       <GraphSearch />

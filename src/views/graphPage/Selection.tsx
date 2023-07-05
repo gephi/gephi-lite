@@ -2,11 +2,13 @@ import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { MdDeselect, MdSelectAll, MdFilterCenterFocus } from "react-icons/md";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsThreeDotsVertical, BsFillTrashFill } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
 
 import {
   useFilteredGraph,
   useGraphDataset,
+  useGraphDatasetActions,
   useSelection,
   useSelectionActions,
   useVisualGetters,
@@ -19,6 +21,10 @@ import { ItemData, GraphDataset, DatalessGraph, NodeRenderingData, EdgeRendering
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../core/appearance/utils";
 import Dropdown from "../../components/Dropdown";
 import { ItemType } from "../../core/types";
+import { useModal } from "../../core/modals";
+import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
+import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
+import ConfirmModal from "./modals/ConfirmModal";
 
 function getItemAttributes(
   type: ItemType,
@@ -57,9 +63,12 @@ function SelectedItem<
   selectionSize?: number;
 }) {
   const { t } = useTranslation();
+  const { openModal } = useModal();
+
   const graphDataset = useGraphDataset();
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
+  const { deleteItems } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
   const pairs = useMemo(
     () =>
@@ -120,9 +129,40 @@ function SelectedItem<
               onClick: () => select({ type, items: new Set([id]), replace: true }),
               disabled: item.hidden || selectionSize === 1,
             },
+            { type: "divider" },
+            {
+              label: (
+                <>
+                  <AiFillEdit className="me-2" /> {t(`edition.update_this_${type}`)}
+                </>
+              ),
+              onClick: () =>
+                type === "nodes"
+                  ? openModal({ component: UpdateNodeModal, arguments: { nodeId: id } })
+                  : openModal({ component: UpdateEdgeModal, arguments: { edgeId: id } }),
+            },
+            {
+              label: (
+                <>
+                  <BsFillTrashFill className="me-2" /> {t(`edition.delete_this_${type}`)}
+                </>
+              ),
+              onClick: () => {
+                openModal({
+                  component: ConfirmModal,
+                  arguments: {
+                    title: t(`edition.delete_${type}`, { count: 0 }),
+                    message: t(`edition.confirm_delete_${type}`, { count: 1 }),
+                  },
+                  afterSubmit: () => {
+                    deleteItems(type, [id]);
+                  },
+                });
+              },
+            },
           ]}
         >
-          <button className="btn btn-sm btn-outline-dark ms-1 flex-shrink-0">
+          <button className="btn btn-sm ms-1 flex-shrink-0">
             <BsThreeDotsVertical />
           </button>
         </Dropdown>
@@ -142,9 +182,12 @@ function SelectedItem<
 
 export const Selection: FC = () => {
   const { t } = useTranslation();
+  const { openModal } = useModal();
+
   const { type, items } = useSelection();
   const { select, reset } = useSelectionActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
+  const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
 
   const ItemIcon = ItemIcons[type];
@@ -155,24 +198,63 @@ export const Selection: FC = () => {
 
   return (
     <>
-      <h3 className="fs-5">
-        <ItemIcon className="me-1" />
-        {t(hidden.length ? `selection.visible_${type}` : `selection.${type}`, { count: visible.length })}
-      </h3>
+      <h3 className="fs-5 d-flex flex-row align-items-center mb-0">
+        <div className="flex-grow-1 flex-shrink-1 text-ellipsis">
+          <ItemIcon className="me-1" />
+          {t(hidden.length ? `selection.visible_${type}` : `selection.${type}`, { count: visible.length })}
+        </div>
 
-      <div>
-        <button
-          className="btn btn-sm btn-outline-dark mb-1 me-1"
-          onClick={() =>
-            select({ type, items: new Set<string>(type === "nodes" ? filteredGraph.nodes() : filteredGraph.edges()) })
-          }
+        <Dropdown
+          options={[
+            {
+              label: (
+                <>
+                  <MdSelectAll className="me-1" /> {t("selection.select_all")}
+                </>
+              ),
+              onClick: () =>
+                select({
+                  type,
+                  items: new Set<string>(type === "nodes" ? filteredGraph.nodes() : filteredGraph.edges()),
+                }),
+            },
+            {
+              label: (
+                <>
+                  <MdDeselect className="me-1" /> {t("selection.unselect_all")}
+                </>
+              ),
+              onClick: () => reset(),
+              disabled: !items.size,
+            },
+            { type: "divider" },
+            {
+              label: (
+                <>
+                  <BsFillTrashFill className="me-2" /> {t(`edition.delete_${type}`, { count: items.size })}
+                </>
+              ),
+              onClick: () => {
+                openModal({
+                  component: ConfirmModal,
+                  arguments: {
+                    title: t(`edition.delete_${type}`, { count: 0 }),
+                    message: t(`edition.confirm_delete_${type}`, { count: items.size }),
+                  },
+                  afterSubmit: () => {
+                    deleteItems(type, Array.from(items));
+                  },
+                });
+              },
+              disabled: !items.size,
+            },
+          ]}
         >
-          <MdSelectAll className="me-1" /> {t("selection.select_all")}
-        </button>
-        <button className="btn btn-sm btn-outline-dark mb-1" onClick={() => reset()} disabled={!items.size}>
-          <MdDeselect className="me-1" /> {t("selection.unselect_all")}
-        </button>
-      </div>
+          <button className="btn ms-1 pe-2 flex-shrink-0">
+            <BsThreeDotsVertical />
+          </button>
+        </Dropdown>
+      </h3>
 
       <ul className="list-unstyled">
         {visible.map((item) => (

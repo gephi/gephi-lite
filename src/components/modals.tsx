@@ -1,13 +1,11 @@
-import React, { FC, PropsWithChildren } from "react";
-import { BsQuestionCircleFill } from "react-icons/bs";
+import React, { FC, PropsWithChildren, ReactNode } from "react";
 import cx from "classnames";
 import { useTranslation } from "react-i18next";
 
-import { Spinner } from "./Loader";
 import { useModal } from "../core/modals";
 
 interface Props {
-  title?: string | JSX.Element;
+  title?: ReactNode;
   onClose?: () => void;
   onSubmit?: () => void;
   showHeader?: boolean;
@@ -96,50 +94,6 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
       </div>
       <div className="modal-backdrop fade show"></div>
     </>
-  );
-};
-
-export const ConfirmModal: FC<
-  PropsWithChildren<{
-    title?: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-    loading?: boolean;
-  }>
-> = ({ title, onConfirm, onCancel, loading, children }) => {
-  const { t } = useTranslation();
-  return (
-    <Modal
-      title={
-        <>
-          <BsQuestionCircleFill className="text-info me-2" /> {title}
-        </>
-      }
-      onClose={loading === true ? undefined : onCancel}
-    >
-      <>{children}</>
-      <>
-        <button
-          type="reset"
-          title={t("common.cancel").toString()}
-          className="btn btn-outline-secondary me-2"
-          onClick={onCancel}
-          disabled={loading === true}
-        >
-          {t("common.cancel")}
-        </button>
-        <button
-          type="submit"
-          title={t("common.confirm").toString()}
-          className="btn btn-primary"
-          onClick={onConfirm}
-          disabled={loading === true}
-        >
-          {t("common.confirm")}
-          {loading && <Spinner className="ms-2 spinner-border-sm" />}
-        </button>
-      </>
-    </Modal>
   );
 };
 
