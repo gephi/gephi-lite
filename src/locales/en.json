@@ -87,7 +87,8 @@
     "focus_edges": "Select only this edge",
     "empty_nodes": "This node has no attribute",
     "empty_edges": "This edge has no attribute",
-    "node_no_label": "(Empty label)"
+    "node_no_label": "(Empty label)",
+    "locate_on_graph": "Locate on the graph"
   },
   "appearance": {
     "title": "Appearance",

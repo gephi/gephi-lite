@@ -140,3 +140,30 @@ export const sigmaActions = {
   setHoveredEdge: producerToAction(setHoveredEdge, sigmaStateAtom),
   resetHoveredEdge: producerToAction(resetHoveredEdge, sigmaStateAtom),
 } as const;
+
+export function focusCameraOnNode(id: string) {
+  const sigma = sigmaAtom.get();
+  const nodeData = sigma.getNodeDisplayData(id);
+  if (nodeData) {
+    sigma.getCamera().animate({
+      x: nodeData.x,
+      y: nodeData.y,
+    });
+    sigmaActions.setHoveredNode(id);
+  }
+}
+
+export function focusCameraOnEdge(id: string) {
+  const sigma = sigmaAtom.get();
+  const sourceId = sigma.getGraph().source(id);
+  const sourceData = sigma.getNodeDisplayData(sourceId);
+  const targetId = sigma.getGraph().target(id);
+  const targetData = sigma.getNodeDisplayData(targetId);
+  if (sourceData && targetData) {
+    sigma.getCamera().animate({
+      x: (sourceData.x + targetData.x) / 2,
+      y: (sourceData.y + targetData.y) / 2,
+    });
+    sigmaActions.setHoveredEdge(id);
+  }
+}

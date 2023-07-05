@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { MdDeselect, MdSelectAll, MdFilterCenterFocus } from "react-icons/md";
 import { BsThreeDotsVertical, BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
+import { BiTargetLock } from "react-icons/bi";
 
 import {
   useFilteredGraph,
@@ -13,6 +14,7 @@ import {
   useSelectionActions,
   useVisualGetters,
 } from "../../core/context/dataContexts";
+import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 import { NodeComponent } from "../../components/Node";
 import { EdgeComponent } from "../../components/Edge";
 import { ItemIcons } from "../../components/common-icons";
@@ -115,7 +117,21 @@ function SelectedItem<
             {
               label: (
                 <>
-                  <MdDeselect className="me-2" /> {t(`selection.unselect_${type}`)}
+                  <BiTargetLock className="me-2" />
+                  {t(`selection.locate_on_graph`)}
+                </>
+              ),
+              onClick: () => {
+                if (type === "nodes") focusCameraOnNode(id);
+                else focusCameraOnEdge(id);
+              },
+              disabled: item.hidden,
+            },
+            {
+              label: (
+                <>
+                  <MdDeselect className="me-2" />
+                  {t(`selection.unselect_${type}`)}
                 </>
               ),
               onClick: () => unselect({ type, items: new Set([id]) }),
@@ -123,7 +139,8 @@ function SelectedItem<
             {
               label: (
                 <>
-                  <MdFilterCenterFocus className="me-2" /> {t(`selection.focus_${type}`)}
+                  <MdFilterCenterFocus className="me-2" />
+                  {t(`selection.focus_${type}`)}
                 </>
               ),
               onClick: () => select({ type, items: new Set([id]), replace: true }),
@@ -133,7 +150,8 @@ function SelectedItem<
             {
               label: (
                 <>
-                  <AiFillEdit className="me-2" /> {t(`edition.update_this_${type}`)}
+                  <AiFillEdit className="me-2" />
+                  {t(`edition.update_this_${type}`)}
                 </>
               ),
               onClick: () =>
@@ -144,7 +162,8 @@ function SelectedItem<
             {
               label: (
                 <>
-                  <BsFillTrashFill className="me-2" /> {t(`edition.delete_this_${type}`)}
+                  <BsFillTrashFill className="me-2" />
+                  {t(`edition.delete_this_${type}`)}
                 </>
               ),
               onClick: () => {
