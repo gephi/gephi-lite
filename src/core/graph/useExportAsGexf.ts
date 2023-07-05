@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { write } from "graphology-gexf";
+import { toUndirected } from "graphology-operators";
 
 import { dataGraphToFullGraph } from "./utils";
 import { useFilteredGraph, useGraphDataset } from "../context/dataContexts";
@@ -17,8 +18,13 @@ export function useExportAsGexf() {
     try {
       setLoading(true);
       setError(null);
-      const graphToExport = dataGraphToFullGraph(graphDataset, filteredGraph);
+      // get the full graph
+      let graphToExport = dataGraphToFullGraph(graphDataset, filteredGraph);
 
+      // change the type of the graph based on the meta type (default is directed)
+      if (graphDataset.metadata.type === "undirected") graphToExport = toUndirected(graphToExport);
+
+      // finally, export as gexf
       return write(graphToExport, {});
     } catch (e) {
       setError(e as Error);

@@ -179,6 +179,7 @@
       "title": "Metadata",
       "graph-title": "Title",
       "description": "Description",
+      "keywords": "Keywords",
       "authors": "Authors",
       "graph-type": "Graph Type"
     },

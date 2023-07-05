@@ -1,4 +1,5 @@
 import { MultiGraph } from "graphology";
+import { GraphType } from "graphology-types";
 
 import { ItemType, Scalar } from "../types";
 import { CloudFile } from "../cloud/types";
@@ -22,6 +23,14 @@ export interface LocalFile extends GraphFile {
   source: File;
 }
 export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
+
+export interface GraphMetadata {
+  title?: string;
+  description?: string;
+  authors?: string;
+  keywords?: string;
+  type: GraphType;
+}
 
 /**
  * Items data:
@@ -80,7 +89,7 @@ export interface GraphDataset {
   edgeData: Record<string, ItemData>;
 
   // We store here the graph metadata (title, author, etc...):
-  metadata: Record<string, any>;
+  metadata: GraphMetadata;
 
   // We store here how the nodes/edges attributes should be interpreted:
   nodeFields: FieldModel<"nodes">[];

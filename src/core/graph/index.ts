@@ -1,4 +1,4 @@
-import { last, mapValues, omit } from "lodash";
+import { last, mapValues } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { filtersAtom } from "../filters";
@@ -26,10 +26,10 @@ const setGraphMeta: Producer<GraphDataset, [GraphDataset["metadata"]]> = (metada
     metadata,
   });
 };
-const editGraphMeta: Producer<GraphDataset, [string, any]> = (key, value) => {
+const editGraphMeta: Producer<GraphDataset, [Partial<GraphDataset["metadata"]>]> = (metadata) => {
   return (state) => ({
     ...state,
-    metadata: value === undefined ? omit(state.metadata, key) : { ...state.metadata, [key]: value },
+    metadata: { ...state.metadata, ...metadata },
   });
 };
 const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {

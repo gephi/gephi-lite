@@ -1,32 +1,21 @@
-import { FC, useState, useEffect } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
 type GraphType = (typeof GraphTypeValues)[number];
-interface GraphMetadata {
-  title?: string;
-  authors?: string;
-  description?: string;
-  type?: GraphType;
-}
 
 export const GraphMetadataForm: FC = () => {
   const { metadata } = useGraphDataset();
   const { setGraphMeta } = useGraphDatasetActions();
-  const [graphMetadata, setGraphMetadata] = useState<GraphMetadata>(metadata);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    setGraphMetadata(metadata);
-  }, [metadata]);
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        setGraphMeta(graphMetadata);
+        setGraphMeta(metadata);
       }}
     >
       <div className="mb-2">
@@ -37,9 +26,9 @@ export const GraphMetadataForm: FC = () => {
           className="form-control"
           id="graph-title"
           type="text"
-          value={graphMetadata?.title || ""}
+          value={metadata?.title || ""}
           onChange={(e) => {
-            setGraphMetadata({ ...graphMetadata, title: e.target.value });
+            setGraphMeta({ ...metadata, title: e.target.value });
           }}
         />
       </div>
@@ -50,11 +39,28 @@ export const GraphMetadataForm: FC = () => {
         <textarea
           className="form-control"
           id="graph-description"
-          value={graphMetadata?.description || ""}
+          value={metadata?.description || ""}
           onChange={(e) => {
-            setGraphMetadata({
-              ...graphMetadata,
+            setGraphMeta({
+              ...metadata,
               description: e.target.value,
+            });
+          }}
+        />
+      </div>
+      <div className="mb-2">
+        <label htmlFor="graph-keywords" className="form-label">
+          {t("graph.metadata.keywords")}
+        </label>
+        <input
+          id="graph-keywords"
+          className="form-control"
+          type="text"
+          value={metadata?.keywords || ""}
+          onChange={(e) => {
+            setGraphMeta({
+              ...metadata,
+              keywords: e.target.value,
             });
           }}
         />
@@ -67,9 +73,9 @@ export const GraphMetadataForm: FC = () => {
           className="form-control"
           id="graph-authors"
           type="text"
-          value={graphMetadata?.authors || ""}
+          value={metadata?.authors || ""}
           onChange={(e) => {
-            setGraphMetadata({ ...graphMetadata, authors: e.target.value });
+            setGraphMeta({ ...metadata, authors: e.target.value });
           }}
         />
       </div>
@@ -80,10 +86,10 @@ export const GraphMetadataForm: FC = () => {
         <select
           className="form-select"
           id="graph-type"
-          value={graphMetadata?.type || "undirected"}
+          value={metadata?.type || "undirected"}
           onChange={(e) => {
-            setGraphMetadata({
-              ...graphMetadata,
+            setGraphMeta({
+              ...metadata,
               type: e.target.value as GraphType,
             });
           }}
@@ -94,17 +100,6 @@ export const GraphMetadataForm: FC = () => {
             </option>
           ))}
         </select>
-      </div>
-
-      <div className="d-flex justify-content-end">
-        <button
-          className="btn btn-primary"
-          type="submit"
-          title={`${t("common.save")} ${t("graph.metadata.title")}`}
-          disabled={graphMetadata === null}
-        >
-          {t("common.save")}
-        </button>
       </div>
     </form>
   );

@@ -26,7 +26,7 @@ export function getEmptyGraphDataset(): GraphDataset {
     edgeRenderingData: {},
     nodeData: {},
     edgeData: {},
-    metadata: {},
+    metadata: { type: "mixed" },
     nodeFields: [],
     edgeFields: [],
     fullGraph: new MultiGraph<{}, {}>(),
@@ -210,14 +210,26 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
  * and returns a FullGraph:
  */
 export function dataGraphToFullGraph(
-  { fullGraph, nodeRenderingData, edgeRenderingData, nodeData, edgeData }: GraphDataset,
+  { fullGraph, nodeRenderingData, edgeRenderingData, nodeData, edgeData, metadata }: GraphDataset,
   graph: DatalessGraph = fullGraph,
 ) {
-  const res: FullGraph = new MultiGraph<NodeRenderingData & ItemData, EdgeRenderingData & ItemData>();
+  const res: FullGraph = new MultiGraph<
+    NodeRenderingData & ItemData,
+    EdgeRenderingData & ItemData,
+    Omit<GraphDataset["metadata"], "type">
+  >();
+
+  // metadata
+  res.replaceAttributes(omit(metadata, ["type"]));
+
+  // nodes
   graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...nodeRenderingData[node] }));
+
+  // edges
   graph.forEachEdge((edge, _, source, target) =>
     res.addEdgeWithKey(edge, source, target, { ...edgeData[edge], ...edgeRenderingData[edge] }),
   );
+
   return res;
 }
 
