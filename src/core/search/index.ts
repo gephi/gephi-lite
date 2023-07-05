@@ -5,6 +5,7 @@ import { graphDatasetAtom } from "../graph";
 import { SearchState } from "./types";
 import { getEmptySearchState, nodeToDocument, edgeToDocument } from "./utils";
 import { Producer, producerToAction } from "../utils/reducers";
+import { ItemType } from "../types";
 
 /**
  * Producers:
@@ -27,7 +28,6 @@ export const indexAll: Producer<SearchState, []> = () => {
         .toLowerCase(),
   });
 
-  // TODO: this can be done async or in a web worker
   index.addAll(Object.keys(graphDataset.nodeData).map((id) => nodeToDocument(graphDataset, id)));
   index.addAll(Object.keys(graphDataset.edgeData).map((id) => edgeToDocument(graphDataset, id)));
 
@@ -50,6 +50,17 @@ export const edgeRemove: Producer<SearchState, [string]> = (id) => {
     if (state.index.has(`edges-${id}`)) {
       state.index.discard(`edges-${id}`);
     }
+    return state;
+  };
+};
+
+export const itemsRemove: Producer<SearchState, [ItemType, string[]]> = (type, ids) => {
+  return (state) => {
+    ids.forEach((id) => {
+      if (state.index.has(`${type}-${id}`)) {
+        state.index.discard(`${type}-${id}`);
+      }
+    });
     return state;
   };
 };
@@ -96,5 +107,6 @@ export const searchActions = {
   nodeIndex: producerToAction(nodeIndex, searchAtom),
   edgeRemove: producerToAction(edgeRemove, searchAtom),
   edgeIndex: producerToAction(edgeIndex, searchAtom),
+  itemsRemove: producerToAction(itemsRemove, searchAtom),
   reset: producerToAction(reset, searchAtom),
 } as const;

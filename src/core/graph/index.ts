@@ -4,7 +4,7 @@ import { Attributes } from "graphology-types";
 
 import { filtersAtom } from "../filters";
 import { appearanceAtom } from "../appearance";
-import { searchActions } from "../search";
+import { itemsRemove, searchActions, searchAtom } from "../search";
 import { clearGraph } from "../../utils/graph";
 import { applyFilters } from "../filters/utils";
 import { FilteredGraph } from "../filters/types";
@@ -16,6 +16,7 @@ import { cleanEdge, cleanNode, dataGraphToSigmaGraph, getEmptyGraphDataset, seri
 import { ItemType } from "../types";
 import { SelectionState } from "../selection/types";
 import { selectionAtom } from "../selection";
+import { SearchState } from "../search/types";
 
 /**
  * Producers:
@@ -54,8 +55,9 @@ const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = 
   });
 };
 
-const deleteItems: MultiProducer<[SelectionState, GraphDataset], [ItemType, string[]]> = (type, ids) => {
+const deleteItems: MultiProducer<[SearchState, SelectionState, GraphDataset], [ItemType, string[]]> = (type, ids) => {
   return [
+    itemsRemove(type, ids),
     (selection) => {
       if (selection.type === type) {
         const newItems = new Set(selection.items);
@@ -179,7 +181,7 @@ export const graphDatasetActions = {
   createEdge: producerToAction(createEdge, graphDatasetAtom),
   updateNode: producerToAction(updateNode, graphDatasetAtom),
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
-  deleteItems: multiproducerToAction(deleteItems, [selectionAtom, graphDatasetAtom]),
+  deleteItems: multiproducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
 };
 
 /**
@@ -205,13 +207,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     searchActions.indexAll();
   }
 
-  // When graph meta change, we set the page meta data
+  // When graph meta change, we set the page metadata
   if (updatedKeys.has("metadata")) {
     document.title = ["Gephi Lite", graphDataset.metadata.title].filter((s) => !isNil(s)).join(" - ");
   }
 
   // Only "small enough" graphs are stored in the sessionStorage, because this
-  // feature only helps resisting page reloads, basically:
+  // feature only helps to resist page reloads, basically:
   if (graphDataset.fullGraph.order < 5000 && graphDataset.fullGraph.size < 25000) {
     try {
       sessionStorage.setItem("dataset", serializeDataset(graphDataset));

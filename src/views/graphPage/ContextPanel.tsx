@@ -52,14 +52,14 @@ const GraphStat: FC<{ type: ItemType; current: number; total: number }> = ({ typ
 
 export const ContextPanel: FC = () => {
   const { t } = useTranslation();
-  const { fullGraph, metadata } = useGraphDataset();
+  const { fullGraph } = useGraphDataset();
   const filteredGraph = useFilteredGraph();
 
   return (
     <>
       <h2 className="fs-4">
         <ContextIcon className="me-1" />
-        {metadata.title || t("context.title")}
+        {t("context.title")}
       </h2>
       <hr />
 
