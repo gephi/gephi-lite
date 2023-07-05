@@ -1,5 +1,6 @@
 import { last, mapValues, isNil } from "lodash";
 import { Coordinates } from "sigma/types";
+import { Attributes } from "graphology-types";
 
 import { filtersAtom } from "../filters";
 import { appearanceAtom } from "../appearance";
@@ -11,7 +12,7 @@ import { atom, derivedAtom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/reducers";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
-import { dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
+import { cleanEdge, cleanNode, dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
 import { ItemType } from "../types";
 
 /**
@@ -52,10 +53,65 @@ const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = 
 };
 
 const deleteItems: Producer<GraphDataset, [ItemType, string[]]> = (type, ids) => {
-  console.log("TODO: Delete items", type, ids);
-  return (state) => ({
-    ...state,
-  });
+  return (state) => {
+    if (type === "nodes") {
+      ids.forEach((id) => state.fullGraph.dropNode(id));
+      return {
+        ...state,
+        nodeData: omit(state.nodeData, ids),
+        nodeRenderingData: omit(state.nodeRenderingData, ids),
+      };
+    } else {
+      ids.forEach((id) => state.fullGraph.dropEdge(id));
+      return {
+        ...state,
+        edgeData: omit(state.edgeData, ids),
+        edgeRenderingData: omit(state.edgeRenderingData, ids),
+      };
+    }
+  };
+};
+const createNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
+  return (state) => {
+    const { data, renderingData } = cleanNode(node, attributes);
+    state.fullGraph.addNode(node, {});
+    return {
+      ...state,
+      nodeData: { ...state.nodeData, [node]: data },
+      nodeRenderingData: { ...state.nodeRenderingData, [node]: renderingData },
+    };
+  };
+};
+const createEdge: Producer<GraphDataset, [string, Attributes, string, string]> = (edge, attributes, source, target) => {
+  return (state) => {
+    const { data, renderingData } = cleanEdge(edge, attributes);
+    state.fullGraph.addEdgeWithKey(edge, source, target, {});
+    return {
+      ...state,
+      edgeData: { ...state.edgeData, [edge]: data },
+      edgeRenderingData: { ...state.edgeRenderingData, [edge]: renderingData },
+    };
+  };
+};
+const updateNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
+  return (state) => {
+    const { data, renderingData } = cleanNode(node, attributes);
+    return {
+      ...state,
+      nodeData: { ...state.nodeData, [node]: data },
+      nodeRenderingData: { ...state.nodeRenderingData, [node]: renderingData },
+    };
+  };
+};
+const updateEdge: Producer<GraphDataset, [string, Attributes]> = (edge, attributes) => {
+  return (state) => {
+    const { data, renderingData } = cleanEdge(edge, attributes);
+    return {
+      ...state,
+      edgeData: { ...state.edgeData, [edge]: data },
+      edgeRenderingData: { ...state.edgeRenderingData, [edge]: renderingData },
+    };
+  };
 };
 
 /**
@@ -102,6 +158,10 @@ export const graphDatasetActions = {
   setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
   setNodePositions: producerToAction(setNodePositions, graphDatasetAtom),
   deleteItems: producerToAction(deleteItems, graphDatasetAtom),
+  createNode: producerToAction(createNode, graphDatasetAtom),
+  createEdge: producerToAction(createEdge, graphDatasetAtom),
+  updateNode: producerToAction(updateNode, graphDatasetAtom),
+  updateEdge: producerToAction(updateEdge, graphDatasetAtom),
 };
 
 /**

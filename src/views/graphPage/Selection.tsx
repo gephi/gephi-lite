@@ -73,7 +73,7 @@ function SelectedItem<
   const pairs = useMemo(
     () =>
       selectionSize === 1
-        ? [[t(`selection.${type}_id`) as string, id], ...toPairs(data), ...toPairs(renderingData)].filter(
+        ? [[t(`graph.model.${type}-data.id`) as string, id], ...toPairs(data), ...toPairs(renderingData)].filter(
             ([, value]) => !isNil(value),
           )
         : null,

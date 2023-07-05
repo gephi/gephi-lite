@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, useMemo } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { ErrorPage } from "../views/ErrorPage";
@@ -9,13 +9,14 @@ import { AtomsContextsRoot } from "./context/dataContexts";
 import { Initialize } from "./Initialize";
 
 export const Root: FC = () => {
-  const portalTarget = useRef<HTMLDivElement>(null);
+  const portalTarget = useMemo(() => document.getElementById("portal-target") as HTMLDivElement, []);
+
   return (
     <HashRouter>
       <UIContext.Provider
         value={{
           ...emptyUIContext,
-          portalTarget: portalTarget.current || emptyUIContext.portalTarget,
+          portalTarget: portalTarget,
         }}
       >
         <AtomsContextsRoot>
@@ -28,7 +29,6 @@ export const Root: FC = () => {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Initialize>
-          <div id="portal-target" ref={portalTarget} />
         </AtomsContextsRoot>
       </UIContext.Provider>
     </HashRouter>

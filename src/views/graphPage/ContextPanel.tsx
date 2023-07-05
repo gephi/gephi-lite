@@ -9,8 +9,8 @@ import { ContextIcon } from "../../components/common-icons";
 import { useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { ItemType } from "../../core/types";
 import { useModal } from "../../core/modals";
-import CreateNodeModal from "./modals/edition/CreateNodeModal";
-import CreateEdgeModal from "./modals/edition/CreateEdgeModal";
+import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
+import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
 
 const GraphStat: FC<{ type: ItemType; current: number; total: number }> = ({ type, current, total }) => {
   const { t } = useTranslation();
@@ -32,19 +32,17 @@ const GraphStat: FC<{ type: ItemType; current: number; total: number }> = ({ typ
       <button
         className="btn btn-outline-dark btn-sm ms-1 flex-shrink-0"
         title={t(`edition.create_${type}`) as string}
-        onClick={() => {
-          openModal(
-            type === "nodes"
-              ? {
-                  component: CreateNodeModal,
-                  arguments: {},
-                }
-              : {
-                  component: CreateEdgeModal,
-                  arguments: {},
-                },
-          );
-        }}
+        onClick={() =>
+          type === "nodes"
+            ? openModal({
+                component: UpdateNodeModal,
+                arguments: {},
+              })
+            : openModal({
+                component: UpdateEdgeModal,
+                arguments: {},
+              })
+        }
       >
         <AiOutlinePlus />
       </button>

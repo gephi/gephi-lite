@@ -12,6 +12,7 @@ interface Props {
   footerAlignLeft?: boolean;
   className?: string;
   bodyClassName?: string;
+  contentClassName?: string;
   children: JSX.Element | [JSX.Element] | [JSX.Element, JSX.Element];
 }
 
@@ -24,6 +25,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   footerAlignLeft = false,
   className,
   bodyClassName,
+  contentClassName,
 }) => {
   const { t } = useTranslation();
   const childrenArray = Array.isArray(children) ? children : [children];
@@ -79,7 +81,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
         >
           {onSubmit ? (
             <form
-              className="modal-content"
+              className={cx("modal-content", contentClassName)}
               onSubmit={(e) => {
                 e.preventDefault();
                 onSubmit();
@@ -88,7 +90,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
               {content}
             </form>
           ) : (
-            <div className="modal-content">{content}</div>
+            <div className={cx("modal-content", contentClassName)}>{content}</div>
           )}
         </div>
       </div>

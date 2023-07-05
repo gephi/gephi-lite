@@ -57,7 +57,7 @@
   border-style: dotted;
 }
 .over-modal {
-  z-index: $zindex-modal + 1;
+  z-index: $zindex-modal + 1 !important;
 }
 
 .hoverable:hover {

@@ -1,5 +1,6 @@
 import { forEach, isNumber, mapValues, omit, sortBy, take, uniq } from "lodash";
 import Graph, { MultiGraph } from "graphology";
+import { Attributes } from "graphology-types";
 
 import {
   DataGraph,
@@ -121,6 +122,35 @@ export function inferFieldType<T extends ItemType = ItemType>(
   return res;
 }
 
+export function cleanNode(node: string, attributes: Attributes): { data: ItemData; renderingData: NodeRenderingData } {
+  const x = toNumber(attributes.x);
+  const y = toNumber(attributes.y);
+
+  const renderingData: NodeRenderingData = {
+    label: typeof attributes.label === "string" ? attributes.label : undefined,
+    color: typeof attributes.color === "string" ? attributes.color : undefined,
+    size: toNumber(attributes.size),
+    x: typeof x === "number" ? x : getRandomNodeCoordinate(),
+    y: typeof y === "number" ? y : getRandomNodeCoordinate(),
+  };
+
+  const data: ItemData = mapValues(omit(attributes, "label", "color", "size", "x", "y"), (v) => toScalar(v));
+
+  return { data, renderingData };
+}
+
+export function cleanEdge(edge: string, attributes: Attributes): { data: ItemData; renderingData: EdgeRenderingData } {
+  const renderingData: EdgeRenderingData = {
+    label: typeof attributes.label === "string" ? attributes.label : undefined,
+    color: typeof attributes.color === "string" ? attributes.color : undefined,
+    weight: toNumber(attributes.weight),
+  };
+
+  const data: ItemData = mapValues(omit(attributes, "label", "color", "weight"), (v) => toScalar(v));
+
+  return { data, renderingData };
+}
+
 /**
  * This function takes any graphology instance (like returned by any graphology
  * importer basically), and returns a properly shaped graph dataset:
@@ -137,45 +167,30 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
 
   const nodeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachNode((node, attributes) => {
-    const x = toNumber(attributes.x);
-    const y = toNumber(attributes.y);
+    const { data, renderingData } = cleanNode(node, attributes);
 
-    const renderingData: NodeRenderingData = {
-      label: typeof attributes.label === "string" ? attributes.label : undefined,
-      color: typeof attributes.color === "string" ? attributes.color : undefined,
-      size: toNumber(attributes.size),
-      x: typeof x === "number" ? x : getRandomNodeCoordinate(),
-      y: typeof y === "number" ? y : getRandomNodeCoordinate(),
-    };
-
-    const nodeData: ItemData = mapValues(omit(attributes, "label", "color", "size", "x", "y"), (v) => toScalar(v));
-    for (const key in nodeData) {
+    for (const key in data) {
       nodeAttributeValues[key] = nodeAttributeValues[key] || [];
-      nodeAttributeValues[key].push(nodeData[key]);
+      nodeAttributeValues[key].push(data[key]);
     }
 
     dataset.fullGraph.addNode(node, {});
     dataset.nodeRenderingData[node] = renderingData;
-    dataset.nodeData[node] = nodeData;
+    dataset.nodeData[node] = data;
   });
 
   const edgeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachEdge((edge, attributes, source, target) => {
-    const renderingData: EdgeRenderingData = {
-      label: typeof attributes.label === "string" ? attributes.label : undefined,
-      color: typeof attributes.color === "string" ? attributes.color : undefined,
-      weight: toNumber(attributes.weight),
-    };
+    const { data, renderingData } = cleanEdge(edge, attributes);
 
-    const edgeData: ItemData = mapValues(omit(attributes, "label", "color", "weight", "x", "y"), (v) => toScalar(v));
-    for (const key in edgeData) {
+    for (const key in data) {
       edgeAttributeValues[key] = edgeAttributeValues[key] || [];
-      edgeAttributeValues[key].push(edgeData[key]);
+      edgeAttributeValues[key].push(data[key]);
     }
 
     dataset.fullGraph.addEdgeWithKey(edge, source, target, {});
     dataset.edgeRenderingData[edge] = renderingData;
-    dataset.edgeData[edge] = edgeData;
+    dataset.edgeData[edge] = data;
   });
 
   // Infer model:

@@ -15,7 +15,7 @@ export type Option =
 
 const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: target, options }) => {
   return (
-    <Tooltip>
+    <Tooltip hoverable closeOnClickContent>
       {target}
       <div className="dropdown-menu show over-modal position-relative">
         {options.map((option, i) =>

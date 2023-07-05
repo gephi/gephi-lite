@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 export interface NotificationData {
-  title?: string;
-  message: string | JSX.Element;
+  title?: ReactNode;
+  message: ReactNode;
   type: "success" | "info" | "warning" | "error";
 }
 

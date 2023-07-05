@@ -1,9 +1,19 @@
 import { FC, ReactNode, useEffect, useRef, useState } from "react";
 import TetherComponent from "react-tether";
+import Tether from "tether";
 
-const Tooltip: FC<{
-  children: [ReactNode, ReactNode];
-}> = ({ children: [target, content] }) => {
+const Tooltip: FC<
+  {
+    children: [ReactNode, ReactNode];
+    hoverable?: boolean;
+    closeOnClickContent?: boolean;
+  } & Partial<
+    Pick<
+      Tether.ITetherOptions,
+      "attachment" | "constraints" | "offset" | "targetAttachment" | "targetOffset" | "targetModifier"
+    >
+  >
+> = ({ children: [target, content], hoverable, closeOnClickContent, ...tether }) => {
   const [showTooltip, setShowTooltip] = useState<null | "click" | "hover">(null);
 
   const targetWrapper = useRef<HTMLDivElement>(null);
@@ -21,8 +31,16 @@ const Tooltip: FC<{
         setShowTooltip(null);
       }
     };
-    const handleClickBody = () => {
-      setShowTooltip(null);
+    const handleClickBody = (e: MouseEvent) => {
+      if (!tooltipWrapper.current || !targetWrapper.current) return;
+
+      const node = e.target as Node;
+      if (
+        (showTooltip && closeOnClickContent) ||
+        (!tooltipWrapper.current.contains(node) && !targetWrapper.current.contains(node))
+      ) {
+        setShowTooltip(null);
+      }
     };
 
     setTimeout(() => {
@@ -33,14 +51,15 @@ const Tooltip: FC<{
       document.body.removeEventListener("mousemove", handleMove);
       document.body.removeEventListener("click", handleClickBody);
     };
-  }, [showTooltip]);
+  }, [closeOnClickContent, showTooltip]);
 
   return (
     <TetherComponent
       className="over-modal"
       attachment="top right"
       targetAttachment="bottom right"
-      constraints={[{ to: "scrollparent", attachment: "together", pin: true }]}
+      constraints={[{ to: "window", attachment: "together", pin: true }]}
+      {...{ ...tether }}
       renderTarget={(ref) => (
         <div
           ref={ref}
@@ -48,7 +67,7 @@ const Tooltip: FC<{
             setShowTooltip("click");
           }}
           onMouseEnter={() => {
-            if (!showTooltip) setShowTooltip("hover");
+            if (!showTooltip && hoverable) setShowTooltip("hover");
           }}
         >
           <div ref={targetWrapper}>{target}</div>

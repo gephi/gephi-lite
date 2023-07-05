@@ -15,6 +15,7 @@
   },
   "error": {
     "title": "Error",
+    "unknown": "An unknown error has occurred.",
     "not_found": {
       "title": "Page Not Found",
       "subtitle": "The page you were looking for doesn't exist.",
@@ -63,11 +64,9 @@
     "nodes_zero": "No selected item",
     "nodes_one": "One selected node",
     "nodes": "{{count}} selected nodes",
-    "nodes_id": "Node ID",
     "edges_zero": "No selected item",
     "edges_one": "One selected edge",
     "edges": "{{count}} selected edges",
-    "edges_id": "Edge ID",
     "visible_nodes_zero": "No visible selected item",
     "visible_nodes_one": "One visible selected node",
     "visible_nodes": "{{count}} visible selected nodes",
@@ -169,10 +168,14 @@
   "edition": {
     "create_nodes": "Create new node",
     "create_edges": "Create new edge",
+    "create_nodes_success": "The node has successfully been created.",
+    "create_edges_success": "The edge has successfully been created.",
     "update_this_nodes": "Update this node",
     "update_this_edges": "Update this edge",
     "update_nodes": "Update existing node",
     "update_edges": "Update existing edge",
+    "update_nodes_success": "The node has successfully been updated.",
+    "update_edges_success": "The edge has successfully been updated.",
     "delete_this_nodes": "Delete this node",
     "delete_this_edges": "Delete this edge",
     "delete_nodes_zero": "Delete nodes",
@@ -184,7 +187,8 @@
     "confirm_delete_nodes_one": "Are you sure you want to delete this one node?",
     "confirm_delete_nodes": "Are you sure you want to delete {{count}} nodes?",
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
-    "confirm_delete_edges": "Are you sure you want to delete {{count}} edges?"
+    "confirm_delete_edges": "Are you sure you want to delete {{count}} edges?",
+    "search_nodes": "Search on node labels..."
   },
   "graph": {
     "title": "Graph",
@@ -226,7 +230,29 @@
       "nodes": "nodes",
       "edges_one": "edge",
       "edges_zero": "edge",
-      "edges": "edges"
+      "edges": "edges",
+      "nodes-data": {
+        "id": "Node ID",
+        "label": "Node label",
+        "size": "Node size",
+        "color": "Node color",
+        "x": "Node x position",
+        "y": "Node y position",
+        "attributes": "Other attributes",
+        "attribute-name": "Attribute name",
+        "attribute-value": "Attribute value"
+      },
+      "edges-data": {
+        "id": "Edge ID",
+        "source": "Edge source",
+        "target": "Edge target",
+        "label": "Edge label",
+        "color": "Edge color",
+        "weight": "Edge weight",
+        "attributes": "Other attributes",
+        "attribute-name": "Attribute name",
+        "attribute-value": "Attribute value"
+      }
     },
     "open": {
       "title": "Open a graph file",
@@ -624,11 +650,11 @@
   },
   "cloud": {
     "github": {
-      "title": "Github",
+      "title": "GitHub",
       "auth": {
-        "title": "Github authentification",
+        "title": "GitHub authentification",
         "asking_for_device_code": "Asking github for device code",
-        "copy_code": "Copy the code below, and click on \"Open Github\" button. It will opened a new tab, on which Github will ask you the code",
+        "copy_code": "Copy the code below, and click on \"Open GitHub\" button. It will opened a new tab, on which GitHub will ask you the code",
         "copy_success": "Code saved in clipboard",
         "waiting_validation": "Waiting validation"
       }
