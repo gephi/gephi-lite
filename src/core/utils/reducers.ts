@@ -20,6 +20,9 @@ export function reducify<T>(fn: (reducer: Reducer<T>) => void): (input: ValueOrR
  * it is easy to create mutating actions from them as well.
  */
 export type Producer<T, Args extends unknown[] = []> = (...args: Args) => Reducer<T>;
+export type MultiProducer<Ts extends Array<unknown>, Args extends unknown[] = []> = (...args: Args) => {
+  [K in keyof Ts]: Reducer<Ts[K]>;
+};
 
 /**
  * Takes a producer and an atom, and returns an action that actually mutates the
@@ -30,5 +33,16 @@ export type Producer<T, Args extends unknown[] = []> = (...args: Args) => Reduce
 export function producerToAction<T, Args extends unknown[] = []>(producer: Producer<T, Args>, atom: WritableAtom<T>) {
   return (...args: Args) => {
     atom.set(producer(...args));
+  };
+}
+export function multiproducerToAction<Ts extends Array<unknown>, Args extends unknown[] = []>(
+  producer: MultiProducer<Ts, Args>,
+  atoms: {
+    [K in keyof Ts]: WritableAtom<Ts[K]>;
+  },
+) {
+  return (...args: Args) => {
+    const reducers = producer(...args);
+    atoms.forEach((atom, i) => atom.set(reducers[i]));
   };
 }
