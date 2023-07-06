@@ -45,8 +45,8 @@ export function useOpenGexf() {
         const content = await file.source.text();
         const graph = parse(Graph, content, { allowUndeclaredAttributes: true });
         graph.setAttribute("title", file.filename);
-        setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
         resetStates();
+        setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
         resetCamera({ forceRefresh: true });
       } catch (e) {
         setError(e as Error);
