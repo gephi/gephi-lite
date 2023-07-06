@@ -1,6 +1,19 @@
 {
-  "home": {
-    "greeting": "Bonjour",
-    "blabla": "Très heureux de vous voir"
-  }
+    "home": {
+        "greeting": "Bonjour",
+        "blabla": "Très heureux de vous voir"
+    },
+    "error": {
+        "title": "Erreur",
+        "not_found": {
+            "title": "Page non trouvée"
+        }
+    },
+    "welcome": {
+        "title": "Bienvenue sur Gephi Lite"
+    },
+    "gephi-lite": {
+        "info": "En savoir plus sur Gephi Lite",
+        "title": "Gephi Lite"
+    }
 }
