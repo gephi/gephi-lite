@@ -18,12 +18,12 @@ export interface RangeExtends {
 export type PartitionExtends = { occurrences: Record<string, number>; missing?: boolean };
 
 const getAttributeRanges = (
-  graph: DatalessGraph,
+  itemIds: string[],
   itemData: Record<string, ItemData>,
   rangesFields: string[],
   partitionsFields: string[],
 ) => {
-  return graph.nodes().reduce((acc, n) => {
+  return itemIds.reduce((acc, n) => {
     return mapValues(acc, (value, field) => {
       const fieldValue = itemData[n][field];
       if (rangesFields.includes(field)) {
@@ -76,8 +76,13 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
       })
       .filter((f): f is string => f !== null);
 
-    if (nodeRankingFields.length > 0) {
-      attributesExtends.node = getAttributeRanges(filteredGraph, nodeData, nodeRankingFields, nodePartitionFields);
+    if (nodeRankingFields.length > 0 || nodePartitionFields.length > 0) {
+      attributesExtends.node = getAttributeRanges(
+        filteredGraph.nodes(),
+        nodeData,
+        nodeRankingFields,
+        nodePartitionFields,
+      );
     }
     // should we iterate on edges
     const edgeRankingFields = [appearance.edgesColor, appearance.edgesSize]
@@ -97,8 +102,13 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
       })
       .filter((f): f is string => f !== null);
 
-    if (edgeRankingFields.length > 0) {
-      attributesExtends.edge = getAttributeRanges(filteredGraph, edgeData, edgeRankingFields, edgePartitionFields);
+    if (edgeRankingFields.length > 0 || edgePartitionFields.length > 0) {
+      attributesExtends.edge = getAttributeRanges(
+        filteredGraph.edges(),
+        edgeData,
+        edgeRankingFields,
+        edgePartitionFields,
+      );
     }
 
     return attributesExtends;

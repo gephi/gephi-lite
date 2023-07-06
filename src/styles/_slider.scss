@@ -16,9 +16,8 @@
   }
 }
 .thumb {
-  width: 10px;
   border-radius: 50%;
-  border: white 2px solid;
+  border: #d3d3d3 2px solid;
   // /!\ changing thumb size must also change minDistance setting in ReactSlider AND slider height
   height: 18px;
   width: 18px;
