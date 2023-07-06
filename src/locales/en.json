@@ -242,7 +242,8 @@
         "y": "Node y position",
         "attributes": "Other attributes",
         "attribute-name": "Attribute name",
-        "attribute-value": "Attribute value"
+        "attribute-value": "Attribute value",
+        "new-attribute": "Add new attribute"
       },
       "edges-data": {
         "id": "Edge ID",
@@ -253,7 +254,8 @@
         "weight": "Edge weight",
         "attributes": "Other attributes",
         "attribute-name": "Attribute name",
-        "attribute-value": "Attribute value"
+        "attribute-value": "Attribute value",
+        "new-attribute": "Add new attribute"
       }
     },
     "open": {

@@ -231,7 +231,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             className="btn btn-outline-dark"
             onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "" }))}
           >
-            <AiOutlinePlusCircle className="me-2" /> Add new attribute
+            <AiOutlinePlusCircle className="me-2" /> {t('graph.model.nodes-data.new-attribute')}
           </button>
         </div>
       </div>
