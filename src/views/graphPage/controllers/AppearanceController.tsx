@@ -55,7 +55,7 @@ export const AppearanceController: FC = () => {
     const hasHighlightedEdges = !!allHighlightedEdges.size;
 
     sigma.setSetting("nodeReducer", (id, attr) => {
-      const res = { ...attr } as Partial<CustomNodeDisplayData>;
+      const res = structuredClone(attr) as Partial<CustomNodeDisplayData>;
       res.zIndex = 0;
       res.rawSize = res.size || DEFAULT_NODE_SIZE;
 
@@ -75,21 +75,23 @@ export const AppearanceController: FC = () => {
 
       return res;
     });
-    sigma.setSetting("edgeReducer", (id, { weight, ...attr }) => {
-      const res = { ...attr, size: weight, type: edgeArrow ? "arrow" : "line" } as Partial<CustomEdgeDisplayData>;
-      res.zIndex = 0;
-      res.rawSize = res.size || DEFAULT_EDGE_SIZE;
+    sigma.setSetting(
+      "edgeReducer",
+      !showEdges
+        ? () => ({ hidden: true })
+        : (id, { weight, ...attr }) => {
+            const res = { ...attr, size: weight, type: edgeArrow ? "arrow" : "line" } as Partial<CustomEdgeDisplayData>;
+            res.zIndex = 0;
+            res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
-      if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
-        res.hidden = true;
-        res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
-        res.zIndex = -1;
-      }
+            if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
+              res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
+              res.zIndex = -1;
+            }
 
-      if (!showEdges) res.hidden = true;
-
-      return res;
-    });
+            return res;
+          },
+    );
   }, [highlightedEdges, highlightedNodes, hoveredNode, selection, showEdges, sigma, metadata.type]);
 
   return null;
