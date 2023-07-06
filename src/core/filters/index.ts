@@ -1,7 +1,7 @@
 import { dropRight, inRange } from "lodash";
 
 import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/producers";
 import { FilterType, FiltersState } from "./types";
 import { getEmptyFiltersState, serializeFiltersState } from "./utils";
 

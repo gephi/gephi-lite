@@ -7,7 +7,7 @@ import { atom } from "../utils/atoms";
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaGraph } from "../graph/types";
 import { getEmptySigmaState } from "./utils";
-import { Producer, producerToAction } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/producers";
 
 /**
  * Producers:

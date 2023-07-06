@@ -4,7 +4,7 @@ import { atom } from "../utils/atoms";
 import { graphDatasetAtom } from "../graph";
 import { SearchState } from "./types";
 import { getEmptySearchState, nodeToDocument, edgeToDocument } from "./utils";
-import { Producer, producerToAction } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/producers";
 import { ItemType } from "../types";
 
 /**

@@ -3,7 +3,7 @@ import { isEqual } from "lodash";
 import { atom } from "../utils/atoms";
 import { Preferences } from "./types";
 import { RemoteFile } from "../graph/types";
-import { Producer, producerToAction } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/producers";
 import { getEmptyPreferences, serializePreferences } from "./utils";
 
 /**

@@ -9,7 +9,7 @@ import { clearGraph } from "../../utils/graph";
 import { applyFilters } from "../filters/utils";
 import { FilteredGraph } from "../filters/types";
 import { atom, derivedAtom } from "../utils/atoms";
-import { MultiProducer, multiproducerToAction, Producer, producerToAction } from "../utils/reducers";
+import { MultiProducer, multiproducerToAction, Producer, producerToAction } from "../utils/producers";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { cleanEdge, cleanNode, dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";

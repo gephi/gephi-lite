@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { debounce, isEqual } from "lodash";
-import React, { FC, ReactNode, useEffect, useState } from "react";
-
-import { Reducer, reducify, ValueOrReducer } from "./reducers";
+import { debounce as debounceFn, isEqual } from "lodash";
+import { useEffect, useState } from "react";
 
 /**
  * Useful types:
@@ -42,7 +40,10 @@ export function atom<T>(initialValue: T): WritableAtom<T> {
       const previousValue = value;
       if (typeof v === "function") value = (v as AtomReducer<T>)(value);
       else value = v;
-      handlers.forEach((handler) => handler(value, previousValue));
+
+      if (value !== previousValue) {
+        handlers.forEach((handler) => handler(value, previousValue));
+      }
     },
     bind(handler: AtomHandler<T>) {
       handlers.push(handler);
@@ -57,43 +58,50 @@ export function atom<T>(initialValue: T): WritableAtom<T> {
  * This function takes an array of atom dependencies and an extractor function, and returns a read-only atom.
  */
 interface DerivedAtomOptions {
-  checkInput?: boolean;
-  checkOutput?: boolean;
-  debounce?: boolean;
+  checkInput: boolean;
+  checkOutput: boolean;
+  debounce: boolean;
 }
 export function derivedAtom<D, T>(
   atom: ReadableAtom<T>,
   extractor: (value: T, previousValue: D | undefined) => D,
-  options?: DerivedAtomOptions,
+  options?: Partial<DerivedAtomOptions>,
 ): ReadableAtom<D>;
 export function derivedAtom<D, T1, T2>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>],
   extractor: (v1: T1, v2: T2, previousValue: D | undefined) => D,
-  options?: DerivedAtomOptions,
+  options?: Partial<DerivedAtomOptions>,
 ): ReadableAtom<D>;
 export function derivedAtom<D, T1, T2, T3>(
   atoms: [ReadableAtom<T1>, ReadableAtom<T2>, ReadableAtom<T3>],
   extractor: (v1: T1, v2: T2, v3: T3, previousValue: D | undefined) => D,
-  options?: DerivedAtomOptions,
+  options?: Partial<DerivedAtomOptions>,
 ): ReadableAtom<D>;
 export function derivedAtom<D>(
   atoms: ReadableAtom<any> | ReadableAtom<any>[],
   extractor: (...args: any[]) => D,
-  options: DerivedAtomOptions = {},
+  options: Partial<DerivedAtomOptions> = {},
 ): ReadableAtom<D> {
   const atomsArray = Array.isArray(atoms) ? atoms : [atoms];
   let lastInput: any[] = atomsArray.map((atom) => atom.get());
   let value: D = extractor(...lastInput);
   let handlers: AtomHandler<D>[] = [];
 
+  const { checkInput, checkOutput, debounce } = {
+    checkInput: true,
+    checkOutput: true,
+    debounce: false,
+    ...options,
+  };
+
   let extract = () => {
     const input = atomsArray.map((atom) => atom.get());
 
-    if (!options.checkInput || input.some((v, i) => !isEqual(v, lastInput[i]))) {
+    if (!checkInput || input.some((v, i) => !isEqual(v, lastInput[i]))) {
       lastInput = input;
       const newValue = extractor(...atomsArray.map((atom) => atom.get()), value);
 
-      if (!options.checkOutput || !isEqual(newValue, value)) {
+      if (!checkOutput || !isEqual(newValue, value)) {
         const previousValue = value;
         value = newValue;
         handlers.forEach((handler) => handler(value, previousValue));
@@ -101,7 +109,7 @@ export function derivedAtom<D>(
     }
   };
 
-  if (options.debounce) extract = debounce(extract, 100);
+  if (debounce) extract = debounceFn(extract, 100);
 
   atomsArray.map((atom) => atom.bind(extract));
 
@@ -116,63 +124,6 @@ export function derivedAtom<D>(
       handlers = handlers.filter((h) => h !== handler);
     },
   };
-}
-
-/**
- * This function binds a handler on an extracted value of atoms, and only executes when the extracted value changes.
- * It returns a function you a call to unbind the handler from the given atoms.
- */
-export function bindOn<D, T>(
-  atom: ReadableAtom<T>,
-  extractor: (value: T) => D,
-  handler: (value: D) => void,
-): () => void;
-export function bindOn<D, T1, T2>(
-  atoms: [ReadableAtom<T1>, ReadableAtom<T2>],
-  extractor: (v1: T1, v2: T2) => D,
-  handler: (value: D) => void,
-): () => void;
-export function bindOn<D, T1, T2, T3>(
-  atoms: [ReadableAtom<T1>, ReadableAtom<T2>, ReadableAtom<T3>],
-  extractor: (v1: T1, v2: T2, v3: T3) => D,
-  handler: (value: D) => void,
-): () => void;
-export function bindOn<D>(
-  atoms: ReadableAtom<any> | ReadableAtom<any>[],
-  extractor: (...args: any[]) => D,
-  handler: (value: D) => void,
-): () => void {
-  const atomsArray = Array.isArray(atoms) ? atoms : [atoms];
-  let value: D = extractor(...atomsArray.map((atom) => atom.get()));
-  const atomHandler = () => {
-    const newValue = extractor(...atomsArray.map((atom) => atom.get()));
-    if (newValue !== value) {
-      value = newValue;
-      handler(newValue);
-    }
-  };
-  atomsArray.map((atom) => atom.bind(atomHandler));
-
-  return () => atomsArray.map((atom) => atom.unbind(atomHandler));
-}
-
-/**
- * This function returns a setter for a given key inside an atom.
- */
-export function buildSetter<T extends Object, Key extends keyof T>(
-  atom: WritableAtom<T>,
-  key: Key,
-): (input: ValueOrReducer<T[Key]>) => void {
-  return reducify((reducer: Reducer<T[Key]>) => {
-    atom.set((state) => ({ ...state, [key]: reducer(state[key]) }));
-  });
-}
-
-/**
- * This function returns a getter for a given key inside an atom.
- */
-export function buildGetter<T extends Object, Key extends keyof T>(atom: ReadableAtom<T>, key: Key): () => T[Key] {
-  return () => atom.get()[key];
 }
 
 /**
@@ -227,44 +178,4 @@ export function useReadAtom<T, K extends keyof T>(atom: ReadableAtom<T>, key?: K
   }, [atom, setValue]);
 
   return key ? value[key] : value;
-}
-
-/**
- * These are factories for the previous hooks.
- */
-export function makeUseAtom<T>(atom: WritableAtom<T>) {
-  return () => useAtom(atom);
-}
-export function makeUseWriteAtom<T>(atom: WritableAtom<T>) {
-  return () => useWriteAtom(atom);
-}
-export function makeUseReadAtom<T>(atom: ReadableAtom<T>) {
-  return () => useReadAtom(atom);
-}
-
-/**
- * This function takes an atom as input, and returns a proper React context, and a component to use at the root that
- * will keep the context value up to date.
- */
-export function buildContext<T>(atom: ReadableAtom<T>) {
-  const Context = React.createContext<T>(atom.get());
-
-  const ContextComponent: FC<{ children: ReactNode }> = ({ children }) => {
-    const [value, setValue] = useState<T>(atom.get());
-
-    useEffect(() => {
-      const v = atom.get();
-      if (v !== value) setValue(atom.get());
-
-      atom.bind(setValue);
-      return () => atom.unbind(setValue);
-    }, [atom, setValue]);
-
-    return <Context.Provider value={value}>{children}</Context.Provider>;
-  };
-
-  return {
-    context: Context,
-    component: ContextComponent,
-  };
 }

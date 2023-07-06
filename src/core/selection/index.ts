@@ -4,7 +4,7 @@ import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
 import { SelectionState } from "./types";
 import { getEmptySelectionState } from "./utils";
-import { Producer, producerToAction } from "../utils/reducers";
+import { Producer, producerToAction } from "../utils/producers";
 
 /**
  * Producers:
