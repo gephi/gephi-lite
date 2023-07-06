@@ -1,4 +1,4 @@
-.loader-fill {
+.loader {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,4 +11,20 @@
   background-color: rgba(0, 0, 0, 0.25);
   margin: 0 !important;
   padding: 0 !important;
+}
+
+.loader-fill {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.z-over-loader {
+  z-index: 10;
+  position: relative;
 }

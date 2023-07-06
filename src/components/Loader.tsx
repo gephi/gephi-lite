@@ -11,7 +11,19 @@ export const Spinner: FC<{ className?: string; style?: CSSProperties }> = ({ cla
   );
 };
 
+/**
+ * Display a loader that takes the full screen size.
+ */
 export const Loader: FC = () => (
+  <div className="loader">
+    <Spinner style={{ width: "3rem", height: " 3rem" }} />
+  </div>
+);
+
+/**
+ * Display a loader that takes the size of its parent container.
+ */
+export const LoaderFill: FC = () => (
   <div className="loader-fill">
     <Spinner style={{ width: "3rem", height: " 3rem" }} />
   </div>

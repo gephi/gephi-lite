@@ -27,13 +27,6 @@ export function useLayouts() {
       if (supervisor) {
         supervisor.stop();
         supervisor.kill();
-        notify({
-          type: "info",
-          message: t("layouts.exec.stopped", {
-            layout: t(`layouts.${layoutId}.title`).toString(),
-          }).toString(),
-          title: t("layouts.title") as string,
-        });
 
         // Save data
         const positions: LayoutMapping = {};
@@ -74,14 +67,6 @@ export function useLayouts() {
         // To prevent resetting the camera before sigma receives new data, we
         // need to wait a frame, and also wait for it to trigger a refresh:
         setTimeout(() => resetCamera({ forceRefresh: false }), 0);
-
-        notify({
-          type: "info",
-          message: t("layouts.exec.started", {
-            layout: t(`layouts.${id}.title`).toString(),
-          }).toString(),
-          title: t("layouts.title") as string,
-        });
       }
 
       // Sync layout
@@ -89,16 +74,9 @@ export function useLayouts() {
         const worker = new layout.supervisor(sigmaGraph, { settings: params });
         worker.start();
         setSupervisor(worker);
-        notify({
-          type: "success",
-          message: t("layouts.exec.success", {
-            layout: t(`layouts.${id}.title`).toString(),
-          }).toString(),
-          title: t("layouts.title") as string,
-        });
       }
     },
-    [dataset, setNodePositions, notify, t, sigmaGraph],
+    [dataset, setNodePositions, sigmaGraph],
   );
 
   return { isRunning, start, stop };

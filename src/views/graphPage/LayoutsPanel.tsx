@@ -6,19 +6,20 @@ import Highlight from "react-highlight";
 import cx from "classnames";
 import { isNil } from "lodash";
 
-import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
+import { useModal } from "../../core/modals";
 import { useAtom } from "../../core/utils/atoms";
 import { sessionAtom } from "../../core/session";
-import { LAYOUTS } from "../../core/layouts/collection";
-import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
-import { useLayouts } from "../../core/layouts/useLayouts";
-import { useModal } from "../../core/modals";
-import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { FieldModel } from "../../core/graph/types";
-import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
-import { FunctionEditorModal } from "./modals/FunctionEditorModal";
-import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import { LAYOUTS } from "../../core/layouts/collection";
+import { useLayouts } from "../../core/layouts/useLayouts";
 import { getFilteredDataGraph } from "../../core/graph/utils";
+import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
+import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { LoaderFill } from "../../components/Loader";
+import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
+import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
+import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type LayoutOption = {
   value: string;
@@ -122,108 +123,111 @@ export const LayoutForm: FC<{
       <h3 className="fs-5 mt-3">{t(`layouts.${layout.id}.title`)}</h3>
       {layout.description && <p className="text-muted small">{t(`layouts.${layout.id}.description`)}</p>}
 
-      {layout.parameters.map((param) => {
-        const id = `layouts-${layout.id}-params-${param.id}`;
-        return (
-          <div className="my-1" key={id}>
-            {param.type === "number" && (
-              <NumberInput
-                id={id}
-                label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
-                description={
-                  param.description
-                    ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                value={layoutParameters[param.id] as number}
-                disabled={isRunning}
-                onChange={(v) => onChangeParameters(param.id, v)}
-              />
-            )}
-            {param.type === "boolean" && (
-              <BooleanInput
-                id={id}
-                label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
-                description={
-                  param.description
-                    ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                value={layoutParameters[param.id] as boolean}
-                disabled={isRunning}
-                onChange={(v) => onChangeParameters(param.id, v)}
-              />
-            )}
-            {param.type === "attribute" && (
-              <EnumInput
-                id={id}
-                label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
-                required={param.required}
-                description={
-                  param.description
-                    ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                placeholder={t("common.none") as string}
-                value={layoutParameters[param.id] as string}
-                disabled={isRunning}
-                onChange={(v) => onChangeParameters(param.id, v)}
-                options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
-                  .filter((field) => (param.restriction ? !!field[param.restriction] : true))
-                  .map((field) => ({
-                    value: field.id,
-                    label: field.id,
-                  }))}
-              />
-            )}
-            {param.type === "script" && (
-              <div className="position-relative">
-                <>
-                  {layoutParameters[param.id] && (
-                    <>
-                      <div className="code-thumb mt-1" style={{ height: "auto", maxHeight: "auto" }}>
-                        <Highlight className="javascript">
-                          {(layoutParameters[param.id] as LayoutScriptParameter["defaultValue"]).toString()}
-                        </Highlight>
-                      </div>
-                      <div className="filler-fade-out position-absolute bottom-0"></div>
-                    </>
-                  )}
-                  <div className={cx(layoutParameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
-                    <button
-                      type="button"
-                      className="btn btn-dark mx-auto d-block m-3"
-                      onClick={() =>
-                        openModal({
-                          component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
-                          arguments: {
-                            title: "Custom layout",
-                            withSaveAndRun: true,
-                            functionJsDoc: param.functionJsDoc,
-                            defaultFunction: param.defaultValue,
-                            value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
-                            checkFunction: param.functionCheck,
-                          },
-                          beforeSubmit: ({ run, script }) => {
-                            onChangeParameters(param.id, script);
-                            if (run) setTimeout(submit, 0);
-                          },
-                        })
-                      }
-                      title={t("common.open_code_editor").toString()}
-                    >
-                      <CodeEditorIcon className="me-1" />
-                      {t("common.open_code_editor")}
-                    </button>
-                  </div>
-                </>
-              </div>
-            )}
-          </div>
-        );
-      })}
+      <div>
+        {layout.parameters.map((param) => {
+          const id = `layouts-${layout.id}-params-${param.id}`;
+          return (
+            <div className="my-1" key={id}>
+              {param.type === "number" && (
+                <NumberInput
+                  id={id}
+                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                  description={
+                    param.description
+                      ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  value={layoutParameters[param.id] as number}
+                  disabled={isRunning}
+                  onChange={(v) => onChangeParameters(param.id, v)}
+                />
+              )}
+              {param.type === "boolean" && (
+                <BooleanInput
+                  id={id}
+                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                  description={
+                    param.description
+                      ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  value={layoutParameters[param.id] as boolean}
+                  disabled={isRunning}
+                  onChange={(v) => onChangeParameters(param.id, v)}
+                />
+              )}
+              {param.type === "attribute" && (
+                <EnumInput
+                  id={id}
+                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                  required={param.required}
+                  description={
+                    param.description
+                      ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  placeholder={t("common.none") as string}
+                  value={layoutParameters[param.id] as string}
+                  disabled={isRunning}
+                  onChange={(v) => onChangeParameters(param.id, v)}
+                  options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
+                    .filter((field) => (param.restriction ? !!field[param.restriction] : true))
+                    .map((field) => ({
+                      value: field.id,
+                      label: field.id,
+                    }))}
+                />
+              )}
+              {param.type === "script" && (
+                <div className="position-relative">
+                  <>
+                    {layoutParameters[param.id] && (
+                      <>
+                        <div className="code-thumb mt-1" style={{ height: "auto", maxHeight: "auto" }}>
+                          <Highlight className="javascript">
+                            {(layoutParameters[param.id] as LayoutScriptParameter["defaultValue"]).toString()}
+                          </Highlight>
+                        </div>
+                        <div className="filler-fade-out position-absolute bottom-0"></div>
+                      </>
+                    )}
+                    <div className={cx(layoutParameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
+                      <button
+                        type="button"
+                        className="btn btn-dark mx-auto d-block m-3"
+                        onClick={() =>
+                          openModal({
+                            component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
+                            arguments: {
+                              title: "Custom layout",
+                              withSaveAndRun: true,
+                              functionJsDoc: param.functionJsDoc,
+                              defaultFunction: param.defaultValue,
+                              value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
+                              checkFunction: param.functionCheck,
+                            },
+                            beforeSubmit: ({ run, script }) => {
+                              onChangeParameters(param.id, script);
+                              if (run) setTimeout(submit, 0);
+                            },
+                          })
+                        }
+                        title={t("common.open_code_editor").toString()}
+                      >
+                        <CodeEditorIcon className="me-1" />
+                        {t("common.open_code_editor")}
+                      </button>
+                    </div>
+                  </>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {isRunning && <LoaderFill />}
+      </div>
 
-      <div className="text-end mt-2">
+      <div className="text-end mt-2 z-over-loader">
         {layout.buttons?.map(({ id, description, getSettings }) => (
           <button
             key={id}
@@ -234,11 +238,12 @@ export const LayoutForm: FC<{
               const graph = getFilteredDataGraph(dataset, sigmaGraph);
               setParameters(getSettings(layoutParameters, graph));
             }}
+            disabled={isRunning}
           >
             {t(`layouts.${layout.id}.buttons.${id}.title`) as string}
           </button>
         ))}
-        <button type="reset" className="btn btn-secondary ms-2" onClick={() => setParameters()}>
+        <button type="reset" className="btn btn-secondary ms-2" onClick={() => setParameters()} disabled={isRunning}>
           {t("common.reset")}
         </button>
         <button type="submit" className="btn btn-primary ms-2">
