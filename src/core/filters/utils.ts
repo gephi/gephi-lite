@@ -36,7 +36,10 @@ export function parseFiltersState(rawFilters: string): FiltersState | null {
 /**
  * Actual filtering helpers:
  */
-function filterValue(value: any, filter: RangeFilterType | TermsFilterType): boolean {
+export function filterValue(
+  value: any,
+  filter: Omit<RangeFilterType, "field" | "itemType"> | Omit<TermsFilterType, "field" | "itemType">,
+): boolean {
   switch (filter.type) {
     case "range":
       const number = toNumber(value);

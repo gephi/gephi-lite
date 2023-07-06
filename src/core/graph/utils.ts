@@ -92,12 +92,10 @@ export function guessSeparator(values: string[]): string | null {
  * quantitative:
  */
 export function inferFieldType<T extends ItemType = ItemType>(
-  model: Omit<FieldModel<T>, "quantitative" | "qualitative">,
   values: Scalar[],
   itemsCount: number,
-): FieldModel<T> {
-  const res: FieldModel<T> = {
-    ...model,
+): Pick<FieldModel<T>, "quantitative" | "qualitative"> {
+  const res: Pick<FieldModel<T>, "quantitative" | "qualitative"> = {
     qualitative: null,
     quantitative: null,
   };
@@ -106,16 +104,20 @@ export function inferFieldType<T extends ItemType = ItemType>(
     res.quantitative = { unit: null };
   }
 
-  const uniqValues = uniq(values);
+  const separator = guessSeparator(
+    take(
+      values.map((v) => "" + v),
+      100,
+    ),
+  );
+  const uniqValues = uniq(separator ? values.flatMap((v) => (v + "").split(separator)) : values);
   const uniqValuesCount = uniqValues.length;
-  if (uniqValuesCount > 1 && uniqValuesCount < 50 && uniqValuesCount < Math.max(Math.pow(itemsCount, 0.75), 5)) {
-    const separator = guessSeparator(
-      take(
-        uniqValues.map((v) => "" + v),
-        100,
-      ),
-    );
 
+  if (
+    uniqValuesCount > 1 &&
+    uniqValuesCount < 50 &&
+    uniqValuesCount < Math.max(separator ? itemsCount : Math.pow(itemsCount, 0.75), 5)
+  ) {
     res.qualitative = { separator };
   }
 
@@ -195,28 +197,18 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
 
   // Infer model:
   forEach(nodeAttributeValues, (values, key) => {
-    dataset.nodeFields.push(
-      inferFieldType(
-        {
-          id: key,
-          itemType: "nodes",
-        },
-        values,
-        graph.order,
-      ),
-    );
+    dataset.nodeFields.push({
+      id: key,
+      itemType: "nodes",
+      ...inferFieldType(values, graph.order),
+    });
   });
   forEach(edgeAttributeValues, (values, key) => {
-    dataset.edgeFields.push(
-      inferFieldType(
-        {
-          id: key,
-          itemType: "edges",
-        },
-        values,
-        graph.size,
-      ),
-    );
+    dataset.edgeFields.push({
+      id: key,
+      itemType: "edges",
+      ...inferFieldType(values, graph.size),
+    });
   });
 
   return dataset;

@@ -34,14 +34,11 @@ export function computeMetric(
     }
 
     // Update field model:
-    const newFieldModel = inferFieldType(
-      {
-        id: attributeName,
-        itemType: metric.itemType,
-      },
-      Object.values(values),
-      itemsCount,
-    );
+    const newFieldModel = {
+      id: attributeName,
+      itemType: metric.itemType,
+      ...inferFieldType(Object.values(values), itemsCount),
+    };
 
     if (fields.find((field) => field.id === attributeName)) {
       fields = fields.map((field) => (field.id === attributeName ? newFieldModel : field));
