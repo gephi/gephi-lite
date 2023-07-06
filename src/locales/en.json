@@ -306,6 +306,10 @@
           "preserve_camera": "Preserve current camera position"
         }
       }
+    },
+    "caption": {
+      "color": " {{itemType}} colors:",
+      "size": "{{itemType}} size:"
     }
   },
   "statistics": {

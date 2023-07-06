@@ -11,7 +11,7 @@
     }
   }
 
-  .node-colors {
+  .item-colors {
     display: flex;
     align-items: flex-start;
     min-height: $graph-caption-items-height;
@@ -25,13 +25,23 @@
       .horizontal-slider {
         margin-left: 10px;
         width: 80%;
-        .label {
-          margin-top: 15px;
-        }
         .thumb {
           cursor: unset;
           display: flex;
           justify-content: center;
+          .label {
+            margin-top: 15px;
+          }
+
+          &.rectangle {
+            width: 10px;
+            height: 25px;
+            margin-top: -3px;
+            border-radius: 0;
+            .label {
+              margin-top: 18px;
+            }
+          }
         }
         .track {
           cursor: unset;
@@ -59,6 +69,10 @@
           height: 20px;
           width: 20px;
         }
+        .rectangle {
+          height: 20px;
+          width: 8px;
+        }
         .label {
           margin-left: 0.5rem;
         }
@@ -75,7 +89,7 @@
     }
   }
 
-  .node-sizes {
+  .item-sizes {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
@@ -87,10 +101,10 @@
         margin-right: 0;
       }
     }
-    .node-size {
+    .item-size {
       display: flex;
       flex-direction: column;
-      .circle-wrapper {
+      .item-wrapper {
         //height: $graph-caption-items-height;
         flex-grow: 1;
         overflow: hidden;
@@ -100,10 +114,19 @@
         justify-content: center;
       }
 
-      .dotted-circle {
-        border-radius: 100%;
+      .dotted-circle,
+      .dotted-rectangle {
         background: #cccccc66;
         border: 2px dotted black;
+      }
+      .dotted-circle {
+        border-radius: 100%;
+      }
+      .dotted-rectangle {
+        height: $graph-caption-items-height;
+
+        border-top: none;
+        border-bottom: none;
       }
     }
   }

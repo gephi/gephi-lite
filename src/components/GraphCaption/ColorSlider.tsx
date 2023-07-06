@@ -1,15 +1,17 @@
 import { FC, HTMLProps, useCallback } from "react";
 import ReactSlider from "react-slider";
+import cx from "classnames";
 
 import { ColorScalePointType } from "../../core/appearance/types";
 import { last, range } from "lodash";
 import { RangeExtends } from ".";
 import { shortenNumber } from "../GraphFilters/utils";
 
-export const ColorSlider: FC<{ colorScalePoints: ColorScalePointType[]; extend: RangeExtends }> = ({
-  colorScalePoints,
-  extend,
-}) => {
+export const ColorSlider: FC<{
+  itemType: "node" | "edge";
+  colorScalePoints: ColorScalePointType[];
+  extend: RangeExtends;
+}> = ({ itemType, colorScalePoints, extend }) => {
   const formatValueFromScalePoint = useCallback(
     (value: number) =>
       shortenNumber(
@@ -51,7 +53,7 @@ export const ColorSlider: FC<{ colorScalePoints: ColorScalePointType[]; extend: 
   return (
     <ReactSlider
       className="horizontal-slider"
-      thumbClassName="thumb"
+      thumbClassName={cx("thumb", itemType === "edge" && "rectangle")}
       trackClassName="track"
       disabled
       snapDragDisabled

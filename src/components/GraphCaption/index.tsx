@@ -2,9 +2,9 @@ import { FC, useMemo } from "react";
 import { fromPairs, mapValues } from "lodash";
 
 import { useAppearance, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
-import NodesSizeCaption from "./NodeSizeCaption";
-import { DatalessGraph, ItemData } from "../../core/graph/types";
-import { NodesColorCaption } from "./NodeColorCaption";
+import ItemSizeCaption from "./ItemSizeCaption";
+import { ItemData } from "../../core/graph/types";
+import { ItemsColorCaption } from "./ItemColorCaption";
 
 export interface GraphCaptionProps {
   minimal?: boolean;
@@ -118,20 +118,39 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   const nodeSizeExtends = appearance.nodesSize.field
     ? vizAttributesExtends.node[appearance.nodesSize.field]
     : undefined;
+  const edgeSizeExtends = appearance.edgesSize.field
+    ? vizAttributesExtends.edge[appearance.edgesSize.field]
+    : undefined;
 
   return (
     <div title="caption" className="graph-caption">
       {appearance.nodesColor.field !== undefined && vizAttributesExtends.node[appearance.nodesColor.field] && (
-        <NodesColorCaption
+        <ItemsColorCaption
+          itemType="node"
           minimal={minimal}
-          nodesColor={appearance.nodesColor}
+          itemsColor={appearance.nodesColor}
           extend={vizAttributesExtends.node[appearance.nodesColor.field]}
         />
       )}
-      <NodesSizeCaption
+      <ItemSizeCaption
         minimal={minimal}
-        nodesSize={appearance.nodesSize}
+        itemType="node"
+        itemsSize={appearance.nodesSize}
         extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
+      />
+      {appearance.edgesColor.field !== undefined && vizAttributesExtends.edge[appearance.edgesColor.field] && (
+        <ItemsColorCaption
+          itemType="edge"
+          minimal={minimal}
+          itemsColor={appearance.edgesColor}
+          extend={vizAttributesExtends.edge[appearance.edgesColor.field]}
+        />
+      )}
+      <ItemSizeCaption
+        minimal={minimal}
+        itemType="edge"
+        itemsSize={appearance.edgesSize}
+        extend={edgeSizeExtends && "min" in edgeSizeExtends ? edgeSizeExtends : undefined}
       />
     </div>
   );

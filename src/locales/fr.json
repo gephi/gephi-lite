@@ -2,5 +2,14 @@
   "home": {
     "greeting": "Bonjour",
     "blabla": "Très heureux de vous voir"
+  },
+  "graph": {
+    "model": {
+      "nodes": "nœuds"
+    },
+    "caption": {
+      "color": "Couleur des {{itemType}} :",
+      "size": "Taille des {{itemType}} :"
+    }
   }
 }
