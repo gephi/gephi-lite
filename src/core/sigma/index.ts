@@ -149,7 +149,7 @@ export function focusCameraOnNode(id: string) {
       x: nodeData.x,
       y: nodeData.y,
     });
-    sigmaActions.setHoveredNode(id);
+    // TODO: highlight the node in sigma ?
   }
 }
 
@@ -164,6 +164,6 @@ export function focusCameraOnEdge(id: string) {
       x: (sourceData.x + targetData.x) / 2,
       y: (sourceData.y + targetData.y) / 2,
     });
-    sigmaActions.setHoveredEdge(id);
+    // TODO: highlight the edge in sigma ?
   }
 }
