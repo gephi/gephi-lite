@@ -1,4 +1,4 @@
-import { ComponentType, FC, useMemo, useState } from "react";
+import { ComponentType, FC, ReactNode, useMemo, useState } from "react";
 import cx from "classnames";
 import { BsX } from "react-icons/bs";
 import { BsFillInfoSquareFill } from "react-icons/bs";
@@ -34,8 +34,10 @@ type Tool = {
   label: string;
   icon: ComponentType<{ className?: string }>;
   panel: ComponentType;
-  count?: number;
-  countStatus?: "danger" | "warning" | "success" | "secondary";
+  badge?: {
+    content: ReactNode;
+    status?: "danger" | "warning" | "success" | "secondary";
+  };
 };
 type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
 
@@ -77,10 +79,17 @@ export const GraphPage: FC = () => {
         label: t("filters.title"),
         icon: FiltersIcon,
         panel: FiltersPanel,
-        count: filterState.future.length + filterState.past.length,
-        countStatus: filterState.past.length === 0 && filterState.future.length > 0 ? "secondary" : "warning",
+        badge: {
+          content: filterState.future.length + filterState.past.length,
+          status: filterState.past.length === 0 && filterState.future.length > 0 ? "secondary" : "warning",
+        },
       },
-      { type: "tool", label: t("layouts.title"), icon: LayoutsIcon, panel: LayoutsPanel },
+      {
+        type: "tool",
+        label: t("layouts.title"),
+        icon: LayoutsIcon,
+        panel: LayoutsPanel,
+      },
       { type: "filler" },
       {
         type: "button",
@@ -127,15 +136,15 @@ export const GraphPage: FC = () => {
                 }}
               >
                 <t.icon />
-                {t.type === "tool" && (t?.count || 0) > 0 && (
+                {t.type === "tool" && t.badge && t.badge.content && (
                   <span
                     style={{ fontSize: "10px !important" }}
                     className={cx(
                       "position-absolute translate-middle badge rounded-pill",
-                      t.countStatus && `bg-${t.countStatus}`,
+                      t.badge.status && `bg-${t.badge.status}`,
                     )}
                   >
-                    {t.count}
+                    {t.badge.content}
                   </span>
                 )}
               </button>
