@@ -1,5 +1,6 @@
 import Sigma from "sigma";
 import { Extent } from "graphology-metrics/graph/extent";
+import { max, min } from "lodash";
 
 import { SigmaState } from "./types";
 import { atom } from "../utils/atoms";
@@ -143,27 +144,47 @@ export const sigmaActions = {
 
 export function focusCameraOnNode(id: string) {
   const sigma = sigmaAtom.get();
-  const nodeData = sigma.getNodeDisplayData(id);
-  if (nodeData) {
+  const nodeDisplayData = sigma.getNodeDisplayData(id);
+  const graphDimensions = sigma.getGraphDimensions();
+  if (nodeDisplayData) {
     sigma.getCamera().animate({
-      x: nodeData.x,
-      y: nodeData.y,
+      x: nodeDisplayData.x,
+      y: nodeDisplayData.y,
+      // we zoom to see a box of X times the size of the node
+      ratio: max([
+        (nodeDisplayData.size * 10) / graphDimensions.width,
+        (nodeDisplayData.size * 10) / graphDimensions.height,
+      ]) as number,
     });
-    // TODO: highlight the node in sigma ?
   }
 }
 
 export function focusCameraOnEdge(id: string) {
   const sigma = sigmaAtom.get();
   const sourceId = sigma.getGraph().source(id);
-  const sourceData = sigma.getNodeDisplayData(sourceId);
+  const sourceDisplayData = sigma.getNodeDisplayData(sourceId);
+  const sourceData = sigma.getGraph().getNodeAttributes(sourceId);
+
   const targetId = sigma.getGraph().target(id);
-  const targetData = sigma.getNodeDisplayData(targetId);
-  if (sourceData && targetData) {
+  const targetDisplayData = sigma.getNodeDisplayData(targetId);
+  const targetData = sigma.getGraph().getNodeAttributes(targetId);
+
+  if (sourceData && targetData && targetDisplayData && sourceDisplayData) {
+    // margin is the size of the biggest node;
+    const margin = max([sourceDisplayData?.size, targetDisplayData?.size, 10]) as number;
+
+    // we compute the width/height of the edge (with margin) in  the graph referencial
+    const focusWidth = Math.abs(targetData.x - sourceData.x) + margin * 2;
+    const focusHeight = Math.abs(targetData.y - sourceData.y) + margin * 2;
+
+    // we compute the zoom ratio (in the graph ref, which should be the same in the viewport)
+    const graphDimensions = sigma.getGraphDimensions();
+    const focusRatio = max([focusHeight / graphDimensions.height, focusWidth / graphDimensions.width]) as number;
+
     sigma.getCamera().animate({
-      x: (sourceData.x + targetData.x) / 2,
-      y: (sourceData.y + targetData.y) / 2,
+      x: (sourceDisplayData.x + targetDisplayData.x) / 2,
+      y: (sourceDisplayData.y + targetDisplayData.y) / 2,
+      ratio: focusRatio,
     });
-    // TODO: highlight the edge in sigma ?
   }
 }
