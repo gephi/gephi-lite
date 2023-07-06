@@ -1,5 +1,6 @@
 import { ComponentType, FC, ReactNode, useMemo, useState } from "react";
 import cx from "classnames";
+import { isNil } from "lodash";
 import { BsX } from "react-icons/bs";
 import { BsFillInfoSquareFill } from "react-icons/bs";
 import { useTranslation } from "react-i18next";
@@ -80,7 +81,10 @@ export const GraphPage: FC = () => {
         icon: FiltersIcon,
         panel: FiltersPanel,
         badge: {
-          content: filterState.future.length + filterState.past.length,
+          content:
+            filterState.future.length + filterState.past.length
+              ? filterState.future.length + filterState.past.length
+              : null,
           status: filterState.past.length === 0 && filterState.future.length > 0 ? "secondary" : "warning",
         },
       },
@@ -136,7 +140,7 @@ export const GraphPage: FC = () => {
                 }}
               >
                 <t.icon />
-                {t.type === "tool" && t.badge && t.badge.content && (
+                {t.type === "tool" && !isNil(t.badge) && !isNil(t.badge.content) && (
                   <span
                     style={{ fontSize: "10px !important" }}
                     className={cx(
