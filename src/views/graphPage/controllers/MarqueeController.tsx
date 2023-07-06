@@ -46,12 +46,12 @@ export const MarqueeController: FC = () => {
 
   const selection = useSelection();
   const { select } = useSelectionActions();
-  const { setHighlightedNodes } = useSigmaActions();
+  const { setEmphasizedNodes } = useSigmaActions();
   const cleanup = useCallback(() => {
     sigma.getCamera().enable();
     setSelectionState({ type: "idle" });
-    setHighlightedNodes(null);
-  }, [sigma, setHighlightedNodes]);
+    setEmphasizedNodes(null);
+  }, [sigma, setEmphasizedNodes]);
 
   useEffect(() => {
     const keyDownHandler = (e: KeyboardEvent) => {
@@ -59,14 +59,14 @@ export const MarqueeController: FC = () => {
       if (e.key === "Escape") cleanup();
       if (e.key === "Control") {
         setSelectionState((state) => ({ ...state, ctrlKeyDown: true }));
-        setHighlightedNodes(new Set(selectionState.capturedNodes.concat(Array.from(selection.items))));
+        setEmphasizedNodes(new Set(selectionState.capturedNodes.concat(Array.from(selection.items))));
       }
     };
     const keyUpHandler = (e: KeyboardEvent) => {
       if (selectionState.type === "idle") return;
       if (e.key === "Control") {
         setSelectionState((state) => ({ ...state, ctrlKeyDown: false }));
-        setHighlightedNodes(new Set(selectionState.capturedNodes));
+        setEmphasizedNodes(new Set(selectionState.capturedNodes));
       }
     };
     window.document.body.addEventListener("keydown", keyDownHandler);
@@ -75,7 +75,7 @@ export const MarqueeController: FC = () => {
       window.document.body.removeEventListener("keydown", keyDownHandler);
       window.document.body.removeEventListener("keyup", keyUpHandler);
     };
-  }, [cleanup, selection, selectionState, setHighlightedNodes]);
+  }, [cleanup, selection, selectionState, setEmphasizedNodes]);
 
   useEffect(() => {
     registerEvents({
@@ -97,7 +97,7 @@ export const MarqueeController: FC = () => {
             return !(x + size < minX || x - size > maxX || y + size < minY || y - size > maxY);
           });
 
-          setHighlightedNodes(
+          setEmphasizedNodes(
             new Set(
               capturedNodes.concat(
                 selectionState.ctrlKeyDown && selection.type === "nodes" ? Array.from(selection.items) : [],
@@ -134,7 +134,7 @@ export const MarqueeController: FC = () => {
         }
       },
     });
-  }, [registerEvents, sigma, selectionState, selection, cleanup, setHighlightedNodes, select]);
+  }, [registerEvents, sigma, selectionState, selection, cleanup, setEmphasizedNodes, select]);
 
   return selectionState.type === "marquee" ? (
     <MarqueeDisplay firstCorner={selectionState.startCorner} lastCorner={selectionState.mouseCorner} />

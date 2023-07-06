@@ -17,29 +17,29 @@ export const resetState: Producer<SigmaState, []> = () => {
   return () => getEmptySigmaState();
 };
 
-export const setHighlightedNodes: Producer<SigmaState, [Set<string> | null]> = (items) => {
+export const setEmphasizedNodes: Producer<SigmaState, [Set<string> | null]> = (items) => {
   return (state) => ({
     ...state,
-    highlightedNodes: items,
+    emphasizedNodes: items,
   });
 };
-export const resetHighlightedNodes: Producer<SigmaState, []> = () => {
+export const resetEmphasizedNodes: Producer<SigmaState, []> = () => {
   return (state) => ({
     ...state,
-    highlightedNodes: null,
+    emphasizedNodes: null,
   });
 };
 
-export const setHighlightedEdges: Producer<SigmaState, [Set<string> | null]> = (items) => {
+export const setEmphasizedEdges: Producer<SigmaState, [Set<string> | null]> = (items) => {
   return (state) => ({
     ...state,
-    highlightedEdges: items,
+    emphasizedEdges: items,
   });
 };
-export const resetHighlightedEdges: Producer<SigmaState, []> = () => {
+export const resetEmphasizedEdges: Producer<SigmaState, []> = () => {
   return (state) => ({
     ...state,
-    highlightedEdges: null,
+    emphasizedEdges: null,
   });
 };
 
@@ -66,6 +66,19 @@ export const resetHoveredEdge: Producer<SigmaState, []> = () => {
   return (state) => ({
     ...state,
     hoveredEdge: null,
+  });
+};
+
+export const setHighlightedNodes: Producer<SigmaState, [Set<string> | null]> = (items) => {
+  return (state) => ({
+    ...state,
+    highlightedNodes: items,
+  });
+};
+export const resetHighlightedNodes: Producer<SigmaState, []> = () => {
+  return (state) => ({
+    ...state,
+    highlightedNodes: null,
   });
 };
 
@@ -132,34 +145,55 @@ export const resetCamera = ({
 
 export const sigmaActions = {
   resetState: producerToAction(resetState, sigmaStateAtom),
-  setHighlightedNodes: producerToAction(setHighlightedNodes, sigmaStateAtom),
-  resetHighlightedNodes: producerToAction(resetHighlightedNodes, sigmaStateAtom),
-  setHighlightedEdges: producerToAction(setHighlightedEdges, sigmaStateAtom),
-  resetHighlightedEdges: producerToAction(resetHighlightedEdges, sigmaStateAtom),
+  setEmphasizedNodes: producerToAction(setEmphasizedNodes, sigmaStateAtom),
+  resetEmphasizedNodes: producerToAction(resetEmphasizedNodes, sigmaStateAtom),
+  setEmphasizedEdges: producerToAction(setEmphasizedEdges, sigmaStateAtom),
+  resetEmphasizedEdges: producerToAction(resetEmphasizedEdges, sigmaStateAtom),
   setHoveredNode: producerToAction(setHoveredNode, sigmaStateAtom),
   resetHoveredNode: producerToAction(resetHoveredNode, sigmaStateAtom),
   setHoveredEdge: producerToAction(setHoveredEdge, sigmaStateAtom),
   resetHoveredEdge: producerToAction(resetHoveredEdge, sigmaStateAtom),
+  setHighlightedNodes: producerToAction(setHighlightedNodes, sigmaStateAtom),
+  resetHighlightedNodes: producerToAction(resetHighlightedNodes, sigmaStateAtom),
 } as const;
 
+const ANIMATION_DURATION = 500;
+const HIGHLIGHT_DURATION = 2000;
+let focusTimeOutId: number | null = null;
 export function focusCameraOnNode(id: string) {
+  if (focusTimeOutId) clearTimeout(focusTimeOutId);
+  sigmaActions.resetHighlightedNodes();
+
   const sigma = sigmaAtom.get();
   const nodeDisplayData = sigma.getNodeDisplayData(id);
   const graphDimensions = sigma.getGraphDimensions();
   if (nodeDisplayData) {
-    sigma.getCamera().animate({
-      x: nodeDisplayData.x,
-      y: nodeDisplayData.y,
-      // we zoom to see a box of X times the size of the node
-      ratio: max([
-        (nodeDisplayData.size * 10) / graphDimensions.width,
-        (nodeDisplayData.size * 10) / graphDimensions.height,
-      ]) as number,
-    });
+    sigma.getCamera().animate(
+      {
+        x: nodeDisplayData.x,
+        y: nodeDisplayData.y,
+        // we zoom to see a box of X times the size of the node
+        ratio: max([
+          (nodeDisplayData.size * 10) / graphDimensions.width,
+          (nodeDisplayData.size * 10) / graphDimensions.height,
+        ]) as number,
+      },
+      { duration: ANIMATION_DURATION },
+    );
   }
+
+  // Higlight nodes during X seconds
+  sigmaActions.setHighlightedNodes(new Set([id]));
+  focusTimeOutId = window.setTimeout(() => {
+    sigmaActions.resetHighlightedNodes();
+    focusTimeOutId = null;
+  }, HIGHLIGHT_DURATION);
 }
 
 export function focusCameraOnEdge(id: string) {
+  if (focusTimeOutId) clearTimeout(focusTimeOutId);
+  sigmaActions.resetHighlightedNodes();
+
   const sigma = sigmaAtom.get();
   const sourceId = sigma.getGraph().source(id);
   const sourceDisplayData = sigma.getNodeDisplayData(sourceId);
@@ -181,10 +215,20 @@ export function focusCameraOnEdge(id: string) {
     const graphDimensions = sigma.getGraphDimensions();
     const focusRatio = max([focusHeight / graphDimensions.height, focusWidth / graphDimensions.width]) as number;
 
-    sigma.getCamera().animate({
-      x: (sourceDisplayData.x + targetDisplayData.x) / 2,
-      y: (sourceDisplayData.y + targetDisplayData.y) / 2,
-      ratio: focusRatio,
-    });
+    sigma.getCamera().animate(
+      {
+        x: (sourceDisplayData.x + targetDisplayData.x) / 2,
+        y: (sourceDisplayData.y + targetDisplayData.y) / 2,
+        ratio: focusRatio,
+      },
+      { duration: ANIMATION_DURATION },
+    );
   }
+
+  // Higlight nodes during X seconds
+  sigmaActions.setHighlightedNodes(new Set([sourceId, targetId]));
+  focusTimeOutId = window.setTimeout(() => {
+    sigmaActions.resetHighlightedNodes();
+    focusTimeOutId = null;
+  }, HIGHLIGHT_DURATION);
 }

@@ -5,9 +5,10 @@ import { SigmaState } from "./types";
  */
 export function getEmptySigmaState(): SigmaState {
   return {
-    highlightedNodes: null,
-    highlightedEdges: null,
+    emphasizedNodes: null,
+    emphasizedEdges: null,
     hoveredNode: null,
     hoveredEdge: null,
+    highlightedNodes: null,
   };
 }

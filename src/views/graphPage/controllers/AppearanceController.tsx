@@ -16,7 +16,7 @@ export const AppearanceController: FC = () => {
   const selection = useSelection();
   const { showEdges } = useAppearance();
   const { metadata } = useGraphDataset();
-  const { highlightedNodes, highlightedEdges, hoveredNode } = useSigmaState();
+  const { emphasizedNodes, emphasizedEdges, hoveredNode, highlightedNodes } = useSigmaState();
 
   // Reducers:
   useEffect(() => {
@@ -27,48 +27,48 @@ export const AppearanceController: FC = () => {
     //  or
     //    the node selection,
     //    the hover node plus its neighbor
-    const allHighlightedNodes =
-      highlightedNodes ||
+    const allEmphasizedNodes =
+      emphasizedNodes ||
       new Set([
         ...(selection.type === "nodes" ? Array.from(selection.items) : []),
         ...(hoveredNode ? [hoveredNode, ...graph.neighbors(hoveredNode)] : []),
       ]);
 
     // What we've got in state
-    //  or edges linked to an highlightedNodes
+    //  or edges linked to an emphasizedNodes
     //  or
     //    edges in selection
     //    edges hovered
     //    edges in neighbor of the node hovered
-    const allHighlightedEdges = highlightedNodes
+    const allEmphasizedEdges = emphasizedNodes
       ? new Set(
           graph.filterEdges(
-            (edge, _attr, source, target) => highlightedNodes.has(source) && highlightedNodes.has(target),
+            (edge, _attr, source, target) => emphasizedNodes.has(source) && emphasizedNodes.has(target),
           ),
         )
-      : highlightedEdges ||
+      : emphasizedEdges ||
         new Set([
           ...(selection.type === "edges" ? Array.from(selection.items) : []),
           ...(hoveredNode ? graph.edges(hoveredNode) : []),
         ]);
-    const hasHighlightedNodes = !!allHighlightedNodes.size;
-    const hasHighlightedEdges = !!allHighlightedEdges.size;
+    const hasEmphasizedNodes = !!allEmphasizedNodes.size;
+    const hasEmphasizedEdges = !!allEmphasizedEdges.size;
 
     sigma.setSetting("nodeReducer", (id, attr) => {
       const res = structuredClone(attr) as Partial<CustomNodeDisplayData>;
       res.zIndex = 0;
       res.rawSize = res.size || DEFAULT_NODE_SIZE;
 
-      if (hasHighlightedNodes && !allHighlightedNodes.has(id)) {
+      if (hasEmphasizedNodes && !allEmphasizedNodes.has(id)) {
         res.hideLabel = true;
         res.borderColor = res.color;
         res.color = memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
         res.zIndex = -1;
       }
 
-      if (id === hoveredNode) res.highlighted = true;
+      if (id === hoveredNode || highlightedNodes?.has(id)) res.highlighted = true;
 
-      if (allHighlightedNodes.has(id)) {
+      if (allEmphasizedNodes.has(id)) {
         res.forceLabel = true;
         res.zIndex = 1;
       }
@@ -84,7 +84,7 @@ export const AppearanceController: FC = () => {
             res.zIndex = 0;
             res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
-            if (hasHighlightedEdges && !allHighlightedEdges.has(id)) {
+            if (hasEmphasizedEdges && !allEmphasizedEdges.has(id)) {
               res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
               res.zIndex = -1;
             }
@@ -92,7 +92,7 @@ export const AppearanceController: FC = () => {
             return res;
           },
     );
-  }, [highlightedEdges, highlightedNodes, hoveredNode, selection, showEdges, sigma, metadata.type]);
+  }, [emphasizedEdges, emphasizedNodes, hoveredNode, selection, showEdges, sigma, metadata.type, highlightedNodes]);
 
   return null;
 };
