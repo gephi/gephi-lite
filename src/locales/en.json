@@ -668,6 +668,11 @@
     "help": "Type something to search",
     "other_result": "... and {{count}} other results",
     "select_all_nodes": "Add {{count}} nodes in the selection",
-    "select_all_edges": "Add {{count}} edges in the selection"
+    "select_all_edges": "Add {{count}} edges in the selection",
+    "node": {
+      "placeholder": "Search a node",
+      "no_result": "No node found",
+      "help": "Type something to search a node"
+    }
   }
 }
