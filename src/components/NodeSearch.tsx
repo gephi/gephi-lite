@@ -25,7 +25,7 @@ type Option = OptionItem | OptionMessage;
 
 const OptionComponent = ({ data, innerProps, className, isFocused }: OptionProps<Option, false>) => {
   const { t } = useTranslation();
-  console.log(data, innerProps, className, isFocused);
+
   return (
     <div {...innerProps} className={className} onMouseMove={undefined} onMouseOver={undefined}>
       <div

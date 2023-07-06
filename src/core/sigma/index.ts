@@ -1,6 +1,6 @@
 import Sigma from "sigma";
 import { Extent } from "graphology-metrics/graph/extent";
-import { max, min } from "lodash";
+import { max } from "lodash";
 
 import { SigmaState } from "./types";
 import { atom } from "../utils/atoms";
