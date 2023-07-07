@@ -11,10 +11,12 @@ interface Option {
   label: string;
 }
 
-const availableLocales: Array<Option> = toPairs(locales).map(([key, locale]) => ({
-  value: key,
-  label: `${localeEmoji(key)} ${locale.label}`,
-}));
+const availableLocales: Array<Option> = toPairs(locales)
+  .filter(([key]) => process.env.NODE_ENV === "development" || key !== "dev")
+  .map(([key, locale]) => ({
+    value: key,
+    label: `${localeEmoji(key)} ${locale.label}`,
+  }));
 
 export const LocalSwitcher: FC = () => {
   const { locale } = usePreferences();

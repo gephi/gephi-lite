@@ -12,11 +12,11 @@ const i18n = i18next.use(initReactI18next).use(LngDetector);
 i18n
   .init({
     debug: process.env.NODE_ENV !== "production",
-    fallbackLng: "en",
+    fallbackLng: "dev",
     resources: locales,
     detection: {
-      order: ["querystring", "en", "navigator"],
-      lookupQuerystring: "lng",
+      order: ["querystring", "navigator"],
+      lookupQuerystring: "lang",
     },
   })
   .then(() => {
