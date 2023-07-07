@@ -47,17 +47,19 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
   return (
     <>
       {itemType === "edges" && (
-        <div className="form-check">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={showEdges}
-            onChange={(e) => setShowEdges(e.target.checked)}
-            id="show-edges"
-          />
-          <label className="form-check-label" htmlFor="show-edges">
-            {t("appearance.show_edges")}
-          </label>
+        <div className="panel-block">
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showEdges}
+              onChange={(e) => setShowEdges(e.target.checked)}
+              id="show-edges"
+            />
+            <label className="form-check-label" htmlFor="show-edges">
+              {t("appearance.show_edges")}
+            </label>
+          </div>
         </div>
       )}
 
