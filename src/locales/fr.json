@@ -77,6 +77,38 @@
     "stop": "Arrêter",
     "size": "Taille",
     "show_more": "Voir plus",
-    "show": "Voir"
+    "show": "Voir",
+    "hide": "Cacher",
+    "max": "Max",
+    "loading": "Chargement en cours",
+    "min": "Min",
+    "cancel": "Annuler",
+    "clear": "Nettoyer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "copy": "Copier",
+    "created": "Créé",
+    "delete": "Supprimer",
+    "edit": "Éditer",
+    "filename": "Nom de fichier",
+    "none": "Vide",
+    "submit": "Envoyer"
+  },
+  "github": {
+    "title": "Authentification GitHub",
+    "select_ui_language": "Sélectionner la langue",
+    "logged_as": "Vous actuellement connecté avec  GitHub en tant que {{username}}."
+  },
+  "auth": {
+    "sign_in": "S'authentifier via GitHub",
+    "unauth_success": "Authentification réussie"
+  },
+  "storage": {
+    "cannot_restore": "Votre graphe ne peut être restauré."
+  },
+  "cloud": {
+    "github": {
+      "title": "Github"
+    }
   }
 }
