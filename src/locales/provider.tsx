@@ -5,7 +5,7 @@ import { initReactI18next, I18nextProvider } from "react-i18next";
 import LngDetector from "i18next-browser-languagedetector";
 
 import { usePreferences } from "../core/context/dataContexts";
-import { locales } from "./locales";
+import { LOCALES } from "./LOCALES";
 
 const i18n = i18next.use(initReactI18next).use(LngDetector);
 
@@ -13,7 +13,7 @@ i18n
   .init({
     debug: process.env.NODE_ENV !== "production",
     fallbackLng: "dev",
-    resources: locales,
+    resources: LOCALES,
     detection: {
       order: ["querystring", "navigator"],
       lookupQuerystring: "lang",

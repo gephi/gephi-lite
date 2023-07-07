@@ -45,6 +45,7 @@
   },
   "github": {
     "title": "GitHub authentication",
+    "select_ui_language": "Select application language",
     "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
     "logged_as": "You are currently logged into GitHub as {{username}}."
   },

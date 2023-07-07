@@ -36,7 +36,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
     <>
       {showHeader && (
         <div className="modal-header">
-          {title && <h5 className="modal-title d-flex align-items-center">{title}</h5>}
+          {title && <h5 className="modal-title d-flex align-items-center flex-grow-1">{title}</h5>}
           <button
             type="button"
             title={t("common.close").toString()}

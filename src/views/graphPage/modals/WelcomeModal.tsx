@@ -13,6 +13,7 @@ import { useOpenGexf } from "../../../core/graph/useOpenGexf";
 import { useNotifications } from "../../../core/notifications";
 import { usePreferences } from "../../../core/context/dataContexts";
 import { GitHubIcon } from "../../../components/common-icons";
+import LocalSwitcher from "../../../components/LocalSwitcher";
 
 const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 
@@ -46,6 +47,10 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
             className="me-2"
           />{" "}
           {t("welcome.title")}
+          <span className="flex-grow-1" />
+          <span className="me-1" style={{ marginTop: "-0.1em" }}>
+            <LocalSwitcher />
+          </span>
         </>
       }
       onClose={loading ? undefined : () => cancel()}

@@ -2,10 +2,10 @@ import dev from "./dev.json";
 import en from "./en.json";
 import fr from "./fr.json";
 
-export const locales = {
+export const LOCALES = {
   dev: {
     translation: dev,
-    label: "Only in dev mode",
+    label: "Dev language",
   },
   en: {
     translation: en,

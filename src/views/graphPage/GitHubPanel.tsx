@@ -6,7 +6,7 @@ import { useModal } from "../../core/modals";
 import { useConnectedUser } from "../../core/user";
 import { useNotifications } from "../../core/notifications";
 import { SignInModal } from "../../components/user/SignInModal";
-import { LocalSwitcher } from "../../components/LocalSwitcher";
+import LocalSwitcher from "../../components/LocalSwitcher";
 
 export const GitHubPanel: FC = () => {
   const { openModal } = useModal();
@@ -25,7 +25,11 @@ export const GitHubPanel: FC = () => {
       <hr className="m-0" />
 
       <div className="panel-block-grow">
-        <LocalSwitcher />
+        <div className="d-flex flex-row mb-4">
+          <span className="flex-grow-1">{t("github.select_ui_language")}</span>
+          <LocalSwitcher />
+        </div>
+
         {!user && (
           <>
             <p className="small">{t("github.description")}</p>
@@ -42,20 +46,22 @@ export const GitHubPanel: FC = () => {
 
         {user && (
           <>
-            <p className="small">{t("github.logged_as", { username: user.name })}</p>
-            <button
-              className="btn btn-sm btn-outline-dark"
-              title={t("auth.sign_out").toString()}
-              onClick={() => {
-                setUser(null);
-                notify({
-                  type: "success",
-                  message: t("auth.unauth_success").toString(),
-                });
-              }}
-            >
-              <SignOutIcon className="me-1" /> {t("auth.sign_out")}
-            </button>
+            <p className="small m-0">{t("github.logged_as", { username: user.name })}</p>
+            <div className="text-center">
+              <button
+                className="btn btn-sm btn-outline-dark"
+                title={t("auth.sign_out").toString()}
+                onClick={() => {
+                  setUser(null);
+                  notify({
+                    type: "success",
+                    message: t("auth.unauth_success").toString(),
+                  });
+                }}
+              >
+                <SignOutIcon className="me-1" /> {t("auth.sign_out")}
+              </button>
+            </div>
           </>
         )}
       </div>

@@ -1,35 +1,51 @@
-import Select from "react-select";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { toPairs } from "lodash";
 import localeEmoji from "locale-emoji";
+import { HiMiniLanguage } from "react-icons/hi2";
 
 import { usePreferencesActions, usePreferences } from "../core/context/dataContexts";
-import { locales } from "../locales/locales";
+import { LOCALES } from "../locales/LOCALES";
+import Tooltip from "./Tooltip";
 
-interface Option {
-  value: string;
-  label: string;
+const DEFAULT_FLAG = <HiMiniLanguage className="fs-5" />;
+
+function getIcon(locale: string): ReactNode {
+  return locale === "dev" ? DEFAULT_FLAG : localeEmoji(locale) || DEFAULT_FLAG;
 }
 
-const availableLocales: Array<Option> = toPairs(locales)
+const AVAILABLE_LOCALES = toPairs(LOCALES)
   .filter(([key]) => process.env.NODE_ENV === "development" || key !== "dev")
   .map(([key, locale]) => ({
     value: key,
-    label: `${localeEmoji(key)} ${locale.label}`,
+    label: (
+      <>
+        {getIcon(key)} {locale.label}
+      </>
+    ),
   }));
 
-export const LocalSwitcher: FC = () => {
+const LocalSwitcher: FC = () => {
   const { locale } = usePreferences();
   const { changeLocale } = usePreferencesActions();
 
   return (
-    <div>
-      <Select<Option>
-        value={availableLocales.find((e) => e.value === locale)}
-        options={availableLocales}
-        onChange={(e) => changeLocale(e ? e.value : "en")}
-        isSearchable
-      />
-    </div>
+    <Tooltip closeOnClickContent attachment="top middle" targetAttachment="bottom middle">
+      <button className="btn p-0">{getIcon(locale)}</button>
+      <div className="dropdown-menu show over-modal position-relative">
+        {AVAILABLE_LOCALES.map((option, i) => (
+          <button
+            key={i}
+            className="dropdown-item"
+            onClick={() => {
+              changeLocale(option.value);
+            }}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </Tooltip>
   );
 };
+
+export default LocalSwitcher;
