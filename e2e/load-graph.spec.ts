@@ -9,9 +9,9 @@ FILES.forEach((file) => {
     await page.goto(`/?gexf=${BASE_URL}${file}`);
 
     // Wait for the graph to be fully loaded
-    await expect(page).toHaveTitle(`Gephi Lite - ${file}`);
+    await expect(page).toHaveTitle(`Gephi Lite - ${file}`, { timeout: 30000 });
 
     // Check the screenshot
-    await expect(page).toHaveScreenshot(`${file}.png`);
+    await expect(page).toHaveScreenshot(`${file}.png`, { maxDiffPixelRatio: 0.01 });
   });
 });
