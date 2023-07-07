@@ -1,15 +1,24 @@
 {
-  "home": {
-    "greeting": "Bonjour",
-    "blabla": "Très heureux de vous voir"
-  },
-  "graph": {
-    "model": {
-      "nodes": "nœuds"
+    "home": {
+        "greeting": "Bonjour",
+        "blabla": "Très heureux de vous voir"
     },
-    "caption": {
-      "color": "Couleur des {{itemType}} :",
-      "size": "Taille des {{itemType}} :"
+    "graph": {
+        "model": {
+            "nodes": "nœuds"
+        },
+        "caption": {
+            "color": "Couleur des {{itemType}} :",
+            "size": "Taille des {{itemType}} :"
+        }
+    },
+    "welcome": {
+        "logo": "Gephi logo",
+        "open_recent": "Récemment ouvert",
+        "open_graph": "Ouvrir un fichier de graphe",
+        "title": "Bienvenue sur Gephi Lite",
+        "disclaimer-1": "Gephi Lite est actuellement en phase active de développement.",
+        "disclaimer-2": "N'hésitez pas à consulter le projet sur GitHub pour en savoir plus sur les fonctionnalités à venir ou pour signaler des anomalies.",
+        "no_recent": "Aucun fichier distant n'a été ouvert sur ce navigateur pour l'instant."
     }
-  }
 }
