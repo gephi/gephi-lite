@@ -8,6 +8,7 @@
       "nodes": "nœuds",
       "edges": "liens"
     },
+
     "caption": {
       "color": "Couleur des {{itemType}} par",
       "size": "Taille des {{itemType}} par"
@@ -20,6 +21,62 @@
     "title": "Bienvenue sur Gephi Lite",
     "disclaimer-1": "Gephi Lite est actuellement en phase active de développement.",
     "disclaimer-2": "N'hésitez pas à consulter le projet sur GitHub pour en savoir plus sur les fonctionnalités à venir ou pour signaler des anomalies.",
-    "no_recent": "Aucun fichier distant n'a été ouvert sur ce navigateur pour l'instant."
+    "no_recent": "Aucun fichier distant n'a été ouvert sur ce navigateur pour l'instant.",
+    "samples": "Exemples"
+  },
+  "gephi-lite": {
+    "title": "Gephi Lite",
+    "info": "En savoir plus sur Gephi Lite"
+  },
+  "error": {
+    "title": "Erreur",
+    "unknown": "Une erreur inconnue est survenue.",
+    "not_found": {
+      "title": "Page non trouvée",
+      "subtitle": "La page que vous cherchez n'existe pas.",
+      "paragraph": "Vous avez peut-être mal tapé l'adresse ou la page a peut-être été déplacée."
+    }
+  },
+  "user": {
+    "avatar_alt": "Avatar de {{name}}"
+  },
+  "menu": {
+    "open": {
+      "cloud": "Ouvrir un graphe depuis {{provider}}",
+      "local": "Ouvrir un graphe local",
+      "remote": "Ouvrir un graphe distant"
+    },
+    "save": {
+      "default": "Enregistrer",
+      "cloud": "Sauvegarder sur {{provider}} en tant que …"
+    },
+    "download": {
+      "gexf": "Enregistrer le graphe localement",
+      "gexf-error": "Une erreur est survenue pendant la génération du GEXF"
+    }
+  },
+  "providers": {
+    "github": "Github"
+  },
+  "search": {
+    "nodes": {
+      "other_result": "… et {{count}} nœuds supplémentaires",
+      "help": "Taper un mot pour commencer la recherche",
+      "no_result": "Aucun nœud trouvé"
+    }
+  },
+  "common": {
+    "open": "Ouvrir",
+    "open_file": "Ouvrir {{filename}}",
+    "open_code_editor": "Ouvrir l'éditeur de code",
+    "remove": "Enlever",
+    "reset": "Réinitialiser",
+    "save": "Enregistrer",
+    "save-and-run": "Enregistrer et exécuter",
+    "start": "Démarrer",
+    "stop": "Arrêter",
+    "size": "Taille",
+    "show_more": "Voir plus",
+    "show": "Voir"
   }
 }
