@@ -8,6 +8,7 @@ import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts"
 import { capitalize } from "lodash";
 import { useTranslation } from "react-i18next";
 import { EdgeIcon, NodeIcon } from "../common-icons";
+import { CaptionItemTitle } from "./CaptionItemTitle";
 
 const ItemSizeCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
@@ -46,7 +47,7 @@ const ItemSizeCaption: FC<
   // Refresh caption when metric changes:
   useEffect(() => {
     refreshState();
-  }, [refreshState]);
+  }, [refreshState, itemSizeState]);
 
   // Refresh caption on camera update:
   useEffect(() => {
@@ -59,29 +60,7 @@ const ItemSizeCaption: FC<
   if (itemsSize.field) {
     return (
       <div className="graph-caption-item">
-        <h4 className="fs-6 d-flex">
-          <span
-            className="d-flex align-items-center me-1"
-            title={
-              t("graph.caption.size", { itemType: capitalize(t(`graph.model.${itemType}s`, { count: 2 }) + "") }) ||
-              undefined
-            }
-          >
-            {itemType === "node" ? (
-              <>
-                <NodeIcon size="0.5rem" />
-                <NodeIcon size="1rem" />
-              </>
-            ) : (
-              <>
-                <EdgeIcon size="0.6rem" />
-                <EdgeIcon size="1rem" />
-              </>
-            )}
-          </span>
-
-          {itemsSize.field}
-        </h4>
+        <CaptionItemTitle vizVariable="size" itemType={itemType} field={itemsSize.field} />
         {itemSizeState && (
           <div className="item-sizes">
             <div className="item-size">
@@ -90,7 +69,7 @@ const ItemSizeCaption: FC<
                   className={cx(itemType === "node" ? "dotted-circle" : "dotted-rectangle")}
                   style={{
                     width: itemSizeState?.minSize,
-                    height: itemType === "node" ? itemSizeState?.minSize : undefined,
+                    height: itemSizeState?.minSize,
                   }}
                 />
               </div>
@@ -102,7 +81,7 @@ const ItemSizeCaption: FC<
                   className={cx(itemType === "node" ? "dotted-circle" : "dotted-rectangle")}
                   style={{
                     width: itemSizeState?.maxSize,
-                    height: itemType === "node" ? itemSizeState?.maxSize : undefined,
+                    height: itemSizeState?.maxSize,
                   }}
                 />
               </div>

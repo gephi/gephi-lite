@@ -1,11 +1,12 @@
 import { FC } from "react";
-import { capitalize, sortBy, toPairs } from "lodash";
+import { sortBy, toPairs } from "lodash";
 import cx from "classnames";
 
 import { Color } from "../../core/appearance/types";
 import { GraphCaptionProps, PartitionExtends, RangeExtends } from ".";
 import { useTranslation } from "react-i18next";
 import { ColorSlider } from "./ColorSlider";
+import { CaptionItemTitle } from "./CaptionItemTitle";
 
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
@@ -19,10 +20,8 @@ export const ItemsColorCaption: FC<
   if (itemsColor.field)
     return (
       <div className="graph-caption-item">
-        <h4 className="fs-6">
-          {t("graph.caption.color", { itemType: capitalize(t(`graph.model.${itemType}s`, { count: 2 }) + "") })}{" "}
-          {itemsColor.field}
-        </h4>
+        <CaptionItemTitle itemType={itemType} field={itemsColor.field} vizVariable="color" />
+
         {/* PARTITION */}
         {itemsColor.type === "partition" && "occurrences" in extend && (
           <div className={cx(minimal && "minimal", "item-colors partition")}>
@@ -51,7 +50,7 @@ export const ItemsColorCaption: FC<
         {/* RANKING */}
         {itemsColor.type === "ranking" && "min" in extend && (
           <div className={cx(minimal && "minimal", "item-colors ranking")}>
-            <ColorSlider colorScalePoints={itemsColor.colorScalePoints} extend={extend} itemType={itemType} />
+            <ColorSlider colorScalePoints={itemsColor.colorScalePoints} extend={extend} />
           </div>
         )}
       </div>

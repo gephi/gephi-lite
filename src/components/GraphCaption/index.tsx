@@ -1,5 +1,9 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { fromPairs, mapValues } from "lodash";
+import { useTranslation } from "react-i18next";
+import { BiCollapseAlt } from "react-icons/bi";
+import { AiFillQuestionCircle } from "react-icons/ai";
+import cx from "classnames";
 
 import { useAppearance, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import ItemSizeCaption from "./ItemSizeCaption";
@@ -51,6 +55,8 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   const appearance = useAppearance();
   const filteredGraph = useFilteredGraph();
   const { nodeData, edgeData } = useGraphDataset();
+  const { t } = useTranslation();
+  const [collapsed, setCollapsed] = useState<boolean>(false);
 
   // min-max values for ranking caption items
   const vizAttributesExtends = useMemo(() => {
@@ -123,35 +129,54 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
     : undefined;
 
   return (
-    <div title="caption" className="graph-caption">
-      {appearance.nodesColor.field !== undefined && vizAttributesExtends.node[appearance.nodesColor.field] && (
-        <ItemsColorCaption
-          itemType="node"
-          minimal={minimal}
-          itemsColor={appearance.nodesColor}
-          extend={vizAttributesExtends.node[appearance.nodesColor.field]}
-        />
+    <div title="caption" className={cx("graph-caption", collapsed ? "collapsed" : "border")}>
+      <div className="d-flex flex-column justify-content-end align-items-start align-self-end">
+        <div>
+          <button
+            title={`${t(collapsed ? "graph.caption.expand" : "graph.caption.collapse")} `}
+            className="btn btn-ico btn-dark btn-sm"
+            onClick={(e) => {
+              setCollapsed(!collapsed);
+            }}
+          >
+            {collapsed ? <AiFillQuestionCircle size="1rem" /> : <BiCollapseAlt />}
+          </button>
+        </div>
+      </div>
+      {!collapsed && (
+        <>
+          <div className="caption-items">
+            {appearance.nodesColor.field !== undefined && vizAttributesExtends.node[appearance.nodesColor.field] && (
+              <ItemsColorCaption
+                itemType="node"
+                minimal={minimal}
+                itemsColor={appearance.nodesColor}
+                extend={vizAttributesExtends.node[appearance.nodesColor.field]}
+              />
+            )}
+            <ItemSizeCaption
+              minimal={minimal}
+              itemType="node"
+              itemsSize={appearance.nodesSize}
+              extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
+            />
+            {appearance.edgesColor.field !== undefined && vizAttributesExtends.edge[appearance.edgesColor.field] && (
+              <ItemsColorCaption
+                itemType="edge"
+                minimal={minimal}
+                itemsColor={appearance.edgesColor}
+                extend={vizAttributesExtends.edge[appearance.edgesColor.field]}
+              />
+            )}
+            <ItemSizeCaption
+              minimal={minimal}
+              itemType="edge"
+              itemsSize={appearance.edgesSize}
+              extend={edgeSizeExtends && "min" in edgeSizeExtends ? edgeSizeExtends : undefined}
+            />
+          </div>
+        </>
       )}
-      <ItemSizeCaption
-        minimal={minimal}
-        itemType="node"
-        itemsSize={appearance.nodesSize}
-        extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
-      />
-      {appearance.edgesColor.field !== undefined && vizAttributesExtends.edge[appearance.edgesColor.field] && (
-        <ItemsColorCaption
-          itemType="edge"
-          minimal={minimal}
-          itemsColor={appearance.edgesColor}
-          extend={vizAttributesExtends.edge[appearance.edgesColor.field]}
-        />
-      )}
-      <ItemSizeCaption
-        minimal={minimal}
-        itemType="edge"
-        itemsSize={appearance.edgesSize}
-        extend={edgeSizeExtends && "min" in edgeSizeExtends ? edgeSizeExtends : undefined}
-      />
     </div>
   );
 };

@@ -309,8 +309,9 @@
       }
     },
     "caption": {
-      "color": " {{itemType}} colors:",
-      "size": "{{itemType}} size:"
+      "color": "Color {{itemType}} by",
+      "size": "Size {itemType}} by",
+      "title": "Caption"
     }
   },
   "statistics": {
