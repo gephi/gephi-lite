@@ -46,7 +46,8 @@
   "github": {
     "title": "GitHub authentication",
     "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
-    "logged_as": "You are currently logged into GitHub as {{username}}."
+    "logged_as": "You are currently logged into GitHub as {{username}}.",
+    "select_ui_language": "Select application language"
   },
   "auth": {
     "unauth_success": "Unauthentication successful",
@@ -61,21 +62,23 @@
     "title": "Data overview"
   },
   "selection": {
-    "nodes_zero": "No selected item",
     "nodes_one": "One selected node",
+    "nodes_other": "",
     "nodes": "{{count}} selected nodes",
-    "edges_zero": "No selected item",
     "edges_one": "One selected edge",
+    "edges_other": "",
     "edges": "{{count}} selected edges",
-    "visible_nodes_zero": "No visible selected item",
     "visible_nodes_one": "One visible selected node",
+    "visible_nodes_other": "",
     "visible_nodes": "{{count}} visible selected nodes",
-    "visible_edges_zero": "No visible selected item",
     "visible_edges_one": "One visible selected edge",
+    "visible_edges_other": "",
     "visible_edges": "{{count}} visible selected edges",
     "hidden_nodes_one": "One hidden selected node",
+    "hidden_nodes_other": "",
     "hidden_nodes": "{{count}} hidden selected nodes",
     "hidden_edges_one": "One hidden selected edge",
+    "hidden_edges_other": "",
     "hidden_edges": "{{count}} hidden selected edges",
     "select_all": "Select all",
     "unselect_all": "Unselect all",
@@ -180,15 +183,17 @@
     "update_edges_success": "The edge has successfully been updated.",
     "delete_this_nodes": "Delete this node",
     "delete_this_edges": "Delete this edge",
-    "delete_nodes_zero": "Delete nodes",
     "delete_nodes_one": "Delete one node",
+    "delete_nodes_other": "",
     "delete_nodes": "Delete {{count}} nodes",
-    "delete_edges_zero": "Delete edges",
     "delete_edges_one": "Delete one edge",
+    "delete_edges_other": "",
     "delete_edges": "Delete {{count}} edges",
     "confirm_delete_nodes_one": "Are you sure you want to delete this one node?",
+    "confirm_delete_nodes_other": "",
     "confirm_delete_nodes": "Are you sure you want to delete {{count}} nodes?",
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
+    "confirm_delete_edges_other": "",
     "confirm_delete_edges": "Are you sure you want to delete {{count}} edges?",
     "search_nodes": "Search on node labels..."
   },
@@ -229,10 +234,10 @@
         "quantitative": "Quantitative"
       },
       "nodes_one": "node",
-      "nodes_zero": "node",
+      "nodes_other": "",
       "nodes": "nodes",
       "edges_one": "edge",
-      "edges_zero": "edge",
+      "edges_other": "",
       "edges": "edges",
       "nodes-data": {
         "id": "Node ID",
@@ -318,8 +323,10 @@
   "statistics": {
     "title": "Statistics",
     "compute_one": "Compute metric",
+    "compute_other": "",
     "compute": "Compute metrics",
     "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",
+    "success_other": "",
     "success": "The {{items}} metrics \"{{metrics}}\" have been added to the data.",
     "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
     "placeholder": "Select an algorithm",
@@ -616,8 +623,7 @@
     },
     "script": {
       "title": "Custom layout",
-      "description": "Write your own layout by creating a function that returns a {x,y} object for each node",
-      "parameters": {}
+      "description": "Write your own layout by creating a function that returns a {x,y} object for each node"
     }
   },
   "file": {
