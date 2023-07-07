@@ -5,6 +5,7 @@ import AnimateHeight from "react-animate-height";
 
 import { ItemType } from "../../../core/types";
 import { PartitionColor } from "../../../core/appearance/types";
+import ColorPicker from "../../ColorPicker";
 
 export const ColorPartitionEditor: FC<{
   itemType: ItemType;
@@ -17,41 +18,27 @@ export const ColorPartitionEditor: FC<{
   return (
     <div className="mt-1">
       <AnimateHeight height={expanded ? "auto" : 200} className="position-relative" duration={400}>
-        {map(color.colorPalette, (c, value) => {
-          const id = `${itemType}-color-${value}`;
-          return (
-            <div key={value} className="d-inline-block w-50 d-inline-flex align-items-center flex-nowrap" title={value}>
-              <input
-                className="form-control form-control-sm form-control-color d-inline-block flex-grow-0 flex-shrink-0"
-                type="color"
-                value={c}
-                id={id}
-                onChange={(e) =>
-                  setColor({
-                    ...color,
-                    colorPalette: {
-                      ...color.colorPalette,
-                      [value]: e.target.value,
-                    },
-                  })
-                }
-              />
-              <label className="form-check-label small ms-1 flex-grow-1 flex-shrink-1 text-ellipsis" htmlFor={id}>
-                {value}
-              </label>
-            </div>
-          );
-        })}
+        {map(color.colorPalette, (c, value) => (
+          <div key={value} className="d-inline-block w-50 d-inline-flex align-items-center flex-nowrap" title={value}>
+            <ColorPicker
+              color={c}
+              onChange={(v) =>
+                setColor({
+                  ...color,
+                  colorPalette: {
+                    ...color.colorPalette,
+                    [value]: v,
+                  },
+                })
+              }
+            />
+            <label className="form-check-label small ms-1 flex-grow-1 flex-shrink-1 text-ellipsis">{value}</label>
+          </div>
+        ))}
 
         <div className="d-flex align-items-center mt-1">
-          <input
-            className="form-control form-control-sm form-control-color d-inline-block flex-grow-0 flex-shrink-0"
-            type="color"
-            value={color.missingColor}
-            onChange={(v) => setColor({ ...color, missingColor: v.target.value })}
-            id={`${itemType}-defaultColor`}
-          />
-          <label className="form-check-label small ms-1" htmlFor={`${itemType}-defaultColor`}>
+          <ColorPicker color={color.missingColor} onChange={(v) => setColor({ ...color, missingColor: v })} />
+          <label className="form-check-label small ms-1">
             {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>

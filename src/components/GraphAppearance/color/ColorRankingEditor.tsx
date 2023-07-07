@@ -7,6 +7,7 @@ import { ItemType } from "../../../core/types";
 import { RankingColor } from "../../../core/appearance/types";
 import { last, sortBy } from "lodash";
 import ColorPickerTooltip from "./ColorPickerTooltip";
+import ColorPicker from "../../ColorPicker";
 
 const minDistance = 0.05;
 
@@ -130,14 +131,8 @@ export const ColorRankingEditor: FC<{
 
       <div>
         <div className="d-flex align-items-center mt-1">
-          <input
-            className="form-control form-control-sm form-control-color d-inline-block flex-grow-0 flex-shrink-0"
-            type="color"
-            value={color.missingColor}
-            onChange={(v) => setColor({ ...color, missingColor: v.target.value })}
-            id={`${itemType}-defaultColor`}
-          />
-          <label className="form-check-label small ms-1" htmlFor={`${itemType}-defaultColor`}>
+          <ColorPicker color={color.missingColor} onChange={(v) => setColor({ ...color, missingColor: v })} />
+          <label className="form-check-label small ms-1">
             {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>

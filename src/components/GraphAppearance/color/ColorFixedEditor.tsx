@@ -2,6 +2,7 @@ import { FC } from "react";
 import { ItemType } from "../../../core/types";
 import { FixedColor } from "../../../core/appearance/types";
 import { useTranslation } from "react-i18next";
+import ColorPicker from "../../ColorPicker";
 
 export const ColorFixedEditor: FC<{
   itemType: ItemType;
@@ -9,18 +10,11 @@ export const ColorFixedEditor: FC<{
   setColor: (newColor: FixedColor) => void;
 }> = ({ itemType, color, setColor }) => {
   const { t } = useTranslation();
-  const id = `${itemType}-fixedColorInput`;
 
   return (
     <div className="d-flex align-items-center mt-1">
-      <input
-        className="form-control form-control-sm form-control-color d-inline-block"
-        type="color"
-        value={color.value}
-        onChange={(v) => setColor({ ...color, value: v.target.value })}
-        id={id}
-      />
-      <label className="form-check-label small ms-1" htmlFor={id}>
+      <ColorPicker color={color.value} onChange={(v) => setColor({ ...color, value: v })} />
+      <label className="form-check-label small ms-1">
         {t("appearance.color.color_all_items", { items: t(`graph.model.${itemType}`) })}
       </label>
     </div>
