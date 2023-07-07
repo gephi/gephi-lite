@@ -29,10 +29,8 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   );
 
   return (
-    <>
-      <label className="mt-2" htmlFor={`${itemType}-labelSizesMode`}>
-        {t("appearance.labels.set_labels_size_from")}
-      </label>
+    <div className="panel-block">
+      <label htmlFor={`${itemType}-labelSizesMode`}>{t("appearance.labels.set_labels_size_from")}</label>
       <Select
         {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-labelSizesMode`}
@@ -130,6 +128,6 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         }}
         label={t("appearance.labels.density")}
       />
-    </>
+    </div>
   );
 };

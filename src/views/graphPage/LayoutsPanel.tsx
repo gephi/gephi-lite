@@ -115,15 +115,16 @@ export const LayoutForm: FC<{
 
   return (
     <form
+      className="panel-wrapper"
       onSubmit={(e) => {
         e.preventDefault();
         submit();
       }}
     >
-      <h3 className="fs-5 mt-3">{t(`layouts.${layout.id}.title`)}</h3>
-      {layout.description && <p className="text-muted small">{t(`layouts.${layout.id}.description`)}</p>}
+      <div className="panel-block-grow">
+        <h3 className="fs-5">{t(`layouts.${layout.id}.title`)}</h3>
+        {layout.description && <p className="text-muted small">{t(`layouts.${layout.id}.description`)}</p>}
 
-      <div>
         {layout.parameters.map((param) => {
           const id = `layouts-${layout.id}-params-${param.id}`;
           return (
@@ -227,7 +228,9 @@ export const LayoutForm: FC<{
         {isRunning && <LoaderFill />}
       </div>
 
-      <div className="text-end mt-2 z-over-loader">
+      <hr className="m-0" />
+
+      <div className="text-end z-over-loader panel-block">
         {layout.buttons?.map(({ id, description, getSettings }) => (
           <button
             key={id}
@@ -285,26 +288,28 @@ export const LayoutsPanel: FC = () => {
   const [option, setOption] = useState<LayoutOption | null>(null);
 
   return (
-    <div>
-      <h2 className="fs-4">
-        <LayoutsIcon className="me-1" /> {t("layouts.title")}
-      </h2>
-      <p className="text-muted small">{t("layouts.description")}</p>
+    <>
+      <div className="panel-block">
+        <h2 className="fs-4">
+          <LayoutsIcon className="me-1" /> {t("layouts.title")}
+        </h2>
+        <p className="text-muted small">{t("layouts.description")}</p>
 
-      <Select<LayoutOption, false>
-        {...DEFAULT_SELECT_PROPS}
-        options={options}
-        value={option}
-        onChange={(option) => {
-          setOption(option);
-          stop();
-        }}
-        placeholder={t("layouts.placeholder")}
-      />
+        <Select<LayoutOption, false>
+          {...DEFAULT_SELECT_PROPS}
+          options={options}
+          value={option}
+          onChange={(option) => {
+            setOption(option);
+            stop();
+          }}
+          placeholder={t("layouts.placeholder")}
+        />
+      </div>
 
       {option?.layout && (
         <>
-          <hr />
+          <hr className="m-0" />
           <LayoutForm
             layout={option.layout}
             onStart={(params) => {
@@ -321,6 +326,6 @@ export const LayoutsPanel: FC = () => {
           />
         </>
       )}
-    </div>
+    </>
   );
 };

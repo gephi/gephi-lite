@@ -15,21 +15,25 @@ export const GraphAppearance: FC = () => {
 
   return (
     <>
-      <Toggle
-        value={showEdges}
-        onChange={setShowEdges}
-        leftLabel={
-          <>
-            <NodeIcon className="me-1" /> {t("graph.model.nodes")}
-          </>
-        }
-        rightLabel={
-          <>
-            <EdgeIcon className="me-1" /> {t("graph.model.edges")}
-          </>
-        }
-      />
-      <hr />
+      <div className="panel-block">
+        <Toggle
+          value={showEdges}
+          onChange={setShowEdges}
+          leftLabel={
+            <>
+              <NodeIcon className="me-1" /> {t("graph.model.nodes")}
+            </>
+          }
+          rightLabel={
+            <>
+              <EdgeIcon className="me-1" /> {t("graph.model.edges")}
+            </>
+          }
+        />
+      </div>
+
+      <hr className="m-0" />
+
       {showEdges ? <GraphItemAppearance itemType="edges" /> : <GraphItemAppearance itemType="nodes" />}
     </>
   );
@@ -58,9 +62,9 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
       )}
 
       <ColorItem itemType={itemType} />
-      <hr />
+      <hr className="m-0" />
       <SizeItem itemType={itemType} />
-      <hr />
+      <hr className="m-0" />
       <LabelItem itemType={itemType} />
       <LabelSizeItem itemType={itemType} />
     </>

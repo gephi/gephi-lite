@@ -69,8 +69,8 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     options.find((option) => option.type === color.type && option.field === color.field) || options[0];
 
   return (
-    <>
-      <h3 className="fs-5 mt-3">{t("appearance.color.title")}</h3>
+    <div className="panel-block">
+      <h3 className="fs-5">{t("appearance.color.title")}</h3>
       <label htmlFor={`${itemType}-colorMode`}>{t("appearance.color.set_color_from")}</label>
       <Select<ColorOption>
         {...DEFAULT_SELECT_PROPS}
@@ -125,7 +125,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       />
 
       {(color.type === "data" || color.type === "source" || color.type === "target") && (
-        <p className="fst-italic text-muted small mt-1">
+        <p className="fst-italic text-muted small m-0">
           {t(`appearance.color.${color.type}_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
@@ -150,6 +150,6 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           setColor={(newColor) => setColorAppearance(itemType, newColor)}
         />
       )}
-    </>
+    </div>
   );
 };

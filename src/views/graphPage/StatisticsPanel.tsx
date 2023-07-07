@@ -124,7 +124,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
         title: t("statistics.title") as string,
       });
     } catch (e) {
-      const message = e instanceof Error ? e.message : "unknown error";
+      const message = e instanceof Error ? e.message : t("error.unknown");
       notify({
         type: "error",
         message,
@@ -135,156 +135,163 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
 
   return (
     <form
+      className="panel-wrapper"
       onSubmit={(e) => {
         e.preventDefault();
         submit();
       }}
     >
-      <h3 className="fs-5 mt-3">{t(`statistics.${metric.itemType}.${metric.id}.title`)}</h3>
-      {metric.description && (
-        <p className="text-muted small">{t(`statistics.${metric.itemType}.${metric.id}.description`)}</p>
-      )}
+      <div className="panel-block-grow">
+        <h3 className="fs-5">{t(`statistics.${metric.itemType}.${metric.id}.title`)}</h3>
+        {metric.description && (
+          <p className="text-muted small">{t(`statistics.${metric.itemType}.${metric.id}.description`)}</p>
+        )}
 
-      <div className="my-3">
-        {map(metric.types, (_type, value) => (
-          <Fragment key={value}>
-            <StringInput
-              required
-              id={`statistics-${metric.itemType}-${metric.id}-params-${value}`}
-              label={t(`statistics.${metric.itemType}.${metric.id}.attributes.${value}`) as string}
-              value={metricConfig.attributeNames[value]}
-              onChange={(v) => onChange("attributeNames", value, v)}
-            />
-            {!!fieldsIndex[metricConfig.attributeNames[value]] && (
-              <div className="small text-primary">
-                {t(`statistics.${metric.itemType}_attribute_already_exists`, {
-                  field: metricConfig.attributeNames[value],
-                })}
-              </div>
-            )}
-          </Fragment>
-        ))}
+        <div className="my-3">
+          {map(metric.types, (_type, value) => (
+            <Fragment key={value}>
+              <StringInput
+                required
+                id={`statistics-${metric.itemType}-${metric.id}-params-${value}`}
+                label={t(`statistics.${metric.itemType}.${metric.id}.attributes.${value}`) as string}
+                value={metricConfig.attributeNames[value]}
+                onChange={(v) => onChange("attributeNames", value, v)}
+              />
+              {!!fieldsIndex[metricConfig.attributeNames[value]] && (
+                <div className="small text-primary">
+                  {t(`statistics.${metric.itemType}_attribute_already_exists`, {
+                    field: metricConfig.attributeNames[value],
+                  })}
+                </div>
+              )}
+            </Fragment>
+          ))}
+        </div>
+
+        {metric.parameters.map((param) => {
+          const id = `statistics-${metric.itemType}-${metric.id}-params-${param.id}`;
+          return (
+            <div className="my-1" key={id}>
+              {param.type === "number" && (
+                <NumberInput
+                  id={id}
+                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                  required={param.required}
+                  description={
+                    param.description
+                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  value={metricConfig.parameters[param.id] as number}
+                  onChange={(v) => onChange("parameters", param.id, v)}
+                />
+              )}
+              {param.type === "boolean" && (
+                <BooleanInput
+                  id={id}
+                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                  required={param.required}
+                  description={
+                    param.description
+                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  value={metricConfig.parameters[param.id] as boolean}
+                  onChange={(v) => onChange("parameters", param.id, v)}
+                />
+              )}
+              {param.type === "enum" && (
+                <EnumInput
+                  id={id}
+                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                  required={param.required}
+                  description={
+                    param.description
+                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  value={metricConfig.parameters[param.id] as string}
+                  onChange={(v) => onChange("parameters", param.id, v)}
+                  options={param.values.map(({ id }) => ({
+                    value: id,
+                    label: t(
+                      `statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.values.${id}`,
+                    ) as string,
+                  }))}
+                />
+              )}
+              {param.type === "attribute" && (
+                <EnumInput
+                  id={id}
+                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
+                  required={param.required}
+                  description={
+                    param.description
+                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
+                      : undefined
+                  }
+                  placeholder={t("common.none") as string}
+                  value={metricConfig.parameters[param.id] as string}
+                  onChange={(v) => onChange("parameters", param.id, v)}
+                  options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
+                    .filter((field) => (param.restriction ? !!field[param.restriction] : true))
+                    .map((field) => ({
+                      value: field.id,
+                      label: field.id,
+                    }))}
+                />
+              )}
+              {param.type === "script" && (
+                <div className="position-relative">
+                  <>
+                    {metricConfig.parameters[param.id] && (
+                      <>
+                        <div className="code-thumb mt-1">
+                          <Highlight className="javascript">
+                            {(metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"]).toString()}
+                          </Highlight>
+                        </div>
+                        <div className="filler-fade-out position-absolute bottom-0"></div>
+                      </>
+                    )}
+                    <div className={cx(metricConfig.parameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
+                      <button
+                        type="button"
+                        className="btn btn-dark mx-auto d-block m-3"
+                        onClick={() =>
+                          openModal({
+                            component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
+                            arguments: {
+                              title: "Custom metric",
+                              withSaveAndRun: true,
+                              functionJsDoc: param.functionJsDoc,
+                              defaultFunction: param.defaultValue,
+                              value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
+                              checkFunction: param.functionCheck,
+                            },
+                            beforeSubmit: ({ run, script }) => {
+                              onChange("parameters", param.id, script);
+                              if (run) setTimeout(submit, 0);
+                            },
+                          })
+                        }
+                        title={t("common.open_code_editor").toString()}
+                      >
+                        <CodeEditorIcon className="me-1" />
+                        {t("common.open_code_editor")}
+                      </button>
+                    </div>
+                  </>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {metric.parameters.map((param) => {
-        const id = `statistics-${metric.itemType}-${metric.id}-params-${param.id}`;
-        return (
-          <div className="my-1" key={id}>
-            {param.type === "number" && (
-              <NumberInput
-                id={id}
-                label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                required={param.required}
-                description={
-                  param.description
-                    ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                value={metricConfig.parameters[param.id] as number}
-                onChange={(v) => onChange("parameters", param.id, v)}
-              />
-            )}
-            {param.type === "boolean" && (
-              <BooleanInput
-                id={id}
-                label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                required={param.required}
-                description={
-                  param.description
-                    ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                value={metricConfig.parameters[param.id] as boolean}
-                onChange={(v) => onChange("parameters", param.id, v)}
-              />
-            )}
-            {param.type === "enum" && (
-              <EnumInput
-                id={id}
-                label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                required={param.required}
-                description={
-                  param.description
-                    ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                value={metricConfig.parameters[param.id] as string}
-                onChange={(v) => onChange("parameters", param.id, v)}
-                options={param.values.map(({ id }) => ({
-                  value: id,
-                  label: t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.values.${id}`) as string,
-                }))}
-              />
-            )}
-            {param.type === "attribute" && (
-              <EnumInput
-                id={id}
-                label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                required={param.required}
-                description={
-                  param.description
-                    ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                    : undefined
-                }
-                placeholder={t("common.none") as string}
-                value={metricConfig.parameters[param.id] as string}
-                onChange={(v) => onChange("parameters", param.id, v)}
-                options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
-                  .filter((field) => (param.restriction ? !!field[param.restriction] : true))
-                  .map((field) => ({
-                    value: field.id,
-                    label: field.id,
-                  }))}
-              />
-            )}
-            {param.type === "script" && (
-              <div className="position-relative">
-                <>
-                  {metricConfig.parameters[param.id] && (
-                    <>
-                      <div className="code-thumb mt-1">
-                        <Highlight className="javascript">
-                          {(metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"]).toString()}
-                        </Highlight>
-                      </div>
-                      <div className="filler-fade-out position-absolute bottom-0"></div>
-                    </>
-                  )}
-                  <div className={cx(metricConfig.parameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
-                    <button
-                      type="button"
-                      className="btn btn-dark mx-auto d-block m-3"
-                      onClick={() =>
-                        openModal({
-                          component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
-                          arguments: {
-                            title: "Custom metric",
-                            withSaveAndRun: true,
-                            functionJsDoc: param.functionJsDoc,
-                            defaultFunction: param.defaultValue,
-                            value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
-                            checkFunction: param.functionCheck,
-                          },
-                          beforeSubmit: ({ run, script }) => {
-                            onChange("parameters", param.id, script);
-                            if (run) setTimeout(submit, 0);
-                          },
-                        })
-                      }
-                      title={t("common.open_code_editor").toString()}
-                    >
-                      <CodeEditorIcon className="me-1" />
-                      {t("common.open_code_editor")}
-                    </button>
-                  </div>
-                </>
-              </div>
-            )}
-          </div>
-        );
-      })}
+      <hr className="m-0" />
 
-      <div className="text-end mt-2">
+      <div className="text-end z-over-loader panel-block">
         <button type="reset" className="btn btn-outline-secondary ms-2" onClick={() => resetParameters()}>
           {t("common.reset")}
         </button>
@@ -325,26 +332,28 @@ export const StatisticsPanel: FC = () => {
   const [option, setOption] = useState<MetricOption | null>(null);
 
   return (
-    <div>
-      <h2 className="fs-4">
-        <StatisticsIcon className="me-1" /> {t("statistics.title")}
-      </h2>
-      <p className="text-muted small">{t("statistics.description")}</p>
+    <>
+      <div className="panel-block">
+        <h2 className="fs-4">
+          <StatisticsIcon className="me-1" /> {t("statistics.title")}
+        </h2>
+        <p className="text-muted small">{t("statistics.description")}</p>
 
-      <Select<MetricOption, false>
-        {...DEFAULT_SELECT_PROPS}
-        options={options}
-        value={option}
-        onChange={setOption}
-        placeholder={t("statistics.placeholder")}
-      />
+        <Select<MetricOption, false>
+          {...DEFAULT_SELECT_PROPS}
+          options={options}
+          value={option}
+          onChange={setOption}
+          placeholder={t("statistics.placeholder")}
+        />
+      </div>
 
       {option?.metric && (
         <>
-          <hr />
+          <hr className="m-0" />
           <MetricForm key={option.metric.id} metric={option.metric} onClose={() => setOption(null)} />
         </>
       )}
-    </div>
+    </>
   );
 };

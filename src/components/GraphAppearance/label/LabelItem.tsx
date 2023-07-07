@@ -38,8 +38,8 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   );
 
   return (
-    <>
-      <h3 className="fs-5 mt-3">{t("appearance.labels.title")}</h3>
+    <div className="panel-block">
+      <h3 className="fs-5">{t("appearance.labels.title")}</h3>
       <label htmlFor={`${itemType}-labelsMode`}>{t("appearance.labels.set_labels_from")}</label>
       <Select<LabelOption>
         {...DEFAULT_SELECT_PROPS}
@@ -71,12 +71,12 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       />
 
       {labelsDef.type === "data" && (
-        <p className="fst-italic text-muted small mt-1">
+        <p className="fst-italic text-muted small m-0">
           {t("appearance.labels.data_description", { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
       {labelsDef.type === "none" && (
-        <p className="fst-italic text-muted small mt-1">
+        <p className="fst-italic text-muted small m-0">
           {t("appearance.labels.none_description", { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
@@ -108,6 +108,6 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           </label>
         </div>
       )}
-    </>
+    </div>
   );
 };

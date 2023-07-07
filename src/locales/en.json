@@ -223,6 +223,7 @@
     },
     "model": {
       "title": "Attributes' Model",
+      "no_attributes": "There is no attribute in the model yet.",
       "attribute": {
         "qualitative": "Qualitative",
         "quantitative": "Quantitative"

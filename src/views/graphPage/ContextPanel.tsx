@@ -128,20 +128,28 @@ export const ContextPanel: FC = () => {
 
   return (
     <>
-      <h2 className="fs-4">
-        <ContextIcon className="me-1" />
-        {t("context.title")}
-      </h2>
-      <hr />
+      <div className="panel-block">
+        <h2 className="fs-4">
+          <ContextIcon className="me-1" />
+          {t("context.title")}
+        </h2>
+      </div>
+      <hr className="m-0" />
 
-      <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} />
-      <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
-      <hr />
+      <div className="panel-block">
+        <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} />
+        <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
+      </div>
+      <hr className="m-0" />
 
-      <GraphSelectionSearch />
-      <hr />
+      <div className="panel-block">
+        <GraphSelectionSearch />
+      </div>
+      <hr className="m-0" />
 
-      <Selection />
+      <div className="panel-block-grow">
+        <Selection />
+      </div>
     </>
   );
 };

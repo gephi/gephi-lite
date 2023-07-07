@@ -12,6 +12,7 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
 
   return (
     <div>
+      {!fields.length && <div className="text-muted fst-italic text-center mt-3">{t("graph.model.no_attributes")}</div>}
       {fields.map((field) => (
         <div key={field.id} className="mt-1  p-2">
           <div className="fs-5">{field.id}</div>
@@ -82,7 +83,7 @@ export const GraphModelForm: FC = () => {
         />
       </div>
 
-      {!showEdges ? <FieldModelsComponent fields={nodeFields} /> : <FieldModelsComponent fields={edgeFields} />}
+      <FieldModelsComponent fields={showEdges ? edgeFields : nodeFields} />
     </>
   );
 };

@@ -128,7 +128,7 @@ const GraphFilters: FC = () => {
   const { fullGraph } = useGraphDataset();
 
   return (
-    <div>
+    <div className="panel-block-grow">
       <div
         className={cx("filter-item d-flex align-items-center", filters.past.length !== 0 && "cursor-pointer")}
         onClick={() => {

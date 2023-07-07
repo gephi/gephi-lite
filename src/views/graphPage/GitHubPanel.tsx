@@ -14,44 +14,49 @@ export const GitHubPanel: FC = () => {
   const { t } = useTranslation("translation");
 
   return (
-    <div>
-      <h2 className="fs-4">
-        <GitHubIcon className="me-1" /> {t("github.title")}
-      </h2>
+    <>
+      <div className="panel-block">
+        <h2 className="fs-4">
+          <GitHubIcon className="me-1" /> {t("github.title")}
+        </h2>
+      </div>
 
-      <br />
+      <hr className="m-0" />
 
-      {!user && (
-        <>
-          <p className="small">{t("github.description")}</p>
-          <button
-            className="btn btn-sm btn-outline-dark"
-            title={t("auth.sign_in").toString()}
-            onClick={() => openModal({ component: SignInModal, arguments: {} })}
-          >
-            <SingInIcon className="me-1" />
-            {t("auth.sign_in")}
-          </button>
-        </>
-      )}
-      {user && (
-        <>
-          <p className="small">{t("github.logged_as", { username: user.name })}</p>
-          <button
-            className="btn btn-sm btn-outline-dark"
-            title={t("auth.sign_out").toString()}
-            onClick={() => {
-              setUser(null);
-              notify({
-                type: "success",
-                message: t("auth.unauth_success").toString(),
-              });
-            }}
-          >
-            <SignOutIcon className="me-1" /> {t("auth.sign_out")}
-          </button>
-        </>
-      )}
-    </div>
+      <div className="panel-block-grow">
+        {!user && (
+          <>
+            <p className="small">{t("github.description")}</p>
+            <button
+              className="btn btn-sm btn-outline-dark"
+              title={t("auth.sign_in").toString()}
+              onClick={() => openModal({ component: SignInModal, arguments: {} })}
+            >
+              <SingInIcon className="me-1" />
+              {t("auth.sign_in")}
+            </button>
+          </>
+        )}
+
+        {user && (
+          <>
+            <p className="small">{t("github.logged_as", { username: user.name })}</p>
+            <button
+              className="btn btn-sm btn-outline-dark"
+              title={t("auth.sign_out").toString()}
+              onClick={() => {
+                setUser(null);
+                notify({
+                  type: "success",
+                  message: t("auth.unauth_success").toString(),
+                });
+              }}
+            >
+              <SignOutIcon className="me-1" /> {t("auth.sign_out")}
+            </button>
+          </>
+        )}
+      </div>
+    </>
   );
 };

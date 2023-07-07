@@ -46,8 +46,8 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     options.find((option) => option.type === size.type && option.field === size.field) || options[0];
 
   return (
-    <>
-      <h3 className="fs-5 mt-3">{t("appearance.size.title")}</h3>
+    <div className="panel-block">
+      <h3 className="fs-5">{t("appearance.size.title")}</h3>
       <label htmlFor={`${itemType}-sizeMode`}>{t("appearance.size.set_size_from")}</label>
       <Select<SizeOption>
         {...DEFAULT_SELECT_PROPS}
@@ -81,7 +81,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       />
 
       {size.type === "data" && (
-        <p className="fst-italic text-muted small mt-1">
+        <p className="fst-italic text-muted small m-0">
           {t("appearance.size.data_description", { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
@@ -95,6 +95,6 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           setSize={(newSize) => setSizeAppearance(itemType, newSize)}
         />
       )}
-    </>
+    </div>
   );
 };

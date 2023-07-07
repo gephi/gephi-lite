@@ -28,143 +28,145 @@ export const FilePanel: FC = () => {
   const { loading: ldExportGexf, downloadAsGexf } = useExportAsGexf();
 
   return (
-    <div>
-      <h2 className="fs-4">
-        <FileIcon className="me-1" /> {t("file.title")}
-      </h2>
+    <>
+      <div className="panel-block">
+        <h2 className="fs-4">
+          <FileIcon className="me-1" /> {t("file.title")}
+        </h2>
+      </div>
 
-      {!user?.provider ? (
-        <>
-          <hr />
-          <p className="small">{t("file.login_capabilities")}</p>
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={() => openModal({ component: SignInModal, arguments: {} })}
-            >
-              <SingInIcon className="me-1" />
-              {t("auth.sign_in")}
-            </button>
-          </div>
-          <hr />
-        </>
-      ) : (
-        <hr />
-      )}
+      <hr className="m-0" />
 
-      <div className="position-relative">
-        {/* Save links */}
-        <h3 className="fs-5 mt-3">{t("graph.save.title")}</h3>
-        {user && user.provider && (
+      <div className="panel-block-grow">
+        {!user?.provider && (
           <>
-            {origin && origin.type === "cloud" && (
+            <p className="small">{t("file.login_capabilities")}</p>
+            <div>
+              <button
+                className="btn btn-sm btn-outline-dark mb-1"
+                onClick={() => openModal({ component: SignInModal, arguments: {} })}
+              >
+                <SingInIcon className="me-1" />
+                {t("auth.sign_in")}
+              </button>
+            </div>
+          </>
+        )}
+
+        <div className="position-relative">
+          {/* Save links */}
+          <h3 className="fs-5">{t("graph.save.title")}</h3>
+          {user && user.provider && (
+            <>
+              {origin && origin.type === "cloud" && (
+                <div>
+                  <button
+                    className="btn btn-sm btn-outline-dark mb-1"
+                    onClick={async () => {
+                      try {
+                        await saveFile();
+                        notify({
+                          type: "success",
+                          message: t("graph.save.cloud.success", { filename: origin.filename }).toString(),
+                        });
+                      } catch (e) {
+                        notify({ type: "error", message: t("graph.save.cloud.error").toString() });
+                      }
+                    }}
+                  >
+                    <FaRegSave className="me-1" />
+                    {t("menu.save.default").toString()}
+                  </button>
+                </div>
+              )}
               <div>
                 <button
                   className="btn btn-sm btn-outline-dark mb-1"
-                  onClick={async () => {
-                    try {
-                      await saveFile();
-                      notify({
-                        type: "success",
-                        message: t("graph.save.cloud.success", { filename: origin.filename }).toString(),
-                      });
-                    } catch (e) {
-                      notify({ type: "error", message: t("graph.save.cloud.error").toString() });
-                    }
+                  onClick={() => {
+                    openModal({ component: SaveCloudFileModal, arguments: {} });
                   }}
                 >
                   <FaRegSave className="me-1" />
-                  {t("menu.save.default").toString()}
+                  {t("menu.save.cloud", { provider: t(`providers.${user.provider.type}`) }).toString()}
                 </button>
               </div>
-            )}
+              <div>
+                <hr className="dropdown-divider" />
+              </div>
+            </>
+          )}
+          <div>
+            <button
+              className="btn btn-sm btn-outline-dark mb-1"
+              onClick={async () => {
+                try {
+                  await downloadAsGexf();
+                } catch (e) {
+                  console.error(e);
+                  notify({ type: "error", message: t("menu.download.gexf-error").toString() });
+                }
+              }}
+            >
+              <FaDownload className="me-1" />
+              {t("menu.download.gexf").toString()}
+            </button>
+          </div>
+
+          {/* Open links */}
+          <h3 className="fs-5 mt-3">{t("graph.open.title")}</h3>
+          {user && user.provider && (
             <div>
               <button
                 className="btn btn-sm btn-outline-dark mb-1"
                 onClick={() => {
-                  openModal({ component: SaveCloudFileModal, arguments: {} });
+                  openModal({ component: CloudFileModal, arguments: {} });
                 }}
               >
-                <FaRegSave className="me-1" />
-                {t("menu.save.cloud", { provider: t(`providers.${user.provider.type}`) }).toString()}
+                <FaRegFolderOpen className="me-1" />
+                {t(`menu.open.cloud`, { provider: t(`providers.${user.provider.type}`) }).toString()}
               </button>
             </div>
-            <div>
-              <hr className="dropdown-divider" />
-            </div>
-          </>
-        )}
-        <div>
-          <button
-            className="btn btn-sm btn-outline-dark mb-1"
-            onClick={async () => {
-              try {
-                await downloadAsGexf();
-              } catch (e) {
-                console.error(e);
-                notify({ type: "error", message: t("menu.download.gexf-error").toString() });
-              }
-            }}
-          >
-            <FaDownload className="me-1" />
-            {t("menu.download.gexf").toString()}
-          </button>
-        </div>
-
-        {/* Open links */}
-        <h3 className="fs-5 mt-3">{t("graph.open.title")}</h3>
-        {user && user.provider && (
+          )}
           <div>
             <button
               className="btn btn-sm btn-outline-dark mb-1"
               onClick={() => {
-                openModal({ component: CloudFileModal, arguments: {} });
+                openModal({ component: LocalFileModal, arguments: {} });
               }}
             >
               <FaRegFolderOpen className="me-1" />
-              {t(`menu.open.cloud`, { provider: t(`providers.${user.provider.type}`) }).toString()}
+              {t(`menu.open.local`).toString()}
             </button>
           </div>
-        )}
-        <div>
-          <button
-            className="btn btn-sm btn-outline-dark mb-1"
-            onClick={() => {
-              openModal({ component: LocalFileModal, arguments: {} });
-            }}
-          >
-            <FaRegFolderOpen className="me-1" />
-            {t(`menu.open.local`).toString()}
-          </button>
-        </div>
-        <div>
-          <button
-            className="btn btn-sm btn-outline-dark mb-1"
-            onClick={() => {
-              openModal({ component: RemoteFileModal, arguments: {} });
-            }}
-          >
-            <FaRegFolderOpen className="me-1" />
-            {t(`menu.open.remote`).toString()}
-          </button>
-        </div>
+          <div>
+            <button
+              className="btn btn-sm btn-outline-dark mb-1"
+              onClick={() => {
+                openModal({ component: RemoteFileModal, arguments: {} });
+              }}
+            >
+              <FaRegFolderOpen className="me-1" />
+              {t(`menu.open.remote`).toString()}
+            </button>
+          </div>
 
-        {/* Export links */}
-        <h3 className="fs-5 mt-3">{t("graph.export.title")}</h3>
-        <div>
-          <button
-            className="btn btn-sm btn-outline-dark mb-1"
-            onClick={() => {
-              openModal({ component: ExportPNGModal, arguments: {} });
-            }}
-          >
-            <BsFiletypePng className="me-1" />
-            {t("graph.export.png.title").toString()}
-          </button>
-        </div>
+          {/* Export links */}
+          <h3 className="fs-5 mt-3">{t("graph.export.title")}</h3>
+          <div>
+            <button
+              className="btn btn-sm btn-outline-dark mb-1"
+              onClick={() => {
+                openModal({ component: ExportPNGModal, arguments: {} });
+              }}
+            >
+              <BsFiletypePng className="me-1" />
+              {t("graph.export.png.title").toString()}
+            </button>
+          </div>
 
-        {(loading || ldExportGexf) && <Loader />}
+          {(loading || ldExportGexf) && <Loader />}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
