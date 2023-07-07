@@ -317,8 +317,8 @@
     "title": "Statistics",
     "compute_one": "Compute metric",
     "compute": "Compute metrics",
-    "success_one": "The {{items}} metric {{metrics}} has been added to the data. It is now available in other panels.",
-    "success": "The {{items}} metrics {{metrics}} have been added to the data. They are now available in other panels.",
+    "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",
+    "success": "The {{items}} metrics \"{{metrics}}\" have been added to the data.",
     "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
     "placeholder": "Select an algorithm",
     "attributes_placeholder": "None",
@@ -461,10 +461,10 @@
   },
   "layouts": {
     "title": "Layout",
-    "description": "This panel allows computing new coordintaes to nodes of the graph. ",
+    "description": "This panel allows computing new coordinates to nodes of the graph. ",
     "placeholder": "Select a layout algorithm",
     "exec": {
-      "success": "Layout {{layout}} has been applied",
+      "success": "Layout \"{{layout}}\" has successfully been applied.",
       "started": "Layout {{layout}} is running",
       "stopped": "Layout {{layout}} has been stopped"
     },

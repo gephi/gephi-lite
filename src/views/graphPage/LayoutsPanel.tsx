@@ -1,4 +1,4 @@
-import { FC, useMemo, useState, useEffect, useCallback } from "react";
+import React, { FC, useMemo, useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 import { FaPlay, FaStop } from "react-icons/fa";
@@ -20,6 +20,7 @@ import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
+import MessageTooltip from "../../components/MessageTooltip";
 
 type LayoutOption = {
   value: string;
@@ -39,9 +40,13 @@ export const LayoutForm: FC<{
   const dataset = useGraphDataset();
   const sigmaGraph = useSigmaGraph();
   const { nodeFields, edgeFields } = dataset;
+  const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
   // get layout parameter from the session if it exists
   const [session, setSession] = useAtom(sessionAtom);
-  const layoutParameters = session.layoutsParameters[layout.id] || {};
+  const layoutParameters = useMemo(
+    () => session.layoutsParameters[layout.id] || {},
+    [layout.id, session.layoutsParameters],
+  );
 
   // default layout parameters
   const layoutDefaultParameters = useMemo(
@@ -108,10 +113,24 @@ export const LayoutForm: FC<{
     [layout.id, layoutDefaultParameters, setSession],
   );
 
-  function submit() {
+  const setSuccessMessage = useCallback((message?: string) => {
+    if (typeof message === "string") {
+      setSuccess({ date: Date.now(), message });
+    } else {
+      setSuccess(null);
+    }
+  }, []);
+
+  const submit = useCallback(() => {
     if (isRunning) onStop();
-    else onStart(layoutParameters);
-  }
+    else {
+      try {
+        onStart(layoutParameters);
+        if (layout.type === "sync")
+          setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) as string }) as string);
+      } catch (e) {}
+    }
+  }, [isRunning, layout.id, layout.type, layoutParameters, onStart, onStop, setSuccessMessage, t]);
 
   return (
     <form
@@ -230,7 +249,18 @@ export const LayoutForm: FC<{
 
       <hr className="m-0" />
 
-      <div className="text-end z-over-loader panel-block">
+      <div className="z-over-loader panel-block d-flex flex-row align-items-center">
+        {success && (
+          <MessageTooltip
+            openOnMount={2000}
+            key={success.date}
+            message={success.message}
+            type="success"
+            iconClassName="fs-4"
+          />
+        )}
+        <div className="flex-grow-1" />
+
         {layout.buttons?.map(({ id, description, getSettings }) => (
           <button
             key={id}
@@ -311,6 +341,7 @@ export const LayoutsPanel: FC = () => {
         <>
           <hr className="m-0" />
           <LayoutForm
+            key={option.layout.id}
             layout={option.layout}
             onStart={(params) => {
               start(option.layout.id, params);

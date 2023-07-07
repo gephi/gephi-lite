@@ -2,7 +2,9 @@ import { forwardRef, ReactNode, useEffect, useRef, useState } from "react";
 import TetherComponent from "react-tether";
 import Tether from "tether";
 
-export type TooltipAPI = { close: () => void; open: () => void };
+import Transition from "./Transition";
+
+export type TooltipAPI = { close: () => void; open: () => void; isOpened: () => boolean };
 
 const Tooltip = forwardRef<
   TooltipAPI,
@@ -10,23 +12,28 @@ const Tooltip = forwardRef<
     children: [ReactNode, ReactNode];
     hoverable?: boolean;
     closeOnClickContent?: boolean;
+    targetClassName?: string;
   } & Partial<
     Pick<
       Tether.ITetherOptions,
       "attachment" | "constraints" | "offset" | "targetAttachment" | "targetOffset" | "targetModifier"
     >
   >
->(({ children: [target, content], hoverable, closeOnClickContent, ...tether }, ref) => {
+>(({ children: [target, content], targetClassName, hoverable, closeOnClickContent, ...tether }, ref) => {
   const [showTooltip, setShowTooltip] = useState<null | "click" | "hover">(null);
 
   const targetWrapper = useRef<HTMLDivElement>(null);
   const tooltipWrapper = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const value = { close: () => setShowTooltip(null), open: () => setShowTooltip("click") };
+    const value = {
+      close: () => setShowTooltip(null),
+      open: () => setShowTooltip("click"),
+      isOpened: () => !!showTooltip,
+    };
     if (typeof ref === "function") ref(value);
     else if (ref) ref.current = value;
-  }, [ref]);
+  }, [ref, showTooltip]);
 
   // Handle interactions:
   useEffect(() => {
@@ -78,18 +85,21 @@ const Tooltip = forwardRef<
           onMouseEnter={() => {
             if (!showTooltip && hoverable) setShowTooltip("hover");
           }}
+          className={targetClassName}
         >
           <div ref={targetWrapper}>{target}</div>
         </div>
       )}
-      renderElement={(ref) =>
-        showTooltip && (
-          // We use two divs here to allow having "two refs":
-          <div ref={ref}>
-            <div ref={tooltipWrapper}>{content}</div>
-          </div>
-        )
-      }
+      renderElement={(ref) => (
+        <Transition
+          ref={ref}
+          show={showTooltip}
+          mountTransition="fade-in 0.2s forwards"
+          unmountTransition="fade-out 0.2s forwards"
+        >
+          <div ref={tooltipWrapper}>{content}</div>
+        </Transition>
+      )}
     />
   );
 });

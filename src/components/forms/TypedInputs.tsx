@@ -1,13 +1,13 @@
 import cx from "classnames";
 import Select from "react-select";
-import { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
-import Slider from "rc-slider";
-import { SliderProps } from "rc-slider/lib/Slider";
+import React, { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
 import { clamp } from "lodash";
-import * as React from "react";
+import Slider from "rc-slider";
 import { MarkObj } from "rc-slider/lib/Marks";
+import { SliderProps } from "rc-slider/lib/Slider";
 
 import { DEFAULT_SELECT_PROPS } from "../consts";
+import MessageTooltip from "../MessageTooltip";
 
 interface BaseTypedInputProps {
   id: string;
@@ -94,22 +94,32 @@ export const SliderInput: FC<
 };
 
 export const StringInput: FC<
-  { value: string | null; onChange: (v: string) => void } & BaseTypedInputProps &
+  { value: string | null; onChange: (v: string) => void; warning?: string } & BaseTypedInputProps &
     Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">
-> = ({ id, label, description, value, onChange, className, ...attrs }) => {
+> = ({ id, label, description, value, onChange, className, warning, ...attrs }) => {
   return (
     <div className="mt-1">
-      <label htmlFor={id} className="form-check-label small ms-1">
+      <label htmlFor={id} className="form-check-label small">
         {label}
       </label>
-      <input
-        {...attrs}
-        type="string"
-        className={cx("form-control form-control-sm", className)}
-        id={id}
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-      />
+      <div className="position-relative">
+        <input
+          {...attrs}
+          type="string"
+          className={cx("form-control form-control-sm", className)}
+          id={id}
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        {warning && (
+          <MessageTooltip
+            message={warning}
+            type="warning"
+            className="position-absolute end-0 top-0 h-100 me-2 d-flex align-items-center"
+            iconClassName="fs-4"
+          />
+        )}
+      </div>
       {description && <div className="form-text small text-muted">{description}</div>}
     </div>
   );
@@ -128,7 +138,7 @@ export const BooleanInput: FC<
           className={cx("form-check-input", className)}
           id={id}
           checked={value ?? false}
-          onChange={(e) => onChange(!!e.target.checked)}
+          onChange={(e) => onChange(e.target.checked)}
         />
         <label htmlFor={id} className="form-check-label small ms-1">
           {label}

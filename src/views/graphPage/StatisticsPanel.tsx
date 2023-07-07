@@ -1,5 +1,5 @@
 import { capitalize, keyBy, map, mapValues, isNil, cloneDeep } from "lodash";
-import { FC, Fragment, useMemo, useState, useCallback, useEffect } from "react";
+import React, { FC, Fragment, useMemo, useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
 import Highlight from "react-highlight";
@@ -19,6 +19,7 @@ import { useModal } from "../../core/modals";
 import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import MessageTooltip from "../../components/MessageTooltip";
 
 type MetricOption = {
   value: string;
@@ -36,6 +37,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
   const { nodeFields, edgeFields } = dataset;
   const { setGraphDataset } = useGraphDatasetActions();
   const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
+  const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
   // get metric config from the preference if it exists
   const [session, setSession] = useAtom(sessionAtom);
   const metricConfig = session.metrics[metric.id] || {
@@ -110,19 +112,25 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
     }));
   }, [metric.id, metricDefaultConfig, setSession]);
 
+  const setSuccessMessage = useCallback((message?: string) => {
+    if (typeof message === "string") {
+      setSuccess({ date: Date.now(), message });
+    } else {
+      setSuccess(null);
+    }
+  }, []);
+
   const submit = useCallback(() => {
     try {
       const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, sigmaGraph, dataset);
       setGraphDataset(res.dataset);
-      notify({
-        type: "success",
-        message: t("statistics.success", {
+      setSuccessMessage(
+        t("statistics.success", {
           items: metric.itemType,
           metrics: Object.values(metricConfig.attributeNames).join(", "),
           count: Object.values(metricConfig.attributeNames).length,
         }) as string,
-        title: t("statistics.title") as string,
-      });
+      );
     } catch (e) {
       const message = e instanceof Error ? e.message : t("error.unknown");
       notify({
@@ -131,7 +139,17 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
         title: t("statistics.title") as string,
       });
     }
-  }, [notify, setGraphDataset, dataset, metric, metricConfig.attributeNames, metricConfig.parameters, sigmaGraph, t]);
+  }, [
+    metric,
+    metricConfig.parameters,
+    metricConfig.attributeNames,
+    sigmaGraph,
+    dataset,
+    setGraphDataset,
+    setSuccessMessage,
+    t,
+    notify,
+  ]);
 
   return (
     <form
@@ -156,14 +174,14 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                 label={t(`statistics.${metric.itemType}.${metric.id}.attributes.${value}`) as string}
                 value={metricConfig.attributeNames[value]}
                 onChange={(v) => onChange("attributeNames", value, v)}
+                warning={
+                  !!fieldsIndex[metricConfig.attributeNames[value]]
+                    ? (t(`statistics.${metric.itemType}_attribute_already_exists`, {
+                        field: metricConfig.attributeNames[value],
+                      }) as string)
+                    : undefined
+                }
               />
-              {!!fieldsIndex[metricConfig.attributeNames[value]] && (
-                <div className="small text-primary">
-                  {t(`statistics.${metric.itemType}_attribute_already_exists`, {
-                    field: metricConfig.attributeNames[value],
-                  })}
-                </div>
-              )}
             </Fragment>
           ))}
         </div>
@@ -291,7 +309,17 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
 
       <hr className="m-0" />
 
-      <div className="text-end z-over-loader panel-block">
+      <div className="z-over-loader panel-block d-flex flex-row align-items-center">
+        {success && (
+          <MessageTooltip
+            openOnMount={2000}
+            key={success.date}
+            message={success.message}
+            type="success"
+            iconClassName="fs-4"
+          />
+        )}
+        <div className="flex-grow-1" />
         <button type="reset" className="btn btn-outline-secondary ms-2" onClick={() => resetParameters()}>
           {t("common.reset")}
         </button>
