@@ -25,6 +25,7 @@ import { useModal } from "../../core/modals";
 import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
 import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
 import ConfirmModal from "./modals/ConfirmModal";
+import { InfiniteScroll } from "../../components/InfiniteScroll";
 
 function SelectedItem<
   T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },
@@ -253,16 +254,21 @@ export const Selection: FC = () => {
       </h3>
 
       <ul className="list-unstyled">
-        {visible.map((item) => (
-          <SelectedItem
-            key={item}
-            id={item}
-            type={type}
-            selectionSize={items.size}
-            data={type === "nodes" ? nodeData[item] : edgeData[item]}
-            renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
-          />
-        ))}
+        <InfiniteScroll
+          pageSize={50}
+          data={visible}
+          scrollableTarget={"selection"}
+          renderItem={(item) => (
+            <SelectedItem
+              id={item}
+              key={item}
+              type={type}
+              selectionSize={items.size}
+              data={type === "nodes" ? nodeData[item] : edgeData[item]}
+              renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
+            />
+          )}
+        />
       </ul>
 
       {!!hidden.length && (
@@ -285,16 +291,21 @@ export const Selection: FC = () => {
           </div>
 
           <ul className="list-unstyled">
-            {hidden.map((item) => (
-              <SelectedItem
-                key={item}
-                id={item}
-                type={type}
-                selectionSize={items.size}
-                data={type === "nodes" ? nodeData[item] : edgeData[item]}
-                renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
-              />
-            ))}
+            <InfiniteScroll
+              scrollableTarget={"selection"}
+              pageSize={50}
+              data={hidden}
+              renderItem={(item) => (
+                <SelectedItem
+                  id={item}
+                  key={item}
+                  type={type}
+                  selectionSize={items.size}
+                  data={type === "nodes" ? nodeData[item] : edgeData[item]}
+                  renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
+                />
+              )}
+            />
           </ul>
         </>
       )}

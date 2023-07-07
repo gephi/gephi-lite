@@ -147,7 +147,7 @@ export const ContextPanel: FC = () => {
       </div>
       <hr className="m-0" />
 
-      <div className="panel-block-grow">
+      <div className="panel-block-grow" id="selection">
         <Selection />
       </div>
     </>
