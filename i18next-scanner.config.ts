@@ -8,8 +8,8 @@ module.exports = {
     },
 
     // Create and update files `en.json`, `fr.json`, `es.json`
-    lngs: ["en"],
-    defaultLng: "en",
+    lngs: ["dev"],
+    defaultLng: "dev",
 
     // Put a blank string as initial translation
     // (useful for Weblate be marked as 'not yet translated', see later)

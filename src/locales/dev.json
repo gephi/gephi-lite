@@ -257,7 +257,9 @@
         "attribute-name": "Attribute name",
         "attribute-value": "Attribute value",
         "new-attribute": "Add new attribute"
-      }
+      },
+      "nodes_plural": "",
+      "edges_plural": ""
     },
     "open": {
       "title": "Open a graph file",
@@ -457,7 +459,9 @@
           "custom": "Attribute name on which to store the metric"
         }
       }
-    }
+    },
+    "success_plural": "",
+    "compute_plural": ""
   },
   "layouts": {
     "title": "Layout",
