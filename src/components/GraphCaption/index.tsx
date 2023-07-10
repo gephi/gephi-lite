@@ -58,6 +58,18 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
+  const [enabled, setEnabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    const enable =
+      ["ranking", "partition"].includes(appearance.nodesColor.type) ||
+      ["ranking", "partition", "source", "target"].includes(appearance.edgesColor.type) ||
+      appearance.edgesSize.type === "ranking" ||
+      appearance.nodesSize.type === "ranking";
+
+    setEnabled(enable);
+  }, [appearance]);
+
   // min-max values for ranking caption items
   const vizAttributesExtends = useMemo(() => {
     const attributesExtends: Record<"node" | "edge", Record<string, RangeExtends | PartitionExtends>> = {
@@ -131,21 +143,22 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   return (
     <div title="caption" className={cx("graph-caption", collapsed ? "collapsed" : "border")}>
       <div className="d-flex flex-column justify-content-end align-items-start align-self-end">
-        <div>
+        <div title={enabled ? undefined : t("graph.caption.disabled").toString()}>
           <button
             title={`${t(collapsed ? "graph.caption.expand" : "graph.caption.collapse")} `}
             className="btn btn-ico btn-dark btn-sm"
+            disabled={!enabled}
             onClick={(e) => {
               setCollapsed(!collapsed);
             }}
           >
-            {collapsed ? <AiFillQuestionCircle size="1rem" /> : <BiCollapseAlt />}
+            {collapsed || !enabled ? <AiFillQuestionCircle size="1rem" /> : <BiCollapseAlt size="1rem" />}
           </button>
         </div>
       </div>
       {!collapsed && (
         <>
-          <div className="caption-items">
+          <div className={cx("caption-items", !enabled && "d-none")}>
             {appearance.nodesColor.field !== undefined && vizAttributesExtends.node[appearance.nodesColor.field] && (
               <ItemsColorCaption
                 itemType="node"

@@ -310,8 +310,7 @@
     },
     "caption": {
       "color": "Color {{itemType}} by",
-      "size": "Size {itemType}} by",
-      "title": "Caption"
+      "disabled": "Caption is available once appearance has been set."
     }
   },
   "statistics": {

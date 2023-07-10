@@ -313,7 +313,8 @@
     },
     "caption": {
       "color": " {{itemType}} colors:",
-      "size": "{{itemType}} size:"
+      "size": "{{itemType}} size:",
+      "disabled": "Caption is available once appearance has been set."
     }
   },
   "statistics": {
