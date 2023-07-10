@@ -33,12 +33,12 @@ export const ItemsColorCaption: FC<
               ...(extend.missing ? [["N/A", itemsColor.missingColor]] : []),
             ].map(([label, color]) => (
               <div
+                key={label}
                 title={`${itemsColor.field}: ${label} ${extend.occurrences[label]} ${t(`graph.model.${itemType}s`, {
                   count: extend.occurrences[label],
                 })}`}
               >
                 <span
-                  key={label}
                   className={cx(itemType === "node" && "disc", itemType === "edge" && "rectangle", "flex-shrink-0")}
                   style={{ backgroundColor: color }}
                 />
