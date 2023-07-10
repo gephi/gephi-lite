@@ -152,7 +152,7 @@ export function makeGetColor<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
-  { nodeData, edgeData, fullGraph }: GraphDataset,
+  { nodeData, edgeData, nodeRenderingData, fullGraph }: GraphDataset,
   { nodesColor, edgesColor }: AppearanceState,
   getters?: VisualGetters,
 ): ColorGetter | null {
@@ -194,22 +194,24 @@ export function makeGetColor<
       getColor = () => colorsDef.value;
   }
 
-  if (itemType === "edges") {
+  if (itemType === "edges" && ["source", "target"].includes(colorsDef.type)) {
     const getNodeColor = (getters as VisualGetters | undefined)?.getNodeColor;
-    switch ((colorsDef as EdgeColor).type) {
-      case "source":
-        getColor = (_: ItemData, edgeId?: string) => {
-          const node = fullGraph.source(edgeId);
-          return getNodeColor && edgeId && node ? getNodeColor(nodeData[node]) : DEFAULT_NODE_COLOR;
-        };
-        break;
-      case "target":
-        getColor = (_: ItemData, edgeId?: string) => {
-          const node = fullGraph.target(edgeId);
-          return getNodeColor && edgeId && node ? getNodeColor(nodeData[node]) : DEFAULT_NODE_COLOR;
-        };
-        break;
-    }
+    const nodeForColor =
+      colorsDef.type === "source" ? (id?: string) => fullGraph.source(id) : (id?: string) => fullGraph.target(id);
+
+    if (getNodeColor && nodesColor.type !== "data")
+      getColor = (_, edgeId?: string) =>
+        nodeForColor(edgeId) ? getNodeColor(nodeData[nodeForColor(edgeId)]) : DEFAULT_NODE_COLOR;
+    else if (nodesColor.type === "data")
+      // special case when node are colored by data have to reach nodeRenderingData instead of normal getNodeColor
+      getColor = (_, edgeId?: string) => {
+        return nodeForColor(edgeId) &&
+          nodeRenderingData[nodeForColor(edgeId)] &&
+          nodeRenderingData[nodeForColor(edgeId)].color
+          ? nodeRenderingData[nodeForColor(edgeId)].color || DEFAULT_NODE_COLOR
+          : DEFAULT_NODE_COLOR;
+      };
+    else getColor = () => DEFAULT_EDGE_COLOR;
   }
 
   return getColor;
