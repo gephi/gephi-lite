@@ -14,7 +14,7 @@ export function getCurrentPreferences(): Preferences {
   try {
     const rawPreferences = localStorage.getItem("preferences");
     const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
-    return preferences || getEmptyPreferences();
+    return { ...preferences, ...getEmptyPreferences() };
   } catch (e) {
     return getEmptyPreferences();
   }
