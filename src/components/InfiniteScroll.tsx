@@ -38,7 +38,7 @@ export function InfiniteScroll<T>({ data, renderItem, pageSize, scrollableTarget
       loader={<LoaderFill />}
       next={next}
     >
-      {items.map((data, index) => renderItem(data))}
+      {items.map((data) => renderItem(data))}
     </InfiniteScrollComponent>
   );
 }
