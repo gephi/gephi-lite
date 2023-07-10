@@ -5,9 +5,7 @@ import { GraphCaptionProps, RangeExtends } from ".";
 import { Size } from "../../core/appearance/types";
 import { shortenNumber } from "../GraphFilters/utils";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
-import { capitalize } from "lodash";
-import { useTranslation } from "react-i18next";
-import { EdgeIcon, NodeIcon } from "../common-icons";
+
 import { CaptionItemTitle } from "./CaptionItemTitle";
 
 const ItemSizeCaption: FC<
@@ -17,7 +15,6 @@ const ItemSizeCaption: FC<
     extend?: RangeExtends;
   }
 > = ({ minimal, itemType, itemsSize, extend }) => {
-  const { t } = useTranslation();
   const sigma = useSigmaAtom();
   // update nodeSize Size to camera updates from Sigma
   const visualGetters = useVisualGetters();
