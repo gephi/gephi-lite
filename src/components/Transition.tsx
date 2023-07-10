@@ -16,9 +16,9 @@ const Transition = forwardRef<
     <div
       ref={ref}
       style={{ animation: show ? mountTransition : unmountTransition }}
-      // onAnimationEnd={() => {
-      //   if (!show) setRender(false);
-      // }}
+      onAnimationEnd={() => {
+        if (!show) setRender(false);
+      }}
     >
       {children}
     </div>
