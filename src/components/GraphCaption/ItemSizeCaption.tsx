@@ -44,7 +44,7 @@ const ItemSizeCaption: FC<
   // Refresh caption when metric changes:
   useEffect(() => {
     refreshState();
-  }, [refreshState, itemSizeState]);
+  }, [refreshState]);
 
   // Refresh caption on camera update:
   useEffect(() => {
