@@ -106,8 +106,8 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             } else {
               const field = option.field as string;
               const values = uniq(
-                flatMap(graphDatasetAtom.get().nodeData, (nodeData) => {
-                  const v = nodeData[field];
+                flatMap(graphDatasetAtom.get()[itemType === "nodes" ? "nodeData" : "edgeData"], (itemData) => {
+                  const v = itemData[field];
                   if (typeof v === "number" || (typeof v === "string" && !!v)) return [v + ""];
                   return [];
                 }),
