@@ -2,7 +2,7 @@ import { FC } from "react";
 import { sortBy, toPairs } from "lodash";
 import cx from "classnames";
 
-import { Color } from "../../core/appearance/types";
+import { Color, EdgeColor } from "../../core/appearance/types";
 import { GraphCaptionProps, PartitionExtends, RangeExtends } from ".";
 import { useTranslation } from "react-i18next";
 import { ColorSlider } from "./ColorSlider";
@@ -11,8 +11,8 @@ import { CaptionItemTitle } from "./CaptionItemTitle";
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
     itemType: "node" | "edge";
-    itemsColor: Color;
-    extend: RangeExtends | PartitionExtends;
+    itemsColor: Color | EdgeColor;
+    extend?: RangeExtends | PartitionExtends;
   }
 > = ({ itemType, minimal, itemsColor, extend }) => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ export const ItemsColorCaption: FC<
         <CaptionItemTitle itemType={itemType} field={itemsColor.field} vizVariable="color" />
 
         {/* PARTITION */}
-        {itemsColor.type === "partition" && "occurrences" in extend && (
+        {extend && itemsColor.type === "partition" && "occurrences" in extend && (
           <div className={cx(minimal && "minimal", "item-colors partition")}>
             {[
               ...sortBy(
@@ -48,12 +48,19 @@ export const ItemsColorCaption: FC<
           </div>
         )}
         {/* RANKING */}
-        {itemsColor.type === "ranking" && "min" in extend && (
+        {extend && itemsColor.type === "ranking" && "min" in extend && (
           <div className={cx(minimal && "minimal", "item-colors ranking")}>
             <ColorSlider colorScalePoints={itemsColor.colorScalePoints} extend={extend} />
           </div>
         )}
       </div>
     );
+  if (itemsColor.type === "source" || itemsColor.type === "target") {
+    return (
+      <div className="graph-caption-item">
+        <CaptionItemTitle itemType={itemType} field={t(`appearance.color.${itemsColor.type}`)} vizVariable="color" />
+      </div>
+    );
+  }
   return null;
 };

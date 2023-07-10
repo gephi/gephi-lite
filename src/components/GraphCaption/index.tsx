@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { fromPairs, mapValues } from "lodash";
 import { useTranslation } from "react-i18next";
 import { BiCollapseAlt } from "react-icons/bi";
@@ -173,12 +173,15 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
               itemsSize={appearance.nodesSize}
               extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
             />
-            {appearance.edgesColor.field !== undefined && vizAttributesExtends.edge[appearance.edgesColor.field] && (
+            {((appearance.edgesColor.field !== undefined && vizAttributesExtends.edge[appearance.edgesColor.field]) ||
+              ["source", "target"].includes(appearance.edgesColor.type)) && (
               <ItemsColorCaption
                 itemType="edge"
                 minimal={minimal}
                 itemsColor={appearance.edgesColor}
-                extend={vizAttributesExtends.edge[appearance.edgesColor.field]}
+                extend={
+                  appearance.edgesColor.field ? vizAttributesExtends.edge[appearance.edgesColor.field] : undefined
+                }
               />
             )}
             <ItemSizeCaption
