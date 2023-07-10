@@ -24,19 +24,21 @@ export type PartitionExtends = { occurrences: Record<string, number>; missing?: 
 const getAttributeRanges = (
   itemIds: string[],
   itemData: Record<string, ItemData>,
-  rangesFields: string[],
-  partitionsFields: string[],
+  rankingFields: string[],
+  partitionFields: string[],
 ) => {
-  return itemIds.reduce((acc, n) => {
-    return mapValues(acc, (value, field) => {
-      const fieldValue = itemData[n][field];
-      if (rangesFields.includes(field)) {
-        // ranges
+  return itemIds.reduce(
+    (acc, n) => {
+      // rankings
+      const rankings = mapValues(acc.ranking, (value, key) => {
+        const fieldValue = itemData[n][key];
         if (fieldValue && (typeof fieldValue === "number" || !isNaN(+fieldValue)))
-          return { min: Math.min(value.min, +fieldValue), max: Math.max(value.max, +fieldValue) };
+          return { ...value, min: Math.min(value.min, +fieldValue), max: Math.max(value.max, +fieldValue) };
         else return { ...value, missing: true };
-      } else {
-        // partitions
+      });
+      // partitions
+      const partitions = mapValues(acc.partition, (value, key) => {
+        const fieldValue = itemData[n][key];
         if (fieldValue !== null && fieldValue !== undefined)
           return {
             ...value,
@@ -46,9 +48,15 @@ const getAttributeRanges = (
             },
           };
         else return { ...value, missing: true };
-      }
-    });
-  }, fromPairs([...rangesFields.map((f) => [f, { min: Infinity, max: -Infinity }]), ...partitionsFields.map((f) => [f, {}])]));
+      });
+
+      return { ranking: { ...acc.ranking, ...rankings }, partition: { ...acc.partition, ...partitions } };
+    },
+    {
+      ranking: fromPairs(rankingFields.map((f) => [f, { min: Infinity, max: -Infinity } as RangeExtends])),
+      partition: fromPairs(partitionFields.map((f) => [f, {} as PartitionExtends])),
+    },
+  );
 };
 
 const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
@@ -72,9 +80,12 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
 
   // min-max values for ranking caption items
   const vizAttributesExtends = useMemo(() => {
-    const attributesExtends: Record<"node" | "edge", Record<string, RangeExtends | PartitionExtends>> = {
-      node: {},
-      edge: {},
+    const attributesExtends: Record<
+      "node" | "edge",
+      { ranking: Record<string, RangeExtends>; partition: Record<string, PartitionExtends> }
+    > = {
+      node: { ranking: {}, partition: {} },
+      edge: { ranking: {}, partition: {} },
     };
     // should we iterate on nodes
     const nodeRankingFields = [appearance.nodesColor, appearance.nodesSize]
@@ -134,10 +145,10 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
 
   //sigma.getNodeDisplayData(id).size
   const nodeSizeExtends = appearance.nodesSize.field
-    ? vizAttributesExtends.node[appearance.nodesSize.field]
+    ? vizAttributesExtends.node["ranking"][appearance.nodesSize.field]
     : undefined;
   const edgeSizeExtends = appearance.edgesSize.field
-    ? vizAttributesExtends.edge[appearance.edgesSize.field]
+    ? vizAttributesExtends.edge["ranking"][appearance.edgesSize.field]
     : undefined;
 
   return (
@@ -159,12 +170,12 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
       {!collapsed && (
         <>
           <div className={cx("caption-items", !enabled && "d-none")}>
-            {appearance.nodesColor.field !== undefined && vizAttributesExtends.node[appearance.nodesColor.field] && (
+            {appearance.nodesColor.field !== undefined && (
               <ItemsColorCaption
                 itemType="node"
                 minimal={minimal}
                 itemsColor={appearance.nodesColor}
-                extend={vizAttributesExtends.node[appearance.nodesColor.field]}
+                extend={vizAttributesExtends.node[appearance.nodesColor.type][appearance.nodesColor.field]}
               />
             )}
             <ItemSizeCaption
@@ -173,14 +184,16 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
               itemsSize={appearance.nodesSize}
               extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
             />
-            {((appearance.edgesColor.field !== undefined && vizAttributesExtends.edge[appearance.edgesColor.field]) ||
+            {(appearance.edgesColor.field !== undefined ||
               ["source", "target"].includes(appearance.edgesColor.type)) && (
               <ItemsColorCaption
                 itemType="edge"
                 minimal={minimal}
                 itemsColor={appearance.edgesColor}
                 extend={
-                  appearance.edgesColor.field ? vizAttributesExtends.edge[appearance.edgesColor.field] : undefined
+                  appearance.edgesColor.field
+                    ? vizAttributesExtends.edge[appearance.edgesColor.type][appearance.edgesColor.field]
+                    : undefined
                 }
               />
             )}
