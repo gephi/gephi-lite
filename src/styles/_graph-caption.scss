@@ -25,11 +25,6 @@
       justify-content: center;
       min-height: $graph-caption-items-height;
 
-      &.partition {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-left: 0.4em;
-      }
       &.ranking {
         width: 200px;
         position: relative;
@@ -38,7 +33,6 @@
           // bottom is half thumb + half tick label
           bottom: calc(9px + 15px);
           left: 10%;
-          //height: $graph-caption-items-height;
 
           width: 80%;
 
@@ -65,8 +59,11 @@
         }
       }
       &.partition {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding-left: 0.4em;
         > * {
-          height: $graph-caption-items-height;
           display: flex;
           align-items: center;
           //children
@@ -80,7 +77,8 @@
           }
           .rectangle {
             height: 20px;
-            width: 8px;
+            width: 5px;
+            transform: rotate(35deg);
           }
           .label {
             margin-left: 0.5rem;
@@ -89,12 +87,12 @@
       }
 
       &.minimal.partition {
-        overflow-y: scroll;
-        max-height: $graph-caption-items-height;
+        overflow-y: auto;
+        height: $graph-caption-items-height;
 
-        > * {
-          height: min-content !important;
-        }
+        // > * {
+        //   height: min-content !important;
+        // }
       }
     }
 
