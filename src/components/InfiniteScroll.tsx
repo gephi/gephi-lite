@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState, useEffect, useMemo } from "react";
+import { ReactNode, useState, useMemo } from "react";
 import InfiniteScrollComponent from "react-infinite-scroll-component";
 
 import { LoaderFill } from "./Loader";
@@ -13,30 +13,23 @@ interface InfiniteScrollProps<T> {
 }
 
 export function InfiniteScroll<T>({ data, renderItem, pageSize, scrollableTarget }: InfiniteScrollProps<T>) {
-  const [items, setItems] = useState<T[]>([]);
+  const [itemNumber, setItemNumber] = useState<number>(pageSize || DEFAULT_PAGE_SIZE);
 
-  const next = useCallback(async () => {
-    setTimeout(
-      () =>
-        setItems((prev) => {
-          const result = data.slice(0, prev.length + (pageSize || DEFAULT_PAGE_SIZE));
-          return result;
-        }),
-      0,
-    );
-  }, [data, pageSize]);
+  const next = () => setItemNumber((prev) => prev + (pageSize || DEFAULT_PAGE_SIZE));
 
-  useEffect(() => {
-    setItems(data.length > 0 ? data.slice(0, pageSize || DEFAULT_PAGE_SIZE) : []);
-  }, [data, pageSize]);
-
-  const visibleItems = useMemo(() => items.map((data) => renderItem(data)), [renderItem, items]);
+  const visibleItems = useMemo(
+    () =>
+      data.slice(0, itemNumber).map((d) => {
+        return renderItem(d);
+      }),
+    [renderItem, data, itemNumber],
+  );
 
   return (
     <InfiniteScrollComponent
       scrollableTarget={scrollableTarget}
-      dataLength={items.length}
-      hasMore={items.length < data.length}
+      dataLength={itemNumber}
+      hasMore={itemNumber < data.length}
       loader={<LoaderFill />}
       next={next}
     >
