@@ -57,7 +57,12 @@ const ItemSizeCaption: FC<
   if (itemsSize.field) {
     return (
       <div className="graph-caption-item">
-        <CaptionItemTitle vizVariable="size" itemType={itemType} field={itemsSize.field} />
+        <CaptionItemTitle
+          vizVariable="size"
+          itemType={itemType}
+          field={itemsSize.field}
+          transformationMethod={itemsSize.transformationMethod}
+        />
         {itemSizeState && (
           <div className="item-sizes">
             <div className="item-size">

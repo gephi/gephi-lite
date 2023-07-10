@@ -1,6 +1,6 @@
 .graph-caption {
   &:not(.collapsed) {
-    background-color: #e1e1e199;
+    background-color: rgba($panels-bg, 0.9);
   }
   display: flex;
   align-items: center;
@@ -9,7 +9,7 @@
     // z-index: $zindex-caption;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     padding: 1rem;
 
     > * {

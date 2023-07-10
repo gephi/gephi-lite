@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import cx from "classnames";
+import { TransformationMethod } from "../../core/appearance/types";
 
 const ICON_NAMES = {
   color: {
@@ -13,11 +14,46 @@ const ICON_NAMES = {
   },
 };
 
-export const CaptionItemTitle: FC<{ itemType: "node" | "edge"; vizVariable: "color" | "size"; field: string }> = ({
-  itemType,
+const TransformationMethodLabel: FC<{ field: string; transformationMethod?: TransformationMethod }> = ({
   field,
-  vizVariable,
+  transformationMethod,
 }) => {
+  const methodLabelProps = { className: "text-muted", style: { fontSize: "0.75em" } };
+  if (!transformationMethod) return <>{field}</>;
+  if (transformationMethod === "log")
+    return (
+      <>
+        <span {...methodLabelProps}>log(</span>
+        {field}
+        <span {...methodLabelProps}>)</span>
+      </>
+    );
+  if ("pow" in transformationMethod) {
+    if (transformationMethod.pow === 0.5)
+      return (
+        <>
+          <span {...methodLabelProps}>√(</span>
+          {field}
+          <span {...methodLabelProps}>)</span>
+        </>
+      );
+    else
+      return (
+        <>
+          {field}
+          <sup {...methodLabelProps}>{transformationMethod.pow}</sup>
+        </>
+      );
+  }
+  return <>{field}</>;
+};
+
+export const CaptionItemTitle: FC<{
+  itemType: "node" | "edge";
+  vizVariable: "color" | "size";
+  field: string;
+  transformationMethod?: TransformationMethod;
+}> = ({ itemType, field, vizVariable, transformationMethod }) => {
   const { t } = useTranslation();
   const label = t(`graph.caption.${vizVariable}`, {
     itemType: t(`graph.model.${itemType}s`, { count: 2 }) + "",
@@ -28,7 +64,9 @@ export const CaptionItemTitle: FC<{ itemType: "node" | "edge"; vizVariable: "col
       <i title={label} className={cx("fs-4 me-1", ICON_NAMES[vizVariable][itemType])} />
       <div className="d-flex flex-column justify-content-center m-2">
         <span className="text-muted small">{label}</span>
-        <h4 className="fs-5 m-0">{field}</h4>
+        <h4 className="fs-5 m-0 d-flex align-items-center">
+          <TransformationMethodLabel field={field} transformationMethod={transformationMethod} />
+        </h4>
       </div>
     </div>
   );
