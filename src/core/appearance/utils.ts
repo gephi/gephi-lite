@@ -9,7 +9,6 @@ import {
   ColorGetter,
   CustomEdgeDisplayData,
   CustomNodeDisplayData,
-  EdgeColor,
   LabelGetter,
   SizeGetter,
   TransformationMethod,
