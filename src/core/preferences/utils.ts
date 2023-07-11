@@ -1,4 +1,5 @@
 import { parse, stringify } from "../utils/json";
+import { i18n } from "../../locales/provider";
 import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
@@ -6,7 +7,8 @@ export function getEmptyPreferences(): Preferences {
     recentRemoteFiles: [],
     layoutsParameters: {},
     metrics: {},
-    locale: "en",
+    // default is the local detected by i18n
+    locale: i18n.language,
   };
 }
 
@@ -14,7 +16,7 @@ export function getCurrentPreferences(): Preferences {
   try {
     const rawPreferences = localStorage.getItem("preferences");
     const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
-    return { ...preferences, ...getEmptyPreferences() };
+    return { ...getEmptyPreferences(), ...preferences };
   } catch (e) {
     return getEmptyPreferences();
   }
