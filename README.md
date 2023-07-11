@@ -35,6 +35,14 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+End-to-end tests can be run with playwright.
+
+First make sure to install browsers : `npx playwright install`
+
+Then start teh e2e tests : `npm run test:e2e`
+
+If you have updated the project style/layout, you will have to delete the saved screenshot in /e2e/_.spec.ts-snapthots/_, and then run the e2e test to regenerate them.
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
