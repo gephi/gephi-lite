@@ -92,7 +92,7 @@ export const FilterCreator: FC = () => {
     return (
       <div className="filter-item d-flex align-items-center justify-content-center">
         <button type="button" className="btn btn-outline-dark border-0" onClick={() => setIsOpened(true)}>
-          <CgAddR /> {t("common.add")} {t("filters.filter")}
+          <CgAddR /> {t("filters.add_filter")}
         </button>
       </div>
     );

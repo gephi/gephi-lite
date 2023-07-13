@@ -96,7 +96,7 @@ export const GraphMetadataForm: FC = () => {
         >
           {GraphTypeValues.map((v) => (
             <option key={v} value={v}>
-              {v}
+              {t(`graph.model.${v}`)}
             </option>
           ))}
         </select>

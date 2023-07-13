@@ -45,9 +45,9 @@
   },
   "github": {
     "title": "GitHub authentication",
-    "select_ui_language": "Select application language",
     "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
-    "logged_as": "You are currently logged into GitHub as {{username}}."
+    "logged_as": "You are currently logged into GitHub as {{username}}.",
+    "select_ui_language": "Select application language"
   },
   "auth": {
     "unauth_success": "Unauthentication successful",
@@ -62,16 +62,16 @@
     "title": "Data overview"
   },
   "selection": {
-    "nodes_zero": "No selected item",
+    "nodes_zero": "No selected node",
     "nodes_one": "One selected node",
     "nodes": "{{count}} selected nodes",
-    "edges_zero": "No selected item",
+    "edges_zero": "No selected edge",
     "edges_one": "One selected edge",
     "edges": "{{count}} selected edges",
-    "visible_nodes_zero": "No visible selected item",
+    "visible_nodes_zero": "No visible selected node",
     "visible_nodes_one": "One visible selected node",
     "visible_nodes": "{{count}} visible selected nodes",
-    "visible_edges_zero": "No visible selected item",
+    "visible_edges_zero": "No visible selected edge",
     "visible_edges_one": "One visible selected edge",
     "visible_edges": "{{count}} visible selected edges",
     "hidden_nodes_one": "One hidden selected node",
@@ -155,6 +155,7 @@
     "title": "Filters",
     "description": "This panel allows to filter the graph by stacking filters.",
     "filter": "Filter",
+    "add_filter": "Add filter",
     "full_graph": "Full graph",
     "using": "Using",
     "topological": "Topology",
@@ -173,10 +174,10 @@
     "create_edges": "Create new edge",
     "create_nodes_success": "The node has successfully been created.",
     "create_edges_success": "The edge has successfully been created.",
-    "update_this_nodes": "Update this node",
-    "update_this_edges": "Update this edge",
-    "update_nodes": "Update existing node",
-    "update_edges": "Update existing edge",
+    "update_this_nodes": "Edit this node",
+    "update_this_edges": "Edit this edge",
+    "update_nodes": "Edit existing node",
+    "update_edges": "Edit existing edge",
     "update_nodes_success": "The node has successfully been updated.",
     "update_edges_success": "The edge has successfully been updated.",
     "delete_this_nodes": "Delete this node",
@@ -229,6 +230,9 @@
         "qualitative": "Qualitative",
         "quantitative": "Quantitative"
       },
+      "directed": "Directed",
+      "undirected": "Undirected",
+      "mixed": "Mixed",
       "nodes_one": "node",
       "nodes_zero": "node",
       "nodes": "nodes",
@@ -258,9 +262,7 @@
         "attribute-name": "Attribute name",
         "attribute-value": "Attribute value",
         "new-attribute": "Add new attribute"
-      },
-      "nodes_plural": "",
-      "edges_plural": ""
+      }
     },
     "open": {
       "title": "Open a graph file",
@@ -312,8 +314,9 @@
       }
     },
     "caption": {
-      "color": " {{itemType}} colors:",
-      "size": "{{itemType}} size:",
+      "color": "Color {{itemType}} by",
+      "size": "Size {{itemType}} by",
+      "title": "Caption",
       "disabled": "Caption is available once appearance has been set."
     }
   },
@@ -321,8 +324,8 @@
     "title": "Statistics",
     "compute_one": "Compute metric",
     "compute": "Compute metrics",
-    "success_one": "The {{items}} metric {{metrics}} has been added to the data. It is now available in other panels.",
-    "success": "The {{items}} metrics {{metrics}} have been added to the data. They are now available in other panels.",
+    "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",
+    "success": "The {{items}} metrics \"{{metrics}}\" have been added to the data.",
     "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
     "placeholder": "Select an algorithm",
     "attributes_placeholder": "None",
@@ -461,16 +464,14 @@
           "custom": "Attribute name on which to store the metric"
         }
       }
-    },
-    "success_plural": "",
-    "compute_plural": ""
+    }
   },
   "layouts": {
     "title": "Layout",
-    "description": "This panel allows computing new coordintaes to nodes of the graph. ",
+    "description": "This panel allows computing new coordinates to nodes of the graph. ",
     "placeholder": "Select a layout algorithm",
     "exec": {
-      "success": "Layout {{layout}} has been applied",
+      "success": "Layout \"{{layout}}\" has successfully been applied.",
       "started": "Layout {{layout}} is running",
       "stopped": "Layout {{layout}} has been stopped"
     },
@@ -635,11 +636,13 @@
     "cancel": "Cancel",
     "clear": "Clear",
     "close": "Close",
+    "collapse": "Collapse",
     "confirm": "Confirm",
     "copy": "Copy",
     "created": "Created",
     "delete": "Delete",
     "edit": "Edit",
+    "expand": "Expand",
     "filename": "Filename",
     "hide": "Hide",
     "load-more": "Load more",
@@ -654,6 +657,7 @@
     "reset": "Reset",
     "save": "Save",
     "save-and-run": "Save and run",
+    "select": "Select...",
     "start": "Start",
     "stop": "Stop",
     "size": "Size",
