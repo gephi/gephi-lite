@@ -5,18 +5,19 @@ import { initReactI18next, I18nextProvider } from "react-i18next";
 import LngDetector from "i18next-browser-languagedetector";
 
 import { usePreferences } from "../core/context/dataContexts";
-import { LOCALES } from "./LOCALES";
+import { DEFAULT_LOCALE, LOCALES } from "./LOCALES";
 
 const i18n = i18next.use(initReactI18next).use(LngDetector);
 
 i18n
   .init({
     debug: process.env.NODE_ENV !== "production",
-    fallbackLng: "dev",
+    fallbackLng: DEFAULT_LOCALE,
     resources: LOCALES,
     detection: {
       order: ["querystring", "navigator"],
       lookupQuerystring: "lang",
+      convertDetectedLanguage: (lng) => lng in LOCALES ? lng : DEFAULT_LOCALE,
     },
   })
   .then(() => {

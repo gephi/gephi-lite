@@ -16,3 +16,5 @@ export const LOCALES = {
     label: "Français",
   },
 };
+
+export const DEFAULT_LOCALE = process.env.NODE_ENV !== "production" ? "dev" : "en";
