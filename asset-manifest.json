@@ -1,15 +1,19 @@
 {
   "files": {
-    "main.css": "/gephi-lite/static/css/main.823dc065.css",
-    "main.js": "/gephi-lite/static/js/main.856c4c25.js",
+    "main.css": "/gephi-lite/static/css/main.39e14db7.css",
+    "main.js": "/gephi-lite/static/js/main.1078d15b.js",
     "static/js/787.2284c812.chunk.js": "/gephi-lite/static/js/787.2284c812.chunk.js",
+    "static/media/mfglabsiconset-webfont.svg": "/gephi-lite/static/media/mfglabsiconset-webfont.cf376e8ed0d56fb0137c.svg",
+    "static/media/mfglabsiconset-webfont.ttf": "/gephi-lite/static/media/mfglabsiconset-webfont.54d7f6edf18c0687b33e.ttf",
+    "static/media/mfglabsiconset-webfont.woff": "/gephi-lite/static/media/mfglabsiconset-webfont.59093cbb11043474f285.woff",
+    "static/media/mfglabsiconset-webfont.eot": "/gephi-lite/static/media/mfglabsiconset-webfont.253d34d606121d55aa74.eot",
     "index.html": "/gephi-lite/index.html",
-    "main.823dc065.css.map": "/gephi-lite/static/css/main.823dc065.css.map",
-    "main.856c4c25.js.map": "/gephi-lite/static/js/main.856c4c25.js.map",
+    "main.39e14db7.css.map": "/gephi-lite/static/css/main.39e14db7.css.map",
+    "main.1078d15b.js.map": "/gephi-lite/static/js/main.1078d15b.js.map",
     "787.2284c812.chunk.js.map": "/gephi-lite/static/js/787.2284c812.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.823dc065.css",
-    "static/js/main.856c4c25.js"
+    "static/css/main.39e14db7.css",
+    "static/js/main.1078d15b.js"
   ]
 }
