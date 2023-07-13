@@ -14,7 +14,7 @@ import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "..
 import { UIContext } from "../../../../core/context/uiContext";
 import { useNotifications } from "../../../../core/notifications";
 import { EdgeRenderingData } from "../../../../core/graph/types";
-import ColorPicker from "../../../../components/ColorPicker";
+// import ColorPicker from "../../../../components/ColorPicker";
 
 interface NodeOption {
   label: string;
@@ -219,19 +219,19 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             <FaTimes />
           </button>
         </div>
-        <div className="col-md-6 d-flex flex-row align-items-center">
-          <label htmlFor="updateEdge-color" className="form-label mb-0 flex-grow-1">
-            {t("graph.model.edges-data.color")}
-          </label>
-          <ColorPicker clearable color={watch("color")} onChange={(color) => setValue("color", color)} />
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"
-            onClick={() => setValue("color", undefined)}
-          >
-            <FaTimes />
-          </button>
-        </div>
+        {/*<div className="col-md-6 d-flex flex-row align-items-center">*/}
+        {/*  <label htmlFor="updateEdge-color" className="form-label mb-0 flex-grow-1">*/}
+        {/*    {t("graph.model.edges-data.color")}*/}
+        {/*  </label>*/}
+        {/*  <ColorPicker clearable color={watch("color")} onChange={(color) => setValue("color", color)} />*/}
+        {/*  <button*/}
+        {/*    type="button"*/}
+        {/*    className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"*/}
+        {/*    onClick={() => setValue("color", undefined)}*/}
+        {/*  >*/}
+        {/*    <FaTimes />*/}
+        {/*  </button>*/}
+        {/*</div>*/}
 
         {/* Other attributes */}
         <div>{t("graph.model.edges-data.attributes")}</div>

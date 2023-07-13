@@ -11,7 +11,7 @@ import { ModalProps } from "../../../../core/modals/types";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
 import { useNotifications } from "../../../../core/notifications";
 import { NodeRenderingData } from "../../../../core/graph/types";
-import ColorPicker from "../../../../components/ColorPicker";
+// import ColorPicker from "../../../../components/ColorPicker";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
   id: string;
@@ -23,7 +23,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
   const { notify } = useNotifications();
 
   const { createNode, updateNode } = useGraphDatasetActions();
-  const { edgeData, nodeRenderingData } = useGraphDataset();
+  const { nodeData, nodeRenderingData } = useGraphDataset();
   const { select } = useSelectionActions();
 
   const isNew = typeof nodeId === "undefined";
@@ -38,12 +38,12 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
     return {
       id: nodeId,
       ...omit(nodeRenderingData[nodeId], "rawSize"),
-      attributes: toPairs(edgeData[nodeId]).map(([key, value]) => ({
+      attributes: toPairs(nodeData[nodeId]).map(([key, value]) => ({
         key,
         value: value ? value + "" : undefined,
       })),
     };
-  }, [isNew, nodeId, nodeRenderingData, edgeData]);
+  }, [isNew, nodeId, nodeRenderingData, nodeData]);
   const { register, handleSubmit, setValue, getValues, watch } = useForm<UpdatedNodeState>({
     defaultValues,
   });
@@ -110,12 +110,12 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             id="updateNode-id"
             className="form-control"
             disabled={!isNew}
-            {...register("id", { required: "true", validate: (value) => !!value && (!isNew || !edgeData[value]) })}
+            {...register("id", { required: "true", validate: (value) => !!value && (!isNew || !nodeData[value]) })}
           />
         </div>
 
         {/* Rendering attributes */}
-        <div className="col-md-8 d-flex flex-row align-items-center">
+        <div className="col-md-12 d-flex flex-row align-items-center">
           <label htmlFor="updateNode-label" className="form-label mb-0 flex-grow-1 flex-shrink-0">
             {t("graph.model.nodes-data.label")}
           </label>
@@ -134,40 +134,40 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             <FaTimes />
           </button>
         </div>
-        <div className="col-md-4 d-flex flex-row align-items-center">
-          <label htmlFor="updateNode-color" className="form-label mb-0 flex-grow-1">
-            {t("graph.model.nodes-data.color")}
-          </label>
-          <ColorPicker clearable color={watch("color")} onChange={(color) => setValue("color", color)} />
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"
-            onClick={() => setValue("color", undefined)}
-          >
-            <FaTimes />
-          </button>
-        </div>
-        <div className="col-md-4 d-flex flex-row align-items-center">
-          <label htmlFor="updateNode-size" className="form-label mb-0 flex-shrink-0">
-            {t("graph.model.nodes-data.size")}
-          </label>
-          <input
-            type="number"
-            id="updateNode-size"
-            className="form-control flex-grow-1 ms-2"
-            step="any"
-            min={0}
-            {...register("size", { min: 0 })}
-          />
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"
-            onClick={() => setValue("size", undefined)}
-          >
-            <FaTimes />
-          </button>
-        </div>
-        <div className="col-md-4 d-flex flex-row align-items-center">
+        {/*<div className="col-md-4 d-flex flex-row align-items-center">*/}
+        {/*  <label htmlFor="updateNode-color" className="form-label mb-0 flex-grow-1">*/}
+        {/*    {t("graph.model.nodes-data.color")}*/}
+        {/*  </label>*/}
+        {/*  <ColorPicker clearable color={watch("color")} onChange={(color) => setValue("color", color)} />*/}
+        {/*  <button*/}
+        {/*    type="button"*/}
+        {/*    className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"*/}
+        {/*    onClick={() => setValue("color", undefined)}*/}
+        {/*  >*/}
+        {/*    <FaTimes />*/}
+        {/*  </button>*/}
+        {/*</div>*/}
+        {/*<div className="col-md-4 d-flex flex-row align-items-center">*/}
+        {/*  <label htmlFor="updateNode-size" className="form-label mb-0 flex-shrink-0">*/}
+        {/*    {t("graph.model.nodes-data.size")}*/}
+        {/*  </label>*/}
+        {/*  <input*/}
+        {/*    type="number"*/}
+        {/*    id="updateNode-size"*/}
+        {/*    className="form-control flex-grow-1 ms-2"*/}
+        {/*    step="any"*/}
+        {/*    min={0}*/}
+        {/*    {...register("size", { min: 0 })}*/}
+        {/*  />*/}
+        {/*  <button*/}
+        {/*    type="button"*/}
+        {/*    className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"*/}
+        {/*    onClick={() => setValue("size", undefined)}*/}
+        {/*  >*/}
+        {/*    <FaTimes />*/}
+        {/*  </button>*/}
+        {/*</div>*/}
+        <div className="col-md-6 d-flex flex-row align-items-center">
           <label htmlFor="updateNode-x" className="form-label mb-0 flex-shrink-0">
             {t("graph.model.nodes-data.x")}
           </label>
@@ -179,7 +179,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             {...register("x")}
           />
         </div>
-        <div className="col-md-4 d-flex flex-row align-items-center">
+        <div className="col-md-6 d-flex flex-row align-items-center">
           <label htmlFor="updateNode-y" className="form-label mb-0 flex-shrink-0">
             {t("graph.model.nodes-data.y")}
           </label>
@@ -231,7 +231,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             className="btn btn-outline-dark"
             onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "" }))}
           >
-            <AiOutlinePlusCircle className="me-2" /> {t('graph.model.nodes-data.new-attribute')}
+            <AiOutlinePlusCircle className="me-2" /> {t("graph.model.nodes-data.new-attribute")}
           </button>
         </div>
       </div>
