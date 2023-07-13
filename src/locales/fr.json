@@ -97,6 +97,7 @@
     "partition": "Partition",
     "ranking": "Classement",
     "show_edges": "Afficher les liens",
+    "no_caption": "(pas de légende)",
     "transformation_methods": {
       "title": "Méthodes de transformation",
       "linear": "linéaire",
@@ -109,7 +110,7 @@
     "color": {
       "title": "Couleur",
       "set_color_from": "Définir la couleur à partir de...",
-      "data": "Données d'entrée",
+      "data": "Fichier de données",
       "fixed": "Une couleur constante",
       "source": "Nœuds sources",
       "target": "Nœuds cibles",
@@ -127,7 +128,7 @@
       "title": "Libellés",
       "set_labels_from": "Définir le libellé à partir de...",
       "set_labels_size_from": "Définir la taille du libellé à partir de...",
-      "data": "Données d'entrée",
+      "data": "Fichier de données",
       "fixed": "Un texte constant",
       "fixed_label": "Libellé pour chaque {{items}}",
       "fixed_label_size": "Taille du libellé pour chaque {{items}}",
@@ -144,7 +145,7 @@
     "size": {
       "title": "Taille",
       "set_size_from": "Définir la taille à partir de...",
-      "data": "Données d'entrée",
+      "data": "Fichier de données",
       "fixed": "Une taille constante",
       "default_value": "Taille pour {{items}} sans valeur valide",
       "size_all_items": "Taille pour tous les {{items}}",

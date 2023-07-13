@@ -29,7 +29,15 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const options: ColorOption[] = useMemo(() => {
     const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
     return [
-      { value: "data", type: "data", label: t("appearance.color.data") as string },
+      {
+        value: "data",
+        type: "data",
+        label: (
+          <>
+            {t("appearance.color.data")} <small className="text-muted">{t("appearance.no_caption")}</small>
+          </>
+        ),
+      },
       { value: "fixed", type: "fixed", label: t("appearance.color.fixed") as string },
       ...(itemType === "edges"
         ? [
@@ -46,7 +54,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             type: "ranking",
             label: (
               <>
-                {field.id} <span className="text-muted">({t("appearance.color.quanti")})</span>
+                {field.id} <small className="text-muted">({t("appearance.color.quanti")})</small>
               </>
             ),
           });
@@ -57,7 +65,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             type: "partition",
             label: (
               <>
-                {field.id} <span className="text-muted">({t("appearance.color.quali")})</span>
+                {field.id} <small className="text-muted">({t("appearance.color.quali")})</small>
               </>
             ),
           });

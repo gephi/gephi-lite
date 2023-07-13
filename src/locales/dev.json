@@ -97,6 +97,7 @@
     "partition": "Partition",
     "ranking": "Ranking",
     "show_edges": "Show edges",
+    "no_caption": "(no caption)",
     "transformation_methods": {
       "title": "Transformation methods",
       "linear": "linear",
@@ -109,7 +110,7 @@
     "color": {
       "title": "Color",
       "set_color_from": "Set color from...",
-      "data": "Input data",
+      "data": "Input file",
       "fixed": "A constant color",
       "source": "Source nodes",
       "target": "Target nodes",
@@ -144,7 +145,7 @@
     "size": {
       "title": "Size",
       "set_size_from": "Set size from...",
-      "data": "Input data",
+      "data": "Input file",
       "fixed": "A constant size",
       "default_value": "Size for {{items}} with no valid value",
       "size_all_items": "Size for all {{items}}",

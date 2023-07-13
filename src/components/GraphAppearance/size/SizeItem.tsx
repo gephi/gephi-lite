@@ -26,7 +26,15 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const options: SizeOption[] = useMemo(() => {
     const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
     return [
-      { value: "data", type: "data", label: t("appearance.size.data") as string },
+      {
+        value: "data",
+        type: "data",
+        label: (
+          <>
+            {t("appearance.size.data")} <small className="text-muted">{t("appearance.no_caption")}</small>
+          </>
+        ),
+      },
       { value: "fixed", type: "fixed", label: t("appearance.size.fixed") as string },
       ...allFields.flatMap((field) => {
         const options = [];
