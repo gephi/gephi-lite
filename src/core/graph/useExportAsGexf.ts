@@ -4,6 +4,8 @@ import { toUndirected } from "graphology-operators";
 
 import { dataGraphToFullGraph } from "./utils";
 import { useFilteredGraph, useGraphDataset } from "../context/dataContexts";
+import { applyVisualProperties } from "../appearance/utils";
+import { visualGettersAtom } from "./index";
 
 export function useExportAsGexf() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,6 +22,8 @@ export function useExportAsGexf() {
       setError(null);
       // get the full graph
       let graphToExport = dataGraphToFullGraph(graphDataset, filteredGraph);
+      const visualGetters = visualGettersAtom.get();
+      applyVisualProperties(graphToExport, graphDataset, visualGetters);
 
       // change the type of the graph based on the meta type (default is directed)
       if (graphDataset.metadata.type === "undirected") graphToExport = toUndirected(graphToExport);
