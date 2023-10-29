@@ -1,1 +1,48 @@
-{}
+{
+    "welcome": {
+        "logo": "Логотип Gephi",
+        "title": "Вітаємо у Gephi Lite",
+        "disclaimer-2": "Ви можете також переглянути проект на GitHub, щоб побачити більше про нові функції або повідомити про проблеми.",
+        "open_recent": "Відкрити нещодавні",
+        "disclaimer-1": "Gephi Lite знаходиться на стадії розробки.",
+        "samples": "Приклади"
+    },
+    "appearance": {
+        "show_edges": "Показати ребра",
+        "color": {
+            "title": "Колір"
+        }
+    },
+    "providers": {
+        "github": "GitHub"
+    },
+    "selection": {
+        "nodes_one": "Один вибраний вузол",
+        "focus_edges": "Вибрати тільки це ребро",
+        "edges": "{{count}} вибраних ребер",
+        "edges_zero": "Нема вибраних ребер",
+        "select_all": "Вибрати все",
+        "nodes": "{{count}} вибраних вузлів",
+        "focus_nodes": "Вибрати тільки цей вузол",
+        "edges_one": "Одне вибране ребро",
+        "nodes_zero": "Немає вибраних вузлів"
+    },
+    "github": {
+        "select_ui_language": "Вибрати мову додатку"
+    },
+    "gephi-lite": {
+        "title": "Gephi Lite",
+        "info": "Більше інформації про Gephi Lite"
+    },
+    "error": {
+        "title": "Помилка",
+        "not_found": {
+            "title": "Сторінку не знайдено"
+        }
+    },
+    "menu": {
+        "save": {
+            "default": "Зберегти"
+        }
+    }
+}
