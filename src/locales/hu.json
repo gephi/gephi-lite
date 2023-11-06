@@ -20,7 +20,8 @@
             "gexf-error": "Hiba történt a GEXF fájl generálásakor"
         },
         "save": {
-            "default": "Mentés"
+            "default": "Mentés",
+            "cloud": "Mentés itt: {{provider}} mint..."
         }
     },
     "layouts": {
@@ -176,9 +177,9 @@
             "description": "Ütközésgátló elrendezési algoritmus"
         },
         "exec": {
-            "success": "Az elrendezés\"{{elrendezés}}\" alkalmazása sikeresen megtörtént.",
-            "stopped": "Az elrendezés {{elrendezés}} leállt",
-            "started": "Az elrendezés {{elrendezés}} fut"
+            "success": "Az elrendezés\"{{layout}}\" alkalmazása sikeresen megtörtént.",
+            "stopped": "Az elrendezés {{layout}} leállt",
+            "started": "Az elrendezés {{layout}} fut"
         }
     },
     "filters": {
@@ -196,7 +197,8 @@
         "inapplicable": "Szűrő letiltva: csak egy érték áll rendelkezésre",
         "create_filter": "Szűrő létrehozása",
         "keepMissingValues": "Tartsa meg a hiányzó értékeket",
-        "title": "Szűrők"
+        "title": "Szűrők",
+        "range": "tartomány"
     },
     "statistics": {
         "edges": {
@@ -361,7 +363,13 @@
         "create_nodes": "Új csomópont létrehozása",
         "create_edges_success": "Az él sikeresen létrejött.",
         "create_edges": "Új él létrehozása",
-        "search_nodes": "Keresés a csomópontcímkék között..."
+        "search_nodes": "Keresés a csomópontcímkék között...",
+        "confirm_delete_nodes_one": "Biztosan törli ezt az egy csomópontot?",
+        "confirm_delete_edges": "Biztosan törölni szeretne {{count}} élt?",
+        "confirm_delete_nodes": "Biztosan törölni szeretne {{count}} csomópontot?",
+        "delete_edges": "{{count}} él törlése",
+        "delete_nodes": "Töröljön {{count}} csomópontot",
+        "confirm_delete_edges_one": "Biztosan törli ezt az egy élt?"
     },
     "auth": {
         "sign_in": "Jelentkezzen be a GitHubba",
@@ -381,7 +389,10 @@
             "data": "Bemeneti fájl",
             "fixed": "Állandó szín",
             "target_description": "Minden él célpontként színezett.",
-            "ranking_intro": "Adjon hozzá színpontokat ezen a skálán"
+            "ranking_intro": "Adjon hozzá színpontokat ezen a skálán",
+            "data_description": "Az összes {{items}} szín olyan, mint a bemeneti adatfájlban.",
+            "color_all_items": "Minden {{items}} szín",
+            "default_value": "A(z) {{items}} színe érvényes érték nélkül"
         },
         "labels": {
             "density": "Hány címke jelenjen meg bármikor",
@@ -392,7 +403,14 @@
             "adapts_to_zoom": "Mennyire nőjenek a címkék a nagyítással",
             "fixed_size": "Fix méret",
             "title": "Címkék",
-            "data": "Beviteli adat"
+            "data": "Beviteli adat",
+            "size_coef": "Címkeméretek (a nagyobb címkék nagyobbnak tűnnek)",
+            "data_description": "Az összes {{items}} címke olyan, mint a bemeneti adatfájlban.",
+            "fixed_label_size": "Címkeméret minden {{items}} esetben",
+            "none_description": "Az összes {{items}} elemnek nincs megjelenített címkéje.",
+            "fixed_label": "Minden cimke {{items}}",
+            "default_value": "A {{items}} címke érvényes érték nélkül",
+            "size": "{{items}} méret"
         },
         "show_edges": "Élek megjelenítése",
         "transformation_methods": {
@@ -409,7 +427,10 @@
             "title": "Méret",
             "fixed": "Állandó méretű",
             "data": "Bemeneti fájl",
-            "set_size_from": "Méret beállítása innen:..."
+            "set_size_from": "Méret beállítása innen:...",
+            "default_value": "{{items}} mérete érvényes érték nélkül",
+            "size_all_items": "Méret az összes {{items}} számára",
+            "data_description": "Minden {{items}} méret megegyezik a bemeneti adatfájlban."
         },
         "no_caption": "(nincs felirat)",
         "title": "Kinézet",
@@ -438,7 +459,13 @@
         "visible_nodes_one": "Egy látható kiválasztott csomópont",
         "empty_edges": "Ennek az élnek nincs attribútuma",
         "nodes_zero": "Nincs kiválasztott csomópont",
-        "unselect_all_hidden_edges": "Törölje az összes rejtett él kijelölését"
+        "unselect_all_hidden_edges": "Törölje az összes rejtett él kijelölését",
+        "visible_edges": "{{count}} látható kijelölt él",
+        "edges": "{{count}} kiválasztott él",
+        "visible_nodes": "{{count}} látható kiválasztott csomópont",
+        "nodes": "{{count}} kiválasztott csomópont",
+        "hidden_edges": "{{count}} rejtett kijelölt él",
+        "hidden_nodes": "{{count}} rejtett kiválasztott csomópont"
     },
     "error": {
         "not_found": {
@@ -458,7 +485,7 @@
     "github": {
         "select_ui_language": "Válassza ki az alkalmazás nyelvét",
         "title": "GitHub hitelesítés",
-        "logged_as": "Jelenleg {{felhasználónév}} néven van bejelentkezve a GitHubba.",
+        "logged_as": "Jelenleg {{username}} néven van bejelentkezve a GitHubba.",
         "description": "A GitHubba bejelentkezhet a Gephi Lite alkalmazásból, hogy közvetlenül GitHub Gists néven mentse és töltse be a grafikonfájlokat."
     },
     "storage": {
@@ -470,7 +497,7 @@
         "info": "További információ a Gephi Lite-ról"
     },
     "user": {
-        "avatar_alt": "{{név}} avatarja"
+        "avatar_alt": "{{name}} avatarja"
     },
     "search": {
         "nodes": {
@@ -487,10 +514,10 @@
         },
         "graph": {
             "no_result": "Nincs eredmény",
-            "select_all_nodes": "Adjon hozzá {{számos}} csomópontot a kijelöléshez",
+            "select_all_nodes": "Adjon hozzá {{count}} csomópontot a kijelöléshez",
             "help": "Írjon be valamit a kereséshez",
-            "other_result": "... és további {{számolt}} találat",
-            "select_all_edges": "Adjon hozzá {{számos}} élt a kijelöléshez",
+            "other_result": "... és további {{count}} találat",
+            "select_all_edges": "Adjon hozzá {{count}} élt a kijelöléshez",
             "placeholder": "Csomópontok, élek keresése..."
         }
     },
@@ -519,7 +546,7 @@
         "select": "Válogatás...",
         "reset": "Visszaállítás",
         "open": "Kinyit",
-        "open_file": "Nyissa ki {{fájl neve}}",
+        "open_file": "Nyissa ki {{filename}}",
         "show_less": "Mutass kevesebbet",
         "none": "Egyik sem",
         "filename": "Fájl neve",
