@@ -77,6 +77,27 @@
                 "adjustSizes": {
                     "description": "Figyelembe kell venni a csomópontok méretét?",
                     "title": "Méretek beállítása?"
+                },
+                "linLogMode": {
+                    "title": "linLog mód",
+                    "description": "Használja-e a Noack LinLog modelljét."
+                },
+                "gravity": {
+                    "description": "Az elrendezés gravitációjának erőssége",
+                    "title": "Gravitáció"
+                },
+                "outboundAttractionDistribution": {
+                    "title": "Kifelé kötött vonzás eloszlása"
+                },
+                "strongGravityMode": {
+                    "title": "Erős gravitációs mód?"
+                },
+                "edgeWeightInfluence": {
+                    "title": "A szélek súlyának hatása",
+                    "description": "Az él súlyának hatása az elrendezésre"
+                },
+                "scalingRatio": {
+                    "title": "Méretezési arány"
                 }
             },
             "buttons": {
@@ -86,7 +107,67 @@
                 }
             }
         },
-        "description": "Ez a panel lehetővé teszi új koordináták kiszámítását a grafikon csomópontjaihoz. "
+        "description": "Ez a panel lehetővé teszi új koordináták kiszámítását a grafikon csomópontjaihoz. ",
+        "force": {
+            "title": "Kényszer irányított",
+            "parameters": {
+                "inertia": {
+                    "title": "Tehetetlenség",
+                    "description": "Az egyes lépésekben megőrzött csomópontvektor-eltolódás százalékos aránya. A 0 azt jelenti, hogy nincs tehetetlenség, az 1 azt jelenti, hogy nincs súrlódás"
+                },
+                "attraction": {
+                    "title": "Vonzerő",
+                    "description": "A vonzási erő fontossága, amely minden egyes összekapcsolt csomópontpárt rugalmasként vonz"
+                },
+                "repulsion": {
+                    "description": "A taszító erő jelentősége, amely mágnesként vonzza az egyes csomópontokat",
+                    "title": "Taszítás"
+                },
+                "gravity": {
+                    "title": "Gravitáció",
+                    "description": "A gravitációs erő jelentősége, amely minden csomópontot a központba vonz"
+                },
+                "maxMove": {
+                    "title": "Maximális mozgás",
+                    "description": "Maximális hossza, amelyet egy csomópont minden lépésnél megtehet, pixelben"
+                }
+            }
+        },
+        "script": {
+            "title": "Egyedi elrendezés",
+            "description": "Írja meg saját elrendezését egy olyan függvény létrehozásával, amely minden csomóponthoz egy {x,y} objektumot ad vissza"
+        },
+        "noverlap": {
+            "parameters": {
+                "speed": {
+                    "title": "Sebesség",
+                    "description": "Csillapító tényező, amely lelassítja a csomópontok mozgását, hogy megkönnyítse az általános folyamatot"
+                },
+                "expansion": {
+                    "description": "Az aktuális tér azon százaléka, amelyen a csomópontok megpróbálhatnak kimozdulni",
+                    "title": "Terjeszkedés"
+                },
+                "gridSize": {
+                    "description": "A grafikon terét vízszintesen és függőlegesen felosztó rácscellák száma. Ezt optimalizálási sémaként használják. Állítsa 1-re, és O(n²) időbonyolultságú lesz, ami néha nagyon kevés csomóponttal jobban teljesít.",
+                    "title": "Rács mérete"
+                },
+                "margin": {
+                    "description": "A csomópontok között megtartandó margó",
+                    "title": "Margó"
+                },
+                "ratio": {
+                    "title": "Hányados",
+                    "description": "A csomópontok méretaránya"
+                }
+            },
+            "title": "Átfedés",
+            "description": "Ütközésgátló elrendezési algoritmus"
+        },
+        "exec": {
+            "success": "Az elrendezés\"{{elrendezés}}\" alkalmazása sikeresen megtörtént.",
+            "stopped": "Az elrendezés {{elrendezés}} leállt",
+            "started": "Az elrendezés {{elrendezés}} fut"
+        }
     },
     "filters": {
         "topological": "Topológia",
@@ -156,7 +237,8 @@
                     }
                 },
                 "attributes": {
-                    "hubs": "Hub pontszám attribútum neve"
+                    "hubs": "Hub pontszám attribútum neve",
+                    "authorities": "Authority score attribútum neve"
                 }
             },
             "degree": {
@@ -194,6 +276,9 @@
                     "normalize": {
                         "title": "Normalizálja a kimenetet?"
                     }
+                },
+                "attributes": {
+                    "betweennessCentrality": "Közötti központiság attribútum neve"
                 }
             }
         }
@@ -319,5 +404,80 @@
     },
     "user": {
         "avatar_alt": "{{név}} avatarja"
+    },
+    "search": {
+        "nodes": {
+            "help": "Írjon be valamit a csomópont kereséséhez",
+            "other_result": "... és {{count}} másik csomópont",
+            "placeholder": "Csomópont keresése...",
+            "no_result": "Nem található csomópont"
+        },
+        "edges": {
+            "help": "Írjon be valamit, hogy megtalálja az élt",
+            "placeholder": "Keress egy élt...",
+            "no_result": "Nem található él",
+            "other_result": "... és {{count}} másik él"
+        },
+        "graph": {
+            "no_result": "Nincs eredmény",
+            "select_all_nodes": "Adjon hozzá {{számos}} csomópontot a kijelöléshez",
+            "help": "Írjon be valamit a kereséshez",
+            "other_result": "... és további {{számolt}} találat",
+            "select_all_edges": "Adjon hozzá {{számos}} élt a kijelöléshez",
+            "placeholder": "Csomópontok, élek keresése..."
+        }
+    },
+    "common": {
+        "hide": "Rejtett",
+        "start": "Rajt",
+        "edit": "Szerkeszt",
+        "show_more": "Mutass többet",
+        "updated": "Frissítve",
+        "save": "Mentés",
+        "collapse": "Összeomlás",
+        "add": "Hozzáadás",
+        "created": "Létrehoz",
+        "all": "Minden",
+        "load-more": "Töltsön be többet",
+        "save-and-run": "Mentse el és futtassa",
+        "max": "Maximum",
+        "open_code_editor": "Nyissa meg a kódszerkesztőt",
+        "clear": "Egyértelmű",
+        "stop": "Állj meg",
+        "delete": "Töröl",
+        "cancel": "Megszünteti",
+        "show": "Mutasd meg",
+        "copy": "Másolat",
+        "confirm": "Megerősít",
+        "select": "Válogatás...",
+        "reset": "Visszaállítás",
+        "open": "Kinyit",
+        "open_file": "Nyissa ki {{fájl neve}}",
+        "show_less": "Mutass kevesebbet",
+        "none": "Egyik sem",
+        "filename": "Fájl neve",
+        "expand": "Kiterjesztett",
+        "apply": "Alkalmaz",
+        "submit": "Beküldés",
+        "loading": "Betölt",
+        "remove": "Távolítsa el",
+        "size": "Méret",
+        "close": "Bezárás"
+    },
+    "cloud": {
+        "github": {
+            "auth": {
+                "copy_success": "A kód a vágólapra mentve",
+                "asking_for_device_code": "Eszközkód kérése a Githubtól",
+                "title": "GitHub hitelesítés",
+                "waiting_validation": "Érvényesítésre vár",
+                "copy_code": "Másolja ki az alábbi kódot, és kattintson az \"Open GitHub\" gombra. Megnyílik egy új lap, amelyen a GitHub megkérdezi a kódot"
+            },
+            "title": "GitHub"
+        }
+    },
+    "file": {
+        "title": "Adatkezelés",
+        "login_capabilities": "A GitHubba bejelentkezhet a Gephi Lite alkalmazásból, hogy közvetlenül GitHub Gistsként mentse és töltse be a grafikonfájlokat:"
     }
 }
