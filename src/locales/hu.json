@@ -1,1 +1,323 @@
-{}
+{
+    "welcome": {
+        "no_recent": "Ebben a böngészőben még nem nyitottak meg távoli fájlt.",
+        "logo": "Gephi logó",
+        "title": "Üdvözöljük a Gephi Lite-ban",
+        "open_graph": "Nyissa meg a grafikonfájlt",
+        "disclaimer-2": "Nyugodtan tekintse meg a GitHub projektet, ha többet szeretne megtudni a lehetséges funkciókról, vagy bejelentheti a hibákat.",
+        "open_recent": "Nyissa meg a legutóbbi lehetőséget",
+        "disclaimer-1": "A Gephi Lite jelenleg dolgozik.",
+        "samples": "Minták"
+    },
+    "menu": {
+        "open": {
+            "cloud": "Grafikon megnyitása a következő: {{szolgáltató}}",
+            "remote": "Távoli grafikon megnyitása",
+            "local": "Nyissa meg a helyi grafikont"
+        },
+        "download": {
+            "gexf": "Mentse el a grafikont helyileg",
+            "gexf-error": "Hiba történt a GEXF fájl generálásakor"
+        },
+        "save": {
+            "default": "Mentés"
+        }
+    },
+    "layouts": {
+        "circular": {
+            "title": "Kör alakú",
+            "description": "A csomópontot körbe rendezi",
+            "parameters": {
+                "center": {
+                    "title": "Középpont",
+                    "description": "Az elrendezés középpontja"
+                },
+                "scale": {
+                    "title": "Skála",
+                    "description": "Az elrendezés léptéke"
+                }
+            }
+        },
+        "circlePack": {
+            "parameters": {
+                "groupingField": {
+                    "description": "Nem kötelező attribútum a csomópontok csoportosításához",
+                    "title": "Hierarchia attribútum"
+                },
+                "scale": {
+                    "description": "Az elrendezés léptéke",
+                    "title": "Skála"
+                },
+                "center": {
+                    "title": "Középpont",
+                    "description": "Az elrendezés középpontja"
+                }
+            },
+            "description": "Buborékdiagramként rendezi el a csomópontokat a megadott attribútumoknak megfelelően"
+        },
+        "title": "Elrendezés",
+        "random": {
+            "title": "Véletlen",
+            "parameters": {
+                "scale": {
+                    "title": "Skála",
+                    "description": "Az elrendezés léptéke"
+                },
+                "center": {
+                    "description": "Az elrendezés középpontja",
+                    "title": "Központi"
+                }
+            },
+            "description": "Véletlenszerű elrendezés minden csomópont pozicionálása az egyes koordináták egyenletes, véletlenszerű kiválasztásával az intervallum [0, 1)"
+        },
+        "placeholder": "Válasszon elrendezési algoritmust",
+        "fa2": {
+            "title": "ForceAtlas2",
+            "parameters": {
+                "adjustSizes": {
+                    "description": "Figyelembe kell venni a csomópontok méretét?",
+                    "title": "Méretek beállítása?"
+                }
+            },
+            "buttons": {
+                "autoSettings": {
+                    "title": "Találd meg a beállításokat",
+                    "description": "Olyan beállításokat állít elő, amelyek a legjobban illeszkednek az aktuális grafikonhoz"
+                }
+            }
+        },
+        "description": "Ez a panel lehetővé teszi új koordináták kiszámítását a grafikon csomópontjaihoz. "
+    },
+    "filters": {
+        "topological": "Topológia",
+        "add_filter": "Szűrő hozzáadása",
+        "activated": "Aktivált szűrő",
+        "no_concurrent_edit": "Egyszerre csak egy szűrő szerkeszthető. A szűrő szerkesztéséhez erősítse meg az aktuális szűrőt.",
+        "full_graph": "Teljes grafikon",
+        "desactivated": "Deaktivált szűrő, kattintson az újraaktiváláshoz",
+        "script": "Egyedi szűrő",
+        "terms": "pontos értékek",
+        "description": "Ez a panel lehetővé teszi a grafikon szűrését szűrők halmozásával.",
+        "using": "Használat",
+        "filter": "Szűrő",
+        "inapplicable": "Szűrő letiltva: csak egy érték áll rendelkezésre",
+        "create_filter": "Szűrő létrehozása",
+        "keepMissingValues": "Tartsa meg a hiányzó értékeket",
+        "title": "Szűrők"
+    },
+    "statistics": {
+        "edges": {
+            "simmelianStrength": {
+                "title": "Szimmeli erő",
+                "attributes": {
+                    "simmelianStrength": "Simmelian erősség attribútum neve"
+                }
+            },
+            "edgescript": {
+                "description": "Határozzon meg egy függvényt, amely egy él metrikáját számítja ki.",
+                "attributes": {
+                    "custom": "Attribútumnév, amelyen tárolni kívánja a metrikát"
+                },
+                "title": "Egyéni élmutató"
+            },
+            "disparity": {
+                "parameters": {
+                    "getEdgeWeight": {
+                        "title": "Élsúly attribútum"
+                    }
+                },
+                "title": "Különbség",
+                "attributes": {
+                    "disparity": "Disparity attribútum neve"
+                }
+            }
+        },
+        "nodes": {
+            "nodescript": {
+                "title": "Egyéni csomóponti mérőszám",
+                "attributes": {
+                    "custom": "Attribútumnév, amelyen tárolni kívánja a metrikát"
+                },
+                "description": "Határozzon meg egy függvényt, amely egy csomópont metrikáját számítja ki."
+            },
+            "hits": {
+                "parameters": {
+                    "tolerance": {
+                        "title": "Megfelelő"
+                    },
+                    "maxIterations": {
+                        "title": "Max. iterációk"
+                    },
+                    "getEdgeWeight": {
+                        "title": "Élsúly attribútum"
+                    },
+                    "normalize": {
+                        "title": "Normalizálja a kimenetet?"
+                    }
+                },
+                "attributes": {
+                    "hubs": "Hub pontszám attribútum neve"
+                }
+            },
+            "degree": {
+                "parameters": {
+                    "kind": {
+                        "title": "A kimenet típusa",
+                        "values": {
+                            "degree": "Fokozat"
+                        }
+                    },
+                    "getEdgeWeight": {
+                        "title": "Élsúly attribútum"
+                    }
+                },
+                "attributes": {
+                    "degree": "Fokozat attribútum neve"
+                },
+                "title": "Fokozat"
+            },
+            "pagerank": {
+                "parameters": {
+                    "maxIterations": {
+                        "title": "Max. iterációk"
+                    },
+                    "tolerance": {
+                        "title": "Megértés"
+                    }
+                }
+            },
+            "betweennessCentrality": {
+                "parameters": {
+                    "getEdgeWeight": {
+                        "title": "Élsúly attribútum"
+                    },
+                    "normalize": {
+                        "title": "Normalizálja a kimenetet?"
+                    }
+                }
+            }
+        }
+    },
+    "edition": {
+        "update_this_edges": "Szerkessze ezt az élt",
+        "delete_edges_one": "Egy él törlése",
+        "update_edges": "Meglévő él szerkesztése",
+        "update_nodes": "Meglévő csomópont szerkesztése",
+        "create_nodes_success": "A csomópont sikeresen létrejött.",
+        "delete_nodes_one": "Töröljön egy csomópontot",
+        "delete_nodes_zero": "Csomópontok törlése",
+        "delete_this_edges": "Törölje ezt az élt",
+        "update_edges_success": "Az él frissítése sikeresen megtörtént.",
+        "update_this_nodes": "Szerkessze ezt a csomópontot",
+        "delete_this_nodes": "Törölje ezt a csomópontot",
+        "delete_edges_zero": "Élek törlése",
+        "update_nodes_success": "A csomópont frissítése sikeresen megtörtént.",
+        "create_nodes": "Új csomópont létrehozása",
+        "create_edges_success": "Az él sikeresen létrejött.",
+        "create_edges": "Új él létrehozása"
+    },
+    "auth": {
+        "sign_in": "Jelentkezzen be a GitHubba",
+        "unauth_success": "Az azonosítás sikeres volt",
+        "sign_out": "Jelentkezzen ki a GitHubból"
+    },
+    "appearance": {
+        "color": {
+            "source": "Forrás csomópontok",
+            "quali": "mint húrok",
+            "set_color_from": "Szín beállítása innen:...",
+            "quanti": "mint számok",
+            "scale_point": "Skálapont",
+            "title": "Szín",
+            "source_description": "Minden él forrásként színezett.",
+            "target": "Célcsomópontok",
+            "data": "Bemeneti fájl",
+            "fixed": "Állandó szín",
+            "target_description": "Minden él célpontként színezett.",
+            "ranking_intro": "Adjon hozzá színpontokat ezen a skálán"
+        },
+        "labels": {
+            "density": "Hány címke jelenjen meg bármikor",
+            "none": "Nincs cimke",
+            "set_labels_from": "Címke beállítása innen...",
+            "fixed": "Állandó szöveg",
+            "set_labels_size_from": "Címkeméretek beállítása innen...",
+            "adapts_to_zoom": "Mennyire nőjenek a címkék a nagyítással",
+            "fixed_size": "Fix méret",
+            "title": "Címkék",
+            "data": "Beviteli adat"
+        },
+        "show_edges": "Élek megjelenítése",
+        "transformation_methods": {
+            "title": "Átalakítási módszerek",
+            "linear": "lineáris"
+        },
+        "ranking": "Rangsorolás",
+        "size": {
+            "title": "Méret",
+            "fixed": "Állandó méretű",
+            "data": "Bemeneti fájl",
+            "set_size_from": "Méret beállítása innen:..."
+        },
+        "no_caption": "(nincs felirat)",
+        "title": "Kinézet",
+        "partition": "Partíció"
+    },
+    "selection": {
+        "unselect_all_hidden_nodes": "Törölje az összes rejtett él kijelölését",
+        "hidden_edges_one": "Egy rejtett kiválasztott él",
+        "unselect_edges": "Törölje ennek az élnek a kijelölését",
+        "unselect_all": "Minden kijelölés megszüntetése",
+        "nodes_one": "Egy kiválasztott csomópont",
+        "focus_edges": "Csak ezt az élt válassza ki",
+        "edges_zero": "Nincs kiválasztott él",
+        "hidden_nodes_one": "Egy rejtett kiválasztott csomópont",
+        "select_all": "Mindet kiválaszt",
+        "visible_edges_one": "Egy látható kiválasztott él",
+        "node_no_label": "(Üres címke)",
+        "locate_on_graph": "Keresse meg a grafikonon",
+        "visible_nodes_zero": "Nincs látható kiválasztott csomópont",
+        "edge_no_label": "(Üres címke)",
+        "unselect_nodes": "Törölje a csomópont kijelölését",
+        "visible_edges_zero": "Nincs látható kiválasztott él",
+        "focus_nodes": "Csak ezt a csomópontot válassza ki",
+        "empty_nodes": "Ennek a csomópontnak nincs attribútuma",
+        "edges_one": "Egy kiválasztott él",
+        "visible_nodes_one": "Egy látható kiválasztott csomópont",
+        "empty_edges": "Ennek az élnek nincs attribútuma",
+        "nodes_zero": "Nincs kiválasztott csomópont",
+        "unselect_all_hidden_edges": "Törölje az összes rejtett él kijelölését"
+    },
+    "error": {
+        "not_found": {
+            "paragraph": "Lehet, hogy rosszul írta be a címet, vagy az oldal elköltözött.",
+            "subtitle": "A keresett oldal nem létezik.",
+            "title": "Az oldal nem található"
+        },
+        "unknown": "Ismeretlen hiba lépett fel.",
+        "title": "Hiba"
+    },
+    "context": {
+        "title": "Adatok áttekintése"
+    },
+    "providers": {
+        "github": "GitHub"
+    },
+    "github": {
+        "select_ui_language": "Válassza ki az alkalmazás nyelvét",
+        "title": "GitHub hitelesítés",
+        "logged_as": "Jelenleg {{felhasználónév}} néven van bejelentkezve a GitHubba.",
+        "description": "A GitHubba bejelentkezhet a Gephi Lite alkalmazásból, hogy közvetlenül GitHub Gists néven mentse és töltse be a grafikonfájlokat."
+    },
+    "storage": {
+        "cannot_restore": "A grafikonját nem lehet visszaállítani.",
+        "restore_successful": "Munkadiagramja visszaállításra került."
+    },
+    "gephi-lite": {
+        "title": "Gephi Lite",
+        "info": "További információ a Gephi Lite-ról"
+    },
+    "user": {
+        "avatar_alt": "{{név}} avatarja"
+    }
+}
