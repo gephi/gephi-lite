@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import { forEach, identity } from "lodash";
-import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
-import drawLabel from "sigma/rendering/canvas/label";
+import { EdgeLabelDrawingFunction } from "sigma/rendering/edge-labels";
+import { NodeLabelDrawingFunction } from "sigma/rendering/node-labels";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
 import {
@@ -290,7 +290,7 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
 /**
  * Rendering helpers:
  */
-export function getNodeDrawFunction({ nodesLabelSize }: AppearanceState, draw: typeof drawLabel) {
+export function getNodeDrawFunction({ nodesLabelSize }: AppearanceState, draw: NodeLabelDrawingFunction) {
   return ((context, data: CustomNodeDisplayData, settings) => {
     let labelSize =
       nodesLabelSize.type === "fixed"
@@ -307,10 +307,10 @@ export function getNodeDrawFunction({ nodesLabelSize }: AppearanceState, draw: t
       },
       { ...settings, labelSize, labelWeight: data.boldLabel ? "bold" : "normal" },
     );
-  }) as typeof drawLabel;
+  }) as NodeLabelDrawingFunction;
 }
 
-export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState, draw: typeof drawEdgeLabel) {
+export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState, draw: EdgeLabelDrawingFunction) {
   return ((context, data: CustomEdgeDisplayData, sourceData, targetData, settings) => {
     let edgeLabelSize =
       edgesLabelSize.type === "fixed" ? edgesLabelSize.value : data.rawSize * edgesLabelSize.sizeCorrelation;
@@ -318,7 +318,7 @@ export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState, draw: type
     else if (edgesLabelSize.zoomCorrelation >= 0)
       edgeLabelSize = edgeLabelSize * Math.pow(data.size / data.rawSize, edgesLabelSize.zoomCorrelation);
     return draw(context, data, sourceData, targetData, { ...settings, edgeLabelSize });
-  }) as typeof drawEdgeLabel;
+  }) as EdgeLabelDrawingFunction;
 }
 
 export function getItemAttributes(

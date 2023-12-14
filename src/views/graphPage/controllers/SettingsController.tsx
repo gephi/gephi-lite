@@ -1,9 +1,9 @@
 import { useSigma } from "@react-sigma/core";
 import { FC, useEffect } from "react";
 import Sigma from "sigma";
-import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
-import drawHover from "sigma/rendering/canvas/hover";
-import drawLabel from "sigma/rendering/canvas/label";
+import { drawStraightEdgeLabel } from "sigma/rendering/edge-labels";
+import { drawDiscNodeHover } from "sigma/rendering/node-hover";
+import { drawDiscNodeLabel } from "sigma/rendering/node-labels";
 import { DEFAULT_SETTINGS } from "sigma/settings";
 
 import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
@@ -24,9 +24,9 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
 
   useEffect(() => {
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
-    sigma.setSetting("labelRenderer", getNodeDrawFunction(graphAppearance, drawLabel));
-    sigma.setSetting("hoverRenderer", getNodeDrawFunction(graphAppearance, drawHover));
-    sigma.setSetting("edgeLabelRenderer", getDrawEdgeLabel(graphAppearance, drawEdgeLabel));
+    sigma.setSetting("defaultDrawNodeLabel", getNodeDrawFunction(graphAppearance, drawDiscNodeLabel));
+    sigma.setSetting("defaultDrawNodeHover", getNodeDrawFunction(graphAppearance, drawDiscNodeHover));
+    sigma.setSetting("defaultDrawEdgeLabel", getDrawEdgeLabel(graphAppearance, drawStraightEdgeLabel));
 
     const labelThreshold = inputToStateThreshold(graphAppearance.nodesLabelSize.density);
     const labelDensity = labelThreshold === 0 ? Infinity : DEFAULT_SETTINGS.labelDensity;

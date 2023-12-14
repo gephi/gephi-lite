@@ -1,4 +1,5 @@
 export const vertexShaderSource = /*glsl*/ `
+attribute vec4 a_id;
 attribute vec2 a_position;
 attribute float a_size;
 attribute float a_angle;
@@ -34,9 +35,17 @@ void main() {
   v_radius = size / 2.0 / marginRatio;
   v_borderThickness = min(5.0 * u_correctionRatio, v_radius / 2.0);
 
+  #ifdef PICKING_MODE
+  // For picking mode, we use the ID as both colors:
+  v_color = a_id;
+  v_borderColor = a_id;
+  #else
+  // For normal mode, we use the color:
   v_color = a_color;
-  v_color.a *= bias;
   v_borderColor = a_borderColor;
+  #endif
+
+  v_color.a *= bias;
   v_borderColor.a *= bias;
 }
 `;

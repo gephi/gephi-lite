@@ -28,7 +28,7 @@
     "@octokit/auth-oauth-device": "^4.0.3",
     "@octokit/core": "^4.0.5",
     "@playwright/test": "^1.35.1",
-    "@react-sigma/core": "^3.4.0",
+    "@react-sigma/core": "^3.4.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/byte-size": "^8.1.0",
     "@types/chroma-js": "^2.1.4",
@@ -94,7 +94,7 @@
     "vitest": "^1.2.2"
   },
   "overrides": {
-    "sigma": "3.0.0-alpha3"
+    "sigma": "3.0.0-beta.5"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.20.0",
