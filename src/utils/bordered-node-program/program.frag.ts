@@ -15,6 +15,15 @@ void main(void) {
 
   float insideRadius = v_radius - v_borderThickness;
 
+
+  // No antialiasing for picking mode:
+  #ifdef PICKING_MODE
+  if (dist > v_radius)
+    gl_FragColor = transparent;
+  else
+    gl_FragColor = v_color;
+
+  #else
   if (dist < insideRadius - v_antiAliasingBorder)
     gl_FragColor = v_color;
   else if (dist < insideRadius)
@@ -25,5 +34,6 @@ void main(void) {
     gl_FragColor = mix(transparent, v_borderColor, (v_radius - dist) / v_antiAliasingBorder);
   else
     gl_FragColor = transparent;
+  #endif
 }
 `;

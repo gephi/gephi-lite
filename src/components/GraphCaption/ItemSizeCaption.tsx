@@ -48,6 +48,8 @@ const ItemSizeCaption: FC<
 
   // Refresh caption on camera update:
   useEffect(() => {
+    if (!refreshState) return;
+
     sigma.getCamera().addListener("updated", refreshState);
     return () => {
       sigma.getCamera().removeListener("updated", refreshState);
