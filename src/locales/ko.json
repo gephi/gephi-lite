@@ -459,7 +459,8 @@
                     "description": "레이아웃 크기 조절"
                 },
                 "center": {
-                    "title": "중심"
+                    "title": "중심",
+                    "description": "레이아웃 중심"
                 }
             },
             "description": "각 좌표를 구간 [0, 1)에서 무작위로 균일하게 선택하여 모든 노드를 배치하는 무작위 레이아웃"
