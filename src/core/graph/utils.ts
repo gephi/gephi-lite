@@ -1,7 +1,10 @@
-import { forEach, isNumber, mapValues, omit, sortBy, take, uniq } from "lodash";
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
+import { forEach, isNumber, keys, mapValues, omit, sortBy, take, uniq } from "lodash";
 
+import { ItemType, Scalar } from "../types";
+import { toNumber, toScalar } from "../utils/casting";
+import { parse, stringify } from "../utils/json";
 import {
   DataGraph,
   DatalessGraph,
@@ -13,9 +16,6 @@ import {
   NodeRenderingData,
   SigmaGraph,
 } from "./types";
-import { toNumber, toScalar } from "../utils/casting";
-import { ItemType, Scalar } from "../types";
-import { parse, stringify } from "../utils/json";
 
 export function getRandomNodeCoordinate(): number {
   return Math.random() * 100;
@@ -274,4 +274,42 @@ export function getFilteredDataGraph({ nodeData, edgeData }: GraphDataset, graph
   });
 
   return res;
+}
+
+/**
+ * This functions returns the item fields models if a create/update item payload contains unknown attributes
+ * update in the state must be done in the context calling this method.
+ */
+export function newItemModel<T extends ItemType>(
+  itemType: T,
+  itemAttributes: ItemData,
+  itemFieldModel: FieldModel<T>[],
+): FieldModel<T>[] {
+  // check if fieldModel needs an update
+  const newAttributes = keys(itemAttributes).filter((key) => itemFieldModel.find((f) => f.id === key) === undefined);
+  if (newAttributes.length > 0) {
+    // guess attribute type
+    return [
+      ...itemFieldModel,
+      ...newAttributes.map((newAttribute) => {
+        // we don't use utils.inderFieldType here as we only have one value and we know for sure it's not a multiple
+        // TODO: discuss if we can do some better inference
+        const type = isNumber(itemAttributes[newAttribute]) ? "quantitative" : "qualitative";
+        const fieldModel: FieldModel<T> = {
+          id: newAttribute,
+          itemType,
+          qualitative: type === "qualitative" ? {} : null,
+          quantitative: type === "quantitative" ? {} : null,
+        };
+        console.debug(`updating ${itemType} fieldModel with new attributes : ${JSON.stringify(fieldModel, null, 2)}`);
+        return fieldModel;
+      }),
+    ];
+  }
+  return itemFieldModel;
+
+  // Here we don't look for attributes which are in the model but not in the payload.
+  // We could try to detect that an attribute has been deleted from all nodes but this would require iterating through all the graph nodes.
+  // but removing the model is not necessarily a good thing?  Keeping it does not harm much and model deletion might be better handled through a specific action.
+  // To be decided later see https://github.com/gephi/gephi-lite/issues/117
 }

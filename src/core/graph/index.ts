@@ -1,22 +1,29 @@
-import { last, mapValues, isNil, omit } from "lodash";
-import { Coordinates } from "sigma/types";
 import { Attributes } from "graphology-types";
+import { isNil, last, mapValues, omit } from "lodash";
+import { Coordinates } from "sigma/types";
 
-import { filtersAtom } from "../filters";
-import { appearanceAtom } from "../appearance";
-import { itemsRemove, searchActions, searchAtom } from "../search";
 import { clearGraph } from "../../utils/graph";
-import { applyFilters } from "../filters/utils";
-import { FilteredGraph } from "../filters/types";
-import { atom, derivedAtom } from "../utils/atoms";
-import { MultiProducer, multiproducerToAction, Producer, producerToAction } from "../utils/producers";
-import { FieldModel, GraphDataset, SigmaGraph } from "./types";
+import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
-import { cleanEdge, cleanNode, dataGraphToSigmaGraph, getEmptyGraphDataset, serializeDataset } from "./utils";
-import { ItemType } from "../types";
-import { SelectionState } from "../selection/types";
-import { selectionAtom } from "../selection";
+import { filtersAtom } from "../filters";
+import { FilteredGraph } from "../filters/types";
+import { applyFilters } from "../filters/utils";
+import { itemsRemove, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
+import { selectionAtom } from "../selection";
+import { SelectionState } from "../selection/types";
+import { ItemType } from "../types";
+import { atom, derivedAtom } from "../utils/atoms";
+import { MultiProducer, Producer, multiproducerToAction, producerToAction } from "../utils/producers";
+import { FieldModel, GraphDataset, SigmaGraph } from "./types";
+import {
+  cleanEdge,
+  cleanNode,
+  dataGraphToSigmaGraph,
+  getEmptyGraphDataset,
+  newItemModel,
+  serializeDataset,
+} from "./utils";
 
 /**
  * Producers:
@@ -39,11 +46,17 @@ const editGraphMeta: Producer<GraphDataset, [Partial<GraphDataset["metadata"]>]>
 };
 const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
   const key = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
-
-  return (state) => ({
-    ...state,
-    [key]: state[key].map((field) => (field.id === fieldModel.id ? fieldModel : field)),
-  });
+  return (state) => {
+    const prevState = state[key];
+    // todo: remove typescript issue solved here by forcing type
+    const update = !!(prevState as { id: string }[]).find((f) => f.id === fieldModel.id);
+    return {
+      ...state,
+      [key]: update
+        ? prevState.map((field) => (field.id === fieldModel.id ? fieldModel : field))
+        : [...prevState, fieldModel],
+    };
+  };
 };
 const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = (positions) => {
   return (state) => ({
@@ -95,8 +108,10 @@ const createNode: Producer<GraphDataset, [string, Attributes]> = (node, attribut
   return (state) => {
     const { data, renderingData } = cleanNode(node, attributes);
     state.fullGraph.addNode(node, {});
+    const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
     return {
       ...state,
+      nodeFields: newNodeFieldModel,
       nodeData: { ...state.nodeData, [node]: data },
       nodeRenderingData: { ...state.nodeRenderingData, [node]: renderingData },
     };
@@ -106,8 +121,10 @@ const createEdge: Producer<GraphDataset, [string, Attributes, string, string]> =
   return (state) => {
     const { data, renderingData } = cleanEdge(edge, attributes);
     state.fullGraph.addEdgeWithKey(edge, source, target, {});
+    const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
     return {
       ...state,
+      edgeFields: newEdgeFieldModel,
       edgeData: { ...state.edgeData, [edge]: data },
       edgeRenderingData: { ...state.edgeRenderingData, [edge]: renderingData },
     };
@@ -116,8 +133,10 @@ const createEdge: Producer<GraphDataset, [string, Attributes, string, string]> =
 const updateNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
   return (state) => {
     const { data, renderingData } = cleanNode(node, attributes);
+    const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
     return {
       ...state,
+      nodeFields: newNodeFieldModel,
       nodeData: { ...state.nodeData, [node]: data },
       nodeRenderingData: { ...state.nodeRenderingData, [node]: renderingData },
     };
@@ -126,8 +145,10 @@ const updateNode: Producer<GraphDataset, [string, Attributes]> = (node, attribut
 const updateEdge: Producer<GraphDataset, [string, Attributes]> = (edge, attributes) => {
   return (state) => {
     const { data, renderingData } = cleanEdge(edge, attributes);
+    const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
     return {
       ...state,
+      edgeFields: newEdgeFieldModel,
       edgeData: { ...state.edgeData, [edge]: data },
       edgeRenderingData: { ...state.edgeRenderingData, [edge]: renderingData },
     };

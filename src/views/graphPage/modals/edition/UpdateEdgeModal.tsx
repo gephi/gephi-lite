@@ -1,7 +1,7 @@
 import { fromPairs, map, omit, pick, toPairs } from "lodash";
-import { useTranslation } from "react-i18next";
 import { FC, useContext, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
@@ -9,11 +9,12 @@ import Select from "react-select";
 import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
 
 import { Modal } from "../../../../components/modals";
-import { ModalProps } from "../../../../core/modals/types";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
 import { UIContext } from "../../../../core/context/uiContext";
-import { useNotifications } from "../../../../core/notifications";
 import { EdgeRenderingData } from "../../../../core/graph/types";
+import { ModalProps } from "../../../../core/modals/types";
+import { useNotifications } from "../../../../core/notifications";
+import { toNumber } from "../../../../core/utils/casting";
 // import ColorPicker from "../../../../components/ColorPicker";
 
 interface NodeOption {
@@ -79,7 +80,14 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
       className="modal-lg"
       onSubmit={handleSubmit((data) => {
         const allAttributes = {
-          ...fromPairs(data.attributes.map(({ key, value }) => [key, value])),
+          ...fromPairs(
+            data.attributes.map(({ key, value }) => {
+              // value are all string because input are all text whatever the data model
+              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+              const valueAsNumber = toNumber(value);
+              return [key, valueAsNumber ? valueAsNumber : value];
+            }),
+          ),
           ...pick(data, "label", "color", "weight"),
         };
 
