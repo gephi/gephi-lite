@@ -21,7 +21,7 @@ export function useOpenGexf() {
       try {
         const response = await fetch(remote.url);
         const gexf = await response.text();
-        const graph = parse(Graph, gexf, { allowUndeclaredAttributes: true });
+        const graph = parse(Graph, gexf, { allowUndeclaredAttributes: true, addMissingNodes: true });
         graph.setAttribute("title", remote.filename);
         resetStates();
         setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
