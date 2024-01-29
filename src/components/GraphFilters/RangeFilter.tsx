@@ -1,14 +1,15 @@
+import cx from "classnames";
 import { flatMap, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
+import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Slider, { SliderProps } from "rc-slider";
-import cx from "classnames";
 
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
+import { inRangeIncluded } from "../../core/filters/utils";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
-import { findRanges, shortenNumber } from "./utils";
 import { useReadAtom } from "../../core/utils/atoms";
+import { findRanges, shortenNumber } from "./utils";
 
 interface RangeValue {
   min: number;
@@ -52,8 +53,10 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
     const maxValue = max(values);
     if (minValue && maxValue) {
       const { unit, ranges } = findRanges(minValue, maxValue);
+      const step = unit < 1 || unit >= 10 ? unit / 10 : 1;
       const rangeValues = ranges.map((range) => {
-        const rangeValues = values.filter((v) => v >= range[0] && v < range[1]);
+        // we use max range - step as slider exclude upper bound
+        const rangeValues = values.filter((v) => inRangeIncluded(v, range[0], range[1] - step));
         return {
           min: range[0],
           max: range[1],
@@ -64,7 +67,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
       setRangeMetric({
         min: ranges[0][0],
         max: (last(ranges) || ranges[0])[1],
-        step: unit < 1 || unit >= 10 ? unit / 10 : 1,
+        step,
         unit,
         ranges: rangeValues,
         maxCount: Math.max(...rangeValues.map((r) => r.values.length)),
@@ -78,16 +81,10 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
           uniq(
             rangeMetric.ranges
               .flatMap((r) => [r.min, r.max])
-              .concat([filter.min || rangeMetric.min, filter.max || rangeMetric.max]),
+              .concat([filter.min || rangeMetric.min, filter.max ? filter.max + rangeMetric.step : rangeMetric.max]),
           ),
         ),
-        (v) =>
-          v === filter.min || v === filter.max
-            ? {
-                label: shortenNumber(v),
-                style: { fontWeight: "bold", background: "white", padding: "0 0.2em", zIndex: 1 },
-              }
-            : { label: " ", style: { fontWeight: "bold", background: "white", padding: "0 0.2em", zIndex: 1 } },
+        (v) => ({ label: " ", style: { fontWeight: "bold", background: "white", padding: "0 0.2em", zIndex: 1 } }),
       )
     : {};
 
@@ -97,9 +94,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         <ul className="list-unstyled range-filter">
           {(rangeMetric.ranges || []).map((range) => {
             const globalCount = range.values.length;
-            const filteredCount = range.values.filter(
-              (v) => !filter.min || (v >= filter.min && (!filter.max || v < filter.max)),
-            ).length;
+            const filteredCount = range.values.filter((v) => inRangeIncluded(v, filter.min, filter.max)).length;
             const filteredHeight = (filteredCount / rangeMetric.maxCount) * 100;
             const isLabelInside = filteredHeight > 90;
 
@@ -114,7 +109,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
                 >
                   {filteredCount !== 0 && (
                     <span className={cx("label", isLabelInside ? "inside" : "outside")}>
-                      {shortenNumber(filteredCount)}
+                      {shortenNumber(filteredCount, globalCount)}
                     </span>
                   )}
                 </div>
@@ -133,7 +128,8 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         value={
           [
             filter.min !== undefined ? filter.min : rangeMetric?.min,
-            filter.max !== undefined ? filter.max : rangeMetric?.max,
+            // max is shifted + step as slider exclude upper bound
+            (filter.max !== undefined ? filter.max : rangeMetric?.max) + rangeMetric.step,
           ].filter((n) => isNumber(n)) as number[]
         }
         {...rangeMetric}
@@ -141,10 +137,16 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         onChange={(value) => {
           if (Array.isArray(value)) {
             const [minSelected, maxSelected] = value;
-            replaceCurrentFilter({ ...filter, min: minSelected, max: maxSelected });
+            // max is shifted - step as slider exclude upper bound
+            replaceCurrentFilter({
+              ...filter,
+              min: minSelected,
+              max: maxSelected - rangeMetric.step,
+            });
           }
         }}
         allowCross={false}
+        pushable={true}
         {...RANGE_STYLE}
       />
 
@@ -156,7 +158,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             type="number"
             disabled={rangeMetric.min === rangeMetric.max}
             min={rangeMetric?.min}
-            // max={filter.max}
+            max={filter.max || rangeMetric.max}
             step={rangeMetric?.step}
             value={filter.min || ""}
             placeholder={"" + rangeMetric?.min}
@@ -176,9 +178,11 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             type="number"
             disabled={rangeMetric.min === rangeMetric.max}
             min={filter.min}
-            max={rangeMetric?.max}
+            // max is shifted - step as slider exclude upper bound
+            max={rangeMetric?.max - rangeMetric.step}
             step={rangeMetric?.step}
-            placeholder={"" + rangeMetric?.max}
+            // max is shifted - step as slider exclude upper bound
+            placeholder={"" + (rangeMetric?.max - rangeMetric.step)}
             value={filter.max || ""}
             onChange={(e) => {
               const newMax = +e.target.value;

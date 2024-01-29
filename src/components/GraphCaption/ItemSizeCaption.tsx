@@ -1,10 +1,10 @@
-import { FC, useCallback, useEffect, useState } from "react";
 import cx from "classnames";
+import { FC, useCallback, useEffect, useState } from "react";
 
 import { GraphCaptionProps, RangeExtends } from ".";
 import { Size } from "../../core/appearance/types";
-import { shortenNumber } from "../GraphFilters/utils";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
+import { shortenNumber } from "../GraphFilters/utils";
 
 import { CaptionItemTitle } from "./CaptionItemTitle";
 
@@ -75,7 +75,14 @@ const ItemSizeCaption: FC<
                   }}
                 />
               </div>
-              <div className="caption text-center">{shortenNumber(itemSizeState?.minValue)}</div>
+              <div className="caption text-center">
+                {shortenNumber(
+                  itemSizeState?.minValue,
+                  itemSizeState?.maxValue && itemSizeState?.minValue
+                    ? itemSizeState?.maxValue - itemSizeState?.minValue
+                    : undefined,
+                )}
+              </div>
             </div>
             <div className="item-size">
               <div className="item-wrapper">
@@ -87,7 +94,14 @@ const ItemSizeCaption: FC<
                   }}
                 />
               </div>
-              <div className="caption text-center">{shortenNumber(itemSizeState?.maxValue)}</div>
+              <div className="caption text-center">
+                {shortenNumber(
+                  itemSizeState?.maxValue,
+                  itemSizeState?.maxValue && itemSizeState?.minValue
+                    ? itemSizeState?.maxValue - itemSizeState?.minValue
+                    : undefined,
+                )}
+              </div>
             </div>
           </div>
         )}

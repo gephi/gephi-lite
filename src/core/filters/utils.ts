@@ -1,11 +1,10 @@
-import { inRange } from "lodash";
 import { subgraph } from "graphology-operators";
 
-import { FilterType, FiltersState, RangeFilterType, TermsFilterType, FilteredGraph } from "./types";
-import { toNumber, toString } from "../utils/casting";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
+import { toNumber, toString } from "../utils/casting";
 import { parse, stringify } from "../utils/json";
+import { FilterType, FilteredGraph, FiltersState, RangeFilterType, TermsFilterType } from "./types";
 
 /**
  * Returns an empty filters state:
@@ -45,7 +44,7 @@ export function filterValue(
       const number = toNumber(value);
       return (
         (typeof number === "number" &&
-          inRange(
+          inRangeIncluded(
             number,
             typeof filter.min === "number" ? filter.min : -Infinity,
             typeof filter.max === "number" ? filter.max : Infinity,
@@ -60,6 +59,16 @@ export function filterValue(
         (typeof string !== "string" && !!filter.keepMissingValues)
       );
   }
+}
+
+/**
+ * check if value is in the range [min, max] min and max included
+ * @param value
+ * @param min
+ * @param max
+ */
+export function inRangeIncluded(value: number, min: number | undefined, max: number | undefined) {
+  return (!min || min <= value) && (!max || value <= max);
 }
 
 export function filterGraph<G extends DatalessGraph | SigmaGraph>(

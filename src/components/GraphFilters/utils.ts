@@ -19,17 +19,17 @@ export function findRanges(min: number, max: number): { unit: number; ranges: [n
 
   return { unit, ranges };
 }
-export function shortenNumber(n: number): string {
+export function shortenNumber(n: number, extendSize?: number): string {
   if (n === 0) return "0";
-  if (n < 0) return "-" + shortenNumber(-n);
-
+  if (n < 0) return "-" + shortenNumber(-n, extendSize);
   const suffixes = ["", "k", "m", "b", "t"];
-  const suffixNum = Math.floor(Math.log10(n) / 3);
+  const suffixNum = Math.floor(Math.log10(extendSize || n) / 3);
   const shortValue = suffixNum ? +(n / Math.pow(1000, suffixNum)).toFixed(2) : n;
-
-  return suffixes[suffixNum]
-    ? (shortValue % 1 ? shortValue.toFixed(1) : shortValue) + suffixes[suffixNum]
-    : n.toPrecision(3).replace(/\.?0+$/, "");
+  const label =
+    suffixes[suffixNum] !== undefined
+      ? (shortValue % 1 ? shortValue.toFixed(1) : shortValue) + suffixes[suffixNum]
+      : n.toPrecision(3).replace(/\.?0+$/, "");
+  return label;
 }
 
 export function isNumber(v: unknown): boolean {
