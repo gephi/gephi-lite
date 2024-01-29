@@ -20,7 +20,11 @@
             "title": "Page Not Found",
             "subtitle": "The page you were looking for doesn't exist.",
             "paragraph": "You may have mistyped the address or the page may have moved."
-        }
+        },
+        "form": {
+            "required": "Field is required",
+            "unique": "Value must be unique, and a data with the same value already exist"
+          }
     },
     "user": {
         "avatar_alt": "{{name}}'s avatar"

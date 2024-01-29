@@ -7,6 +7,7 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 import Select from "react-select";
 import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
+import cx from "classnames";
 
 import { Modal } from "../../../../components/modals";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
@@ -68,7 +69,15 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
       })),
     };
   }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, nodeRenderingData]);
-  const { register, handleSubmit, control, setValue, getValues, watch } = useForm<UpdatedEdgeState>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useForm<UpdatedEdgeState>({
     defaultValues,
   });
   const attributes = watch("attributes");
@@ -139,10 +148,15 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
           <input
             type="text"
             id="updateEdge-id"
-            className="form-control"
+            className={cx("form-control", errors.id && "is-invalid")}
             disabled={!isNew}
             {...register("id", { required: "true", validate: (value) => !!value && (!isNew || !edgeData[value]) })}
           />
+          {errors.id && (
+            <div className="invalid-feedback">
+              {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+            </div>
+          )}
         </div>
         <div className="col-md-6">
           <label htmlFor="updateEdge-label" className="form-label">
@@ -176,12 +190,14 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
               <Select
                 {...field}
                 {...nodeSelectProps}
+                className={cx(errors.source && "form-control react-select is-invalid")}
                 isDisabled={!isNew}
                 onChange={(newValue) => onChange(newValue as NodeOption)}
                 id="updateEdge-source"
               />
             )}
           />
+          {errors.source && <div className="invalid-feedback">{t(`error.form.${errors.source.type}`)}</div>}
         </div>
         <div className="col-md-6">
           <label htmlFor="updateEdge-target" className="form-label">
@@ -198,12 +214,14 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
               <Select
                 {...field}
                 {...nodeSelectProps}
+                className={cx(errors.target && "form-control react-select is-invalid")}
                 isDisabled={!isNew}
                 onChange={(newValue) => onChange(newValue as NodeOption)}
                 id="updateEdge-target"
               />
             )}
           />
+          {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
         </div>
 
         {/* Rendering attributes */}
@@ -227,39 +245,44 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             <FaTimes />
           </button>
         </div>
-        {/*<div className="col-md-6 d-flex flex-row align-items-center">*/}
-        {/*  <label htmlFor="updateEdge-color" className="form-label mb-0 flex-grow-1">*/}
-        {/*    {t("graph.model.edges-data.color")}*/}
-        {/*  </label>*/}
-        {/*  <ColorPicker clearable color={watch("color")} onChange={(color) => setValue("color", color)} />*/}
-        {/*  <button*/}
-        {/*    type="button"*/}
-        {/*    className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"*/}
-        {/*    onClick={() => setValue("color", undefined)}*/}
-        {/*  >*/}
-        {/*    <FaTimes />*/}
-        {/*  </button>*/}
-        {/*</div>*/}
 
         {/* Other attributes */}
         <div>{t("graph.model.edges-data.attributes")}</div>
         {attributes.map((_, i) => (
           <div key={i} className="col-12 d-flex flex-row">
-            <input
-              type="text"
-              className="form-control flex-grow-1 me-2"
-              placeholder={t("graph.model.edges-data.attribute-name") as string}
-              {...register(`attributes.${i}.key`, {
-                required: "true",
-                validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
-              })}
-            />
-            <input
-              type="text"
-              className="form-control flex-grow-1 me-2"
-              placeholder={t("graph.model.edges-data.attribute-value") as string}
-              {...register(`attributes.${i}.value`)}
-            />
+            <div className="flex-grow-1 me-2">
+              <input
+                type="text"
+                className="form-control"
+                placeholder={t("graph.model.edges-data.attribute-name") as string}
+                {...register(`attributes.${i}.key`, {
+                  required: "true",
+                  validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
+                })}
+              />
+              {(errors.attributes || [])[i]?.key && (
+                <div className="invalid-feedback">
+                  {t(
+                    `error.form.${
+                      (errors.attributes || [])[i]?.key?.type === "validate"
+                        ? "unique"
+                        : (errors.attributes || [])[i]?.key?.type
+                    }`,
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex-grow-1 me-2">
+              <input
+                type="text"
+                className="form-control"
+                placeholder={t("graph.model.edges-data.attribute-value") as string}
+                {...register(`attributes.${i}.value`)}
+              />
+              {(errors.attributes || [])[i]?.value && (
+                <div className="invalid-feedback">{t(`error.form.${(errors.attributes || [])[i]?.value?.type}`)}</div>
+              )}
+            </div>
             <button
               type="button"
               className="btn btn-sm btn-outline-dark flex-shrink-0"

@@ -20,6 +20,10 @@
       "title": "Page non trouvée",
       "subtitle": "La page que vous recherchez n'existe pas.",
       "paragraph": "Vous avez peut-être mal saisi l'adresse ou la page a été déplacée."
+    },
+    "form": {
+      "required": "Champs requis",
+      "unique": "Une autre entrée existe déjà avec cette valeur"
     }
   },
   "user": {

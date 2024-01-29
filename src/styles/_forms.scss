@@ -1,0 +1,11 @@
+.form-control.react-select.is-invalid {
+    border: none;
+    padding-left:0;
+    padding-top:0;
+    padding-bottom: 0;
+
+    > div {
+        border-color: var(--bs-form-invalid-border-color);
+        box-shadow: none;
+    }
+}

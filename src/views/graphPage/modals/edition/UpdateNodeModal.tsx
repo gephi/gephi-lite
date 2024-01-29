@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
+import cx from "classnames";
 
 import { Modal } from "../../../../components/modals";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
@@ -12,7 +13,6 @@ import { NodeRenderingData } from "../../../../core/graph/types";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { toNumber } from "../../../../core/utils/casting";
-// import ColorPicker from "../../../../components/ColorPicker";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
   id: string;
@@ -22,7 +22,6 @@ interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
 const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, arguments: { nodeId } }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-
   const { createNode, updateNode } = useGraphDatasetActions();
   const { nodeData, nodeRenderingData } = useGraphDataset();
   const { select } = useSelectionActions();
@@ -45,7 +44,14 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
       })),
     };
   }, [isNew, nodeId, nodeRenderingData, nodeData]);
-  const { register, handleSubmit, setValue, getValues, watch } = useForm<UpdatedNodeState>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useForm<UpdatedNodeState>({
     defaultValues,
   });
   const attributes = watch("attributes");
@@ -116,10 +122,15 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
           <input
             type="text"
             id="updateNode-id"
-            className="form-control"
+            className={cx("form-control", errors.id && "is-invalid")}
             disabled={!isNew}
             {...register("id", { required: "true", validate: (value) => !!value && (!isNew || !nodeData[value]) })}
           />
+          {errors.id && (
+            <div className="invalid-feedback">
+              {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+            </div>
+          )}
         </div>
 
         {/* Rendering attributes */}
@@ -130,7 +141,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
           <input
             type="text"
             id="updateNode-label"
-            className="form-control flex-grow-1 ms-2"
+            className={cx("form-control flex-grow-1 ms-2", errors.label && "is-invalid")}
             min={0}
             {...register("label")}
           />
@@ -142,39 +153,6 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             <FaTimes />
           </button>
         </div>
-        {/*<div className="col-md-4 d-flex flex-row align-items-center">*/}
-        {/*  <label htmlFor="updateNode-color" className="form-label mb-0 flex-grow-1">*/}
-        {/*    {t("graph.model.nodes-data.color")}*/}
-        {/*  </label>*/}
-        {/*  <ColorPicker clearable color={watch("color")} onChange={(color) => setValue("color", color)} />*/}
-        {/*  <button*/}
-        {/*    type="button"*/}
-        {/*    className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"*/}
-        {/*    onClick={() => setValue("color", undefined)}*/}
-        {/*  >*/}
-        {/*    <FaTimes />*/}
-        {/*  </button>*/}
-        {/*</div>*/}
-        {/*<div className="col-md-4 d-flex flex-row align-items-center">*/}
-        {/*  <label htmlFor="updateNode-size" className="form-label mb-0 flex-shrink-0">*/}
-        {/*    {t("graph.model.nodes-data.size")}*/}
-        {/*  </label>*/}
-        {/*  <input*/}
-        {/*    type="number"*/}
-        {/*    id="updateNode-size"*/}
-        {/*    className="form-control flex-grow-1 ms-2"*/}
-        {/*    step="any"*/}
-        {/*    min={0}*/}
-        {/*    {...register("size", { min: 0 })}*/}
-        {/*  />*/}
-        {/*  <button*/}
-        {/*    type="button"*/}
-        {/*    className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"*/}
-        {/*    onClick={() => setValue("size", undefined)}*/}
-        {/*  >*/}
-        {/*    <FaTimes />*/}
-        {/*  </button>*/}
-        {/*</div>*/}
         <div className="col-md-6 d-flex flex-row align-items-center">
           <label htmlFor="updateNode-x" className="form-label mb-0 flex-shrink-0">
             {t("graph.model.nodes-data.x")}
@@ -182,7 +160,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
           <input
             type="number"
             id="updateNode-x"
-            className="form-control flex-grow-1 ms-2"
+            className={cx("form-control flex-grow-1 ms-2", errors.x && "is-invalid")}
             step="any"
             {...register("x")}
           />
@@ -194,7 +172,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
           <input
             type="number"
             id="updateNode-y"
-            className="form-control flex-grow-1 ms-2"
+            className={cx("form-control flex-grow-1 ms-2", errors.y && "is-invalid")}
             step="any"
             {...register("y")}
           />
@@ -204,21 +182,39 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
         <div className="fs-5">{t("graph.model.nodes-data.attributes")}</div>
         {attributes.map((_, i) => (
           <div key={i} className="col-12 d-flex flex-row">
-            <input
-              type="text"
-              className="form-control flex-grow-1 me-2"
-              placeholder={t("graph.model.nodes-data.attribute-name") as string}
-              {...register(`attributes.${i}.key`, {
-                required: "true",
-                validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
-              })}
-            />
-            <input
-              type="text"
-              className="form-control flex-grow-1 me-2"
-              placeholder={t("graph.model.nodes-data.attribute-value") as string}
-              {...register(`attributes.${i}.value`)}
-            />
+            <div className="flex-grow-1 me-2">
+              <input
+                type="text"
+                className={cx("form-control", (errors.attributes || [])[i]?.key && "is-invalid")}
+                placeholder={t("graph.model.nodes-data.attribute-name") as string}
+                {...register(`attributes.${i}.key`, {
+                  required: "true",
+                  validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
+                })}
+              />
+              {(errors.attributes || [])[i]?.key && (
+                <div className="invalid-feedback">
+                  {t(
+                    `error.form.${
+                      (errors.attributes || [])[i]?.key?.type === "validate"
+                        ? "unique"
+                        : (errors.attributes || [])[i]?.key?.type
+                    }`,
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex-grow-1 me-2">
+              <input
+                type="text"
+                className={cx("form-control flex-grow-1 me-2", (errors.attributes || [])[i]?.value && "is-invalid")}
+                placeholder={t("graph.model.nodes-data.attribute-value") as string}
+                {...register(`attributes.${i}.value`)}
+              />
+              {(errors.attributes || [])[i]?.value && (
+                <div className="invalid-feedback">{t(`error.form.${(errors.attributes || [])[i]?.value?.type}`)}</div>
+              )}
+            </div>
             <button
               type="button"
               className="btn btn-sm btn-outline-dark flex-shrink-0"
