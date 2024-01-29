@@ -27,4 +27,4 @@ export const LOCALES = {
   },
 };
 
-export const DEFAULT_LOCALE = process.env.NODE_ENV !== "production" ? "dev" : "en";
+export const DEFAULT_LOCALE = import.meta.env.NODE_ENV !== "production" ? "dev" : "en";

@@ -41,7 +41,7 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
       title={
         <>
           <img
-            src={`${process.env.PUBLIC_URL}/gephi-logo.svg`}
+            src={`${import.meta.env.BASE_URL}/gephi-logo.svg`}
             style={{ width: "1em" }}
             alt={t("welcome.logo") as string}
             className="me-2"
@@ -135,7 +135,7 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
                   onClick={async () => {
                     await openRemoteFile({
                       type: "remote",
-                      url: `${process.env.PUBLIC_URL}/samples/${sample}`,
+                      url: `${import.meta.env.BASE_URL}/samples/${sample}`,
                       filename: sample,
                     });
                     notify({

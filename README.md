@@ -16,7 +16,7 @@ Gephi Lite source code is distributed under the [GNU General Public License v3](
 
 Gephi Lite is a web application, written using [TypeScript](https://www.typescriptlang.org/) and [React](https://react.dev/). The styles are written using [SASS](https://sass-lang.com/), and are based on [Bootstrap v5](https://getbootstrap.com/).
 
-Gephi Lite uses [sigma.js](https://www.sigmajs.org/) for graph rendering, and [graphology](https://graphology.github.io/) as the graph model as well as for graph algorithms. It has been bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Gephi Lite uses [sigma.js](https://www.sigmajs.org/) for graph rendering, and [graphology](https://graphology.github.io/) as the graph model as well as for graph algorithms. It is built using [Vite](https://vitejs.dev/).
 
 To build Gephi Lite locally, you first need a recent version of [Node.js](https://nodejs.org/en) with [NPM](https://www.npmjs.com/) installed on your computer. You can then install the dependencies by running `npm install` in Gephi Lite's directory.
 
@@ -25,7 +25,7 @@ Now, in the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.\
-Open [http://localhost:3000/gephi-lite](http://localhost:3000/gephi-lite) to view it in the browser.
+Open [http://localhost:5173/gephi-lite](http://localhost:5173/gephi-lite) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
@@ -39,9 +39,9 @@ End-to-end tests can be run with playwright.
 
 First make sure to install browsers : `npx playwright install`
 
-Then start teh e2e tests : `npm run test:e2e`
+Then start the e2e tests : `npm run test:e2e`
 
-If you have updated the project style/layout, you will have to delete the saved screenshot in /e2e/_.spec.ts-snapthots/_, and then run the e2e test to regenerate them.
+If you have updated the project style/layout, you will have to delete the saved screenshot in /e2e/_.spec.ts-snapshots/_, and then run the e2e test to regenerate them.
 
 ### `npm run build`
 
@@ -53,7 +53,7 @@ Your Gephi Lite is ready to be deployed!
 
 ## Deploy the application
 
-To allow users to synchronize their data with GitHub, Gephi Lite needs a reverse proxy to avoid CORS issues. When working locally in development, [we use `http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/src/setupProxy.js) to make that work.
+To allow users to synchronize their data with GitHub, Gephi Lite needs a reverse proxy to avoid CORS issues. When working locally in development, [we use `http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/vite.config.js) to make that work.
 
 To deploy the application, you need to define the env variable `REACT_APP_GITHUB_PROXY` before building it, by following those steps:
 

@@ -7,23 +7,22 @@
     "@monaco-editor/react": "^4.4.6",
     "@octokit/auth-oauth-device": "^4.0.3",
     "@octokit/core": "^4.0.5",
+    "@playwright/test": "^1.35.1",
     "@react-sigma/core": "^3.4.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
     "@types/byte-size": "^8.1.0",
     "@types/chroma-js": "^2.1.4",
     "@types/classnames": "^2.3.1",
     "@types/file-saver": "^2.0.5",
-    "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.186",
-    "@types/node": "^16.11.56",
+    "@types/node": "^20.11.10",
     "@types/react": "^18.0.17",
     "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.6",
     "@types/react-dropzone": "^5.1.0",
+    "@types/react-highlight": "^0.12.5",
     "@types/react-slider": "^1.3.1",
     "@types/tether": "^1.4.6",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "bootstrap": "^5.3.0",
     "byte-size": "^8.1.0",
     "chroma-js": "^2.4.2",
@@ -44,6 +43,7 @@
     "i18next": "^22.4.9",
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-scanner": "^4.1.1",
+    "isomorphic-fetch": "^3.0.0",
     "iwanthue": "^2.0.0",
     "locale-emoji": "^0.3.0",
     "lodash": "^4.17.21",
@@ -62,24 +62,26 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
     "react-select": "^5.4.0",
     "react-slider": "^2.0.4",
     "react-tether": "^3.0.1",
     "react-use-konami": "^1.1.0",
     "sass": "^1.54.6",
     "typescript": "^4.8.2",
-    "web-vitals": "^2.1.4"
+    "vite": "^5.0.12",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.2.2"
   },
   "overrides": {
     "sigma": "3.0.0-alpha3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:e2e": "npx playwright test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
+    "test": "vitest -r src",
+    "test:e2e": "playwright test",
     "translations-scan": "i18next-scanner --config i18next-scanner.config.ts src/**/*.{ts,tsx}"
   },
   "eslintConfig": {
@@ -99,9 +101,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.35.1",
-    "@types/react-highlight": "^0.12.5"
   }
 }

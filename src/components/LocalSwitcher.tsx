@@ -14,7 +14,7 @@ function getIcon(locale: string): ReactNode {
 }
 
 const AVAILABLE_LOCALES = toPairs(LOCALES)
-  .filter(([key]) => process.env.NODE_ENV === "development" || key !== "dev")
+  .filter(([key]) => import.meta.env.NODE_ENV === "development" || key !== "dev")
   .map(([key, locale]) => ({
     value: key,
     label: (
