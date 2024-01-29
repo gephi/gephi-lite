@@ -22,9 +22,13 @@ import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 import MessageTooltip from "../../components/MessageTooltip";
 
 type MetricOption = {
+  // id/name of the metric
   value: string;
+  // metric for node or edge ?
   itemType: ItemType;
+  // label displayed in the UI for the metric
   label: string;
+  // metric's value
   metric: Metric<any, any, any>;
 };
 
@@ -276,7 +280,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                       <button
                         type="button"
                         className="btn btn-dark mx-auto d-block m-3"
-                        onClick={() =>
+                        onClick={() => {
                           openModal({
                             component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
                             arguments: {
@@ -288,11 +292,12 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                               checkFunction: param.functionCheck,
                             },
                             beforeSubmit: ({ run, script }) => {
+                              console.log(script);
                               onChange("parameters", param.id, script);
                               if (run) setTimeout(submit, 0);
                             },
-                          })
-                        }
+                          });
+                        }}
                         title={t("common.open_code_editor").toString()}
                       >
                         <CodeEditorIcon className="me-1" />

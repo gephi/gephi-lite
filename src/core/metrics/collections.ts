@@ -1,4 +1,4 @@
-import { isNumber } from "lodash";
+import { isNumber, isString } from "lodash";
 import louvain from "graphology-communities-louvain";
 import toSimple from "graphology-operators/to-simple";
 import { hits, pagerank } from "graphology-metrics/centrality";
@@ -248,7 +248,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
 * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
 * @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
-* @returns number The computed metric of the node
+* @returns number|string The computed metric of the node
 */`,
         functionCheck: (fn) => {
           if (!fn) throw new Error("Function is not defined");
@@ -256,7 +256,9 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
           const id = fullGraph.nodes()[0];
           const attributs = fullGraph.getNodeAttributes(id);
           const result = fn(id, attributs, 0, fullGraph);
-          if (!isNumber(result)) throw new Error("Function must returns a number");
+          console.log(isNumber(result), isString(result));
+          if (!isNumber(result) && !isString(result))
+            throw new Error("Function must return either a number or a string");
         },
         defaultValue: nodeMetricCustomFn,
       },
@@ -327,7 +329,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
 * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
 * @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
-* @returns number The computed metric of the edge
+* @returns number|string The computed metric of the edge
 */`,
         functionCheck: (fn) => {
           if (!fn) throw new Error("Function is not defined");
@@ -335,7 +337,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
           const id = fullGraph.edges()[0];
           const attributs = fullGraph.getEdgeAttributes(id);
           const result = fn(id, attributs, 0, fullGraph);
-          if (!isNumber(result)) throw new Error("Function must returns a number");
+          if (!isNumber(result) && !isString(result)) throw new Error("Function must returns a number");
         },
         defaultValue: edgeMetricCustomFn,
       },
