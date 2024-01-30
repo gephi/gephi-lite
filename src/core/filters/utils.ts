@@ -90,8 +90,8 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
     let nodes: string[];
     if (filter.type === "script") {
       const fullGraph = dataGraphToFullGraph(dataset, graph);
-      nodes = graph.filterNodes(
-        (nodeID) => filter.script && filter.script(nodeID, fullGraph.getNodeAttributes(nodeID), fullGraph),
+      nodes = graph.filterNodes((nodeID) =>
+        filter.script ? filter.script(nodeID, fullGraph.getNodeAttributes(nodeID), fullGraph) : true,
       );
     } else {
       nodes = graph.filterNodes((nodeID) => filterValue(nodeData[nodeID][filter.field], filter));
@@ -104,8 +104,8 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
     let edges: string[] = [];
     if (filter.type === "script") {
       const fullGraph = dataGraphToFullGraph(dataset, graph);
-      edges = graph.filterEdges(
-        (edgeID) => filter.script && filter.script(edgeID, fullGraph.getEdgeAttributes(edgeID), fullGraph),
+      edges = graph.filterEdges((edgeID) =>
+        filter.script ? filter.script(edgeID, fullGraph.getEdgeAttributes(edgeID), fullGraph) : true,
       );
     } else {
       edges = graph.filterEdges((edgeID) => filterValue(edgeData[edgeID][filter.field], filter));

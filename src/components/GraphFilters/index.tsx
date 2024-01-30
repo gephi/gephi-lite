@@ -35,6 +35,7 @@ const FilterInStack: FC<{
   // thus the internalEditMode is used to toggle Edit/Confirmed state for the last filter without affecting others filters state
   const [internalEditMode, setInternalEditMode] = useState<boolean>(editMode);
   useEffect(() => setInternalEditMode(editMode), [editMode]);
+
   return (
     <div
       className={cx(
