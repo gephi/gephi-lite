@@ -48,7 +48,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           className="form-check-input me-2"
           type="checkbox"
           id="keepMissingValues"
-          checked={filter.keepMissingValues}
+          checked={!!filter.keepMissingValues}
           onChange={(e) => {
             replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
           }}
