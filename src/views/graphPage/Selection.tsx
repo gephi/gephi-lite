@@ -6,6 +6,7 @@ import { BiTargetLock } from "react-icons/bi";
 import { BsFillTrashFill, BsThreeDotsVertical } from "react-icons/bs";
 import { MdDeselect, MdFilterCenterFocus, MdSelectAll } from "react-icons/md";
 
+import ReactLinkify from "react-linkify";
 import Dropdown from "../../components/Dropdown";
 import { EdgeComponent } from "../../components/Edge";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
@@ -23,6 +24,7 @@ import {
 import { EdgeRenderingData, ItemData, NodeRenderingData } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
 import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
+import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import ConfirmModal from "./modals/ConfirmModal";
 import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
 import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
@@ -50,7 +52,7 @@ function SelectedItem<
   const filteredGraph = useFilteredGraph();
   const { deleteItems } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
-  const pairs = useMemo(
+  const attributes = useMemo(
     () =>
       selectionSize === 1
         ? [[t(`graph.model.${type}-data.id`) as string, id], ...toPairs(data), ...toPairs(renderingData)].filter(
@@ -164,11 +166,11 @@ function SelectedItem<
           </button>
         </Dropdown>
       </h4>
-      {pairs && (
+      {attributes && (
         <ul className="ms-4 list-unstyled small">
-          {pairs.map(([key, value], i) => (
+          {attributes.map(([key, value], i) => (
             <li key={i}>
-              <span className="text-muted">{key}:</span> {value}
+              <span className="text-muted">{key}:</span> <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify>
             </li>
           ))}
         </ul>
