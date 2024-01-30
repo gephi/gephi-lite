@@ -16,6 +16,8 @@
   "error": {
     "title": "Erreur",
     "unknown": "Une erreur inconnue s'est produite.",
+    "message": "Désolé ! geph-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur github en cliquant sur le bouton ci-dessous.",
+    "report": "Signaler l'erreur",
     "not_found": {
       "title": "Page non trouvée",
       "subtitle": "La page que vous recherchez n'existe pas.",
