@@ -64,10 +64,10 @@ export const CaptionItemTitle: FC<{
     <div className="d-flex align-items-center mb-1">
       <i title={label} className={cx("fs-4 me-1", ICON_NAMES[vizVariable][itemType])} />
       <div className="d-flex flex-column justify-content-center m-2">
-        <span className="text-muted small">{label}</span>
-        <h4 className="fs-5 m-0 d-flex align-items-center">
+        <span className="text-muted caption-item-label">{label}</span>
+        <h6 className="m-0 d-flex align-items-center">
           <TransformationMethodLabel field={field} transformationMethod={transformationMethod} />
-        </h4>
+        </h6>
       </div>
     </div>
   );

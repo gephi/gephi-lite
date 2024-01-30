@@ -10,7 +10,11 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    padding: 1rem;
+    padding: 0.5rem;
+
+    .caption-item-label {
+      font-size: 0.8rem;
+    }
 
     > * {
       margin-right: 1rem;
@@ -91,11 +95,7 @@
 
       &.minimal.partition {
         overflow-y: auto;
-        height: $graph-caption-items-height;
-
-        // > * {
-        //   height: min-content !important;
-        // }
+        max-height: calc(2 * $graph-caption-items-height);
       }
     }
 
