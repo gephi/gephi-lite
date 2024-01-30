@@ -11,7 +11,6 @@ import { useFileActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
-import { fileStateAtom } from "./graph/files";
 import { getEmptyGraphDataset, parseDataset } from "./graph/utils";
 import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
@@ -21,6 +20,11 @@ import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
+
+// This awful flag helps dealing with the double rendering caused from
+// React.StrictMode:
+// https://react.dev/reference/react/StrictMode#fixing-bugs-found-by-double-rendering-in-development
+let isInitialized = false;
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
@@ -59,6 +63,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * - ...
    */
   const initialize = useCallback(async () => {
+    if (isInitialized) return;
+    isInitialized = true;
+
     // Load session from local storage
     sessionAtom.set(() => {
       const raw = sessionStorage.getItem("session");
@@ -86,8 +93,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     // If query params has gexf
     // => try to load the file
-    const isIdle = fileStateAtom.get().type === "idle";
-    if (!graphFound && url.searchParams.has("gexf") && isIdle) {
+    if (!graphFound && url.searchParams.has("gexf")) {
       const gexfUrl = url.searchParams.get("gexf") || "";
       try {
         await openRemoteFile({
@@ -128,7 +134,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
 
-          graphFound = true;
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }
       }
