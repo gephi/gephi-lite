@@ -292,7 +292,6 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                               checkFunction: param.functionCheck,
                             },
                             beforeSubmit: ({ run, script }) => {
-                              console.log(script);
                               onChange("parameters", param.id, script);
                               if (run) setTimeout(submit, 0);
                             },

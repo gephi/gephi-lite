@@ -3,29 +3,33 @@ import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
 import { ModalProps } from "../../../../core/modals/types";
-import { useOpenGexf } from "../../../../core/graph/useOpenGexf";
 import { useNotifications } from "../../../../core/notifications";
 import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
 import { DropInput } from "../../../../components/DropInput";
+import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 
 export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { notify } = useNotifications();
   const { t } = useTranslation();
-  const { loading, error, openLocalFile } = useOpenGexf();
   const [file, setFile] = useState<File | null>(null);
+
+  const { type: fileStateType } = useFileState();
+  const { openLocalFile } = useFileActions();
 
   return (
     <Modal title={t("graph.open.local.title").toString()} onClose={() => cancel()}>
       <>
-        {error && <p className="text-center text-danger">{t("graph.open.local.error").toString()}</p>}
+        {fileStateType === "error" && (
+          <p className="text-center text-danger">{t("graph.open.local.error").toString()}</p>
+        )}
         <DropInput
           value={file}
           onChange={(file) => setFile(file)}
           helpText={t("graph.open.local.dragndrop_text").toString()}
           accept={{ "application/graph": [".gexf"] }}
         />
-        {loading && <Loader />}
+        {fileStateType === "loading" && <Loader />}
       </>
       <>
         <button title={t("common.cancel").toString()} className="btn btn-outline-danger" onClick={() => cancel()}>

@@ -33,7 +33,7 @@ describe("Atoms library", () => {
   });
 
   describe("#derivedAtom", () => {
-    it("should be updated when depencies are updated", () => {
+    it("should be updated when dependencies are updated", () => {
       const a1 = atom(0);
       const a2 = atom(0);
       const sum = derivedAtom([a1, a2], (v1, v2, previousValue) => v1 + v2);

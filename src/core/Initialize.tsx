@@ -7,7 +7,6 @@ import { AuthInit } from "./user/AuthInit";
 import { Loader } from "../components/Loader";
 import { useNotifications } from "./notifications";
 import { graphDatasetAtom } from "./graph";
-import { useOpenGexf } from "./graph/useOpenGexf";
 import { parseDataset, getEmptyGraphDataset } from "./graph/utils";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
@@ -21,12 +20,15 @@ import { useModal } from "./modals";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { resetCamera } from "./sigma";
 import { I18n } from "../locales/provider";
+import { useFileActions, useFileState } from "./context/dataContexts";
+import { fileStateAtom } from "./graph/files";
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
-  const { loading, openRemoteFile } = useOpenGexf();
+  const { type: fileStateType } = useFileState();
+  const { openRemoteFile } = useFileActions();
 
   useKonami(
     () => {
@@ -86,7 +88,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     // If query params has gexf
     // => try to load the file
-    if (!graphFound && url.searchParams.has("gexf")) {
+    const isIdle = fileStateAtom.get().type === "idle";
+    if (!graphFound && url.searchParams.has("gexf") && isIdle) {
       const gexfUrl = url.searchParams.get("gexf") || "";
       try {
         await openRemoteFile({
@@ -152,7 +155,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <I18n>
       <AuthInit />
-      {loading ? <Loader /> : children}
+      {children}
     </I18n>
   );
 };

@@ -103,3 +103,4 @@ export interface GraphDataset {
   // Ex: is it a local or a remote file
   origin: GraphOrigin;
 }
+export type FileState = { type: "idle" } | { type: "loading" } | { type: "error"; message?: string };

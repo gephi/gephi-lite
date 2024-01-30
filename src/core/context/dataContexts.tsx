@@ -9,6 +9,8 @@ import { preferencesActions, preferencesAtom } from "../preferences";
 import { selectionActions, selectionAtom } from "../selection";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
 import { searchActions, searchAtom } from "../search";
+import { Action } from "../utils/producers";
+import { fileActions, fileStateAtom } from "../graph/files";
 
 /**
  * Helpers:
@@ -38,6 +40,7 @@ const ATOMS = {
   sigma: sigmaAtom,
   filters: filtersAtom,
   selection: selectionAtom,
+  fileState: fileStateAtom,
   appearance: appearanceAtom,
   sigmaState: sigmaStateAtom,
   sigmaGraph: sigmaGraphAtom,
@@ -53,6 +56,7 @@ const CONTEXTS = {
   sigma: createContext(ATOMS.sigma),
   filters: createContext(ATOMS.filters),
   selection: createContext(ATOMS.selection),
+  fileState: createContext(ATOMS.fileState),
   appearance: createContext(ATOMS.appearance),
   sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
@@ -79,11 +83,19 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
     </>
   );
 };
+export const resetStates: Action = () => {
+  filtersActions.resetFilters();
+  selectionActions.reset();
+  appearanceActions.resetState();
+  sigmaActions.resetState();
+  searchActions.reset();
+};
 
 // Read data:
 export const useFilters = makeUseAtom(CONTEXTS.filters);
 export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
 export const useSelection = makeUseAtom(CONTEXTS.selection);
+export const useFileState = makeUseAtom(CONTEXTS.fileState);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaState = makeUseAtom(CONTEXTS.sigmaState);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
@@ -100,13 +112,8 @@ export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);
 export const useSearchActions = makeUseActions(searchActions);
+export const useFileActions = makeUseActions(fileActions);
 
 export const useResetStates = () => {
-  return () => {
-    filtersActions.resetFilters();
-    selectionActions.reset();
-    appearanceActions.resetState();
-    sigmaActions.resetState();
-    searchActions.reset();
-  };
+  return resetStates;
 };

@@ -9,9 +9,8 @@ import { RemoteFileModal } from "./open/RemoteFileModal";
 import { useConnectedUser } from "../../../core/user";
 import { useModal } from "../../../core/modals";
 import { Loader } from "../../../components/Loader";
-import { useOpenGexf } from "../../../core/graph/useOpenGexf";
 import { useNotifications } from "../../../core/notifications";
-import { usePreferences } from "../../../core/context/dataContexts";
+import { useFileActions, useFileState, usePreferences } from "../../../core/context/dataContexts";
 import { GitHubIcon } from "../../../components/common-icons";
 import LocalSwitcher from "../../../components/LocalSwitcher";
 
@@ -24,17 +23,18 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const [user] = useConnectedUser();
   const { recentRemoteFiles } = usePreferences();
 
-  const { loading, error, openRemoteFile } = useOpenGexf();
+  const { type: fileStateType } = useFileState();
+  const { openRemoteFile } = useFileActions();
 
   useEffect(() => {
-    if (error) {
+    if (fileStateType === "error") {
       notify({
         type: "error",
         message: t("graph.open.remote.error") as string,
         title: t("gephi-lite.title") as string,
       });
     }
-  }, [error, notify, t]);
+  }, [fileStateType, notify, t]);
 
   return (
     <Modal
@@ -53,7 +53,7 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
           </span>
         </>
       }
-      onClose={loading ? undefined : () => cancel()}
+      onClose={fileStateType === "loading" ? undefined : () => cancel()}
       className="modal-lg"
     >
       <div className="row mb-3 position-relative">
@@ -152,7 +152,7 @@ export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
             ))}
           </ul>
         </div>
-        {loading && <Loader />}
+        {fileStateType === "loading" && <Loader />}
       </div>
       <div className="d-flex align-items-center w-100">
         <div className="text-muted small flex-grow-1 flex-shrink-1">

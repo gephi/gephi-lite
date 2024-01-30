@@ -5,17 +5,19 @@ import { useTranslation } from "react-i18next";
 import { isUrl } from "../../../../utils/check";
 import { extractFilename } from "../../../../utils/url";
 import { ModalProps } from "../../../../core/modals/types";
-import { useOpenGexf } from "../../../../core/graph/useOpenGexf";
 import { RemoteFile } from "../../../../core/graph/types";
 import { useNotifications } from "../../../../core/notifications";
 import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
+import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 
 export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   const { notify } = useNotifications();
   const { t } = useTranslation();
-  const { loading, error, openRemoteFile } = useOpenGexf();
   const [url, setUrl] = useState<string>("");
+
+  const { type: fileStateType } = useFileState();
+  const { openRemoteFile } = useFileActions();
 
   const isFormValid = useMemo(() => {
     return url ? isUrl(url) : false;
@@ -37,7 +39,9 @@ export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
   return (
     <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()} onSubmit={openRemote}>
       <>
-        {error && <p className="text-center text-danger">{t("graph.open.remote.error").toString()}</p>}
+        {fileStateType === "error" && (
+          <p className="text-center text-danger">{t("graph.open.remote.error").toString()}</p>
+        )}
 
         <div className="mb-3">
           <label htmlFor="url" className="form-label">
@@ -54,7 +58,7 @@ export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
           />
         </div>
 
-        {loading && <Loader />}
+        {fileStateType === "loading" && <Loader />}
       </>
 
       <>
@@ -70,7 +74,7 @@ export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
         <button
           type="submit"
           className="btn btn-primary"
-          disabled={!isFormValid || loading}
+          disabled={!isFormValid || fileStateType === "loading"}
           title={url ? t("common.open_file", { filename: extractFilename(url) }).toString() : ""}
         >
           <FaFolderOpen className="me-1" />

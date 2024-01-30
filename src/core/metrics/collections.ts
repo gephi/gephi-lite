@@ -13,16 +13,16 @@ import { toNumber } from "../utils/casting";
 
 // Definition of a custom metric function for nodes
 // eslint-disable-next-line no-new-func
-const nodeMetricCustomFn = new Function(`return ( 
+const nodeMetricCustomFn = new Function(`return (
 function nodeMetric(id, attributes, index, graph) {
   // Your code goes here
   return Math.random();
-} 
+}
 )`)();
 
 // Definition of a custom metric function for edges
 // eslint-disable-next-line no-new-func
-const edgeMetricCustomFn = new Function(`return ( 
+const edgeMetricCustomFn = new Function(`return (
 function edgeMetric(id, attributes, index, graph) {
   // Your code goes here
   return Math.random();
@@ -256,7 +256,6 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
           const id = fullGraph.nodes()[0];
           const attributs = fullGraph.getNodeAttributes(id);
           const result = fn(id, attributs, 0, fullGraph);
-          console.log(isNumber(result), isString(result));
           if (!isNumber(result) && !isString(result))
             throw new Error("Function must return either a number or a string");
         },

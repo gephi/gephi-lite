@@ -32,16 +32,7 @@ describe("Graph utilities", () => {
 
     it("should properly detect separators", () => {
       expect(
-        inferFieldType(
-          [
-            "TypeScript",
-            "Neo4J,TypeScript",
-            "Python,TypeScript",
-            "TypeScript,Python",
-            "TypeScript",
-          ],
-          5,
-        ),
+        inferFieldType(["TypeScript", "Neo4J,TypeScript", "Python,TypeScript", "TypeScript,Python", "TypeScript"], 5),
       ).toEqual({
         quantitative: null,
         qualitative: { separator: "," },

@@ -223,7 +223,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     filteredGraphsAtom.set(newCache);
   }
 
-  // When graph data or fields changed changed, we reindex it for the search
+  // When graph data or fields changed, we reindex it for the search
   if (updatedKeys.has("fullGraph") || updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
     searchActions.indexAll();
   }
