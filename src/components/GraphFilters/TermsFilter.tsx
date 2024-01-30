@@ -1,13 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import Select from "react-select";
 
+import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
+import { useTranslation } from "react-i18next";
+import { useFiltersActions } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
-import { useFiltersActions } from "../../core/context/dataContexts";
-import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
-import { toString } from "../../core/utils/casting";
-import { useTranslation } from "react-i18next";
 import { useReadAtom } from "../../core/utils/atoms";
+import { toString } from "../../core/utils/casting";
 import { DEFAULT_SELECT_PROPS } from "../consts";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
@@ -34,7 +34,8 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
         {...DEFAULT_SELECT_PROPS}
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
         onChange={(options) => {
-          replaceCurrentFilter({ ...filter, terms: new Set(options.map((o) => o.value)) });
+          const selectedValues = new Set(options.map((o) => o.value))
+          replaceCurrentFilter({ ...filter, terms: selectedValues.size > 0 ? selectedValues : undefined });
         }}
         isMulti
         options={sortBy(toPairs(dataTerms), ([_term, nbOcc]) => -1 * nbOcc).map(([term, nbOcc]) => ({
