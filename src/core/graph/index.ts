@@ -2,7 +2,6 @@ import { Attributes } from "graphology-types";
 import { isNil, last, mapValues, omit } from "lodash";
 import { Coordinates } from "sigma/types";
 
-import { clearGraph } from "../../utils/graph";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { filtersAtom } from "../filters";
@@ -181,7 +180,7 @@ export const sigmaGraphAtom = derivedAtom(
     applyVisualProperties(newGraph, dataset, visualGetters);
 
     if (graph) {
-      clearGraph(graph);
+      graph.clear();
       graph.import(newGraph);
 
       return graph;
