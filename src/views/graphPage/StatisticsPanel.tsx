@@ -1,25 +1,25 @@
-import { capitalize, keyBy, map, mapValues, isNil, cloneDeep } from "lodash";
-import React, { FC, Fragment, useMemo, useState, useCallback, useEffect } from "react";
+import cx from "classnames";
+import { capitalize, cloneDeep, isNil, keyBy, map, mapValues } from "lodash";
+import React, { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
-import Highlight from "react-highlight";
-import cx from "classnames";
 
-import { ItemType } from "../../core/types";
-import { useAtom } from "../../core/utils/atoms";
-import { sessionAtom } from "../../core/session";
-import { useNotifications } from "../../core/notifications";
-import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
-import { Metric, MetricScriptParameter } from "../../core/metrics/types";
-import { computeMetric } from "../../core/metrics";
+import MessageTooltip from "../../components/MessageTooltip";
+import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
+import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
 import { useGraphDataset, useGraphDatasetActions, useSigmaGraph } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
+import { computeMetric } from "../../core/metrics";
+import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
+import { Metric, MetricScriptParameter } from "../../core/metrics/types";
 import { useModal } from "../../core/modals";
-import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
+import { useNotifications } from "../../core/notifications";
+import { sessionAtom } from "../../core/session";
+import { ItemType } from "../../core/types";
+import { useAtom } from "../../core/utils/atoms";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
-import { DEFAULT_SELECT_PROPS } from "../../components/consts";
-import MessageTooltip from "../../components/MessageTooltip";
 
 type MetricOption = {
   // id/name of the metric

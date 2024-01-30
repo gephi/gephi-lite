@@ -1,13 +1,13 @@
-import Select from "react-select";
-import { FC, useMemo } from "react";
 import { capitalize } from "lodash";
+import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import Select from "react-select";
 
-import { ItemType } from "../../../core/types";
-import { useAppearance, useAppearanceActions } from "../../../core/context/dataContexts";
 import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_NODE_LABEL_SIZE } from "../../../core/appearance/utils";
-import { SliderInput } from "../../forms/TypedInputs";
+import { useAppearance, useAppearanceActions } from "../../../core/context/dataContexts";
+import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { SliderInput } from "../../forms/TypedInputs";
 
 export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();

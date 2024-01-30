@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
 import { write } from "graphology-gexf";
 import { toUndirected } from "graphology-operators";
+import { useCallback, useState } from "react";
 
-import { dataGraphToFullGraph } from "./utils";
-import { useFilteredGraph, useGraphDataset } from "../context/dataContexts";
 import { applyVisualProperties } from "../appearance/utils";
+import { useFilteredGraph, useGraphDataset } from "../context/dataContexts";
 import { visualGettersAtom } from "./index";
+import { dataGraphToFullGraph } from "./utils";
 
 export function useExportAsGexf() {
   const [loading, setLoading] = useState<boolean>(false);

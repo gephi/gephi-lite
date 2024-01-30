@@ -1,15 +1,15 @@
-import { useState, useCallback } from "react";
-import { isNil } from "lodash";
-import { parse } from "graphology-gexf";
 import Graph from "graphology";
+import { parse } from "graphology-gexf";
+import { isNil } from "lodash";
+import { useCallback, useState } from "react";
 
-import { useAtom } from "../utils/atoms";
-import { initializeGraphDataset } from "../graph/utils";
 import { graphDatasetAtom } from "../graph";
 import { useExportAsGexf } from "../graph/useExportAsGexf";
-import { useConnectedUser } from "../user/index";
-import { CloudFile } from "./types";
+import { initializeGraphDataset } from "../graph/utils";
 import { resetCamera } from "../sigma";
+import { useConnectedUser } from "../user/index";
+import { useAtom } from "../utils/atoms";
+import { CloudFile } from "./types";
 
 export function useCloudProvider() {
   const [user] = useConnectedUser();

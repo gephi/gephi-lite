@@ -1,8 +1,9 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
+
+import { GraphIcon } from "../../components/common-icons";
 import { GraphMetadataForm } from "../../components/forms/GraphMetadataForm";
 import { GraphModelForm } from "../../components/forms/GraphModelForm";
-import { GraphIcon } from "../../components/common-icons";
 
 export const GraphDataPanel: FC = () => {
   const { t } = useTranslation();

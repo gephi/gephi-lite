@@ -1,7 +1,7 @@
 import { isNil } from "lodash";
 
-import { User } from "./types";
 import { atom, useAtom } from "../utils/atoms";
+import { User } from "./types";
 
 export const LS_USER_KEY = "user";
 export const userAtom = atom<User | null>(null);

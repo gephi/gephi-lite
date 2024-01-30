@@ -1,7 +1,8 @@
 import { FC } from "react";
-import { ItemType } from "../../../core/types";
-import { FixedSize } from "../../../core/appearance/types";
 import { useTranslation } from "react-i18next";
+
+import { FixedSize } from "../../../core/appearance/types";
+import { ItemType } from "../../../core/types";
 
 export const SizeFixedEditor: FC<{
   itemType: ItemType;

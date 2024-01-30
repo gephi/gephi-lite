@@ -1,19 +1,19 @@
-import Select from "react-select";
-import { FC, useMemo } from "react";
 import { flatMap, isEqual, uniq } from "lodash";
+import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import Select from "react-select";
 
+import { Color } from "../../../core/appearance/types";
+import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
+import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import { graphDatasetAtom } from "../../../core/graph";
+import { FieldModel } from "../../../core/graph/types";
+import { ItemType } from "../../../core/types";
+import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
-import { ColorFixedEditor } from "./ColorFixedEditor";
-import { ItemType } from "../../../core/types";
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
-import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance/utils";
-import { FieldModel } from "../../../core/graph/types";
-import { Color } from "../../../core/appearance/types";
-import { graphDatasetAtom } from "../../../core/graph";
 import { getPalette } from "./utils";
-import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type ColorOption = { value: string; label: string | JSX.Element; field?: string; type: string };
 

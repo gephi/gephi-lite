@@ -1,5 +1,5 @@
-import { parse, stringify } from "../utils/json";
 import { i18n } from "../../locales/provider";
+import { parse, stringify } from "../utils/json";
 import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {

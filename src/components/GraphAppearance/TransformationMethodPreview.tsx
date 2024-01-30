@@ -1,5 +1,6 @@
 import { range } from "lodash";
 import { FC } from "react";
+
 import { TransformationMethod } from "../../core/appearance/types";
 import { makeGetValue } from "../../core/appearance/utils";
 

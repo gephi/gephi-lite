@@ -1,12 +1,12 @@
-import { FC } from "react";
-import { sortBy, toPairs } from "lodash";
 import cx from "classnames";
-
-import { Color, EdgeColor } from "../../core/appearance/types";
-import { GraphCaptionProps, PartitionExtends, RangeExtends } from ".";
+import { sortBy, toPairs } from "lodash";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { ColorSlider } from "./ColorSlider";
+
+import { GraphCaptionProps, PartitionExtends, RangeExtends } from ".";
+import { Color, EdgeColor } from "../../core/appearance/types";
 import { CaptionItemTitle } from "./CaptionItemTitle";
+import { ColorSlider } from "./ColorSlider";
 
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {

@@ -1,6 +1,7 @@
+import cx from "classnames";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
-import cx from "classnames";
+
 import { TransformationMethod } from "../../core/appearance/types";
 
 const ICON_NAMES = {

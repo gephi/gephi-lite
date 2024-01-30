@@ -1,8 +1,8 @@
+import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
-import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
-import { useTranslation } from "react-i18next";
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
@@ -34,7 +34,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
         {...DEFAULT_SELECT_PROPS}
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
         onChange={(options) => {
-          const selectedValues = new Set(options.map((o) => o.value))
+          const selectedValues = new Set(options.map((o) => o.value));
           replaceCurrentFilter({ ...filter, terms: selectedValues.size > 0 ? selectedValues : undefined });
         }}
         isMulti

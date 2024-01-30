@@ -2,8 +2,8 @@ import cx from "classnames";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
 import { getItemAttributes } from "../core/appearance/utils";
+import { useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
 import { NodeComponent } from "./Node";
 
 export const EdgeComponent: FC<{

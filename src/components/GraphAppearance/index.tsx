@@ -1,13 +1,14 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ColorItem } from "./color/ColorItem";
+
+import { useAppearance, useAppearanceActions } from "../../core/context/dataContexts";
 import { ItemType } from "../../core/types";
-import { SizeItem } from "./size/SizeItem";
-import { LabelItem } from "./label/LabelItem";
-import { LabelSizeItem } from "./label/LabelSizeItem";
 import { Toggle } from "../Toggle";
 import { EdgeIcon, NodeIcon } from "../common-icons";
-import { useAppearance, useAppearanceActions } from "../../core/context/dataContexts";
+import { ColorItem } from "./color/ColorItem";
+import { LabelItem } from "./label/LabelItem";
+import { LabelSizeItem } from "./label/LabelSizeItem";
+import { SizeItem } from "./size/SizeItem";
 
 export const GraphAppearance: FC = () => {
   const { t } = useTranslation();

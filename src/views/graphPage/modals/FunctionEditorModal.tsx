@@ -1,10 +1,10 @@
+import Editor from "@monaco-editor/react";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Editor from "@monaco-editor/react";
 
-import { ModalProps } from "../../../core/modals/types";
+import { CloseIcon, CodeEditorIcon, RunIcon, SaveIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
-import { CodeEditorIcon, RunIcon, SaveIcon, CloseIcon } from "../../../components/common-icons";
+import { ModalProps } from "../../../core/modals/types";
 
 //eslint-disable-next-line @typescript-eslint/ban-types
 interface FunctionEditorModalProps<T = Function> {

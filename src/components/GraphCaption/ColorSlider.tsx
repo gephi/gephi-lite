@@ -1,7 +1,7 @@
+import { last, range } from "lodash";
 import { FC, HTMLProps, useCallback } from "react";
 import ReactSlider from "react-slider";
 
-import { last, range } from "lodash";
 import { RangeExtends } from ".";
 import { ColorScalePointType } from "../../core/appearance/types";
 import { shortenNumber } from "../GraphFilters/utils";
@@ -79,10 +79,10 @@ export const ColorSlider: FC<{
                       colorScalePoints[state.index].color
                     })`
                   : state.index === 0
-                  ? colorScalePoints[0].color
-                  : state.index === state.value.length
-                  ? last(colorScalePoints)?.color
-                  : undefined,
+                    ? colorScalePoints[0].color
+                    : state.index === state.value.length
+                      ? last(colorScalePoints)?.color
+                      : undefined,
             }}
           />
         );

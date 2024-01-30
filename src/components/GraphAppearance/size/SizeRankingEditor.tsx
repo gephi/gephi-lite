@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ItemType } from "../../../core/types";
 import { RankingSize } from "../../../core/appearance/types";
+import { ItemType } from "../../../core/types";
 import { TransformationMethodsSelect } from "../TransformationMethodSelect";
 
 export const SizeRankingEditor: FC<{

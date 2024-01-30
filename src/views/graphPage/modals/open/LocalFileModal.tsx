@@ -1,13 +1,13 @@
 import { FC, useState } from "react";
-import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { FaFolderOpen, FaTimes } from "react-icons/fa";
 
+import { DropInput } from "../../../../components/DropInput";
+import { Loader } from "../../../../components/Loader";
+import { Modal } from "../../../../components/modals";
+import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
-import { Modal } from "../../../../components/modals";
-import { Loader } from "../../../../components/Loader";
-import { DropInput } from "../../../../components/DropInput";
-import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 
 export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { notify } = useNotifications();

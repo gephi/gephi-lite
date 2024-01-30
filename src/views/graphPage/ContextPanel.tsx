@@ -1,17 +1,17 @@
-import { FC, useCallback } from "react";
 import { capitalize } from "lodash";
+import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlinePlus } from "react-icons/ai";
 
-import { Selection } from "./Selection";
 import { GraphSearch, Option, OptionItem } from "../../components/GraphSearch";
 import { ContextIcon } from "../../components/common-icons";
 import { useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
-import { ItemType } from "../../core/types";
-import { useModal } from "../../core/modals";
 import { useSelectionActions } from "../../core/context/dataContexts";
-import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
+import { useModal } from "../../core/modals";
+import { ItemType } from "../../core/types";
+import { Selection } from "./Selection";
 import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
+import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
 
 const GraphStat: FC<{ type: ItemType; current: number; total: number }> = ({ type, current, total }) => {
   const { t } = useTranslation();

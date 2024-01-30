@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
-import { NotificationData, NotificationsState } from "./types";
 import { atom, useWriteAtom } from "../utils/atoms";
+import { NotificationData, NotificationsState } from "./types";
 
 export const notificationsStateAtom = atom<NotificationsState>({ notifications: [] });
 

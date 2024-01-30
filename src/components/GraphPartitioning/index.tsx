@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { ItemType } from "../../core/types";
 import { Tabs } from "../Tabs";
 import { GraphPartitioningForm } from "./GraphPartitioningForm";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
-import { ItemType } from "../../core/types";
-import { useTranslation } from "react-i18next";
 
 export const GraphPartitioning: FC = () => {
   const { t } = useTranslation();

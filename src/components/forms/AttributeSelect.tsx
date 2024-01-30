@@ -1,6 +1,7 @@
 import { FC, useEffect } from "react";
-import { Attribute } from "../GraphPartitioning/GraphPartitioningForm";
+
 import { ItemType } from "../../core/types";
+import { Attribute } from "../GraphPartitioning/GraphPartitioningForm";
 
 type AttributeSelectProps = {
   id?: string;

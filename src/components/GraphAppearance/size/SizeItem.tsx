@@ -1,16 +1,16 @@
+import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
-import { isEqual } from "lodash";
 
-import { SizeRankingEditor } from "./SizeRankingEditor";
-import { SizeFixedEditor } from "./SizeFixedEditor";
-import { ItemType } from "../../../core/types";
-import { FieldModel } from "../../../core/graph/types";
+import { Size } from "../../../core/appearance/types";
 import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
-import { Size } from "../../../core/appearance/types";
+import { FieldModel } from "../../../core/graph/types";
+import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { SizeFixedEditor } from "./SizeFixedEditor";
+import { SizeRankingEditor } from "./SizeRankingEditor";
 
 type SizeOption = { value: string; label: string | JSX.Element; field?: string; type: string };
 

@@ -1,10 +1,10 @@
-import { FC, useEffect } from "react";
 import { isNil } from "lodash";
+import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ghProviderDeserialize } from "../cloud/github/provider";
 import { useNotifications } from "../notifications";
-import { useConnectedUser, LS_USER_KEY } from "./index";
+import { LS_USER_KEY, useConnectedUser } from "./index";
 
 /**
  * Sync user saved in localstorage with the atom.

@@ -1,11 +1,12 @@
 import { IconType } from "react-icons";
-import { TbCircles } from "react-icons/tb";
-import { RiFilterFill } from "react-icons/ri";
-import { ImFilesEmpty } from "react-icons/im";
 import { BiNetworkChart } from "react-icons/bi";
+import { BsCircle, BsCodeSlash, BsFillPlayFill, BsGithub, BsPalette, BsSearch, BsSlashLg } from "react-icons/bs";
 import { GrOverview, GrScorecard } from "react-icons/gr";
-import { MdLogin, MdLogout, MdOutlineSaveAlt, MdClose } from "react-icons/md";
-import { BsSearch, BsSlashLg, BsCircle, BsGithub, BsPalette, BsCodeSlash, BsFillPlayFill } from "react-icons/bs";
+import { ImFilesEmpty } from "react-icons/im";
+import { MdClose, MdLogin, MdLogout, MdOutlineSaveAlt } from "react-icons/md";
+import { RiFilterFill } from "react-icons/ri";
+import { TbCircles } from "react-icons/tb";
+
 import { ItemType } from "../core/types";
 
 export const GraphIcon = BiNetworkChart;

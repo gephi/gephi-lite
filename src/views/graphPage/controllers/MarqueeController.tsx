@@ -1,8 +1,8 @@
-import React from "react";
-import { pick } from "lodash";
-import { Coordinates } from "sigma/types";
-import { FC, useCallback, useEffect, useState } from "react";
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
+import { pick } from "lodash";
+import React from "react";
+import { FC, useCallback, useEffect, useState } from "react";
+import { Coordinates } from "sigma/types";
 
 import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
 

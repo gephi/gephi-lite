@@ -1,13 +1,13 @@
 import cx from "classnames";
-import Select from "react-select";
-import React, { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
 import { clamp } from "lodash";
 import Slider from "rc-slider";
 import { MarkObj } from "rc-slider/lib/Marks";
 import { SliderProps } from "rc-slider/lib/Slider";
+import React, { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
+import Select from "react-select";
 
-import { DEFAULT_SELECT_PROPS } from "../consts";
 import MessageTooltip from "../MessageTooltip";
+import { DEFAULT_SELECT_PROPS } from "../consts";
 
 interface BaseTypedInputProps {
   id: string;

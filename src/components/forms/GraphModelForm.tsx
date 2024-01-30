@@ -1,8 +1,8 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FieldModel } from "../../core/graph/types";
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { FieldModel } from "../../core/graph/types";
 import { Toggle } from "../Toggle";
 import { EdgeIcon, NodeIcon } from "../common-icons";
 

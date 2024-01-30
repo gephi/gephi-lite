@@ -1,9 +1,9 @@
-import { FC, ReactNode } from "react";
-import { toPairs } from "lodash";
 import localeEmoji from "locale-emoji";
+import { toPairs } from "lodash";
+import { FC, ReactNode } from "react";
 import { HiMiniLanguage } from "react-icons/hi2";
 
-import { usePreferencesActions, usePreferences } from "../core/context/dataContexts";
+import { usePreferences, usePreferencesActions } from "../core/context/dataContexts";
 import { LOCALES } from "../locales/LOCALES";
 import Tooltip from "./Tooltip";
 

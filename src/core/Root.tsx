@@ -1,13 +1,13 @@
 import { FC, useMemo } from "react";
-import { HashRouter, Route, Routes } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
+import { ErrorComponent } from "../components/Error";
 import { NotFoundPage } from "../views/NotFoundPage";
 import { GraphPage } from "../views/graphPage";
-import { ErrorComponent } from "../components/Error";
-import { UIContext, emptyUIContext } from "./context/uiContext";
-import { AtomsContextsRoot } from "./context/dataContexts";
 import { Initialize } from "./Initialize";
+import { AtomsContextsRoot } from "./context/dataContexts";
+import { UIContext, emptyUIContext } from "./context/uiContext";
 
 export const Root: FC = () => {
   const portalTarget = useMemo(() => document.getElementById("portal-target") as HTMLDivElement, []);

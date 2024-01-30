@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
+import { ItemType } from "../../core/types";
 import { AttributeSelect } from "../forms/AttributeSelect";
 import { GraphPartitioningStatus } from "./GraphPartitioningStatus";
-import { ItemType } from "../../core/types";
-import { useTranslation } from "react-i18next";
 
 export interface Attribute {
   id: string;
@@ -21,9 +21,11 @@ export const GraphPartitioningForm: FC<{
   const [newPartAttId, setNewPartAttId] = useState<string | undefined>();
 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-    }}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
       <div>
         <label>
           {t("graph.partitioning.partition", {

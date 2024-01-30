@@ -1,13 +1,13 @@
-import { FC, useEffect, useState, useCallback } from "react";
-import { FaSave, FaTimes } from "react-icons/fa";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FaSave, FaTimes } from "react-icons/fa";
 
-import { ModalProps } from "../../../../core/modals/types";
-import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
-import { useConnectedUser } from "../../../../core/user";
-import { useNotifications } from "../../../../core/notifications";
-import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
+import { Modal } from "../../../../components/modals";
+import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
+import { ModalProps } from "../../../../core/modals/types";
+import { useNotifications } from "../../../../core/notifications";
+import { useConnectedUser } from "../../../../core/user";
 
 export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();

@@ -1,5 +1,5 @@
-import { toNumber, toScalar, toString } from "./casting";
 import { Scalar } from "../types";
+import { toNumber, toScalar, toString } from "./casting";
 
 describe("Casting utilities", () => {
   describe("#toNumber", () => {

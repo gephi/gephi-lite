@@ -1,8 +1,8 @@
 import Graph from "graphology";
 import { Coordinates } from "sigma/types";
 
-import { ItemType } from "../types";
 import { DataGraph, ItemData } from "../graph/types";
+import { ItemType } from "../types";
 
 /**
  * Type for layout parameters

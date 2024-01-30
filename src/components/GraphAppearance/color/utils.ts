@@ -1,5 +1,5 @@
-import { every } from "lodash";
 import iwanthue from "iwanthue";
+import { every } from "lodash";
 
 export function isColor(strColor: string): boolean {
   const s = new Option().style;

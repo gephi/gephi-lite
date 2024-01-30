@@ -1,18 +1,11 @@
-import { ComponentType, FC, ReactNode, useMemo, useState } from "react";
 import cx from "classnames";
 import { isNil } from "lodash";
+import { ComponentType, FC, ReactNode, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BsX } from "react-icons/bs";
 import { BsFillInfoSquareFill } from "react-icons/bs";
-import { useTranslation } from "react-i18next";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 
-import { Layout } from "../layout";
-import { GraphDataPanel } from "./GraphDataPanel";
-import { StatisticsPanel } from "./StatisticsPanel";
-import { AppearancePanel } from "./AppearancePanel";
-import { FiltersPanel } from "./FiltersPanel";
-import { LayoutsPanel } from "./LayoutsPanel";
-import { GraphRendering } from "./GraphRendering";
 import {
   AppearanceIcon,
   FileIcon,
@@ -21,14 +14,21 @@ import {
   LayoutsIcon,
   StatisticsIcon,
 } from "../../components/common-icons";
+import { UserAvatar } from "../../components/user/UserAvatar";
+import { config } from "../../config";
 import { useFilters, useSelection } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
-import { WelcomeModal } from "./modals/WelcomeModal";
-import { FilePanel } from "./FilePanel";
-import { GitHubPanel } from "./GitHubPanel";
-import { UserAvatar } from "../../components/user/UserAvatar";
+import { Layout } from "../layout";
+import { AppearancePanel } from "./AppearancePanel";
 import { ContextPanel } from "./ContextPanel";
-import { config } from "../../config";
+import { FilePanel } from "./FilePanel";
+import { FiltersPanel } from "./FiltersPanel";
+import { GitHubPanel } from "./GitHubPanel";
+import { GraphDataPanel } from "./GraphDataPanel";
+import { GraphRendering } from "./GraphRendering";
+import { LayoutsPanel } from "./LayoutsPanel";
+import { StatisticsPanel } from "./StatisticsPanel";
+import { WelcomeModal } from "./modals/WelcomeModal";
 
 type Tool = {
   type: "tool";
@@ -45,7 +45,11 @@ type Button = { type: "button"; label: string; icon: ComponentType<{ className?:
 const GephiLiteButton: FC = () => {
   const { t } = useTranslation();
   return (
-    <img src={`${import.meta.env.BASE_URL}/gephi-logo.svg`} style={{ width: "2em" }} alt={t("welcome.logo") as string} />
+    <img
+      src={`${import.meta.env.BASE_URL}/gephi-logo.svg`}
+      style={{ width: "2em" }}
+      alt={t("welcome.logo") as string}
+    />
   );
 };
 

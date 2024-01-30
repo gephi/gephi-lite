@@ -1,17 +1,17 @@
-import { isNil, isObject } from "lodash";
 import Graph from "graphology";
-import circlepack from "graphology-layout/circlepack";
-import { inferSettings } from "graphology-layout-forceatlas2";
-import FA2Layout from "graphology-layout-forceatlas2/worker";
-import random, { RandomLayoutOptions } from "graphology-layout/random";
-import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
-import circular, { CircularLayoutOptions } from "graphology-layout/circular";
 import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
+import { inferSettings } from "graphology-layout-forceatlas2";
+import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
+import FA2Layout from "graphology-layout-forceatlas2/worker";
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
+import circlepack from "graphology-layout/circlepack";
+import circular, { CircularLayoutOptions } from "graphology-layout/circular";
+import random, { RandomLayoutOptions } from "graphology-layout/random";
+import { isNil, isObject } from "lodash";
 
-import { dataGraphToFullGraph } from "../graph/utils";
-import { DataGraph, ItemData } from "../graph/types";
 import { graphDatasetAtom } from "../graph";
+import { DataGraph, ItemData } from "../graph/types";
+import { dataGraphToFullGraph } from "../graph/utils";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
 
 // definition of a custom layout function

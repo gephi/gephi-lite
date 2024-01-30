@@ -1,13 +1,13 @@
-import { FC, useState, useCallback } from "react";
-import { FaSave, FaTimes } from "react-icons/fa";
-import { useTranslation } from "react-i18next";
 import fileSaver from "file-saver";
+import { FC, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FaSave, FaTimes } from "react-icons/fa";
 
-import { ModalProps } from "../../../../core/modals/types";
 import { Modal } from "../../../../components/modals";
 import { useSigmaAtom } from "../../../../core/context/dataContexts";
-import { getGraphSnapshot } from "../../../../utils/sigma";
+import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
+import { getGraphSnapshot } from "../../../../utils/sigma";
 
 export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();

@@ -1,8 +1,8 @@
 import { MultiGraph } from "graphology";
 import { GraphType } from "graphology-types";
 
-import { ItemType, Scalar } from "../types";
 import { CloudFile } from "../cloud/types";
+import { ItemType, Scalar } from "../types";
 
 /**
  * Graph origin:

@@ -1,10 +1,10 @@
 import { isEqual } from "lodash";
 
-import { Producer, producerToAction } from "../utils/producers";
-import { atom } from "../utils/atoms";
 import { RemoteFile } from "../graph/types";
-import { getCurrentPreferences, serializePreferences } from "./utils";
+import { atom } from "../utils/atoms";
+import { Producer, producerToAction } from "../utils/producers";
 import { Preferences } from "./types";
+import { getCurrentPreferences, serializePreferences } from "./utils";
 
 /**
  * Producers:

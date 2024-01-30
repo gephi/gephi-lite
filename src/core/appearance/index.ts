@@ -1,8 +1,8 @@
+import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
+import { Producer, producerToAction } from "../utils/producers";
 import { AppearanceState, Color, Label, LabelSize, Size } from "./types";
 import { getEmptyAppearanceState, serializeAppearanceState } from "./utils";
-import { Producer, producerToAction } from "../utils/producers";
-import { ItemType } from "../types";
 
 const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();

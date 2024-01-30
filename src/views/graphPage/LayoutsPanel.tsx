@@ -1,26 +1,26 @@
-import React, { FC, useMemo, useState, useEffect, useCallback } from "react";
-import { useTranslation } from "react-i18next";
-import Select from "react-select";
-import { FaPlay, FaStop } from "react-icons/fa";
-import Highlight from "react-highlight";
 import cx from "classnames";
 import { isNil } from "lodash";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import Highlight from "react-highlight";
+import { useTranslation } from "react-i18next";
+import { FaPlay, FaStop } from "react-icons/fa";
+import Select from "react-select";
 
-import { useModal } from "../../core/modals";
-import { useAtom } from "../../core/utils/atoms";
-import { sessionAtom } from "../../core/session";
-import { FieldModel } from "../../core/graph/types";
-import { LAYOUTS } from "../../core/layouts/collection";
-import { useLayouts } from "../../core/layouts/useLayouts";
-import { getFilteredDataGraph } from "../../core/graph/utils";
-import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
-import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
 import { LoaderFill } from "../../components/Loader";
-import { DEFAULT_SELECT_PROPS } from "../../components/consts";
-import { LayoutsIcon, CodeEditorIcon } from "../../components/common-icons";
-import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
-import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 import MessageTooltip from "../../components/MessageTooltip";
+import { CodeEditorIcon, LayoutsIcon } from "../../components/common-icons";
+import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
+import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { FieldModel } from "../../core/graph/types";
+import { getFilteredDataGraph } from "../../core/graph/utils";
+import { LAYOUTS } from "../../core/layouts/collection";
+import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
+import { useLayouts } from "../../core/layouts/useLayouts";
+import { useModal } from "../../core/modals";
+import { sessionAtom } from "../../core/session";
+import { useAtom } from "../../core/utils/atoms";
+import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type LayoutOption = {
   value: string;

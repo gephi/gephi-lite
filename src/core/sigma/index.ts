@@ -1,13 +1,13 @@
-import Sigma from "sigma";
 import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
+import Sigma from "sigma";
 
-import { SigmaState } from "./types";
-import { atom } from "../utils/atoms";
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaGraph } from "../graph/types";
-import { getEmptySigmaState } from "./utils";
+import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
+import { SigmaState } from "./types";
+import { getEmptySigmaState } from "./utils";
 
 /**
  * Producers:

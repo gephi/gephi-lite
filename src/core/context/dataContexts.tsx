@@ -1,16 +1,16 @@
-import { Context, createContext, FC, ReactNode, useContext } from "react";
 import { reduce } from "lodash";
+import { Context, FC, ReactNode, createContext, useContext } from "react";
 
-import { filtersActions, filtersAtom } from "../filters";
 import { appearanceActions, appearanceAtom } from "../appearance";
+import { filtersActions, filtersAtom } from "../filters";
 import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
-import { ReadableAtom, useReadAtom, WritableAtom } from "../utils/atoms";
+import { fileActions, fileStateAtom } from "../graph/files";
 import { preferencesActions, preferencesAtom } from "../preferences";
+import { searchActions, searchAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
-import { searchActions, searchAtom } from "../search";
+import { ReadableAtom, WritableAtom, useReadAtom } from "../utils/atoms";
 import { Action } from "../utils/producers";
-import { fileActions, fileStateAtom } from "../graph/files";
 
 /**
  * Helpers:

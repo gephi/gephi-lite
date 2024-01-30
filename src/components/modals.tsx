@@ -1,5 +1,5 @@
-import React, { FC, PropsWithChildren, ReactNode } from "react";
 import cx from "classnames";
+import React, { FC, PropsWithChildren, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useModal } from "../core/modals";

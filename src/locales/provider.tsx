@@ -1,8 +1,8 @@
-import { FC, PropsWithChildren, useEffect } from "react";
-import { capitalize } from "lodash";
 import i18next from "i18next";
-import { initReactI18next, I18nextProvider } from "react-i18next";
 import LngDetector from "i18next-browser-languagedetector";
+import { capitalize } from "lodash";
+import { FC, PropsWithChildren, useEffect } from "react";
+import { I18nextProvider, initReactI18next } from "react-i18next";
 
 import { usePreferences } from "../core/context/dataContexts";
 import { DEFAULT_LOCALE, LOCALES } from "./LOCALES";

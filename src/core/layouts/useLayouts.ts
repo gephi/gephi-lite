@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions, useSigmaGraph } from "../context/dataContexts";
-import { useNotifications } from "../notifications";
-import { LayoutMapping, WorkerSupervisorInterface } from "./types";
-import { LAYOUTS } from "./collection";
-import { resetCamera } from "../sigma";
 import { dataGraphToFullGraph } from "../graph/utils";
+import { useNotifications } from "../notifications";
+import { resetCamera } from "../sigma";
+import { LAYOUTS } from "./collection";
+import { LayoutMapping, WorkerSupervisorInterface } from "./types";
 
 export function useLayouts() {
   const { t } = useTranslation();

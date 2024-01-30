@@ -1,5 +1,5 @@
+import { DatalessGraph, FullGraph, ItemData } from "../graph/types";
 import { ItemType } from "../types";
-import { DatalessGraph, ItemData, FullGraph } from "../graph/types";
 
 export interface BaseFilter {
   type: string;

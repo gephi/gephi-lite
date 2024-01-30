@@ -1,22 +1,20 @@
+import cx from "classnames";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BsCheckSquare } from "react-icons/bs";
 import { CgRemoveR } from "react-icons/cg";
 import { FiEdit } from "react-icons/fi";
 import { RiFilterLine, RiFilterOffLine } from "react-icons/ri";
-import cx from "classnames";
 
 import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
-
 import { FilterType } from "../../core/filters/types";
-
-import { FilterCreator } from "./FilterCreator";
-import { RangeFilter } from "./RangeFilter";
-import { TermsFilter } from "./TermsFilter";
-import { ScriptFilter } from "./ScriptFilter";
-import { GraphIcon } from "../common-icons";
 import { filteredGraphsAtom } from "../../core/graph";
 import { useReadAtom } from "../../core/utils/atoms";
+import { GraphIcon } from "../common-icons";
+import { FilterCreator } from "./FilterCreator";
+import { RangeFilter } from "./RangeFilter";
+import { ScriptFilter } from "./ScriptFilter";
+import { TermsFilter } from "./TermsFilter";
 
 const FilterInStack: FC<{
   filter: FilterType;

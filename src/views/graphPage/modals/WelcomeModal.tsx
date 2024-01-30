@@ -1,18 +1,19 @@
 import { FC, useEffect } from "react";
-import { Modal } from "../../../components/modals";
-import { ModalProps } from "../../../core/modals/types";
 import { useTranslation } from "react-i18next";
-import { CloudFileModal } from "./open/CloudFileModal";
 import { FaRegFolderOpen } from "react-icons/fa";
+
+import { Loader } from "../../../components/Loader";
+import LocalSwitcher from "../../../components/LocalSwitcher";
+import { GitHubIcon } from "../../../components/common-icons";
+import { Modal } from "../../../components/modals";
+import { useFileActions, useFileState, usePreferences } from "../../../core/context/dataContexts";
+import { useModal } from "../../../core/modals";
+import { ModalProps } from "../../../core/modals/types";
+import { useNotifications } from "../../../core/notifications";
+import { useConnectedUser } from "../../../core/user";
+import { CloudFileModal } from "./open/CloudFileModal";
 import { LocalFileModal } from "./open/LocalFileModal";
 import { RemoteFileModal } from "./open/RemoteFileModal";
-import { useConnectedUser } from "../../../core/user";
-import { useModal } from "../../../core/modals";
-import { Loader } from "../../../components/Loader";
-import { useNotifications } from "../../../core/notifications";
-import { useFileActions, useFileState, usePreferences } from "../../../core/context/dataContexts";
-import { GitHubIcon } from "../../../components/common-icons";
-import LocalSwitcher from "../../../components/LocalSwitcher";
 
 const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 

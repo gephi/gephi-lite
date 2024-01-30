@@ -5,7 +5,6 @@ import { GraphCaptionProps, RangeExtends } from ".";
 import { Size } from "../../core/appearance/types";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
 import { shortenNumber } from "../GraphFilters/utils";
-
 import { CaptionItemTitle } from "./CaptionItemTitle";
 
 const ItemSizeCaption: FC<

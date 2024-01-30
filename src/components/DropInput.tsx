@@ -1,8 +1,8 @@
 import cx from "classnames";
 import React, { FC } from "react";
-import { useDropzone, Accept } from "react-dropzone";
-import { FaTimes } from "react-icons/fa";
+import { Accept, useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
+import { FaTimes } from "react-icons/fa";
 
 interface DropInputProperties {
   value: File | null;

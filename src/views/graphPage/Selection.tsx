@@ -1,11 +1,17 @@
 import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { MdDeselect, MdSelectAll, MdFilterCenterFocus } from "react-icons/md";
-import { BsThreeDotsVertical, BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
 import { BiTargetLock } from "react-icons/bi";
+import { BsFillTrashFill, BsThreeDotsVertical } from "react-icons/bs";
+import { MdDeselect, MdFilterCenterFocus, MdSelectAll } from "react-icons/md";
 
+import Dropdown from "../../components/Dropdown";
+import { EdgeComponent } from "../../components/Edge";
+import { InfiniteScroll } from "../../components/InfiniteScroll";
+import { NodeComponent } from "../../components/Node";
+import { ItemIcons } from "../../components/common-icons";
+import { getItemAttributes } from "../../core/appearance/utils";
 import {
   useFilteredGraph,
   useGraphDataset,
@@ -14,18 +20,12 @@ import {
   useSelectionActions,
   useVisualGetters,
 } from "../../core/context/dataContexts";
-import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
-import { NodeComponent } from "../../components/Node";
-import { EdgeComponent } from "../../components/Edge";
-import { ItemIcons } from "../../components/common-icons";
-import { ItemData, NodeRenderingData, EdgeRenderingData } from "../../core/graph/types";
-import { getItemAttributes } from "../../core/appearance/utils";
-import Dropdown from "../../components/Dropdown";
+import { EdgeRenderingData, ItemData, NodeRenderingData } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
-import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
-import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
+import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 import ConfirmModal from "./modals/ConfirmModal";
-import { InfiniteScroll } from "../../components/InfiniteScroll";
+import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
+import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
 
 function SelectedItem<
   T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },

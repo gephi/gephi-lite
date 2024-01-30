@@ -1,5 +1,5 @@
-import React, { forwardRef, PropsWithChildren, useEffect, useState } from "react";
 import { Property } from "csstype";
+import React, { PropsWithChildren, forwardRef, useEffect, useState } from "react";
 
 const Transition = forwardRef<
   HTMLDivElement,

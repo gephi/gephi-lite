@@ -1,17 +1,17 @@
-import { FC } from "react";
-import { useTranslation } from "react-i18next";
-import { isBoolean } from "lodash";
-import Highlight from "react-highlight";
 import cx from "classnames";
+import { isBoolean } from "lodash";
+import { FC } from "react";
+import Highlight from "react-highlight";
+import { useTranslation } from "react-i18next";
 
-import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
-import { useModal } from "../../core/modals";
-import { CodeEditorIcon } from "../common-icons";
-import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
-import { useReadAtom } from "../../core/utils/atoms";
+import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
+import { useModal } from "../../core/modals";
+import { useReadAtom } from "../../core/utils/atoms";
+import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
+import { CodeEditorIcon } from "../common-icons";
 
 // eslint-disable-next-line no-new-func
 const nodeFilterCustomFn = new Function(`return ( 

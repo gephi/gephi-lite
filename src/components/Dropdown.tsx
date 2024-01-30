@@ -1,5 +1,5 @@
-import { FC, ReactNode } from "react";
 import cx from "classnames";
+import { FC, ReactNode } from "react";
 
 import Tooltip from "./Tooltip";
 

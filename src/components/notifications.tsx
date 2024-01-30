@@ -1,16 +1,17 @@
-import { FC, useState, useCallback } from "react";
 import cx from "classnames";
+import { FC, useCallback, useState } from "react";
 import {
   BsFillCheckCircleFill,
-  BsFillInfoCircleFill,
-  BsFillExclamationTriangleFill,
   BsFillExclamationOctagonFill,
+  BsFillExclamationTriangleFill,
+  BsFillInfoCircleFill,
 } from "react-icons/bs";
-import { useAtom } from "../core/utils/atoms";
+
+import { config } from "../config";
 import { notificationsStateAtom } from "../core/notifications";
 import { NotificationType } from "../core/notifications/types";
+import { useAtom } from "../core/utils/atoms";
 import { useTimeout } from "../hooks/useTimeout";
-import { config } from "../config";
 import { dateToFromAgo } from "../utils/date";
 
 export const Notifications: FC = () => {

@@ -1,7 +1,7 @@
-import { FC, CSSProperties } from "react";
 import cx from "classnames";
-import { FaUser } from "react-icons/fa";
+import { CSSProperties, FC } from "react";
 import { useTranslation } from "react-i18next";
+import { FaUser } from "react-icons/fa";
 
 import { useConnectedUser } from "../../core/user";
 

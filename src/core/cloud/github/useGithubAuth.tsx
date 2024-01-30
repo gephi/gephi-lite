@@ -1,11 +1,11 @@
-import { useState, useCallback, useMemo } from "react";
-import { request } from "@octokit/request";
 import { createOAuthDeviceAuth } from "@octokit/auth-oauth-device";
 import { Octokit } from "@octokit/core";
-import { GithubProvider } from "./provider";
+import { request } from "@octokit/request";
+import { useCallback, useMemo, useState } from "react";
 
 import { config } from "../../../config";
 import { useConnectedUser } from "../../user";
+import { GithubProvider } from "./provider";
 
 export function useGithubAuth() {
   // used when we ask github for the code & url

@@ -1,10 +1,10 @@
 import { map } from "lodash";
 import { FC, useState } from "react";
-import { useTranslation } from "react-i18next";
 import AnimateHeight from "react-animate-height";
+import { useTranslation } from "react-i18next";
 
-import { ItemType } from "../../../core/types";
 import { PartitionColor } from "../../../core/appearance/types";
+import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
 
 export const ColorPartitionEditor: FC<{

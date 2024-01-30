@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { fromPairs, map, omit, pick, toPairs } from "lodash";
 import { FC, useContext, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -7,7 +8,6 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 import Select from "react-select";
 import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
-import cx from "classnames";
 
 import { Modal } from "../../../../components/modals";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
@@ -16,6 +16,7 @@ import { EdgeRenderingData } from "../../../../core/graph/types";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { toNumber } from "../../../../core/utils/casting";
+
 // import ColorPicker from "../../../../components/ColorPicker";
 
 interface NodeOption {

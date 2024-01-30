@@ -1,5 +1,5 @@
-import { FC, CSSProperties } from "react";
 import cx from "classnames";
+import { CSSProperties, FC } from "react";
 import { useTranslation } from "react-i18next";
 
 export const Spinner: FC<{ className?: string; style?: CSSProperties }> = ({ className, style }) => {

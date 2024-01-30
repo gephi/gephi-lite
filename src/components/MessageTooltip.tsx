@@ -1,7 +1,7 @@
-import React, { FC, ReactNode, useEffect, useRef, useState } from "react";
-import { AiFillWarning, AiOutlineCheckCircle, AiOutlineInfoCircle } from "react-icons/ai";
-import { IconType } from "react-icons";
 import cx from "classnames";
+import React, { FC, ReactNode, useEffect, useRef, useState } from "react";
+import { IconType } from "react-icons";
+import { AiFillWarning, AiOutlineCheckCircle, AiOutlineInfoCircle } from "react-icons/ai";
 
 import Tooltip, { TooltipAPI } from "./Tooltip";
 

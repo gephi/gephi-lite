@@ -1,10 +1,10 @@
 import { FC, useMemo } from "react";
-import Select from "react-select";
 import { useTranslation } from "react-i18next";
+import Select from "react-select";
 
-import { ItemType } from "../../../core/types";
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
+import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type LabelOption =

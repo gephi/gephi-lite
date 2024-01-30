@@ -1,15 +1,15 @@
 import { FC, useCallback, useMemo, useState } from "react";
-import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { FaFolderOpen, FaTimes } from "react-icons/fa";
 
+import { Loader } from "../../../../components/Loader";
+import { Modal } from "../../../../components/modals";
+import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
+import { RemoteFile } from "../../../../core/graph/types";
+import { ModalProps } from "../../../../core/modals/types";
+import { useNotifications } from "../../../../core/notifications";
 import { isUrl } from "../../../../utils/check";
 import { extractFilename } from "../../../../utils/url";
-import { ModalProps } from "../../../../core/modals/types";
-import { RemoteFile } from "../../../../core/graph/types";
-import { useNotifications } from "../../../../core/notifications";
-import { Modal } from "../../../../components/modals";
-import { Loader } from "../../../../components/Loader";
-import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 
 export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { notify } = useNotifications();

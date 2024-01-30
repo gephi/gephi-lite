@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 function isTimeoutValid(timeout: number): boolean {
   return !isNaN(timeout) && timeout >= 0 && timeout !== Infinity;

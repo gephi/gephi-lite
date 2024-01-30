@@ -1,7 +1,7 @@
+import { useRegisterEvents, useSigma } from "@react-sigma/core";
 import { mapValues, pick } from "lodash";
 import { FC, useEffect, useRef } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
-import { useRegisterEvents, useSigma } from "@react-sigma/core";
 
 import {
   useGraphDatasetActions,

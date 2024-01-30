@@ -1,15 +1,15 @@
-import { isNumber, isString } from "lodash";
 import louvain from "graphology-communities-louvain";
-import toSimple from "graphology-operators/to-simple";
 import { hits, pagerank } from "graphology-metrics/centrality";
-import { disparity, simmelianStrength } from "graphology-metrics/edge";
 import betweennessCentrality from "graphology-metrics/centrality/betweenness";
+import { disparity, simmelianStrength } from "graphology-metrics/edge";
+import toSimple from "graphology-operators/to-simple";
+import { isNumber, isString } from "lodash";
 
-import { Metric } from "./types";
 import { graphDatasetAtom } from "../graph";
 import { DataGraph, EdgeRenderingData } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { toNumber } from "../utils/casting";
+import { Metric } from "./types";
 
 // Definition of a custom metric function for nodes
 // eslint-disable-next-line no-new-func

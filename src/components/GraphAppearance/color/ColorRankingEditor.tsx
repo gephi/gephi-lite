@@ -1,13 +1,13 @@
-import { FC, HTMLProps, useCallback, useMemo, useState } from "react";
 import chroma from "chroma-js";
+import { last, sortBy } from "lodash";
+import { FC, HTMLProps, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactSlider from "react-slider";
 
-import { ItemType } from "../../../core/types";
 import { RankingColor } from "../../../core/appearance/types";
-import { last, sortBy } from "lodash";
-import ColorPickerTooltip from "./ColorPickerTooltip";
+import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
+import ColorPickerTooltip from "./ColorPickerTooltip";
 
 const minDistance = 0.05;
 
@@ -97,10 +97,10 @@ export const ColorRankingEditor: FC<{
                       color.colorScalePoints[state.index].color
                     })`
                   : state.index === 0
-                  ? color.colorScalePoints[0].color
-                  : state.index === state.value.length
-                  ? last(color.colorScalePoints)?.color
-                  : undefined,
+                    ? color.colorScalePoints[0].color
+                    : state.index === state.value.length
+                      ? last(color.colorScalePoints)?.color
+                      : undefined,
             }}
             onMouseMove={(e) => {
               //detect track dragging

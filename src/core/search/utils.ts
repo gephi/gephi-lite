@@ -1,8 +1,8 @@
-import MiniSearch from "minisearch";
 import { mapKeys } from "lodash";
+import MiniSearch from "minisearch";
 
 import { GraphDataset } from "../graph/types";
-import { SearchState, Document } from "./types";
+import { Document, SearchState } from "./types";
 
 export function getEmptySearchState(): SearchState {
   return {

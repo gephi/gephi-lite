@@ -1,13 +1,14 @@
-import { asyncAction } from "../utils/producers";
-import { FileState, LocalFile, RemoteFile } from "./types";
-import { parse } from "graphology-gexf";
 import Graph from "graphology";
+import { parse } from "graphology-gexf";
+
 import { resetStates } from "../context/dataContexts";
-import { getEmptyFileState, initializeGraphDataset } from "./utils";
 import { preferencesActions } from "../preferences";
 import { resetCamera } from "../sigma";
 import { atom } from "../utils/atoms";
+import { asyncAction } from "../utils/producers";
 import { graphDatasetActions } from "./index";
+import { FileState, LocalFile, RemoteFile } from "./types";
+import { getEmptyFileState, initializeGraphDataset } from "./utils";
 
 /**
  * Public API:

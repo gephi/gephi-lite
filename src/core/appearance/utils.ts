@@ -1,9 +1,20 @@
 import chroma from "chroma-js";
 import { forEach, identity } from "lodash";
-import drawLabel from "sigma/rendering/canvas/label";
 import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
+import drawLabel from "sigma/rendering/canvas/label";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
+import {
+  DatalessGraph,
+  EdgeRenderingData,
+  GraphDataset,
+  ItemData,
+  NodeRenderingData,
+  SigmaGraph,
+} from "../graph/types";
+import { ItemType } from "../types";
+import { toNumber, toString } from "../utils/casting";
+import { parse, stringify } from "../utils/json";
 import {
   AppearanceState,
   ColorGetter,
@@ -14,17 +25,6 @@ import {
   TransformationMethod,
   VisualGetters,
 } from "./types";
-import {
-  EdgeRenderingData,
-  GraphDataset,
-  DatalessGraph,
-  ItemData,
-  NodeRenderingData,
-  SigmaGraph,
-} from "../graph/types";
-import { toNumber, toString } from "../utils/casting";
-import { parse, stringify } from "../utils/json";
-import { ItemType } from "../types";
 
 export const DEFAULT_NODE_COLOR = "#999999";
 export const DEFAULT_EDGE_COLOR = "#cccccc";

@@ -1,21 +1,20 @@
-import cx from "classnames";
-import { useTranslation } from "react-i18next";
 import { SigmaContainer } from "@react-sigma/core";
-import { Settings } from "sigma/settings";
+import cx from "classnames";
 import React, { FC, useCallback, useEffect, useState } from "react";
-
-import { FaRegDotCircle } from "react-icons/fa";
-import { BsZoomIn, BsZoomOut } from "react-icons/bs";
+import { useTranslation } from "react-i18next";
 import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
+import { BsZoomIn, BsZoomOut } from "react-icons/bs";
+import { FaRegDotCircle } from "react-icons/fa";
+import { Settings } from "sigma/settings";
 
-import { useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
-import { AppearanceController } from "./controllers/AppearanceController";
-import { SettingsController } from "./controllers/SettingsController";
-import { MarqueeController } from "./controllers/MarqueeController";
-import { EventsController } from "./controllers/EventsController";
-import NodeProgramBorder from "../../utils/bordered-node-program";
-import { resetCamera } from "../../core/sigma";
 import GraphCaption from "../../components/GraphCaption";
+import { useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
+import { resetCamera } from "../../core/sigma";
+import NodeProgramBorder from "../../utils/bordered-node-program";
+import { AppearanceController } from "./controllers/AppearanceController";
+import { EventsController } from "./controllers/EventsController";
+import { MarqueeController } from "./controllers/MarqueeController";
+import { SettingsController } from "./controllers/SettingsController";
 
 function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
   const [isFullScreen, setFullScreen] = useState<boolean>(false);

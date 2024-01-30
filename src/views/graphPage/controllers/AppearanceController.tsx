@@ -1,15 +1,15 @@
-import { FC, useEffect } from "react";
 import { useSigma } from "@react-sigma/core";
+import { FC, useEffect } from "react";
 
-import { memoizedBrighten } from "../../../utils/colors";
-import { useAppearance, useGraphDataset, useSelection, useSigmaState } from "../../../core/context/dataContexts";
+import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appearance/types";
 import {
   DEFAULT_EDGE_COLOR,
   DEFAULT_EDGE_SIZE,
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_SIZE,
 } from "../../../core/appearance/utils";
-import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appearance/types";
+import { useAppearance, useGraphDataset, useSelection, useSigmaState } from "../../../core/context/dataContexts";
+import { memoizedBrighten } from "../../../utils/colors";
 
 export const AppearanceController: FC = () => {
   const sigma = useSigma();

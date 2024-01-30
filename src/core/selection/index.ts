@@ -2,9 +2,9 @@ import { without } from "lodash";
 
 import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
+import { Producer, producerToAction } from "../utils/producers";
 import { SelectionState } from "./types";
 import { getEmptySelectionState } from "./utils";
-import { Producer, producerToAction } from "../utils/producers";
 
 /**
  * Producers:
@@ -39,8 +39,8 @@ export const toggle: Producer<SelectionState, [{ type: ItemType; item: string }]
       state.type !== type
         ? new Set([item])
         : state.items.has(item)
-        ? new Set(without(Array.from(state.items), item))
-        : new Set(Array.from(state.items).concat(item)),
+          ? new Set(without(Array.from(state.items), item))
+          : new Set(Array.from(state.items).concat(item)),
   });
 };
 

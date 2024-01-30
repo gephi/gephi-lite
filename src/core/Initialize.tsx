@@ -1,26 +1,26 @@
-import { FC, PropsWithChildren, useEffect, useCallback } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
+import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
-import { AuthInit } from "./user/AuthInit";
-import { useNotifications } from "./notifications";
-import { graphDatasetAtom } from "./graph";
-import { parseDataset, getEmptyGraphDataset } from "./graph/utils";
-import { filtersAtom } from "./filters";
-import { parseFiltersState } from "./filters/utils";
+import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
 import { parseAppearanceState } from "./appearance/utils";
+import { useFileActions } from "./context/dataContexts";
+import { filtersAtom } from "./filters";
+import { parseFiltersState } from "./filters/utils";
+import { graphDatasetAtom } from "./graph";
+import { fileStateAtom } from "./graph/files";
+import { getEmptyGraphDataset, parseDataset } from "./graph/utils";
+import { useModal } from "./modals";
+import { useNotifications } from "./notifications";
 import { preferencesAtom } from "./preferences";
 import { getCurrentPreferences } from "./preferences/utils";
 import { sessionAtom } from "./session";
-import { parseSession, getEmptySession } from "./session/utils";
-import { useModal } from "./modals";
-import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
+import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
-import { I18n } from "../locales/provider";
-import { useFileActions } from "./context/dataContexts";
-import { fileStateAtom } from "./graph/files";
+import { AuthInit } from "./user/AuthInit";
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();

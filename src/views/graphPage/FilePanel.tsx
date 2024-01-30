@@ -1,22 +1,22 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
 import { BsFiletypePng } from "react-icons/bs";
+import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
 
+import { Loader } from "../../components/Loader";
 import { FileIcon, SingInIcon } from "../../components/common-icons";
-import { SaveCloudFileModal } from "./modals/save/SaveCloudFileModal";
+import { SignInModal } from "../../components/user/SignInModal";
+import { useCloudProvider } from "../../core/cloud/useCloudProvider";
+import { useGraphDataset } from "../../core/context/dataContexts";
+import { useExportAsGexf } from "../../core/graph/useExportAsGexf";
+import { useModal } from "../../core/modals";
+import { useNotifications } from "../../core/notifications";
+import { useConnectedUser } from "../../core/user";
 import { CloudFileModal } from "./modals/open/CloudFileModal";
 import { LocalFileModal } from "./modals/open/LocalFileModal";
 import { RemoteFileModal } from "./modals/open/RemoteFileModal";
-import { useModal } from "../../core/modals";
-import { useConnectedUser } from "../../core/user";
-import { useNotifications } from "../../core/notifications";
-import { useGraphDataset } from "../../core/context/dataContexts";
-import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useExportAsGexf } from "../../core/graph/useExportAsGexf";
-import { Loader } from "../../components/Loader";
-import { SignInModal } from "../../components/user/SignInModal";
 import { ExportPNGModal } from "./modals/save/ExportPNGModal";
+import { SaveCloudFileModal } from "./modals/save/SaveCloudFileModal";
 
 export const FilePanel: FC = () => {
   const { openModal } = useModal();

@@ -1,15 +1,15 @@
-import { FC, useCallback } from "react";
-import AsyncSelect from "react-select/async";
-import { OptionProps, SingleValueProps } from "react-select";
 import cx from "classnames";
 import { debounce } from "lodash";
+import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { OptionProps, SingleValueProps } from "react-select";
+import AsyncSelect from "react-select/async";
 
+import { useAppearance, useSearch } from "../core/context/dataContexts";
 import { ItemType } from "../core/types";
-import { useSearch, useAppearance } from "../core/context/dataContexts";
-import { SearchIcon } from "./common-icons";
-import { NodeComponentById } from "./Node";
 import { EdgeComponentById } from "./Edge";
+import { NodeComponentById } from "./Node";
+import { SearchIcon } from "./common-icons";
 
 export interface OptionItem {
   id: string;

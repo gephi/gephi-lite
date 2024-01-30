@@ -1,5 +1,5 @@
-import { producerToAction } from "./producers";
 import { atom } from "./atoms";
+import { producerToAction } from "./producers";
 
 describe("Producers library", () => {
   describe("#producerToAction", () => {

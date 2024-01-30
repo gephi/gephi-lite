@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { fromPairs, omit, pick, toPairs } from "lodash";
 import { FC, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -5,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
-import cx from "classnames";
 
 import { Modal } from "../../../../components/modals";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";

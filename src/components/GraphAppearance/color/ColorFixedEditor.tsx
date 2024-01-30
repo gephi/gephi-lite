@@ -1,7 +1,8 @@
 import { FC } from "react";
-import { ItemType } from "../../../core/types";
-import { FixedColor } from "../../../core/appearance/types";
 import { useTranslation } from "react-i18next";
+
+import { FixedColor } from "../../../core/appearance/types";
+import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
 
 export const ColorFixedEditor: FC<{

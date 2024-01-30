@@ -1,9 +1,9 @@
-import { isNil } from "lodash";
 import { Octokit } from "@octokit/core";
+import { isNil } from "lodash";
 import { FaGithub } from "react-icons/fa";
 
-import { CloudProvider, CloudFile } from "../types";
 import { notEmpty } from "../../utils/casting";
+import { CloudFile, CloudProvider } from "../types";
 
 export type GistFile =
   | {

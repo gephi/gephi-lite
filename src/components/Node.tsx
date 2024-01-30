@@ -1,9 +1,9 @@
+import cx from "classnames";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import cx from "classnames";
 
-import { useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
 import { getItemAttributes } from "../core/appearance/utils";
+import { useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
 
 export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boolean }> = ({ label, color, hidden }) => {
   const { t } = useTranslation();

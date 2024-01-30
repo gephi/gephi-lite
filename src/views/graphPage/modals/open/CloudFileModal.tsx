@@ -1,15 +1,15 @@
+import byteSize from "byte-size";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaLock, FaFolderOpen, FaExternalLinkAlt, FaSync, FaTimes } from "react-icons/fa";
-import byteSize from "byte-size";
+import { FaExternalLinkAlt, FaFolderOpen, FaLock, FaSync, FaTimes } from "react-icons/fa";
 
-import { displayDateTime } from "../../../../utils/date";
-import { ModalProps } from "../../../../core/modals/types";
-import { useConnectedUser } from "../../../../core/user";
+import { Loader } from "../../../../components/Loader";
+import { Modal } from "../../../../components/modals";
 import { CloudFile } from "../../../../core/cloud/types";
 import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
-import { Modal } from "../../../../components/modals";
-import { Loader } from "../../../../components/Loader";
+import { ModalProps } from "../../../../core/modals/types";
+import { useConnectedUser } from "../../../../core/user";
+import { displayDateTime } from "../../../../utils/date";
 
 const PAGINATION_SIZE = 10;
 

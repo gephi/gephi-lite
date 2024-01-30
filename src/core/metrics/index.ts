@@ -1,8 +1,8 @@
 import { clone } from "lodash";
 
-import { Metric, MetricReport } from "./types";
-import { getFilteredDataGraph, inferFieldType } from "../graph/utils";
 import { FieldModel, GraphDataset, SigmaGraph } from "../graph/types";
+import { getFilteredDataGraph, inferFieldType } from "../graph/utils";
+import { Metric, MetricReport } from "./types";
 
 export function computeMetric(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

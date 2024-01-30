@@ -1,12 +1,12 @@
-import { FC, useEffect, useState } from "react";
 import copy from "copy-to-clipboard";
-import { BsGithub, BsClipboard } from "react-icons/bs";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { BsClipboard, BsGithub } from "react-icons/bs";
 
-import { ModalProps } from "../../modals/types";
-import { Modal } from "../../../components/modals";
-import { useNotifications } from "../../notifications";
 import { Loader, Spinner } from "../../../components/Loader";
+import { Modal } from "../../../components/modals";
+import { ModalProps } from "../../modals/types";
+import { useNotifications } from "../../notifications";
 import { useGithubAuth } from "./useGithubAuth";
 
 export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {

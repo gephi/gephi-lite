@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import React, { ComponentType, FC, ReactNode, useState } from "react";
 import { chunk } from "lodash";
+import React, { ComponentType, FC, ReactNode, useState } from "react";
 
 export interface Tab {
   value: string;

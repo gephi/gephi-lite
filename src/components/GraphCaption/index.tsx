@@ -1,14 +1,14 @@
-import { FC, useEffect, useMemo, useState } from "react";
-import { fromPairs, mapValues } from "lodash";
-import { useTranslation } from "react-i18next";
-import { BiCollapseAlt } from "react-icons/bi";
-import { AiFillQuestionCircle } from "react-icons/ai";
 import cx from "classnames";
+import { fromPairs, mapValues } from "lodash";
+import { FC, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { AiFillQuestionCircle } from "react-icons/ai";
+import { BiCollapseAlt } from "react-icons/bi";
 
 import { useAppearance, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
-import ItemSizeCaption from "./ItemSizeCaption";
 import { ItemData } from "../../core/graph/types";
 import { ItemsColorCaption } from "./ItemColorCaption";
+import ItemSizeCaption from "./ItemSizeCaption";
 
 export interface GraphCaptionProps {
   minimal?: boolean;

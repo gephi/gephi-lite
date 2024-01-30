@@ -1,5 +1,5 @@
-import { FC } from "react";
 import cx from "classnames";
+import { FC } from "react";
 
 /**
  * This toggle button displays and controls a boolean value, with two "left" and

@@ -1,16 +1,16 @@
-import Sigma from "sigma";
-import { FC, useEffect } from "react";
 import { useSigma } from "@react-sigma/core";
-import { DEFAULT_SETTINGS } from "sigma/settings";
-import drawLabel from "sigma/rendering/canvas/label";
-import drawHover from "sigma/rendering/canvas/hover";
+import { FC, useEffect } from "react";
+import Sigma from "sigma";
 import drawEdgeLabel from "sigma/rendering/canvas/edge-label";
+import drawHover from "sigma/rendering/canvas/hover";
+import drawLabel from "sigma/rendering/canvas/label";
+import { DEFAULT_SETTINGS } from "sigma/settings";
 
+import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
+import { useAppearance, useGraphDataset } from "../../../core/context/dataContexts";
 import { SigmaGraph } from "../../../core/graph/types";
 import { resetCamera, sigmaAtom } from "../../../core/sigma";
 import { inputToStateThreshold } from "../../../utils/labels";
-import { useAppearance, useGraphDataset } from "../../../core/context/dataContexts";
-import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma();

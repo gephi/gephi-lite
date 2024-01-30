@@ -1,8 +1,8 @@
-import Sigma from "sigma";
 import Graph from "graphology";
+import { Dimensions } from "graphology-layout/conversion";
+import Sigma from "sigma";
 import { Settings } from "sigma/settings";
 import { CameraState } from "sigma/types";
-import { Dimensions } from "graphology-layout/conversion";
 
 import { wait } from "./promises";
 
