@@ -6,9 +6,10 @@ import { ModalProps } from "../../../core/modals/types";
 import { Modal } from "../../../components/modals";
 import { CodeEditorIcon, RunIcon, SaveIcon, CloseIcon } from "../../../components/common-icons";
 
+//eslint-disable-next-line @typescript-eslint/ban-types
 interface FunctionEditorModalProps<T = Function> {
   title: string;
-  withSaveAndRun?: Boolean;
+  withSaveAndRun?: boolean;
   functionJsDoc: string;
   defaultFunction: T;
   value?: T;

@@ -34,7 +34,7 @@ export const LayoutForm: FC<{
   onStart: (params: Record<string, unknown>) => void;
   onStop: () => void;
   isRunning: boolean;
-}> = ({ layout, onCancel, onStart, onStop, isRunning }) => {
+}> = ({ layout, onStart, onStop, isRunning }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const dataset = useGraphDataset();
@@ -128,7 +128,9 @@ export const LayoutForm: FC<{
         onStart(layoutParameters);
         if (layout.type === "sync")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) as string }) as string);
-      } catch (e) {}
+      } catch (e) {
+        // nothing todo
+      }
     }
   }, [isRunning, layout.id, layout.type, layoutParameters, onStart, onStop, setSuccessMessage, t]);
 
@@ -190,7 +192,7 @@ export const LayoutForm: FC<{
                   value={layoutParameters[param.id] as string}
                   disabled={isRunning}
                   onChange={(v) => onChangeParameters(param.id, v)}
-                  options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
+                  options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
                     .filter((field) => (param.restriction ? !!field[param.restriction] : true))
                     .map((field) => ({
                       value: field.id,
@@ -276,7 +278,12 @@ export const LayoutForm: FC<{
             {t(`layouts.${layout.id}.buttons.${id}.title`) as string}
           </button>
         ))}
-        <button type="reset" className="btn text-nowrap mt-1 btn-secondary ms-2" onClick={() => setParameters()} disabled={isRunning}>
+        <button
+          type="reset"
+          className="btn text-nowrap mt-1 btn-secondary ms-2"
+          onClick={() => setParameters()}
+          disabled={isRunning}
+        >
           {t("common.reset")}
         </button>
         <button type="submit" className="btn text-nowrap mt-1 btn-primary ms-2">

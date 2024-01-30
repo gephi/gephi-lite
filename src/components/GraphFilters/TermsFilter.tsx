@@ -37,7 +37,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           replaceCurrentFilter({ ...filter, terms: new Set(options.map((o) => o.value)) });
         }}
         isMulti
-        options={sortBy(toPairs(dataTerms), ([term, nbOcc]) => -1 * nbOcc).map(([term, nbOcc]) => ({
+        options={sortBy(toPairs(dataTerms), ([_term, nbOcc]) => -1 * nbOcc).map(([term, nbOcc]) => ({
           label: `${term} (${nbOcc} ${t(`graph.model.${filter.itemType}`)})`,
           value: term,
         }))}
@@ -64,7 +64,7 @@ export const TermsFilter: FC<{
   filter: TermsFilterType;
   active?: boolean;
   editMode?: boolean;
-}> = ({ filter, editMode, active }) => {
+}> = ({ filter, editMode }) => {
   const { t, i18n } = useTranslation();
 
   //TODO: adapt language

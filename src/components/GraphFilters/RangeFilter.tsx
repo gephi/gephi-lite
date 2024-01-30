@@ -84,7 +84,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
               .concat([filter.min || rangeMetric.min, filter.max ? filter.max + rangeMetric.step : rangeMetric.max]),
           ),
         ),
-        (v) => ({ label: " ", style: { fontWeight: "bold", background: "white", padding: "0 0.2em", zIndex: 1 } }),
+        () => ({ label: " ", style: { fontWeight: "bold", background: "white", padding: "0 0.2em", zIndex: 1 } }),
       )
     : {};
 
@@ -217,7 +217,7 @@ export const RangeFilter: FC<{
   filter: RangeFilterType;
   active?: boolean;
   editMode?: boolean;
-}> = ({ filter, editMode, active }) => {
+}> = ({ filter, editMode }) => {
   const { t } = useTranslation();
 
   return (

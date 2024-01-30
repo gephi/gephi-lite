@@ -4,7 +4,6 @@ import useKonami from "react-use-konami";
 
 import { extractFilename } from "../utils/url";
 import { AuthInit } from "./user/AuthInit";
-import { Loader } from "../components/Loader";
 import { useNotifications } from "./notifications";
 import { graphDatasetAtom } from "./graph";
 import { parseDataset, getEmptyGraphDataset } from "./graph/utils";
@@ -20,14 +19,13 @@ import { useModal } from "./modals";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { resetCamera } from "./sigma";
 import { I18n } from "../locales/provider";
-import { useFileActions, useFileState } from "./context/dataContexts";
+import { useFileActions } from "./context/dataContexts";
 import { fileStateAtom } from "./graph/files";
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
-  const { type: fileStateType } = useFileState();
   const { openRemoteFile } = useFileActions();
 
   useKonami(

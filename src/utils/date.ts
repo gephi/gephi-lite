@@ -6,7 +6,9 @@ export function displayDateTime(value: string | Date, options?: { time: boolean 
         dateStyle: "short",
         timeStyle: options?.time === false ? undefined : "short",
       }).format(date);
-  } catch (_e) {}
+  } catch (_e) {
+    // nothing todo
+  }
   return undefined;
 }
 

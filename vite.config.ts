@@ -1,9 +1,20 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
+import checker from "vite-plugin-checker";
 
 export default defineConfig({
   base: "/gephi-lite",
-  plugins: [react()],
+  plugins: [
+    react(),
+    checker({
+      typescript: {
+        buildMode: true,
+      },
+      eslint: {
+        lintCommand: "eslint --ext .ts,.tsx,.js,.jsx src",
+      },
+    }),
+  ],
   resolve: {
     alias: {
       global: "window",
@@ -15,7 +26,11 @@ export default defineConfig({
     globals: true,
     exclude: ["e2e", "node_modules"],
   },
+  build: {
+    outDir: "build",
+  },
   server: {
+    open: false,
     proxy: {
       "^/_github/*": {
         target: "https://github.com",

@@ -109,7 +109,7 @@ export function makeGetSize<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
-  { nodeData, edgeData, fullGraph }: GraphDataset,
+  { nodeData, edgeData }: GraphDataset,
   { nodesSize, edgesSize }: AppearanceState,
 ): null | SizeGetter {
   const itemsValues = itemType === "nodes" ? nodeData : edgeData;
@@ -220,7 +220,7 @@ export function makeGetLabel<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
-  { nodeData, edgeData, fullGraph, nodeRenderingData }: GraphDataset,
+  _graphDataset: GraphDataset,
   { nodesLabel, edgesLabel }: AppearanceState,
 ): LabelGetter | null {
   const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;

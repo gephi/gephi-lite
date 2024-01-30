@@ -31,7 +31,7 @@ export function getEmptyGraphDataset(): GraphDataset {
     metadata: { type: "mixed" },
     nodeFields: [],
     edgeFields: [],
-    fullGraph: new MultiGraph<{}, {}>(),
+    fullGraph: new MultiGraph(),
     origin: null,
   };
 }
@@ -51,7 +51,7 @@ export function parseDataset(rawDataset: string): GraphDataset | null {
     // TODO:
     // Validate the actual data
     const parsed = parse(rawDataset);
-    const fullGraph = new MultiGraph<{}, {}>();
+    const fullGraph = new MultiGraph();
     fullGraph.import(parsed.fullGraph);
     return {
       ...parsed,

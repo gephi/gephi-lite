@@ -9,7 +9,7 @@ import { useSigmaAtom } from "../../../../core/context/dataContexts";
 import { getGraphSnapshot } from "../../../../utils/sigma";
 import { useNotifications } from "../../../../core/notifications";
 
-export const ExportPNGModal: FC<ModalProps<{}>> = ({ cancel }) => {
+export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const sigma = useSigmaAtom();

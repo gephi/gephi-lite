@@ -28,6 +28,7 @@ function edgeMetric(id, attributes, index, graph) {
   return Math.random();
 } )`)();
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NODE_METRICS: Metric<"nodes", any, any>[] = [
   {
     id: "louvain",
@@ -262,6 +263,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         defaultValue: nodeMetricCustomFn,
       },
     ],
+    //eslint-disable-next-line @typescript-eslint/ban-types
     fn(parameters: { script?: Function }, graph: DataGraph) {
       const fn = parameters.script;
       if (fn) {
@@ -269,7 +271,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         const graphCopy = graph.copy();
         Object.freeze(graphCopy);
 
-        const custom: Record<string, any> = {};
+        const custom: Record<string, unknown> = {};
         graph.nodes().forEach((id, index) => {
           custom[id] = fn(id, graph.getNodeAttributes(id), index, graphCopy);
         });
@@ -282,6 +284,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
   },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EDGE_METRICS: Metric<"edges", any, any>[] = [
   {
     id: "disparity",
@@ -309,7 +312,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
     types: { simmelianStrength: "number" },
     itemType: "edges",
     parameters: [],
-    fn(parameters: {}, graph: DataGraph) {
+    fn(_parameters: unknown, graph: DataGraph) {
       return { simmelianStrength: simmelianStrength(graph) };
     },
   },
@@ -341,6 +344,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
         defaultValue: edgeMetricCustomFn,
       },
     ],
+    //eslint-disable-next-line @typescript-eslint/ban-types
     fn(parameters: { script?: Function }, graph: DataGraph) {
       const fn = parameters.script;
       if (fn) {
@@ -348,7 +352,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
         const graphCopy = graph.copy();
         Object.freeze(graphCopy);
 
-        const custom: Record<string, any> = {};
+        const custom: Record<string, unknown> = {};
         graph.edges().forEach((id, index) => {
           custom[id] = fn(id, graph.getEdgeAttributes(id), index, graphCopy);
         });

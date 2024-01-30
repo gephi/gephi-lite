@@ -9,7 +9,7 @@ import { Loader } from "../../../../components/Loader";
 import { DropInput } from "../../../../components/DropInput";
 import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 
-export const LocalFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { notify } = useNotifications();
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);

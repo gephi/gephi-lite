@@ -78,11 +78,14 @@ export function derivedAtom<D, T1, T2, T3>(
   options?: Partial<DerivedAtomOptions>,
 ): ReadableAtom<D>;
 export function derivedAtom<D>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   atoms: ReadableAtom<any> | ReadableAtom<any>[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extractor: (...args: any[]) => D,
   options: Partial<DerivedAtomOptions> = {},
 ): ReadableAtom<D> {
   const atomsArray = Array.isArray(atoms) ? atoms : [atoms];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let lastInput: any[] = atomsArray.map((atom) => atom.get());
   let value: D = extractor(...lastInput);
   let handlers: AtomHandler<D>[] = [];

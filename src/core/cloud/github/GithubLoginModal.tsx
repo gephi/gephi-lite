@@ -9,7 +9,7 @@ import { useNotifications } from "../../notifications";
 import { Loader, Spinner } from "../../../components/Loader";
 import { useGithubAuth } from "./useGithubAuth";
 
-export const GithubLoginModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
   const [hasBeenClick, setHasBeenClick] = useState<boolean>(false);
   const { code, loading, url, login, user, error, waiting } = useGithubAuth();

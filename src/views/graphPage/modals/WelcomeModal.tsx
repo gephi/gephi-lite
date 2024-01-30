@@ -16,7 +16,7 @@ import LocalSwitcher from "../../../components/LocalSwitcher";
 
 const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 
-export const WelcomeModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { notify } = useNotifications();

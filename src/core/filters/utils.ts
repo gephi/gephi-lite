@@ -36,11 +36,11 @@ export function parseFiltersState(rawFilters: string): FiltersState | null {
  * Actual filtering helpers:
  */
 export function filterValue(
-  value: any,
+  value: unknown,
   filter: Omit<RangeFilterType, "field" | "itemType"> | Omit<TermsFilterType, "field" | "itemType">,
 ): boolean {
   switch (filter.type) {
-    case "range":
+    case "range": {
       const number = toNumber(value);
       return (
         (typeof number === "number" &&
@@ -51,13 +51,15 @@ export function filterValue(
           )) ||
         (typeof number !== "number" && !!filter.keepMissingValues)
       );
-    case "terms":
+    }
+    case "terms": {
       if (!filter.terms) return true;
       const string = toString(value);
       return (
         (typeof string === "string" && filter.terms.has(string)) ||
         (typeof string !== "string" && !!filter.keepMissingValues)
       );
+    }
   }
 }
 

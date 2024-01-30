@@ -40,7 +40,7 @@ export const ScriptFilter: FC<{
   filter: ScriptFilterType;
   active?: boolean;
   editMode?: boolean;
-}> = ({ filter, editMode, active }) => {
+}> = ({ filter, editMode }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { replaceCurrentFilter } = useFiltersActions();

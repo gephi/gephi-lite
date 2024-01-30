@@ -5,6 +5,7 @@ import { getFilteredDataGraph, inferFieldType } from "../graph/utils";
 import { FieldModel, GraphDataset, SigmaGraph } from "../graph/types";
 
 export function computeMetric(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metric: Metric<any, any, any>,
   params: Record<string, unknown>,
   attributeNames: Record<string, string>,

@@ -76,6 +76,7 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
       {reduce(
         CONTEXTS,
         (iter, context, key) => (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           <context.Provider value={ATOMS[key as AtomName] as any}>{iter || null}</context.Provider>
         ),
         children,

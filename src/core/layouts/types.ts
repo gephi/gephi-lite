@@ -49,7 +49,7 @@ export type LayoutParameter =
   | LayoutNumberParameter
   | LayoutAttributeParameter;
 
-export interface LayoutButton<P = {}> {
+export interface LayoutButton<P = unknown> {
   id: string;
   description?: boolean;
   getSettings: (currentSettings: P, dataGraph: DataGraph) => P;
@@ -61,7 +61,8 @@ export interface LayoutButton<P = {}> {
  */
 export type LayoutMapping = { [node: string]: Coordinates };
 
-export interface SyncLayout<P = {}> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface SyncLayout<P = any> {
   id: string;
   type: "sync";
   description?: boolean;
@@ -80,7 +81,8 @@ export interface WorkerSupervisorConstructor<P = unknown> {
   new (graph: Graph, options?: P): WorkerSupervisorInterface;
 }
 
-export interface WorkerLayout<P = {}> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface WorkerLayout<P = any> {
   id: string;
   type: "worker";
   description?: boolean;

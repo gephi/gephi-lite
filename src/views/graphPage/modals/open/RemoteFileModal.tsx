@@ -11,7 +11,7 @@ import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
 import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
 
-export const RemoteFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { notify } = useNotifications();
   const { t } = useTranslation();
   const [url, setUrl] = useState<string>("");

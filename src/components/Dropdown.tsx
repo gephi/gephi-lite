@@ -25,7 +25,7 @@ const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: ta
             <button
               key={i}
               className={cx("dropdown-item", option.disabled && "disabled")}
-              onClick={(e) => {
+              onClick={() => {
                 option.onClick();
               }}
             >

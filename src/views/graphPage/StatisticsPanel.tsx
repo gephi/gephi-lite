@@ -29,10 +29,12 @@ type MetricOption = {
   // label displayed in the UI for the metric
   label: string;
   // metric's value
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metric: Metric<any, any, any>;
 };
 
-export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void }> = ({ metric, onClose }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void }> = ({ metric }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
@@ -255,6 +257,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
                   placeholder={t("common.none") as string}
                   value={metricConfig.parameters[param.id] as string}
                   onChange={(v) => onChange("parameters", param.id, v)}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
                     .filter((field) => (param.restriction ? !!field[param.restriction] : true))
                     .map((field) => ({

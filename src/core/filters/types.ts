@@ -24,6 +24,7 @@ export interface TermsFilterType extends BaseFilter {
 export interface TopologicalFilterType {
   type: "topological";
   method?: string; // TODO
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   arguments?: any; // TODO
 }
 

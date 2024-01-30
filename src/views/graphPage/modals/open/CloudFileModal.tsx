@@ -13,7 +13,7 @@ import { Loader } from "../../../../components/Loader";
 
 const PAGINATION_SIZE = 10;
 
-export const CloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const [user] = useConnectedUser();
   const { t } = useTranslation();
   const { loading, error, getFiles, openFile } = useCloudProvider();

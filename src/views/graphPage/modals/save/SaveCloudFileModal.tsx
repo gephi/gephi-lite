@@ -9,7 +9,7 @@ import { useNotifications } from "../../../../core/notifications";
 import { Modal } from "../../../../components/modals";
 import { Loader } from "../../../../components/Loader";
 
-export const SaveCloudFileModal: FC<ModalProps<{}>> = ({ cancel, submit }) => {
+export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const [user] = useConnectedUser();
   const { loading, error, createFile } = useCloudProvider();

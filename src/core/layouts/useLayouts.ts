@@ -44,7 +44,7 @@ export function useLayouts() {
   }, []);
 
   const start = useCallback(
-    (id: string, params: any) => {
+    (id: string, params: unknown) => {
       setIsRunning(true);
       setSupervisor(null);
       setLayoutId(id);

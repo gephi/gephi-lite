@@ -31,8 +31,7 @@ describe("Casting utilities", () => {
     });
 
     it("should return `undefined` for anything else", () => {
-      const values: any[] = [{ abc: 123 }, ["toto"], new Date(), undefined, null, true, false];
-
+      const values = [{ abc: 123 }, ["toto"], new Date(), undefined, null, true, false];
       values.forEach((input) => expect(toNumber(input)).toBe(undefined));
     });
   });
@@ -49,7 +48,8 @@ describe("Casting utilities", () => {
     });
 
     it("should work with other types", () => {
-      const tests: [any, ReturnType<typeof toString>][] = [
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const tests = [
         [new Date(), undefined],
         [false, undefined],
         [true, undefined],
@@ -70,6 +70,7 @@ describe("Casting utilities", () => {
     });
 
     it("should work with objects", () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tests: [any, ReturnType<typeof toScalar>][] = [
         [new Date(), new Date().toString()],
         [{ abc: 123 }, "[object Object]"],

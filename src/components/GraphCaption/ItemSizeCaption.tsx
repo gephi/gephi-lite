@@ -14,7 +14,7 @@ const ItemSizeCaption: FC<
     itemsSize: Size;
     extend?: RangeExtends;
   }
-> = ({ minimal, itemType, itemsSize, extend }) => {
+> = ({ itemType, itemsSize, extend }) => {
   const sigma = useSigmaAtom();
   // update nodeSize Size to camera updates from Sigma
   const visualGetters = useVisualGetters();

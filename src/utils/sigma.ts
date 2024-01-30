@@ -29,7 +29,7 @@ export async function getGraphSnapshot(
   document.body.append(div);
 
   // Instantiate sigma:
-  const renderer = new Sigma(graph as any, div, settings);
+  const renderer = new Sigma(graph, div, settings);
 
   if (cameraState) renderer.getCamera().setState(cameraState);
 

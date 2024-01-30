@@ -238,7 +238,9 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   if (graphDataset.fullGraph.order < 5000 && graphDataset.fullGraph.size < 25000) {
     try {
       sessionStorage.setItem("dataset", serializeDataset(graphDataset));
-    } catch (_e) {}
+    } catch (_e) {
+      // nothing todo
+    }
   }
 });
 

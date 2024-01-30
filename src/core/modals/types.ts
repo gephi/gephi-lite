@@ -16,5 +16,6 @@ export interface ModalRequest<ArgumentsType = unknown, SubmitArgumentsType = unk
 }
 
 export interface ModalState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modal?: ModalRequest<any, any>;
 }

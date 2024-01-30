@@ -36,7 +36,7 @@ describe("Atoms library", () => {
     it("should be updated when dependencies are updated", () => {
       const a1 = atom(0);
       const a2 = atom(0);
-      const sum = derivedAtom([a1, a2], (v1, v2, previousValue) => v1 + v2);
+      const sum = derivedAtom([a1, a2], (v1, v2, _previousValue) => v1 + v2);
       expect(sum.get()).toBe(0);
 
       a1.set(123);

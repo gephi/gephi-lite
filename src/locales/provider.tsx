@@ -17,21 +17,21 @@ i18n
     detection: {
       order: ["querystring", "navigator"],
       lookupQuerystring: "lang",
-      convertDetectedLanguage: (lng) => lng in LOCALES ? lng : DEFAULT_LOCALE,
+      convertDetectedLanguage: (lng) => (lng in LOCALES ? lng : DEFAULT_LOCALE),
     },
   })
   .then(() => {
-    i18next.services.formatter?.add("lowercase", (value, lng, options) => {
+    i18next.services.formatter?.add("lowercase", (value, _lng, _options) => {
       return value.toLowerCase();
     });
-    i18next.services.formatter?.add("capitalize", (value, lng, options) => {
+    i18next.services.formatter?.add("capitalize", (value, _lng, _options) => {
       return capitalize(value);
     });
   });
 
 export { i18n };
 
-export const I18n: FC<PropsWithChildren<{}>> = ({ children }) => {
+export const I18n: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { locale } = usePreferences();
 
   useEffect(() => {

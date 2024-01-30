@@ -159,7 +159,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
             title={`${t(collapsed ? "common.expand" : "common.collapse")} `}
             className="btn btn-ico btn-dark btn-sm"
             disabled={!enabled}
-            onClick={(e) => {
+            onClick={() => {
               setCollapsed(!collapsed);
             }}
           >

@@ -5,6 +5,16 @@ import { FaGithub } from "react-icons/fa";
 import { CloudProvider, CloudFile } from "../types";
 import { notEmpty } from "../../utils/casting";
 
+export type GistFile =
+  | {
+      filename?: string;
+      type?: string;
+      language?: string;
+      raw_url?: string;
+      size?: number;
+    }
+  | undefined
+  | null;
 export class GithubProvider implements CloudProvider {
   type = "github";
   icon = (<FaGithub />);
@@ -36,7 +46,7 @@ export class GithubProvider implements CloudProvider {
         result = result.concat(
           response.data
             .map((item) => {
-              if (this.getGexfFile(item)) {
+              if (item && this.getGexfFile(item)) {
                 return this.gistToCloudFile(item);
               }
               return null;
@@ -157,7 +167,7 @@ export class GithubProvider implements CloudProvider {
     public?: boolean;
     created_at?: string;
     updated_at?: string;
-    files?: { [key: string]: any };
+    files?: { [key: string]: GistFile };
     html_url?: string;
   }): CloudFile {
     if (!gist.id) throw new Error(`Gist ${JSON.stringify(gist)} has no ID`);
@@ -181,16 +191,16 @@ export class GithubProvider implements CloudProvider {
    * If so, it return the file, otherwise null
    */
   private getGexfFile(gist: {
-    files?: { [key: string]: any };
+    files?: { [key: string]: GistFile };
     html_url?: string;
   }): { filename: string; size: number; webUrl?: string } | null {
     let result: { filename: string; size: number; webUrl?: string } | null = null;
     Object.keys(gist.files || []).forEach((filename: string) => {
-      const file = (gist.files || [])[filename];
-      if (file && file.filename.endsWith(".gexf")) {
+      const file = gist.files ? gist.files[filename] : undefined;
+      if (file && file.filename?.endsWith(".gexf")) {
         result = {
           filename: file.filename,
-          size: file.size,
+          size: file.size || 0,
           webUrl: gist.html_url,
         };
       }
