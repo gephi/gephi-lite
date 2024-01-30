@@ -5,7 +5,7 @@ import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { DropInput } from "../../../../components/DropInput";
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
-import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
+import { useImportActions, useImportState } from "../../../../core/context/dataContexts";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 
@@ -14,13 +14,13 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
 
-  const { type: fileStateType } = useFileState();
-  const { openLocalFile } = useFileActions();
+  const { type: importStateType } = useImportState();
+  const { importLocalGexf } = useImportActions();
 
   return (
     <Modal title={t("graph.open.local.title").toString()} onClose={() => cancel()}>
       <>
-        {fileStateType === "error" && (
+        {importStateType === "error" && (
           <p className="text-center text-danger">{t("graph.open.local.error").toString()}</p>
         )}
         <DropInput
@@ -29,7 +29,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           helpText={t("graph.open.local.dragndrop_text").toString()}
           accept={{ "application/graph": [".gexf"] }}
         />
-        {fileStateType === "loading" && <Loader />}
+        {importStateType === "loading" && <Loader />}
       </>
       <>
         <button title={t("common.cancel").toString()} className="btn btn-outline-danger" onClick={() => cancel()}>
@@ -43,7 +43,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           onClick={async () => {
             if (file) {
               try {
-                await openLocalFile({
+                await importLocalGexf({
                   type: "local",
                   filename: file.name,
                   updatedAt: new Date(file.lastModified),

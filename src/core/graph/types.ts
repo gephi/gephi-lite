@@ -1,28 +1,8 @@
 import { MultiGraph } from "graphology";
 import { GraphType } from "graphology-types";
 
-import { CloudFile } from "../cloud/types";
 import { ItemType, Scalar } from "../types";
-
-/**
- * Graph origin:
- * *************
- */
-export interface GraphFile {
-  type: string;
-  filename: string;
-}
-export interface RemoteFile extends GraphFile {
-  type: "remote";
-  url: string;
-}
-export interface LocalFile extends GraphFile {
-  type: "local";
-  updatedAt: Date;
-  size: number;
-  source: File;
-}
-export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
+import { GraphOrigin } from "./import/types";
 
 export interface GraphMetadata {
   title?: string;
@@ -103,4 +83,3 @@ export interface GraphDataset {
   // Ex: is it a local or a remote file
   origin: GraphOrigin;
 }
-export type FileState = { type: "idle" } | { type: "loading" } | { type: "error"; message?: string };

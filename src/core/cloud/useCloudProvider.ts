@@ -3,18 +3,19 @@ import { parse } from "graphology-gexf";
 import { isNil } from "lodash";
 import { useCallback, useState } from "react";
 
+import { useExportActions } from "../context/dataContexts";
 import { graphDatasetAtom } from "../graph";
-import { useExportAsGexf } from "../graph/useExportAsGexf";
 import { initializeGraphDataset } from "../graph/utils";
 import { resetCamera } from "../sigma";
 import { useConnectedUser } from "../user/index";
 import { useAtom } from "../utils/atoms";
 import { CloudFile } from "./types";
 
+// TODO: need to be refaco by atom/action/producer pattern
 export function useCloudProvider() {
   const [user] = useConnectedUser();
-  const { exportAsGexf } = useExportAsGexf();
   const [graphDataset, setGraphDataset] = useAtom(graphDatasetAtom);
+  const { exportAsGexf } = useExportActions();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -67,8 +68,9 @@ export function useCloudProvider() {
     try {
       if (isNil(user)) throw new Error("You must be logged !");
       if (!graphDataset.origin || graphDataset.origin.type !== "cloud") throw new Error("Not a cloud graph");
-      const content = exportAsGexf();
-      await user.provider.saveFile(graphDataset.origin, content);
+      await exportAsGexf(async (content) => {
+        await user.provider.saveFile(graphDataset.origin as CloudFile, content);
+      });
     } catch (e) {
       setError(e as Error);
       throw e;
@@ -86,9 +88,10 @@ export function useCloudProvider() {
       setError(null);
       try {
         if (isNil(user)) throw new Error("You must be logged !");
-        const content = exportAsGexf();
-        const result = await user.provider.createFile(file, content);
-        setGraphDataset({ ...graphDataset, origin: result });
+        await exportAsGexf(async (content) => {
+          const result = await user.provider.createFile(file, content);
+          setGraphDataset({ ...graphDataset, origin: result });
+        });
       } catch (e) {
         setError(e as Error);
         throw e;

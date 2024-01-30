@@ -11,12 +11,11 @@ import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, LayoutsIcon } from "../../components/common-icons";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
-import { useGraphDataset, useSigmaGraph } from "../../core/context/dataContexts";
+import { useGraphDataset, useLayoutActions, useLayoutState, useSigmaGraph } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
 import { getFilteredDataGraph } from "../../core/graph/utils";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
-import { useLayouts } from "../../core/layouts/useLayouts";
 import { useModal } from "../../core/modals";
 import { sessionAtom } from "../../core/session";
 import { useAtom } from "../../core/utils/atoms";
@@ -311,7 +310,8 @@ export const LayoutForm: FC<{
 
 export const LayoutsPanel: FC = () => {
   const { t } = useTranslation();
-  const { isRunning, start, stop } = useLayouts();
+  const { startLayout, stopLayout } = useLayoutActions();
+  const { type } = useLayoutState();
 
   const options: Array<LayoutOption> = useMemo(
     () =>
@@ -338,7 +338,7 @@ export const LayoutsPanel: FC = () => {
           value={option}
           onChange={(option) => {
             setOption(option);
-            stop();
+            stopLayout();
           }}
           placeholder={t("layouts.placeholder")}
         />
@@ -351,14 +351,14 @@ export const LayoutsPanel: FC = () => {
             key={option.layout.id}
             layout={option.layout}
             onStart={(params) => {
-              start(option.layout.id, params);
+              startLayout(option.layout.id, params);
             }}
             onStop={() => {
-              stop();
+              stopLayout();
             }}
-            isRunning={isRunning}
+            isRunning={type === "running"}
             onCancel={() => {
-              stop();
+              stopLayout();
               setOption(null);
             }}
           />

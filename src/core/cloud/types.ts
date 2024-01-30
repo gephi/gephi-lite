@@ -1,4 +1,4 @@
-import { GraphFile } from "../graph/types";
+import { GraphFile } from "../graph/import/types";
 
 export interface CloudFile extends GraphFile {
   type: "cloud";

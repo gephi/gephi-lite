@@ -1,3 +1,4 @@
+import fileSaver from "file-saver";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { BsFiletypePng } from "react-icons/bs";
@@ -7,8 +8,7 @@ import { Loader } from "../../components/Loader";
 import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useGraphDataset } from "../../core/context/dataContexts";
-import { useExportAsGexf } from "../../core/graph/useExportAsGexf";
+import { useExportActions, useExportState, useGraphDataset } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
@@ -25,7 +25,8 @@ export const FilePanel: FC = () => {
   const { t } = useTranslation("translation");
   const { origin } = useGraphDataset();
   const { loading, saveFile } = useCloudProvider();
-  const { loading: ldExportGexf, downloadAsGexf } = useExportAsGexf();
+  const { exportAsGexf } = useExportActions();
+  const { type: exportState } = useExportState();
 
   return (
     <>
@@ -100,7 +101,9 @@ export const FilePanel: FC = () => {
               className="btn btn-sm btn-outline-dark mb-1"
               onClick={async () => {
                 try {
-                  await downloadAsGexf();
+                  await exportAsGexf((content) => {
+                    fileSaver(new Blob([content]), origin?.filename || "gephi-lite.gexf");
+                  });
                 } catch (e) {
                   console.error(e);
                   notify({ type: "error", message: t("menu.download.gexf-error").toString() });
@@ -164,7 +167,7 @@ export const FilePanel: FC = () => {
             </button>
           </div>
 
-          {(loading || ldExportGexf) && <Loader />}
+          {(loading || exportState === "loading") && <Loader />}
         </div>
       </div>
     </>

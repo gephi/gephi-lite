@@ -4,7 +4,9 @@ import { Context, FC, ReactNode, createContext, useContext } from "react";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { filtersActions, filtersAtom } from "../filters";
 import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
-import { fileActions, fileStateAtom } from "../graph/files";
+import { exportActions, exportStateAtom } from "../graph/export";
+import { importActions, importStateAtom } from "../graph/import";
+import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { searchActions, searchAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
@@ -40,7 +42,8 @@ const ATOMS = {
   sigma: sigmaAtom,
   filters: filtersAtom,
   selection: selectionAtom,
-  fileState: fileStateAtom,
+  importState: importStateAtom,
+  exportState: exportStateAtom,
   appearance: appearanceAtom,
   sigmaState: sigmaStateAtom,
   sigmaGraph: sigmaGraphAtom,
@@ -49,6 +52,7 @@ const ATOMS = {
   filteredGraph: filteredGraphAtom,
   visualGetters: visualGettersAtom,
   search: searchAtom,
+  layoutState: layoutStateAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -56,7 +60,8 @@ const CONTEXTS = {
   sigma: createContext(ATOMS.sigma),
   filters: createContext(ATOMS.filters),
   selection: createContext(ATOMS.selection),
-  fileState: createContext(ATOMS.fileState),
+  importState: createContext(ATOMS.importState),
+  exportState: createContext(ATOMS.exportState),
   appearance: createContext(ATOMS.appearance),
   sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
@@ -65,6 +70,7 @@ const CONTEXTS = {
   filteredGraph: createContext(ATOMS.filteredGraph),
   visualGetters: createContext(ATOMS.visualGetters),
   search: createContext(ATOMS.search),
+  layoutState: createContext(ATOMS.layoutState),
 };
 
 /**
@@ -96,7 +102,8 @@ export const resetStates: Action = () => {
 export const useFilters = makeUseAtom(CONTEXTS.filters);
 export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
 export const useSelection = makeUseAtom(CONTEXTS.selection);
-export const useFileState = makeUseAtom(CONTEXTS.fileState);
+export const useImportState = makeUseAtom(CONTEXTS.importState);
+export const useExportState = makeUseAtom(CONTEXTS.exportState);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaState = makeUseAtom(CONTEXTS.sigmaState);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
@@ -105,6 +112,7 @@ export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
+export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
@@ -113,7 +121,9 @@ export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);
 export const useSearchActions = makeUseActions(searchActions);
-export const useFileActions = makeUseActions(fileActions);
+export const useImportActions = makeUseActions(importActions);
+export const useExportActions = makeUseActions(exportActions);
+export const useLayoutActions = makeUseActions(layoutActions);
 
 export const useResetStates = () => {
   return resetStates;

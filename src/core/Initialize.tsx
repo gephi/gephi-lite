@@ -7,7 +7,7 @@ import { extractFilename } from "../utils/url";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
 import { parseAppearanceState } from "./appearance/utils";
-import { useFileActions } from "./context/dataContexts";
+import { useImportActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
@@ -30,7 +30,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
-  const { openRemoteFile } = useFileActions();
+  const { importRemoteGexf } = useImportActions();
 
   useKonami(
     () => {
@@ -96,7 +96,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     if (!graphFound && url.searchParams.has("gexf")) {
       const gexfUrl = url.searchParams.get("gexf") || "";
       try {
-        await openRemoteFile({
+        await importRemoteGexf({
           type: "remote",
           filename: extractFilename(gexfUrl),
           url: gexfUrl,

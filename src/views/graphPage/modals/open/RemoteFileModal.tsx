@@ -4,8 +4,8 @@ import { FaFolderOpen, FaTimes } from "react-icons/fa";
 
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
-import { useFileActions, useFileState } from "../../../../core/context/dataContexts";
-import { RemoteFile } from "../../../../core/graph/types";
+import { useImportActions, useImportState } from "../../../../core/context/dataContexts";
+import { RemoteFile } from "../../../../core/graph/import/types";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { isUrl } from "../../../../utils/check";
@@ -16,8 +16,8 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const [url, setUrl] = useState<string>("");
 
-  const { type: fileStateType } = useFileState();
-  const { openRemoteFile } = useFileActions();
+  const { type: fileStateType } = useImportState();
+  const { importRemoteGexf } = useImportActions();
 
   const isFormValid = useMemo(() => {
     return url ? isUrl(url) : false;
@@ -27,14 +27,14 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
     if (isFormValid) {
       try {
         const file: RemoteFile = { type: "remote", url, filename: extractFilename(url) };
-        await openRemoteFile(file);
+        await importRemoteGexf(file);
         notify({ type: "success", message: t("graph.open.remote.success", { filename: file.filename }).toString() });
         cancel();
       } catch (e) {
         console.error(e);
       }
     }
-  }, [isFormValid, url, cancel, notify, t, openRemoteFile]);
+  }, [isFormValid, url, cancel, notify, t, importRemoteGexf]);
 
   return (
     <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()} onSubmit={openRemote}>

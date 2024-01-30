@@ -92,3 +92,7 @@ export interface WorkerLayout<P = any> {
 }
 
 export type Layout = WorkerLayout | SyncLayout;
+
+export type LayoutState =
+  | { type: "idle" }
+  | { type: "running"; layoutId: string; supervisor?: WorkerSupervisorInterface };

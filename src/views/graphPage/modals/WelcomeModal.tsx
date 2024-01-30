@@ -6,7 +6,7 @@ import { Loader } from "../../../components/Loader";
 import LocalSwitcher from "../../../components/LocalSwitcher";
 import { GitHubIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
-import { useFileActions, useFileState, usePreferences } from "../../../core/context/dataContexts";
+import { useImportActions, useImportState, usePreferences } from "../../../core/context/dataContexts";
 import { useModal } from "../../../core/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
@@ -24,8 +24,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const [user] = useConnectedUser();
   const { recentRemoteFiles } = usePreferences();
 
-  const { type: fileStateType } = useFileState();
-  const { openRemoteFile } = useFileActions();
+  const { type: fileStateType } = useImportState();
+  const { importRemoteGexf } = useImportActions();
 
   useEffect(() => {
     if (fileStateType === "error") {
@@ -67,7 +67,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                   <button
                     className="btn btn-sm btn-outline-dark"
                     onClick={async () => {
-                      await openRemoteFile(remoteFile);
+                      await importRemoteGexf(remoteFile);
                       notify({
                         type: "success",
                         message: t("graph.open.remote.success", { filename: remoteFile.filename }) as string,
@@ -134,7 +134,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 <button
                   className="btn btn-sm btn-outline-dark"
                   onClick={async () => {
-                    await openRemoteFile({
+                    await importRemoteGexf({
                       type: "remote",
                       url: `${import.meta.env.BASE_URL}/samples/${sample}`,
                       filename: sample,

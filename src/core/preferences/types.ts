@@ -1,4 +1,4 @@
-import { RemoteFile } from "../graph/types";
+import { RemoteFile } from "../graph/import/types";
 
 export interface Preferences {
   recentRemoteFiles: RemoteFile[];

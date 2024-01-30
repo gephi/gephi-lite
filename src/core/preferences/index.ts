@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
 
-import { RemoteFile } from "../graph/types";
+import { RemoteFile } from "../graph/import/types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
 import { Preferences } from "./types";

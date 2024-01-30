@@ -10,7 +10,6 @@ import {
   DatalessGraph,
   EdgeRenderingData,
   FieldModel,
-  FileState,
   FullGraph,
   GraphDataset,
   ItemData,
@@ -34,10 +33,6 @@ export function getEmptyGraphDataset(): GraphDataset {
     fullGraph: new MultiGraph(),
     origin: null,
   };
-}
-
-export function getEmptyFileState(): FileState {
-  return { type: "idle" };
 }
 
 /**
