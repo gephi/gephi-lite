@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["vite/client", "vitest/globals"],
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules"]
   },
   "include": ["src", "types"]
 }

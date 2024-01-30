@@ -62,7 +62,11 @@ export const ColorSlider: FC<{
         return (
           <span
             {...props}
-            title={props.key !== null && props.key !== undefined ? formatValueFromScalePoint(+props.key) : undefined}
+            title={
+              props.key !== null && props.key !== undefined
+                ? formatValueFromScalePoint(+(props.key as string | number))
+                : undefined
+            }
           />
         );
       }}

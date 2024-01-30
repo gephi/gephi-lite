@@ -70,7 +70,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                       await openRemoteFile(remoteFile);
                       notify({
                         type: "success",
-                        message: t("graph.open.remote.success", remoteFile) as string,
+                        message: t("graph.open.remote.success", { filename: remoteFile.filename }) as string,
                         title: t("gephi-lite.title") as string,
                       });
                       submit({});
