@@ -40,8 +40,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run start",
-    url: "http://127.0.0.1:5173",
+    command: "npm run build && npm run serve",
+    url: process.env.CI ? "http://localhost:4173/gephi-lite" : "http://127.0.0.1:5173/gephi-lite",
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
