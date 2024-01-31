@@ -11,7 +11,7 @@ const i18n = i18next.use(initReactI18next).use(LngDetector);
 
 i18n
   .init({
-    debug: import.meta.env.NODE_ENV !== "production",
+    debug: import.meta.env.MODE !== "production",
     fallbackLng: DEFAULT_LOCALE,
     resources: LOCALES,
     detection: {

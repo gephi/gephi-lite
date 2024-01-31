@@ -12,9 +12,9 @@ const DEFAULT_FLAG = <HiMiniLanguage className="fs-5" />;
 function getIcon(locale: string): ReactNode {
   return locale === "dev" ? DEFAULT_FLAG : localeEmoji(locale) || DEFAULT_FLAG;
 }
-
+console.log(import.meta.env);
 const AVAILABLE_LOCALES = toPairs(LOCALES)
-  .filter(([key]) => import.meta.env.NODE_ENV === "development" || key !== "dev")
+  .filter(([key]) => import.meta.env.MODE === "development" || key !== "dev")
   .map(([key, locale]) => ({
     value: key,
     label: (
@@ -27,10 +27,9 @@ const AVAILABLE_LOCALES = toPairs(LOCALES)
 const LocalSwitcher: FC = () => {
   const { locale } = usePreferences();
   const { changeLocale } = usePreferencesActions();
-
   return (
     <Tooltip closeOnClickContent attachment="top middle" targetAttachment="bottom middle">
-      <button className="btn p-0">{getIcon(locale)}</button>
+      <button className="btn p-0 fs-4">{getIcon(locale)}</button>
       <div className="dropdown-menu show over-modal position-relative">
         {AVAILABLE_LOCALES.map((option, i) => (
           <button
