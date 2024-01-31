@@ -64,7 +64,7 @@ const FieldModelsComponent: FC<{ fields: FieldModelWithStats[] }> = ({ fields })
             </div>
             <button
               type="button"
-              className="btn btn-outline-danger btn-sm"
+              className="btn btn-danger btn-sm"
               title={`${t(`edition.delete_${field.itemType}_attributes`, { name: field.id })}`}
               onClick={() => {
                 openModal({

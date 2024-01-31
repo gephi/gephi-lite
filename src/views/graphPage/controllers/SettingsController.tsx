@@ -1,17 +1,20 @@
 import { useSigma } from "@react-sigma/core";
 import { FC, useEffect } from "react";
-import { drawDiscNodeHover, drawDiscNodeLabel, drawStraightEdgeLabel } from "sigma/rendering";
-import { DEFAULT_SETTINGS } from "sigma/settings";
+import { drawDiscNodeLabel, drawStraightEdgeLabel } from "sigma/rendering";
+import { DEFAULT_SETTINGS, Settings } from "sigma/settings";
 
 import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
-import { useAppearance, useGraphDataset } from "../../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, usePreferences } from "../../../core/context/dataContexts";
+import { getAppliedTheme } from "../../../core/preferences/utils";
 import { GephiLiteSigma, resetCamera, sigmaAtom } from "../../../core/sigma";
+import { drawDiscNodeHover } from "../../../core/sigma/utils";
 import { inputToStateThreshold } from "../../../utils/labels";
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma() as GephiLiteSigma;
   const graphDataset = useGraphDataset();
   const graphAppearance = useAppearance();
+  const { theme } = usePreferences();
 
   useEffect(() => {
     sigmaAtom.set(sigma);
@@ -19,6 +22,10 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
   }, [sigma]);
 
   useEffect(() => {
+    const mode = getAppliedTheme(theme);
+    sigma.setSetting("labelColor", { color: mode === "dark" ? "#FFF" : "#000" });
+    sigma.setSetting("edgeLabelColor", { color: mode === "dark" ? "#495057" : "#CCC" });
+    sigma.setSetting("nodeHoverBackgoundColor" as keyof Settings, mode === "dark" ? "#000" : "#FFF");
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
     sigma.setSetting("defaultDrawNodeLabel", getNodeDrawFunction(graphAppearance, drawDiscNodeLabel));
     sigma.setSetting("defaultDrawNodeHover", getNodeDrawFunction(graphAppearance, drawDiscNodeHover));
@@ -30,7 +37,7 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     sigma.setSetting("labelDensity", labelDensity);
 
     setIsReady();
-  }, [graphAppearance, graphDataset, setIsReady, sigma]);
+  }, [graphAppearance, graphDataset, setIsReady, sigma, theme]);
 
   return null;
 };

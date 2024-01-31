@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react-swc";
 import checker from "vite-plugin-checker";
+import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
 
 // export BASE_PATH to reuse it in e2e test
@@ -9,6 +10,7 @@ export default defineConfig({
   base: BASE_URL,
   plugins: [
     react(),
+    svgr(),
     checker({
       typescript: {
         buildMode: true,

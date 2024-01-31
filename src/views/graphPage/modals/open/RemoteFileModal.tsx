@@ -72,12 +72,7 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       </>
 
       <>
-        <button
-          type="reset"
-          title={t("common.cancel").toString()}
-          className="btn btn-outline-danger"
-          onClick={() => cancel()}
-        >
+        <button type="reset" title={t("common.cancel").toString()} className="btn btn-danger" onClick={() => cancel()}>
           <FaTimes className="me-1" />
           {t("common.cancel").toString()}
         </button>

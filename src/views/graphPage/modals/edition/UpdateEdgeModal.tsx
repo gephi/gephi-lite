@@ -18,8 +18,6 @@ import { useNotifications } from "../../../../core/notifications";
 import { Scalar } from "../../../../core/types";
 import { toNumber } from "../../../../core/utils/casting";
 
-// import ColorPicker from "../../../../components/ColorPicker";
-
 interface NodeOption {
   label: string;
   value: string;
@@ -313,7 +311,8 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             </div>
             <button
               type="button"
-              className="btn btn-sm btn-outline-dark flex-shrink-0"
+              className="btn btn-sm btn-danger flex-shrink-0"
+              title={t("edition.delete_edges_attributes", { name: field.key })}
               onClick={() =>
                 setValue(
                   "attributes",

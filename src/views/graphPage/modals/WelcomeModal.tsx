@@ -4,8 +4,10 @@ import { FaRegFolderOpen } from "react-icons/fa";
 import { ImFileEmpty } from "react-icons/im";
 
 import { version } from "../../../../package.json";
+import GephiLogo from "../../../assets/gephi-logo.svg?react";
 import { Loader } from "../../../components/Loader";
 import LocalSwitcher from "../../../components/LocalSwitcher";
+import { ThemeSwicther } from "../../../components/ThemeSwitcher";
 import { GitHubIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
 import {
@@ -50,14 +52,12 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     <Modal
       title={
         <>
-          <img
-            src={`${import.meta.env.BASE_URL}gephi-logo.svg`}
-            style={{ width: "1em" }}
-            alt={t("welcome.logo") as string}
-            className="me-2"
-          />{" "}
+          <GephiLogo className="me-1" style={{ height: "1em", width: "1em" }} />
           {t("welcome.title")}
           <span className="flex-grow-1" />
+          <span className="me-1" style={{ marginTop: "-0.1em" }}>
+            <ThemeSwicther />
+          </span>
           <span className="me-1" style={{ marginTop: "-0.1em" }}>
             <LocalSwitcher />
           </span>

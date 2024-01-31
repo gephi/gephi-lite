@@ -2,6 +2,7 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import LocalSwitcher from "../../components/LocalSwitcher";
+import { ThemeSwicther } from "../../components/ThemeSwitcher";
 import { DangerIcon, GitHubIcon, SettingsIcon, SignOutIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
 import { resetStates } from "../../core/context/dataContexts";
@@ -27,9 +28,14 @@ export const UserSettingsPanel: FC = () => {
       <hr className="m-0" />
 
       <div className="panel-block-grow">
-        <div className="d-flex flex-row mb-4 align-items-center">
+        <div className="d-flex flex-row mb-3 align-items-center">
           <span className="flex-grow-1">{t("github.select_ui_language")}</span>
           <LocalSwitcher />
+        </div>
+        <hr className="m-0" />
+        <div className="d-flex flex-row my-3 align-items-center">
+          <span className="flex-grow-1">{t("settings.theme")}</span>
+          <ThemeSwicther />
         </div>
         <hr className="m-0" />
         <h3 className="fs-5 mt-3">
@@ -73,7 +79,7 @@ export const UserSettingsPanel: FC = () => {
       </div>
       <div className="d-flex justify-content-center">
         <button
-          className="btn btn-outline-danger m-3"
+          className="btn btn-danger m-3"
           onClick={() => {
             openModal({
               component: ConfirmModal,

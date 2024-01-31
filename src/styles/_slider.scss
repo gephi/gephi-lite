@@ -25,10 +25,15 @@
 }
 
 .custom-color-picker {
-  background-color: $body-bg;
-
+  background-color: var(--bs-body-bg);
   width: 220px;
-
   padding: 10px;
   border-radius: 4px;
+  .sketch-picker {
+    background: var(--bs-body-bg) !important;
+
+    .flexbox-fix label {
+      color:var(--bs-body-color) !important;
+    }
+  }
 }

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { BsFillInfoSquareFill, BsX } from "react-icons/bs";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 
+import GephiLogo from "../../assets/gephi-logo.svg?react";
 import {
   AppearanceIcon,
   FileIcon,
@@ -42,10 +43,7 @@ type Tool = {
 type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
 
 const GephiLiteButton: FC = () => {
-  const { t } = useTranslation();
-  return (
-    <img src={`${import.meta.env.BASE_URL}gephi-logo.svg`} style={{ width: "2em" }} alt={t("welcome.logo") as string} />
-  );
+  return <GephiLogo style={{ height: "2em" }} />;
 };
 
 export const GraphPage: FC = () => {

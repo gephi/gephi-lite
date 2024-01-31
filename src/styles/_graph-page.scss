@@ -32,6 +32,19 @@
   .graph-layout-grid {
     z-index: -1;
   }
+  .sigma-controls {
+    .btn-dark {
+        color: var(--bs-btn-hover-color);
+        background-color: var(--bs-btn-hover-bg);
+        border-color: var(--bs-btn-hover-border-color);
+        
+        &:hover {
+            color: var(--bs-btn-color);
+            background-color: $black;
+            border-color: var(--bs-btn-border-color);
+        }
+    }
+}
 
   .toolbar,
   .filler,
@@ -43,7 +56,7 @@
   .toolbar {
     width: $toolbar-width;
     overflow-x: hidden;
-    background: $toolbar-bg;
+    background: var(--toolbar-bg);
     padding-right: 0;
     padding-left: 0;
 
@@ -56,7 +69,7 @@
       background: none;
 
       &.active {
-        background: $panels-bg !important;
+        background: var(--panels-bg) !important;
       }
     }
   }
@@ -66,7 +79,7 @@
     width: 0;
     overflow-x: hidden;
     transition: 0.3s width;
-    background: $panels-bg;
+    background: var(--panels-bg);
     position: relative;
   }
 
@@ -106,7 +119,7 @@
     .filler-fade-out {
       height: 100px;
       width: 100%;
-      background: linear-gradient(transparent, $panels-bg);
+      background: linear-gradient(transparent, var(--panels-bg));
     }
 
     .btn-close-panel {
@@ -153,7 +166,7 @@
   .right-panel-btn {
     border: none;
     outline: none;
-    background: $toolbar-bg;
+    background: var(--toolbar-bg);
     border-radius: $border-radius 0 0 $border-radius;
     width: 2.5em;
     height: 2.5em;

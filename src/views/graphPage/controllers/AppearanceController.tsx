@@ -8,21 +8,30 @@ import {
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_SIZE,
 } from "../../../core/appearance/utils";
-import { useAppearance, useGraphDataset, useSelection, useSigmaState } from "../../../core/context/dataContexts";
+import {
+  useAppearance,
+  useGraphDataset,
+  usePreferences,
+  useSelection,
+  useSigmaState,
+} from "../../../core/context/dataContexts";
 import { GephiLiteSigma } from "../../../core/graph/types";
-import { memoizedBrighten } from "../../../utils/colors";
+import { getAppliedTheme } from "../../../core/preferences/utils";
+import { memoizedBrighten, memoizedDarken } from "../../../utils/colors";
 
 export const AppearanceController: FC = () => {
   const sigma: GephiLiteSigma = useSigma();
   const selection = useSelection();
   const { showEdges } = useAppearance();
   const { metadata } = useGraphDataset();
+  const { theme } = usePreferences();
   const { emphasizedNodes, emphasizedEdges, hoveredNode, highlightedNodes } = useSigmaState();
 
   // Reducers:
   useEffect(() => {
     const graph = sigma.getGraph();
     const edgeArrow = metadata.type !== "undirected";
+    const mode = getAppliedTheme(theme);
 
     // what we've got in the state,
     //  or
@@ -63,7 +72,10 @@ export const AppearanceController: FC = () => {
       if (hasEmphasizedNodes && !allEmphasizedNodes.has(id)) {
         res.hideLabel = true;
         res.borderColor = res.color;
-        res.color = memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
+        res.color =
+          mode === "dark"
+            ? memoizedDarken(res.color || DEFAULT_NODE_COLOR)
+            : memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
         res.zIndex = -1;
         res.type = "bordered";
       }
@@ -87,14 +99,27 @@ export const AppearanceController: FC = () => {
             res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
             if (hasEmphasizedEdges && !allEmphasizedEdges.has(id)) {
-              res.color = memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
+              res.color =
+                mode === "dark"
+                  ? memoizedDarken(res.color || DEFAULT_EDGE_COLOR)
+                  : memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
               res.zIndex = -1;
             }
 
             return res;
           },
     );
-  }, [emphasizedEdges, emphasizedNodes, hoveredNode, selection, showEdges, sigma, metadata.type, highlightedNodes]);
+  }, [
+    emphasizedEdges,
+    emphasizedNodes,
+    hoveredNode,
+    selection,
+    showEdges,
+    sigma,
+    metadata.type,
+    highlightedNodes,
+    theme,
+  ]);
 
   return null;
 };

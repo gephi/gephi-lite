@@ -63,10 +63,10 @@
   }
 
   .global {
-    background: $gray-400;
+    background: var(--range-in-bg);
   }
   .filtered {
-    background: $gray-800;
+    background: var(--range-out-bg);
   }
   .label {
     position: absolute;
@@ -76,11 +76,11 @@
 
     &.inside {
       top: 0;
-      color: $gray-100;
+      color: var(--range-in-body);
     }
     &.outside {
       bottom: 100%;
-      color: $gray-800;
+      color: var(--range-out-body);
     }
   }
 }

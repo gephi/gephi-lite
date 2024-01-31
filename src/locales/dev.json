@@ -220,10 +220,10 @@
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
     "confirm_delete_edges": "Are you sure you want to delete {{count}} edges?",
     "search_nodes": "Search on node labels...",
-    "delete_nodes_attributes": "Delete the {{name}} node attribute",
-    "delete_edges_attributes": "Delete the {{name}} edge attribute",
+    "delete_nodes_attributes": "Delete the '{{name}}' node attribute",
+    "delete_edges_attributes": "Delete the '{{name}}' edge attribute",
     "confirm_delete_attributes": "This deletion will remove {{nbValues}} values from the graph. Are you sure you want to delete the attribute {{name}}?",
-    "delete_attributes_success": "The {{name}} attribute has been deleted."
+    "delete_attributes_success": "The '{{name}'} attribute has been deleted."
   },
   "graph": {
     "title": "Graph",
@@ -740,13 +740,15 @@
       "placeholder": "Search a node ...",
       "no_result": "No node found",
       "help": "Type something to find a node",
-      "other_result": "... and {{count}} other nodes"
+      "other_result": "... and {{count}} other nodes",
+      "select_all": "Select all {{count}} nodes"
     },
     "edges": {
       "placeholder": "Search an edge...",
       "no_result": "No edge found",
       "help": "Type something to find an edge",
-      "other_result": "... and {{count}} other edges"
+      "other_result": "... and {{count}} other edges",
+      "select_all": "Select all {{count}} edges"
     }
   },
   "settings": {
@@ -758,6 +760,7 @@
         "description": "All your data will be deleted, even the settings saved locally (ie. in your browser). Are you sure ?",
         "success": "Application's state has been cleared"
       }
-    }
+    },
+    "theme": "Choose a theme"
   }
 }

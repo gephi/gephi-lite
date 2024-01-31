@@ -241,7 +241,8 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             </div>
             <button
               type="button"
-              className="btn btn-sm btn-outline-dark flex-shrink-0"
+              className="btn btn-sm btn-danger flex-shrink-0"
+              title={t("edition.delete_nodes_attributes", { name: field.key })}
               onClick={() =>
                 setValue(
                   "attributes",

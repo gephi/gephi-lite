@@ -1,6 +1,6 @@
 .graph-caption {
   &:not(.collapsed) {
-    background-color: rgba($panels-bg, 0.9);
+    background-color: rgba(var(--panels-bg-rgb), 0.9);
   }
   display: flex;
   align-items: center;

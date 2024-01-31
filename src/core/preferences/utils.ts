@@ -9,6 +9,7 @@ export function getEmptyPreferences(): Preferences {
     metrics: {},
     // default is the local detected by i18n
     locale: i18n.language,
+    theme: "auto",
   };
 }
 
@@ -37,4 +38,12 @@ export function parsePreferences(rawPreferences: string): Preferences | null {
   } catch (e) {
     return null;
   }
+}
+
+export function getAppliedTheme(theme: Preferences["theme"]): "light" | "dark" {
+  if (theme === "auto") {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+    else return "light";
+  }
+  return theme;
 }
