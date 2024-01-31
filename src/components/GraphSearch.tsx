@@ -10,6 +10,7 @@ import { ItemType } from "../core/types";
 import { EdgeComponentById } from "./Edge";
 import { NodeComponentById } from "./Node";
 import { SearchIcon } from "./common-icons";
+import { DEFAULT_SELECT_PROPS } from "./consts";
 
 export interface OptionItem {
   id: string;
@@ -28,14 +29,13 @@ const OptionComponent = ({ data, innerProps, className, isFocused }: OptionProps
   const { t } = useTranslation();
 
   return (
-    <div {...innerProps} className={className} onMouseMove={undefined} onMouseOver={undefined}>
-      <div
-        className={cx(
-          className,
-          "d-flex m-1 hoverable text-ellipsis d-flex align-items-center",
-          isFocused && "bg-light",
-        )}
-      >
+    <div
+      {...innerProps}
+      className={cx(className, isFocused && "selected")}
+      onMouseMove={undefined}
+      onMouseOver={undefined}
+    >
+      <div className={cx(className, "d-flex m-1 hoverable text-ellipsis d-flex align-items-center")}>
         {data.type === "nodes" && <NodeComponentById id={data.id} />}
         {data.type === "edges" && <EdgeComponentById id={data.id} />}
         {data.type === "message" && (
@@ -112,6 +112,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
 
   return (
     <AsyncSelect<Option>
+      {...DEFAULT_SELECT_PROPS}
       className={className}
       isClearable
       controlShouldRenderValue={!!value}

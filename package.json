@@ -95,6 +95,7 @@
     "sass": "^1.77.4",
     "typescript": "^5.4.5",
     "vite": "^5.2.13",
+    "vite-plugin-svgr": "^4.2.0",
     "vitest": "^1.6.0"
   },
   "overrides": {

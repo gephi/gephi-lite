@@ -742,13 +742,15 @@
       "placeholder": "Search a node ...",
       "no_result": "No node found",
       "help": "Type something to find a node",
-      "other_result": "... and {{count}} other nodes"
+      "other_result": "... and {{count}} other nodes",
+      "select_all": "Select all {{count}} nodes"
     },
     "edges": {
       "placeholder": "Search an edge...",
       "no_result": "No edge found",
       "help": "Type something to find an edge",
-      "other_result": "... and {{count}} other edges"
+      "other_result": "... and {{count}} other edges",
+      "select_all": "Select all {{count}} edges"
     }
   },
   "settings": {
@@ -760,6 +762,7 @@
         "description": "All your data will be deleted, even the settings saved locally (ie. in your browser). Are you sure ?",
         "success": "Application's state has been cleared"
       }
-    }
+    },
+    "theme": "Choose a theme"
   }
 }

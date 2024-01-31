@@ -85,7 +85,7 @@ const GraphSelectionSearch: FC = () => {
           if (nodesResult.length > 0) {
             result.push({
               type: "message",
-              i18nCode: "select_all_nodes",
+              i18nCode: "nodes.select_all",
               i18nParams: { count: nodesResult.length },
               action: () => {
                 select({

@@ -13,4 +13,6 @@ export interface Preferences {
   };
   // current locale
   locale: string;
+  // theme
+  theme: "light" | "dark" | "auto";
 }

@@ -9,6 +9,7 @@ export function getEmptyPreferences(): Preferences {
     metrics: {},
     // default is the local detected by i18n
     locale: i18n.language,
+    theme: "auto",
   };
 }
 
