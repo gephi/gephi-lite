@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { capitalize, cloneDeep, isNil, keyBy, map, mapValues } from "lodash";
-import React, { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
@@ -9,7 +9,7 @@ import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
-import { useGraphDataset, useGraphDatasetActions, useSigmaGraph } from "../../core/context/dataContexts";
+import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
 import { computeMetric } from "../../core/metrics";
 import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
@@ -38,7 +38,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
-  const sigmaGraph = useSigmaGraph();
+  const filteredGraph = useFilteredGraph();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
   const { setGraphDataset } = useGraphDatasetActions();
@@ -128,7 +128,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
 
   const submit = useCallback(() => {
     try {
-      const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, sigmaGraph, dataset);
+      const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, filteredGraph, dataset);
       setGraphDataset(res.dataset);
       setSuccessMessage(
         t("statistics.success", {
@@ -149,7 +149,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
     metric,
     metricConfig.parameters,
     metricConfig.attributeNames,
-    sigmaGraph,
+    filteredGraph,
     dataset,
     setGraphDataset,
     setSuccessMessage,

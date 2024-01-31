@@ -1,7 +1,7 @@
 import { clone } from "lodash";
 
-import { FieldModel, GraphDataset, SigmaGraph } from "../graph/types";
-import { getFilteredDataGraph, inferFieldType } from "../graph/utils";
+import { DatalessGraph, FieldModel, GraphDataset } from "../graph/types";
+import { dataGraphToFullGraph, inferFieldType } from "../graph/utils";
 import { Metric, MetricReport } from "./types";
 
 export function computeMetric(
@@ -9,10 +9,12 @@ export function computeMetric(
   metric: Metric<any, any, any>,
   params: Record<string, unknown>,
   attributeNames: Record<string, string>,
-  sigmaGraph: SigmaGraph,
+  filteredGraph: DatalessGraph,
   dataset: GraphDataset,
 ): { dataset: GraphDataset; report: MetricReport } {
-  const graph = getFilteredDataGraph(dataset, sigmaGraph);
+  // get the full filtered graph
+  const graph = dataGraphToFullGraph(dataset, filteredGraph);
+
   const scores = metric.fn(params, graph);
   const report = {}; // TODO
   const dataKey = metric.itemType === "nodes" ? "nodeData" : "edgeData";

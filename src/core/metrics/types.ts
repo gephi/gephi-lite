@@ -1,4 +1,4 @@
-import { DataGraph, FullGraph, ItemData } from "../graph/types";
+import { FullGraph, ItemData } from "../graph/types";
 import { ItemType } from "../types";
 
 interface BaseMetricParameter {
@@ -66,7 +66,7 @@ export interface Metric<
   description?: boolean;
   fn: (
     parameters: Record<string, unknown>,
-    sigma: DataGraph,
+    graph: FullGraph,
   ) => { [Key in keyof Types]: Record<string, Types[Key]["type"]> };
 }
 

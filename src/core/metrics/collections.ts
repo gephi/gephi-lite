@@ -6,7 +6,7 @@ import toSimple from "graphology-operators/to-simple";
 import { isNumber, isString } from "lodash";
 
 import { graphDatasetAtom } from "../graph";
-import { DataGraph, EdgeRenderingData } from "../graph/types";
+import { EdgeRenderingData, FullGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { toNumber } from "../utils/casting";
 import { Metric } from "./types";
@@ -69,7 +69,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         randomWalk?: boolean;
         resolution?: number;
       },
-      graph: DataGraph,
+      graph: FullGraph,
     ) {
       return { modularityClass: louvain(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
     },
@@ -109,7 +109,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         maxIterations?: number;
         tolerance?: number;
       },
-      graph: DataGraph,
+      graph: FullGraph,
     ) {
       return { pagerank: pagerank(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
     },
@@ -136,7 +136,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         getEdgeWeight?: keyof EdgeRenderingData;
         normalize?: boolean;
       },
-      graph: DataGraph,
+      graph: FullGraph,
     ) {
       return {
         betweennessCentrality: betweennessCentrality(graph, {
@@ -174,7 +174,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         kind?: "degree" | "inDegree" | "outDegree";
         getEdgeWeight?: keyof EdgeRenderingData;
       },
-      graph: DataGraph,
+      graph: FullGraph,
     ) {
       const collection: Record<string, number> = {};
 
@@ -229,7 +229,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
         normalize?: boolean;
         tolerance?: number;
       },
-      graph: DataGraph,
+      graph: FullGraph,
     ) {
       return hits(toSimple(graph), parameters);
     },
@@ -264,7 +264,7 @@ export const NODE_METRICS: Metric<"nodes", any, any>[] = [
       },
     ],
     //eslint-disable-next-line @typescript-eslint/ban-types
-    fn(parameters: { script?: Function }, graph: DataGraph) {
+    fn(parameters: { script?: Function }, graph: FullGraph) {
       const fn = parameters.script;
       if (fn) {
         // we copy the graph to avoid user to modify it
@@ -302,7 +302,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
       parameters: {
         getEdgeWeight?: keyof EdgeRenderingData;
       },
-      graph: DataGraph,
+      graph: FullGraph,
     ) {
       return { disparity: disparity(toSimple(graph), parameters) };
     },
@@ -312,7 +312,7 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
     types: { simmelianStrength: "number" },
     itemType: "edges",
     parameters: [],
-    fn(_parameters: unknown, graph: DataGraph) {
+    fn(_parameters: unknown, graph: FullGraph) {
       return { simmelianStrength: simmelianStrength(graph) };
     },
   },
@@ -337,15 +337,16 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
           if (!fn) throw new Error("Function is not defined");
           const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
           const id = fullGraph.edges()[0];
-          const attributs = fullGraph.getEdgeAttributes(id);
-          const result = fn(id, attributs, 0, fullGraph);
-          if (!isNumber(result) && !isString(result)) throw new Error("Function must returns a number");
+          const attributes = fullGraph.getEdgeAttributes(id);
+          console.log(attributes);
+          const result = fn(id, attributes, 0, fullGraph);
+          if (!isNumber(result) && !isString(result)) throw new Error("Function must returns a number or a string");
         },
         defaultValue: edgeMetricCustomFn,
       },
     ],
     //eslint-disable-next-line @typescript-eslint/ban-types
-    fn(parameters: { script?: Function }, graph: DataGraph) {
+    fn(parameters: { script?: Function }, graph: FullGraph) {
       const fn = parameters.script;
       if (fn) {
         // we copy the graph to avoid user to modify it
