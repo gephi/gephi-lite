@@ -103,6 +103,19 @@ const deleteItems: MultiProducer<[SearchState, SelectionState, GraphDataset], [I
     },
   ];
 };
+const deleteItemsAttribute: Producer<GraphDataset, [ItemType, string]> = (type, attributeId) => {
+  return (state) => {
+    const dataLabel = type === "nodes" ? "nodeData" : "edgeData";
+    const fieldsModelLabel = type === "nodes" ? "nodeFields" : "edgeFields";
+    return {
+      ...state,
+      // remove attribute from all items in dataset
+      [dataLabel]: mapValues(state[dataLabel], (attributes) => omit(attributes, [attributeId])),
+      // remove the attribute fieldModel
+      [fieldsModelLabel]: state[fieldsModelLabel].filter((fm) => fm.id !== attributeId),
+    };
+  };
+};
 const createNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
   return (state) => {
     const { data, renderingData } = cleanNode(node, attributes);
@@ -201,6 +214,7 @@ export const graphDatasetActions = {
   createEdge: producerToAction(createEdge, graphDatasetAtom),
   updateNode: producerToAction(updateNode, graphDatasetAtom),
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
+  deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
   deleteItems: multiproducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
 };
 

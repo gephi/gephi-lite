@@ -1,6 +1,6 @@
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { forEach, isNumber, keys, mapValues, omit, sortBy, take, uniq } from "lodash";
+import { forEach, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
 import { toNumber, toScalar } from "../utils/casting";
@@ -10,6 +10,7 @@ import {
   DatalessGraph,
   EdgeRenderingData,
   FieldModel,
+  FieldModelWithStats,
   FullGraph,
   GraphDataset,
   ItemData,
@@ -312,4 +313,35 @@ export function newItemModel<T extends ItemType>(
   // We could try to detect that an attribute has been deleted from all nodes but this would require iterating through all the graph nodes.
   // but removing the model is not necessarily a good thing?  Keeping it does not harm much and model deletion might be better handled through a specific action.
   // To be decided later see https://github.com/gephi/gephi-lite/issues/117
+}
+
+/**
+ * This functions counts the number of item (node/edge) having a data attribute set for all fields in a model
+ */
+export function countExistingValues(
+  fieldModel: FieldModel[],
+  itemsData: Record<string, ItemData>,
+): FieldModelWithStats[] {
+  const items = values(itemsData);
+  return fieldModel.map((fm) => {
+    let nbItems = 0;
+    let nbCastIssues = 0;
+    let nbMissingValues = 0;
+    items.forEach((item) => {
+      if (item[fm.id] !== undefined) {
+        // attribute exists
+        nbItems += 1;
+        // is format correct?
+        if (fm.quantitative && typeof item[fm.id] !== "number") nbCastIssues += 1;
+      } else nbMissingValues += 1;
+    });
+    return {
+      ...fm,
+      stats: {
+        nbItems,
+        nbCastIssues,
+        nbMissingValues,
+      },
+    };
+  });
 }

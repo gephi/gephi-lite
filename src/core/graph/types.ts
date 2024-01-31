@@ -46,6 +46,14 @@ export interface FieldModel<T extends ItemType = ItemType> {
   qualitative: null | { separator?: string | null };
 }
 
+export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {
+  stats: {
+    nbItems: number;
+    nbCastIssues: number;
+    nbMissingValues: number;
+  };
+};
+
 /**
  * Graphs:
  * *******

@@ -1,22 +1,31 @@
+import { omit } from "lodash";
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { BsFillTrashFill } from "react-icons/bs";
+import { PiWarningCircleDuotone, PiWarningDiamondDuotone, PiWarningDuotone } from "react-icons/pi";
 
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
-import { FieldModel } from "../../core/graph/types";
+import { FieldModelWithStats } from "../../core/graph/types";
+import { countExistingValues } from "../../core/graph/utils";
+import { useModal } from "../../core/modals";
+import ConfirmModal from "../../views/graphPage/modals/ConfirmModal";
 import { Toggle } from "../Toggle";
 import { EdgeIcon, NodeIcon } from "../common-icons";
 
-const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
-  const { setFieldModel } = useGraphDatasetActions();
+const FieldModelsComponent: FC<{ fields: FieldModelWithStats[] }> = ({ fields }) => {
+  const { setFieldModel, deleteItemsAttribute } = useGraphDatasetActions();
   const { t } = useTranslation();
+  const { openModal } = useModal();
 
   return (
     <div>
       {!fields.length && <div className="text-muted fst-italic text-center mt-3">{t("graph.model.no_attributes")}</div>}
       {fields.map((field) => (
         <div key={field.id} className="mt-1  p-2">
-          <div className="fs-5">{field.id}</div>
-          <div className="d-flex justify-content-around align-items-center">
+          <div className="d-flex justify-content-between align-items-center ">
+            <div className="fs-5">{field.id}</div>
+          </div>
+          <div className="d-flex gap-4 align-items-center">
             <div className="form-check">
               <input
                 className="form-check-input"
@@ -26,7 +35,7 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
                 checked={!!field.qualitative}
                 onChange={(e) =>
                   setFieldModel({
-                    ...field,
+                    ...omit(field, ["stats"]),
                     qualitative: e.target.checked ? {} : null,
                   })
                 }
@@ -44,7 +53,7 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
                 checked={!!field.quantitative}
                 onChange={(e) =>
                   setFieldModel({
-                    ...field,
+                    ...omit(field, ["stats"]),
                     quantitative: e.target.checked ? {} : null,
                   })
                 }
@@ -53,7 +62,48 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
                 {t("graph.model.attribute.quantitative")}
               </label>
             </div>
+            <button
+              type="button"
+              className="btn btn-outline-danger btn-sm"
+              title={`${t(`edition.delete_${field.itemType}_attributes`, { name: field.id })}`}
+              onClick={() => {
+                openModal({
+                  component: ConfirmModal,
+                  arguments: {
+                    title: t(`edition.delete_${field.itemType}_attributes`, { name: field.id }),
+                    message: t(`edition.confirm_delete_attributes`, { name: field.id, nbValues: field.stats.nbItems }),
+                    successMsg: t("edition.delete_attributes_success", { name: field.id }),
+                  },
+                  afterSubmit: () => {
+                    deleteItemsAttribute(field.itemType, field.id);
+                  },
+                });
+              }}
+            >
+              <BsFillTrashFill />
+            </button>
           </div>
+          {(field.stats.nbItems === 0 || field.stats.nbMissingValues !== 0 || field.stats.nbCastIssues !== 0) && (
+            <div className="d-flex flex-wrap flex-gap-1 small gap-2">
+              {field.stats.nbCastIssues > 0 && (
+                <div>
+                  <PiWarningCircleDuotone className="text-info" />{" "}
+                  {t("graph.model.warnings.wrong", { nbValues: field.stats.nbCastIssues })}
+                </div>
+              )}
+              {field.stats.nbMissingValues !== 0 && field.stats.nbItems !== 0 && (
+                <div>
+                  <PiWarningDiamondDuotone className="text-warning" />{" "}
+                  {t("graph.model.warnings.missing", { nbValues: field.stats.nbMissingValues })}
+                </div>
+              )}
+              {field.stats.nbItems === 0 && (
+                <div>
+                  <PiWarningDuotone className="text-danger" /> {t("graph.model.warnings.allMissing")}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -61,7 +111,10 @@ const FieldModelsComponent: FC<{ fields: FieldModel[] }> = ({ fields }) => {
 };
 
 export const GraphModelForm: FC = () => {
-  const { nodeFields, edgeFields } = useGraphDataset();
+  const { nodeFields, edgeFields, nodeData, edgeData } = useGraphDataset();
+  const nodeFieldsWithStats = countExistingValues(nodeFields, nodeData);
+  const edgeFieldsWithStats = countExistingValues(edgeFields, edgeData);
+
   const { t } = useTranslation();
   const [showEdges, setShowEdges] = useState<boolean>(false);
   return (
@@ -83,7 +136,7 @@ export const GraphModelForm: FC = () => {
         />
       </div>
 
-      <FieldModelsComponent fields={showEdges ? edgeFields : nodeFields} />
+      <FieldModelsComponent fields={showEdges ? edgeFieldsWithStats : nodeFieldsWithStats} />
     </>
   );
 };
