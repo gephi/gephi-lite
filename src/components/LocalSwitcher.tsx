@@ -12,7 +12,6 @@ const DEFAULT_FLAG = <HiMiniLanguage className="fs-5" />;
 function getIcon(locale: string): ReactNode {
   return locale === "dev" ? DEFAULT_FLAG : localeEmoji(locale) || DEFAULT_FLAG;
 }
-console.log(import.meta.env);
 const AVAILABLE_LOCALES = toPairs(LOCALES)
   .filter(([key]) => import.meta.env.MODE === "development" || key !== "dev")
   .map(([key, locale]) => ({
