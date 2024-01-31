@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { clamp } from "lodash";
+import { clamp, isNil } from "lodash";
 import Slider from "rc-slider";
 import { MarkObj } from "rc-slider/lib/Marks";
 import { SliderProps } from "rc-slider/lib/Slider";
@@ -137,7 +137,7 @@ export const BooleanInput: FC<
           type="checkbox"
           className={cx("form-check-input", className)}
           id={id}
-          checked={value ?? false}
+          checked={isNil(value) ? false : value}
           onChange={(e) => onChange(e.target.checked)}
         />
         <label htmlFor={id} className="form-check-label small ms-1">
