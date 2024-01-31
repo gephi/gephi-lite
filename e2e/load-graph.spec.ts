@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 const BASE_URL = "https://raw.githubusercontent.com/gephi/gephi-lite/main/public/samples/";
 const FILES = ["Java.gexf", "Les Miserables.gexf", "Power Grid.gexf"];
