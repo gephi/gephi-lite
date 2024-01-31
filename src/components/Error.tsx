@@ -1,8 +1,8 @@
+import cx from "classnames";
 import { FC } from "react";
 import { FallbackProps } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { TbFaceIdError } from "react-icons/tb";
-import cx from "classnames";
 
 import { GitHubIcon } from "./common-icons";
 
@@ -22,7 +22,7 @@ ${error.message}
 ${error.stack}
 \`\`\``;
   }
-  return `https://github.com/gephi/gephi-lite/issues/new?labels=prod&body=${encodeURIComponent(body)}`;
+  return `https://github.com/gephi/gephi-lite/issues/new?labels=bug,prod&body=${encodeURIComponent(body)}`;
 }
 
 export const ErrorComponent: FC<FallbackProps> = ({ error }) => {
