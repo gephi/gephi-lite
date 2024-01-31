@@ -275,15 +275,15 @@
             "title": "Open a graph file",
             "local": {
                 "title": "Open a local file",
-                "dragndrop_text": "Drag'n'drop a GEXF file",
+                "dragndrop_text": "Drag'n'drop a GEXF or GRAPHML file",
                 "success": "File {{filename}} has been successfully loaded",
-                "error": "An error occurred while opening the file. Please check that the file is a valid GEXF."
+                "error": "An error occurred while opening the file. Please check that the file is a valid."
             },
             "remote": {
                 "title": "Open an url",
-                "url-field": "URL of the GEXF file",
+                "url-field": "URL of a GEXF or GRAPHML file",
                 "success": "File {{filename}} has been successfully loaded",
-                "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid GEXF."
+                "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid."
             },
             "cloud": {
                 "title": "Open a file from {{provider}}",

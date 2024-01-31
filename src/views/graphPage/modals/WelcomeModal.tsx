@@ -15,7 +15,7 @@ import { CloudFileModal } from "./open/CloudFileModal";
 import { LocalFileModal } from "./open/LocalFileModal";
 import { RemoteFileModal } from "./open/RemoteFileModal";
 
-const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
+const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf", "airlines.graphml"];
 
 export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
@@ -25,7 +25,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { recentRemoteFiles } = usePreferences();
 
   const { type: fileStateType } = useImportState();
-  const { importRemoteGexf } = useImportActions();
+  const { importFile } = useImportActions();
 
   useEffect(() => {
     if (fileStateType === "error") {
@@ -67,7 +67,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                   <button
                     className="btn btn-sm btn-outline-dark"
                     onClick={async () => {
-                      await importRemoteGexf(remoteFile);
+                      await importFile(remoteFile);
                       notify({
                         type: "success",
                         message: t("graph.open.remote.success", { filename: remoteFile.filename }) as string,
@@ -134,7 +134,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 <button
                   className="btn btn-sm btn-outline-dark"
                   onClick={async () => {
-                    await importRemoteGexf({
+                    await importFile({
                       type: "remote",
                       url: `${import.meta.env.BASE_URL}/samples/${sample}`,
                       filename: sample,

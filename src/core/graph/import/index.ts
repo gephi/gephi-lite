@@ -1,5 +1,6 @@
 import Graph from "graphology";
-import { parse } from "graphology-gexf";
+import gexf from "graphology-gexf";
+import graphml from "graphology-graphml/browser";
 
 import { resetStates } from "../../context/dataContexts";
 import { preferencesActions } from "../../preferences";
@@ -8,7 +9,7 @@ import { atom } from "../../utils/atoms";
 import { asyncAction } from "../../utils/producers";
 import { graphDatasetActions } from "../index";
 import { initializeGraphDataset } from "../utils";
-import { ImportState, LocalFile, RemoteFile } from "./types";
+import { GraphOrigin, ImportState, LocalFile, RemoteFile } from "./types";
 
 function getEmptyImportState(): ImportState {
   return { type: "idle" };
@@ -24,21 +25,24 @@ export const importStateAtom = atom<ImportState>(getEmptyImportState());
  * Actions:
  * ********
  */
-export const importRemoteGexf = asyncAction(async (remote: RemoteFile) => {
-  const { setGraphDataset } = graphDatasetActions;
-  const { addRemoteFile } = preferencesActions;
 
+/**
+ * Generic function that import a graphology instance in gephi-lite
+ */
+async function importFromGraphology<T extends NonNullable<GraphOrigin>>(
+  file: T,
+  getGraphology: (file: T) => Promise<Graph>,
+) {
   if (importStateAtom.get().type === "loading") throw new Error("A file is already being loaded");
-
   importStateAtom.set({ type: "loading" });
   try {
-    const response = await fetch(remote.url);
-    const gexf = await response.text();
-    const graph = parse(Graph, gexf, { allowUndeclaredAttributes: true, addMissingNodes: true });
-    graph.setAttribute("title", remote.filename);
+    const graph = await getGraphology(file);
+    const { setGraphDataset } = graphDatasetActions;
+    const { addRemoteFile } = preferencesActions;
+    graph.setAttribute("title", file.filename);
     resetStates();
-    setGraphDataset({ ...initializeGraphDataset(graph), origin: remote });
-    addRemoteFile(remote);
+    setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
+    if (file.type === "remote") addRemoteFile(file);
     resetCamera({ forceRefresh: true });
   } catch (e) {
     importStateAtom.set({ type: "error", message: (e as Error).message });
@@ -46,30 +50,60 @@ export const importRemoteGexf = asyncAction(async (remote: RemoteFile) => {
   } finally {
     importStateAtom.set({ type: "idle" });
   }
-});
+}
 
 export const importLocalGexf = asyncAction(async (file: LocalFile) => {
-  const { setGraphDataset } = graphDatasetActions;
-
-  if (importStateAtom.get().type === "loading") throw new Error("A file is already being loaded");
-
-  importStateAtom.set({ type: "loading" });
-  try {
+  return importFromGraphology(file, async (file) => {
     const content = await file.source.text();
-    const graph = parse(Graph, content, { allowUndeclaredAttributes: true });
-    graph.setAttribute("title", file.filename);
-    resetStates();
-    setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
-    resetCamera({ forceRefresh: true });
-  } catch (e) {
-    importStateAtom.set({ type: "error", message: (e as Error).message });
-    throw e;
-  } finally {
-    importStateAtom.set({ type: "idle" });
+    const graph = gexf.parse(Graph, content, { allowUndeclaredAttributes: true, addMissingNodes: true });
+    return graph;
+  });
+});
+export const importRemoteGexf = asyncAction(async (file: RemoteFile) => {
+  return importFromGraphology(file, async (file) => {
+    const response = await fetch(file.url);
+    const content = await response.text();
+    const graph = gexf.parse(Graph, content, { allowUndeclaredAttributes: true, addMissingNodes: true });
+    return graph;
+  });
+});
+
+export const importLocalGraphml = asyncAction(async (file: LocalFile) => {
+  return importFromGraphology(file, async (file) => {
+    const content = await file.source.text();
+    const graph = graphml.parse(Graph, content, { addMissingNodes: true });
+    return graph;
+  });
+});
+export const importRemoteGraphml = asyncAction(async (file: RemoteFile) => {
+  return importFromGraphology(file, async (file) => {
+    const response = await fetch(file.url);
+    const content = await response.text();
+    const graph = graphml.parse(Graph, content, { addMissingNodes: true });
+    return graph;
+  });
+});
+
+export const importFile = asyncAction(async (file: RemoteFile | LocalFile) => {
+  const extension = (file.filename.split(".").pop() || "").toLowerCase();
+  switch (extension) {
+    case "gexf":
+      if (file.type === "remote") await importRemoteGexf(file);
+      else await importLocalGexf(file);
+      break;
+    case "graphml":
+      if (file.type === "remote") await importRemoteGraphml(file);
+      else await importLocalGraphml(file);
+      break;
+    default:
+      throw new Error(`Extension ${extension} for file ${file.filename} is not recognized`);
   }
 });
 
 export const importActions = {
+  importFile,
   importRemoteGexf,
   importLocalGexf,
+  importRemoteGraphml,
+  importLocalGraphml,
 };

@@ -17,9 +17,10 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const [url, setUrl] = useState<string>("");
 
   const { type: fileStateType } = useImportState();
-  const { importRemoteGexf } = useImportActions();
+  const { importFile } = useImportActions();
 
   const isFormValid = useMemo(() => {
+    console.log(url, isUrl(url));
     return url ? isUrl(url) : false;
   }, [url]);
 
@@ -27,14 +28,14 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
     if (isFormValid) {
       try {
         const file: RemoteFile = { type: "remote", url, filename: extractFilename(url) };
-        await importRemoteGexf(file);
+        await importFile(file);
         notify({ type: "success", message: t("graph.open.remote.success", { filename: file.filename }).toString() });
         cancel();
       } catch (e) {
         console.error(e);
       }
     }
-  }, [isFormValid, url, cancel, notify, t, importRemoteGexf]);
+  }, [isFormValid, url, cancel, notify, t, importFile]);
 
   return (
     <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()} onSubmit={openRemote}>

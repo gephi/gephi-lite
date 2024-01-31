@@ -15,7 +15,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const [file, setFile] = useState<File | null>(null);
 
   const { type: importStateType } = useImportState();
-  const { importLocalGexf } = useImportActions();
+  const { importFile } = useImportActions();
 
   return (
     <Modal title={t("graph.open.local.title").toString()} onClose={() => cancel()}>
@@ -27,7 +27,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           value={file}
           onChange={(file) => setFile(file)}
           helpText={t("graph.open.local.dragndrop_text").toString()}
-          accept={{ "application/graph": [".gexf"] }}
+          accept={{ "application/graph": [".gexf", ".graphml"] }}
         />
         {importStateType === "loading" && <Loader />}
       </>
@@ -43,7 +43,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           onClick={async () => {
             if (file) {
               try {
-                await importLocalGexf({
+                await importFile({
                   type: "local",
                   filename: file.name,
                   updatedAt: new Date(file.lastModified),
