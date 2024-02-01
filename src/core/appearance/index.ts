@@ -1,14 +1,14 @@
 import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
-import { AppearanceState, Color, Label, LabelSize, Size } from "./types";
+import { AppearanceState, BooleanAppearance, Color, Label, LabelSize, Size } from "./types";
 import { getEmptyAppearanceState, serializeAppearanceState } from "./utils";
 
 const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();
 };
 
-const setShowEdges: Producer<AppearanceState, [boolean]> = (showEdges) => {
+const setShowEdges: Producer<AppearanceState, [BooleanAppearance]> = (showEdges) => {
   return (state) => ({ ...state, showEdges });
 };
 

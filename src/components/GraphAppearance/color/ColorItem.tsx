@@ -91,6 +91,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           if (!option || option.value === "fixed") {
             if (color.type !== "fixed") {
               setColorAppearance(itemType, {
+                itemType,
                 type: "fixed",
                 value: baseValue,
               });
@@ -102,6 +103,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           } else {
             if (option.type === "ranking") {
               setColorAppearance(itemType, {
+                itemType,
                 type: "ranking",
                 field: option.field,
                 colorScalePoints: [
@@ -122,6 +124,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
               ) as string[];
 
               setColorAppearance(itemType, {
+                itemType,
                 type: "partition",
                 field,
                 colorPalette: getPalette(values),

@@ -49,21 +49,25 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         onChange={(option) => {
           if (!option) {
             setLabelAppearance(itemType, {
+              itemType,
               type: "none",
             });
           } else if (option.type === "field") {
             setLabelAppearance(itemType, {
+              itemType,
               type: "field",
               field: option.field,
               missingLabel: null,
             });
           } else if (option.type === "fixed") {
             setLabelAppearance(itemType, {
+              itemType,
               type: "fixed",
               value: "label",
             });
           } else {
             setLabelAppearance(itemType, {
+              itemType,
               type: option.type,
             });
           }

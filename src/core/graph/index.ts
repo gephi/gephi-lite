@@ -1,11 +1,11 @@
 import { Attributes } from "graphology-types";
-import { isNil, last, mapValues, omit } from "lodash";
+import { isNil, last, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { appearanceAtom } from "../appearance";
-import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
+import { applyVisualProperties, getAllVisualGetters, getEmptyAppearanceState } from "../appearance/utils";
 import { filtersAtom } from "../filters";
-import { FilteredGraph } from "../filters/types";
+import { FilterType, FilteredGraph } from "../filters/types";
 import { applyFilters } from "../filters/utils";
 import { itemsRemove, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
@@ -239,6 +239,44 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When graph data or fields changed, we reindex it for the search
   if (updatedKeys.has("fullGraph") || updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
     searchActions.indexAll();
+  }
+
+  // When fields changed, check if filter or appearance use it
+  if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
+    const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
+    const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
+    // filters
+    const filtersState = filtersAtom.get();
+    const filterFilters = (f: FilterType) =>
+      !("field" in f) ||
+      (f.itemType === "nodes" && nodeFields.includes(f.field)) ||
+      (f.itemType === "edges" && edgeFields.includes(f.field));
+    filtersAtom.set({
+      past: filtersState.past.filter(filterFilters),
+      future: filtersState.future.filter(filterFilters),
+    });
+    // appearance
+    const appearanceState = appearanceAtom.get();
+    const initialState = getEmptyAppearanceState();
+
+    const newState = {
+      ...initialState,
+      ...omitBy(appearanceState, (appearanceElement) => {
+        if (
+          appearanceElement.field &&
+          ((appearanceElement.itemType === "edges" && !edgeFields.includes(appearanceElement.field)) ||
+            (appearanceElement.itemType === "nodes" && !nodeFields.includes(appearanceElement.field)))
+        ) {
+          // this appearance element is based on a field which is not in the model anymore
+          // let's reset it
+          return true;
+        }
+        // this appearance is not based on a field or on a field existing in the model
+        return false;
+      }),
+    };
+
+    appearanceAtom.set(newState);
   }
 
   // When graph meta change, we set the page metadata

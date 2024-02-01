@@ -1,8 +1,14 @@
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
 import { ItemData } from "../graph/types";
+import { ItemType } from "../types";
 
-interface NoFieldValue<T extends string> {
+interface AppearanceBaseElement {
+  itemType: ItemType;
+  field?: string;
+}
+
+interface NoFieldValue<T extends string> extends AppearanceBaseElement {
   type: T;
   field?: undefined;
 }
@@ -15,7 +21,7 @@ export interface FixedSize extends NoFieldValue<"fixed"> {
 
 export type TransformationMethod = { pow: number } | "log" | { spline: [[number, number], [number, number]] };
 
-export interface RankingSize {
+export interface RankingSize extends AppearanceBaseElement {
   type: "ranking";
   field: string;
   minSize: number;
@@ -36,14 +42,14 @@ export interface ColorScalePointType {
   scalePoint: number;
   color: string;
 }
-export interface RankingColor {
+export interface RankingColor extends AppearanceBaseElement {
   type: "ranking";
   field: string;
   colorScalePoints: ColorScalePointType[];
   transformationMethod?: { pow: number } | "log" | { spline: [[number, number], [number, number]] };
   missingColor: string;
 }
-export interface PartitionColor {
+export interface PartitionColor extends AppearanceBaseElement {
   type: "partition";
   field: string;
   colorPalette: Record<string, string>;
@@ -56,7 +62,7 @@ export type EdgeColor = Color | SourceNodeColor | TargetNodeColor;
 export type NoLabel = NoFieldValue<"none">;
 export type DataLabel = NoFieldValue<"data">;
 export type FixedLabel = NoFieldValue<"fixed"> & { value: string };
-export interface FieldLabel {
+export interface FieldLabel extends AppearanceBaseElement {
   type: "field";
   field: string;
   missingLabel: string | null;
@@ -68,11 +74,14 @@ export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: nu
 export type ItemLabelSize = NoFieldValue<"item"> & BaseLabelSize & { sizeCorrelation: number };
 export type LabelSize = FixedLabelSize | ItemLabelSize;
 
+export interface BooleanAppearance extends AppearanceBaseElement {
+  value: boolean;
+}
 /**
  * This state contains everything needed to generate the visual getters:
  */
 export interface AppearanceState {
-  showEdges: boolean;
+  showEdges: BooleanAppearance;
   nodesSize: Size;
   edgesSize: Size;
   nodesColor: Color;
