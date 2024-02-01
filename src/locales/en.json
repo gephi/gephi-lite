@@ -112,6 +112,12 @@
             "log": "log",
             "spline": "spline"
         },
+        "graph": {
+            "background": {
+              "title":"Background",
+              "color": "Color"
+            }
+          },
         "color": {
             "title": "Color",
             "set_color_from": "Set color from...",
@@ -240,6 +246,7 @@
             "directed": "Directed",
             "undirected": "Undirected",
             "mixed": "Mixed",
+            "graph":"graph",
             "nodes_one": "node",
             "nodes_zero": "node",
             "nodes": "nodes",

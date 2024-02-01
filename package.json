@@ -49,6 +49,7 @@
     "byte-size": "^8.1.1",
     "chroma-js": "^2.4.2",
     "classnames": "^2.5.1",
+    "color": "^4.2.3",
     "copy-to-clipboard": "^3.3.3",
     "file-saver": "^2.0.5",
     "graphology": "^0.25.4",
@@ -101,6 +102,7 @@
     "sigma": "3.0.0-beta.5"
   },
   "devDependencies": {
+    "@types/color": "^3.0.6",
     "@types/react-linkify": "^1.0.4",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "@typescript-eslint/parser": "^6.20.0",

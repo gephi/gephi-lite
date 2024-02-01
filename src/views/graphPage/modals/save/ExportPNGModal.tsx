@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FaSave, FaTimes } from "react-icons/fa";
 
 import { Modal } from "../../../../components/modals";
-import { useSigmaAtom } from "../../../../core/context/dataContexts";
+import { useAppearance, useSigmaAtom } from "../../../../core/context/dataContexts";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { getGraphSnapshot } from "../../../../utils/sigma";
@@ -13,6 +13,7 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const sigma = useSigmaAtom();
+  const { backgroundColor } = useAppearance();
 
   const [data, setData] = useState<{
     width: number;
@@ -30,7 +31,7 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
     const blob = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
       width: data.width,
       height: data.height,
-      backgroundColor: "white",
+      backgroundColor,
       cameraState: data.preserve_camera ? sigma.getCamera().getState() : undefined,
       ratio: 1,
     });
@@ -42,7 +43,7 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       message: t("graph.export.png.success").toString(),
     });
     cancel();
-  }, [cancel, data.filename, data.height, data.preserve_camera, data.width, notify, sigma, t]);
+  }, [cancel, data.filename, data.height, data.preserve_camera, data.width, notify, sigma, t, backgroundColor]);
 
   return (
     <Modal

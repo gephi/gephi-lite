@@ -2,6 +2,7 @@ import { FC, useRef } from "react";
 import { SketchPicker } from "react-color";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
+import { hexToRgba, rgbaToHex } from "../utils/colors";
 import Tooltip, { TooltipAPI } from "./Tooltip";
 
 const ColorPicker: FC<
@@ -14,13 +15,13 @@ const ColorPicker: FC<
 
   return (
     <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
-      <button type="button" className="btn disc" style={{ background: color || "#ffffff" }}>
+      <button type="button" className="btn disc border" style={{ background: color || "#ffffff" }}>
         <span style={{ color: "transparent" }}>X</span>
       </button>
       <div className="custom-color-picker">
         <SketchPicker
-          color={color}
-          onChange={(color) => onChange(color.hex)}
+          color={color ? hexToRgba(color) : undefined}
+          onChange={(color) => onChange(rgbaToHex(color.rgb))}
           styles={{
             default: {
               picker: {

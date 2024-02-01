@@ -8,7 +8,7 @@ import { FaRegDotCircle } from "react-icons/fa";
 import { Settings } from "sigma/settings";
 
 import GraphCaption from "../../components/GraphCaption";
-import { useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
+import { useAppearance, useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
 import { resetCamera } from "../../core/sigma";
 import NodeProgramBorder from "../../utils/bordered-node-program";
 import { AppearanceController } from "./controllers/AppearanceController";
@@ -95,6 +95,7 @@ const GraphCaptionLayer: FC = () => {
 };
 
 export const GraphRendering: FC = () => {
+  const { backgroundColor } = useAppearance();
   const sigmaGraph = useSigmaGraph();
   const { hoveredNode, hoveredEdge } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
@@ -110,6 +111,7 @@ export const GraphRendering: FC = () => {
           !isReady && "visually-hidden",
           (hoveredNode || hoveredEdge) && "cursor-pointer",
         )}
+        style={{ backgroundColor }}
         graph={sigmaGraph}
         settings={
           {

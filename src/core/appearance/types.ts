@@ -84,6 +84,7 @@ export interface AppearanceState {
   showEdges: BooleanAppearance;
   nodesSize: Size;
   edgesSize: Size;
+  backgroundColor: string;
   nodesColor: Color;
   edgesColor: EdgeColor;
   nodesLabel: Label;

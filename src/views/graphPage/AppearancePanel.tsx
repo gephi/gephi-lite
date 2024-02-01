@@ -14,8 +14,6 @@ export const AppearancePanel: FC = () => {
         </h2>
       </div>
 
-      <hr className="m-0" />
-
       <GraphAppearance />
     </>
   );

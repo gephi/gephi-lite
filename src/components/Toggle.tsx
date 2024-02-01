@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { FC } from "react";
+import { FC, Fragment } from "react";
 
 /**
  * This toggle button displays and controls a boolean value, with two "left" and
@@ -48,3 +48,30 @@ export const Toggle: FC<{
     </div>
   );
 };
+
+export function ToggleBar<T>(props: {
+  value: T;
+  options: Array<{ label: JSX.Element | string; value: T }>;
+  onChange: (value: T) => void;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const { value, onChange, options, className, disabled } = props;
+  return (
+    <ul className={cx("nav nav-tabs", className)}>
+      {options.map((option) => (
+        <Fragment key={`${option.value}`}>
+          <li className="nav-item">
+            <button
+              className={cx("nav-link link-dark", className, option.value === value && "active")}
+              onClick={() => onChange(option.value)}
+              disabled={disabled}
+            >
+              {option.label}
+            </button>
+          </li>
+        </Fragment>
+      ))}
+    </ul>
+  );
+}

@@ -16,7 +16,7 @@
   "error": {
     "title": "Erreur",
     "unknown": "Une erreur inconnue s'est produite.",
-    "message": "Désolé ! geph-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur github en cliquant sur le bouton ci-dessous.",
+    "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur github en cliquant sur le bouton ci-dessous.",
     "report": "Signaler l'erreur",
     "not_found": {
       "title": "Page non trouvée",
@@ -112,6 +112,12 @@
       "sqrt": "racine carrée",
       "log": "logarithme",
       "spline": "spline"
+    },
+    "graph": {
+      "background": {
+        "title":"Arrière-plan",
+        "color": "Couleur"
+      }
     },
     "color": {
       "title": "Couleur",
@@ -240,6 +246,7 @@
       "directed": "Orienté",
       "undirected": "Non orienté",
       "mixed": "Mixte",
+      "graph":"graph",
       "nodes_one": "nœud",
       "nodes_zero": "nœud",
       "nodes": "nœuds",

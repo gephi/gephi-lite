@@ -1,5 +1,5 @@
 import { Attributes } from "graphology-types";
-import { isNil, last, mapValues, omit, omitBy } from "lodash";
+import { isNil, isString, last, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { appearanceAtom } from "../appearance";
@@ -263,6 +263,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
       ...initialState,
       ...omitBy(appearanceState, (appearanceElement) => {
         if (
+          !isString(appearanceElement) &&
           appearanceElement.field &&
           ((appearanceElement.itemType === "edges" && !edgeFields.includes(appearanceElement.field)) ||
             (appearanceElement.itemType === "nodes" && !nodeFields.includes(appearanceElement.field)))
