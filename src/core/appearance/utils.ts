@@ -32,7 +32,7 @@ export const DEFAULT_NODE_SIZE = 20;
 export const DEFAULT_EDGE_SIZE = 6;
 export const DEFAULT_NODE_LABEL_SIZE = 14;
 export const DEFAULT_EDGE_LABEL_SIZE = 14;
-export const DEFAULT_BACKGROUND_COLOR = "#FFFFFFFF";
+export const DEFAULT_BACKGROUND_COLOR = "#FFFFFF00";
 
 export function getEmptyAppearanceState(): AppearanceState {
   return {
