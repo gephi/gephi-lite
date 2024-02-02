@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { fromPairs, map, omit, pick, toPairs } from "lodash";
+import { fromPairs, isNil, map, omit, pick } from "lodash";
 import { FC, useContext, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -12,9 +12,10 @@ import { StateManagerProps } from "react-select/dist/declarations/src/useStateMa
 import { Modal } from "../../../../components/modals";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
 import { UIContext } from "../../../../core/context/uiContext";
-import { EdgeRenderingData } from "../../../../core/graph/types";
+import { EdgeRenderingData, FieldModel } from "../../../../core/graph/types";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
+import { Scalar } from "../../../../core/types";
 import { toNumber } from "../../../../core/utils/casting";
 
 // import ColorPicker from "../../../../components/ColorPicker";
@@ -28,7 +29,7 @@ interface UpdatedEdgeState extends Omit<EdgeRenderingData, "rawWeight"> {
   id: string;
   source: NodeOption;
   target: NodeOption;
-  attributes: { key: string; value: string }[];
+  attributes: ({ key: string; value: Scalar } & Partial<Pick<FieldModel<"nodes">, "qualitative" | "quantitative">>)[];
 }
 
 const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, arguments: { edgeId } }) => {
@@ -37,7 +38,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
   const { portalTarget } = useContext(UIContext);
 
   const { createEdge, updateEdge } = useGraphDatasetActions();
-  const { edgeData, edgeRenderingData, nodeRenderingData, fullGraph } = useGraphDataset();
+  const { edgeData, edgeRenderingData, nodeRenderingData, fullGraph, edgeFields } = useGraphDataset();
   const { select } = useSelectionActions();
 
   const nodeSelectProps: Partial<StateManagerProps> = useMemo(
@@ -54,7 +55,12 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
   const defaultValues = useMemo(() => {
     if (isNew)
       return {
-        attributes: [],
+        weight: 1,
+        attributes: edgeFields.map((nf) => ({
+          key: nf.id,
+          value: undefined,
+          ...pick(nf, ["qualitative", "quantitative"]),
+        })),
       };
 
     const source = fullGraph.source(edgeId);
@@ -64,12 +70,13 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
       ...omit(edgeRenderingData[edgeId], "rawWeight"),
       source: { value: source, label: nodeRenderingData[source].label || source },
       target: { value: target, label: nodeRenderingData[target].label || target },
-      attributes: toPairs(edgeData[edgeId]).map(([key, value]) => ({
-        key,
-        value: value ? value + "" : undefined,
+      attributes: edgeFields.map((nf) => ({
+        key: nf.id,
+        value: edgeData[edgeId][nf.id],
+        ...pick(nf, ["qualitative", "quantitative"]),
       })),
     };
-  }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, nodeRenderingData]);
+  }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, nodeRenderingData, edgeFields]);
   const {
     register,
     handleSubmit,
@@ -89,14 +96,30 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
       onClose={() => cancel()}
       className="modal-lg"
       onSubmit={handleSubmit((data) => {
+        // generate id if not present
+        const id: string = data.id || crypto.randomUUID();
+
+        if (!id) {
+          setValue("id", id);
+          if (edgeData[id])
+            notify({
+              type: "error",
+              title: t("edition.update_nodes"),
+              message: t("error.unknown"),
+            });
+          return;
+        }
+
         const allAttributes = {
           ...fromPairs(
-            data.attributes.map(({ key, value }) => {
-              // value are all string because input are all text whatever the data model
-              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-              const valueAsNumber = toNumber(value);
-              return [key, valueAsNumber ? valueAsNumber : value];
-            }),
+            data.attributes
+              .filter(({ value }) => value !== "" || value === undefined)
+              .map(({ key, value }) => {
+                // value are all string because input are all text whatever the data model
+                // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+                const valueAsNumber = toNumber(value);
+                return [key, valueAsNumber ? valueAsNumber : value];
+              }),
           ),
           ...pick(data, "label", "color", "weight"),
         };
@@ -104,8 +127,8 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         // Create new edge:
         if (isNew) {
           try {
-            createEdge(data.id, allAttributes, data.source.value, data.target.value);
-            select({ type: "edges", items: new Set([data.id]), replace: true });
+            createEdge(id, allAttributes, data.source.value, data.target.value);
+            select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
               title: t("edition.create_edges"),
@@ -123,8 +146,8 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         // Update existing edge:
         else {
           try {
-            updateEdge(data.id, allAttributes);
-            select({ type: "edges", items: new Set([data.id]), replace: true });
+            updateEdge(id, allAttributes);
+            select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
               title: t("edition.update_edges"),
@@ -151,7 +174,10 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             id="updateEdge-id"
             className={cx("form-control", errors.id && "is-invalid")}
             disabled={!isNew}
-            {...register("id", { required: "true", validate: (value) => !!value && (!isNew || !edgeData[value]) })}
+            {...register("id", {
+              required: !isNew,
+              validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
+            })}
           />
           {errors.id && (
             <div className="invalid-feedback">
@@ -249,7 +275,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
 
         {/* Other attributes */}
         <div>{t("graph.model.edges-data.attributes")}</div>
-        {attributes.map((_, i) => (
+        {attributes.map((field, i) => (
           <div key={i} className="col-12 d-flex flex-row">
             <div className="flex-grow-1 me-2">
               <input
@@ -275,7 +301,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             </div>
             <div className="flex-grow-1 me-2">
               <input
-                type="text"
+                type={isNil(field.qualitative) && !isNil(field.quantitative) ? "number" : "text"}
                 className="form-control"
                 placeholder={t("graph.model.edges-data.attribute-value") as string}
                 {...register(`attributes.${i}.value`)}
