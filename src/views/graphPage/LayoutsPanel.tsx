@@ -105,7 +105,7 @@ export const LayoutForm: FC<{
         ...prev,
         layoutsParameters: {
           ...prev.layoutsParameters,
-          [layout.id]: newParameters || layoutDefaultParameters,
+          [layout.id]: !isNil(newParameters) ? newParameters : layoutDefaultParameters,
         },
       }));
     },
@@ -146,7 +146,7 @@ export const LayoutForm: FC<{
         {layout.description && <p className="text-muted small">{t(`layouts.${layout.id}.description`)}</p>}
 
         {layout.parameters.map((param) => {
-          const id = `layouts-${layout.id}-params-${param.id}`;
+          const id = `layouts-${layout.id}-params-${param.id}-value-${layoutParameters[param.id]})}`;
           return (
             <div className="my-1" key={id}>
               {param.type === "number" && (

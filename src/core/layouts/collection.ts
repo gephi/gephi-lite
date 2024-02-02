@@ -109,7 +109,8 @@ export const LAYOUTS: Array<Layout> = [
         id: "autoSettings",
         description: true,
         getSettings(currentSettings, dataGraph: DataGraph) {
-          return inferSettings(dataGraph);
+          const infer = inferSettings(dataGraph);
+          return infer;
         },
       },
     ],

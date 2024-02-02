@@ -73,7 +73,7 @@ export const importFile = asyncAction(async (file: NonNullable<GraphOrigin>) => 
     const { setGraphDataset } = graphDatasetActions;
     const { addRemoteFile } = preferencesActions;
     graph.setAttribute("title", file.filename);
-    resetStates();
+    resetStates(false);
     setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
     if (file.type === "remote") addRemoteFile(file);
     resetCamera({ forceRefresh: true });

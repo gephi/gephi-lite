@@ -10,7 +10,7 @@ import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { searchActions, searchAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
-import { sessionAtom } from "../session";
+import { sessionActions, sessionAtom } from "../session";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
 import { userActions, userAtom } from "../user";
 import { ReadableAtom, WritableAtom, useReadAtom } from "../utils/atoms";
@@ -96,14 +96,23 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
     </>
   );
 };
-export const resetStates: Action = () => {
+
+/**
+ * Reset the application state (mainly for loading a new graph).
+ * If full si specified, then we reset all data store in session.
+ */
+export const resetStates: Action<[boolean]> = (full = false) => {
   filtersActions.resetFilters();
   selectionActions.reset();
   appearanceActions.resetState();
   sigmaActions.resetState();
   searchActions.reset();
-  userActions.reset();
   graphDatasetActions.resetGraph();
+
+  if (full) {
+    userActions.reset();
+    sessionActions.reset();
+  }
 };
 
 // Read data:

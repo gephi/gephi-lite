@@ -83,7 +83,7 @@ export const UserSettingsPanel: FC = () => {
                 successMsg: t("settings.danger-zone.reset-state.success"),
               },
               beforeSubmit: () => {
-                resetStates();
+                resetStates(true);
               },
             });
           }}

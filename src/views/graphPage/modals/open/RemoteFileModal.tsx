@@ -20,7 +20,6 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { importFile } = useImportActions();
 
   const isFormValid = useMemo(() => {
-    console.log(url, isUrl(url));
     return url ? isUrl(url) : false;
   }, [url]);
 

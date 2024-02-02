@@ -338,7 +338,6 @@ export const EDGE_METRICS: Metric<"edges", any, any>[] = [
           const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
           const id = fullGraph.edges()[0];
           const attributes = fullGraph.getEdgeAttributes(id);
-          console.log(attributes);
           const result = fn(id, attributes, 0, fullGraph);
           if (!isNumber(result) && !isString(result)) throw new Error("Function must returns a number or a string");
         },
