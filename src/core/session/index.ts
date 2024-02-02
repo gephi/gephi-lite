@@ -13,8 +13,6 @@ import { getEmptySession, serializeSession } from "./utils";
  */
 export const sessionAtom = atom<Session>(getEmptySession());
 
-export const sessionActions = {};
-
 /**
  * Bindings:
  * *********

@@ -1,14 +1,29 @@
 import { isNil } from "lodash";
 
 import { atom, useAtom } from "../utils/atoms";
+import { Producer, producerToAction } from "../utils/producers";
 import { User } from "./types";
 
 export const LS_USER_KEY = "user";
-export const userAtom = atom<User | null>(null);
+type UserState = User | null;
 
 export function useConnectedUser() {
   return useAtom(userAtom);
 }
+
+export const reset: Producer<UserState> = () => {
+  return () => null;
+};
+
+/**
+ * Public API:
+ * ***********
+ */
+export const userAtom = atom<UserState>(null);
+
+export const userActions = {
+  reset: producerToAction(reset, userAtom),
+};
 
 /**
  * Sync. user atom in the localstorage

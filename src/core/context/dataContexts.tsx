@@ -10,7 +10,9 @@ import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { searchActions, searchAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
+import { sessionAtom } from "../session";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
+import { userActions, userAtom } from "../user";
 import { ReadableAtom, WritableAtom, useReadAtom } from "../utils/atoms";
 import { Action } from "../utils/producers";
 
@@ -53,24 +55,28 @@ const ATOMS = {
   visualGetters: visualGettersAtom,
   search: searchAtom,
   layoutState: layoutStateAtom,
+  session: sessionAtom,
+  user: userAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
 const CONTEXTS = {
-  sigma: createContext(ATOMS.sigma),
-  filters: createContext(ATOMS.filters),
-  selection: createContext(ATOMS.selection),
-  importState: createContext(ATOMS.importState),
-  exportState: createContext(ATOMS.exportState),
   appearance: createContext(ATOMS.appearance),
+  filters: createContext(ATOMS.filters),
+  filteredGraph: createContext(ATOMS.filteredGraph),
+  graphDataset: createContext(ATOMS.graphDataset),
+  exportState: createContext(ATOMS.exportState),
+  importState: createContext(ATOMS.importState),
+  visualGetters: createContext(ATOMS.visualGetters),
+  layoutState: createContext(ATOMS.layoutState),
+  preferences: createContext(ATOMS.preferences),
+  search: createContext(ATOMS.search),
+  selection: createContext(ATOMS.selection),
+  session: createContext(ATOMS.session),
+  sigma: createContext(ATOMS.sigma),
   sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
-  preferences: createContext(ATOMS.preferences),
-  graphDataset: createContext(ATOMS.graphDataset),
-  filteredGraph: createContext(ATOMS.filteredGraph),
-  visualGetters: createContext(ATOMS.visualGetters),
-  search: createContext(ATOMS.search),
-  layoutState: createContext(ATOMS.layoutState),
+  user: createContext(ATOMS.user),
 };
 
 /**
@@ -96,6 +102,8 @@ export const resetStates: Action = () => {
   appearanceActions.resetState();
   sigmaActions.resetState();
   searchActions.reset();
+  userActions.reset();
+  graphDatasetActions.resetGraph();
 };
 
 // Read data:
@@ -113,6 +121,7 @@ export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
+export const useUser = makeUseAtom(CONTEXTS.user);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
@@ -124,6 +133,7 @@ export const useSearchActions = makeUseActions(searchActions);
 export const useImportActions = makeUseActions(importActions);
 export const useExportActions = makeUseActions(exportActions);
 export const useLayoutActions = makeUseActions(layoutActions);
+export const useUserActions = makeUseActions(userActions);
 
 export const useResetStates = () => {
   return resetStates;

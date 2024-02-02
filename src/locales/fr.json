@@ -732,5 +732,16 @@
       "help": "Écrire quelque chose pour trouver un lien",
       "other_result": "... et {{count}} autres liens"
     }
+  },
+  "settings": {
+    "title":"User's settings",
+    "danger-zone": {
+      "title": "Danger zone",
+      "reset-state": {
+        "title":"Mise à zéro de l'état de l'application",
+        "description": "Toutes les données courantes seront perdues, même celle stockée dans le navigateur. Voulez-vous continuer ?",
+        "success": "Mise à zéro de l'application"
+      }
+    }
   }
 }

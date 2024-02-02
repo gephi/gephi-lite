@@ -2,11 +2,13 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import LocalSwitcher from "../../components/LocalSwitcher";
-import { GitHubIcon, SettingsIcon, SignOutIcon, SingInIcon } from "../../components/common-icons";
+import { DangerIcon, GitHubIcon, SettingsIcon, SignOutIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
+import { resetStates } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
+import ConfirmModal from "./modals/ConfirmModal";
 
 export const UserSettingsPanel: FC = () => {
   const { openModal } = useModal();
@@ -68,6 +70,28 @@ export const UserSettingsPanel: FC = () => {
             </div>
           </>
         )}
+      </div>
+      <div className="d-flex justify-content-center">
+        <button
+          className="btn btn-outline-danger m-3"
+          onClick={() => {
+            openModal({
+              component: ConfirmModal,
+              arguments: {
+                title: t("settings.danger-zone.reset-state.title"),
+                message: t("settings.danger-zone.reset-state.description"),
+                successMsg: t("settings.danger-zone.reset-state.success"),
+              },
+              beforeSubmit: () => {
+                resetStates();
+              },
+            });
+          }}
+        >
+          <DangerIcon />
+          &nbsp;
+          {t("settings.danger-zone.reset-state.title")}
+        </button>
       </div>
     </>
   );

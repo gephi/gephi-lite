@@ -731,5 +731,16 @@
             "help": "Type something to find an edge",
             "other_result": "... and {{count}} other edges"
         }
-    }
+    },
+    "settings": {
+        "title":"User's settings",
+        "danger-zone": {
+          "title": "Danger zone",
+          "reset-state": {
+            "title":"Reset application state",
+            "description": "All your data will be deleted, even the settings saved locally (ie. in your browser). Are you sure ?",
+            "success": "Application's state has been cleared"
+          }
+        }
+      }
 }
