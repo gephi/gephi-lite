@@ -3,6 +3,7 @@ import React, { FC, PropsWithChildren, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useModal } from "../core/modals";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 interface Props {
   title?: ReactNode;
@@ -31,6 +32,14 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   const childrenArray = Array.isArray(children) ? children : [children];
   const body = childrenArray[0];
   const footer = childrenArray[1];
+  useKeyboardShortcuts([
+    {
+      code: "Escape",
+      handler: () => {
+        if (onClose) onClose();
+      },
+    },
+  ]);
 
   const content = (
     <>
