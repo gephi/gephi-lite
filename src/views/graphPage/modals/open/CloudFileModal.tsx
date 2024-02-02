@@ -1,4 +1,5 @@
 import byteSize from "byte-size";
+import cx from "classnames";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaExternalLinkAlt, FaFolderOpen, FaLock, FaSync, FaTimes } from "react-icons/fa";
@@ -8,6 +9,7 @@ import { Modal } from "../../../../components/modals";
 import { CloudFile } from "../../../../core/cloud/types";
 import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
 import { ModalProps } from "../../../../core/modals/types";
+import { useNotifications } from "../../../../core/notifications";
 import { useConnectedUser } from "../../../../core/user";
 import { displayDateTime } from "../../../../utils/date";
 
@@ -16,6 +18,7 @@ const PAGINATION_SIZE = 10;
 export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const [user] = useConnectedUser();
   const { t } = useTranslation();
+  const { notify } = useNotifications();
   const { loading, error, getFiles, openFile } = useCloudProvider();
   // list files retrived from the cloud
   const [files, setFiles] = useState<Array<CloudFile>>([]);
@@ -64,7 +67,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
                   <tr
                     key={file.id}
                     title={file.description}
-                    className={selected && selected.id === file.id ? "table-active" : ""}
+                    className={cx("cursor-pointer", selected && selected.id === file.id && "table-active")}
                     onClick={() => {
                       setSelected(selected && selected.id === file.id ? null : file);
                     }}
@@ -128,9 +131,18 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
             if (selected) {
               try {
                 await openFile(selected);
+                notify({
+                  type: "success",
+                  message: t("graph.open.cloud.success", { filename: selected.filename }).toString(),
+                });
                 cancel();
               } catch (e) {
                 console.error(e);
+                notify({
+                  type: "error",
+                  message: t("graph.open.cloud.error") as string,
+                  title: t("gephi-lite.title") as string,
+                });
               }
             }
           }}

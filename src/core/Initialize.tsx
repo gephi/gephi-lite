@@ -30,7 +30,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
-  const { importRemoteGexf } = useImportActions();
+  const { importFile } = useImportActions();
   const { resetGraph } = useGraphDatasetActions();
 
   useKonami(
@@ -94,18 +94,18 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     // If query params has gexf
     // => try to load the file
-    if (!graphFound && url.searchParams.has("gexf")) {
-      const gexfUrl = url.searchParams.get("gexf") || "";
+    if (!graphFound && url.searchParams.has("file")) {
+      const file = url.searchParams.get("file") || "";
       try {
-        await importRemoteGexf({
+        await importFile({
           type: "remote",
-          filename: extractFilename(gexfUrl),
-          url: gexfUrl,
+          filename: extractFilename(file),
+          url: file,
         });
         graphFound = true;
         showWelcomeModal = false;
         // remove param in url
-        url.searchParams.delete("gexf");
+        url.searchParams.delete("file");
         window.history.pushState({}, "", url);
       } catch (e) {
         console.error(e);

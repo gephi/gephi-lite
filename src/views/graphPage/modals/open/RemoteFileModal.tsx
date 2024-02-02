@@ -33,6 +33,11 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         cancel();
       } catch (e) {
         console.error(e);
+        notify({
+          type: "error",
+          message: t("graph.open.remote.error") as string,
+          title: t("gephi-lite.title") as string,
+        });
       }
     }
   }, [isFormValid, url, cancel, notify, t, importFile]);

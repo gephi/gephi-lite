@@ -57,6 +57,11 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
                 cancel();
               } catch (e) {
                 console.error(e);
+                notify({
+                  type: "error",
+                  message: t("graph.open.local.error") as string,
+                  title: t("gephi-lite.title") as string,
+                });
               }
             }
           }}

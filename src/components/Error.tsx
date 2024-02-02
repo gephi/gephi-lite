@@ -4,7 +4,7 @@ import { FallbackProps } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { TbFaceIdError } from "react-icons/tb";
 
-import { GitHubIcon } from "./common-icons";
+import { GitHubIcon, RetryIcon } from "./common-icons";
 
 function errorToGithubLink(error: unknown): string {
   let body = `
@@ -25,21 +25,30 @@ ${error.stack}
   return `https://github.com/gephi/gephi-lite/issues/new?labels=bug,prod&body=${encodeURIComponent(body)}`;
 }
 
-export const ErrorComponent: FC<FallbackProps> = ({ error }) => {
+export const ErrorComponent: FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   const { t } = useTranslation("translation");
 
   return (
     <div className={cx("container text-center col-6 mt-5 pt-5")}>
       <div className="row">
-        <h1 style={{ fontSize: 160 }}>
-          <TbFaceIdError />
-          {t("error.title")}
-        </h1>
-        <h2 className="text-danger my-3">{error.message || t("error.unknown")}</h2>
-        <p>{t("error.message")}</p>
-        <a className="btn btn-outline-primary" href={errorToGithubLink(error)} target="_blank">
-          <GitHubIcon /> {t("error.report")}
-        </a>
+        <div className="col-12">
+          <h1 style={{ fontSize: 160 }}>
+            <TbFaceIdError />
+            {t("error.title")}
+          </h1>
+          <h2 className="text-danger my-3">{error.message || t("error.unknown")}</h2>
+
+          <p className="mt-3">{t("error.message")}</p>
+
+          <div className="d-flex justify-content-center">
+            <a className="btn btn-outline-primary me-3" href={errorToGithubLink(error)} target="_blank">
+              <GitHubIcon /> {t("error.report")}
+            </a>
+            <button className="btn btn-primary" onClick={() => resetErrorBoundary()}>
+              <RetryIcon /> {t("error.retry")}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -16,7 +16,8 @@
   "error": {
     "title": "Error",
     "unknown": "An unknown error has occurred.",
-    "message": "Sorry, we are working to make gephi-lite better but bugs still happened... It will help if you can open an issue on github with a description of what you were doing by clicking on the button below",
+    "message": "Sorry, we are working to make gephi-lite better, but bugs still happened... It will help us if you can open an issue on github with a description of what you were doing.",
+    "retry":"Retry",
     "report": "Report error",
     "not_found": {
       "title": "Page Not Found",
@@ -315,7 +316,7 @@
       },
       "cloud": {
         "title": "Open a file from {{provider}}",
-        "no-data": "You have no GEXF file saved on {{provider}}",
+        "no-data": "You have no GEXF or GRAPHML file saved on {{provider}}",
         "file-open-external": "Open {{filename}} on {{provider}}",
         "select-file": "Select a file",
         "success": "File {{filename}} has been successfully loaded",

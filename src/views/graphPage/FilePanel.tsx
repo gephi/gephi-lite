@@ -17,6 +17,7 @@ import {
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
+import { checkFilenameExtension } from "../../utils/check";
 import ConfirmModal from "./modals/ConfirmModal";
 import { CloudFileModal } from "./modals/open/CloudFileModal";
 import { LocalFileModal } from "./modals/open/LocalFileModal";
@@ -66,7 +67,7 @@ export const FilePanel: FC = () => {
           <h3 className="fs-5">{t("graph.save.title")}</h3>
           {user && user.provider && (
             <>
-              {origin && origin.type === "cloud" && (
+              {origin && origin.type === "cloud" && checkFilenameExtension(origin.filename, "gexf") && (
                 <div>
                   <button
                     className="btn btn-sm btn-outline-dark mb-1"

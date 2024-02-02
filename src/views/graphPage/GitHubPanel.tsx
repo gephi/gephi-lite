@@ -25,7 +25,7 @@ export const GitHubPanel: FC = () => {
       <hr className="m-0" />
 
       <div className="panel-block-grow">
-        <div className="d-flex flex-row mb-4">
+        <div className="d-flex flex-row mb-4 align-items-center">
           <span className="flex-grow-1">{t("github.select_ui_language")}</span>
           <LocalSwitcher />
         </div>

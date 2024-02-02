@@ -18,6 +18,7 @@
     "unknown": "Une erreur inconnue s'est produite.",
     "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur github en cliquant sur le bouton ci-dessous.",
     "report": "Signaler l'erreur",
+    "retry": "Ré-essayer",
     "not_found": {
       "title": "Page non trouvée",
       "subtitle": "La page que vous recherchez n'existe pas.",
@@ -306,7 +307,7 @@
       },
       "cloud": {
         "title": "Ouvrir un fichier depuis {{provider}}",
-        "no-data": "Vous n'avez aucun fichier GEXF enregistré sur {{provider}}",
+        "no-data": "Vous n'avez aucun fichier GEXF ou GRAPHML d'enregistré sur {{provider}}",
         "file-open-external": "Ouvrir {{filename}} sur {{provider}}",
         "select-file": "Sélectionner un fichier",
         "success": "Le fichier {{filename}} a bien été ouvert",

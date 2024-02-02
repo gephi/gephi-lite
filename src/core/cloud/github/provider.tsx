@@ -2,6 +2,7 @@ import { Octokit } from "@octokit/core";
 import { isNil } from "lodash";
 import { FaGithub } from "react-icons/fa";
 
+import { checkFilenameExtension } from "../../../utils/check";
 import { notEmpty } from "../../utils/casting";
 import { CloudFile, CloudProvider } from "../types";
 
@@ -46,7 +47,7 @@ export class GithubProvider implements CloudProvider {
         result = result.concat(
           response.data
             .map((item) => {
-              if (item && this.getGexfFile(item)) {
+              if (item && this.getGraphFile(item)) {
                 return this.gistToCloudFile(item);
               }
               return null;
@@ -69,7 +70,7 @@ export class GithubProvider implements CloudProvider {
     });
 
     if (response.data) {
-      const file = this.getGexfFile(response.data);
+      const file = this.getGraphFile(response.data);
       if (file) return this.gistToCloudFile(response.data);
     }
 
@@ -85,7 +86,7 @@ export class GithubProvider implements CloudProvider {
     });
 
     if (response.data && response.data.files) {
-      const gistFile = this.getGexfFile(response.data);
+      const gistFile = this.getGraphFile(response.data);
       if (gistFile) {
         const file = response.data.files[gistFile.filename];
         if (file?.truncated && file?.raw_url) {
@@ -171,7 +172,7 @@ export class GithubProvider implements CloudProvider {
     html_url?: string;
   }): CloudFile {
     if (!gist.id) throw new Error(`Gist ${JSON.stringify(gist)} has no ID`);
-    const file = this.getGexfFile(gist);
+    const file = this.getGraphFile(gist);
     if (!file) throw new Error(`File can't be find on gist ${gist.id}`);
     return {
       type: "cloud",
@@ -187,19 +188,23 @@ export class GithubProvider implements CloudProvider {
   }
 
   /**
-   * Given a gist, check if it has a GEXF file.
+   * Given a gist, check if it is a graphml file.
    * If so, it return the file, otherwise null
    */
-  private getGexfFile(gist: {
+  private getGraphFile(gist: {
     files?: { [key: string]: GistFile };
     html_url?: string;
   }): { filename: string; size: number; webUrl?: string } | null {
     let result: { filename: string; size: number; webUrl?: string } | null = null;
     Object.keys(gist.files || []).forEach((filename: string) => {
       const file = gist.files ? gist.files[filename] : undefined;
-      if (file && file.filename?.endsWith(".gexf")) {
+      if (
+        file &&
+        file.filename &&
+        (checkFilenameExtension(file.filename, "gexf") || checkFilenameExtension(file.filename, "graphml"))
+      ) {
         result = {
-          filename: file.filename,
+          filename: file.filename || "Untitled",
           size: file.size || 0,
           webUrl: gist.html_url,
         };

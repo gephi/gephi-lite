@@ -1,12 +1,8 @@
-import Graph from "graphology";
-import { parse } from "graphology-gexf";
 import { isNil } from "lodash";
 import { useCallback, useState } from "react";
 
-import { useExportActions } from "../context/dataContexts";
+import { useExportActions, useImportActions } from "../context/dataContexts";
 import { graphDatasetAtom } from "../graph";
-import { initializeGraphDataset } from "../graph/utils";
-import { resetCamera } from "../sigma";
 import { useConnectedUser } from "../user/index";
 import { useAtom } from "../utils/atoms";
 import { CloudFile } from "./types";
@@ -16,6 +12,7 @@ export function useCloudProvider() {
   const [user] = useConnectedUser();
   const [graphDataset, setGraphDataset] = useAtom(graphDatasetAtom);
   const { exportAsGexf } = useExportActions();
+  const { importFile } = useImportActions();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -44,11 +41,7 @@ export function useCloudProvider() {
       setLoading(true);
       setError(null);
       try {
-        if (isNil(user)) throw new Error("You must be logged !");
-        const content = await user.provider.getFileContent(file.id);
-        const graph = parse(Graph, content);
-        setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
-        resetCamera({ forceRefresh: true });
+        await importFile(file);
       } catch (e) {
         setError(e as Error);
         throw e;
@@ -56,7 +49,7 @@ export function useCloudProvider() {
         setLoading(false);
       }
     },
-    [user, setGraphDataset],
+    [importFile],
   );
 
   /**
