@@ -15,7 +15,7 @@ type LabelOption =
 export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
-  const { nodesLabel, edgesLabel } = useAppearance();
+  const { nodesLabel, edgesLabel, nodesImage } = useAppearance();
   const { setLabelAppearance, setNodeImagesAppearance } = useAppearanceActions();
   const setValue = useCallback(
     (v: StringAttr) => (itemKey === "images" ? setNodeImagesAppearance(v) : setLabelAppearance(itemType, v)),
@@ -23,7 +23,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
   );
 
   const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
-  const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
+  const currentDef = itemKey === "images" ? nodesImage : itemType === "nodes" ? nodesLabel : edgesLabel;
   const labelOptions = useMemo(() => {
     return [
       { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) as string },
@@ -38,8 +38,8 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
     ] as LabelOption[];
   }, [allFields, itemKey, t]);
   const selectedLabelOption: LabelOption | null = useMemo(
-    () => labelOptions.find((option) => option.type === labelsDef.type && option.field === labelsDef.field) || null,
-    [labelOptions, labelsDef.field, labelsDef.type],
+    () => labelOptions.find((option) => option.type === currentDef.type && option.field === currentDef.field) || null,
+    [labelOptions, currentDef.field, currentDef.type],
   );
 
   return (
@@ -68,7 +68,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
             setValue({
               itemType,
               type: "fixed",
-              value: "label",
+              value: itemKey === "images" ? "http://..." : "label",
             });
           } else {
             setValue({
@@ -79,23 +79,23 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
         }}
       />
 
-      {labelsDef.type === "data" && (
+      {currentDef.type === "data" && (
         <p className="fst-italic text-muted small m-0">
           {t(`appearance.${itemKey}.data_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
-      {labelsDef.type === "none" && (
+      {currentDef.type === "none" && (
         <p className="fst-italic text-muted small m-0">
           {t(`appearance.${itemKey}.none_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
-      {labelsDef.type === "field" && (
+      {currentDef.type === "field" && (
         <div className="d-flex align-items-center mt-1">
           <input
             className="form-control form-control-sm w-8"
             type="string"
-            value={labelsDef.missingValue || ""}
-            onChange={(v) => setLabelAppearance(itemType, { ...labelsDef, missingValue: v.target.value || null })}
+            value={currentDef.missingValue || ""}
+            onChange={(v) => setValue({ ...currentDef, missingValue: v.target.value || null })}
             id={`${itemType}-missingStringAttrValue`}
           />
           <label className="form-check-label small ms-1" htmlFor={`${itemType}-missingStringAttrValue`}>
@@ -103,13 +103,13 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
           </label>
         </div>
       )}
-      {labelsDef.type === "fixed" && (
+      {currentDef.type === "fixed" && (
         <div className="d-flex align-items-center mt-1">
           <input
             className="form-control form-control-sm w-8"
             type="string"
-            value={labelsDef.value}
-            onChange={(v) => setLabelAppearance(itemType, { ...labelsDef, value: v.target.value })}
+            value={currentDef.value}
+            onChange={(v) => setValue({ ...currentDef, value: v.target.value })}
             id={`${itemType}-fixedStringAttrValue`}
           />
           <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedStringAttrValue`}>
