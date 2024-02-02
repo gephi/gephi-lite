@@ -1,7 +1,8 @@
-import { FC, useMemo } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
+import { StringAttr } from "../../../core/appearance/types";
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
@@ -11,27 +12,31 @@ type LabelOption =
   | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
   | { value: string; type: "field"; field: string; label: string };
 
-export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
+export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
   const { nodesLabel, edgesLabel } = useAppearance();
-  const { setLabelAppearance } = useAppearanceActions();
+  const { setLabelAppearance, setNodeImagesAppearance } = useAppearanceActions();
+  const setValue = useCallback(
+    (v: StringAttr) => (itemKey === "images" ? setNodeImagesAppearance(v) : setLabelAppearance(itemType, v)),
+    [setLabelAppearance, setNodeImagesAppearance, itemKey, itemType],
+  );
 
   const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
   const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
   const labelOptions = useMemo(() => {
     return [
-      { value: "data", type: "data", label: t("appearance.labels.data") as string },
+      { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) as string },
       ...allFields.map((field) => ({
         value: `field::${field.id}`,
         type: "field",
         field: field.id,
         label: field.id,
       })),
-      { value: "fixed", type: "fixed", label: t("appearance.labels.fixed") as string },
-      { value: "none", type: "none", label: t("appearance.labels.none") as string },
+      { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) as string },
+      { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) as string },
     ] as LabelOption[];
-  }, [allFields, t]);
+  }, [allFields, itemKey, t]);
   const selectedLabelOption: LabelOption | null = useMemo(
     () => labelOptions.find((option) => option.type === labelsDef.type && option.field === labelsDef.field) || null,
     [labelOptions, labelsDef.field, labelsDef.type],
@@ -39,8 +44,8 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <div className="panel-block">
-      <h3 className="fs-5">{t("appearance.labels.title")}</h3>
-      <label htmlFor={`${itemType}-labelsMode`}>{t("appearance.labels.set_labels_from")}</label>
+      <h3 className="fs-5">{t(`appearance.${itemKey}.title`)}</h3>
+      <label htmlFor={`${itemType}-${itemKey}sMode`}>{t(`appearance.${itemKey}.set_labels_from`)}</label>
       <Select<LabelOption>
         {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-labelsMode`}
@@ -48,25 +53,25 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         value={selectedLabelOption}
         onChange={(option) => {
           if (!option) {
-            setLabelAppearance(itemType, {
+            setValue({
               itemType,
               type: "none",
             });
           } else if (option.type === "field") {
-            setLabelAppearance(itemType, {
+            setValue({
               itemType,
               type: "field",
               field: option.field,
-              missingLabel: null,
+              missingValue: null,
             });
           } else if (option.type === "fixed") {
-            setLabelAppearance(itemType, {
+            setValue({
               itemType,
               type: "fixed",
               value: "label",
             });
           } else {
-            setLabelAppearance(itemType, {
+            setValue({
               itemType,
               type: option.type,
             });
@@ -76,12 +81,12 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
       {labelsDef.type === "data" && (
         <p className="fst-italic text-muted small m-0">
-          {t("appearance.labels.data_description", { items: t(`graph.model.${itemType}`) })}
+          {t(`appearance.${itemKey}.data_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
       {labelsDef.type === "none" && (
         <p className="fst-italic text-muted small m-0">
-          {t("appearance.labels.none_description", { items: t(`graph.model.${itemType}`) })}
+          {t(`appearance.${itemKey}.none_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
       {labelsDef.type === "field" && (
@@ -89,12 +94,12 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           <input
             className="form-control form-control-sm w-8"
             type="string"
-            value={labelsDef.missingLabel || ""}
-            onChange={(v) => setLabelAppearance(itemType, { ...labelsDef, missingLabel: v.target.value || null })}
-            id={`${itemType}-missingLabel`}
+            value={labelsDef.missingValue || ""}
+            onChange={(v) => setLabelAppearance(itemType, { ...labelsDef, missingValue: v.target.value || null })}
+            id={`${itemType}-missingStringAttrValue`}
           />
-          <label className="form-check-label small ms-1" htmlFor={`${itemType}-missingLabel`}>
-            {t("appearance.labels.default_value", { items: t(`graph.model.${itemType}`) })}
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-missingStringAttrValue`}>
+            {t(`appearance.${itemKey}.default_value`, { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>
       )}
@@ -105,10 +110,10 @@ export const LabelItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             type="string"
             value={labelsDef.value}
             onChange={(v) => setLabelAppearance(itemType, { ...labelsDef, value: v.target.value })}
-            id={`${itemType}-fixedLabel`}
+            id={`${itemType}-fixedStringAttrValue`}
           />
-          <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedLabel`}>
-            {t("appearance.labels.fixed_label", { items: t(`graph.model.${itemType}`) })}
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedStringAttrValue`}>
+            {t(`appearance.${itemKey}.fixed_label`, { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>
       )}

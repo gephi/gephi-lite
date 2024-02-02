@@ -7,8 +7,8 @@ import ColorPicker from "../ColorPicker";
 import { ToggleBar } from "../Toggle";
 import { EdgeIcon, GraphIcon, NodeIcon } from "../common-icons";
 import { ColorItem } from "./color/ColorItem";
-import { LabelItem } from "./label/LabelItem";
 import { LabelSizeItem } from "./label/LabelSizeItem";
+import { StringAttrItem } from "./label/StringAttrItem";
 import { SizeItem } from "./size/SizeItem";
 
 export const GraphAppearance: FC = () => {
@@ -85,8 +85,14 @@ const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <hr className="m-0" />
       <SizeItem itemType={itemType} />
       <hr className="m-0" />
-      <LabelItem itemType={itemType} />
+      <StringAttrItem itemType={itemType} itemKey="labels" />
       <LabelSizeItem itemType={itemType} />
+      {itemType === "nodes" && (
+        <>
+          <hr className="m-0" />
+          <StringAttrItem itemType={itemType} itemKey="images" />
+        </>
+      )}
     </>
   );
 };

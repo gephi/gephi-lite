@@ -153,6 +153,17 @@
             "data_description": "All {{items}} labels are as they are in the input data file.",
             "none_description": "All {{items}} have no displayed label."
         },
+        "images": {
+            "title": "Images",
+            "set_labels_from": "Set image from...",
+            "data": "Input data",
+            "fixed": "A constant URL",
+            "fixed_label": "Same image for every {{items}}",
+            "none": "No label",
+            "default_value": "Image for {{items}} with no valid value",
+            "data_description": "All {{items}} images are as they are in the input data file.",
+            "none_description": "All {{items}} have no displayed image."
+        },
         "size": {
             "title": "Size",
             "set_size_from": "Set size from...",

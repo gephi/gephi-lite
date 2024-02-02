@@ -115,7 +115,7 @@
     },
     "graph": {
       "background": {
-        "title":"Arrière-plan",
+        "title": "Arrière-plan",
         "color": "Couleur"
       }
     },
@@ -151,8 +151,19 @@
       "size_coef": "Tailles des libellés (plus grand rend les libellés plus grands)",
       "adapts_to_zoom": "Dans quelle mesure les libellés doivent-ils augmenter avec le zoom",
       "density": "Combien de libellés doivent apparaître à tout moment",
-      "data_description": "Toutes les libellés des {{items}} sont ceux du fichier de données d'entrée.",
+      "data_description": "Tous les libellés des {{items}} sont ceux du fichier de données d'entrée.",
       "none_description": "Tous les {{items}} n'ont pas de libellé affiché."
+    },
+    "images": {
+      "title": "Images",
+      "set_labels_from": "Définir l'image à partir de...",
+      "data": "Fichier de données",
+      "fixed": "Une URL fixe",
+      "fixed_label": "La même image pour chaque {{items}}",
+      "none": "Aucune image",
+      "default_value": "Image pour {{items}} sans valeur valide",
+      "data_description": "Toutes les images des {{items}} sont ceux du fichier de données d'entrée.",
+      "none_description": "Tous les {{items}} n'ont pas d'image affichée."
     },
     "size": {
       "title": "Taille",
@@ -246,7 +257,7 @@
       "directed": "Orienté",
       "undirected": "Non orienté",
       "mixed": "Mixte",
-      "graph":"graph",
+      "graph": "graph",
       "nodes_one": "nœud",
       "nodes_zero": "nœud",
       "nodes": "nœuds",

@@ -20,8 +20,8 @@ import {
   ColorGetter,
   CustomEdgeDisplayData,
   CustomNodeDisplayData,
-  LabelGetter,
   SizeGetter,
+  StringAttrGetter,
   TransformationMethod,
   VisualGetters,
 } from "./types";
@@ -78,6 +78,10 @@ export function getEmptyAppearanceState(): AppearanceState {
       value: DEFAULT_EDGE_LABEL_SIZE,
       zoomCorrelation: 0,
       density: 1,
+    },
+    nodesImage: {
+      itemType: "nodes",
+      type: "none",
     },
   };
 }
@@ -229,27 +233,28 @@ export function makeGetColor<
   return getColor;
 }
 
-export function makeGetLabel<
+export function makeGetStringAttr<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
+  itemKey: "images" | "labels",
   _graphDataset: GraphDataset,
-  { nodesLabel, edgesLabel }: AppearanceState,
-): LabelGetter | null {
-  const labelsDef = itemType === "nodes" ? nodesLabel : edgesLabel;
+  { nodesLabel, edgesLabel, nodesImage }: AppearanceState,
+): StringAttrGetter | null {
+  const stringAttrDef = itemKey === "images" ? nodesImage : itemType === "nodes" ? nodesLabel : edgesLabel;
 
-  let getLabel: LabelGetter | null = null;
-  switch (labelsDef.type) {
+  let getLabel: StringAttrGetter | null = null;
+  switch (stringAttrDef.type) {
     case "none":
       getLabel = () => null;
       break;
     case "fixed":
-      getLabel = () => labelsDef.value;
+      getLabel = () => stringAttrDef.value;
       break;
     case "field":
       getLabel = (data: ItemData) => {
-        const label = toString(data[labelsDef.field]);
-        return typeof label === "string" ? label : labelsDef.missingLabel;
+        const label = toString(data[stringAttrDef.field]);
+        return typeof label === "string" ? label : stringAttrDef.missingValue;
       };
       break;
   }
@@ -261,7 +266,8 @@ export function getAllVisualGetters(dataset: GraphDataset, appearance: Appearanc
   const nodeVisualGetters: VisualGetters = {
     getNodeSize: makeGetSize("nodes", dataset, appearance),
     getNodeColor: makeGetColor("nodes", dataset, appearance),
-    getNodeLabel: makeGetLabel("nodes", dataset, appearance),
+    getNodeLabel: makeGetStringAttr("nodes", "labels", dataset, appearance),
+    getNodeImage: makeGetStringAttr("nodes", "images", dataset, appearance),
     getEdgeSize: null,
     getEdgeColor: null,
     getEdgeLabel: null,
@@ -271,7 +277,7 @@ export function getAllVisualGetters(dataset: GraphDataset, appearance: Appearanc
     ...nodeVisualGetters,
     getEdgeSize: makeGetSize("edges", dataset, appearance),
     getEdgeColor: makeGetColor("edges", dataset, appearance, nodeVisualGetters),
-    getEdgeLabel: makeGetLabel("edges", dataset, appearance),
+    getEdgeLabel: makeGetStringAttr("edges", "labels", dataset, appearance),
   };
 }
 export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, getters: VisualGetters): void {
@@ -284,6 +290,7 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
     }
     if (getters.getNodeColor) attr.color = getters.getNodeColor(dataset.nodeData[node]);
     if (getters.getNodeLabel) attr.label = getters.getNodeLabel(dataset.nodeData[node]);
+    if (getters.getNodeImage) attr.image = getters.getNodeImage(dataset.nodeData[node]);
     graph.mergeNodeAttributes(node, attr);
   });
 

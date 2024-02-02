@@ -29,6 +29,7 @@ export interface NodeRenderingData {
   x: number;
   y: number;
   rawSize?: number;
+  image?: string | null;
 }
 
 // At the moment, all other attributes must be stored as scalar values, for

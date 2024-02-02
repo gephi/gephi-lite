@@ -59,15 +59,15 @@ export type Color = DataColor | RankingColor | FixedColor | PartitionColor;
 export type EdgeColor = Color | SourceNodeColor | TargetNodeColor;
 
 // Labels management:
-export type NoLabel = NoFieldValue<"none">;
-export type DataLabel = NoFieldValue<"data">;
-export type FixedLabel = NoFieldValue<"fixed"> & { value: string };
-export interface FieldLabel extends AppearanceBaseElement {
+export type NoStringAttr = NoFieldValue<"none">;
+export type DataStringAttr = NoFieldValue<"data">;
+export type FixedStringAttr = NoFieldValue<"fixed"> & { value: string };
+export interface FieldStringAttr extends AppearanceBaseElement {
   type: "field";
   field: string;
-  missingLabel: string | null;
+  missingValue: string | null;
 }
-export type Label = NoLabel | DataLabel | FixedLabel | FieldLabel;
+export type StringAttr = NoStringAttr | DataStringAttr | FixedStringAttr | FieldStringAttr;
 
 export type BaseLabelSize = { density: number; zoomCorrelation: number };
 export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: number };
@@ -87,15 +87,16 @@ export interface AppearanceState {
   backgroundColor: string;
   nodesColor: Color;
   edgesColor: EdgeColor;
-  nodesLabel: Label;
-  edgesLabel: Label;
+  nodesLabel: StringAttr;
+  edgesLabel: StringAttr;
   nodesLabelSize: LabelSize;
   edgesLabelSize: LabelSize;
+  nodesImage: StringAttr;
 }
 
 export type SizeGetter = (data: ItemData) => number;
 export type ColorGetter = (data: ItemData, edgeId?: string) => string;
-export type LabelGetter = (data: ItemData) => string | null;
+export type StringAttrGetter = (data: ItemData) => string | null;
 
 /**
  * This state contains the visual getters, i.e. the functions to get a node or
@@ -104,10 +105,11 @@ export type LabelGetter = (data: ItemData) => string | null;
 export interface VisualGetters {
   getNodeSize: SizeGetter | null;
   getNodeColor: ColorGetter | null;
-  getNodeLabel: LabelGetter | null;
+  getNodeLabel: StringAttrGetter | null;
+  getNodeImage: StringAttrGetter | null;
   getEdgeSize: SizeGetter | null;
   getEdgeColor: ColorGetter | null;
-  getEdgeLabel: LabelGetter | null;
+  getEdgeLabel: StringAttrGetter | null;
 }
 
 /**

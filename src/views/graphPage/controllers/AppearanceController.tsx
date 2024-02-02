@@ -64,6 +64,7 @@ export const AppearanceController: FC = () => {
         res.borderColor = res.color;
         res.color = memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
         res.zIndex = -1;
+        res.type = "bordered";
       }
 
       if (id === hoveredNode || highlightedNodes?.has(id)) res.highlighted = true;

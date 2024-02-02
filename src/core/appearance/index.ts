@@ -1,7 +1,7 @@
 import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
-import { AppearanceState, BooleanAppearance, Color, Label, LabelSize, Size } from "./types";
+import { AppearanceState, BooleanAppearance, Color, LabelSize, Size, StringAttr } from "./types";
 import { DEFAULT_BACKGROUND_COLOR, getEmptyAppearanceState, serializeAppearanceState } from "./utils";
 
 const resetState: Producer<AppearanceState, []> = () => {
@@ -23,12 +23,16 @@ const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemTy
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
 };
 
-const setLabelAppearance: Producer<AppearanceState, [ItemType, Label]> = (itemType, label) => {
+const setLabelAppearance: Producer<AppearanceState, [ItemType, StringAttr]> = (itemType, label) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesLabel" : "edgesLabel"]: label });
 };
 
 const setLabelSizeAppearance: Producer<AppearanceState, [ItemType, LabelSize]> = (itemType, labelSize) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesLabelSize" : "edgesLabelSize"]: labelSize });
+};
+
+const setNodeImagesAppearance: Producer<AppearanceState, [StringAttr]> = (nodesImage) => {
+  return (state) => ({ ...state, nodesImage });
 };
 
 /**
@@ -45,6 +49,7 @@ export const appearanceActions = {
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
+  setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),
 } as const;
 
 /**

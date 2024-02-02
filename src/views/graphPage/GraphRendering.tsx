@@ -1,6 +1,7 @@
 import { SigmaContainer } from "@react-sigma/core";
+import { createNodeImageProgram } from "@sigma/node-image";
 import cx from "classnames";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 import { BsZoomIn, BsZoomOut } from "react-icons/bs";
@@ -103,6 +104,34 @@ export const GraphRendering: FC = () => {
     setIsReady(true);
   }, [setIsReady]);
 
+  const NodeImageProgram = useMemo(
+    () =>
+      createNodeImageProgram({
+        size: {
+          mode: "max",
+          value: 256,
+        },
+      }),
+    [],
+  );
+  const sigmaSettings: Partial<Settings> = useMemo(
+    () => ({
+      labelFont: "Poppins, Arial, Helvetica, Geneva",
+      edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
+      enableEdgeEvents: true,
+      renderEdgeLabels: true,
+      zIndex: true,
+      itemSizesReference: "positions",
+      zoomToSizeRatioFunction: (x) => x,
+      defaultNodeType: "image",
+      nodeProgramClasses: {
+        image: NodeImageProgram,
+        bordered: NodeProgramBorder,
+      },
+    }),
+    [NodeImageProgram],
+  );
+
   return (
     <>
       <SigmaContainer
@@ -113,21 +142,7 @@ export const GraphRendering: FC = () => {
         )}
         style={{ backgroundColor }}
         graph={sigmaGraph}
-        settings={
-          {
-            labelFont: "Poppins, Arial, Helvetica, Geneva",
-            edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
-            enableEdgeHoverEvents: "debounce",
-            enableEdgeClickEvents: true,
-            renderEdgeLabels: true,
-            zIndex: true,
-            itemSizesReference: "positions",
-            zoomToSizeRatioFunction: (x) => x,
-            nodeProgramClasses: {
-              circle: NodeProgramBorder,
-            },
-          } as Partial<Settings>
-        }
+        settings={sigmaSettings}
       >
         <EventsController />
         <AppearanceController />
