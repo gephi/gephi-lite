@@ -741,5 +741,8 @@
       "help": "Type something to find an edge",
       "other_result": "... and {{count}} other edges"
     }
+  },
+  "settings": {
+    "title":"User's settings"
   }
 }

@@ -23,11 +23,11 @@ import { AppearancePanel } from "./AppearancePanel";
 import { ContextPanel } from "./ContextPanel";
 import { FilePanel } from "./FilePanel";
 import { FiltersPanel } from "./FiltersPanel";
-import { GitHubPanel } from "./GitHubPanel";
 import { GraphDataPanel } from "./GraphDataPanel";
 import { GraphRendering } from "./GraphRendering";
 import { LayoutsPanel } from "./LayoutsPanel";
 import { StatisticsPanel } from "./StatisticsPanel";
+import { UserSettingsPanel } from "./UserSettingsPanel";
 import { WelcomeModal } from "./modals/WelcomeModal";
 
 type Tool = {
@@ -107,7 +107,7 @@ export const GraphPage: FC = () => {
           window.open(config.website_url, "_blank", "noopener");
         },
       },
-      { type: "tool", label: t("github.title"), icon: UserAvatar, panel: GitHubPanel },
+      { type: "tool", label: t("settings.title"), icon: UserAvatar, panel: UserSettingsPanel },
     ],
     [openModal, t, filterState],
   );

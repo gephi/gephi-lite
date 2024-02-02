@@ -3,6 +3,7 @@ import { BiNetworkChart } from "react-icons/bi";
 import { BsCircle, BsCodeSlash, BsFillPlayFill, BsGithub, BsPalette, BsSearch, BsSlashLg } from "react-icons/bs";
 import { GrOverview, GrScorecard } from "react-icons/gr";
 import { ImFilesEmpty } from "react-icons/im";
+import { IoSettingsOutline } from "react-icons/io5";
 import { MdClose, MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
 import { RiFilterFill } from "react-icons/ri";
 import { TbCircles } from "react-icons/tb";
@@ -20,6 +21,7 @@ export const SingInIcon = MdLogin;
 export const SignOutIcon = MdLogout;
 export const ContextIcon = GrOverview;
 export const RetryIcon = MdOutlineRefresh;
+export const SettingsIcon = IoSettingsOutline;
 
 export const NodeIcon = BsCircle;
 export const EdgeIcon = BsSlashLg;
