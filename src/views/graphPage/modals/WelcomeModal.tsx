@@ -6,11 +6,17 @@ import { Loader } from "../../../components/Loader";
 import LocalSwitcher from "../../../components/LocalSwitcher";
 import { GitHubIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
-import { useImportActions, useImportState, usePreferences } from "../../../core/context/dataContexts";
+import {
+  useGraphDatasetActions,
+  useImportActions,
+  useImportState,
+  usePreferences,
+} from "../../../core/context/dataContexts";
 import { useModal } from "../../../core/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
+import ConfirmModal from "./ConfirmModal";
 import { CloudFileModal } from "./open/CloudFileModal";
 import { LocalFileModal } from "./open/LocalFileModal";
 import { RemoteFileModal } from "./open/RemoteFileModal";
@@ -26,6 +32,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
 
   const { type: fileStateType } = useImportState();
   const { importFile } = useImportActions();
+  const { resetGraph } = useGraphDatasetActions();
 
   useEffect(() => {
     if (fileStateType === "error") {
@@ -123,6 +130,26 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
               >
                 <FaRegFolderOpen className="me-1" />
                 {t(`menu.open.remote`).toString()}
+              </button>
+            </li>
+            <li className="mb-1">
+              <button
+                className="btn btn-sm btn-outline-dark"
+                title={t(`menu.open.new`).toString()}
+                onClick={() => {
+                  openModal({
+                    component: ConfirmModal,
+                    arguments: {
+                      title: t(`graph.open.new.title`),
+                      message: t(`graph.open.new.message`),
+                      successMsg: t(`graph.open.new.success`),
+                    },
+                    beforeSubmit: () => resetGraph(),
+                  });
+                }}
+              >
+                <FaRegFolderOpen className="me-1" />
+                {t(`menu.open.new`).toString()}
               </button>
             </li>
           </ul>

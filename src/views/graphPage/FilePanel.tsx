@@ -8,10 +8,16 @@ import { Loader } from "../../components/Loader";
 import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useExportActions, useExportState, useGraphDataset } from "../../core/context/dataContexts";
+import {
+  useExportActions,
+  useExportState,
+  useGraphDataset,
+  useGraphDatasetActions,
+} from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
+import ConfirmModal from "./modals/ConfirmModal";
 import { CloudFileModal } from "./modals/open/CloudFileModal";
 import { LocalFileModal } from "./modals/open/LocalFileModal";
 import { RemoteFileModal } from "./modals/open/RemoteFileModal";
@@ -27,6 +33,7 @@ export const FilePanel: FC = () => {
   const { loading, saveFile } = useCloudProvider();
   const { exportAsGexf } = useExportActions();
   const { type: exportState } = useExportState();
+  const { resetGraph } = useGraphDatasetActions();
 
   return (
     <>
@@ -150,6 +157,27 @@ export const FilePanel: FC = () => {
             >
               <FaRegFolderOpen className="me-1" />
               {t(`menu.open.remote`).toString()}
+            </button>
+          </div>
+
+          <div>
+            <button
+              className="btn btn-sm btn-outline-dark mb-1"
+              title={t(`menu.open.new`).toString()}
+              onClick={() => {
+                openModal({
+                  component: ConfirmModal,
+                  arguments: {
+                    title: t(`graph.open.new.title`),
+                    message: t(`graph.open.new.message`),
+                    successMsg: t(`graph.open.new.success`),
+                  },
+                  beforeSubmit: () => resetGraph(),
+                });
+              }}
+            >
+              <FaRegFolderOpen className="me-1" />
+              {t(`menu.open.new`).toString()}
             </button>
           </div>
 

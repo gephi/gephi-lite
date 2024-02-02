@@ -167,6 +167,10 @@ const updateEdge: Producer<GraphDataset, [string, Attributes]> = (edge, attribut
   };
 };
 
+const resetGraph: Producer<GraphDataset, []> = () => {
+  return () => getEmptyGraphDataset();
+};
+
 /**
  * Public API:
  * ***********
@@ -216,6 +220,7 @@ export const graphDatasetActions = {
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
   deleteItems: multiproducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
+  resetGraph: producerToAction(resetGraph, graphDatasetAtom),
 };
 
 /**

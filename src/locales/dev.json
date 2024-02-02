@@ -35,7 +35,8 @@
     "open": {
       "cloud": "Open graph from {{provider}}",
       "remote": "Open remote graph",
-      "local": "Open local graph"
+      "local": "Open local graph",
+      "new": "Open an empty graph"
     },
     "save": {
       "default": "Save",
@@ -319,6 +320,11 @@
         "select-file": "Select a file",
         "success": "File {{filename}} has been successfully loaded",
         "error": "A technical error occurred. Please check your connectivity or try later."
+      },
+      "new": {
+        "title":"Open an empty graph",
+        "message": "Current graph will be cleared, are you sure you want to continue ?",
+        "success": "Empty graph loaded"
       }
     },
     "save": {

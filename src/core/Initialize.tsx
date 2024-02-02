@@ -7,11 +7,11 @@ import { extractFilename } from "../utils/url";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
 import { parseAppearanceState } from "./appearance/utils";
-import { useImportActions } from "./context/dataContexts";
+import { useGraphDatasetActions, useImportActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
-import { getEmptyGraphDataset, parseDataset } from "./graph/utils";
+import { parseDataset } from "./graph/utils";
 import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
 import { preferencesAtom } from "./preferences";
@@ -31,6 +31,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { notify } = useNotifications();
   const { openModal } = useModal();
   const { importRemoteGexf } = useImportActions();
+  const { resetGraph } = useGraphDatasetActions();
 
   useKonami(
     () => {
@@ -85,7 +86,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // If query params has new
     // => empty graph & open welcome modal
     if (url.searchParams.has("new")) {
-      graphDatasetAtom.set(getEmptyGraphDataset());
+      resetGraph();
       graphFound = true;
       url.searchParams.delete("new");
       window.history.pushState({}, "", url);

@@ -14,6 +14,7 @@ export interface LocalFile extends GraphFile {
   size: number;
   source: File;
 }
+
 export type GraphOrigin = CloudFile | RemoteFile | LocalFile | null;
 
 export type ImportState = { type: "idle" } | { type: "loading" } | { type: "error"; message?: string };

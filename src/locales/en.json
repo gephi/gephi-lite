@@ -35,7 +35,8 @@
         "open": {
             "cloud": "Open graph from {{provider}}",
             "remote": "Open remote graph",
-            "local": "Open local graph"
+            "local": "Open local graph",
+            "new": "Open an empty graph"
         },
         "save": {
             "default": "Save",
@@ -44,7 +45,12 @@
         "download": {
             "gexf": "Save graph locally",
             "gexf-error": "An error occurred while generating GEXF file"
-        }
+        },
+        "new": {
+            "title":"Open an empty graph",
+            "message": "Current graph will be cleared, are you sure you want to continue ?",
+            "success": "Empty graph loaded"
+          }
     },
     "providers": {
         "github": "GitHub"

@@ -35,7 +35,8 @@
     "open": {
       "cloud": "Ouvrir un graphe depuis {{provider}}",
       "remote": "Ouvrir un graphe distant",
-      "local": "Ouvrir un graphe local"
+      "local": "Ouvrir un graphe local",
+      "new": "Ouvrir un graphe vide"
     },
     "save": {
       "default": "Enregistrer",
@@ -310,6 +311,11 @@
         "select-file": "Sélectionner un fichier",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement."
+      },
+      "new": {
+        "title":"Nouveau graphe vide",
+        "message": "Les données courantes seront perdues, voulez-vous continuer ?",
+        "success": "Graphe vide"
       }
     },
     "save": {
