@@ -21,7 +21,7 @@ import { CloudFileModal } from "./open/CloudFileModal";
 import { LocalFileModal } from "./open/LocalFileModal";
 import { RemoteFileModal } from "./open/RemoteFileModal";
 
-const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf", "airlines.graphml"];
+const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 
 export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
