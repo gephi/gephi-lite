@@ -3,7 +3,7 @@ import { clamp, isNil } from "lodash";
 import Slider from "rc-slider";
 import { MarkObj } from "rc-slider/lib/Marks";
 import { SliderProps } from "rc-slider/lib/Slider";
-import React, { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
+import React, { FC, InputHTMLAttributes, ReactNode, useEffect, useMemo, useState } from "react";
 import Select from "react-select";
 
 import MessageTooltip from "../MessageTooltip";
@@ -24,7 +24,7 @@ export const SLIDER_STYLE = {
 };
 
 export const NumberInput: FC<
-  { value: number | null; onChange: (v: number) => void } & BaseTypedInputProps &
+  { value: number | null; onChange: (v: number | null) => void } & BaseTypedInputProps &
     Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">
 > = ({ id, label, description, value, onChange, className, ...attrs }) => {
   return (
@@ -38,7 +38,7 @@ export const NumberInput: FC<
         className={cx("form-control form-control-sm", className)}
         id={id}
         value={typeof value === "number" ? value : ""}
-        onChange={(e) => onChange(+e.target.value)}
+        onChange={(e) => onChange(isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber)}
       />
       {description && <div className="form-text small text-muted">{description}</div>}
     </div>
@@ -129,6 +129,11 @@ export const BooleanInput: FC<
   { value: boolean | null; onChange: (v: boolean) => void } & BaseTypedInputProps &
     Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">
 > = ({ id, label, description, value, onChange, className, ...attrs }) => {
+  const [isChecked, setIsChecked] = useState<boolean>(isNil(value) ? false : value);
+  useEffect(() => {
+    setIsChecked(isNil(value) ? false : value);
+  }, [value]);
+
   return (
     <>
       <div className="form-check mt-1">
@@ -137,7 +142,7 @@ export const BooleanInput: FC<
           type="checkbox"
           className={cx("form-check-input", className)}
           id={id}
-          checked={isNil(value) ? false : value}
+          checked={isChecked}
           onChange={(e) => onChange(e.target.checked)}
         />
         <label htmlFor={id} className="form-check-label small ms-1">
