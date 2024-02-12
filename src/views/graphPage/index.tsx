@@ -2,8 +2,7 @@ import cx from "classnames";
 import { isNil } from "lodash";
 import { ComponentType, FC, ReactNode, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsX } from "react-icons/bs";
-import { BsFillInfoSquareFill } from "react-icons/bs";
+import { BsFillInfoSquareFill, BsX } from "react-icons/bs";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 
 import {
@@ -194,6 +193,13 @@ export const GraphPage: FC = () => {
           {contextOpened && (
             <div className="right-panel border-start">
               <ContextPanel />
+              <button
+                type="button"
+                className="right-panel-btn  justify-content-center align-items-center"
+                onClick={() => setContextOpened((v) => !v)}
+              >
+                <HiChevronDoubleRight />
+              </button>
             </div>
           )}
         </div>
