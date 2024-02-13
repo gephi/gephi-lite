@@ -15,7 +15,7 @@ const ColorPicker: FC<
 
   return (
     <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
-      <button type="button" className="btn disc border" style={{ background: color || "#ffffff" }}>
+      <button type="button" className="btn disc border border-secondary" style={{ background: color || "#ffffff" }}>
         <span style={{ color: "transparent" }}>X</span>
       </button>
       <div className="custom-color-picker">

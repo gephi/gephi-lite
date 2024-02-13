@@ -63,7 +63,7 @@ export function ToggleBar<T>(props: {
         <Fragment key={`${option.value}`}>
           <li className="nav-item">
             <button
-              className={cx("nav-link link-dark", className, option.value === value && "active")}
+              className={cx("nav-link link-dark p-2", className, option.value === value && "active")}
               onClick={() => onChange(option.value)}
               disabled={disabled}
             >

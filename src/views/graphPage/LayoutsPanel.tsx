@@ -1,11 +1,12 @@
 import cx from "classnames";
 import { isNil } from "lodash";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { FaPlay, FaStop } from "react-icons/fa";
 import Select from "react-select";
 
+import { InformationTooltip } from "../../components/InformationTooltip";
 import { LoaderFill } from "../../components/Loader";
 import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, LayoutsIcon } from "../../components/common-icons";
@@ -255,7 +256,7 @@ export const LayoutForm: FC<{
 
       <hr className="m-0" />
 
-      <div className="z-over-loader panel-block d-flex flex-row flex-wrap align-items-center justify-content-end">
+      <div className="z-over-loader panel-block d-flex flex-row gap-1 flex-wrap align-items-center justify-content-end">
         {success && (
           <MessageTooltip
             openOnMount={2000}
@@ -271,7 +272,7 @@ export const LayoutForm: FC<{
           <button
             key={id}
             type="reset"
-            className="btn text-nowrap mt-1 btn-secondary ms-2"
+            className="btn text-nowrap mt-1 btn-secondary"
             title={description ? (t(`layouts.${layout.id}.buttons.${id}.description`) as string) : undefined}
             onClick={() => {
               const graph = getFilteredDataGraph(dataset, sigmaGraph);
@@ -284,13 +285,13 @@ export const LayoutForm: FC<{
         ))}
         <button
           type="reset"
-          className="btn text-nowrap mt-1 btn-secondary ms-2"
+          className="btn text-nowrap mt-1 btn-secondary"
           onClick={() => setParameters()}
           disabled={isRunning}
         >
           {t("common.reset")}
         </button>
-        <button type="submit" className="btn text-nowrap mt-1 btn-primary ms-2">
+        <button type="submit" className="btn text-nowrap mt-1 btn-primary">
           {layout.type === "sync" && <>{t("common.apply")}</>}
           {layout.type === "worker" && (
             <>
@@ -332,10 +333,13 @@ export const LayoutsPanel: FC = () => {
   return (
     <>
       <div className="panel-block">
-        <h2 className="fs-4">
+        <h2 className="fs-4 d-flex align-items-center gap-1">
           <LayoutsIcon className="me-1" /> {t("layouts.title")}
+          <InformationTooltip>
+            <p className="text-muted small">{t("layouts.description")}</p>
+          </InformationTooltip>
         </h2>
-        <p className="text-muted small">{t("layouts.description")}</p>
+        <p className="text-muted small d-none d-md-block">{t("layouts.description")}</p>
 
         <Select<LayoutOption, false>
           {...DEFAULT_SELECT_PROPS}

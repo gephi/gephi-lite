@@ -65,7 +65,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
       className="modal-lg"
     >
       <div className="row mb-3 position-relative">
-        <div className="col-6">
+        <div className="col-12 col-sm-6">
           <h3 className="fs-6">{t("welcome.open_recent")}</h3>
           {!!recentRemoteFiles.length && (
             <ul className="list-unstyled">
@@ -91,7 +91,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           )}
           {!recentRemoteFiles.length && <p className="text-muted">{t("welcome.no_recent")}</p>}
         </div>
-        <div className="col-6">
+        <div className="col-12 col-sm-6">
           <h3 className="fs-6">{t("welcome.open_graph")}</h3>
           <ul className="list-unstyled">
             {user && user.provider && (

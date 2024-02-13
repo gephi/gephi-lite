@@ -102,3 +102,15 @@
     border-right-width: 0.3em;
   }
 }
+
+.btn {
+  --bs-btn-padding-y: 0.25rem;
+  --bs-btn-padding-x: 0.5rem;
+  --bs-btn-font-size: 1rem;
+
+  @include media-breakpoint-down(md) {
+    --bs-btn-padding-y: 0.15rem;
+    --bs-btn-padding-x: 0.35rem;
+    --bs-btn-font-size: 0.85rem;
+  }
+}

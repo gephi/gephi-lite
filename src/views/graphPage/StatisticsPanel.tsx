@@ -5,6 +5,7 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
 
+import { InformationTooltip } from "../../components/InformationTooltip";
 import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
@@ -369,10 +370,13 @@ export const StatisticsPanel: FC = () => {
   return (
     <>
       <div className="panel-block">
-        <h2 className="fs-4">
-          <StatisticsIcon className="me-1" /> {t("statistics.title")}
+        <h2 className="fs-4 d-flex align-items-center gap-1">
+          <StatisticsIcon className="me-1" /> {t("statistics.title")}{" "}
+          <InformationTooltip>
+            <p className="text-muted small m-0">{t("statistics.description")}</p>
+          </InformationTooltip>
         </h2>
-        <p className="text-muted small">{t("statistics.description")}</p>
+        <p className="text-muted small d-none d-md-block">{t("statistics.description")}</p>
 
         <Select<MetricOption, false>
           {...DEFAULT_SELECT_PROPS}
