@@ -37,7 +37,7 @@
       "cloud": "Ouvrir un graphe depuis {{provider}}",
       "remote": "Ouvrir un graphe distant",
       "local": "Ouvrir un graphe local",
-      "new": "Ouvrir un graphe vide"
+      "new": "Créer un nouveau graphe"
     },
     "save": {
       "default": "Enregistrer",
@@ -314,7 +314,7 @@
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement."
       },
       "new": {
-        "title":"Nouveau graphe vide",
+        "title": "Nouveau graphe vide",
         "message": "Les données courantes seront perdues, voulez-vous continuer ?",
         "success": "Graphe vide"
       }
@@ -734,11 +734,11 @@
     }
   },
   "settings": {
-    "title":"User's settings",
+    "title": "User's settings",
     "danger-zone": {
       "title": "Danger zone",
       "reset-state": {
-        "title":"Mise à zéro de l'état de l'application",
+        "title": "Mise à zéro de l'état de l'application",
         "description": "Toutes les données courantes seront perdues, même celle stockée dans le navigateur. Voulez-vous continuer ?",
         "success": "Mise à zéro de l'application"
       }

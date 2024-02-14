@@ -3,6 +3,7 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { BsFiletypePng } from "react-icons/bs";
 import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
+import { ImFileEmpty } from "react-icons/im";
 
 import { Loader } from "../../components/Loader";
 import { FileIcon, SingInIcon } from "../../components/common-icons";
@@ -177,8 +178,8 @@ export const FilePanel: FC = () => {
                 });
               }}
             >
-              <FaRegFolderOpen className="me-1" />
-              {t(`menu.open.new`).toString()}
+              <ImFileEmpty className="me-1" />
+              {t("menu.open.new").toString()}
             </button>
           </div>
 

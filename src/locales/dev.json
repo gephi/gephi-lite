@@ -17,7 +17,7 @@
     "title": "Error",
     "unknown": "An unknown error has occurred.",
     "message": "Sorry, we are working to make gephi-lite better, but bugs still happened... It will help us if you can open an issue on github with a description of what you were doing.",
-    "retry":"Retry",
+    "retry": "Retry",
     "report": "Report error",
     "not_found": {
       "title": "Page Not Found",
@@ -37,7 +37,7 @@
       "cloud": "Open graph from {{provider}}",
       "remote": "Open remote graph",
       "local": "Open local graph",
-      "new": "Open an empty graph"
+      "new": "Create a new graph"
     },
     "save": {
       "default": "Save",
@@ -323,7 +323,7 @@
         "error": "A technical error occurred. Please check your connectivity or try later."
       },
       "new": {
-        "title":"Open an empty graph",
+        "title": "Open an empty graph",
         "message": "Current graph will be cleared, are you sure you want to continue ?",
         "success": "Empty graph loaded"
       }
@@ -743,11 +743,11 @@
     }
   },
   "settings": {
-    "title":"User's settings",
+    "title": "User's settings",
     "danger-zone": {
       "title": "Danger zone",
       "reset-state": {
-        "title":"Reset application state",
+        "title": "Reset application state",
         "description": "All your data will be deleted, even the settings saved locally (ie. in your browser). Are you sure ?",
         "success": "Application's state has been cleared"
       }
