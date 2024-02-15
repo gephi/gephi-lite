@@ -92,10 +92,14 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       window.history.pushState({}, "", url);
     }
 
-    // If query params has gexf
+    // If query params has file (or gexf although it's deprecated)
     // => try to load the file
-    if (!graphFound && url.searchParams.has("file")) {
-      const file = url.searchParams.get("file") || "";
+    if (!graphFound && (url.searchParams.has("file") || url.searchParams.has("gexf"))) {
+      if (!url.searchParams.has("file") && url.searchParams.has("gexf"))
+        notify({ type: "warning", message: t("error.deprecated.gexf_search_params") });
+
+      const file = url.searchParams.get("file") || url.searchParams.get("gexf") || "";
+
       try {
         await importFile({
           type: "remote",

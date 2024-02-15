@@ -27,6 +27,9 @@
     "form": {
       "required": "Field is required",
       "unique": "Value must be unique, and a data with the same value already exist"
+    },
+    "deprecated": {
+      "gexf_search_params": "The `gexf=` url params to open a graph file has been renamed as `file=` in version 0.4.0. Using gexf params is deprecated  and might be removed in future version. Please use `file=` instead."
     }
   },
   "user": {
