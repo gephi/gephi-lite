@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-const BASE_URL = "https://raw.githubusercontent.com/gephi/gephi-lite/main/public/samples/";
-const FILES = ["Java.gexf", "Les Miserables.gexf", "Power Grid.gexf"];
+import { BASE_PATH } from "../vite.config";
+
+const BASE_URL = `${BASE_PATH}/samples/`;
+const FILES = ["Java.gexf", "Les Miserables.gexf", "Power Grid.gexf", "airlines.graphml"];
 
 FILES.forEach((file) => {
   test(`Loading '${file}' should work`, async ({ page }) => {

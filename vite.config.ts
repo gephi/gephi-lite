@@ -2,8 +2,11 @@ import react from "@vitejs/plugin-react-swc";
 import checker from "vite-plugin-checker";
 import { defineConfig } from "vitest/config";
 
+// export BASE_PATH to reuse it in e2e test
+export const BASE_PATH = "/gephi-lite";
+
 export default defineConfig({
-  base: "/gephi-lite",
+  base: BASE_PATH,
   plugins: [
     react(),
     checker({
