@@ -1,5 +1,14 @@
 # Gephi Lite - Changelog:
 
+### 0.4.1
+
+Correcting some regressions:
+
+- End to End tests were not run in CI
+- gexf= url params is back for retro-compatibility but with a deprecation warning
+- End to End tests updated
+- code version displayed in welcome modal
+
 ## 0.4.0 version aka FOSDEM 2024
 
 This version has been developed in a one week iteration preceding the FOSDEM 2024 conference where we presented the [genesis of Gephi Lite](https://fosdem.org/2024/schedule/event/fosdem-2024-3253-bridging-research-and-open-source-the-genesis-of-gephi-lite/).
