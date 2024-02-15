@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FaRegFolderOpen } from "react-icons/fa";
 import { ImFileEmpty } from "react-icons/im";
 
+import { version } from "../../../../package.json";
 import { Loader } from "../../../components/Loader";
 import LocalSwitcher from "../../../components/LocalSwitcher";
 import { GitHubIcon } from "../../../components/common-icons";
@@ -185,7 +186,12 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
       </div>
       <div className="d-flex align-items-center w-100">
         <div className="text-muted small flex-grow-1 flex-shrink-1">
-          <div>{t("welcome.disclaimer-1")}</div>
+          <div>
+            {t("welcome.disclaimer-1")}{" "}
+            <a href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
+              v{version}
+            </a>
+          </div>
           <div>{t("welcome.disclaimer-2")}</div>
         </div>
         <a
