@@ -59,32 +59,35 @@
     transition: 0.3s width;
     background: $panels-bg;
     position: relative;
+  }
 
-    &.deployed {
-      @include media-breakpoint-up(lg) {
-        width: 350px;
-      }
-      @include media-breakpoint-down(lg) {
-        width: 33vw;
-      }
-      @include media-breakpoint-down(md) {
-        width: calc(50vw - $toolbar-width);
-      }
+  // PANEL SIZES: both wrapper and panel need the same size for animation purposes
+  .left-panel-wrapper.deployed,
+  .right-panel-wrapper.deployed,
+  .left-panel,
+  .right-panel {
+    @include media-breakpoint-up(lg) {
+      width: 350px;
+    }
+    @include media-breakpoint-down(lg) {
+      width: 33vw;
+    }
+    @include media-breakpoint-down(md) {
+      width: calc(50vw - $toolbar-width);
+    }
+    .right-panel-btn {
+      display: none;
+    }
+    @include media-breakpoint-down(sm) {
+      width: calc(100vw - $toolbar-width);
       .right-panel-btn {
-        display: none;
-      }
-      @include media-breakpoint-down(sm) {
-        width: calc(100vw - $toolbar-width);
-        .right-panel-btn {
-          display: flex;
-        }
+        display: flex;
       }
     }
   }
 
   .left-panel,
   .right-panel {
-    width: 100%;
     height: 100%;
     overflow-y: auto;
 
