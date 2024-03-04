@@ -9,7 +9,7 @@ jobs:
     env:
       CI: false
       PUBLIC_URL: "/gephi-lite"
-      REACT_APP_GITHUB_PROXY: "https://githubapi.gephi.org"
+      VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
     steps:
       - name: Checkout
         uses: actions/checkout@v2

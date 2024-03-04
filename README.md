@@ -55,15 +55,15 @@ Your Gephi Lite is ready to be deployed!
 
 To allow users to synchronize their data with GitHub, Gephi Lite needs a reverse proxy to avoid CORS issues. When working locally in development, [we use `http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/vite.config.js) to make that work.
 
-To deploy the application, you need to define the env variable `REACT_APP_GITHUB_PROXY` before building it, by following those steps:
+To deploy the application, you need to define the env variable `VITE_GITHUB_PROXY` before building it, by following those steps:
 
 ```
-$> REACT_APP_GITHUB_PROXY=mydomain.for.github.auth.proxy.com
+$> VITE_GITHUB_PROXY=mydomain.for.github.auth.proxy.com
 $> npm install
 $> npm run build
 ```
 
-On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this settings : `REACT_APP_GITHUB_PROXY: "https://githubapi.gephi.org"`.
+On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this settings : `VITE_GITHUB_PROXY: "https://githubapi.gephi.org"`.
 
 Then on our server, we configured NGINX with this following settings:
 
