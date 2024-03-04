@@ -1,6 +1,6 @@
 {
   "name": "gephi-lite",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "homepage": "https://gephi.org/gephi-lite",
   "license": "gpl-3.0",
   "scripts": {

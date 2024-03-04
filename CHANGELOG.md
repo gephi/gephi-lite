@@ -1,6 +1,12 @@
 # Gephi Lite - Changelog:
 
-### 0.4.1
+## 0.4.2
+
+### Debug
+
+- [#144](https://github.com/gephi/gephi-lite/issues/144): Fix github authentification 
+
+## 0.4.1
 
 Correcting some regressions:
 
