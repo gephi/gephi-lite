@@ -51,6 +51,27 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your Gephi Lite is ready to be deployed!
 
+## Run in docker
+Docker allows building and running Gephi lite in a controlled environment without installing npm and project dependencies on your host system.
+
+Make sure you have a fresh version of [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/linux/) plugin. Effective July 2023 Compose is now integrated into all current Docker Desktop versions.
+
+## `docker compose build`
+
+Builds or rebuilds docker image from your git checkout
+
+### `docker compose up`
+
+Starts Gephi Lite with previously prebuilt image
+
+### `docker compose down`
+
+Stops container and frees all the resources obtained by the container.
+
+### Any custom `npm` command
+
+Run `docker compose run --entrypoint sh gephi-lite` and you'll get into the shell where you can run all the `npm` commands from above
+
 ## Deploy the application
 
 To allow users to synchronize their data with GitHub, Gephi Lite needs a reverse proxy to avoid CORS issues. When working locally in development, [we use `http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/vite.config.js) to make that work.

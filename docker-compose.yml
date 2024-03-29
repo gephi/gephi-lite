@@ -1,0 +1,9 @@
+version: '3'
+services:
+    gephi-lite:
+        build: .
+        hostname: gephi-lite
+        volumes:
+            - ./:/home/node/app
+        ports:
+            - 5173:5173
