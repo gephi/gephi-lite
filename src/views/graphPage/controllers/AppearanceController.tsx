@@ -9,10 +9,11 @@ import {
   DEFAULT_NODE_SIZE,
 } from "../../../core/appearance/utils";
 import { useAppearance, useGraphDataset, useSelection, useSigmaState } from "../../../core/context/dataContexts";
+import { GephiLiteSigma } from "../../../core/graph/types";
 import { memoizedBrighten } from "../../../utils/colors";
 
 export const AppearanceController: FC = () => {
-  const sigma = useSigma();
+  const sigma: GephiLiteSigma = useSigma();
   const selection = useSelection();
   const { showEdges } = useAppearance();
   const { metadata } = useGraphDataset();

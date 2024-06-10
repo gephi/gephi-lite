@@ -3,7 +3,6 @@ import { max } from "lodash";
 import Sigma from "sigma";
 
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
-import { SigmaGraph } from "../graph/types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
 import { SigmaState } from "./types";
@@ -86,9 +85,11 @@ export const resetHighlightedNodes: Producer<SigmaState, []> = () => {
  * Public API:
  * ***********
  */
-export const sigmaAtom = atom<Sigma<SigmaGraph>>(
-  new Sigma(sigmaGraphAtom.get(), document.createElement("div"), { allowInvalidContainer: true }),
-);
+const INITIAL_SIGMA_INSTANCE = new Sigma(sigmaGraphAtom.get(), document.createElement("div"), {
+  allowInvalidContainer: true,
+});
+export type GephiLiteSigma = typeof INITIAL_SIGMA_INSTANCE;
+export const sigmaAtom = atom(INITIAL_SIGMA_INSTANCE);
 export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
 
 /**

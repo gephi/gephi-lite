@@ -9,12 +9,13 @@ import {
   useSelectionActions,
   useSigmaActions,
 } from "../../../core/context/dataContexts";
+import { GephiLiteSigma } from "../../../core/graph/types";
 import { LayoutMapping } from "../../../core/layouts/types";
 
 const DRAG_EVENTS_TOLERANCE = 3;
 
 export const EventsController: FC = () => {
-  const sigma = useSigma();
+  const sigma: GephiLiteSigma = useSigma();
   const registerEvents = useRegisterEvents();
 
   const selection = useSelection();

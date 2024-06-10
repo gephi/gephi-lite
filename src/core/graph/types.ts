@@ -1,5 +1,6 @@
 import { MultiGraph } from "graphology";
-import { GraphType } from "graphology-types";
+import { Attributes, GraphType } from "graphology-types";
+import Sigma from "sigma";
 
 import { ItemType, Scalar } from "../types";
 import { GraphOrigin } from "./import/types";
@@ -16,13 +17,13 @@ export interface GraphMetadata {
  * Items data:
  * ***********
  */
-export interface EdgeRenderingData {
+export interface EdgeRenderingData extends Attributes {
   label?: string | null;
   color?: string;
   weight?: number;
   rawWeight?: number;
 }
-export interface NodeRenderingData {
+export interface NodeRenderingData extends Attributes {
   label?: string | null;
   color?: string;
   size?: number;
@@ -30,6 +31,7 @@ export interface NodeRenderingData {
   y: number;
   rawSize?: number;
   image?: string | null;
+  fixed?: boolean;
 }
 
 // At the moment, all other attributes must be stored as scalar values, for
@@ -63,6 +65,8 @@ export type DatalessGraph = MultiGraph;
 export type SigmaGraph = MultiGraph<NodeRenderingData, EdgeRenderingData>;
 export type DataGraph = MultiGraph<ItemData, ItemData>;
 export type FullGraph = MultiGraph<ItemData & NodeRenderingData, ItemData & EdgeRenderingData>;
+
+export type GephiLiteSigma = Sigma<NodeRenderingData, EdgeRenderingData, Attributes>;
 
 /**
  * States:

@@ -1,7 +1,6 @@
 import chroma from "chroma-js";
 import { forEach, identity } from "lodash";
-import { EdgeLabelDrawingFunction } from "sigma/rendering/edge-labels";
-import { NodeLabelDrawingFunction } from "sigma/rendering/node-labels";
+import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
 import {

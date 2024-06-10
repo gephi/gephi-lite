@@ -6,9 +6,11 @@ import { CameraState } from "sigma/types";
 
 import { wait } from "./promises";
 
+type LightAttributes = { [key: string]: unknown };
+
 export async function getGraphSnapshot(
   graph: Graph,
-  settings: Partial<Settings>,
+  settings: Partial<Settings<LightAttributes, LightAttributes, LightAttributes>>,
   {
     width,
     height,

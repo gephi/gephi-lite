@@ -13,10 +13,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "strictFunctionTypes": false,
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["vite/client", "vitest/globals"],
-    "typeRoots": ["node_modules"]
+    "typeRoots": ["node_modules"],
   },
-  "include": ["src", "types"]
+  "include": ["src", "types"],
 }

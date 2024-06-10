@@ -168,7 +168,7 @@ function SelectedItem<
       </h4>
       {attributes && (
         <ul className="ms-4 list-unstyled small">
-          {attributes.map(([key, value], i) => (
+          {attributes.map(([key, value]) => (
             <li key={key}>
               <span className="text-muted">{key}:</span>{" "}
               <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>
