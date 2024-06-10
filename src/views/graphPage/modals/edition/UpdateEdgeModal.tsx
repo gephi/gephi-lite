@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { fromPairs, isNil, map, omit, pick } from "lodash";
+import { fromPairs, isNil, map, omit, pick, reverse } from "lodash";
 import { FC, useContext, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -46,7 +46,8 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
       classNames: { menuPortal: () => "over-modal" },
       menuPortalTarget: portalTarget,
       placeholder: t("edition.search_nodes") as string,
-      options: map(nodeRenderingData, ({ label }, value) => ({ value, label: label || value })),
+      // reverse to show the last inserted node first see #152
+      options: reverse(map(nodeRenderingData, ({ label }, value) => ({ value, label: label || value }))),
     }),
     [nodeRenderingData, portalTarget, t],
   );
