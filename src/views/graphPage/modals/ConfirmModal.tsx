@@ -21,6 +21,7 @@ const ConfirmModal: FC<
     <Modal
       title={title}
       onClose={() => cancel()}
+      doNotPreserveData
       onSubmit={() => {
         submit({});
         notify({ message: successMsg, type: "success" });

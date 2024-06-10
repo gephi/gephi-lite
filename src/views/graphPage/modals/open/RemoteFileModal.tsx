@@ -42,7 +42,12 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   }, [isFormValid, url, cancel, notify, t, importFile]);
 
   return (
-    <Modal title={t("graph.open.remote.title").toString()} onClose={() => cancel()} onSubmit={openRemote}>
+    <Modal
+      title={t("graph.open.remote.title").toString()}
+      onClose={() => cancel()}
+      onSubmit={openRemote}
+      doNotPreserveData
+    >
       <>
         {fileStateType === "error" && (
           <p className="text-center text-danger">{t("graph.open.remote.error").toString()}</p>

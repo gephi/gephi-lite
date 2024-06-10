@@ -8,7 +8,8 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 interface Props {
   title?: ReactNode;
   onClose?: () => void;
-  onSubmit?: () => void;
+  onSubmit?: () => void; // if set echap and click outside the modal does not close it
+  doNotPreserveData?: boolean; // if set, even if a onSubmit is set it's possible to close the modal by escape/click outside to cancel
   showHeader?: boolean;
   footerAlignLeft?: boolean;
   className?: string;
@@ -20,6 +21,7 @@ interface Props {
 export const Modal: FC<PropsWithChildren<Props>> = ({
   onClose,
   onSubmit,
+  doNotPreserveData,
   title,
   children,
   showHeader = true,
@@ -36,7 +38,8 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
     {
       code: "Escape",
       handler: () => {
-        if (onClose) onClose();
+        // don't close the modal on click outside if there is a form in it to avoid data loss
+        if (onClose && (doNotPreserveData || !onSubmit)) onClose();
       },
     },
   ]);
@@ -81,7 +84,9 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
         className="modal fade show"
         style={{ display: "block" }}
         onClick={(e) => {
-          if (onClose && e.target === e.currentTarget) onClose();
+          // don't close the modal on click outside if there is a form in it to avoid data loss
+          // we could do better bu tracking changes but there are already a cancel AND a x icon to close the modal
+          if (onClose && (doNotPreserveData || !onSubmit) && e.target === e.currentTarget) onClose();
         }}
       >
         <div

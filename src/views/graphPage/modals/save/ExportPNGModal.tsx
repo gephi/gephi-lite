@@ -50,6 +50,7 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       title={t("graph.export.png.title").toString()}
       onClose={() => cancel()}
       onSubmit={handleSubmit}
+      doNotPreserveData
       className="modal"
     >
       <>

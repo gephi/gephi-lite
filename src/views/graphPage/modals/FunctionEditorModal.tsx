@@ -51,6 +51,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
         </>
       }
       onClose={() => cancel()}
+      onSubmit={() => save(true, code)}
     >
       <>
         {error && <p className="text-danger text-center">{error}</p>}
@@ -107,12 +108,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
           {t("common.save")}
         </button>
         {withSaveAndRun && (
-          <button
-            type="button"
-            title={t("common.save-and-run").toString()}
-            className="btn btn-primary"
-            onClick={() => save(true, code)}
-          >
+          <button type="submit" title={t("common.save-and-run").toString()} className="btn btn-primary">
             <RunIcon className="me-1" />
             {t("common.save-and-run")}
           </button>
