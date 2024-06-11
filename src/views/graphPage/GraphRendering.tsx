@@ -1,7 +1,7 @@
 import { SigmaContainer } from "@react-sigma/core";
 import { createNodeImageProgram } from "@sigma/node-image";
 import cx from "classnames";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
 import { BsZoomIn, BsZoomOut } from "react-icons/bs";
@@ -128,6 +128,7 @@ export const GraphRendering: FC = () => {
         image: NodeImageProgram,
         bordered: NodeProgramBorder,
       },
+      allowInvalidContainer: true,
     }),
     [NodeImageProgram],
   );
