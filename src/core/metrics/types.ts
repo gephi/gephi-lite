@@ -1,5 +1,5 @@
-import { FullGraph, ItemData } from "../graph/types";
-import { ItemType } from "../types";
+import { FieldModel, FullGraph, ItemData } from "../graph/types";
+import { ItemType, Scalar } from "../types";
 
 interface BaseMetricParameter {
   id: string;
@@ -34,7 +34,7 @@ export interface MetricAttributeParameter extends BaseMetricParameter {
   restriction?: "qualitative" | "quantitative";
 }
 
-type MetricScriptFunction = (id: string, attributes: ItemData, index: number, graph: FullGraph) => number;
+export type MetricScriptFunction = (id: string, attributes: ItemData, index: number, graph: FullGraph) => Scalar;
 export interface MetricScriptParameter extends BaseMetricParameter {
   type: "script";
   defaultValue: MetricScriptFunction;
@@ -49,25 +49,15 @@ export type MetricParameter =
   | MetricAttributeParameter
   | MetricScriptParameter;
 
-export type MetricType =
-  | { string: "number"; type: number }
-  | { string: "string"; type: string }
-  | { string: "boolean"; type: boolean };
+export type MetricType = { string: "qualitative"; type: string | boolean } | { string: "quantitative"; type: number };
 
-export interface Metric<
-  Items extends ItemType,
-  Keys extends [string, ...string[]],
-  Types extends Record<Keys[number], MetricType>,
-> {
+export interface Metric<Items extends ItemType, OutputKeys extends [string, ...string[]]> {
   id: string;
-  types: { [Key in keyof Types]: Types[Key]["string"] };
+  outputs: Record<OutputKeys[number], Pick<FieldModel, "qualitative" | "quantitative"> | undefined>;
   itemType: Items;
   parameters: MetricParameter[];
   description?: boolean;
-  fn: (
-    parameters: Record<string, unknown>,
-    graph: FullGraph,
-  ) => { [Key in keyof Types]: Record<string, Types[Key]["type"]> };
+  fn: (parameters: Record<string, unknown>, graph: FullGraph) => Record<OutputKeys[number], Record<string, Scalar>>;
 }
 
 export interface MetricReport {

@@ -6,7 +6,7 @@ import { Metric, MetricReport } from "./types";
 
 export function computeMetric(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metric: Metric<any, any, any>,
+  metric: Metric<any, any>,
   params: Record<string, unknown>,
   attributeNames: Record<string, string>,
   filteredGraph: DatalessGraph,
@@ -37,10 +37,13 @@ export function computeMetric(
     }
 
     // Update field model:
+    let qualiQuanti = metric.outputs[score];
+    if (qualiQuanti === undefined) qualiQuanti = inferFieldType(Object.values(values), itemsCount);
+
     const newFieldModel = {
       id: attributeName,
       itemType: metric.itemType,
-      ...inferFieldType(Object.values(values), itemsCount),
+      ...qualiQuanti,
     };
 
     if (fields.find((field) => field.id === attributeName)) {

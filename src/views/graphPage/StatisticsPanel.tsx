@@ -31,11 +31,11 @@ type MetricOption = {
   label: string;
   // metric's value
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metric: Metric<any, any, any>;
+  metric: Metric<any, any>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void }> = ({ metric }) => {
+export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> = ({ metric }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
@@ -62,7 +62,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
         }),
         {},
       ),
-      attributeNames: mapValues(metric.types, (type, value) => value),
+      attributeNames: mapValues(metric.outputs, (type, value) => value),
     }),
     [metric],
   );
@@ -173,7 +173,7 @@ export const MetricForm: FC<{ metric: Metric<any, any, any>; onClose: () => void
         )}
 
         <div className="my-3">
-          {map(metric.types, (_type, value) => (
+          {map(metric.outputs, (_type, value) => (
             <Fragment key={value}>
               <StringInput
                 required
