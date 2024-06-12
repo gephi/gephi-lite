@@ -182,14 +182,18 @@ export const filteredGraphAtom = derivedAtom(
   (graphDataset, filteredGraphCache) => {
     return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
   },
+  { checkInput: false },
 );
 export const parentFilteredGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphsAtom],
   (graphDataset, filteredGraphCache) => {
     return filteredGraphCache[filteredGraphCache.length - 2]?.graph || graphDataset.fullGraph;
   },
+  { checkInput: false },
 );
-export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom], getAllVisualGetters);
+export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom], getAllVisualGetters, {
+  checkInput: false,
+});
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters, graph: SigmaGraph | undefined) => {
@@ -205,7 +209,7 @@ export const sigmaGraphAtom = derivedAtom(
 
     return newGraph;
   },
-  { debounce: true },
+  { debounce: true, checkInput: false },
 );
 
 export const graphDatasetActions = {

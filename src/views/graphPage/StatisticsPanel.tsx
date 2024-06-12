@@ -42,7 +42,7 @@ export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> =
   const filteredGraph = useFilteredGraph();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
-  const { setGraphDataset } = useGraphDatasetActions();
+  const { setFieldModel } = useGraphDatasetActions();
   const fieldsIndex = keyBy(metric.itemType === "nodes" ? nodeFields : edgeFields, "id");
   const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
   // get metric config from the preference if it exists
@@ -129,8 +129,17 @@ export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> =
 
   const submit = useCallback(() => {
     try {
-      const res = computeMetric(metric, metricConfig.parameters, metricConfig.attributeNames, filteredGraph, dataset);
-      setGraphDataset(res.dataset);
+      // compute the metric on the graph. This method mutates the state directly for performance reasons
+      const { fieldModels } = computeMetric(
+        metric,
+        metricConfig.parameters,
+        metricConfig.attributeNames,
+        filteredGraph,
+        dataset,
+      );
+      // TODO handle report
+      // update fieldModel
+      fieldModels.forEach(setFieldModel);
       setSuccessMessage(
         t("statistics.success", {
           items: metric.itemType,
@@ -152,7 +161,7 @@ export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> =
     metricConfig.attributeNames,
     filteredGraph,
     dataset,
-    setGraphDataset,
+    setFieldModel,
     setSuccessMessage,
     t,
     notify,
