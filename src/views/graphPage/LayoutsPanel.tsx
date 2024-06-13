@@ -11,6 +11,7 @@ import { LoaderFill } from "../../components/Loader";
 import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, LayoutsIcon } from "../../components/common-icons";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { useGraphDataset, useLayoutActions, useLayoutState, useSigmaGraph } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
@@ -373,6 +374,8 @@ export const LayoutsPanel: FC = () => {
           />
         </>
       )}
+      <hr className="m-0" />
+      <LayoutQualityForm />
     </>
   );
 };

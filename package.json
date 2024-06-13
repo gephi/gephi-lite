@@ -59,7 +59,7 @@
     "graphology-layout-force": "^0.2.4",
     "graphology-layout-forceatlas2": "^0.10.1",
     "graphology-layout-noverlap": "^0.4.2",
-    "graphology-metrics": "^2.2.0",
+    "graphology-metrics": "^2.3.0",
     "graphology-operators": "^1.6.0",
     "highlight.js": "^11.9.0",
     "http-proxy-middleware": "^3.0.0",

@@ -5,10 +5,11 @@ import { useTranslation } from "react-i18next";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { BiCollapseAlt } from "react-icons/bi";
 
-import { useAppearance, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { useAppearance, useFilteredGraph, useGraphDataset, useLayoutState } from "../../core/context/dataContexts";
 import { ItemData } from "../../core/graph/types";
 import { ItemsColorCaption } from "./ItemColorCaption";
 import ItemSizeCaption from "./ItemSizeCaption";
+import { LayoutQualityCaption } from "./LayoutQualityCaption";
 
 export interface GraphCaptionProps {
   minimal?: boolean;
@@ -65,7 +66,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   const { nodeData, edgeData } = useGraphDataset();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState<boolean>(false);
-
+  const { quality } = useLayoutState();
   const [enabled, setEnabled] = useState<boolean>(true);
 
   useEffect(() => {
@@ -73,10 +74,11 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
       ["ranking", "partition"].includes(appearance.nodesColor.type) ||
       ["ranking", "partition", "source", "target"].includes(appearance.edgesColor.type) ||
       appearance.edgesSize.type === "ranking" ||
-      appearance.nodesSize.type === "ranking";
+      appearance.nodesSize.type === "ranking" ||
+      quality.enabled;
 
     setEnabled(enable);
-  }, [appearance]);
+  }, [appearance, quality.enabled]);
 
   // min-max values for ranking caption items
   const vizAttributesExtends = useMemo(() => {
@@ -203,6 +205,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
               itemsSize={appearance.edgesSize}
               extend={edgeSizeExtends && "min" in edgeSizeExtends ? edgeSizeExtends : undefined}
             />
+            <LayoutQualityCaption />
           </div>
         </>
       )}

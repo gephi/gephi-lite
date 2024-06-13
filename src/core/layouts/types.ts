@@ -1,4 +1,5 @@
 import Graph from "graphology";
+import { ConnectedClosenessResult } from "graphology-metrics/layout-quality/connected-closeness";
 import { Coordinates } from "sigma/types";
 
 import { DataGraph, ItemData } from "../graph/types";
@@ -92,7 +93,12 @@ export interface WorkerLayout<P = any> {
 }
 
 export type Layout = WorkerLayout | SyncLayout;
-
-export type LayoutState =
+export interface LayoutQuality {
+  showGrid: boolean;
+  enabled: boolean;
+  metric?: ConnectedClosenessResult;
+}
+export type LayoutState = { quality: LayoutQuality } & (
   | { type: "idle" }
-  | { type: "running"; layoutId: string; supervisor?: WorkerSupervisorInterface };
+  | { type: "running"; layoutId: string; supervisor?: WorkerSupervisorInterface }
+);

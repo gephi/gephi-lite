@@ -667,6 +667,12 @@
       "title": "Custom layout",
       "description": "Write your own layout by creating a function that returns a {x,y} object for each node",
       "parameters": {}
+    },
+    "quality": {
+      "title": "Layout quality",
+      "description": "Calculate and show the layout quality metric",
+      "enable": "enable",
+      "showGrid": "show grid"
     }
   },
   "file": {

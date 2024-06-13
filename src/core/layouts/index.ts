@@ -1,13 +1,15 @@
+import connectedCloseness from "graphology-metrics/layout-quality/connected-closeness";
+
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { resetCamera } from "../sigma";
 import { atom } from "../utils/atoms";
-import { asyncAction } from "../utils/producers";
+import { Producer, asyncAction, producerToAction } from "../utils/producers";
 import { LAYOUTS } from "./collection";
-import { LayoutMapping, LayoutState } from "./types";
+import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
 
 function getEmptyLayoutState(): LayoutState {
-  return { type: "idle" };
+  return { quality: { enabled: false, showGrid: true }, type: "idle" };
 }
 
 /**
@@ -23,13 +25,15 @@ export const layoutStateAtom = atom<LayoutState>(getEmptyLayoutState());
 export const startLayout = asyncAction(async (id: string, params: unknown) => {
   const { setNodePositions } = graphDatasetActions;
   const dataset = graphDatasetAtom.get();
+  const { quality } = layoutStateAtom.get();
+  const { computeLayoutQualityMetric } = layoutActions;
 
   // search the layout
   const layout = LAYOUTS.find((l) => l.id === id);
 
   // Sync layout
   if (layout && layout.type === "sync") {
-    layoutStateAtom.set({ type: "running", layoutId: id });
+    layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id }));
 
     // generate positions
     const fullGraph = dataGraphToFullGraph(dataset);
@@ -41,7 +45,8 @@ export const startLayout = asyncAction(async (id: string, params: unknown) => {
     // To prevent resetting the camera before sigma receives new data, we
     // need to wait a frame, and also wait for it to trigger a refresh:
     setTimeout(() => {
-      layoutStateAtom.set({ type: "idle" });
+      if (quality.enabled) computeLayoutQualityMetric();
+      layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
       resetCamera({ forceRefresh: false });
     }, 0);
   }
@@ -50,7 +55,7 @@ export const startLayout = asyncAction(async (id: string, params: unknown) => {
   if (layout && layout.type === "worker") {
     const worker = new layout.supervisor(sigmaGraphAtom.get(), { settings: params });
     worker.start();
-    layoutStateAtom.set({ type: "running", layoutId: id, supervisor: worker });
+    layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: worker }));
   }
 });
 
@@ -71,10 +76,44 @@ export const stopLayout = asyncAction(async () => {
     setNodePositions(positions);
   }
 
-  layoutStateAtom.set({ type: "idle" });
+  layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
 });
+
+export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
+  return (state) => ({ ...state, quality });
+};
+
+export const computeLayoutQualityMetric: Producer<LayoutState, []> = () => {
+  const sigmaGraph = sigmaGraphAtom.get();
+  const metric = connectedCloseness(sigmaGraph);
+
+  return (state) => ({ ...state, quality: { ...state.quality, metric } });
+};
 
 export const layoutActions = {
   startLayout,
   stopLayout,
+  setQuality: producerToAction(setQuality, layoutStateAtom),
+  computeLayoutQualityMetric: producerToAction(computeLayoutQualityMetric, layoutStateAtom),
 };
+
+layoutStateAtom.bind((layoutState, prevState) => {
+  const updatedQualityKeys = new Set(
+    (Object.keys(layoutState.quality) as (keyof LayoutState["quality"])[]).filter(
+      (key) => layoutState.quality[key] !== prevState.quality[key],
+    ),
+  );
+
+  const { computeLayoutQualityMetric } = layoutActions;
+
+  if (updatedQualityKeys.has("enabled")) {
+    if (layoutState.quality.enabled) {
+      computeLayoutQualityMetric();
+      sigmaGraphAtom.get().on("nodeAttributesUpdated", computeLayoutQualityMetric);
+      sigmaGraphAtom.get().on("eachNodeAttributesUpdated", computeLayoutQualityMetric);
+    } else {
+      sigmaGraphAtom.get().off("eachNodeAttributesUpdated", computeLayoutQualityMetric);
+      sigmaGraphAtom.get().off("nodeAttributesUpdated", computeLayoutQualityMetric);
+    }
+  }
+});
