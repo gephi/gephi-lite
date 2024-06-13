@@ -1,4 +1,5 @@
-import connectedCloseness from "graphology-metrics/layout-quality/connected-closeness";
+import { connectedCloseness } from "graphology-metrics/layout-quality";
+import { debounce } from "lodash";
 
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
@@ -107,13 +108,14 @@ layoutStateAtom.bind((layoutState, prevState) => {
   const { computeLayoutQualityMetric } = layoutActions;
 
   if (updatedQualityKeys.has("enabled")) {
+    const fn = debounce(computeLayoutQualityMetric, 500, { leading: true, maxWait: 500 });
     if (layoutState.quality.enabled) {
       computeLayoutQualityMetric();
-      sigmaGraphAtom.get().on("nodeAttributesUpdated", computeLayoutQualityMetric);
-      sigmaGraphAtom.get().on("eachNodeAttributesUpdated", computeLayoutQualityMetric);
+      sigmaGraphAtom.get().on("nodeAttributesUpdated", fn);
+      sigmaGraphAtom.get().on("eachNodeAttributesUpdated", fn);
     } else {
-      sigmaGraphAtom.get().off("eachNodeAttributesUpdated", computeLayoutQualityMetric);
-      sigmaGraphAtom.get().off("nodeAttributesUpdated", computeLayoutQualityMetric);
+      sigmaGraphAtom.get().off("eachNodeAttributesUpdated", fn);
+      sigmaGraphAtom.get().off("nodeAttributesUpdated", fn);
     }
   }
 });
