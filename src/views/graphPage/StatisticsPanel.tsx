@@ -1,26 +1,22 @@
-import cx from "classnames";
 import { capitalize, cloneDeep, isNil, keyBy, map, mapValues } from "lodash";
 import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import Select, { GroupBase } from "react-select";
 
 import { InformationTooltip } from "../../components/InformationTooltip";
 import MessageTooltip from "../../components/MessageTooltip";
-import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
+import { StatisticsIcon } from "../../components/common-icons";
 import { DEFAULT_SELECT_PROPS } from "../../components/consts";
-import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
+import { ParameterInput, StringInput } from "../../components/forms/TypedInputs";
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
-import { FieldModel } from "../../core/graph/types";
 import { computeMetric } from "../../core/metrics";
 import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
-import { Metric, MetricScriptParameter } from "../../core/metrics/types";
+import { Metric } from "../../core/metrics/types";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { sessionAtom } from "../../core/session";
 import { ItemType } from "../../core/types";
 import { useAtom } from "../../core/utils/atoms";
-import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type MetricOption = {
   // id/name of the metric
@@ -38,7 +34,6 @@ type MetricOption = {
 export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> = ({ metric }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { openModal } = useModal();
   const filteredGraph = useFilteredGraph();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
@@ -197,119 +192,11 @@ export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> =
           const id = `statistics-${metric.itemType}-${metric.id}-params-${param.id}`;
           return (
             <div className="my-1" key={id}>
-              {param.type === "number" && (
-                <NumberInput
-                  id={id}
-                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                  required={param.required}
-                  description={
-                    param.description
-                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                      : undefined
-                  }
-                  value={metricConfig.parameters[param.id] as number}
-                  onChange={(v) => onChange("parameters", param.id, v)}
-                />
-              )}
-              {param.type === "boolean" && (
-                <BooleanInput
-                  id={id}
-                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                  required={param.required}
-                  description={
-                    param.description
-                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                      : undefined
-                  }
-                  value={metricConfig.parameters[param.id] as boolean}
-                  onChange={(v) => onChange("parameters", param.id, v)}
-                />
-              )}
-              {param.type === "enum" && (
-                <EnumInput
-                  id={id}
-                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                  required={param.required}
-                  description={
-                    param.description
-                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                      : undefined
-                  }
-                  value={metricConfig.parameters[param.id] as string}
-                  onChange={(v) => onChange("parameters", param.id, v)}
-                  options={param.values.map(({ id }) => ({
-                    value: id,
-                    label: t(
-                      `statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.values.${id}`,
-                    ) as string,
-                  }))}
-                />
-              )}
-              {param.type === "attribute" && (
-                <EnumInput
-                  id={id}
-                  label={t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.title`) as string}
-                  required={param.required}
-                  description={
-                    param.description
-                      ? (t(`statistics.${metric.itemType}.${metric.id}.parameters.${param.id}.description`) as string)
-                      : undefined
-                  }
-                  placeholder={t("common.none") as string}
-                  value={metricConfig.parameters[param.id] as string}
-                  onChange={(v) => onChange("parameters", param.id, v)}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
-                    .filter((field) => (param.restriction ? !!field[param.restriction] : true))
-                    .map((field) => ({
-                      value: field.id,
-                      label: field.id,
-                    }))}
-                />
-              )}
-              {param.type === "script" && (
-                <div className="position-relative">
-                  <>
-                    {metricConfig.parameters[param.id] && (
-                      <>
-                        <div className="code-thumb mt-1">
-                          <Highlight className="javascript">
-                            {(metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"]).toString()}
-                          </Highlight>
-                        </div>
-                        <div className="filler-fade-out position-absolute bottom-0"></div>
-                      </>
-                    )}
-                    <div className={cx(metricConfig.parameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
-                      <button
-                        type="button"
-                        className="btn btn-dark mx-auto d-block m-3"
-                        onClick={() => {
-                          openModal({
-                            component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
-                            arguments: {
-                              title: "Custom metric",
-                              withSaveAndRun: true,
-                              functionJsDoc: param.functionJsDoc,
-                              defaultFunction: param.defaultValue,
-                              value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
-                              checkFunction: param.functionCheck,
-                            },
-                            beforeSubmit: ({ run, script }) => {
-                              onChange("parameters", param.id, script);
-                              if (run) setTimeout(submit, 0);
-                            },
-                          });
-                        }}
-                        title={t("common.open_code_editor").toString()}
-                      >
-                        <CodeEditorIcon className="me-1" />
-                        {t("common.open_code_editor")}
-                      </button>
-                    </div>
-                  </>
-                </div>
-              )}
+              <ParameterInput
+                param={param}
+                value={metricConfig.parameters[param.id]}
+                onChange={(v) => onChange("parameters", param.id, v)}
+              />
             </div>
           );
         })}

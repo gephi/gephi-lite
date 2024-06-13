@@ -12,7 +12,8 @@ export const disparityMetric: Metric<"edges", ["disparity"]> = {
   parameters: [
     {
       id: "getEdgeWeight",
-      type: "attribute",
+      labelKey: "edges.disparity.parameters.getEdgeWeight.title",
+      type: "field",
       itemType: "edges",
       restriction: "quantitative",
     },

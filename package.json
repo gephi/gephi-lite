@@ -52,6 +52,7 @@
     "copy-to-clipboard": "^3.3.3",
     "file-saver": "^2.0.5",
     "graphology": "^0.25.4",
+    "graphology-components": "^1.5.4",
     "graphology-communities-louvain": "^2.0.1",
     "graphology-gexf": "^0.13.0",
     "graphology-graphml": "^0.5.2",

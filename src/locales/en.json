@@ -198,7 +198,25 @@
     "activated": "Activated filter",
     "create_filter": "Create filter",
     "keepMissingValues": "Keep missing values",
-    "inapplicable": "Filter disabled: only one value available"
+    "inapplicable": "Filter disabled: only one value available",
+    "topological_collection": {
+      "main_connected_components": {
+        "title": "Main connected components",
+        "description": "TODO",
+        "parameters": {
+          "count": "Number of components to keep",
+          "directed": "Handle the graph as directed?"
+        }
+      },
+      "filter_connected_components": {
+        "title": "Filter connected components on their order",
+        "description": "TODO",
+        "parameters": {
+          "min_nodes": "Minimal order to keep the component",
+          "directed": "Handle the graph as directed?"
+        }
+      }
+    }
   },
   "edition": {
     "create_nodes": "Create new node",

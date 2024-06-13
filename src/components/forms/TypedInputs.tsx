@@ -4,9 +4,19 @@ import Slider from "rc-slider";
 import { MarkObj } from "rc-slider/lib/Marks";
 import { SliderProps } from "rc-slider/lib/Slider";
 import React, { FC, InputHTMLAttributes, ReactNode, useEffect, useMemo, useState } from "react";
+import Highlight from "react-highlight";
+import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
+import { useGraphDataset } from "../../core/context/dataContexts";
+import { InferParameterValue, Parameter, ScriptFunction, ScriptParameter } from "../../core/forms/types";
+import { getParameterValue } from "../../core/forms/utils";
+import { FieldModel } from "../../core/graph/types";
+import { useModal } from "../../core/modals";
+import { ItemType } from "../../core/types";
+import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
 import MessageTooltip from "../MessageTooltip";
+import { CodeEditorIcon } from "../common-icons";
 import { DEFAULT_SELECT_PROPS } from "../consts";
 
 interface BaseTypedInputProps {
@@ -156,7 +166,7 @@ export const BooleanInput: FC<
 
 export interface EnumOption {
   value: string;
-  label: string | JSX.Element;
+  label: string | ReactNode;
 }
 export const EnumInput: FC<
   {
@@ -191,4 +201,183 @@ export const EnumInput: FC<
       {description && <div className="form-text small text-muted">{description}</div>}
     </>
   );
+};
+
+export const FieldInput: FC<
+  {
+    value: string | null;
+    onChange: (v: string | null) => void;
+    className?: string;
+    placeholder?: string;
+    required?: boolean;
+    disabled?: boolean;
+    itemType: ItemType;
+    restriction?: "qualitative" | "quantitative";
+  } & BaseTypedInputProps
+> = ({ itemType, restriction, ...props }) => {
+  const { nodeFields, edgeFields } = useGraphDataset();
+  const fields = useMemo(
+    () =>
+      ((itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
+        .filter((field) => (restriction ? !!field[restriction] : true))
+        .map((field) => ({
+          value: field.id,
+          label: field.id,
+        })),
+    [nodeFields, edgeFields, itemType, restriction],
+  );
+  return <EnumInput {...props} options={fields} />;
+};
+
+export const ScriptInput: FC<{
+  id: string;
+  label: string | ReactNode;
+  description?: string | ReactNode;
+  defaultValue: ScriptFunction;
+  functionJsDoc: string;
+  functionCheck: (fn?: ScriptFunction) => void;
+  value?: ScriptFunction;
+  onChange: (fn?: ScriptFunction) => void;
+}> = ({ functionJsDoc, defaultValue, functionCheck, value, onChange }) => {
+  const { t } = useTranslation();
+  const { openModal } = useModal();
+
+  return (
+    <div className="position-relative">
+      <>
+        {value && (
+          <>
+            <div className="code-thumb mt-1">
+              <Highlight className="javascript">{value.toString()}</Highlight>
+            </div>
+            <div className="filler-fade-out position-absolute bottom-0"></div>
+          </>
+        )}
+        <div className={cx(value ? "bottom-0 position-absolute w-100" : "")}>
+          <button
+            type="button"
+            className="btn btn-dark mx-auto d-block m-3"
+            onClick={() => {
+              openModal({
+                component: FunctionEditorModal<ScriptParameter["defaultValue"]>,
+                arguments: {
+                  title: "Custom metric",
+                  withSaveAndRun: true,
+                  functionJsDoc: functionJsDoc,
+                  defaultFunction: defaultValue,
+                  value: value,
+                  checkFunction: functionCheck,
+                },
+                beforeSubmit: ({ script }) => {
+                  onChange(script);
+                },
+              });
+            }}
+            title={t("common.open_code_editor").toString()}
+          >
+            <CodeEditorIcon className="me-1" />
+            {t("common.open_code_editor")}
+          </button>
+        </div>
+      </>
+    </div>
+  );
+};
+
+export const ParameterInput = <P extends Parameter, S extends InferParameterValue<P>>({
+  param,
+  value,
+  onChange,
+  warning,
+}: {
+  param: Parameter;
+  value: unknown;
+  onChange: (newValue: unknown) => void;
+  warning?: string;
+}) => {
+  const { t } = useTranslation();
+  const label = "label" in param ? param.label : t(param.labelKey);
+  const description = "label" in param ? param.description : param.descriptionKey ? t(param.descriptionKey) : undefined;
+
+  switch (param.type) {
+    case "number":
+      return (
+        <NumberInput
+          id={param.id}
+          label={label}
+          description={description}
+          value={getParameterValue(value, param)}
+          onChange={(value) => onChange(value)}
+        />
+      );
+    case "slider":
+      return (
+        <SliderInput
+          min={param.min}
+          max={param.max}
+          step={param.step}
+          label={label}
+          description={description}
+          value={getParameterValue(value, param)}
+          onChange={(value) => onChange(value)}
+        />
+      );
+    case "string":
+      return (
+        <StringInput
+          id={param.id}
+          label={label}
+          description={description}
+          value={getParameterValue(value, param)}
+          onChange={(value) => onChange(value)}
+          warning={warning}
+        />
+      );
+    case "boolean":
+      return (
+        <BooleanInput
+          id={param.id}
+          label={label}
+          description={description}
+          value={getParameterValue(value, param)}
+          onChange={(value) => onChange(value)}
+        />
+      );
+    case "enum":
+      return (
+        <EnumInput
+          id={param.id}
+          label={label}
+          description={description}
+          value={getParameterValue(value, param)}
+          options={param.values}
+          onChange={(value) => onChange(value)}
+        />
+      );
+    case "field":
+      return (
+        <FieldInput
+          id={param.id}
+          label={label}
+          description={description}
+          value={getParameterValue(value, param)}
+          itemType={param.itemType}
+          restriction={param.restriction}
+          onChange={(value) => onChange(value)}
+        />
+      );
+    case "script":
+      return (
+        <ScriptInput
+          id={param.id}
+          label={label}
+          description={description}
+          defaultValue={param.defaultValue}
+          functionCheck={param.functionCheck}
+          functionJsDoc={param.functionJsDoc}
+          value={getParameterValue(value, param)}
+          onChange={(value) => onChange(value)}
+        />
+      );
+  }
 };

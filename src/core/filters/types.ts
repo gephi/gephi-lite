@@ -1,3 +1,4 @@
+import { Parameter } from "../forms/types";
 import { DatalessGraph, FullGraph, ItemData } from "../graph/types";
 import { ItemType } from "../types";
 
@@ -23,7 +24,7 @@ export interface TermsFilterType extends BaseFilter {
 
 export interface TopologicalFilterType {
   type: "topological";
-  method?: string; // TODO
+  method: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   arguments?: any; // TODO
 }
@@ -39,6 +40,17 @@ export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterTy
 export interface FiltersState {
   past: FilterType[];
   future: FilterType[];
+}
+
+/**
+ * Topological definition (to help building meaningful forms):
+ * ***********************************************************
+ */
+export interface TopologicalFilterDefinition {
+  id: string;
+  description?: boolean;
+  parameters: Parameter[];
+  fn: (parameters: Record<string, unknown>, graph: FullGraph) => DatalessGraph;
 }
 
 /**

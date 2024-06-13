@@ -23,6 +23,7 @@ export const edgeScript: Metric<"edges", ["custom"]> = {
     {
       id: "script",
       type: "script",
+      labelKey: "edges.edgescript.attributes.custom",
       functionJsDoc: `/**
 * Function that return the metric value for the specified edge.
 *

@@ -5,18 +5,28 @@ import { CgAddR } from "react-icons/cg";
 import Select from "react-select";
 
 import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { TOPOLOGICAL_FILTERS } from "../../core/filters/collection";
 import { FilterType } from "../../core/filters/types";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../consts";
 
-interface FilterOption {
+interface FieldFilterOption {
+  filterType: "field";
   value: string;
   label: string | JSX.Element;
   disabled?: boolean;
   field?: string;
   type: string;
 }
+interface TopologicalFilterOption {
+  filterType: "topological";
+  disabled?: boolean;
+  value: string;
+  label: string | JSX.Element;
+  topologicalFilterMethod: string;
+}
+type FilterOption = FieldFilterOption | TopologicalFilterOption;
 
 export const FilterCreator: FC = () => {
   const { nodeFields, edgeFields } = useGraphDataset();
@@ -38,24 +48,21 @@ export const FilterCreator: FC = () => {
     setSelectedFilterOption(null);
     setFilterCreation(null);
     if (filterApplicationType === "topological") {
-      // TODO: topological filters
-      const topologicalFiltersOptions: FilterOption[] = [
-        { value: "degree", label: "Topological on Degree (TODO)", disabled: true, type: "topological" },
-        {
-          value: "main_connected_component",
-          label: "Main connected component (TODO)",
-          disabled: true,
-          type: "topological",
-        },
-      ];
+      const topologicalFiltersOptions: TopologicalFilterOption[] = TOPOLOGICAL_FILTERS.map((f) => ({
+        filterType: "topological",
+        value: `topological/${f.id}`,
+        label: t(`filters.topological.${f.id}`),
+        topologicalFilterMethod: f.id,
+      }));
       setFilterOptions(topologicalFiltersOptions);
     } else {
       // Fields filters
       const allFields: FieldModel[] = filterApplicationType === "nodes" ? nodeFields : edgeFields;
-      const fieldFiltersOptions: FilterOption[] = allFields.flatMap((field) => {
-        const options = [];
+      const fieldFiltersOptions = allFields.flatMap((field) => {
+        const options: FieldFilterOption[] = [];
         if (field.quantitative)
           options.push({
+            filterType: "field",
             value: `range::${field.id}`,
             label: (
               <>
@@ -67,6 +74,7 @@ export const FilterCreator: FC = () => {
           });
         if (!!field.qualitative)
           options.push({
+            filterType: "field",
             value: `term::${field.id}`,
             label: (
               <>
@@ -80,6 +88,7 @@ export const FilterCreator: FC = () => {
       });
 
       const scriptFilterOption: FilterOption = {
+        filterType: "field",
         value: "script",
         label: t("filters.script") as string,
         type: "script",
@@ -137,11 +146,12 @@ export const FilterCreator: FC = () => {
                   switch (filterApplicationType) {
                     case "nodes":
                     case "edges": {
-                      if (selectedOption.type !== "script" && selectedOption.field)
+                      const selectedFieldOption = selectedOption as FieldFilterOption;
+                      if (selectedFieldOption.type !== "script" && selectedFieldOption.field)
                         setFilterCreation({
                           itemType: filterApplicationType as ItemType,
-                          type: selectedOption.type as "terms" | "range",
-                          field: selectedOption.field,
+                          type: selectedFieldOption.type as "terms" | "range",
+                          field: selectedFieldOption.field,
                         });
                       else setFilterCreation({ itemType: filterApplicationType, type: "script" });
                       break;
