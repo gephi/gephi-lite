@@ -1,10 +1,11 @@
 import { connectedCloseness } from "graphology-metrics/layout-quality";
-import { debounce } from "lodash";
+import { debounce, pick } from "lodash";
 
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { resetCamera } from "../sigma";
 import { atom } from "../utils/atoms";
+import { stringify } from "../utils/json";
 import { Producer, asyncAction, producerToAction } from "../utils/producers";
 import { LAYOUTS } from "./collection";
 import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
@@ -13,11 +14,20 @@ function getEmptyLayoutState(): LayoutState {
   return { quality: { enabled: false, showGrid: true }, type: "idle" };
 }
 
+function getLocalStorageLayoutState(): LayoutState {
+  const raw = localStorage.getItem("layout");
+  const state = raw ? JSON.parse(raw) : null;
+  return {
+    ...getEmptyLayoutState(),
+    ...state,
+  };
+}
+
 /**
  * Public API:
  * ***********
  */
-export const layoutStateAtom = atom<LayoutState>(getEmptyLayoutState());
+export const layoutStateAtom = atom<LayoutState>(getLocalStorageLayoutState());
 
 /**
  * Actions:
@@ -105,8 +115,8 @@ layoutStateAtom.bind((layoutState, prevState) => {
     ),
   );
 
+  // Compute the layout quality metric when node's position changed
   const { computeLayoutQualityMetric } = layoutActions;
-
   if (updatedQualityKeys.has("enabled")) {
     const fn = debounce(computeLayoutQualityMetric, 500, { leading: true, maxWait: 500 });
     if (layoutState.quality.enabled) {
@@ -118,4 +128,7 @@ layoutStateAtom.bind((layoutState, prevState) => {
       sigmaGraphAtom.get().off("nodeAttributesUpdated", fn);
     }
   }
+
+  // Save the quality in the localstorage
+  localStorage.setItem("layout", stringify(pick(layoutState, ["quality"])));
 });
