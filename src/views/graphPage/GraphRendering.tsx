@@ -9,11 +9,18 @@ import { FaRegDotCircle } from "react-icons/fa";
 import { Settings } from "sigma/settings";
 
 import GraphCaption from "../../components/GraphCaption";
-import { useAppearance, useSigmaAtom, useSigmaGraph, useSigmaState } from "../../core/context/dataContexts";
+import {
+  useAppearance,
+  useLayoutState,
+  useSigmaAtom,
+  useSigmaGraph,
+  useSigmaState,
+} from "../../core/context/dataContexts";
 import { resetCamera } from "../../core/sigma";
 import NodeProgramBorder from "../../utils/bordered-node-program";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { EventsController } from "./controllers/EventsController";
+import { GridController } from "./controllers/GridController";
 import { MarqueeController } from "./controllers/MarqueeController";
 import { SettingsController } from "./controllers/SettingsController";
 
@@ -98,6 +105,7 @@ const GraphCaptionLayer: FC = () => {
 export const GraphRendering: FC = () => {
   const { backgroundColor } = useAppearance();
   const sigmaGraph = useSigmaGraph();
+  const { quality } = useLayoutState();
   const { hoveredNode, hoveredEdge } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
   const setReady = useCallback(() => {
@@ -149,6 +157,9 @@ export const GraphRendering: FC = () => {
         <AppearanceController />
         <SettingsController setIsReady={setReady} />
         <div className="sigma-layers">
+          {quality.enabled && quality.showGrid && quality.metric?.deltaMax && (
+            <GridController size={quality.metric.deltaMax} opacity={1} />
+          )}
           <MarqueeController />
         </div>
       </SigmaContainer>
