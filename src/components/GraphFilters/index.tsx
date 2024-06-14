@@ -48,8 +48,8 @@ const FilterInStack: FC<{
         } else openFutureFilter(filterIndex);
       }}
     >
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center">
+      <div className="d-flex justify-content-between align-items-start">
+        <div className=" button-container">
           {/*  filter downstream ongoing edition => disabled */}
           {!active && <RiFilterOffLine title={t("filters.desactivated").toString()} className="icon" />}
           {active && filterIndex !== filters.past.length - 1 && (
@@ -91,7 +91,7 @@ const FilterInStack: FC<{
             </div>
           )}
         </div>
-        <div className="d-flex align-items-center">
+        <div className=" button-container">
           <button
             className="btn btn-icon"
             onClick={(e) => {
@@ -134,7 +134,9 @@ const GraphFilters: FC = () => {
           if (filters.past.length !== 0) closeAllPastFilters();
         }}
       >
-        <GraphIcon className="icon" />
+        <div className="button-container">
+          <GraphIcon className="icon" />
+        </div>
         <div>
           <div className="fs-5">{t("filters.full_graph")}</div>
           <div className="small text-muted">

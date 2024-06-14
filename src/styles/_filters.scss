@@ -7,8 +7,16 @@
   &.inactive {
     @extend .text-muted;
   }
-  .icon {
-    margin: 0 0.75rem;
+
+  .button-container {
+    // we center buttons vertically on two lines of fs-5 text (filter title)
+    height: calc(var(--bs-body-line-height) * #{$h5-font-size} * 2);
+    margin: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    .btn-icon {
+      padding: 0;
+    }
   }
 
   &::after {
