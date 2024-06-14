@@ -16,7 +16,7 @@ export const GridController: FC<{ size: number; opacity: number; color: string }
     const newSlowedSize = size * T + slowedSizeRef.current * (1 - T);
     const newSlowedOpacity = opacity * T + slowedOpacityRef.current * (1 - T);
 
-    if (Math.abs((newSlowedSize - size) / size) >= 0.05) {
+    if (Math.abs((newSlowedSize - size) / size) >= 0.01) {
       slowedSizeRef.current = newSlowedSize;
       slowedOpacityRef.current = newSlowedOpacity;
       return true;
@@ -68,7 +68,7 @@ export const GridController: FC<{ size: number; opacity: number; color: string }
 
     ctx.globalAlpha = finalOpacity;
     ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 0.5;
 
     for (let x = gridSize / 2; x <= stageSize; x += gridSize) {
       for (let r = -1; r <= 1; r += 2) {
