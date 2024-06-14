@@ -47,8 +47,11 @@ export const GridController: FC<{ size: number; opacity: number; color: string }
     const stageSize = Math.sqrt(width ** 2 + height ** 2) / 2;
     const gridSize = slowedSize / ratio;
 
+    const finalOpacity =
+      gridSize > MIN_GRID_SIZE ? slowedOpacity : (slowedOpacity * (gridSize - MIN_GRID_SIZE / 2)) / (MIN_GRID_SIZE / 2);
+
     ctx.clearRect(0, 0, width, height);
-    if (slowedOpacity <= 0 || gridSize < MIN_GRID_SIZE) return;
+    if (finalOpacity <= 0) return;
 
     ctx.save();
 
@@ -63,8 +66,9 @@ export const GridController: FC<{ size: number; opacity: number; color: string }
       gridSize * Math.round((height / 2 - center.y) / gridSize),
     );
 
-    ctx.globalAlpha = slowedOpacity;
+    ctx.globalAlpha = finalOpacity;
     ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
 
     for (let x = gridSize / 2; x <= stageSize; x += gridSize) {
       for (let r = -1; r <= 1; r += 2) {
