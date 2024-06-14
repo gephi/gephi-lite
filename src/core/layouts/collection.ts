@@ -1,7 +1,6 @@
 import Graph from "graphology";
 import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
-import { inferSettings } from "graphology-layout-forceatlas2";
-import { ForceAtlas2LayoutParameters } from "graphology-layout-forceatlas2";
+import { ForceAtlas2LayoutParameters, inferSettings } from "graphology-layout-forceatlas2";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
 import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 import circlepack from "graphology-layout/circlepack";
@@ -55,7 +54,8 @@ export const LAYOUTS: Array<Layout> = [
         id: "center",
         type: "number",
         description: true,
-        defaultValue: 0.5,
+        defaultValue: 0,
+        step: 1,
       },
       {
         id: "scale",
@@ -82,6 +82,7 @@ export const LAYOUTS: Array<Layout> = [
         type: "number",
         description: true,
         defaultValue: 0.5,
+        step: 0.1,
       },
       {
         id: "scale",
@@ -132,13 +133,15 @@ export const LAYOUTS: Array<Layout> = [
         id: "edgeWeightInfluence",
         type: "number",
         description: true,
-        defaultValue: 1,
+        defaultValue: 1.0,
+        min: 0,
+        step: 0.1,
       },
       { id: "gravity", type: "number", description: true, defaultValue: 1.0, min: 0, step: 0.01, required: true },
       { id: "linLogMode", type: "boolean", description: true, defaultValue: false },
       { id: "outboundAttractionDistribution", type: "boolean", defaultValue: false },
-      { id: "scalingRatio", type: "number", defaultValue: 1, required: true },
-      { id: "slowDown", type: "number", defaultValue: 1 },
+      { id: "scalingRatio", type: "number", defaultValue: 1, min: 0, step: 1, required: true },
+      { id: "slowDown", type: "number", defaultValue: 10, min: 1, step: 1 },
       { id: "strongGravityMode", type: "boolean", defaultValue: false },
     ],
   } as WorkerLayout<ForceAtlas2LayoutParameters>,
@@ -147,10 +150,10 @@ export const LAYOUTS: Array<Layout> = [
     type: "worker",
     supervisor: ForceSupervisor,
     parameters: [
-      { id: "attraction", type: "number", description: true, defaultValue: 0.0005 },
-      { id: "repulsion", type: "number", description: true, defaultValue: 0.1 },
-      { id: "gravity", type: "number", description: true, defaultValue: 0.0001 },
-      { id: "inertia", type: "number", description: true, defaultValue: 0.6, min: 0, max: 1 },
+      { id: "attraction", type: "number", description: true, defaultValue: 0.0005, min: 0, step: 0.0001 },
+      { id: "repulsion", type: "number", description: true, defaultValue: 0.1, min: 0, step: 0.1 },
+      { id: "gravity", type: "number", description: true, defaultValue: 0.0001, min: 0, step: 0.0001 },
+      { id: "inertia", type: "number", description: true, defaultValue: 0.6, min: 0, max: 1, step: 0.1 },
       { id: "maxMove", type: "number", description: true, defaultValue: 200 },
     ],
   } as WorkerLayout<ForceLayoutSupervisorParameters>,
@@ -162,7 +165,7 @@ export const LAYOUTS: Array<Layout> = [
     parameters: [
       { id: "gridSize", type: "number", description: true, defaultValue: 20 },
       { id: "margin", type: "number", description: true, defaultValue: 5 },
-      { id: "expansion", type: "number", description: true, defaultValue: 1.1 },
+      { id: "expansion", type: "number", description: true, defaultValue: 1.1, step: 0.1 },
       { id: "ratio", type: "number", description: true, defaultValue: 1 },
       { id: "speed", type: "number", description: true, defaultValue: 3 },
     ],
