@@ -174,6 +174,7 @@ export const MetricForm: FC<{ metric: Metric<any, any>; onClose: () => void }> =
         e.preventDefault();
         submit();
       }}
+      noValidate
     >
       <div className="panel-block-grow">
         <h3 className="fs-5">{t(`statistics.${metric.itemType}.${metric.id}.title`)}</h3>

@@ -142,6 +142,7 @@ export const LayoutForm: FC<{
         e.preventDefault();
         submit();
       }}
+      noValidate
     >
       <div className="panel-block-grow">
         <h3 className="fs-5">{t(`layouts.${layout.id}.title`)}</h3>
