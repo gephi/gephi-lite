@@ -1,16 +1,10 @@
 import cx from "classnames";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsCheckSquare } from "react-icons/bs";
 import { CgRemoveR } from "react-icons/cg";
-import { FiEdit } from "react-icons/fi";
-import { RiFilterLine, RiFilterOffLine } from "react-icons/ri";
 
 import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
-import { filteredGraphsAtom } from "../../core/graph";
-import { useReadAtom } from "../../core/utils/atoms";
-import { GraphIcon } from "../common-icons";
 import { FilterCreator } from "./FilterCreator";
 import { RangeFilter } from "./RangeFilter";
 import { ScriptFilter } from "./ScriptFilter";
@@ -24,8 +18,6 @@ const FilterInStack: FC<{
   const filters = useFilters();
   const { openPastFilter, deleteFutureFilter, deletePastFilter, openFutureFilter } = useFiltersActions();
   const { t } = useTranslation();
-  const filteredGraphs = useReadAtom(filteredGraphsAtom);
-  const relatedGraph = filteredGraphs[filterIndex]?.graph;
 
   const editMode = !!active && filterIndex === filters.past.length - 1;
   // internalEditMode is an internal state which is used to mimic edit/confirm state for the last filter
@@ -48,52 +40,34 @@ const FilterInStack: FC<{
         } else openFutureFilter(filterIndex);
       }}
     >
-      <div className="d-flex justify-content-between align-items-start">
-        <div className=" button-container">
-          {/*  filter downstream ongoing edition => disabled */}
-          {!active && <RiFilterOffLine title={t("filters.desactivated").toString()} className="icon" />}
-          {active && filterIndex !== filters.past.length - 1 && (
-            <RiFilterLine title={t("filters.activated").toString()} className="icon" />
-          )}
-          {/* upstream filters => can be edited  only if no other edit ongoing*/}
-          {active && filterIndex === filters.past.length - 1 && (
-            <div
-              title={filterIndex === filters.past.length - 1 ? undefined : t("filters.no_concurrent_edit").toString()}
-            >
-              <button
-                className="btn btn-icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setInternalEditMode(!internalEditMode);
-                }}
-                title={t("common.edit").toString()}
-                disabled={filterIndex !== filters.past.length - 1}
-              >
-                {internalEditMode ? <BsCheckSquare /> : <FiEdit />}
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="flex-grow-1">
-          {filter.type === "range" && (
-            <RangeFilter filter={filter} editMode={editMode && internalEditMode} active={active} />
-          )}
-          {filter.type === "terms" && (
-            <TermsFilter filter={filter} editMode={editMode && internalEditMode} active={active} />
-          )}
-          {filter.type === "script" && (
-            <ScriptFilter filter={filter} editMode={editMode && internalEditMode} active={active} />
-          )}
-          {active && relatedGraph && (
-            <div className="small text-muted">
-              {relatedGraph.order} {t("graph.model.nodes", { count: relatedGraph.order })}, {relatedGraph.size}{" "}
-              {t("graph.model.edges", { count: relatedGraph.size })}
-            </div>
-          )}
-        </div>
-        <div className=" button-container">
+      <div className="d-flex  flex-column justify-content-between align-items-start">
+        {filter.type === "range" && (
+          <RangeFilter
+            filter={filter}
+            filterIndex={filterIndex}
+            editMode={editMode && internalEditMode}
+            active={active}
+          />
+        )}
+        {filter.type === "terms" && (
+          <TermsFilter
+            filter={filter}
+            filterIndex={filterIndex}
+            editMode={editMode && internalEditMode}
+            active={active}
+          />
+        )}
+        {filter.type === "script" && (
+          <ScriptFilter
+            filter={filter}
+            filterIndex={filterIndex}
+            editMode={editMode && internalEditMode}
+            active={active}
+          />
+        )}
+        <div className="w-100 d-flex justify-content-center align-items-center">
           <button
-            className="btn btn-icon"
+            className="btn btn-outline-dark border-0"
             onClick={(e) => {
               e.stopPropagation();
               if (active) deletePastFilter(filterIndex);
@@ -101,7 +75,7 @@ const FilterInStack: FC<{
             }}
             title={t("common.remove").toString()}
           >
-            <CgRemoveR />
+            <CgRemoveR /> {t("common.remove").toString()}
           </button>
         </div>
       </div>
@@ -129,14 +103,15 @@ const GraphFilters: FC = () => {
   return (
     <div className="panel-block-grow">
       <div
-        className={cx("filter-item d-flex align-items-center", filters.past.length !== 0 && "cursor-pointer")}
+        className={cx(
+          "filter-item d-flex align-items-center",
+          filters.past.length !== 0 && "cursor-pointer",
+          filters.past.length === 0 && "edited",
+        )}
         onClick={() => {
           if (filters.past.length !== 0) closeAllPastFilters();
         }}
       >
-        <div className="button-container">
-          <GraphIcon className="icon" />
-        </div>
         <div>
           <div className="fs-5">{t("filters.full_graph")}</div>
           <div className="small text-muted">

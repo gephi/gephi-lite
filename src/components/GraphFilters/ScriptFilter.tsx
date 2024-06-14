@@ -12,6 +12,7 @@ import { useModal } from "../../core/modals";
 import { useReadAtom } from "../../core/utils/atoms";
 import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
 import { CodeEditorIcon } from "../common-icons";
+import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 // eslint-disable-next-line no-new-func
 const nodeFilterCustomFn = new Function(`return ( 
@@ -38,9 +39,10 @@ const SCRIPT_JS_DOC = `/**
 
 export const ScriptFilter: FC<{
   filter: ScriptFilterType;
+  filterIndex: number;
   active?: boolean;
   editMode?: boolean;
-}> = ({ filter, editMode }) => {
+}> = ({ filter, editMode, active, filterIndex }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { replaceCurrentFilter } = useFiltersActions();
@@ -51,6 +53,7 @@ export const ScriptFilter: FC<{
       <div className="fs-5">
         {t("filters.script")} ({t(`graph.model.${filter.itemType}`)})
       </div>
+      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
       <div className="position-relative">
         {filter.script && (
           <>
@@ -60,6 +63,7 @@ export const ScriptFilter: FC<{
             <div className="filler-fade-out position-absolute bottom-0"></div>
           </>
         )}
+
         {editMode && (
           <div className={cx(filter.script && "bottom-0 position-absolute w-100")}>
             <button

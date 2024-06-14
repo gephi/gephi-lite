@@ -9,6 +9,7 @@ import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { useReadAtom } from "../../core/utils/atoms";
+import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { findRanges, shortenNumber } from "./utils";
 
 interface RangeValue {
@@ -205,7 +206,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
           }}
         />
-        <label className="from-check-label" htmlFor="keepMissingValues">
+        <label className="from-check-label small" htmlFor="keepMissingValues">
           {t("filters.keepMissingValues")}
         </label>
       </div>
@@ -215,25 +216,26 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
 
 export const RangeFilter: FC<{
   filter: RangeFilterType;
+  filterIndex: number;
   active?: boolean;
   editMode?: boolean;
-}> = ({ filter, editMode }) => {
+}> = ({ filter, editMode, filterIndex, active }) => {
   const { t } = useTranslation();
 
   return (
-    <div>
+    <>
       <div className="fs-5">
         {filter.field} ({t(`graph.model.${filter.itemType}`)})
       </div>
-      {editMode ? (
-        <RangeFilterEditor filter={filter} />
-      ) : (
-        <div>
-          <span className="fs-5">
+      {!editMode && (
+        <div className="flex-grow-1">
+          <span className="fs-6">
             {filter.min ? `${filter.min}` : "∞"} - {filter.max ? `${filter.max}` : "∞"}
           </span>{" "}
         </div>
       )}
-    </div>
+      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
+      {editMode && <RangeFilterEditor filter={filter} />}
+    </>
   );
 };

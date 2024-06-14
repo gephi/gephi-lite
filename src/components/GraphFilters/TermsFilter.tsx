@@ -9,6 +9,7 @@ import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { useReadAtom } from "../../core/utils/atoms";
 import { toString } from "../../core/utils/casting";
 import { DEFAULT_SELECT_PROPS } from "../consts";
+import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   const parentGraph = useReadAtom(parentFilteredGraphAtom);
@@ -29,7 +30,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   }, [filter, parentGraph]);
 
   return (
-    <>
+    <div className="my-3 w-100">
       <Select
         {...DEFAULT_SELECT_PROPS}
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
@@ -53,36 +54,38 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
             replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
           }}
         />
-        <label className="from-check-label" htmlFor="keepMissingValues">
+        <label className="from-check-label small" htmlFor="keepMissingValues">
           {t("filters.keepMissingValues")}
         </label>
       </div>
-    </>
+    </div>
   );
 };
 
 export const TermsFilter: FC<{
   filter: TermsFilterType;
+  filterIndex: number;
   active?: boolean;
   editMode?: boolean;
-}> = ({ filter, editMode }) => {
+}> = ({ filter, editMode, filterIndex, active }) => {
   const { t, i18n } = useTranslation();
 
   //TODO: adapt language
   const listFormatter = new Intl.ListFormat(i18n.language, { style: "long", type: "conjunction" });
 
   return (
-    <div>
+    <>
       <div className="fs-5">
         {filter.field} ({t(`graph.model.${filter.itemType}`)})
       </div>
-      {editMode ? (
-        <TermsFilterEditor filter={filter} />
-      ) : (
+
+      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
+      {!editMode && (
         <div>
           <span className="fs-5">{filter.terms ? listFormatter.format(filter.terms) : t("common.all")}</span>
         </div>
       )}
-    </div>
+      {editMode && <TermsFilterEditor filter={filter} />}
+    </>
   );
 };

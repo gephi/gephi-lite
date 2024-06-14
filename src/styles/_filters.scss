@@ -2,7 +2,7 @@
   position: relative;
 
   @extend .mt-2;
-  @extend .px-1;
+  @extend .px-2;
   @extend .py-2;
   &.inactive {
     @extend .text-muted;
