@@ -119,10 +119,8 @@
       "spline": "spline"
     },
     "graph": {
-      "background": {
-        "title": "Background",
-        "color": "Color"
-      }
+      "background_color": "Background color",
+      "layout_grid_color": "Layout evaluation grid color"
     },
     "color": {
       "title": "Color",
@@ -671,8 +669,8 @@
     "quality": {
       "title": "Layout quality",
       "description": "Calculate and show the layout quality metric",
-      "enable": "enable",
-      "showGrid": "show grid"
+      "enable": "Enable",
+      "showGrid": "Show grid"
     }
   },
   "file": {

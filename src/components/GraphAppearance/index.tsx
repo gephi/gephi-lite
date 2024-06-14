@@ -51,20 +51,28 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
 
 export const GraphGraphAppearance: FC<unknown> = () => {
   const { t } = useTranslation();
-  const { backgroundColor } = useAppearance();
-  const { setBackgroundColorAppearance } = useAppearanceActions();
+  const { backgroundColor, layoutGridColor } = useAppearance();
+  const { setBackgroundColorAppearance, setLayoutGridColorAppearance } = useAppearanceActions();
 
   return (
     <div className="panel-block">
-      <h3 className="fs-5">{t("appearance.graph.background.title")}</h3>
-
       <div className="d-flex align-items-center">
-        <label className="me-3">{t("appearance.graph.background.color")}</label>
+        <label className="me-3 flex-grow-1">{t("appearance.graph.background_color")}</label>
         <ColorPicker
-          className="w-100 h-100"
+          className="w-auto h-100"
           color={backgroundColor}
           clearable
           onChange={(v) => setBackgroundColorAppearance(v)}
+        />
+      </div>
+
+      <div className="d-flex align-items-center">
+        <label className="me-3 flex-grow-1">{t("appearance.graph.layout_grid_color")}</label>
+        <ColorPicker
+          className="w-auto h-100"
+          color={layoutGridColor}
+          clearable
+          onChange={(v) => setLayoutGridColorAppearance(v)}
         />
       </div>
     </div>

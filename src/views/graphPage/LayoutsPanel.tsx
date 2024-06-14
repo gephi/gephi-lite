@@ -354,7 +354,7 @@ export const LayoutsPanel: FC = () => {
         />
       </div>
 
-      {option?.layout && (
+      {option?.layout ? (
         <>
           <hr className="m-0" />
           <LayoutForm
@@ -373,6 +373,8 @@ export const LayoutsPanel: FC = () => {
             }}
           />
         </>
+      ) : (
+        <div className="flex-grow-1" />
       )}
       <hr className="m-0" />
       <LayoutQualityForm />

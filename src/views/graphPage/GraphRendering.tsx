@@ -103,7 +103,7 @@ const GraphCaptionLayer: FC = () => {
 };
 
 export const GraphRendering: FC = () => {
-  const { backgroundColor } = useAppearance();
+  const { backgroundColor, layoutGridColor } = useAppearance();
   const sigmaGraph = useSigmaGraph();
   const { quality } = useLayoutState();
   const { hoveredNode, hoveredEdge } = useSigmaState();
@@ -158,7 +158,11 @@ export const GraphRendering: FC = () => {
         <SettingsController setIsReady={setReady} />
         <div className="sigma-layers">
           {quality.enabled && quality.showGrid && quality.metric?.deltaMax && (
-            <GridController size={quality.metric.deltaMax} opacity={1} />
+            <GridController
+              size={quality.metric.deltaMax}
+              opacity={quality.metric?.cMax || 0}
+              color={layoutGridColor}
+            />
           )}
           <MarqueeController />
         </div>

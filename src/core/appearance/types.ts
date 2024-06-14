@@ -85,6 +85,7 @@ export interface AppearanceState {
   nodesSize: Size;
   edgesSize: Size;
   backgroundColor: string;
+  layoutGridColor: string;
   nodesColor: Color;
   edgesColor: EdgeColor;
   nodesLabel: StringAttr;

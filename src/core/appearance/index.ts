@@ -2,7 +2,12 @@ import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
 import { AppearanceState, BooleanAppearance, Color, LabelSize, Size, StringAttr } from "./types";
-import { DEFAULT_BACKGROUND_COLOR, getEmptyAppearanceState, serializeAppearanceState } from "./utils";
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_LAYOUT_GRID_COLOR,
+  getEmptyAppearanceState,
+  serializeAppearanceState,
+} from "./utils";
 
 const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();
@@ -18,6 +23,9 @@ const setSizeAppearance: Producer<AppearanceState, [ItemType, Size]> = (itemType
 
 const setBackgroundColorAppearance: Producer<AppearanceState, [string | undefined]> = (color) => {
   return (state) => ({ ...state, backgroundColor: color || DEFAULT_BACKGROUND_COLOR });
+};
+const setLayoutGridColorAppearance: Producer<AppearanceState, [string | undefined]> = (color) => {
+  return (state) => ({ ...state, layoutGridColor: color || DEFAULT_LAYOUT_GRID_COLOR });
 };
 const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemType, color) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
@@ -47,6 +55,7 @@ export const appearanceActions = {
   setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
   setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
+  setLayoutGridColorAppearance: producerToAction(setLayoutGridColorAppearance, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
   setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),

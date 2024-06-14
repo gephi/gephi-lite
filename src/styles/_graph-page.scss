@@ -23,6 +23,12 @@
     top: 0;
     margin-left: -50vw;
   }
+  .react-sigma {
+    z-index: -1;
+  }
+  .graph-layout-grid {
+    z-index: -1;
+  }
 
   .toolbar,
   .filler,

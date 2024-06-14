@@ -118,7 +118,7 @@ layoutStateAtom.bind((layoutState, prevState) => {
   // Compute the layout quality metric when node's position changed
   const { computeLayoutQualityMetric } = layoutActions;
   if (updatedQualityKeys.has("enabled")) {
-    const fn = debounce(computeLayoutQualityMetric, 500, { leading: true, maxWait: 500 });
+    const fn = debounce(computeLayoutQualityMetric, 300, { leading: true, maxWait: 300 });
     if (layoutState.quality.enabled) {
       computeLayoutQualityMetric();
       sigmaGraphAtom.get().on("nodeAttributesUpdated", fn);

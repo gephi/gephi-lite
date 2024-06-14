@@ -32,6 +32,7 @@ export const DEFAULT_EDGE_SIZE = 6;
 export const DEFAULT_NODE_LABEL_SIZE = 14;
 export const DEFAULT_EDGE_LABEL_SIZE = 14;
 export const DEFAULT_BACKGROUND_COLOR = "#FFFFFF00";
+export const DEFAULT_LAYOUT_GRID_COLOR = "#666666";
 
 export function getEmptyAppearanceState(): AppearanceState {
   return {
@@ -48,6 +49,7 @@ export function getEmptyAppearanceState(): AppearanceState {
       type: "data",
     },
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
+    layoutGridColor: DEFAULT_LAYOUT_GRID_COLOR,
     nodesColor: {
       itemType: "nodes",
       type: "data",
