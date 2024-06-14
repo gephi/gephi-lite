@@ -1,6 +1,6 @@
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { forEach, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
+import { forEach, isNil, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
 import { toNumber, toScalar } from "../utils/casting";
@@ -328,11 +328,12 @@ export function countExistingValues(
     let nbCastIssues = 0;
     let nbMissingValues = 0;
     items.forEach((item) => {
-      if (item[fm.id] !== undefined) {
+      if (!isNil(item[fm.id])) {
         // attribute exists
         nbItems += 1;
         // is format correct?
-        if (fm.quantitative && typeof item[fm.id] !== "number") nbCastIssues += 1;
+        const value = item[fm.id];
+        if (fm.quantitative && typeof item[fm.id] !== "number" && !isNil(value) && isNaN(+value)) nbCastIssues += 1;
       } else nbMissingValues += 1;
     });
     return {

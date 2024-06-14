@@ -297,7 +297,7 @@
       },
       "warnings": {
         "missing": "{{nbValues}} missing values",
-        "wrong": "{{nbValues}} wrong values",
+        "wrong": "{{nbValues}} values are not quantitative",
         "allMissing": "No values in the graph"
       }
     },
