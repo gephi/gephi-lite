@@ -1,3 +1,4 @@
+import { isNaN } from "lodash";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +9,7 @@ export const LayoutQualityCaption: FC = () => {
   const { t } = useTranslation();
   const { quality } = useLayoutState();
   const { locale } = usePreferences();
+  const error = quality.metric?.cMax === undefined || isNaN(quality.metric?.cMax);
 
   if (!quality.enabled) return null;
 
@@ -21,10 +23,12 @@ export const LayoutQualityCaption: FC = () => {
         </div>
       </div>
       <div className="caption text-center">
-        {quality.metric?.ePercentOfDeltaMax
-          ? Math.round(quality.metric.ePercentOfDeltaMax * 100).toLocaleString(locale, { compactDisplay: "short" }) +
-            "%"
-          : "N/A"}{" "}
+        {error
+          ? "ERROR"
+          : quality.metric?.ePercentOfDeltaMax
+            ? Math.round(quality.metric.ePercentOfDeltaMax * 100).toLocaleString(locale, { compactDisplay: "short" }) +
+              "%"
+            : "N/A"}{" "}
       </div>
     </div>
   );

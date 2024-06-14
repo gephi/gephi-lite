@@ -1,4 +1,6 @@
 import { useSigma } from "@react-sigma/core";
+import { nodeExtent } from "graphology-metrics/graph";
+import { mean } from "lodash";
 import { FC, useCallback, useEffect, useRef } from "react";
 import { getPixelRatio } from "sigma/utils";
 
@@ -41,11 +43,12 @@ export const GridController: FC<{ size: number; opacity: number; color: string }
     const ctx = canvas?.getContext("2d");
     if (!ctx) return;
 
-    const { angle, ratio } = sigma.getCamera().getState();
-    const center = sigma.framedGraphToViewport({ x: 0.5, y: 0.5 });
+    const { angle } = sigma.getCamera().getState();
+    const { x, y } = nodeExtent(sigma.getGraph(), ["x", "y"]);
+    const center = sigma.graphToViewport({ x: mean(x), y: mean(y) });
     const { width, height } = sigma.getDimensions();
     const stageSize = Math.sqrt(width ** 2 + height ** 2) / 2;
-    const gridSize = slowedSize / ratio;
+    const gridSize = slowedSize * sigma.getGraphToViewportRatio();
 
     const finalOpacity =
       gridSize > MIN_GRID_SIZE ? slowedOpacity : (slowedOpacity * (gridSize - MIN_GRID_SIZE / 2)) / (MIN_GRID_SIZE / 2);
