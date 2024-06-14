@@ -1,11 +1,10 @@
 import { connectedCloseness } from "graphology-metrics/layout-quality";
-import { debounce, pick } from "lodash";
+import { debounce, identity, pick } from "lodash";
 
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { resetCamera } from "../sigma";
-import { atom } from "../utils/atoms";
-import { stringify } from "../utils/json";
+import { atom, derivedAtom } from "../utils/atoms";
 import { Producer, asyncAction, producerToAction } from "../utils/producers";
 import { LAYOUTS } from "./collection";
 import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
@@ -96,9 +95,12 @@ export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
 
 export const computeLayoutQualityMetric: Producer<LayoutState, []> = () => {
   const sigmaGraph = sigmaGraphAtom.get();
-  const metric = connectedCloseness(sigmaGraph);
-
-  return (state) => ({ ...state, quality: { ...state.quality, metric } });
+  try {
+    const metric = connectedCloseness(sigmaGraph);
+    return (state) => ({ ...state, quality: { ...state.quality, metric } });
+  } catch (_e: unknown) {
+    return identity;
+  }
 };
 
 export const layoutActions = {
@@ -108,27 +110,24 @@ export const layoutActions = {
   computeLayoutQualityMetric: producerToAction(computeLayoutQualityMetric, layoutStateAtom),
 };
 
-layoutStateAtom.bind((layoutState, prevState) => {
-  const updatedQualityKeys = new Set(
-    (Object.keys(layoutState.quality) as (keyof LayoutState["quality"])[]).filter(
-      (key) => layoutState.quality[key] !== prevState.quality[key],
-    ),
-  );
+const gridEnabledAtom = derivedAtom(layoutStateAtom, (value) => pick(value.quality, "enabled"), {
+  checkOutput: true,
+});
+gridEnabledAtom.bindEffect((enabled) => {
+  console.log("HEY", enabled);
+  if (!enabled) return;
 
   // Compute the layout quality metric when node's position changed
   const { computeLayoutQualityMetric } = layoutActions;
-  if (updatedQualityKeys.has("enabled")) {
-    const fn = debounce(computeLayoutQualityMetric, 300, { leading: true, maxWait: 300 });
-    if (layoutState.quality.enabled) {
-      computeLayoutQualityMetric();
-      sigmaGraphAtom.get().on("nodeAttributesUpdated", fn);
-      sigmaGraphAtom.get().on("eachNodeAttributesUpdated", fn);
-    } else {
-      sigmaGraphAtom.get().off("eachNodeAttributesUpdated", fn);
-      sigmaGraphAtom.get().off("nodeAttributesUpdated", fn);
-    }
-  }
+  const fn = debounce(computeLayoutQualityMetric, 300, { leading: true, maxWait: 300 });
 
-  // Save the quality in the localstorage
-  localStorage.setItem("layout", stringify(pick(layoutState, ["quality"])));
+  computeLayoutQualityMetric();
+  const sigmaGraph = sigmaGraphAtom.get();
+  sigmaGraph.on("nodeAttributesUpdated", fn);
+  sigmaGraph.on("eachNodeAttributesUpdated", fn);
+
+  return () => {
+    sigmaGraph.off("eachNodeAttributesUpdated", fn);
+    sigmaGraph.off("nodeAttributesUpdated", fn);
+  };
 });

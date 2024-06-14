@@ -6,8 +6,12 @@ import { useEffect, useState } from "react";
  * Useful types:
  * *************
  */
+export type CleanupFunction = () => void;
 export interface AtomHandler<T> {
   (value: T, previousValue: T): void;
+}
+export interface AtomEffect<T> {
+  (value: T): CleanupFunction | undefined;
 }
 export interface AtomReducer<T> {
   (value: T): T;
@@ -20,6 +24,7 @@ export interface ReadableAtom<T> {
   get: () => T;
   bind: (handler: AtomHandler<T>) => void;
   unbind: (handler: AtomHandler<T>) => void;
+  bindEffect: (effect: AtomEffect<T>) => void;
 }
 export interface WritableAtom<T> extends ReadableAtom<T> {
   set: AtomSetter<T>;
@@ -32,7 +37,7 @@ export function atom<T>(initialValue: T): WritableAtom<T> {
   let value: T = initialValue;
   let handlers: AtomHandler<T>[] = [];
 
-  return {
+  const res = {
     get() {
       return value;
     },
@@ -51,7 +56,24 @@ export function atom<T>(initialValue: T): WritableAtom<T> {
     unbind(handler: AtomHandler<T>) {
       handlers = handlers.filter((h) => h !== handler);
     },
+    bindEffect(effect: AtomEffect<T>) {
+      let cleanup: CleanupFunction | undefined = undefined;
+      const handler: AtomHandler<T> = (value) => {
+        if (cleanup) cleanup();
+        cleanup = effect(value);
+      };
+      handlers.push(handler);
+
+      // Execute handler:
+      handler(value, value);
+
+      return () => {
+        res.unbind(handler);
+      };
+    },
   };
+
+  return res;
 }
 
 /**
@@ -116,7 +138,7 @@ export function derivedAtom<D>(
 
   atomsArray.map((atom) => atom.bind(extract));
 
-  return {
+  const res = {
     get() {
       return value;
     },
@@ -126,7 +148,24 @@ export function derivedAtom<D>(
     unbind(handler: AtomHandler<D>) {
       handlers = handlers.filter((h) => h !== handler);
     },
+    bindEffect(effect: AtomEffect<D>) {
+      let cleanup: CleanupFunction | undefined = undefined;
+      const handler: AtomHandler<D> = (value) => {
+        if (cleanup) cleanup();
+        cleanup = effect(value);
+      };
+      handlers.push(handler);
+
+      // Execute handler:
+      handler(value, value);
+
+      return () => {
+        res.unbind(handler);
+      };
+    },
   };
+
+  return res;
 }
 
 /**
