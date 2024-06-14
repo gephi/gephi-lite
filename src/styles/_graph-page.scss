@@ -10,6 +10,9 @@
   height: 100%;
   overflow: hidden;
 
+  // default background color which can be customized by user
+  background-color: var(--bs-body-bg);
+
   .stage {
     position: absolute;
     inset: 0;
