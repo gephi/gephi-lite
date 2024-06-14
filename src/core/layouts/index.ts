@@ -1,5 +1,6 @@
 import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
+import seedrandom from "seedrandom";
 
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
@@ -96,7 +97,9 @@ export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
 export const computeLayoutQualityMetric: Producer<LayoutState, []> = () => {
   const sigmaGraph = sigmaGraphAtom.get();
   try {
-    const metric = connectedCloseness(sigmaGraph);
+    const metric = connectedCloseness(sigmaGraph, {
+      rng: seedrandom("gephi-lite"),
+    });
     return (state) => ({ ...state, quality: { ...state.quality, metric } });
   } catch (_e: unknown) {
     return identity;
