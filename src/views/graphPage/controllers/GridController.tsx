@@ -46,7 +46,14 @@ export const GridController: FC<{ size: number; opacity: number; color: string }
     const { angle } = sigma.getCamera().getState();
     const { x, y } = nodeExtent(sigma.getGraph(), ["x", "y"]);
     const center = sigma.graphToViewport({ x: mean(x), y: mean(y) });
-    const { width, height } = sigma.getDimensions();
+    let { width, height } = sigma.getDimensions();
+    const pixelRatio = getPixelRatio();
+
+    width *= pixelRatio;
+    height *= pixelRatio;
+    center.x *= pixelRatio;
+    center.y *= pixelRatio;
+
     const stageSize = Math.sqrt(width ** 2 + height ** 2) / 2;
     const gridSize = slowedSize * sigma.getGraphToViewportRatio();
 
