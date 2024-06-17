@@ -3,10 +3,10 @@ import checker from "vite-plugin-checker";
 import { defineConfig } from "vitest/config";
 
 // export BASE_PATH to reuse it in e2e test
-export const BASE_PATH = "/gephi-lite";
+export const BASE_URL = process.env.BASE_URL || "/gephi-lite/";
 
 export default defineConfig({
-  base: BASE_PATH,
+  base: BASE_URL,
   plugins: [
     react(),
     checker({

@@ -44,11 +44,7 @@ type Button = { type: "button"; label: string; icon: ComponentType<{ className?:
 const GephiLiteButton: FC = () => {
   const { t } = useTranslation();
   return (
-    <img
-      src={`${import.meta.env.BASE_URL}/gephi-logo.svg`}
-      style={{ width: "2em" }}
-      alt={t("welcome.logo") as string}
-    />
+    <img src={`${import.meta.env.BASE_URL}gephi-logo.svg`} style={{ width: "2em" }} alt={t("welcome.logo") as string} />
   );
 };
 

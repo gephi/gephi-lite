@@ -8,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: false
-      PUBLIC_URL: "/gephi-lite"
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
     steps:
       - name: Checkout
