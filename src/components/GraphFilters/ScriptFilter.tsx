@@ -49,7 +49,7 @@ export const ScriptFilter: FC<{
   const parentGraph = useReadAtom(parentFilteredGraphAtom);
 
   return (
-    <div>
+    <div className="w-100">
       <div className="fs-5">
         {t("filters.script")} ({t(`graph.model.${filter.itemType}`)})
       </div>

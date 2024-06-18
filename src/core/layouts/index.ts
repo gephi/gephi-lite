@@ -117,7 +117,6 @@ const gridEnabledAtom = derivedAtom(layoutStateAtom, (value) => pick(value.quali
   checkOutput: true,
 });
 gridEnabledAtom.bindEffect((enabled) => {
-  console.log("HEY", enabled);
   if (!enabled) return;
 
   // Compute the layout quality metric when node's position changed
