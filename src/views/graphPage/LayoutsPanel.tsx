@@ -19,6 +19,7 @@ import { getFilteredDataGraph } from "../../core/graph/utils";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
 import { useModal } from "../../core/modals";
+import { useNotifications } from "../../core/notifications";
 import { sessionAtom } from "../../core/session";
 import { useAtom } from "../../core/utils/atoms";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
@@ -48,7 +49,6 @@ export const LayoutForm: FC<{
     () => session.layoutsParameters[layout.id] || {},
     [layout.id, session.layoutsParameters],
   );
-
   // default layout parameters
   const layoutDefaultParameters = useMemo(
     () =>
@@ -102,7 +102,7 @@ export const LayoutForm: FC<{
    * Reset parameters for the current layout
    */
   const setParameters = useCallback(
-    (newParameters?: { [layout: string]: Record<string, unknown> }) => {
+    (newParameters?: Record<string, unknown>) => {
       setSession((prev) => ({
         ...prev,
         layoutsParameters: {
@@ -130,7 +130,7 @@ export const LayoutForm: FC<{
         if (layout.type === "sync")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) as string }) as string);
       } catch (e) {
-        // nothing todo
+        console.error(e);
       }
     }
   }, [isRunning, layout.id, layout.type, layoutParameters, onStart, onStop, setSuccessMessage, t]);
@@ -149,6 +149,7 @@ export const LayoutForm: FC<{
         {layout.description && <p className="text-muted small">{t(`layouts.${layout.id}.description`)}</p>}
 
         {layout.parameters.map((param) => {
+          const value = layoutParameters[param.id];
           const id = `layouts-${layout.id}-params-${param.id})}`;
           return (
             <div className="my-1" key={id}>
@@ -161,7 +162,7 @@ export const LayoutForm: FC<{
                       ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
                       : undefined
                   }
-                  value={layoutParameters[param.id] as number}
+                  value={value as number}
                   disabled={isRunning}
                   onChange={(v) => onChangeParameters(param.id, v)}
                   required={param.required || false}
@@ -179,7 +180,7 @@ export const LayoutForm: FC<{
                       ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
                       : undefined
                   }
-                  value={!!layoutParameters[param.id] as boolean}
+                  value={!!value as boolean}
                   disabled={isRunning}
                   onChange={(v) => onChangeParameters(param.id, v)}
                   required={param.required || false}
@@ -196,7 +197,7 @@ export const LayoutForm: FC<{
                       : undefined
                   }
                   placeholder={t("common.none") as string}
-                  value={layoutParameters[param.id] as string}
+                  value={value as string}
                   disabled={isRunning}
                   onChange={(v) => onChangeParameters(param.id, v)}
                   options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
@@ -210,17 +211,17 @@ export const LayoutForm: FC<{
               {param.type === "script" && (
                 <div className="position-relative">
                   <>
-                    {layoutParameters[param.id] && (
+                    {value && (
                       <>
                         <div className="code-thumb mt-1" style={{ height: "auto", maxHeight: "auto" }}>
                           <Highlight className="javascript">
-                            {(layoutParameters[param.id] as LayoutScriptParameter["defaultValue"]).toString()}
+                            {(value as LayoutScriptParameter["defaultValue"]).toString()}
                           </Highlight>
                         </div>
                         <div className="filler-fade-out position-absolute bottom-0"></div>
                       </>
                     )}
-                    <div className={cx(layoutParameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
+                    <div className={cx(value ? "bottom-0 position-absolute w-100" : "")}>
                       <button
                         type="button"
                         className="btn btn-dark mx-auto d-block m-3"
@@ -232,7 +233,7 @@ export const LayoutForm: FC<{
                               withSaveAndRun: true,
                               functionJsDoc: param.functionJsDoc,
                               defaultFunction: param.defaultValue,
-                              value: layoutParameters[param.id] as LayoutScriptParameter["defaultValue"],
+                              value: value as LayoutScriptParameter["defaultValue"],
                               checkFunction: param.functionCheck,
                             },
                             beforeSubmit: ({ run, script }) => {
@@ -318,6 +319,7 @@ export const LayoutForm: FC<{
 
 export const LayoutsPanel: FC = () => {
   const { t } = useTranslation();
+  const { notify } = useNotifications();
   const { startLayout, stopLayout } = useLayoutActions();
   const { type } = useLayoutState();
 
@@ -361,8 +363,12 @@ export const LayoutsPanel: FC = () => {
           <LayoutForm
             key={option.layout.id}
             layout={option.layout}
-            onStart={(params) => {
-              startLayout(option.layout.id, params);
+            onStart={async (params) => {
+              try {
+                await startLayout(option.layout.id, params);
+              } catch (e) {
+                notify({ type: "error", message: (e as Error).message });
+              }
             }}
             onStop={() => {
               stopLayout();

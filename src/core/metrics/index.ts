@@ -3,7 +3,8 @@ import { dataGraphToFullGraph, inferFieldType } from "../graph/utils";
 import { Metric, MetricReport } from "./types";
 
 /**
- * computeMetric: compute a metric a mutate the graphdataset state directly for better performance
+ * Compute a metric and mutate the graphdataset state directly for better performance.
+ *
  * @param metric metric object to apply
  * @param params metric params from metric form
  * @param attributeNames attribute⋅s where the result will be stored
