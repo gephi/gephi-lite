@@ -1,6 +1,6 @@
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { forEach, isNil, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
+import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
 import { toNumber, toScalar } from "../utils/casting";
@@ -345,4 +345,16 @@ export function countExistingValues(
       },
     };
   });
+}
+/**
+ * This functions returns all uniq values in one item field
+ */
+export function uniqFieldvaluesAsStrings(items: Record<string, ItemData>, field: string) {
+  return uniq(
+    flatMap(items, (itemData) => {
+      const v = itemData[field];
+      if (typeof v === "number" || (typeof v === "string" && !!v)) return [v + ""];
+      return [];
+    }),
+  ) as string[];
 }

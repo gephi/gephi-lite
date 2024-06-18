@@ -1,7 +1,8 @@
 import { Attributes } from "graphology-types";
-import { isNil, isString, last, mapValues, omit, omitBy } from "lodash";
+import { isNil, isString, keys, last, mapValues, omit, omitBy, values } from "lodash";
 import { Coordinates } from "sigma/types";
 
+import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters, getEmptyAppearanceState } from "../appearance/utils";
 import { filtersAtom } from "../filters";
@@ -22,6 +23,7 @@ import {
   getEmptyGraphDataset,
   newItemModel,
   serializeDataset,
+  uniqFieldvaluesAsStrings,
 } from "./utils";
 
 /**
@@ -254,6 +256,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
     const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
     const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
+
     // filters
     const filtersState = filtersAtom.get();
     const filterFilters = (f: FilterType) =>
@@ -281,10 +284,42 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
           // let's reset it
           return true;
         }
+
         // this appearance is not based on a field or on a field existing in the model
         return false;
       }),
     };
+
+    // to keep appearance state in sync we must check at least partitions
+    values(newState).forEach((appearanceElement) => {
+      if (isString(appearanceElement) || !("type" in appearanceElement)) return appearanceElement;
+      // TODO
+      // - check if data field quali/quanti is still the good one
+
+      // utils variables
+      const itemsData = graphDataset[appearanceElement.itemType === "nodes" ? "nodeData" : "edgeData"];
+      let values: string[] = [];
+
+      switch (appearanceElement.type) {
+        // - if partitions palette are still in sync with the field values
+        case "partition":
+          // check if deprecated appearance state
+          values = uniqFieldvaluesAsStrings(itemsData, appearanceElement.field);
+
+          // checking with the actual palette miss some values. It's ok if it has more available.
+          if (
+            keys(appearanceElement.colorPalette).length < values.length ||
+            values.some((v) => appearanceElement.colorPalette[v] === undefined)
+          ) {
+            // new palette
+            // TODO: merge existing palette with the new values, i.e. keep existing colors
+            appearanceElement.colorPalette = getPalette(values);
+          }
+          break;
+        // nothing to do for other cases
+        // TODO: check if other cases need edits.
+      }
+    });
 
     appearanceAtom.set(newState);
   }

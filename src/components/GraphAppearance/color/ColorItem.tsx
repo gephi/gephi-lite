@@ -1,4 +1,4 @@
-import { flatMap, isEqual, uniq } from "lodash";
+import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
@@ -8,6 +8,7 @@ import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR } from "../../../core/appearance
 import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
 import { graphDatasetAtom } from "../../../core/graph";
 import { FieldModel } from "../../../core/graph/types";
+import { uniqFieldvaluesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
 import { ColorFixedEditor } from "./ColorFixedEditor";
@@ -115,13 +116,8 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
               });
             } else {
               const field = option.field as string;
-              const values = uniq(
-                flatMap(graphDatasetAtom.get()[itemType === "nodes" ? "nodeData" : "edgeData"], (itemData) => {
-                  const v = itemData[field];
-                  if (typeof v === "number" || (typeof v === "string" && !!v)) return [v + ""];
-                  return [];
-                }),
-              ) as string[];
+              const itemsData = graphDatasetAtom.get()[itemType === "nodes" ? "nodeData" : "edgeData"];
+              const values = uniqFieldvaluesAsStrings(itemsData, field);
 
               setColorAppearance(itemType, {
                 itemType,
