@@ -17,7 +17,7 @@ export const ThemeSwicther: FC<unknown> = () => {
       </button>
       <div className="dropdown-menu show over-modal position-relative">
         {(["auto", "light", "dark"] as Preferences["theme"][]).map((theme) => (
-          <button className="dropdown-item" onClick={() => changeTheme(theme)}>
+          <button key={theme} className="dropdown-item" onClick={() => changeTheme(theme)}>
             {theme === "auto" && (
               <span>
                 <MdContrast /> Auto
