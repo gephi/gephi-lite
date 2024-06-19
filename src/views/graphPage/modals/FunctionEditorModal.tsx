@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 
 import { CloseIcon, CodeEditorIcon, RunIcon, SaveIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
+import { usePreferences } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
+import { getAppliedTheme } from "../../../core/preferences/utils";
 
 //eslint-disable-next-line @typescript-eslint/ban-types
 interface FunctionEditorModalProps<T = Function> {
@@ -19,6 +21,7 @@ interface FunctionEditorModalProps<T = Function> {
 export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProps<T>, { run: boolean; script: T }>) {
   const { t } = useTranslation();
   const { cancel, submit } = props;
+  const { theme } = usePreferences();
   const { title, withSaveAndRun, checkFunction, functionJsDoc, defaultFunction, value } = props.arguments;
 
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +43,6 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
     },
     [checkFunction, submit],
   );
-
   return (
     <Modal
       className="modal-xl"
@@ -57,6 +59,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
         {error && <p className="text-danger text-center">{error}</p>}
         <Editor
           height="40vh"
+          theme={getAppliedTheme(theme) === "light" ? "light" : "vs-dark"}
           defaultLanguage="javascript"
           value={code || ""}
           onChange={(e) => {
