@@ -223,7 +223,7 @@
     "delete_nodes_attributes": "Delete the '{{name}}' node attribute",
     "delete_edges_attributes": "Delete the '{{name}}' edge attribute",
     "confirm_delete_attributes": "This deletion will remove {{nbValues}} values from the graph. Are you sure you want to delete the attribute {{name}}?",
-    "delete_attributes_success": "The '{{name}'} attribute has been deleted."
+    "delete_attributes_success": "The '{{name}}' attribute has been deleted."
   },
   "graph": {
     "title": "Graph",
