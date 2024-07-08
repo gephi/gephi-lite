@@ -668,9 +668,11 @@
     },
     "quality": {
       "title": "Layout quality",
-      "description": "Calculate and show the layout quality metric",
-      "enable": "Enable",
-      "showGrid": "Show grid"
+      "description": "Are connected nodes closer thanks to the layout?",
+      "enable": "Enable Connected-closeness",
+      "showGrid": "Show the Δmax grid",
+      "caption_CMax": "of edges are shorter than Δmax thanks to the layout",
+      "caption_deltaMax": "Grid size = Δmax = "
     }
   },
   "file": {

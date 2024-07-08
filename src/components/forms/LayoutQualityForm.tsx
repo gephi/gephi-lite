@@ -12,7 +12,11 @@ export const LayoutQualityForm: FC = () => {
   return (
     <div className="panel-block">
       {t("layouts.quality.title")}
-      <p className="text-muted small d-none d-md-block">{t("layouts.quality.description")}</p>
+      <p className="text-muted small d-none d-md-block">
+        {t("layouts.quality.description")}{" "}
+        <a href="https://jgaa.info/index.php/jgaa/article/view/paper626">(Jacomy 2023)</a>
+      </p>
+
       <div className="form-check">
         <input
           className="form-check-input"
