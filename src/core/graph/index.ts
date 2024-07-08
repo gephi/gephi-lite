@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import { Attributes } from "graphology-types";
 import { isNil, isString, keys, last, mapValues, omit, omitBy, values } from "lodash";
 import { Coordinates } from "sigma/types";
@@ -205,6 +206,7 @@ export const sigmaGraphAtom = derivedAtom(
     if (graph) {
       graph.clear();
       graph.import(newGraph);
+      (graph as EventEmitter).emit("graphImported");
 
       return graph;
     }

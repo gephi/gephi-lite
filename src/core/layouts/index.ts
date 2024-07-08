@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
 import seedrandom from "seedrandom";
@@ -36,8 +37,6 @@ export const layoutStateAtom = atom<LayoutState>(getLocalStorageLayoutState());
 export const startLayout = asyncAction(async (id: string, params: unknown) => {
   const { setNodePositions } = graphDatasetActions;
   const dataset = graphDatasetAtom.get();
-  const { quality } = layoutStateAtom.get();
-  const { computeLayoutQualityMetric } = layoutActions;
 
   // search the layout
   const layout = LAYOUTS.find((l) => l.id === id);
@@ -56,7 +55,6 @@ export const startLayout = asyncAction(async (id: string, params: unknown) => {
     // To prevent resetting the camera before sigma receives new data, we
     // need to wait a frame, and also wait for it to trigger a refresh:
     setTimeout(() => {
-      if (quality.enabled) computeLayoutQualityMetric();
       layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
       resetCamera({ forceRefresh: false });
     }, 0);
@@ -94,7 +92,7 @@ export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
   return (state) => ({ ...state, quality });
 };
 
-export const computeLayoutQualityMetric: Producer<LayoutState, []> = () => {
+const _computeLayoutQualityMetric: Producer<LayoutState, []> = () => {
   const sigmaGraph = sigmaGraphAtom.get();
   try {
     const metric = connectedCloseness(sigmaGraph, {
@@ -110,7 +108,7 @@ export const layoutActions = {
   startLayout,
   stopLayout,
   setQuality: producerToAction(setQuality, layoutStateAtom),
-  computeLayoutQualityMetric: producerToAction(computeLayoutQualityMetric, layoutStateAtom),
+  computeLayoutQualityMetric: producerToAction(_computeLayoutQualityMetric, layoutStateAtom),
 };
 
 const gridEnabledAtom = derivedAtom(layoutStateAtom, (value) => pick(value.quality, "enabled"), {
@@ -125,10 +123,17 @@ gridEnabledAtom.bindEffect((enabled) => {
 
   computeLayoutQualityMetric();
   const sigmaGraph = sigmaGraphAtom.get();
+  // this event is triggered when sigma data are updated by the derived atom mechanism through a graph import
+  // this is a custom event
+  (sigmaGraph as EventEmitter).on("graphImported", fn);
+
+  // this event is triggered by user manually changing node positions by dragging node
   sigmaGraph.on("nodeAttributesUpdated", fn);
+  // this event is triggered by async layout
   sigmaGraph.on("eachNodeAttributesUpdated", fn);
 
   return () => {
+    (sigmaGraph as EventEmitter).off("graphImported", fn);
     sigmaGraph.off("eachNodeAttributesUpdated", fn);
     sigmaGraph.off("nodeAttributesUpdated", fn);
   };
