@@ -1,5 +1,31 @@
 # Gephi Lite - Changelog:
 
+## 0.5.0 aka The 2024 Gephi week edition
+
+This version has been developed in a one week iteration organized at the [2024 Gephi week workshop](https://gephi.wordpress.com/2024/06/13/gephi-week-2024-peek-from-the-inside/).
+
+Special thanks to [Anders Kristian Munk](https://github.com/akmunk), [Johan Irving Sølotft](https://github.com/Johansoltoft) and [Lasse Uhrskov Kristensen](https://github.com/watchforest) for testing the app and reporting ideas and issues.
+
+### New features
+
+- Dark mode
+- Connected Closeness (experimental): in layout panel one can chose to compute and show the `Connected Closeness` metric. It provides a quality measure of the current layout [(jacomy 2023)](https://jgaa.info/index.php/jgaa/article/view/paper626). Note that the current implementation is still being tested and will most likely be updated.
+
+### Enhancements
+
+- Metrics can now indicate what kind of attributes they generate. We needed this to make sure that the Louvain Modularity was classified as a qualitative attribute although it outputs numbers.
+- When creating an edge, the node select shows the last created nodes first to speed-up data edition experience. Thanks to [qkhanhpro](https://github.com/qkhanhpro) for reporting [this great idea](https://github.com/gephi/gephi-lite/issues/152)!
+- Custom scripts modal now prevent data loss by warning users if script has not been saved before closing.
+- Better User Experience in filters to avoid unwanted deletion
+- Run your own [Gephi Lite instance through Docker](https://github.com/gephi/gephi-lite/#dockerfile-for-production)
+
+### Debug
+
+- [#160](https://github.com/gephi/gephi-lite/issues/160): Layout form input issues
+- [#162](https://github.com/gephi/gephi-lite/issues/162): Graph metadata form issues
+- [#153](https://github.com/gephi/gephi-lite/issues/153): Boolean attributes not rendered correctly in node panel
+- [#148](https://github.com/gephi/gephi-lite/issues/148): Graph data model update issues
+
 ## 0.4.2
 
 ### Debug
