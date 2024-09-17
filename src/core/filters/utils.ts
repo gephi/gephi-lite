@@ -2,6 +2,7 @@ import { subgraph } from "graphology-operators";
 
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
+import { Scalar } from "../types";
 import { toNumber, toString } from "../utils/casting";
 import { parse, stringify } from "../utils/json";
 import { FilterType, FilteredGraph, FiltersState, RangeFilterType, TermsFilterType } from "./types";
@@ -36,7 +37,7 @@ export function parseFiltersState(rawFilters: string): FiltersState | null {
  * Actual filtering helpers:
  */
 export function filterValue(
-  value: unknown,
+  value: Scalar,
   filter: Omit<RangeFilterType, "field" | "itemType"> | Omit<TermsFilterType, "field" | "itemType">,
 ): boolean {
   switch (filter.type) {

@@ -47,19 +47,22 @@ describe("Casting utilities", () => {
       values.forEach((input) => expect(toString(input)).toBe(input + ""));
     });
 
+    it("should work with boolean", () => {
+      const values: boolean[] = [true, false];
+      values.forEach((input) => expect(toString(input)).toBe(input.toString()));
+    });
+
     it("should work with other types", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tests = [
         [new Date(), undefined],
-        [false, undefined],
-        [true, undefined],
         [{ abc: 123 }, undefined],
         [[123], undefined],
         [null, undefined],
         [undefined, undefined],
       ];
 
-      tests.forEach(([input, expected]) => expect(toString(input)).toBe(expected));
+      tests.forEach(([input, expected]) => expect(toString(input as Scalar)).toBe(expected));
     });
   });
 
@@ -73,8 +76,8 @@ describe("Casting utilities", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tests: [any, ReturnType<typeof toScalar>][] = [
         [new Date(), new Date().toString()],
-        [{ abc: 123 }, "[object Object]"],
-        [[123], "123"],
+        [{ abc: 123 }, '{"abc":123}'],
+        [[123, "some text, with a coma"], '[123,"some text, with a coma"]'],
         [null, undefined],
       ];
 

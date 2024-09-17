@@ -2,7 +2,13 @@ import { SCALAR_TYPES, Scalar } from "../types";
 
 export function toScalar(o: unknown): Scalar {
   if (SCALAR_TYPES.has(typeof o)) return o as Scalar;
+
+  // some special cases
+  if (o instanceof Date) return o.toString();
+  if (o instanceof Object) return JSON.stringify(o);
+
   if (o === null) return undefined;
+  // fallback to toString
   return `${o}`;
 }
 
@@ -16,10 +22,10 @@ export function toNumber(o: unknown): number | undefined {
   return undefined;
 }
 
-export function toString(o: unknown): string | undefined {
+export function toString(o: Scalar): string | undefined {
   if (typeof o === "string") return o;
   if (typeof o === "number") return o + "";
-
+  if (typeof o === "boolean") return o.toString();
   return undefined;
 }
 
