@@ -1,5 +1,17 @@
 # Gephi Lite - Changelog:
 
+## 0.5.1
+
+various fixes:
+- [#89](https://github.com/gephi/gephi-lite/issues/89): regression on show edges 
+- [#173](https://github.com/gephi/gephi-lite/issues/173): regression on performance due to layout metric
+- boolean attributes not rendered correctly in terms Filter
+
+Thanks to [@splines](https://github.com/Splines) for the bug reports
+
+misc:
+- upgrade Graphology Gexf to 0.13.2
+
 ## 0.5.0 aka The 2024 Gephi week edition
 
 This version has been developed in a one week iteration organized at the [2024 Gephi week workshop](https://gephi.wordpress.com/2024/06/13/gephi-week-2024-peek-from-the-inside/).
