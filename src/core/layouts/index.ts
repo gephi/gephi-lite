@@ -114,8 +114,8 @@ export const layoutActions = {
 const gridEnabledAtom = derivedAtom(layoutStateAtom, (value) => pick(value.quality, "enabled"), {
   checkOutput: true,
 });
-gridEnabledAtom.bindEffect((enabled) => {
-  if (!enabled) return;
+gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
+  if (!connectedClosenessSettings.enabled) return;
 
   // Compute the layout quality metric when node's position changed
   const { computeLayoutQualityMetric } = layoutActions;
