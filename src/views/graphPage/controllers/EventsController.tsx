@@ -1,4 +1,5 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
+import EventEmitter from "events";
 import { mapValues, pick } from "lodash";
 import { FC, useEffect, useRef } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
@@ -26,7 +27,7 @@ export const EventsController: FC = () => {
   const dragStateRef = useRef<
     | { type: "idle" }
     | {
-        type: "dragging";
+        type: "dragging" | "downing";
         initialMousePosition: Coordinates;
         initialNodesPosition: Record<string, Coordinates>;
       }
@@ -87,6 +88,7 @@ export const EventsController: FC = () => {
 
         const initialNodesPosition: LayoutMapping = {};
         nodes.forEach((node) => {
+          // I think the fixed  attribute is a failed tryout to solve the drag during layout issue https://github.com/gephi/gephi-lite/issues/138
           graph.setNodeAttribute(node, "fixed", true);
           const { x, y } = graph.getNodeAttributes(node);
           initialNodesPosition[node] = { x, y };
@@ -94,7 +96,7 @@ export const EventsController: FC = () => {
 
         dragEventsCountRef.current = 0;
         dragStateRef.current = {
-          type: "dragging",
+          type: "downing",
           initialNodesPosition,
           initialMousePosition: { x, y },
         };
@@ -107,24 +109,27 @@ export const EventsController: FC = () => {
       },
       mouseup: () => {
         const dragState = dragStateRef.current;
-        if (dragState.type === "dragging") {
-          // Save new positions in graph dataset:
+        if (dragState.type === "downing" || dragState.type === "dragging") {
           const graph = sigma.getGraph();
+          if (dragState.type === "dragging") {
+            // Save new positions in graph dataset:
+            const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) =>
+              pick(graph.getNodeAttributes(id), ["x", "y"]),
+            );
+            setNodePositions(positions);
+
+            resetHoveredNode();
+            resetHoveredEdge();
+          }
+          // I think the fixed  attribute is a failed tryout to solve the drag during layout issue https://github.com/gephi/gephi-lite/issues/138
           graph.forEachNode((node) => graph.setNodeAttribute(node, "fixed", false));
-          const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) =>
-            pick(graph.getNodeAttributes(id), ["x", "y"]),
-          );
-          setNodePositions(positions);
-
           dragStateRef.current = { type: "idle" };
-
-          resetHoveredNode();
-          resetHoveredEdge();
         }
       },
       mousemovebody: (e) => {
         const dragState = dragStateRef.current;
-        if (dragState.type === "dragging") {
+        if (dragState.type === "downing" || dragState.type === "dragging") {
+          if (dragState.type === "downing") dragStateRef.current = { ...dragState, type: "dragging" };
           dragEventsCountRef.current++;
           const graph = sigma.getGraph();
 
@@ -140,7 +145,7 @@ export const EventsController: FC = () => {
             graph.setNodeAttribute(node, "x", initialPosition.x + delta.x);
             graph.setNodeAttribute(node, "y", initialPosition.y + delta.y);
           }
-
+          (graph as EventEmitter).emit("nodesDragged");
           // Prevent sigma to move camera:
           e.preventSigmaDefault();
           e.original.preventDefault();
