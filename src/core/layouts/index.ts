@@ -117,24 +117,26 @@ const gridEnabledAtom = derivedAtom(layoutStateAtom, (value) => pick(value.quali
 gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
   if (!connectedClosenessSettings.enabled) return;
 
-  // Compute the layout quality metric when node's position changed
+  //Compute the layout quality metric when node's position changed
   const { computeLayoutQualityMetric } = layoutActions;
   const fn = debounce(computeLayoutQualityMetric, 300, { leading: true, maxWait: 300 });
 
   computeLayoutQualityMetric();
   const sigmaGraph = sigmaGraphAtom.get();
-  // this event is triggered when sigma data are updated by the derived atom mechanism through a graph import
+  // this event is triggered when a sync layout has been applied
   // this is a custom event
   (sigmaGraph as EventEmitter).on("graphImported", fn);
 
   // this event is triggered by user manually changing node positions by dragging node
-  sigmaGraph.on("nodeAttributesUpdated", fn);
+  // this is a custom event
+  (sigmaGraph as EventEmitter).on("nodesDragged", fn);
+
   // this event is triggered by async layout
   sigmaGraph.on("eachNodeAttributesUpdated", fn);
 
   return () => {
     (sigmaGraph as EventEmitter).off("graphImported", fn);
+    (sigmaGraph as EventEmitter).off("nodesDragged", fn);
     sigmaGraph.off("eachNodeAttributesUpdated", fn);
-    sigmaGraph.off("nodeAttributesUpdated", fn);
   };
 });
