@@ -53,7 +53,7 @@
     "file-saver": "^2.0.5",
     "graphology": "^0.25.4",
     "graphology-communities-louvain": "^2.0.1",
-    "graphology-gexf": "^0.13.0",
+    "graphology-gexf": "^0.13.2",
     "graphology-graphml": "^0.5.2",
     "graphology-layout": "^0.6.1",
     "graphology-layout-force": "^0.2.4",
