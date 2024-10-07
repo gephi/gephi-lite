@@ -91,7 +91,7 @@ export const AppearanceController: FC = () => {
     });
     sigma.setSetting(
       "edgeReducer",
-      !showEdges
+      !showEdges.value
         ? () => ({ hidden: true })
         : (id, { weight, ...attr }) => {
             const res = { ...attr, size: weight, type: edgeArrow ? "arrow" : "line" } as Partial<CustomEdgeDisplayData>;
