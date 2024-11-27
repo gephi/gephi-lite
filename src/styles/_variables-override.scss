@@ -19,11 +19,11 @@ $form-switch-checked-bg-image: $form-switch-bg-image;
 $toolbar-bg: $gray-400;
 $panels-bg: $gray-200;
 :root {
-    --toolbar-bg: #{$gray-400};
-    --panels-bg: #{$gray-200};
-    --panels-bg-rgb: 233,236,239;
-    --range-in-bg: #{$gray-400};
-    --range-in-body: #{$gray-100};
-    --range-out-bg: #{$gray-800};
-    --range-out-body: #{$gray-800};
+  --toolbar-bg: #{$gray-400};
+  --panels-bg: #{$gray-200};
+  --panels-bg-rgb: 233, 236, 239;
+  --range-in-bg: #{$gray-400};
+  --range-in-body: #{$gray-100};
+  --range-out-bg: #{$gray-800};
+  --range-out-body: #{$gray-800};
 }

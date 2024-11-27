@@ -118,17 +118,17 @@
 .btn-outline-dark {
   color: var(--bs-body-color);
   border-color: var(--bs-body-color);
-  
+
   &:hover {
-      color: var(--bs-body-bg);
-      background-color: var(--bs-body-color);
+    color: var(--bs-body-bg);
+    background-color: var(--bs-body-color);
   }
 }
 
 .nav {
   .nav-item {
-      .nav-link.link-dark {
-          color: var(--bs-btn-hover-color)!important;
-      }
+    .nav-link.link-dark {
+      color: var(--bs-btn-hover-color) !important;
+    }
   }
 }

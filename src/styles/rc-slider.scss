@@ -1,16 +1,15 @@
 .rc-slider {
-    .rc-slider-rail {
-        background-color: var(--range-in-bg) !important;
-    }
-    .rc-slider-track {
-        background-color: var(--range-out-bg)!important;
-    }
-    .rc-slider-dot {
-        background-color: var(--panels-bg);
-        border-color: var(--range-in-bg)!important;
-    }
-    .rc-slider-dot-active {
-        border-color: var(--range-out-bg)!important;
-    }
-    
+  .rc-slider-rail {
+    background-color: var(--range-in-bg) !important;
+  }
+  .rc-slider-track {
+    background-color: var(--range-out-bg) !important;
+  }
+  .rc-slider-dot {
+    background-color: var(--panels-bg);
+    border-color: var(--range-in-bg) !important;
+  }
+  .rc-slider-dot-active {
+    border-color: var(--range-out-bg) !important;
+  }
 }

@@ -1,10 +1,9 @@
 @include color-mode(dark) {
-    --toolbar-bg: #{$black};
-    --panels-bg: #{$gray-700};
-    --panels-bg-rgb: 73,80,87;
-    --range-in-bg: #{$gray-800};
-    --range-in-body: #{$gray-800};
-    --range-out-bg: #{$gray-200};
-    --range-out-body: #{$gray-200};
+  --toolbar-bg: #{$black};
+  --panels-bg: #{$gray-700};
+  --panels-bg-rgb: 73, 80, 87;
+  --range-in-bg: #{$gray-800};
+  --range-in-body: #{$gray-800};
+  --range-out-bg: #{$gray-200};
+  --range-out-body: #{$gray-200};
 }
-  

@@ -34,17 +34,17 @@
   }
   .sigma-controls {
     .btn-dark {
-        color: var(--bs-btn-hover-color);
-        background-color: var(--bs-btn-hover-bg);
-        border-color: var(--bs-btn-hover-border-color);
-        
-        &:hover {
-            color: var(--bs-btn-color);
-            background-color: $black;
-            border-color: var(--bs-btn-border-color);
-        }
+      color: var(--bs-btn-hover-color);
+      background-color: var(--bs-btn-hover-bg);
+      border-color: var(--bs-btn-hover-border-color);
+
+      &:hover {
+        color: var(--bs-btn-color);
+        background-color: $black;
+        border-color: var(--bs-btn-border-color);
+      }
     }
-}
+  }
 
   .toolbar,
   .filler,
