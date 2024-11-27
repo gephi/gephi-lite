@@ -1,3 +1,4 @@
+import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
 import react from "@vitejs/plugin-react-swc";
 import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
@@ -9,6 +10,7 @@ export const BASE_URL = process.env.BASE_URL || "/gephi-lite/";
 export default defineConfig({
   base: BASE_URL,
   plugins: [
+    UnpluginTypia({}),
     react(),
     svgr(),
     checker({

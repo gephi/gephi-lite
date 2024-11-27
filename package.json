@@ -9,7 +9,8 @@
     "serve": "vite preview",
     "test": "vitest -r src",
     "test:e2e": "playwright test",
-    "translations-scan": "i18next-scanner --config i18next-scanner.config.ts src/**/*.{ts,tsx}"
+    "translations-scan": "i18next-scanner --config i18next-scanner.config.ts src/**/*.{ts,tsx}",
+    "prepare": "ts-patch install && typia patch"
   },
   "browserslist": {
     "production": [
@@ -42,7 +43,6 @@
     "@types/react-dom": "^18.3.0",
     "@types/react-highlight": "^0.12.8",
     "@types/react-slider": "^1.3.6",
-    "@types/tether": "^1.4.9",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "bootstrap": "^5.3.3",
     "byte-size": "^8.1.1",
@@ -94,7 +94,7 @@
     "react-use-konami": "^1.1.0",
     "sass": "^1.77.4",
     "seedrandom": "^3.0.5",
-    "typescript": "^5.4.5",
+    "typia": "^6.12.2",
     "vite": "^5.2.13",
     "vite-plugin-svgr": "^4.2.0",
     "vitest": "^1.6.0"
@@ -103,9 +103,11 @@
     "sigma": "3.0.0-beta.19"
   },
   "devDependencies": {
+    "@ryoppippi/unplugin-typia": "^1.0.7",
     "@types/color": "^3.0.6",
     "@types/react-linkify": "^1.0.4",
     "@types/seedrandom": "^3.0.8",
+    "@types/tether": "^1.4.9",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
     "eslint": "^8.57.0",
@@ -114,6 +116,8 @@
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^3.3.1",
+    "ts-patch": "^3.2.1",
+    "typescript": "~5.6.3",
     "vite-plugin-checker": "^0.6.4"
   }
 }
