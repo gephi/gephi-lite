@@ -1,15 +1,21 @@
 # Gephi Lite - Changelog:
 
+## 0.5.2
+
+This version is just published to allow testing scripting Gephi Lite, using the [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) API.
+
 ## 0.5.1
 
 various fixes:
-- [#89](https://github.com/gephi/gephi-lite/issues/89): regression on show edges 
+
+- [#89](https://github.com/gephi/gephi-lite/issues/89): regression on show edges
 - [#173](https://github.com/gephi/gephi-lite/issues/173): regression on performance due to layout metric
 - boolean attributes not rendered correctly in terms Filter
 
 Thanks to [@splines](https://github.com/Splines) for the bug reports
 
 misc:
+
 - upgrade Graphology Gexf to 0.13.2
 
 ## 0.5.0 aka The 2024 Gephi week edition
@@ -42,7 +48,7 @@ Special thanks to [Anders Kristian Munk](https://github.com/akmunk), [Johan Irvi
 
 ### Debug
 
-- [#144](https://github.com/gephi/gephi-lite/issues/144): Fix github authentification 
+- [#144](https://github.com/gephi/gephi-lite/issues/144): Fix github authentification
 
 ## 0.4.1
 
