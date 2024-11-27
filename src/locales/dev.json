@@ -764,5 +764,11 @@
       }
     },
     "theme": "Choose a theme"
+  },
+  "broadcast": {
+    "title": "Broadcast {{id}}",
+    "untrusted_message": "Latest message was untrusted. You might want to check the BroadcastChannel setup.",
+    "unimplemented_message": "Messages of type \"{{type}}\" are not implemented yet.",
+    "type_error": "Latest message was not properly typed:"
   }
 }

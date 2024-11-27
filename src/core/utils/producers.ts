@@ -3,7 +3,7 @@ import { WritableAtom } from "./atoms";
 export type Reducer<T> = (v: T) => T;
 
 export type Action<Args extends unknown[] = []> = (...args: Args) => void;
-export type AsyncAction<Args extends unknown[]> = (...args: Args) => Promise<void>;
+export type AsyncAction<Args extends unknown[] = []> = (...args: Args) => Promise<void>;
 
 /**
  * A short function to help automatically type an AsyncAction Args generic.

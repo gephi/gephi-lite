@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useCallback, useEffect } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
@@ -7,6 +7,7 @@ import { extractFilename } from "../utils/url";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
 import { parseAppearanceState } from "./appearance/utils";
+import { useBroadcast } from "./broadcast/useBroadcast";
 import { useGraphDatasetActions, useImportActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
@@ -32,6 +33,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { openModal } = useModal();
   const { importFile } = useImportActions();
   const { resetGraph } = useGraphDatasetActions();
+  const [broadcastID, setBroadcastID] = useState<string | null>(null);
+  useBroadcast(broadcastID);
 
   useKonami(
     () => {
@@ -82,17 +85,20 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     let graphFound = false;
     let showWelcomeModal = true;
     const url = new URL(window.location.href);
+    const broadcastID = url.searchParams.get("broadcast");
+    setBroadcastID(broadcastID);
 
     // If query params has new
     // => empty graph & open welcome modal
-    if (url.searchParams.has("new")) {
+    if (url.searchParams.has("new") || broadcastID) {
       resetGraph();
       graphFound = true;
       url.searchParams.delete("new");
       window.history.pushState({}, "", url);
+      showWelcomeModal = false;
     }
 
-    // If query params has file (or gexf although it's deprecated)
+    // If query params has file (or GEXF, although it's deprecated)
     // => try to load the file
     if (!graphFound && (url.searchParams.has("file") || url.searchParams.has("gexf"))) {
       if (!url.searchParams.has("file") && url.searchParams.has("gexf"))
@@ -157,7 +163,15 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * => run the initialize function
    */
   useEffect(() => {
-    initialize();
+    initialize().catch((error) => {
+      console.error(error);
+      notify({
+        type: "error",
+        title: t("error.title"),
+        message: t("error.message"),
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialize]);
 
   return (
