@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { BASE_URL } from "../vite.config.mjs";
+import { BASE_URL } from "../config";
 
 const FILES = ["Java.gexf", "Les Miserables.gexf", "Power Grid.gexf", "airlines.graphml"];
 

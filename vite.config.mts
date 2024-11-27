@@ -4,8 +4,7 @@ import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
 
-// export BASE_PATH to reuse it in e2e test
-export const BASE_URL = process.env.BASE_URL || "/gephi-lite/";
+import { BASE_URL } from "./config";
 
 export default defineConfig({
   base: BASE_URL,
