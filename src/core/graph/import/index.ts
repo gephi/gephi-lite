@@ -1,5 +1,5 @@
 import Graph from "graphology";
-import gexf from "graphology-gexf";
+import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
 
 import { resetStates } from "../../context/dataContexts";
