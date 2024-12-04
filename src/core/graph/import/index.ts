@@ -63,6 +63,9 @@ export const importFile = asyncAction(async (file: NonNullable<GraphOrigin>) => 
       case "graphml":
         graph = graphml.parse(Graph, content, { addMissingNodes: true });
         break;
+      case "json":
+        graph = Graph.from(JSON.parse(content));
+        break;
       default:
         graph = null;
         break;
