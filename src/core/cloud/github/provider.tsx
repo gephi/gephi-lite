@@ -201,7 +201,9 @@ export class GithubProvider implements CloudProvider {
       if (
         file &&
         file.filename &&
-        (checkFilenameExtension(file.filename, "gexf") || checkFilenameExtension(file.filename, "graphml"))
+        (checkFilenameExtension(file.filename, "gexf") ||
+          checkFilenameExtension(file.filename, "graphml") ||
+          checkFilenameExtension(file.filename, "json"))
       ) {
         result = {
           filename: file.filename || "Untitled",
