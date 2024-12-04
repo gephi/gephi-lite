@@ -27,7 +27,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           value={file}
           onChange={(file) => setFile(file)}
           helpText={t("graph.open.local.dragndrop_text").toString()}
-          accept={{ "application/graph": [".gexf", ".graphml"] }}
+          accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
         />
         {importStateType === "loading" && <Loader />}
       </>
