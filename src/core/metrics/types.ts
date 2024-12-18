@@ -51,13 +51,23 @@ export type MetricParameter =
 
 export type MetricType = { string: "qualitative"; type: string | boolean } | { string: "quantitative"; type: number };
 
-export interface Metric<Items extends ItemType, OutputKeys extends [string, ...string[]]> {
+export interface Metric<Outputs extends Partial<Record<ItemType, string[]>>> {
   id: string;
-  outputs: Record<OutputKeys[number], Pick<FieldModel, "qualitative" | "quantitative"> | undefined>;
-  itemType: Items;
+  outputs: {
+    [Key in keyof Outputs]: Outputs[Key] extends string[]
+      ? Record<Outputs[Key][number], Pick<FieldModel, "qualitative" | "quantitative"> | undefined>
+      : never;
+  };
   parameters: MetricParameter[];
   description?: boolean;
-  fn: (parameters: Record<string, unknown>, graph: FullGraph) => Record<OutputKeys[number], Record<string, Scalar>>;
+  fn: (
+    parameters: Record<string, unknown>,
+    graph: FullGraph,
+  ) => {
+    [Key in keyof Outputs]: Outputs[Key] extends string[]
+      ? Record<Outputs[Key][number], Record<string, Scalar>>
+      : never;
+  };
 }
 
 export interface MetricReport {

@@ -4,11 +4,14 @@ import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { quantitativeOnly } from "../utils";
 
-export const degreeMetric: Metric<"nodes", ["degree"]> = {
+export const degreeMetric: Metric<{ nodes: ["degree"] }> = {
   id: "degree",
   description: true,
-  itemType: "nodes",
-  outputs: { degree: quantitativeOnly },
+  outputs: {
+    nodes: {
+      degree: quantitativeOnly,
+    },
+  },
   parameters: [
     {
       id: "kind",
@@ -49,6 +52,10 @@ export const degreeMetric: Metric<"nodes", ["degree"]> = {
       });
     }
 
-    return { degree: collection };
+    return {
+      nodes: {
+        degree: collection,
+      },
+    };
   },
 };

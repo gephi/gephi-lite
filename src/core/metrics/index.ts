@@ -1,9 +1,10 @@
 import { DatalessGraph, FieldModel, GraphDataset } from "../graph/types";
 import { dataGraphToFullGraph, inferFieldType } from "../graph/utils";
+import { ItemType } from "../types";
 import { Metric, MetricReport } from "./types";
 
 /**
- * Compute a metric and mutate the graphdataset state directly for better performance.
+ * Compute a metric and mutate the graph dataset state directly for better performance.
  *
  * @param metric metric object to apply
  * @param params metric params from metric form
@@ -14,7 +15,7 @@ import { Metric, MetricReport } from "./types";
  */
 export function computeMetric(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metric: Metric<any, any>,
+  metric: Metric<any>,
   params: Record<string, unknown>,
   attributeNames: Record<string, string>,
   filteredGraph: DatalessGraph,
@@ -25,31 +26,34 @@ export function computeMetric(
 
   const scores = metric.fn(params, graph);
   const report = {}; // TODO
-  const dataKey = metric.itemType === "nodes" ? "nodeData" : "edgeData";
-  const data = dataset[dataKey];
-
-  const itemsCount = metric.itemType === "nodes" ? dataset.fullGraph.order : dataset.fullGraph.size;
   const updatedFieldModels: FieldModel[] = [];
-  for (const score in scores) {
-    const values = scores[score];
-    const attributeName = attributeNames[score];
+  for (const key in metric.outputs) {
+    const itemType = key as ItemType;
+    const itemsCount = itemType === "nodes" ? dataset.fullGraph.order : dataset.fullGraph.size;
+    const dataKey = itemType === "nodes" ? "nodeData" : "edgeData";
+    const data = dataset[dataKey];
 
-    if (!attributeName) throw new Error("missing_attribute_name");
+    for (const score in scores[itemType]) {
+      const values = scores[itemType][score];
+      const attributeName = attributeNames[score];
 
-    // Update item values:
-    for (const itemId in values) {
-      data[itemId][attributeName] = values[itemId];
+      if (!attributeName) throw new Error("missing_attribute_name");
+
+      // Update item values:
+      for (const itemId in values) {
+        data[itemId][attributeName] = values[itemId];
+      }
+
+      // Update field model:
+      let qualiQuanti = metric.outputs[itemType][score];
+      if (qualiQuanti === undefined) qualiQuanti = inferFieldType(Object.values(values), itemsCount);
+
+      updatedFieldModels.push({
+        itemType,
+        id: attributeName,
+        ...qualiQuanti,
+      });
     }
-
-    // Update field model:
-    let qualiQuanti = metric.outputs[score];
-    if (qualiQuanti === undefined) qualiQuanti = inferFieldType(Object.values(values), itemsCount);
-
-    updatedFieldModels.push({
-      id: attributeName,
-      itemType: metric.itemType,
-      ...qualiQuanti,
-    });
   }
 
   return {

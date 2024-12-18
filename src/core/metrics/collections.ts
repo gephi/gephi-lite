@@ -10,7 +10,7 @@ import { pageRankMetric } from "./nodes/pagerankMetric";
 import { Metric } from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const NODE_METRICS: Metric<"nodes", any>[] = [
+export const NODE_METRICS: Metric<{ nodes: any }>[] = [
   louvainMetric,
   pageRankMetric,
   betweennessCentralityMetric,
@@ -20,4 +20,4 @@ export const NODE_METRICS: Metric<"nodes", any>[] = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const EDGE_METRICS: Metric<"edges", any>[] = [disparityMetric, simmelianStrengthMetric, edgeScript];
+export const EDGE_METRICS: Metric<{ edges: any }>[] = [disparityMetric, simmelianStrengthMetric, edgeScript];

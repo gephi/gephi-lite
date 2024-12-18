@@ -5,10 +5,9 @@ import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { quantitativeOnly } from "../utils";
 
-export const hitsMetric: Metric<"nodes", ["hubs", "authorities"]> = {
+export const hitsMetric: Metric<{ nodes: ["hubs", "authorities"] }> = {
   id: "hits",
-  itemType: "nodes",
-  outputs: { hubs: quantitativeOnly, authorities: quantitativeOnly },
+  outputs: { nodes: { hubs: quantitativeOnly, authorities: quantitativeOnly } },
   parameters: [
     {
       id: "getEdgeWeight",
@@ -41,6 +40,6 @@ export const hitsMetric: Metric<"nodes", ["hubs", "authorities"]> = {
     },
     graph: FullGraph,
   ) {
-    return hits(toSimple(graph), parameters);
+    return { nodes: hits(toSimple(graph), parameters) };
   },
 };

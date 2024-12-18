@@ -4,11 +4,10 @@ import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { qualitativeOnly } from "../utils";
 
-export const louvainMetric: Metric<"nodes", ["modularityClass"]> = {
+export const louvainMetric: Metric<{ nodes: ["modularityClass"] }> = {
   id: "louvain",
   description: true,
-  itemType: "nodes",
-  outputs: { modularityClass: qualitativeOnly },
+  outputs: { nodes: { modularityClass: qualitativeOnly } },
   parameters: [
     {
       id: "getEdgeWeight",
@@ -45,6 +44,8 @@ export const louvainMetric: Metric<"nodes", ["modularityClass"]> = {
     },
     graph: FullGraph,
   ) {
-    return { modularityClass: louvain(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
+    return {
+      nodes: { modularityClass: louvain(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) },
+    };
   },
 };
