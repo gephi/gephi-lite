@@ -13,7 +13,7 @@ import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../compone
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
 import { computeMetric } from "../../core/metrics";
-import { EDGE_METRICS, NODE_METRICS } from "../../core/metrics/collections";
+import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Metric, MetricScriptParameter } from "../../core/metrics/types";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
@@ -364,6 +364,14 @@ export const StatisticsPanel: FC = () => {
         options: EDGE_METRICS.map((metric) => ({
           value: metric.id,
           label: t(`statistics.edges.${metric.id}.title`),
+          metric,
+        })),
+      },
+      {
+        label: capitalize(t("graph.model.mixed") as string),
+        options: MIXED_METRICS.map((metric) => ({
+          value: metric.id,
+          label: t(`statistics.mixed.${metric.id}.title`),
           metric,
         })),
       },
