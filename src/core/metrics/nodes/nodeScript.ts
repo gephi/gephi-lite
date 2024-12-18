@@ -13,13 +13,11 @@ const nodeMetricCustomFn = new Function(`return (
     // Your code goes here
     return Math.random();
   }
-  )`)();
+)`)();
 
-export const nodeScript: Metric<"nodes", ["custom"]> = {
+export const nodeScript: Metric<{ nodes: ["custom"] }> = {
   id: "nodescript",
-  itemType: "nodes",
-  //undefined in outputs will trigger inference
-  outputs: { custom: undefined },
+  outputs: { nodes: { custom: undefined } },
   parameters: [
     {
       id: "script",
@@ -56,10 +54,12 @@ export const nodeScript: Metric<"nodes", ["custom"]> = {
       graph.nodes().forEach((id, index) => {
         custom[id] = fn(id, graph.getNodeAttributes(id), index, graphCopy);
       });
-      return { custom };
+      return { nodes: { custom } };
     }
     return {
-      custom: {},
+      nodes: {
+        custom: {},
+      },
     };
   },
 };

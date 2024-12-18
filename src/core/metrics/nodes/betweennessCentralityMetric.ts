@@ -1,13 +1,19 @@
 import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
+
+
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { quantitativeOnly } from "../utils";
 
-export const betweennessCentralityMetric: Metric<"nodes", ["betweennessCentrality"]> = {
+
+export const betweennessCentralityMetric: Metric<{ nodes: ["betweennessCentrality"] }> = {
   id: "betweennessCentrality",
-  itemType: "nodes",
-  outputs: { betweennessCentrality: quantitativeOnly },
+  outputs: {
+    nodes: {
+      betweennessCentrality: quantitativeOnly,
+    },
+  },
   parameters: [
     {
       id: "getEdgeWeight",
@@ -29,11 +35,13 @@ export const betweennessCentralityMetric: Metric<"nodes", ["betweennessCentralit
     graph: FullGraph,
   ) {
     return {
-      betweennessCentrality: betweennessCentrality(graph, {
-        ...parameters,
-        getEdgeWeight: parameters.getEdgeWeight || null,
-        normalized: parameters.normalize,
-      }),
+      nodes: {
+        betweennessCentrality: betweennessCentrality(graph, {
+          ...parameters,
+          getEdgeWeight: parameters.getEdgeWeight || null,
+          normalized: parameters.normalize,
+        }),
+      },
     };
   },
 };

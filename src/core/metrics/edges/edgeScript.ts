@@ -12,13 +12,12 @@ const edgeMetricCustomFn = new Function(`return (
   function edgeMetric(id, attributes, index, graph) {
     // Your code goes here
     return Math.random();
-  } )`)();
+  }
+)`)();
 
-export const edgeScript: Metric<"edges", ["custom"]> = {
+export const edgeScript: Metric<{ edges: ["custom"] }> = {
   id: "edgescript",
-  itemType: "edges",
-  //undefined in outputs will trigger inference
-  outputs: { custom: undefined },
+  outputs: { edges: { custom: undefined } },
   parameters: [
     {
       id: "script",
@@ -55,10 +54,12 @@ export const edgeScript: Metric<"edges", ["custom"]> = {
       graph.edges().forEach((id, index) => {
         custom[id] = fn(id, graph.getEdgeAttributes(id), index, graphCopy);
       });
-      return { custom };
+      return { edges: { custom } };
     }
     return {
-      custom: {},
+      edges: {
+        custom: {},
+      },
     };
   },
 };

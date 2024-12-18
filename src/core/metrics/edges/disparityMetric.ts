@@ -5,10 +5,9 @@ import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { quantitativeOnly } from "../utils";
 
-export const disparityMetric: Metric<"edges", ["disparity"]> = {
+export const disparityMetric: Metric<{ edges: ["disparity"] }> = {
   id: "disparity",
-  itemType: "edges",
-  outputs: { disparity: quantitativeOnly },
+  outputs: { edges: { disparity: quantitativeOnly } },
   parameters: [
     {
       id: "getEdgeWeight",
@@ -23,6 +22,6 @@ export const disparityMetric: Metric<"edges", ["disparity"]> = {
     },
     graph: FullGraph,
   ) {
-    return { disparity: disparity(toSimple(graph), parameters) };
+    return { edges: { disparity: disparity(toSimple(graph), parameters) } };
   },
 };

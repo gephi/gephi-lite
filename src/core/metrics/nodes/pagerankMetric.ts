@@ -4,10 +4,9 @@ import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { quantitativeOnly } from "../utils";
 
-export const pageRankMetric: Metric<"nodes", ["pagerank"]> = {
+export const pageRankMetric: Metric<{ nodes: ["pagerank"] }> = {
   id: "pagerank",
-  itemType: "nodes",
-  outputs: { pagerank: quantitativeOnly },
+  outputs: { nodes: { pagerank: quantitativeOnly } },
   parameters: [
     {
       id: "getEdgeWeight",
@@ -41,6 +40,6 @@ export const pageRankMetric: Metric<"nodes", ["pagerank"]> = {
     },
     graph: FullGraph,
   ) {
-    return { pagerank: pagerank(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) };
+    return { nodes: { pagerank: pagerank(graph, { ...parameters, getEdgeWeight: parameters.getEdgeWeight || null }) } };
   },
 };
