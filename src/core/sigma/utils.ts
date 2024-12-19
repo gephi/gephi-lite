@@ -34,7 +34,7 @@ export function drawDiscNodeHover<
   context.font = `${weight} ${size}px ${font}`;
 
   // Then we draw the label background
-  context.fillStyle = (settings as Settings & { nodeHoverBackgoundColor?: string }).nodeHoverBackgoundColor || "#FFF";
+  context.fillStyle = (settings as Settings & { nodeHoverBackgroundColor?: string }).nodeHoverBackgroundColor || "#FFF";
   context.shadowOffsetX = 0;
   context.shadowOffsetY = 0;
   context.shadowBlur = 8;

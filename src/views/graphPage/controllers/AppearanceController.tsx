@@ -95,7 +95,7 @@ export const AppearanceController: FC = () => {
         ? () => ({ hidden: true })
         : (id, { weight, ...attr }) => {
             const res = { ...attr, size: weight, type: edgeArrow ? "arrow" : "line" } as Partial<CustomEdgeDisplayData>;
-            res.zIndex = 0;
+            res.zIndex = res.zIndex || 0;
             res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 
             if (hasEmphasizedEdges && !allEmphasizedEdges.has(id)) {

@@ -19,7 +19,7 @@ import {
   ColorGetter,
   CustomEdgeDisplayData,
   CustomNodeDisplayData,
-  SizeGetter,
+  NumberGetter,
   StringAttrGetter,
   TransformationMethod,
   VisualGetters,
@@ -84,6 +84,10 @@ export function getEmptyAppearanceState(): AppearanceState {
       itemType: "nodes",
       type: "none",
     },
+    edgesZIndex: {
+      itemType: "edges",
+      type: "none",
+    },
   };
 }
 
@@ -97,7 +101,7 @@ export function parseAppearanceState(rawAppearance: string): AppearanceState | n
   try {
     // TODO:
     // Validate the actual data
-    return parse(rawAppearance);
+    return { ...getEmptyAppearanceState(), ...parse(rawAppearance) };
   } catch (e) {
     return null;
   }
@@ -123,46 +127,71 @@ export const makeGetValue = (method?: TransformationMethod): ((value?: number) =
   return identity;
 };
 
-export function makeGetSize<
+export function makeGetNumberAttr<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
+  itemKey: "size" | "zIndex",
   { nodeData, edgeData }: GraphDataset,
-  { nodesSize, edgesSize }: AppearanceState,
-): null | SizeGetter {
+  { nodesSize, edgesSize, edgesZIndex }: AppearanceState,
+): null | NumberGetter {
+  const numberAttrDef = itemKey === "zIndex" ? edgesZIndex : itemType === "nodes" ? nodesSize : edgesSize;
   const itemsValues = itemType === "nodes" ? nodeData : edgeData;
-  const sizesDef = itemType === "nodes" ? nodesSize : edgesSize;
 
-  let getSize: SizeGetter | null = null;
-  switch (sizesDef.type) {
+  let getNumberValue: NumberGetter | null = null;
+  switch (numberAttrDef.type) {
     case "ranking": {
-      const getValue = makeGetValue(sizesDef.transformationMethod);
+      const getValue = makeGetValue(numberAttrDef.transformationMethod);
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = getValue(toNumber(data[sizesDef.field]));
+        const value = getValue(toNumber(data[numberAttrDef.field]));
         if (typeof value === "number") {
           min = Math.min(min, value);
           max = Math.max(max, value);
         }
       });
       const delta = max - min || 1;
-      const ratio = (sizesDef.maxSize - sizesDef.minSize) / delta;
-      getSize = (data: ItemData) => {
-        const value = getValue(toNumber(data[sizesDef.field]));
+      const ratio = (numberAttrDef.maxSize - numberAttrDef.minSize) / delta;
+      getNumberValue = (data: ItemData) => {
+        const value = getValue(toNumber(data[numberAttrDef.field]));
 
         if (typeof value === "number" && !isNaN(value) && Math.abs(value) !== Infinity) {
-          return (value - min) * ratio + sizesDef.minSize;
+          return (value - min) * ratio + numberAttrDef.minSize;
         }
-        return sizesDef.missingSize;
+        return numberAttrDef.missingSize;
+      };
+      break;
+    }
+    case "field": {
+      let min = Infinity,
+        max = -Infinity;
+      forEach(itemsValues, (data) => {
+        const value = toNumber(data[numberAttrDef.field]);
+        if (typeof value === "number") {
+          min = Math.min(min, value);
+          max = Math.max(max, value);
+        }
+      });
+      const [minIndex, maxIndex] = numberAttrDef.reversed ? [10, 1] : [1, 10];
+      const delta = max - min || 1;
+      const ratio = (maxIndex - minIndex) / delta;
+      getNumberValue = (data: ItemData) => {
+        const value = toNumber(data[numberAttrDef.field]);
+
+        if (typeof value === "number" && !isNaN(value) && Math.abs(value) !== Infinity) {
+          return (value - min) * ratio + minIndex;
+        }
+
+        return 0;
       };
       break;
     }
     case "fixed":
-      getSize = () => sizesDef.value;
+      getNumberValue = () => numberAttrDef.value;
   }
 
-  return getSize;
+  return getNumberValue;
 }
 
 export function makeGetColor<
@@ -265,20 +294,22 @@ export function makeGetStringAttr<
 
 export function getAllVisualGetters(dataset: GraphDataset, appearance: AppearanceState): VisualGetters {
   const nodeVisualGetters: VisualGetters = {
-    getNodeSize: makeGetSize("nodes", dataset, appearance),
+    getNodeSize: makeGetNumberAttr("nodes", "size", dataset, appearance),
     getNodeColor: makeGetColor("nodes", dataset, appearance),
     getNodeLabel: makeGetStringAttr("nodes", "labels", dataset, appearance),
     getNodeImage: makeGetStringAttr("nodes", "images", dataset, appearance),
     getEdgeSize: null,
     getEdgeColor: null,
     getEdgeLabel: null,
+    getEdgeZIndex: null,
   };
 
   return {
     ...nodeVisualGetters,
-    getEdgeSize: makeGetSize("edges", dataset, appearance),
+    getEdgeSize: makeGetNumberAttr("edges", "size", dataset, appearance),
     getEdgeColor: makeGetColor("edges", dataset, appearance, nodeVisualGetters),
     getEdgeLabel: makeGetStringAttr("edges", "labels", dataset, appearance),
+    getEdgeZIndex: makeGetNumberAttr("edges", "zIndex", dataset, appearance),
   };
 }
 export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, getters: VisualGetters): void {
@@ -304,6 +335,7 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
     }
     if (getters.getEdgeColor) attr.color = getters.getEdgeColor(dataset.edgeData[edge], edge);
     if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(dataset.edgeData[edge]);
+    if (getters.getEdgeZIndex) attr.zIndex = getters.getEdgeZIndex(dataset.edgeData[edge]);
     graph.mergeEdgeAttributes(edge, attr);
   });
 }
@@ -311,7 +343,7 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
 /**
  * Rendering helpers:
  */
-export function getNodeDrawFunction({ nodesLabelSize }: AppearanceState, draw: NodeLabelDrawingFunction) {
+export function getDrawNodeLabel({ nodesLabelSize }: AppearanceState, draw: NodeLabelDrawingFunction) {
   return ((context, data: CustomNodeDisplayData, settings) => {
     let labelSize =
       nodesLabelSize.type === "fixed"

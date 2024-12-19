@@ -77,6 +77,16 @@ export type LabelSize = FixedLabelSize | ItemLabelSize;
 export interface BooleanAppearance extends AppearanceBaseElement {
   value: boolean;
 }
+
+// Z-index management:
+export interface ZIndexFieldAttr extends AppearanceBaseElement {
+  type: "field";
+  field: string;
+  reversed: boolean;
+}
+
+export type ZIndexAttr = NoFieldValue<"none"> | ZIndexFieldAttr;
+
 /**
  * This state contains everything needed to generate the visual getters:
  */
@@ -93,9 +103,10 @@ export interface AppearanceState {
   nodesLabelSize: LabelSize;
   edgesLabelSize: LabelSize;
   nodesImage: StringAttr;
+  edgesZIndex: ZIndexAttr;
 }
 
-export type SizeGetter = (data: ItemData) => number;
+export type NumberGetter = (data: ItemData) => number;
 export type ColorGetter = (data: ItemData, edgeId?: string) => string;
 export type StringAttrGetter = (data: ItemData) => string | null;
 
@@ -104,13 +115,14 @@ export type StringAttrGetter = (data: ItemData) => string | null;
  * edge size, color or label:
  */
 export interface VisualGetters {
-  getNodeSize: SizeGetter | null;
+  getNodeSize: NumberGetter | null;
   getNodeColor: ColorGetter | null;
   getNodeLabel: StringAttrGetter | null;
   getNodeImage: StringAttrGetter | null;
-  getEdgeSize: SizeGetter | null;
+  getEdgeSize: NumberGetter | null;
   getEdgeColor: ColorGetter | null;
   getEdgeLabel: StringAttrGetter | null;
+  getEdgeZIndex: NumberGetter | null;
 }
 
 /**

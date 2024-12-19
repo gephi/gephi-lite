@@ -3,7 +3,7 @@ import { FC, useEffect } from "react";
 import { drawDiscNodeLabel, drawStraightEdgeLabel } from "sigma/rendering";
 import { DEFAULT_SETTINGS, Settings } from "sigma/settings";
 
-import { getDrawEdgeLabel, getNodeDrawFunction } from "../../../core/appearance/utils";
+import { getDrawEdgeLabel, getDrawNodeLabel } from "../../../core/appearance/utils";
 import { useAppearance, useGraphDataset, usePreferences } from "../../../core/context/dataContexts";
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { GephiLiteSigma, resetCamera, sigmaAtom } from "../../../core/sigma";
@@ -25,10 +25,11 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     const mode = getAppliedTheme(theme);
     sigma.setSetting("labelColor", { color: mode === "dark" ? "#FFF" : "#000" });
     sigma.setSetting("edgeLabelColor", { color: mode === "dark" ? "#495057" : "#CCC" });
-    sigma.setSetting("nodeHoverBackgoundColor" as keyof Settings, mode === "dark" ? "#000" : "#FFF");
+    sigma.setSetting("nodeHoverBackgroundColor" as keyof Settings, mode === "dark" ? "#000" : "#FFF");
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
-    sigma.setSetting("defaultDrawNodeLabel", getNodeDrawFunction(graphAppearance, drawDiscNodeLabel));
-    sigma.setSetting("defaultDrawNodeHover", getNodeDrawFunction(graphAppearance, drawDiscNodeHover));
+    sigma.setSetting("zIndex", graphAppearance.edgesZIndex.type !== "none");
+    sigma.setSetting("defaultDrawNodeLabel", getDrawNodeLabel(graphAppearance, drawDiscNodeLabel));
+    sigma.setSetting("defaultDrawNodeHover", getDrawNodeLabel(graphAppearance, drawDiscNodeHover));
     sigma.setSetting("defaultDrawEdgeLabel", getDrawEdgeLabel(graphAppearance, drawStraightEdgeLabel));
 
     const labelThreshold = inputToStateThreshold(graphAppearance.nodesLabelSize.density);

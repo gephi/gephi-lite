@@ -8,6 +8,7 @@ import { ColorItem } from "./color/ColorItem";
 import { LabelSizeItem } from "./label/LabelSizeItem";
 import { StringAttrItem } from "./label/StringAttrItem";
 import { SizeItem } from "./size/SizeItem";
+import { EdgesZIndexItem } from "./zIndex/EdgesZIndexItem";
 
 export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -43,6 +44,12 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
         <>
           <hr className="m-0" />
           <StringAttrItem itemType={itemType} itemKey="images" />
+        </>
+      )}
+      {itemType === "edges" && (
+        <>
+          <hr className="m-0" />
+          <EdgesZIndexItem />
         </>
       )}
     </>

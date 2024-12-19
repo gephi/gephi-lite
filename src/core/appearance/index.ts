@@ -1,7 +1,7 @@
 import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
-import { AppearanceState, BooleanAppearance, Color, LabelSize, Size, StringAttr } from "./types";
+import { AppearanceState, BooleanAppearance, Color, LabelSize, ZIndexAttr, Size, StringAttr } from "./types";
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LAYOUT_GRID_COLOR,
@@ -43,6 +43,10 @@ const setNodeImagesAppearance: Producer<AppearanceState, [StringAttr]> = (nodesI
   return (state) => ({ ...state, nodesImage });
 };
 
+const setEdgesZIndexAppearance: Producer<AppearanceState, [ZIndexAttr]> = (zIndex) => {
+  return (state) => ({ ...state, edgesZIndex: zIndex });
+};
+
 /**
  * Public API:
  * ***********
@@ -59,6 +63,7 @@ export const appearanceActions = {
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
   setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),
+  setEdgesZIndexAppearance: producerToAction(setEdgesZIndexAppearance, appearanceAtom),
 } as const;
 
 /**

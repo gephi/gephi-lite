@@ -168,6 +168,15 @@
       "data_description": "All {{items}} images are as they are in the input data file.",
       "none_description": "All {{items}} have no displayed image."
     },
+    "zIndex": {
+      "title": "Depth",
+      "description": "Allows customizing which {{items}} should be rendered in the front. Higher values are rendered in the front, lower values in the back.",
+      "none": "Default (faster)",
+      "set_values_from": "Set depth from...",
+      "none_description": "Gephi Lite renders all {{items}} in the order it meets them.",
+      "reverse_order": "Inverse order of elements (lower values on front, higher in the back)",
+      "default_value": ""
+    },
     "size": {
       "title": "Size",
       "set_size_from": "Set size from...",
