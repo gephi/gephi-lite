@@ -177,6 +177,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
                 itemType="node"
                 minimal={minimal}
                 itemsColor={appearance.nodesColor}
+                itemsRefinementColor={appearance.nodesRefinementColor}
                 extend={vizAttributesExtends.node[appearance.nodesColor.type][appearance.nodesColor.field]}
               />
             )}
@@ -192,6 +193,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
                 itemType="edge"
                 minimal={minimal}
                 itemsColor={appearance.edgesColor}
+                itemsRefinementColor={appearance.edgesRefinementColor}
                 extend={
                   appearance.edgesColor.field
                     ? vizAttributesExtends.edge[appearance.edgesColor.type][appearance.edgesColor.field]

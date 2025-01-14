@@ -1,10 +1,10 @@
 import cx from "classnames";
 import { sortBy, toPairs } from "lodash";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GraphCaptionProps, PartitionExtends, RangeExtends } from ".";
-import { Color, EdgeColor } from "../../core/appearance/types";
+import { Color, EdgeColor, RefinementColor } from "../../core/appearance/types";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
 
@@ -12,14 +12,16 @@ export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
     itemType: "node" | "edge";
     itemsColor: Color | EdgeColor;
+    itemsRefinementColor?: RefinementColor;
     extend?: RangeExtends | PartitionExtends;
   }
-> = ({ itemType, minimal, itemsColor, extend }) => {
+> = ({ itemType, minimal, itemsColor, itemsRefinementColor, extend }) => {
   const { t } = useTranslation();
+  let result: ReactNode = null;
 
   if (itemsColor.field)
-    return (
-      <div className="graph-caption-item">
+    result = (
+      <>
         <CaptionItemTitle itemType={itemType} field={itemsColor.field} vizVariable="color" />
 
         {/* PARTITION */}
@@ -53,14 +55,32 @@ export const ItemsColorCaption: FC<
             <ColorSlider colorScalePoints={itemsColor.colorScalePoints} extend={extend} />
           </div>
         )}
-      </div>
+      </>
     );
-  if (itemsColor.type === "source" || itemsColor.type === "target") {
-    return (
-      <div className="graph-caption-item">
+  else if (itemsColor.type === "source" || itemsColor.type === "target")
+    result = (
+      <>
         <CaptionItemTitle itemType={itemType} field={t(`appearance.color.${itemsColor.type}`)} vizVariable="color" />
-      </div>
+      </>
     );
-  }
-  return null;
+
+  if (itemsRefinementColor)
+    result = (
+      <>
+        {result}
+        <p className="small">
+          <span className="text-muted">Edges with high</span> {itemsRefinementColor.field}{" "}
+          <span className="text-muted">
+            tend to the color{" "}
+            <span
+              className={cx("d-inline-block ms-1", itemType === "node" && "disc", itemType === "edge" && "rectangle")}
+              style={{ backgroundColor: itemsRefinementColor.targetColor }}
+            />
+            .
+          </span>
+        </p>
+      </>
+    );
+
+  return result && <div className="graph-caption-item">{result}</div>;
 };

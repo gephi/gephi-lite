@@ -33,6 +33,7 @@ export const DEFAULT_NODE_LABEL_SIZE = 14;
 export const DEFAULT_EDGE_LABEL_SIZE = 14;
 export const DEFAULT_BACKGROUND_COLOR = "#FFFFFF00";
 export const DEFAULT_LAYOUT_GRID_COLOR = "#666666";
+export const DEFAULT_REFINEMENT_COLOR = "#ffffff";
 
 export function getEmptyAppearanceState(): AppearanceState {
   return {
@@ -199,11 +200,12 @@ export function makeGetColor<
 >(
   itemType: T["itemType"],
   { nodeData, edgeData, nodeRenderingData, fullGraph }: GraphDataset,
-  { nodesColor, edgesColor }: AppearanceState,
+  { nodesColor, edgesColor, nodesRefinementColor, edgesRefinementColor }: AppearanceState,
   getters?: VisualGetters,
 ): ColorGetter | null {
   const itemsValues = itemType === "nodes" ? nodeData : edgeData;
   const colorsDef = itemType === "nodes" ? nodesColor : edgesColor;
+  const refinementDef = itemType === "nodes" ? nodesRefinementColor : edgesRefinementColor;
 
   let getColor: ColorGetter | null = null;
   switch (colorsDef.type) {
@@ -243,21 +245,51 @@ export function makeGetColor<
   if (itemType === "edges" && ["source", "target"].includes(colorsDef.type)) {
     const getNodeColor = (getters as VisualGetters | undefined)?.getNodeColor;
     const nodeForColor =
-      colorsDef.type === "source" ? (id?: string) => fullGraph.source(id) : (id?: string) => fullGraph.target(id);
+      colorsDef.type === "source"
+        ? (id?: string) => id && fullGraph.source(id)
+        : (id?: string) => id && fullGraph.target(id);
 
     if (getNodeColor && nodesColor.type !== "data")
-      getColor = (_, edgeId?: string) =>
-        nodeForColor(edgeId) ? getNodeColor(nodeData[nodeForColor(edgeId)]) : DEFAULT_NODE_COLOR;
+      getColor = (_, edgeId?: string) => {
+        const node = nodeForColor(edgeId);
+        return node ? getNodeColor(nodeData[node]) : DEFAULT_NODE_COLOR;
+      };
     else if (nodesColor.type === "data")
       // special case when node are colored by data have to reach nodeRenderingData instead of normal getNodeColor
       getColor = (_, edgeId?: string) => {
-        return nodeForColor(edgeId) &&
-          nodeRenderingData[nodeForColor(edgeId)] &&
-          nodeRenderingData[nodeForColor(edgeId)].color
-          ? nodeRenderingData[nodeForColor(edgeId)].color || DEFAULT_NODE_COLOR
+        const node = nodeForColor(edgeId);
+        return node && nodeRenderingData[node] && nodeRenderingData[node].color
+          ? nodeRenderingData[node].color || DEFAULT_NODE_COLOR
           : DEFAULT_NODE_COLOR;
       };
     else getColor = () => DEFAULT_EDGE_COLOR;
+  }
+
+  if (getColor && refinementDef) {
+    let min = Infinity,
+      max = -Infinity;
+    forEach(itemsValues, (data) => {
+      const value = toNumber(data[refinementDef.field]);
+      if (typeof value === "number") {
+        min = Math.min(min, value);
+        max = Math.max(max, value);
+      }
+    });
+    const factor = refinementDef.factor / (max - min || 1);
+
+    const rawGetColor = getColor;
+    getColor = (data: ItemData, edgeId?: string) => {
+      const color = rawGetColor(data, edgeId);
+      const value = toNumber(data[refinementDef.field]);
+
+      if (typeof value === "number") {
+        return chroma
+          .scale([color, refinementDef.targetColor])(value === max ? refinementDef.factor : (value - min) * factor)
+          .hex();
+      }
+
+      return refinementDef.missingColor || color;
+    };
   }
 
   return getColor;

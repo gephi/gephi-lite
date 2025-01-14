@@ -37,6 +37,7 @@
   width: 1em;
   height: 1em;
   border-radius: 1em;
+  padding: 0;
   background-color: $gray-400;
 }
 .circle::after {
@@ -58,6 +59,11 @@
 }
 .over-modal {
   z-index: $zindex-modal + 1 !important;
+}
+.rectangle {
+  height: 1em;
+  width: 0.25em;
+  transform: rotate(35deg);
 }
 
 .hoverable:hover {

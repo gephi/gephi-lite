@@ -1,7 +1,16 @@
 import { ItemType } from "../types";
 import { atom } from "../utils/atoms";
 import { Producer, producerToAction } from "../utils/producers";
-import { AppearanceState, BooleanAppearance, Color, LabelSize, ZIndexAttr, Size, StringAttr } from "./types";
+import {
+  AppearanceState,
+  BooleanAppearance,
+  Color,
+  LabelSize,
+  RefinementColor,
+  Size,
+  StringAttr,
+  ZIndexAttr,
+} from "./types";
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LAYOUT_GRID_COLOR,
@@ -29,6 +38,15 @@ const setLayoutGridColorAppearance: Producer<AppearanceState, [string | undefine
 };
 const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemType, color) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
+};
+const setRefinementColorAppearance: Producer<AppearanceState, [ItemType, RefinementColor | undefined]> = (
+  itemType,
+  refinementColor,
+) => {
+  return (state) => ({
+    ...state,
+    [itemType === "nodes" ? "nodesRefinementColor" : "edgesRefinementColor"]: refinementColor,
+  });
 };
 
 const setLabelAppearance: Producer<AppearanceState, [ItemType, StringAttr]> = (itemType, label) => {
@@ -58,6 +76,7 @@ export const appearanceActions = {
   setShowEdges: producerToAction(setShowEdges, appearanceAtom),
   setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
   setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),
+  setRefinementColorAppearance: producerToAction(setRefinementColorAppearance, appearanceAtom),
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
   setLayoutGridColorAppearance: producerToAction(setLayoutGridColorAppearance, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),

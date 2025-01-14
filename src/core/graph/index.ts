@@ -277,6 +277,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
       ...initialState,
       ...omitBy(appearanceState, (appearanceElement) => {
         if (
+          appearanceElement &&
           !isString(appearanceElement) &&
           appearanceElement.field &&
           ((appearanceElement.itemType === "edges" && !edgeFields.includes(appearanceElement.field)) ||

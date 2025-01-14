@@ -55,6 +55,13 @@ export interface PartitionColor extends AppearanceBaseElement {
   colorPalette: Record<string, string>;
   missingColor: string;
 }
+export interface RefinementColor extends AppearanceBaseElement {
+  type: "refinement";
+  field: string;
+  factor: number;
+  targetColor: string;
+  missingColor?: string;
+}
 export type Color = DataColor | RankingColor | FixedColor | PartitionColor;
 export type EdgeColor = Color | SourceNodeColor | TargetNodeColor;
 
@@ -97,7 +104,9 @@ export interface AppearanceState {
   backgroundColor: string;
   layoutGridColor: string;
   nodesColor: Color;
+  nodesRefinementColor?: RefinementColor;
   edgesColor: EdgeColor;
+  edgesRefinementColor?: RefinementColor;
   nodesLabel: StringAttr;
   edgesLabel: StringAttr;
   nodesLabelSize: LabelSize;

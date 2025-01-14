@@ -137,7 +137,11 @@
       "source_description": "Each edge is colored as its source.",
       "target_description": "Each edge is colored as its target.",
       "scale_point": "Scale point",
-      "ranking_intro": "Add color points on this scale"
+      "ranking_intro": "Add color points on this scale",
+      "enable_color_refinement": "Refine {{items}} colors",
+      "refinement_color": "Refinement color",
+      "refinement_factor": "Refinement factor",
+      "refinement_factor_description": "Use 1 to interpolate onto the refinement color. Use 0.1 to interpolate only 10% of the way."
     },
     "labels": {
       "title": "Labels",
