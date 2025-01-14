@@ -1,11 +1,8 @@
 import betweennessCentrality from "graphology-metrics/centrality/betweenness";
 
-
-
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
 import { quantitativeOnly } from "../utils";
-
 
 export const betweennessCentralityMetric: Metric<{ nodes: ["betweennessCentrality"] }> = {
   id: "betweennessCentrality",
