@@ -1,3 +1,5 @@
+import { ComponentType } from "react";
+
 import { FieldModel, FullGraph, ItemData } from "../graph/types";
 import { ItemType, Scalar } from "../types";
 
@@ -68,6 +70,11 @@ export interface Metric<Outputs extends Partial<Record<ItemType, string[]>>> {
       ? Record<Outputs[Key][number], Record<string, Scalar>>
       : never;
   };
+  additionalControl?: ComponentType<{
+    parameters: Record<string, unknown>;
+    attributeNames: Record<string, unknown>;
+    submitCount: number;
+  }>;
 }
 
 export interface MetricReport {

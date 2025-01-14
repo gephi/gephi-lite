@@ -22,6 +22,13 @@ const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();
 };
 
+const setFullState: Producer<AppearanceState, [AppearanceState]> = (newState) => {
+  return () => newState;
+};
+const mergeState: Producer<AppearanceState, [Partial<AppearanceState>]> = (newPartialState) => {
+  return (state) => ({ ...state, ...newPartialState });
+};
+
 const setShowEdges: Producer<AppearanceState, [BooleanAppearance]> = (showEdges) => {
   return (state) => ({ ...state, showEdges });
 };
@@ -73,6 +80,8 @@ export const appearanceAtom = atom<AppearanceState>(getEmptyAppearanceState());
 
 export const appearanceActions = {
   resetState: producerToAction(resetState, appearanceAtom),
+  setFullState: producerToAction(setFullState, appearanceAtom),
+  mergeState: producerToAction(mergeState, appearanceAtom),
   setShowEdges: producerToAction(setShowEdges, appearanceAtom),
   setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
   setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),

@@ -49,6 +49,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
     edges: keyBy(edgeFields, "id"),
   };
   const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
+  const [submitCount, setSubmitCount] = useState(0);
   // get metric config from the preference if it exists
   const [session, setSession] = useAtom(sessionAtom);
   const metricConfig = session.metrics[metric.id] || {
@@ -135,6 +136,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
   }, []);
 
   const submit = useCallback(() => {
+    setSubmitCount((v) => v + 1);
     try {
       // compute the metric on the graph. This method mutates the state directly for performance reasons
       const { fieldModels } = computeMetric(
@@ -320,6 +322,8 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
             </div>
           );
         })}
+
+        {metric.additionalControl && <metric.additionalControl {...metricConfig} submitCount={submitCount} />}
       </div>
 
       <hr className="m-0" />
