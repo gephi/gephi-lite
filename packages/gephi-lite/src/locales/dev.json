@@ -159,7 +159,11 @@
       "adapts_to_zoom": "How much labels should grow with zoom",
       "density": "How many labels should appear any time",
       "data_description": "All {{items}} labels are as they are in the input data file.",
-      "none_description": "All {{items}} have no displayed label."
+      "none_description": "All {{items}} have no displayed label.",
+      "ellipsis": {
+        "enabled":"Enabled ellipsis?",
+        "max_length": "Maximum length for labels"
+      }
     },
     "images": {
       "title": "Images",

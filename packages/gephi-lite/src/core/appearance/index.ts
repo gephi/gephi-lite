@@ -5,6 +5,7 @@ import {
   AppearanceState,
   BooleanAppearance,
   Color,
+  LabelEllipsis,
   LabelSize,
   RefinementColor,
   Size,
@@ -72,6 +73,14 @@ const setEdgesZIndexAppearance: Producer<AppearanceState, [ZIndexAttr]> = (zInde
   return (state) => ({ ...state, edgesZIndex: zIndex });
 };
 
+const setNodesLabelEllipsisAppearance: Producer<AppearanceState, [LabelEllipsis]> = (labelEllipsis) => {
+  return (state) => ({ ...state, nodesLabelEllipsis: labelEllipsis });
+};
+
+const setEdgesLabelEllipsisAppearance: Producer<AppearanceState, [LabelEllipsis]> = (labelEllipsis) => {
+  return (state) => ({ ...state, edgesLabelEllipsis: labelEllipsis });
+};
+
 /**
  * Public API:
  * ***********
@@ -92,6 +101,8 @@ export const appearanceActions = {
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
   setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),
   setEdgesZIndexAppearance: producerToAction(setEdgesZIndexAppearance, appearanceAtom),
+  setNodesLabelEllipsisAppearance: producerToAction(setNodesLabelEllipsisAppearance, appearanceAtom),
+  setEdgesLabelEllipsisAppearance: producerToAction(setEdgesLabelEllipsisAppearance, appearanceAtom),
 } as const;
 
 /**

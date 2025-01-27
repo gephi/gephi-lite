@@ -80,6 +80,7 @@ export type BaseLabelSize = { density: number; zoomCorrelation: number };
 export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: number };
 export type ItemLabelSize = NoFieldValue<"item"> & BaseLabelSize & { sizeCorrelation: number };
 export type LabelSize = FixedLabelSize | ItemLabelSize;
+export type LabelEllipsis = { enabled: boolean; maxLength: number };
 
 export interface BooleanAppearance extends AppearanceBaseElement {
   value: boolean;
@@ -111,6 +112,8 @@ export interface AppearanceState {
   edgesLabel: StringAttr;
   nodesLabelSize: LabelSize;
   edgesLabelSize: LabelSize;
+  nodesLabelEllipsis: LabelEllipsis;
+  edgesLabelEllipsis: LabelEllipsis;
   nodesImage: StringAttr;
   edgesZIndex: ZIndexAttr;
 }

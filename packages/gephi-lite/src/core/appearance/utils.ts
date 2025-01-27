@@ -1,5 +1,6 @@
 import chroma from "chroma-js";
 import { forEach, identity } from "lodash";
+import { Attributes } from "react";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
@@ -80,6 +81,14 @@ export function getEmptyAppearanceState(): AppearanceState {
       value: DEFAULT_EDGE_LABEL_SIZE,
       zoomCorrelation: 0,
       density: 1,
+    },
+    nodesLabelEllipsis: {
+      enabled: false,
+      maxLength: 25,
+    },
+    edgesLabelEllipsis: {
+      enabled: false,
+      maxLength: 25,
     },
     nodesImage: {
       itemType: "nodes",
@@ -375,7 +384,10 @@ export function applyVisualProperties(graph: SigmaGraph, dataset: GraphDataset, 
 /**
  * Rendering helpers:
  */
-export function getDrawNodeLabel({ nodesLabelSize }: AppearanceState, draw: NodeLabelDrawingFunction) {
+export function getDrawNodeLabel<N extends Attributes, E extends Attributes, G extends Attributes>(
+  { nodesLabelSize, nodesLabelEllipsis }: AppearanceState,
+  draw: NodeLabelDrawingFunction<N, E, G>,
+) {
   return ((context, data: CustomNodeDisplayData, settings) => {
     let labelSize =
       nodesLabelSize.type === "fixed"
@@ -384,26 +396,46 @@ export function getDrawNodeLabel({ nodesLabelSize }: AppearanceState, draw: Node
     if (nodesLabelSize.zoomCorrelation >= 1) labelSize = (labelSize * data.size) / data.rawSize;
     else if (nodesLabelSize.zoomCorrelation >= 0)
       labelSize = labelSize * Math.pow(data.size / data.rawSize, nodesLabelSize.zoomCorrelation);
+
+    let nodeLabel = data.label;
+    if (
+      !data.highlighted &&
+      data.label &&
+      nodesLabelEllipsis.enabled &&
+      data.label?.length > nodesLabelEllipsis.maxLength
+    ) {
+      nodeLabel = nodeLabel?.slice(0, nodesLabelEllipsis.maxLength) + "...";
+    }
+
     return draw(
       context,
       {
         ...data,
-        label: data.hideLabel ? null : data.label,
+        label: data.hideLabel ? null : nodeLabel,
       },
       { ...settings, labelSize, labelWeight: data.boldLabel ? "bold" : "normal" },
     );
-  }) as NodeLabelDrawingFunction;
+  }) as NodeLabelDrawingFunction<N, E, G>;
 }
 
-export function getDrawEdgeLabel({ edgesLabelSize }: AppearanceState, draw: EdgeLabelDrawingFunction) {
+export function getDrawEdgeLabel<N extends Attributes, E extends Attributes, G extends Attributes>(
+  { edgesLabelSize, edgesLabelEllipsis }: AppearanceState,
+  draw: EdgeLabelDrawingFunction<N, E, G>,
+) {
   return ((context, data: CustomEdgeDisplayData, sourceData, targetData, settings) => {
     let edgeLabelSize =
       edgesLabelSize.type === "fixed" ? edgesLabelSize.value : data.rawSize * edgesLabelSize.sizeCorrelation;
     if (edgesLabelSize.zoomCorrelation >= 1) edgeLabelSize = (edgeLabelSize * data.size) / data.rawSize;
     else if (edgesLabelSize.zoomCorrelation >= 0)
       edgeLabelSize = edgeLabelSize * Math.pow(data.size / data.rawSize, edgesLabelSize.zoomCorrelation);
-    return draw(context, data, sourceData, targetData, { ...settings, edgeLabelSize });
-  }) as EdgeLabelDrawingFunction;
+
+    let edgeLabel = data.label;
+    if (data.label && edgesLabelEllipsis.enabled && data.label?.length > edgesLabelEllipsis.maxLength) {
+      edgeLabel = edgeLabel?.slice(0, edgesLabelEllipsis.maxLength) + "...";
+    }
+
+    return draw(context, { ...data, label: edgeLabel }, sourceData, targetData, { ...settings, edgeLabelSize });
+  }) as EdgeLabelDrawingFunction<N, E, G>;
 }
 
 export function getItemAttributes(

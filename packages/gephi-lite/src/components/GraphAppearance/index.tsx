@@ -5,6 +5,7 @@ import { useAppearance, useAppearanceActions } from "../../core/context/dataCont
 import { ItemType } from "../../core/types";
 import ColorPicker from "../ColorPicker";
 import { ColorItem } from "./color/ColorItem";
+import { LabelEllipsis } from "./label/LabelEllipsis";
 import { LabelSizeItem } from "./label/LabelSizeItem";
 import { StringAttrItem } from "./label/StringAttrItem";
 import { SizeItem } from "./size/SizeItem";
@@ -35,11 +36,15 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
       )}
 
       <ColorItem itemType={itemType} />
+
       <hr className="m-0" />
       <SizeItem itemType={itemType} />
+
       <hr className="m-0" />
       <StringAttrItem itemType={itemType} itemKey="labels" />
       <LabelSizeItem itemType={itemType} />
+      <LabelEllipsis itemType={itemType} />
+
       {itemType === "nodes" && (
         <>
           <hr className="m-0" />
