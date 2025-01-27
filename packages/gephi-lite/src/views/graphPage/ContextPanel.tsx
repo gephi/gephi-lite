@@ -77,7 +77,7 @@ const GraphSelectionSearch: FC = () => {
         if (searchResult.length > RESULT_MAX_SIZE) {
           result.push({
             type: "message",
-            i18nCode: "other_result",
+            i18nCode: "graph.other_result",
             i18nParams: { count: searchResult.length - RESULT_MAX_SIZE },
           });
         } else {
