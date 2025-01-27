@@ -26,7 +26,7 @@ export const SLIDER_STYLE = {
 export const NumberInput: FC<
   { value: number | null; onChange: (v: number | null) => void } & BaseTypedInputProps &
     Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">
-> = ({ id, label, description, value, onChange, className, ...attrs }) => {
+> = ({ id, label, description, value, onChange, className, defaultValue, ...attrs }) => {
   return (
     <div className="mt-1">
       <label htmlFor={id} className="form-check-label small">
@@ -37,7 +37,7 @@ export const NumberInput: FC<
         type="number"
         className={cx("form-control form-control-sm", className)}
         id={id}
-        value={typeof value === "number" ? value : ""}
+        value={typeof value === "number" ? value : defaultValue || ""}
         onChange={(e) => onChange(isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber)}
       />
       {description && <div className="form-text small text-muted">{description}</div>}

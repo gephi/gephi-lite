@@ -211,7 +211,33 @@
     "activated": "Activated filter",
     "create_filter": "Create filter",
     "keepMissingValues": "Keep missing values",
-    "inapplicable": "Filter disabled: only one value available"
+    "inapplicable": "Filter disabled: only one value available",
+    "topology": {
+      "largestConnectedComponent": {
+        "label": "Connected component",
+        "number": "Number of largest components to keep",
+        "summary_one": "The largest",
+        "summary": "The {{number}} largest"
+      },
+      "kCore": {
+        "label": "kCore",
+        "core": "k: minimum degree nodes should have",
+        "summary": "{{core}}-Core"
+      },
+      "ego": {
+        "label": "Ego network",
+        "ego": "Ego node",
+        "core": "depth: maximum distance to ego",
+        "summary_depth": "at depth {{depth}}",
+        "summary_direction": "following {{direction}}",
+        "direction": {
+          "label": "Follow",
+          "in": "inbound edges",
+          "out": "outbound edges",
+          "both": "any edges"
+        }
+      }
+    }
   },
   "edition": {
     "create_nodes": "Create new node",

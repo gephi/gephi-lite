@@ -57,8 +57,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
   const { nodeData, edgeData } = dataset;
 
   if (filter.type === "topological") {
-    // TODO:
-    return graph;
+    return filter.filter(filter.parameters, graph) as G;
   }
 
   // Nodes:

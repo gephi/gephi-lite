@@ -5,12 +5,13 @@ import { CgAddR } from "react-icons/cg";
 import Select from "react-select";
 
 import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { topologicalFilters } from "../../core/filters/topological";
 import { FilterType } from "../../core/filters/types";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../consts";
 
-interface FilterOption {
+export interface FilterOption {
   value: string;
   label: string | JSX.Element;
   disabled?: boolean;
@@ -19,7 +20,7 @@ interface FilterOption {
 }
 
 export const FilterCreator: FC = () => {
-  const { nodeFields, edgeFields } = useGraphDataset();
+  const { nodeFields, edgeFields, metadata } = useGraphDataset();
   const { t } = useTranslation();
   const { addFilter } = useFiltersActions();
   const filters = useFilters();
@@ -38,16 +39,13 @@ export const FilterCreator: FC = () => {
     setSelectedFilterOption(null);
     setFilterCreation(null);
     if (filterApplicationType === "topological") {
-      // TODO: topological filters
-      const topologicalFiltersOptions: FilterOption[] = [
-        { value: "degree", label: "Topological on Degree (TODO)", disabled: true, type: "topological" },
-        {
-          value: "main_connected_component",
-          label: "Main connected component (TODO)",
-          disabled: true,
+      const topologicalFiltersOptions: FilterOption[] = topologicalFilters(metadata.type !== "undirected").map(
+        (tf) => ({
+          value: tf.id,
+          label: tf.label,
           type: "topological",
-        },
-      ];
+        }),
+      );
       setFilterOptions(topologicalFiltersOptions);
     } else {
       // Fields filters
@@ -86,7 +84,7 @@ export const FilterCreator: FC = () => {
       };
       setFilterOptions([...fieldFiltersOptions, scriptFilterOption]);
     }
-  }, [filterApplicationType, edgeFields, nodeFields, t]);
+  }, [filterApplicationType, edgeFields, nodeFields, t, metadata.type]);
 
   if (!isOpened) {
     return (
@@ -147,7 +145,10 @@ export const FilterCreator: FC = () => {
                       break;
                     }
                     case "topological":
-                      setFilterCreation({ type: "topological", method: selectedOption.value });
+                      setFilterCreation(
+                        topologicalFilters(metadata.type !== "undirected").find((f) => f.id === selectedOption.value) ||
+                          null,
+                      );
                   }
                 }
               }}

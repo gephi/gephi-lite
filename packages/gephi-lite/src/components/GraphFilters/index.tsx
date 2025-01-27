@@ -9,6 +9,7 @@ import { FilterCreator } from "./FilterCreator";
 import { RangeFilter } from "./RangeFilter";
 import { ScriptFilter } from "./ScriptFilter";
 import { TermsFilter } from "./TermsFilter";
+import { TopologicalFilter } from "./TopologicalFilter";
 
 const FilterInStack: FC<{
   filter: FilterType;
@@ -59,6 +60,14 @@ const FilterInStack: FC<{
         )}
         {filter.type === "script" && (
           <ScriptFilter
+            filter={filter}
+            filterIndex={filterIndex}
+            editMode={editMode && internalEditMode}
+            active={active}
+          />
+        )}
+        {filter.type === "topological" && (
+          <TopologicalFilter
             filter={filter}
             filterIndex={filterIndex}
             editMode={editMode && internalEditMode}
