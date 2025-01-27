@@ -1,0 +1,32 @@
+{
+  "name": "@gephi/gephi-lite-sdk",
+  "version": "0.0.1",
+  "description": "TODO",
+  "main": "dist/gephi-gephi-lite-sdk.cjs.js",
+  "module": "dist/gephi-gephi-lite-sdk.esm.js",
+  "files": [
+    "/dist"
+  ],
+  "sideEffects": false,
+  "homepage": "https://gephi.org/gephi-lite",
+  "bugs": "http://github.com/jacomyal/sigma.js/issues",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jacomyal/sigma.js.git",
+    "directory": "packages/template"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts"
+    ]
+  },
+  "license": "gpl-3.0",
+  "exports": {
+    ".": {
+      "module": "./dist/gephi-gephi-lite-sdk.esm.js",
+      "import": "./dist/gephi-gephi-lite-sdk.cjs.mjs",
+      "default": "./dist/gephi-gephi-lite-sdk.cjs.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

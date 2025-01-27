@@ -15,15 +15,22 @@
     "isolatedModules": true,
     "strictFunctionTypes": false,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "types": ["vite/client", "vitest/globals"],
     "typeRoots": ["node_modules"],
-    "plugins": [
-      {
-        "transform": "typia/lib/transform"
-      }
-    ],
     "strictNullChecks": true
   },
-  "include": ["src", "types"]
+  "watchOptions": {
+    "excludeDirectories": ["**/node_modules"]
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/sdk"
+    },
+    {
+      "path": "./packages/broadcast-client"
+    },
+    {
+      "path": "./packages/gephi-lite"
+    },
+  ]
 }

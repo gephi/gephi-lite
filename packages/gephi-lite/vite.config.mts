@@ -4,7 +4,7 @@ import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
 
-import { BASE_URL } from "./config";
+import { BASE_URL } from "../../config";
 
 export default defineConfig({
   base: BASE_URL,

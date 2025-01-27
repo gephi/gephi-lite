@@ -1,113 +1,22 @@
 {
-  "name": "gephi-lite",
-  "version": "0.5.2",
-  "homepage": "https://gephi.org/gephi-lite",
+  "name": "@gephi/gephi-lite-root",
+  "homepage": "https://github.com/gephi/gephi-lite",
   "license": "gpl-3.0",
+  "bugs": "http://github.com/jacomyal/sigma.js/issues",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "test": "vitest -r src",
-    "test:e2e": "playwright test",
-    "translations-scan": "i18next-scanner --config i18next-scanner.config.ts src/**/*.{ts,tsx}",
-    "prepare": "ts-patch install && typia patch"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
-    "@octokit/auth-oauth-device": "^7.1.1",
-    "@octokit/core": "^6.1.2",
-    "@playwright/test": "^1.44.1",
-    "@react-sigma/core": "^4.0.2",
-    "@sigma/node-image": "^3.0.0",
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/byte-size": "^8.1.2",
-    "@types/chroma-js": "^2.4.4",
-    "@types/file-saver": "^2.0.7",
-    "@types/is-url": "^1.2.32",
-    "@types/lodash": "^4.17.5",
-    "@types/node": "^20.14.2",
-    "@types/react": "^18.3.3",
-    "@types/react-color": "^3.0.12",
-    "@types/react-dom": "^18.3.0",
-    "@types/react-highlight": "^0.12.8",
-    "@types/react-slider": "^1.3.6",
-    "@vitejs/plugin-react-swc": "^3.7.0",
-    "bootstrap": "^5.3.3",
-    "byte-size": "^8.1.1",
-    "chroma-js": "^2.4.2",
-    "classnames": "^2.5.1",
-    "color": "^4.2.3",
-    "copy-to-clipboard": "^3.3.3",
-    "file-saver": "^2.0.5",
-    "graphology": "^0.25.4",
-    "graphology-communities-louvain": "^2.0.2",
-    "graphology-gexf": "^0.13.2",
-    "graphology-graphml": "^0.5.2",
-    "graphology-layout": "^0.6.1",
-    "graphology-layout-force": "^0.2.4",
-    "graphology-layout-forceatlas2": "^0.10.1",
-    "graphology-layout-noverlap": "^0.4.2",
-    "graphology-metrics": "^2.3.0",
-    "graphology-operators": "^1.6.0",
-    "highlight.js": "^11.9.0",
-    "http-proxy-middleware": "^3.0.0",
-    "i18next": "^23.11.5",
-    "i18next-browser-languagedetector": "^8.0.0",
-    "i18next-scanner": "^4.4.0",
-    "is-url": "^1.2.4",
-    "isomorphic-fetch": "^3.0.0",
-    "iwanthue": "^2.0.0",
-    "locale-emoji": "^0.3.0",
-    "lodash": "^4.17.21",
-    "minisearch": "^6.3.0",
-    "prettier": "^3.3.1",
-    "rc-slider": "^10.6.2",
-    "react": "^18.3.1",
-    "react-animate-height": "^3.2.3",
-    "react-color": "^2.19.3",
-    "react-dom": "^18.3.1",
-    "react-dropzone": "^14.2.3",
-    "react-error-boundary": "^4.0.13",
-    "react-highlight": "^0.15.0",
-    "react-hook-form": "^7.51.5",
-    "react-i18next": "^14.1.2",
-    "react-icons": "^5.2.1",
-    "react-infinite-scroll-component": "^6.1.0",
-    "react-linkify": "^1.0.0-alpha",
-    "react-router": "^6.23.1",
-    "react-router-dom": "^6.23.1",
-    "react-select": "^5.8.0",
-    "react-slider": "^2.0.6",
-    "react-tether": "^3.0.3",
-    "react-use-konami": "^1.1.0",
-    "sass": "^1.77.4",
-    "seedrandom": "^3.0.5",
-    "typia": "^6.12.2",
-    "vite": "^5.2.13",
-    "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^1.6.0"
-  },
-  "overrides": {
-    "sigma": "3.0.0"
+    "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
+    "start": "npm run start --workspace=@gephi/gephi-lite",
+    "test": "npm run test --workspaces --if-present",
+    "build": "preconstruct build",
+    "postinstall": "preconstruct dev",
+    "postpublish": "preconstruct dev"
   },
   "devDependencies": {
-    "@ryoppippi/unplugin-typia": "^1.0.7",
-    "@types/color": "^3.0.6",
-    "@types/react-linkify": "^1.0.4",
-    "@types/seedrandom": "^3.0.8",
-    "@types/tether": "^1.4.9",
+    "@preconstruct/cli": "^2.8.10",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
     "eslint": "^8.57.0",
@@ -116,8 +25,15 @@
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^3.3.1",
-    "ts-patch": "^3.2.1",
-    "typescript": "~5.6.3",
-    "vite-plugin-checker": "^0.6.4"
+    "typescript": "~5.6.3"
+  },
+  "preconstruct": {
+    "packages": [
+      "packages/sdk",
+      "packages/broadcast-client"
+    ],
+    "exports": {
+      "importConditionDefaultExport": "default"
+    }
   }
 }

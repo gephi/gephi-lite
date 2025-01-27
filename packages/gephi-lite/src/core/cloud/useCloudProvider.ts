@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 
 import { useExportActions, useImportActions } from "../context/dataContexts";
 import { graphDatasetAtom } from "../graph";
-import { useConnectedUser } from "../user/index";
+import { useConnectedUser } from "../user";
 import { useAtom } from "../utils/atoms";
 import { CloudFile } from "./types";
 

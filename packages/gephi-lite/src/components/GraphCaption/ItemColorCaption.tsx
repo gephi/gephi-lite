@@ -3,7 +3,7 @@ import { sortBy, toPairs } from "lodash";
 import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GraphCaptionProps, PartitionExtends, RangeExtends } from ".";
+import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./index";
 import { Color, EdgeColor, RefinementColor } from "../../core/appearance/types";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
