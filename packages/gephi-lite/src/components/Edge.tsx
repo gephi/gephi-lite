@@ -26,7 +26,7 @@ export const EdgeComponent: FC<{
           <span className={cx(hidden ? "dotted" : "dash", "edge-body")} style={{ borderColor: color }} />{" "}
           {directed && <span className="edge-arrow" style={{ borderTopColor: color }} />}
         </div>
-        <span className={cx(hidden && "text-muted flex-grow-1", !label && "fst-italic")}>
+        <span className={cx("text-ellipsis", hidden && "text-muted flex-grow-1", !label && "fst-italic")}>
           {label || t("selection.edge_no_label")}
         </span>
       </div>

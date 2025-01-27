@@ -169,11 +169,13 @@ function SelectedItem<
       {attributes && (
         <ul className="ms-4 list-unstyled small">
           {attributes.map(([key, value]) => (
-            <li key={key}>
+            <li key={key} className="overflow-hidden">
               <span className="text-muted">{key}:</span>{" "}
-              <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>
-                {typeof value === "boolean" ? value.toString() : value}
-              </ReactLinkify>
+              <span className="text-ellipsis">
+                <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>
+                  {typeof value === "boolean" ? value.toString() : value}
+                </ReactLinkify>
+              </span>
             </li>
           ))}
         </ul>
