@@ -1,4 +1,4 @@
 #! /bin/sh
 cd /gephi-lite
 npm i
-npm run start -- --host
+npm run start -- -- --host
