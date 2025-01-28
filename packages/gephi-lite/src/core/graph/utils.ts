@@ -53,6 +53,7 @@ export function parseDataset(rawDataset: string): GraphDataset | null {
       fullGraph,
     };
   } catch (e) {
+    console.error(e);
     return null;
   }
 }
@@ -124,7 +125,7 @@ export function inferFieldType<T extends ItemType = ItemType>(
   return res;
 }
 
-export function cleanNode(node: string, attributes: Attributes): { data: ItemData; renderingData: NodeRenderingData } {
+export function cleanNode(_node: string, attributes: Attributes): { data: ItemData; renderingData: NodeRenderingData } {
   const x = toNumber(attributes.x);
   const y = toNumber(attributes.y);
 
@@ -141,7 +142,7 @@ export function cleanNode(node: string, attributes: Attributes): { data: ItemDat
   return { data, renderingData };
 }
 
-export function cleanEdge(edge: string, attributes: Attributes): { data: ItemData; renderingData: EdgeRenderingData } {
+export function cleanEdge(_edge: string, attributes: Attributes): { data: ItemData; renderingData: EdgeRenderingData } {
   const renderingData: EdgeRenderingData = {
     label: typeof attributes.label === "string" ? attributes.label : undefined,
     color: typeof attributes.color === "string" ? attributes.color : undefined,

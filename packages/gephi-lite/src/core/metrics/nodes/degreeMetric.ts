@@ -43,7 +43,7 @@ export const degreeMetric: Metric<{ nodes: ["degree"] }> = {
         kind === "inDegree" ? graph.reduceInEdges : kind === "outDegree" ? graph.reduceOutEdges : graph.reduceEdges
       ).bind(graph);
       graph.forEachNode((node) => {
-        collection[node] = reduceEdges(node, (acc, edge, attr) => acc + (toNumber(attr[getEdgeWeight]) || 0), 0);
+        collection[node] = reduceEdges(node, (acc, _edge, attr) => acc + (toNumber(attr[getEdgeWeight]) || 0), 0);
       });
     } else {
       const getDegree = graph[kind || "degree"].bind(graph);

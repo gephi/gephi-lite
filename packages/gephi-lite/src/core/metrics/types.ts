@@ -77,6 +77,7 @@ export interface Metric<Outputs extends Partial<Record<ItemType, string[]>>> {
   }>;
 }
 
+//eslint-disable-next-line
 export interface MetricReport {
   // TODO
 }

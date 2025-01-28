@@ -53,7 +53,7 @@ export const AppearanceController: FC = () => {
     const allEmphasizedEdges = emphasizedNodes
       ? new Set(
           graph.filterEdges(
-            (edge, _attr, source, target) => emphasizedNodes.has(source) && emphasizedNodes.has(target),
+            (_edge, _attr, source, target) => emphasizedNodes.has(source) && emphasizedNodes.has(target),
           ),
         )
       : emphasizedEdges ||

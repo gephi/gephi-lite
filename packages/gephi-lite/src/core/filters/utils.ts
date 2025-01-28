@@ -28,6 +28,7 @@ export function parseFiltersState(rawFilters: string): FiltersState | null {
     // Validate the actual data
     return parseWithSetsAndFunctions(rawFilters);
   } catch (e) {
+    console.error(e);
     return null;
   }
 }

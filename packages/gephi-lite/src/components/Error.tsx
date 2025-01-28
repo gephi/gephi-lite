@@ -41,7 +41,12 @@ export const ErrorComponent: FC<FallbackProps> = ({ error, resetErrorBoundary })
           <p className="mt-3">{t("error.message")}</p>
 
           <div className="d-flex justify-content-center">
-            <a className="btn btn-outline-primary me-3" href={errorToGithubLink(error)} target="_blank">
+            <a
+              className="btn btn-outline-primary me-3"
+              rel="noreferrer"
+              target="_blank"
+              href={errorToGithubLink(error)}
+            >
               <GitHubIcon /> {t("error.report")}
             </a>
             <button className="btn btn-primary" onClick={() => resetErrorBoundary()}>

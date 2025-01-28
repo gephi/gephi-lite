@@ -14,7 +14,7 @@ export const LayoutQualityForm: FC = () => {
       {t("layouts.quality.title")}
       <p className="text-muted small d-none d-md-block">
         {t("layouts.quality.description")}{" "}
-        <a href="https://jgaa.info/index.php/jgaa/article/view/paper626" target="_blank" rel="noopener">
+        <a href="https://jgaa.info/index.php/jgaa/article/view/paper626" target="_blank" rel="noreferrer">
           (Jacomy 2023)
         </a>
       </p>

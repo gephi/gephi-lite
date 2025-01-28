@@ -21,6 +21,7 @@ export function parseSession(rawSession: string): Session | null {
     // Validate the actual data
     return parseWithSetsAndFunctions(rawSession);
   } catch (e) {
+    console.error(e);
     return null;
   }
 }

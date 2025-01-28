@@ -14,7 +14,6 @@ import { dataGraphToFullGraph } from "../graph/utils";
 import { Layout, LayoutMapping, SyncLayout, WorkerLayout } from "./types";
 
 // definition of a custom layout function
-// eslint-disable-next-line no-new-func
 const nodeCoordinatesCustomFn = new Function(`return (
 function nodeCoordinates(id, attributes, index, graph) {
   // / Your code goes here
@@ -109,7 +108,7 @@ export const LAYOUTS: Array<Layout> = [
       {
         id: "autoSettings",
         description: true,
-        getSettings(currentSettings, dataGraph: DataGraph) {
+        getSettings(_currentSettings, dataGraph: DataGraph) {
           const infer = inferSettings(dataGraph);
           return infer;
         },

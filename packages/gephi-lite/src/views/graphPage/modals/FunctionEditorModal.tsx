@@ -8,7 +8,7 @@ import { usePreferences } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
 import { getAppliedTheme } from "../../../core/preferences/utils";
 
-//eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 interface FunctionEditorModalProps<T = Function> {
   title: string;
   withSaveAndRun?: boolean;
@@ -33,7 +33,6 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
     (run: boolean, code: string) => {
       try {
         if (code.trim().length === 0) throw new Error("Code is required");
-        // eslint-disable-next-line no-new-func
         const script = new Function(`return ( ${code} )`)() as T;
         checkFunction(script);
         submit({ run, script });

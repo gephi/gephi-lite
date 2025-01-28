@@ -7,7 +7,6 @@ import { Scalar } from "../../types";
 import { Metric, MetricScriptFunction } from "../types";
 
 // Definition of a custom metric function for edges
-// eslint-disable-next-line no-new-func
 const edgeMetricCustomFn = new Function(`return (
   function edgeMetric(id, attributes, index, graph) {
     // Your code goes here

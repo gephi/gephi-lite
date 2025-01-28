@@ -80,6 +80,7 @@ export const FilePanel: FC = () => {
                           message: t("graph.save.cloud.success", { filename: origin.filename }).toString(),
                         });
                       } catch (e) {
+                        console.error(e);
                         notify({ type: "error", message: t("graph.save.cloud.error").toString() });
                       }
                     }}

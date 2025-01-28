@@ -18,13 +18,19 @@ export default tseslint.config(
     },
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser
+      globals: globals.browser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
     rules: {
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
       'react/prop-types': 'off',
+      "react/display-name": "off",
       "@typescript-eslint/no-unused-vars": ["warn", {
         "args": "all",
         "argsIgnorePattern": "^_",

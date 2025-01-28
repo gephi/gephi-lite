@@ -20,6 +20,7 @@ export function getCurrentPreferences(): Preferences {
     const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
     return { ...getEmptyPreferences(), ...preferences };
   } catch (e) {
+    console.error(e);
     return getEmptyPreferences();
   }
 }
@@ -37,6 +38,7 @@ export function parsePreferences(rawPreferences: string): Preferences | null {
     // Validate the actual data
     return parseWithSetsAndFunctions(rawPreferences);
   } catch (e) {
+    console.error(e);
     return null;
   }
 }

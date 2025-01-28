@@ -188,7 +188,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
         <div className="text-muted small flex-grow-1 flex-shrink-1">
           <div>
             {t("welcome.disclaimer-1")}{" "}
-            <a href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
+            <a rel="noreferrer" target="_blank" href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md">
               v{version}
             </a>
           </div>

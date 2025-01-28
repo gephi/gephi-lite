@@ -7,7 +7,6 @@ import { Scalar } from "../../types";
 import { Metric, MetricScriptFunction } from "../types";
 
 // Definition of a custom metric function for nodes
-// eslint-disable-next-line no-new-func
 const nodeMetricCustomFn = new Function(`return (
   function nodeMetric(id, attributes, index, graph) {
     // Your code goes here

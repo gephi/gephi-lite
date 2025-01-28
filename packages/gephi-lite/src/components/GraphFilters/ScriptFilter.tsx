@@ -14,14 +14,12 @@ import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditor
 import { CodeEditorIcon } from "../common-icons";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
-// eslint-disable-next-line no-new-func
 const nodeFilterCustomFn = new Function(`return (
 function nodeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
 })`)();
 
-// eslint-disable-next-line no-new-func
 const edgeFilterCustomFn = new Function(`return (
 function edgeFilter(id, attributes, graph) {
   // Your code goes here

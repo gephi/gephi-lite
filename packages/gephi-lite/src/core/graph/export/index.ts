@@ -46,6 +46,7 @@ export const exportAsGexf = asyncAction(async (callback: (content: string) => vo
     // idle state
     exportStateAtom.set({ type: "idle" });
   } catch (e) {
+    console.error(e);
     exportStateAtom.set({ type: "error" });
   }
 });
