@@ -2,9 +2,9 @@ import { last, range } from "lodash";
 import { FC, HTMLProps, useCallback } from "react";
 import ReactSlider from "react-slider";
 
-import { RangeExtends } from "./index";
 import { ColorScalePointType } from "../../core/appearance/types";
 import { shortenNumber } from "../GraphFilters/utils";
+import { RangeExtends } from "./index";
 
 export const ColorSlider: FC<{
   colorScalePoints: ColorScalePointType[];

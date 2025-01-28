@@ -1,3 +1,4 @@
+import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { isNil } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
@@ -21,7 +22,6 @@ import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { sessionAtom } from "../../core/session";
-import { useAtom } from "../../core/utils/atoms";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type LayoutOption = {

@@ -1,10 +1,9 @@
+import { asyncAction, atom } from "@ouestware/atoms";
 import { write } from "graphology-gexf";
 import { toUndirected } from "graphology-operators";
 
-import { filteredGraphAtom, graphDatasetAtom, visualGettersAtom } from "../index";
 import { applyVisualProperties } from "../../appearance/utils";
-import { atom } from "../../utils/atoms";
-import { asyncAction } from "../../utils/producers";
+import { filteredGraphAtom, graphDatasetAtom, visualGettersAtom } from "../index";
 import { dataGraphToFullGraph } from "../utils";
 import { ExportState } from "./types";
 

@@ -1,3 +1,4 @@
+import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { capitalize, cloneDeep, flatMap, isNil, keyBy, map, mapValues } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
@@ -19,7 +20,6 @@ import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { sessionAtom } from "../../core/session";
 import { ItemType } from "../../core/types";
-import { useAtom } from "../../core/utils/atoms";
 import { FunctionEditorModal } from "./modals/FunctionEditorModal";
 
 type MetricOption = {

@@ -1,5 +1,5 @@
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
+import { Producer, atom, producerToAction } from "@ouestware/atoms";
+
 import { Session } from "./types";
 import { getEmptySession, serializeSession } from "./utils";
 

@@ -1,3 +1,4 @@
+import { Producer, asyncAction, atom, derivedAtom, producerToAction } from "@ouestware/atoms";
 import EventEmitter from "events";
 import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
@@ -6,8 +7,6 @@ import seedrandom from "seedrandom";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { resetCamera } from "../sigma";
-import { atom, derivedAtom } from "../utils/atoms";
-import { Producer, asyncAction, producerToAction } from "../utils/producers";
 import { LAYOUTS } from "./collection";
 import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
 

@@ -1,10 +1,9 @@
+import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { Scalar } from "../types";
-import { toNumber, toString } from "../utils/casting";
-import { parse, stringify } from "../utils/json";
 import { FilterType, FilteredGraph, FiltersState, RangeFilterType, TermsFilterType } from "./types";
 
 /**
@@ -21,13 +20,13 @@ export function getEmptyFiltersState(): FiltersState {
  * Filters lifecycle helpers (state serialization / deserialization):
  */
 export function serializeFiltersState(filters: FiltersState): string {
-  return stringify(filters);
+  return stringifyWithSetsAndFunctions(filters);
 }
 export function parseFiltersState(rawFilters: string): FiltersState | null {
   try {
     // TODO:
     // Validate the actual data
-    return parse(rawFilters);
+    return parseWithSetsAndFunctions(rawFilters);
   } catch (e) {
     return null;
   }
@@ -118,7 +117,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
 }
 
 export function getFilterFingerprint(filter: FilterType): string {
-  return stringify(filter);
+  return stringifyWithSetsAndFunctions(filter);
 }
 
 export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache: FilteredGraph[]): FilteredGraph[] {

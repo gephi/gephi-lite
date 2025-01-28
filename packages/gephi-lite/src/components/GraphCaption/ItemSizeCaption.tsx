@@ -1,11 +1,11 @@
 import cx from "classnames";
 import { FC, useCallback, useEffect, useState } from "react";
 
-import { GraphCaptionProps, RangeExtends } from "./index";
 import { Size } from "../../core/appearance/types";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
 import { shortenNumber } from "../GraphFilters/utils";
 import { CaptionItemTitle } from "./CaptionItemTitle";
+import { GraphCaptionProps, RangeExtends } from "./index";
 
 const ItemSizeCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {

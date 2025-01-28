@@ -1,1 +1,1 @@
-declare module "packages/gephi-lite/types/locale-emoji";
+declare module "locale-emoji";

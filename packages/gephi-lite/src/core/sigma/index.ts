@@ -1,10 +1,9 @@
+import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
 import Sigma from "sigma";
 
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
 import { SigmaState } from "./types";
 import { getEmptySigmaState } from "./utils";
 

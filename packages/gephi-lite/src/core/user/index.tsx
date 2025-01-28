@@ -1,7 +1,6 @@
+import { Producer, atom, producerToAction, useAtom } from "@ouestware/atoms";
 import { isNil } from "lodash";
 
-import { atom, useAtom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
 import { User } from "./types";
 
 export const LS_USER_KEY = "user";

@@ -1,8 +1,7 @@
+import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { without } from "lodash";
 
 import { ItemType } from "../types";
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
 import { SelectionState } from "./types";
 import { getEmptySelectionState } from "./utils";
 

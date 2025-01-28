@@ -1,8 +1,7 @@
+import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { isEqual } from "lodash";
 
 import { RemoteFile } from "../graph/import/types";
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
 import { Preferences } from "./types";
 import { getAppliedTheme, getCurrentPreferences, serializePreferences } from "./utils";
 

@@ -1,3 +1,4 @@
+import { Action, ReadableAtom, WritableAtom, useReadAtom } from "@ouestware/atoms";
 import { reduce } from "lodash";
 import { Context, FC, ReactNode, createContext, useContext } from "react";
 
@@ -13,8 +14,6 @@ import { selectionActions, selectionAtom } from "../selection";
 import { sessionActions, sessionAtom } from "../session";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
 import { userActions, userAtom } from "../user";
-import { ReadableAtom, WritableAtom, useReadAtom } from "../utils/atoms";
-import { Action } from "../utils/producers";
 
 /**
  * Helpers:

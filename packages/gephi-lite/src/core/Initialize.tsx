@@ -1,3 +1,4 @@
+import { parseAppearanceState } from "@gephi/gephi-lite-sdk";
 import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
@@ -6,7 +7,6 @@ import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
-import { parseAppearanceState } from "./appearance/utils";
 import { useBroadcast } from "./broadcast/useBroadcast";
 import { useGraphDatasetActions, useImportActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
@@ -22,7 +22,7 @@ import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
 
-// This awful flag helps dealing with the double rendering caused from
+// This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
 // https://react.dev/reference/react/StrictMode#fixing-bugs-found-by-double-rendering-in-development
 let isInitialized = false;

@@ -1,3 +1,4 @@
+import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { FC, useCallback, useState } from "react";
 import {
@@ -10,7 +11,6 @@ import {
 import { config } from "../config";
 import { notificationsStateAtom } from "../core/notifications";
 import { NotificationType } from "../core/notifications/types";
-import { useAtom } from "../core/utils/atoms";
 import { useTimeout } from "../hooks/useTimeout";
 import { dateToFromAgo } from "../utils/date";
 

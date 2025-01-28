@@ -1,8 +1,8 @@
+import { useReadAtom } from "@ouestware/atoms";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { filteredGraphsAtom } from "../../core/graph";
-import { useReadAtom } from "../../core/utils/atoms";
 
 export const FilteredGraphSummary: FC<{ filterIndex: number }> = ({ filterIndex }) => {
   const { t } = useTranslation();

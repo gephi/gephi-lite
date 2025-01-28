@@ -1,3 +1,4 @@
+import { toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, isNil, omit, pick } from "lodash";
 import { FC, useMemo } from "react";
@@ -13,7 +14,6 @@ import { FieldModel, NodeRenderingData } from "../../../../core/graph/types";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { Scalar } from "../../../../core/types";
-import { toNumber } from "../../../../core/utils/casting";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
   id?: string;

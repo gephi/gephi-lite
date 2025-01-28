@@ -1,4 +1,4 @@
-import { parse, stringify } from "./json";
+import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "./json";
 
 const CLASSIC_DATASET = {
   name: "John Doe",
@@ -23,31 +23,31 @@ const SETS_DATASET_STRING =
 describe("JSON utilities", () => {
   describe("#parse and #stringify together", () => {
     it("should work with 'classic' data", () => {
-      expect(parse(stringify(CLASSIC_DATASET))).toEqual(CLASSIC_DATASET);
+      expect(parseWithSetsAndFunctions(stringifyWithSetsAndFunctions(CLASSIC_DATASET))).toEqual(CLASSIC_DATASET);
     });
 
     it("should work with sets", () => {
-      expect(parse(stringify(SETS_DATASET))).toEqual(SETS_DATASET);
+      expect(parseWithSetsAndFunctions(stringifyWithSetsAndFunctions(SETS_DATASET))).toEqual(SETS_DATASET);
     });
   });
 
   describe("#stringify", () => {
     it("should work with 'classic' data", () => {
-      expect(stringify(CLASSIC_DATASET)).toBe(CLASSIC_DATASET_STRING);
+      expect(stringifyWithSetsAndFunctions(CLASSIC_DATASET)).toBe(CLASSIC_DATASET_STRING);
     });
 
     it("should work with sets", () => {
-      expect(stringify(SETS_DATASET)).toBe(SETS_DATASET_STRING);
+      expect(stringifyWithSetsAndFunctions(SETS_DATASET)).toBe(SETS_DATASET_STRING);
     });
   });
 
   describe("#parse", () => {
     it("should work with 'classic' data", () => {
-      expect(parse(CLASSIC_DATASET_STRING)).toEqual(CLASSIC_DATASET);
+      expect(parseWithSetsAndFunctions(CLASSIC_DATASET_STRING)).toEqual(CLASSIC_DATASET);
     });
 
     it("should work with sets", () => {
-      expect(parse(SETS_DATASET_STRING)).toEqual(SETS_DATASET);
+      expect(parseWithSetsAndFunctions(SETS_DATASET_STRING)).toEqual(SETS_DATASET);
     });
   });
 });

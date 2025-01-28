@@ -1,3 +1,4 @@
+import { useReadAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { flatMap, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
 import Slider, { SliderProps } from "rc-slider";
@@ -8,7 +9,6 @@ import { useFiltersActions } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
-import { useReadAtom } from "../../core/utils/atoms";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { findRanges, shortenNumber } from "./utils";
 

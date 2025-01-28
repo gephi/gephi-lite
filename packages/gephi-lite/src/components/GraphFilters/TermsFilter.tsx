@@ -1,3 +1,5 @@
+import { toString } from "@gephi/gephi-lite-sdk";
+import { useReadAtom } from "@ouestware/atoms";
 import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,8 +8,6 @@ import Select from "react-select";
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
-import { useReadAtom } from "../../core/utils/atoms";
-import { toString } from "../../core/utils/casting";
 import { DEFAULT_SELECT_PROPS } from "../consts";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 

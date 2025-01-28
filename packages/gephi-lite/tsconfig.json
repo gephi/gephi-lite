@@ -1,13 +1,11 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "packages/gephi-lite/src",
-    "packages/gephi-lite/types"
-  ],
+  "include": ["./src", "./types"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "types": ["vite/client", "vitest/globals"],
-    "typeRoots": ["node_modules"],
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules", "../../node_modules"],
     "plugins": [
       {
         "transform": "typia/lib/transform"

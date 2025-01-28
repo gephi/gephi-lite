@@ -1,3 +1,5 @@
+import { getEmptyAppearanceState } from "@gephi/gephi-lite-sdk";
+import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
 import EventEmitter from "events";
 import { Attributes } from "graphology-types";
 import { isNil, isString, keys, last, mapValues, omit, omitBy, values } from "lodash";
@@ -5,7 +7,7 @@ import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
-import { applyVisualProperties, getAllVisualGetters, getEmptyAppearanceState } from "../appearance/utils";
+import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { filtersAtom } from "../filters";
 import { FilterType, FilteredGraph } from "../filters/types";
 import { applyFilters } from "../filters/utils";
@@ -14,8 +16,6 @@ import { SearchState } from "../search/types";
 import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { ItemType } from "../types";
-import { atom, derivedAtom } from "../utils/atoms";
-import { MultiProducer, Producer, multiproducerToAction, producerToAction } from "../utils/producers";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
@@ -227,7 +227,7 @@ export const graphDatasetActions = {
   updateNode: producerToAction(updateNode, graphDatasetAtom),
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
-  deleteItems: multiproducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
+  deleteItems: multiProducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
   resetGraph: producerToAction(resetGraph, graphDatasetAtom),
 };
 

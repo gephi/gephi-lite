@@ -1,6 +1,6 @@
 {
   "name": "@gephi/gephi-lite-broadcast-client",
-  "version": "0.0.1",
+  "version": "0.5.2",
   "description": "TODO",
   "main": "dist/gephi-gephi-lite-broadcast-client.cjs.js",
   "module": "dist/gephi-gephi-lite-broadcast-client.esm.js",

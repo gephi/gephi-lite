@@ -1,6 +1,6 @@
+import { atom, useAtom } from "@ouestware/atoms";
 import { useCallback } from "react";
 
-import { atom, useAtom } from "../utils/atoms";
 import { ModalRequest, ModalState } from "./types";
 
 export const modalStateAtom = atom<ModalState>({});

@@ -1,6 +1,7 @@
+import { getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
+import { Producer, atom, producerToAction } from "@ouestware/atoms";
+
 import { ItemType } from "../types";
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
 import {
   AppearanceState,
   BooleanAppearance,
@@ -12,12 +13,7 @@ import {
   StringAttr,
   ZIndexAttr,
 } from "./types";
-import {
-  DEFAULT_BACKGROUND_COLOR,
-  DEFAULT_LAYOUT_GRID_COLOR,
-  getEmptyAppearanceState,
-  serializeAppearanceState,
-} from "./utils";
+import { DEFAULT_BACKGROUND_COLOR, DEFAULT_LAYOUT_GRID_COLOR } from "./utils";
 
 const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();

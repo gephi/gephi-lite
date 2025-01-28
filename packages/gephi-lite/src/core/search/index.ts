@@ -1,9 +1,8 @@
+import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import MiniSearch from "minisearch";
 
 import { graphDatasetAtom } from "../graph";
 import { ItemType } from "../types";
-import { atom } from "../utils/atoms";
-import { Producer, producerToAction } from "../utils/producers";
 import { SearchState } from "./types";
 import { edgeToDocument, getEmptySearchState, nodeToDocument } from "./utils";
 

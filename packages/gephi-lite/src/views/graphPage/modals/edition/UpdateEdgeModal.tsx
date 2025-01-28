@@ -1,3 +1,4 @@
+import { toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, isNil, map, omit, pick, reverse } from "lodash";
 import { FC, useContext, useMemo } from "react";
@@ -16,7 +17,6 @@ import { EdgeRenderingData, FieldModel } from "../../../../core/graph/types";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { Scalar } from "../../../../core/types";
-import { toNumber } from "../../../../core/utils/casting";
 
 interface NodeOption {
   label: string;

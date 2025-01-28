@@ -1,6 +1,6 @@
+import { atom, useWriteAtom } from "@ouestware/atoms";
 import { useCallback } from "react";
 
-import { atom, useWriteAtom } from "../utils/atoms";
 import { NotificationData, NotificationsState } from "./types";
 
 export const notificationsStateAtom = atom<NotificationsState>({ notifications: [] });

@@ -1,9 +1,9 @@
+import { notEmpty } from "@gephi/gephi-lite-sdk";
 import { Octokit } from "@octokit/core";
 import { isNil } from "lodash";
 import { FaGithub } from "react-icons/fa";
 
 import { checkFilenameExtension } from "../../../utils/check";
-import { notEmpty } from "../../utils/casting";
 import { CloudFile, CloudProvider } from "../types";
 
 export type GistFile =

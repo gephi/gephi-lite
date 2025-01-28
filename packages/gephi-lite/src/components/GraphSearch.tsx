@@ -75,7 +75,7 @@ interface GraphSearchProps {
   onChange: (e: Option | null) => void;
   /**
    * With this function, you can filter/enhance the result displayed to the user.
-   * This can useful to add action / messages or limit the number of result
+   * This can be useful to add action / messages or limit the number of result
    */
   postProcessOptions?: (options: Option[]) => Option[];
 }

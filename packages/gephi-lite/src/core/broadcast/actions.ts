@@ -1,3 +1,4 @@
+import { Producer, asyncAction, producerToAction } from "@ouestware/atoms";
 import Graph from "graphology";
 import { SerializedGraph } from "graphology-types";
 
@@ -8,7 +9,6 @@ import { graphDatasetActions } from "../graph";
 import { importStateAtom } from "../graph/import";
 import { initializeGraphDataset } from "../graph/utils";
 import { resetCamera } from "../sigma";
-import { Producer, asyncAction, producerToAction } from "../utils/producers";
 
 /**
  * Actions:

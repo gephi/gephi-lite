@@ -1,3 +1,4 @@
+import { asyncAction, atom } from "@ouestware/atoms";
 import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
@@ -6,8 +7,6 @@ import { resetStates } from "../../context/dataContexts";
 import { preferencesActions } from "../../preferences";
 import { resetCamera } from "../../sigma";
 import { userAtom } from "../../user";
-import { atom } from "../../utils/atoms";
-import { asyncAction } from "../../utils/producers";
 import { graphDatasetActions } from "../index";
 import { initializeGraphDataset } from "../utils";
 import { GraphOrigin, ImportState } from "./types";

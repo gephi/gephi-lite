@@ -1,3 +1,4 @@
+import { useReadAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { isBoolean } from "lodash";
 import { FC } from "react";
@@ -9,20 +10,19 @@ import { ScriptFilterType } from "../../core/filters/types";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
-import { useReadAtom } from "../../core/utils/atoms";
 import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
 import { CodeEditorIcon } from "../common-icons";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 // eslint-disable-next-line no-new-func
-const nodeFilterCustomFn = new Function(`return ( 
+const nodeFilterCustomFn = new Function(`return (
 function nodeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
 })`)();
 
 // eslint-disable-next-line no-new-func
-const edgeFilterCustomFn = new Function(`return ( 
+const edgeFilterCustomFn = new Function(`return (
 function edgeFilter(id, attributes, graph) {
   // Your code goes here
   return true;

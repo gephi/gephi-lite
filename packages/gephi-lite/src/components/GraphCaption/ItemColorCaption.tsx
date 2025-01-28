@@ -3,10 +3,10 @@ import { sortBy, toPairs } from "lodash";
 import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./index";
 import { Color, EdgeColor, RefinementColor } from "../../core/appearance/types";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
+import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./index";
 
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
