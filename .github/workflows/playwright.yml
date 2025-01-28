@@ -38,8 +38,8 @@ jobs:
         run: npx playwright install --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Run Playwright tests
-        run: npx playwright test
+      - name: Run E2E tests
+        run: npm run test:e2e
 
       - uses: actions/upload-artifact@v3
         if: always()
