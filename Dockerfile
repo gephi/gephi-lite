@@ -1,16 +1,6 @@
-FROM node:20
-ARG BASE_URL="/"
+FROM nginx:latest
 
-RUN apt-get -qq update && apt-get -qqy install nginx && apt-get clean
-
-COPY . /opt/code
-WORKDIR /opt/code
-RUN npm install && npm cache clean --force
-RUN npm run build
-RUN rm  /var/www/html/*
-RUN cp -f nginx.conf /etc/nginx/sites-available/default
-RUN cp -R build/* /var/www/html/
+COPY ./packages/gephi-lite/build/ /var/www/html/
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]

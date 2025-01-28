@@ -75,11 +75,18 @@ Stops container and frees all the resources obtained by the container.
 
 ### Dockerfile for production
 
-The Dockerfile provided in this repository is designed for **production**. 
+The Dockerfile provided in this repository is designed for **production**.
 The application is build and then served by nginx, which its port is exposed by docker
 
-* Build the image : `docker build -f Dockerfile -t gephi-lite .`
-* Create & run a container : `docker run -p 80:80 gephi-lite`
+- Build the project :
+
+```
+$> export BASE_URL="./"
+$> npm run build
+```
+
+- Build the image : `docker build -f Dockerfile -t gephi-lite .`
+- Create & run a container : `docker run -p 80:80 gephi-lite`
 
 ### Any custom `npm` command
 
