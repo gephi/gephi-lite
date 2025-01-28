@@ -68,7 +68,6 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           if (!option || option.value === "fixed") {
             if (size.type !== "fixed") {
               setSizeAppearance(itemType, {
-                itemType,
                 type: "fixed",
                 value: baseValue,
               });
@@ -79,7 +78,6 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             } as Size);
           } else if (option.type === "ranking") {
             setSizeAppearance(itemType, {
-              itemType,
               type: "ranking",
               field: option.field,
               minSize: baseValue / 2,

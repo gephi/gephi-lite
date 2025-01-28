@@ -16,67 +16,54 @@ export const DEFAULT_REFINEMENT_COLOR = "#ffffff";
 export function getEmptyAppearanceState(): AppearanceState {
   return {
     showEdges: {
-      itemType: "edges",
       value: true,
     },
     nodesSize: {
-      itemType: "nodes",
       type: "data",
     },
     edgesSize: {
-      itemType: "edges",
       type: "data",
     },
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     layoutGridColor: DEFAULT_LAYOUT_GRID_COLOR,
     nodesColor: {
-      itemType: "nodes",
       type: "data",
     },
     edgesColor: {
-      itemType: "edges",
       type: "data",
     },
     nodesLabel: {
-      itemType: "nodes",
       type: "data",
     },
     edgesLabel: {
-      itemType: "edges",
       type: "data",
     },
     nodesLabelSize: {
-      itemType: "nodes",
       type: "fixed",
       value: DEFAULT_NODE_LABEL_SIZE,
       zoomCorrelation: 0,
       density: 1,
     },
     edgesLabelSize: {
-      itemType: "edges",
       type: "fixed",
       value: DEFAULT_EDGE_LABEL_SIZE,
       zoomCorrelation: 0,
       density: 1,
     },
     nodesLabelEllipsis: {
-      itemType: "nodes",
       type: "ellipsis",
       enabled: false,
       maxLength: 25,
     },
     edgesLabelEllipsis: {
-      itemType: "edges",
       type: "ellipsis",
       enabled: false,
       maxLength: 25,
     },
     nodesImage: {
-      itemType: "nodes",
       type: "none",
     },
     edgesZIndex: {
-      itemType: "edges",
       type: "none",
     },
   };

@@ -3,7 +3,6 @@ import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 import { ItemData, ItemType } from "../utils";
 
 interface AppearanceBaseElement {
-  itemType: ItemType;
   field?: string;
 }
 
@@ -116,6 +115,28 @@ export interface AppearanceState {
   nodesImage: StringAttr;
   edgesZIndex: ZIndexAttr;
 }
+
+export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | null> = {
+  backgroundColor: null,
+  layoutGridColor: null,
+
+  nodesSize: "nodes",
+  nodesColor: "nodes",
+  nodesRefinementColor: "nodes",
+  nodesLabel: "nodes",
+  nodesLabelSize: "nodes",
+  nodesLabelEllipsis: "nodes",
+  nodesImage: "nodes",
+
+  showEdges: "edges",
+  edgesSize: "edges",
+  edgesColor: "edges",
+  edgesRefinementColor: "edges",
+  edgesLabel: "edges",
+  edgesLabelSize: "edges",
+  edgesLabelEllipsis: "edges",
+  edgesZIndex: "edges",
+};
 
 export type NumberGetter = (data: ItemData) => number;
 export type ColorGetter = (data: ItemData, edgeId?: string) => string;

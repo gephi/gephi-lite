@@ -1,8 +1,8 @@
-import { getEmptyAppearanceState } from "@gephi/gephi-lite-sdk";
+import { APPEARANCE_ITEM_TYPES, AppearanceState, getEmptyAppearanceState } from "@gephi/gephi-lite-sdk";
 import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
 import EventEmitter from "events";
 import { Attributes } from "graphology-types";
-import { isNil, isString, keys, last, mapValues, omit, omitBy, values } from "lodash";
+import { forEach, isNil, isString, keys, last, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -275,13 +275,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
     const newState = {
       ...initialState,
-      ...omitBy(appearanceState, (appearanceElement) => {
+      ...omitBy(appearanceState, (appearanceElement, key: keyof AppearanceState) => {
         if (
           appearanceElement &&
           !isString(appearanceElement) &&
           appearanceElement.field &&
-          ((appearanceElement.itemType === "edges" && !edgeFields.includes(appearanceElement.field)) ||
-            (appearanceElement.itemType === "nodes" && !nodeFields.includes(appearanceElement.field)))
+          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field)) ||
+            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field)))
         ) {
           // this appearance element is based on a field which is not in the model anymore
           // let's reset it
@@ -294,13 +294,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     };
 
     // to keep appearance state in sync we must check at least partitions
-    values(newState).forEach((appearanceElement) => {
-      if (isString(appearanceElement) || !("type" in appearanceElement)) return appearanceElement;
+    forEach(newState, (appearanceElement, key: keyof AppearanceState) => {
+      if (!appearanceElement || isString(appearanceElement) || !("type" in appearanceElement)) return appearanceElement;
       // TODO
       // - check if data field quali/quanti is still the good one
 
       // utils variables
-      const itemsData = graphDataset[appearanceElement.itemType === "nodes" ? "nodeData" : "edgeData"];
+      const itemsData = graphDataset[APPEARANCE_ITEM_TYPES[key] === "nodes" ? "nodeData" : "edgeData"];
       let values: string[] = [];
 
       switch (appearanceElement.type) {

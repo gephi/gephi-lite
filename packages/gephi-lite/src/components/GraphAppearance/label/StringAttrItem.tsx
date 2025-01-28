@@ -54,25 +54,21 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
         onChange={(option) => {
           if (!option) {
             setValue({
-              itemType,
               type: "none",
             });
           } else if (option.type === "field") {
             setValue({
-              itemType,
               type: "field",
               field: option.field,
               missingValue: null,
             });
           } else if (option.type === "fixed") {
             setValue({
-              itemType,
               type: "fixed",
               value: itemKey === "images" ? "http://..." : "label",
             });
           } else {
             setValue({
-              itemType,
               type: option.type,
             });
           }

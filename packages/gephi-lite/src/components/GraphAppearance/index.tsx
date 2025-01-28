@@ -25,7 +25,7 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
               className="form-check-input"
               type="checkbox"
               checked={showEdges.value}
-              onChange={(e) => setShowEdges({ itemType: "edges", value: e.target.checked })}
+              onChange={(e) => setShowEdges({ value: e.target.checked })}
               id="show-edges"
             />
             <label className="form-check-label" htmlFor="show-edges">

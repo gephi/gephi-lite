@@ -48,19 +48,16 @@ export const EdgesZIndexItem: FC = () => {
         onChange={(option) => {
           if (!option) {
             setEdgesZIndexAppearance({
-              itemType,
               type: "none",
             });
           } else if (option.type === "field") {
             setEdgesZIndexAppearance({
-              itemType,
               type: "field",
               field: option.field,
               reversed: false,
             });
           } else {
             setEdgesZIndexAppearance({
-              itemType,
               type: option.type,
             });
           }
