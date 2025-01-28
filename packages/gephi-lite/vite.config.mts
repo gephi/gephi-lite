@@ -17,7 +17,8 @@ export default defineConfig({
         buildMode: true,
       },
       eslint: {
-        lintCommand: "eslint --ext .ts,.tsx,.js,.jsx src --max-warnings=0",
+        useFlatConfig: true,
+        lintCommand: "eslint src --max-warnings=0",
       },
     }),
   ],
