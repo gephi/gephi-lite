@@ -1,4 +1,4 @@
-import { SCALAR_TYPES, Scalar } from "./types";
+import { SCALAR_TYPES, Scalar } from "../graph";
 
 export function toScalar(o: unknown): Scalar {
   if (SCALAR_TYPES.has(typeof o)) return o as Scalar;

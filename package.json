@@ -35,7 +35,7 @@
   "preconstruct": {
     "packages": [
       "packages/sdk",
-      "packages/broadcast-client"
+      "packages/broadcast"
     ],
     "exports": {
       "importConditionDefaultExport": "default"

@@ -1,5 +1,5 @@
 import { toNumber, toScalar, toString } from "./casting";
-import { Scalar } from "./types";
+import { Scalar } from "../graph/types.ts";
 
 describe("Casting utilities", () => {
   describe("#toNumber", () => {

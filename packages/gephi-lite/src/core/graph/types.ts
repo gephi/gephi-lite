@@ -1,61 +1,18 @@
+import { EdgeRenderingData, FieldModel, GraphMetadata, ItemData, NodeRenderingData } from "@gephi/gephi-lite-sdk";
 import { MultiGraph } from "graphology";
-import { Attributes, GraphType } from "graphology-types";
+import { Attributes } from "graphology-types";
 import Sigma from "sigma";
 
-import { ItemType, Scalar } from "../types";
 import { GraphOrigin } from "./import/types";
 
-export interface GraphMetadata {
-  title?: string;
-  description?: string;
-  authors?: string;
-  keywords?: string;
-  type: GraphType;
-}
-
-/**
- * Items data:
- * ***********
- */
-export interface EdgeRenderingData extends Attributes {
-  label?: string | null;
-  color?: string;
-  weight?: number;
-  rawWeight?: number;
-}
-export interface NodeRenderingData extends Attributes {
-  label?: string | null;
-  color?: string;
-  size?: number;
-  x: number;
-  y: number;
-  rawSize?: number;
-  image?: string | null;
-  fixed?: boolean;
-}
-
-// At the moment, all other attributes must be stored as scalar values, for
-// maintainability and performance reasons:
-export type ItemData = Record<string, Scalar>;
-
-/**
- * Model:
- * ******
- */
-export interface FieldModel<T extends ItemType = ItemType> {
-  id: string;
-  itemType: T;
-  quantitative: null | { unit?: string | null };
-  qualitative: null | { separator?: string | null };
-}
-
-export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {
-  stats: {
-    nbItems: number;
-    nbCastIssues: number;
-    nbMissingValues: number;
-  };
-};
+export {
+  type EdgeRenderingData,
+  type FieldModel,
+  type GraphMetadata,
+  type NodeRenderingData,
+  type FieldModelWithStats,
+  type ItemData,
+} from "@gephi/gephi-lite-sdk";
 
 /**
  * Graphs:

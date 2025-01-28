@@ -1,0 +1,41 @@
+{
+  "name": "@gephi/gephi-lite-broadcast",
+  "version": "0.5.2",
+  "description": "TODO",
+  "main": "dist/gephi-gephi-lite-broadcast.cjs.js",
+  "module": "dist/gephi-gephi-lite-broadcast.esm.js",
+  "files": [
+    "/dist"
+  ],
+  "sideEffects": false,
+  "homepage": "https://gephi.org/gephi-lite",
+  "bugs": "http://github.com/jacomyal/sigma.js/issues",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jacomyal/sigma.js.git",
+    "directory": "packages/template"
+  },
+  "dependencies": {
+    "@gephi/gephi-lite-sdk": "0.5.2",
+    "lodash": "^4.17.21",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.15",
+    "graphology-types": "^0.24.8"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts"
+    ]
+  },
+  "license": "gpl-3.0",
+  "exports": {
+    ".": {
+      "module": "./dist/gephi-gephi-lite-broadcast.esm.js",
+      "import": "./dist/gephi-gephi-lite-broadcast.cjs.mjs",
+      "default": "./dist/gephi-gephi-lite-broadcast.cjs.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

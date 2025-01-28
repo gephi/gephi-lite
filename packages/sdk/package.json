@@ -20,6 +20,9 @@
       "index.ts"
     ]
   },
+  "devDependencies": {
+    "graphology-types": "^0.24.8"
+  },
   "license": "gpl-3.0",
   "exports": {
     ".": {

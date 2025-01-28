@@ -370,6 +370,10 @@
           "height": "Height (in pixels)",
           "preserve_camera": "Preserve current camera position"
         }
+      },
+      "clone_in_new_tab": {
+        "title": "Clone in a new tab",
+        "success": "Your graph clone has successfully been opened in a new tab."
       }
     },
     "caption": {

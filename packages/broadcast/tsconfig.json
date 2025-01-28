@@ -16,8 +16,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "declaration": true
+    "declaration": true,
+    "types": ["vitest/globals"]
   },
-  "include": ["src"],
-  "exclude": ["src/**/__docs__", "src/**/__test__"]
+  "include": ["src"]
 }

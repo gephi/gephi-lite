@@ -1,37 +1,12 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
+import { stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { Scalar } from "../types";
-import { FilterType, FilteredGraph, FiltersState, RangeFilterType, TermsFilterType } from "./types";
+import { FilterType, FilteredGraph, RangeFilterType, TermsFilterType } from "./types";
 
-/**
- * Returns an empty filters state:
- */
-export function getEmptyFiltersState(): FiltersState {
-  return {
-    past: [],
-    future: [],
-  };
-}
-
-/**
- * Filters lifecycle helpers (state serialization / deserialization):
- */
-export function serializeFiltersState(filters: FiltersState): string {
-  return stringifyWithSetsAndFunctions(filters);
-}
-export function parseFiltersState(rawFilters: string): FiltersState | null {
-  try {
-    // TODO:
-    // Validate the actual data
-    return parseWithSetsAndFunctions(rawFilters);
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-}
+export { getEmptyFiltersState, serializeFiltersState, parseFiltersState } from "@gephi/gephi-lite-sdk";
 
 /**
  * Actual filtering helpers:

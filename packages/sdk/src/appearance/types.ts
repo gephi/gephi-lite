@@ -1,6 +1,6 @@
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { ItemData, ItemType } from "../utils";
+import { ItemData, ItemType } from "../graph";
 
 interface AppearanceBaseElement {
   field?: string;

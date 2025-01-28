@@ -27,7 +27,7 @@
       "path": "./packages/sdk"
     },
     {
-      "path": "./packages/broadcast-client"
+      "path": "./packages/broadcast"
     },
     {
       "path": "./packages/gephi-lite"

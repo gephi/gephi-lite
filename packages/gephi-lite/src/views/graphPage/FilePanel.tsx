@@ -3,11 +3,13 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { BsFiletypePng } from "react-icons/bs";
 import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
+import { FaClone } from "react-icons/fa6";
 import { ImFileEmpty } from "react-icons/im";
 
 import { Loader } from "../../components/Loader";
 import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
+import { openInNewTab } from "../../core/broadcast/driver";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import {
   useExportActions,
@@ -51,7 +53,7 @@ export const FilePanel: FC = () => {
         {!user?.provider && (
           <>
             <p className="small">{t("file.login_capabilities")}</p>
-            <div>
+            <div className="mb-3">
               <button
                 className="btn btn-sm btn-outline-dark mb-1"
                 onClick={() => openModal({ component: SignInModal, arguments: {} })}
@@ -195,6 +197,21 @@ export const FilePanel: FC = () => {
             >
               <BsFiletypePng className="me-1" />
               {t("graph.export.png.title").toString()}
+            </button>
+          </div>
+          <div>
+            <button
+              className="btn btn-sm btn-outline-dark mb-1"
+              onClick={async () => {
+                await openInNewTab();
+                notify({
+                  type: "success",
+                  message: t("graph.export.clone_in_new_tab.success").toString(),
+                });
+              }}
+            >
+              <FaClone className="me-1" />
+              {t("graph.export.clone_in_new_tab.title").toString()}
             </button>
           </div>
 

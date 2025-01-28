@@ -1,5 +1,5 @@
 import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "../utils";
-import { AppearanceState } from "./types";
+import { type AppearanceState } from "./types";
 
 export * from "./types";
 
