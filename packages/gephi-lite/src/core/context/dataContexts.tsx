@@ -4,7 +4,14 @@ import { Context, FC, ReactNode, createContext, useContext } from "react";
 
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { filtersActions, filtersAtom } from "../filters";
-import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
+import {
+  filteredGraphAtom,
+  graphDatasetActions,
+  graphDatasetAtom,
+  originAtom,
+  sigmaGraphAtom,
+  visualGettersAtom,
+} from "../graph";
 import { exportActions, exportStateAtom } from "../graph/export";
 import { importActions, importStateAtom } from "../graph/import";
 import { layoutActions, layoutStateAtom } from "../layouts";
@@ -55,6 +62,7 @@ const ATOMS = {
   search: searchAtom,
   layoutState: layoutStateAtom,
   session: sessionAtom,
+  origin: originAtom,
   user: userAtom,
 };
 type AtomName = keyof typeof ATOMS;
@@ -75,6 +83,7 @@ const CONTEXTS = {
   sigma: createContext(ATOMS.sigma),
   sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
+  origin: createContext(ATOMS.origin),
   user: createContext(ATOMS.user),
 };
 
@@ -129,6 +138,7 @@ export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
+export const useOrigin = makeUseAtom(CONTEXTS.origin);
 export const useUser = makeUseAtom(CONTEXTS.user);
 
 export const useSigmaActions = makeUseActions(sigmaActions);

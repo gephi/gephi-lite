@@ -11,12 +11,7 @@ import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
 import { openInNewTab } from "../../core/broadcast/driver";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import {
-  useExportActions,
-  useExportState,
-  useGraphDataset,
-  useGraphDatasetActions,
-} from "../../core/context/dataContexts";
+import { useExportActions, useExportState, useGraphDatasetActions, useOrigin } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
@@ -33,7 +28,7 @@ export const FilePanel: FC = () => {
   const [user] = useConnectedUser();
   const { notify } = useNotifications();
   const { t } = useTranslation("translation");
-  const { origin } = useGraphDataset();
+  const origin = useOrigin();
   const { loading, saveFile } = useCloudProvider();
   const { exportAsGexf } = useExportActions();
   const { type: exportState } = useExportState();

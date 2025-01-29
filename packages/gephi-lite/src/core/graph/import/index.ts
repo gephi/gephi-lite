@@ -7,7 +7,7 @@ import { resetStates } from "../../context/dataContexts";
 import { preferencesActions } from "../../preferences";
 import { resetCamera } from "../../sigma";
 import { userAtom } from "../../user";
-import { graphDatasetActions } from "../index";
+import { graphDatasetActions, originAtom } from "../index";
 import { initializeGraphDataset } from "../utils";
 import { GraphOrigin, ImportState } from "./types";
 
@@ -76,7 +76,8 @@ export const importFile = asyncAction(async (file: NonNullable<GraphOrigin>) => 
     const { addRemoteFile } = preferencesActions;
     graph.setAttribute("title", file.filename);
     resetStates(false);
-    setGraphDataset({ ...initializeGraphDataset(graph), origin: file });
+    setGraphDataset(initializeGraphDataset(graph));
+    originAtom.set(file);
     if (file.type === "remote") addRemoteFile(file);
     resetCamera({ forceRefresh: true });
   } catch (e) {

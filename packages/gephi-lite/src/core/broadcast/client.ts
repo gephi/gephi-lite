@@ -9,12 +9,14 @@ import {
   Message,
   MethodReplyMessage,
 } from "@gephi/gephi-lite-broadcast";
+import { AppearanceState, SerializedGraphDataset, deserializeDataset, serializeDataset } from "@gephi/gephi-lite-sdk";
 import EventEmitter from "events";
 import Graph from "graphology";
 import { isPlainObject } from "lodash";
 import { assert } from "typia";
 
 import { config } from "../../config";
+import { appearanceAtom } from "../appearance";
 import { resetStates } from "../context/dataContexts";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
 import { importStateAtom } from "../graph/import";
@@ -60,6 +62,26 @@ const BROADCAST_METHODS: {
     const graph = dataGraphToFullGraph(dataset);
     return graph.toJSON();
   },
+  getGraphDataset: async () => {
+    return serializeDataset(graphDatasetAtom.get());
+  },
+  setGraphDataset: async (appearance: SerializedGraphDataset) => {
+    graphDatasetAtom.set(deserializeDataset(appearance));
+    resetCamera({ forceRefresh: true });
+  },
+  mergeGraphDataset: async (appearance: Partial<SerializedGraphDataset>) => {
+    graphDatasetAtom.set((state) => ({ ...state, ...deserializeDataset(appearance) }));
+  },
+
+  getAppearance: async () => {
+    return appearanceAtom.get();
+  },
+  setAppearance: async (appearance: AppearanceState) => {
+    appearanceAtom.set(appearance);
+  },
+  mergeAppearance: async (appearance: Partial<AppearanceState>) => {
+    appearanceAtom.set((state) => ({ ...state, ...appearance }));
+  },
 };
 
 /**
@@ -80,6 +102,7 @@ export class BroadcastClient extends EventEmitter {
       if ((messageData as Message).type === "broadcastMessage") {
         const { id } = messageData as BroadcastMessage;
         if (!id) return;
+
         const { payload } = assert<GephiLiteMethodBroadcastMessage>(messageData);
         const returnValue = await this.callMethod(payload.method, payload.args);
         const replyMessage: MethodReplyMessage<GephiLiteMethod> = {

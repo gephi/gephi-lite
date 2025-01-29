@@ -1,3 +1,4 @@
+import { AppearanceState, GraphDataset, deserializeDataset, serializeDataset } from "@gephi/gephi-lite-sdk";
 import EventEmitter from "events";
 import { SerializedGraph } from "graphology-types";
 import { isPlainObject } from "lodash";
@@ -7,13 +8,19 @@ import {
   BaseMethod,
   EventBroadcastMessage,
   GephiLiteEvents,
+  GetAppearanceMethod,
+  GetGraphDatasetMethod,
   GetGraphMethod,
   GetVersionMethod,
   ImportGraphMethod,
+  MergeAppearanceMethod,
+  MergeGraphDatasetMethod,
   Message,
   MethodBroadcastMessage,
   PingMethod,
   ReplyMessage,
+  SetAppearanceMethod,
+  SetGraphDatasetMethod,
   TypedEventEmitter,
 } from "./types";
 
@@ -100,6 +107,24 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
   }
   getGraph() {
     return this.callMethod<GetGraphMethod>("getGraph");
+  }
+  getAppearance() {
+    return this.callMethod<GetAppearanceMethod>("getAppearance");
+  }
+  setAppearance(appearance: AppearanceState) {
+    return this.callMethod<SetAppearanceMethod>("setAppearance", appearance);
+  }
+  mergeAppearance(appearance: Partial<AppearanceState>) {
+    return this.callMethod<MergeAppearanceMethod>("mergeAppearance", appearance);
+  }
+  getGraphDataset() {
+    return this.callMethod<GetGraphDatasetMethod>("getGraphDataset").then((dataset) => deserializeDataset(dataset));
+  }
+  setGraphDataset(dataset: GraphDataset) {
+    return this.callMethod<SetGraphDatasetMethod>("setGraphDataset", serializeDataset(dataset));
+  }
+  mergeGraphDataset(dataset: Partial<GraphDataset>) {
+    return this.callMethod<MergeGraphDatasetMethod>("mergeGraphDataset", serializeDataset(dataset));
   }
 
   /**

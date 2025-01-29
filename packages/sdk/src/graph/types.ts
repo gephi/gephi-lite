@@ -1,4 +1,5 @@
-import { Attributes, GraphType } from "graphology-types";
+import { MultiGraph } from "graphology";
+import { Attributes, GraphType, SerializedGraph } from "graphology-types";
 
 /**
  * Base types:
@@ -58,3 +59,38 @@ export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> &
     nbMissingValues: number;
   };
 };
+
+/**
+ * Graphs:
+ * *******
+ */
+export type DatalessGraph = MultiGraph;
+export type SigmaGraph = MultiGraph<NodeRenderingData, EdgeRenderingData>;
+export type DataGraph = MultiGraph<ItemData, ItemData>;
+export type FullGraph = MultiGraph<ItemData & NodeRenderingData, ItemData & EdgeRenderingData>;
+
+/**
+ * States:
+ * *******
+ */
+export interface GraphDataset {
+  // The mandatory rendering data is stored in typed indices:
+  nodeRenderingData: Record<string, NodeRenderingData>;
+  edgeRenderingData: Record<string, EdgeRenderingData>;
+
+  // The rest of nodes and edges attributes are stored in separate indices:
+  nodeData: Record<string, ItemData>;
+  edgeData: Record<string, ItemData>;
+
+  // We store here the graph metadata (title, author, etc...):
+  metadata: GraphMetadata;
+
+  // We store here how the nodes/edges attributes should be interpreted:
+  nodeFields: FieldModel<"nodes">[];
+  edgeFields: FieldModel<"edges">[];
+
+  // Finally, we store here a Graphology instance that stores the graph, without
+  // nodes and edges data - just for traversal:
+  fullGraph: DatalessGraph;
+}
+export type SerializedGraphDataset = Omit<GraphDataset, "fullGraph"> & { fullGraph: SerializedGraph };

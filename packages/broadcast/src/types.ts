@@ -1,3 +1,4 @@
+import { AppearanceState, SerializedGraphDataset } from "@gephi/gephi-lite-sdk";
 import EventEmitter from "events";
 import { SerializedGraph } from "graphology-types";
 
@@ -96,8 +97,8 @@ export interface EventBroadcastMessage<E extends BaseEvent<string, unknown> = Ba
  *
  * 1. Data update/reading:
  *   - [x] getGraph(): SerializedFullGraph / importGraph(graph: FullGraph)
- *   - [ ] setGraphModel / getGraphModel
- *   - [ ] setGraphAppearance / getGraphAppearance
+ *   - [x] setGraphDataset / getGraphDataset / mergeGraphDataset
+ *   - [x] setGraphAppearance / getGraphAppearance / mergeGraphAppearance
  *   - [ ] setFilters / getFilters
  *   - [ ] setSelection / getSelection
  *
@@ -127,14 +128,40 @@ export interface EventBroadcastMessage<E extends BaseEvent<string, unknown> = Ba
  */
 export type PingMethod = BaseMethod<"ping">;
 export type GetVersionMethod = BaseMethod<"getVersion", [], string>;
+
 export type ImportGraphMethod = BaseMethod<"importGraph", [SerializedGraph]>;
 export type GetGraphMethod = BaseMethod<"getGraph", [], SerializedGraph>;
-export type GephiLiteMethod = PingMethod | GetVersionMethod | ImportGraphMethod | GetGraphMethod;
+export type GetGraphDatasetMethod = BaseMethod<"getGraphDataset", [], SerializedGraphDataset>;
+export type SetGraphDatasetMethod = BaseMethod<"setGraphDataset", [SerializedGraphDataset]>;
+export type MergeGraphDatasetMethod = BaseMethod<"mergeGraphDataset", [Partial<SerializedGraphDataset>]>;
+
+export type GetAppearanceMethod = BaseMethod<"getAppearance", [], AppearanceState>;
+export type SetAppearanceMethod = BaseMethod<"setAppearance", [AppearanceState]>;
+export type MergeAppearanceMethod = BaseMethod<"mergeAppearance", [Partial<AppearanceState>]>;
+
+export type GephiLiteMethod =
+  | PingMethod
+  | GetVersionMethod
+  | ImportGraphMethod
+  | GetGraphMethod
+  | GetGraphDatasetMethod
+  | SetGraphDatasetMethod
+  | MergeGraphDatasetMethod
+  | GetAppearanceMethod
+  | SetAppearanceMethod
+  | MergeAppearanceMethod;
+
 export type GephiLiteMethodBroadcastMessage =
   | MethodBroadcastMessage<PingMethod>
   | MethodBroadcastMessage<GetVersionMethod>
   | MethodBroadcastMessage<ImportGraphMethod>
-  | MethodBroadcastMessage<GetGraphMethod>;
+  | MethodBroadcastMessage<GetGraphMethod>
+  | MethodBroadcastMessage<GetGraphDatasetMethod>
+  | MethodBroadcastMessage<SetGraphDatasetMethod>
+  | MethodBroadcastMessage<MergeGraphDatasetMethod>
+  | MethodBroadcastMessage<GetAppearanceMethod>
+  | MethodBroadcastMessage<SetAppearanceMethod>
+  | MethodBroadcastMessage<MergeAppearanceMethod>;
 
 /**
  * Event types:

@@ -4,7 +4,6 @@ import { AppearanceState } from "@gephi/gephi-lite-sdk";
 import { appearanceAtom } from "../appearance";
 import { graphDatasetAtom } from "../graph";
 import { GraphDataset } from "../graph/types";
-import { dataGraphToFullGraph } from "../graph/utils";
 
 export async function openInNewTab({
   dataset = graphDatasetAtom.get(),
@@ -23,10 +22,10 @@ export async function openInNewTab({
   });
 
   // Feed graph:
-  await driver.importGraph(dataGraphToFullGraph(dataset).toJSON());
+  await driver.setGraphDataset(dataset);
 
   // Set graph appearance:
-  console.log("TODO: Set graph appearance in new Gephi Lite tab", appearance);
+  await driver.setAppearance(appearance);
 
   driver.destroy();
 }

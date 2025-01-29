@@ -20,6 +20,9 @@
       "index.ts"
     ]
   },
+  "peerDependencies": {
+    "graphology": "^0.25.4"
+  },
   "devDependencies": {
     "graphology-types": "^0.24.8"
   },

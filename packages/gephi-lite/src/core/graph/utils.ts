@@ -1,4 +1,4 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
+import { getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
 import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
@@ -17,45 +17,10 @@ import {
   SigmaGraph,
 } from "./types";
 
+export { parseDataset, datasetToString, getEmptyGraphDataset } from "@gephi/gephi-lite-sdk";
+
 export function getRandomNodeCoordinate(): number {
   return Math.random() * 100;
-}
-
-export function getEmptyGraphDataset(): GraphDataset {
-  return {
-    nodeRenderingData: {},
-    edgeRenderingData: {},
-    nodeData: {},
-    edgeData: {},
-    metadata: { type: "mixed" },
-    nodeFields: [],
-    edgeFields: [],
-    fullGraph: new MultiGraph(),
-    origin: null,
-  };
-}
-
-/**
- * Appearance lifecycle helpers (state serialization / deserialization):
- */
-export function serializeDataset(dataset: GraphDataset): string {
-  return stringifyWithSetsAndFunctions({ ...dataset, fullGraph: dataset.fullGraph.export() });
-}
-export function parseDataset(rawDataset: string): GraphDataset | null {
-  try {
-    // TODO:
-    // Validate the actual data
-    const parsed = parseWithSetsAndFunctions(rawDataset);
-    const fullGraph = new MultiGraph();
-    fullGraph.import(parsed.fullGraph);
-    return {
-      ...parsed,
-      fullGraph,
-    };
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
 }
 
 /**

@@ -3,14 +3,14 @@ import { isNil } from "lodash";
 import { useCallback, useState } from "react";
 
 import { useExportActions, useImportActions } from "../context/dataContexts";
-import { graphDatasetAtom } from "../graph";
+import { originAtom } from "../graph";
 import { useConnectedUser } from "../user";
 import { CloudFile } from "./types";
 
-// TODO: need to be refaco by atom/action/producer pattern
+// TODO: need to be refacto by atom/action/producer pattern
 export function useCloudProvider() {
   const [user] = useConnectedUser();
-  const [graphDataset, setGraphDataset] = useAtom(graphDatasetAtom);
+  const [origin, setOrigin] = useAtom(originAtom);
   const { exportAsGexf } = useExportActions();
   const { importFile } = useImportActions();
 
@@ -60,9 +60,9 @@ export function useCloudProvider() {
     setError(null);
     try {
       if (isNil(user)) throw new Error("You must be logged !");
-      if (!graphDataset.origin || graphDataset.origin.type !== "cloud") throw new Error("Not a cloud graph");
+      if (!origin || origin.type !== "cloud") throw new Error("Not a cloud graph");
       await exportAsGexf(async (content) => {
-        await user.provider.saveFile(graphDataset.origin as CloudFile, content);
+        await user.provider.saveFile(origin as CloudFile, content);
       });
     } catch (e) {
       setError(e as Error);
@@ -70,7 +70,7 @@ export function useCloudProvider() {
     } finally {
       setLoading(false);
     }
-  }, [user, exportAsGexf, graphDataset.origin]);
+  }, [user, exportAsGexf, origin]);
 
   /**
    * Save the current graph in the provider.
@@ -83,7 +83,7 @@ export function useCloudProvider() {
         if (isNil(user)) throw new Error("You must be logged !");
         await exportAsGexf(async (content) => {
           const result = await user.provider.createFile(file, content);
-          setGraphDataset({ ...graphDataset, origin: result });
+          setOrigin(result);
         });
       } catch (e) {
         setError(e as Error);
@@ -92,7 +92,7 @@ export function useCloudProvider() {
         setLoading(false);
       }
     },
-    [user, setGraphDataset, graphDataset, exportAsGexf],
+    [user, exportAsGexf, setOrigin],
   );
 
   return { loading, error, getFiles, openFile, saveFile, createFile };
