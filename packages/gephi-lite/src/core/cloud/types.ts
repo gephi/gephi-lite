@@ -1,6 +1,6 @@
-import { GraphFile } from "../graph/import/types";
+import { AbstractFile } from "../file/types";
 
-export interface CloudFile extends GraphFile {
+export interface CloudFile extends AbstractFile {
   type: "cloud";
   id: string;
   description?: string;

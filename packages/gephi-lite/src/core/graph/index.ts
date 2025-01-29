@@ -16,7 +16,6 @@ import { SearchState } from "../search/types";
 import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { ItemType } from "../types";
-import { GraphOrigin } from "./import/types";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
@@ -30,7 +29,7 @@ import {
 
 /**
  * Producers:
- * **********
+ * **********graphToExport
  */
 const setGraphDataset: Producer<GraphDataset, [GraphDataset]> = (dataset) => {
   return () => dataset;
@@ -179,7 +178,6 @@ const resetGraph: Producer<GraphDataset, []> = () => {
  * Public API:
  * ***********
  */
-export const originAtom = atom<GraphOrigin>(null);
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
 export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
 export const filteredGraphAtom = derivedAtom(

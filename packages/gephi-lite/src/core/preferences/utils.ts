@@ -5,7 +5,6 @@ import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
   return {
-    recentRemoteFiles: [],
     layoutsParameters: {},
     metrics: {},
     // default is the local detected by i18n

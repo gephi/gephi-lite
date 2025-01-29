@@ -1,7 +1,5 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
-import { isEqual } from "lodash";
 
-import { RemoteFile } from "../graph/import/types";
 import { Preferences } from "./types";
 import { getAppliedTheme, getCurrentPreferences, serializePreferences } from "./utils";
 
@@ -9,13 +7,6 @@ import { getAppliedTheme, getCurrentPreferences, serializePreferences } from "./
  * Producers:
  * **********
  */
-const addRemoteFile: Producer<Preferences, [RemoteFile]> = (file) => {
-  return (preferences) => ({
-    ...preferences,
-    recentRemoteFiles: [file, ...preferences.recentRemoteFiles.filter((f) => !isEqual(f, file))].slice(0, 5),
-  });
-};
-
 const changeLocale: Producer<Preferences, [string]> = (locale) => {
   // save the new locale in the state
   return (preferences) => ({
@@ -38,7 +29,6 @@ const changeTheme: Producer<Preferences, [Preferences["theme"]]> = (theme) => {
 export const preferencesAtom = atom<Preferences>(getCurrentPreferences());
 
 export const preferencesActions = {
-  addRemoteFile: producerToAction(addRemoteFile, preferencesAtom),
   changeLocale: producerToAction(changeLocale, preferencesAtom),
   changeTheme: producerToAction(changeTheme, preferencesAtom),
 };

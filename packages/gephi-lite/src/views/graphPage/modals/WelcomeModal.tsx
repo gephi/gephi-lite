@@ -10,12 +10,7 @@ import LocalSwitcher from "../../../components/LocalSwitcher";
 import { ThemeSwicther } from "../../../components/ThemeSwitcher";
 import { GitHubIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
-import {
-  useGraphDatasetActions,
-  useImportActions,
-  useImportState,
-  usePreferences,
-} from "../../../core/context/dataContexts";
+import { useFile, useFileActions, useGraphDatasetActions } from "../../../core/context/dataContexts";
 import { useModal } from "../../../core/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
@@ -32,10 +27,12 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const [user] = useConnectedUser();
-  const { recentRemoteFiles } = usePreferences();
+  const {
+    recentFiles,
+    status: { type: fileStateType },
+  } = useFile();
 
-  const { type: fileStateType } = useImportState();
-  const { importFile } = useImportActions();
+  const { open } = useFileActions();
   const { resetGraph } = useGraphDatasetActions();
 
   useEffect(() => {
@@ -69,29 +66,31 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
       <div className="row mb-3 position-relative">
         <div className="col-12 col-sm-6">
           <h3 className="fs-6">{t("welcome.open_recent")}</h3>
-          {!!recentRemoteFiles.length && (
+          {!!recentFiles.length && (
             <ul className="list-unstyled">
-              {recentRemoteFiles.map((remoteFile, i) => (
-                <li className="mb-1" key={i}>
-                  <button
-                    className="btn btn-sm btn-outline-dark"
-                    onClick={async () => {
-                      await importFile(remoteFile);
-                      notify({
-                        type: "success",
-                        message: t("graph.open.remote.success", { filename: remoteFile.filename }) as string,
-                        title: t("gephi-lite.title") as string,
-                      });
-                      submit({});
-                    }}
-                  >
-                    {remoteFile.filename}
-                  </button>
-                </li>
-              ))}
+              {recentFiles
+                .filter((f) => f.type === "remote")
+                .map((file, i) => (
+                  <li className="mb-1" key={i}>
+                    <button
+                      className="btn btn-sm btn-outline-dark"
+                      onClick={async () => {
+                        await open(file);
+                        notify({
+                          type: "success",
+                          message: t("graph.open.remote.success", { filename: file.filename }) as string,
+                          title: t("gephi-lite.title") as string,
+                        });
+                        submit({});
+                      }}
+                    >
+                      {file.filename}
+                    </button>
+                  </li>
+                ))}
             </ul>
           )}
-          {!recentRemoteFiles.length && <p className="text-muted">{t("welcome.no_recent")}</p>}
+          {!recentFiles.length && <p className="text-muted">{t("welcome.no_recent")}</p>}
         </div>
         <div className="col-12 col-sm-6">
           <h3 className="fs-6">{t("welcome.open_graph")}</h3>
@@ -163,7 +162,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 <button
                   className="btn btn-sm btn-outline-dark"
                   onClick={async () => {
-                    await importFile({
+                    await open({
                       type: "remote",
                       url: `${import.meta.env.BASE_URL}samples/${sample}`,
                       filename: sample,

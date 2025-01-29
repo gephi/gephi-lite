@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function deserializer(_: string, value: any): any {
+export function deserializer(_: string, value: any): any {
   if (Array.isArray(value) && value.length === 3 && value[0] === "<<SET" && value[2] === "SET>>") {
     return new Set(parseWithSetsAndFunctions(value[1]));
   }
@@ -11,7 +11,7 @@ function deserializer(_: string, value: any): any {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function serializer(_: string, value: unknown): any {
+export function serializer(_: string, value: unknown): any {
   if (value instanceof Set) {
     return ["<<SET", stringifyWithSetsAndFunctions(Array.from(value)), "SET>>"];
   }

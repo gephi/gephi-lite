@@ -8,7 +8,7 @@ import { extractFilename } from "../utils/url";
 import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
-import { useGraphDatasetActions, useImportActions } from "./context/dataContexts";
+import { useFileActions, useGraphDatasetActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
@@ -31,7 +31,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
-  const { importFile } = useImportActions();
+  const { open } = useFileActions();
   const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
@@ -107,7 +107,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       const file = url.searchParams.get("file") || url.searchParams.get("gexf") || "";
 
       try {
-        await importFile({
+        await open({
           type: "remote",
           filename: extractFilename(file),
           url: file,

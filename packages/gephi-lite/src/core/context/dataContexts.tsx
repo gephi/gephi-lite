@@ -3,17 +3,9 @@ import { reduce } from "lodash";
 import { Context, FC, ReactNode, createContext, useContext } from "react";
 
 import { appearanceActions, appearanceAtom } from "../appearance";
+import { fileActions, fileAtom } from "../file";
 import { filtersActions, filtersAtom } from "../filters";
-import {
-  filteredGraphAtom,
-  graphDatasetActions,
-  graphDatasetAtom,
-  originAtom,
-  sigmaGraphAtom,
-  visualGettersAtom,
-} from "../graph";
-import { exportActions, exportStateAtom } from "../graph/export";
-import { importActions, importStateAtom } from "../graph/import";
+import { filteredGraphAtom, graphDatasetActions, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
 import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { searchActions, searchAtom } from "../search";
@@ -50,8 +42,7 @@ const ATOMS = {
   sigma: sigmaAtom,
   filters: filtersAtom,
   selection: selectionAtom,
-  importState: importStateAtom,
-  exportState: exportStateAtom,
+  file: fileAtom,
   appearance: appearanceAtom,
   sigmaState: sigmaStateAtom,
   sigmaGraph: sigmaGraphAtom,
@@ -62,7 +53,6 @@ const ATOMS = {
   search: searchAtom,
   layoutState: layoutStateAtom,
   session: sessionAtom,
-  origin: originAtom,
   user: userAtom,
 };
 type AtomName = keyof typeof ATOMS;
@@ -72,8 +62,7 @@ const CONTEXTS = {
   filters: createContext(ATOMS.filters),
   filteredGraph: createContext(ATOMS.filteredGraph),
   graphDataset: createContext(ATOMS.graphDataset),
-  exportState: createContext(ATOMS.exportState),
-  importState: createContext(ATOMS.importState),
+  file: createContext(ATOMS.file),
   visualGetters: createContext(ATOMS.visualGetters),
   layoutState: createContext(ATOMS.layoutState),
   preferences: createContext(ATOMS.preferences),
@@ -83,7 +72,6 @@ const CONTEXTS = {
   sigma: createContext(ATOMS.sigma),
   sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
-  origin: createContext(ATOMS.origin),
   user: createContext(ATOMS.user),
 };
 
@@ -116,6 +104,7 @@ export const resetStates: Action<[boolean]> = (full = false) => {
   sigmaActions.resetState();
   searchActions.reset();
   graphDatasetActions.resetGraph();
+  fileActions.reset();
 
   if (full) {
     userActions.reset();
@@ -127,8 +116,7 @@ export const resetStates: Action<[boolean]> = (full = false) => {
 export const useFilters = makeUseAtom(CONTEXTS.filters);
 export const useSigmaAtom = makeUseAtom(CONTEXTS.sigma);
 export const useSelection = makeUseAtom(CONTEXTS.selection);
-export const useImportState = makeUseAtom(CONTEXTS.importState);
-export const useExportState = makeUseAtom(CONTEXTS.exportState);
+export const useFile = makeUseAtom(CONTEXTS.file);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaState = makeUseAtom(CONTEXTS.sigmaState);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
@@ -138,7 +126,6 @@ export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
-export const useOrigin = makeUseAtom(CONTEXTS.origin);
 export const useUser = makeUseAtom(CONTEXTS.user);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
@@ -148,8 +135,7 @@ export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);
 export const useSearchActions = makeUseActions(searchActions);
-export const useImportActions = makeUseActions(importActions);
-export const useExportActions = makeUseActions(exportActions);
+export const useFileActions = makeUseActions(fileActions);
 export const useLayoutActions = makeUseActions(layoutActions);
 export const useUserActions = makeUseActions(userActions);
 

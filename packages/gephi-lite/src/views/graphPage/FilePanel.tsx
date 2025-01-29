@@ -11,7 +11,7 @@ import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useExportActions, useExportState, useGraphDatasetActions, useOrigin } from "../../core/context/dataContexts";
+import { useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
@@ -28,10 +28,12 @@ export const FilePanel: FC = () => {
   const [user] = useConnectedUser();
   const { notify } = useNotifications();
   const { t } = useTranslation("translation");
-  const origin = useOrigin();
   const { loading, saveFile } = useCloudProvider();
-  const { exportAsGexf } = useExportActions();
-  const { type: exportState } = useExportState();
+  const { exportAsGexf, save } = useFileActions();
+  const {
+    current: currentFile,
+    status: { type: exportState },
+  } = useFile();
   const { resetGraph } = useGraphDatasetActions();
 
   return (
@@ -65,7 +67,7 @@ export const FilePanel: FC = () => {
           <h3 className="fs-5">{t("graph.save.title")}</h3>
           {user && user.provider && (
             <>
-              {origin && origin.type === "cloud" && checkFilenameExtension(origin.filename, "gexf") && (
+              {currentFile && currentFile.type === "cloud" && checkFilenameExtension(currentFile.filename, "gexf") && (
                 <div>
                   <button
                     className="btn btn-sm btn-outline-dark mb-1"
@@ -74,7 +76,7 @@ export const FilePanel: FC = () => {
                         await saveFile();
                         notify({
                           type: "success",
-                          message: t("graph.save.cloud.success", { filename: origin.filename }).toString(),
+                          message: t("graph.save.cloud.success", { filename: currentFile.filename }).toString(),
                         });
                       } catch (e) {
                         console.error(e);
@@ -109,7 +111,7 @@ export const FilePanel: FC = () => {
               onClick={async () => {
                 try {
                   await exportAsGexf((content) => {
-                    fileSaver(new Blob([content]), origin?.filename || "gephi-lite.gexf");
+                    fileSaver(new Blob([content]), currentFile?.filename || "gephi-lite.gexf");
                   });
                 } catch (e) {
                   console.error(e);
@@ -119,6 +121,25 @@ export const FilePanel: FC = () => {
             >
               <FaDownload className="me-1" />
               {t("menu.download.gexf").toString()}
+            </button>
+          </div>
+
+          <div>
+            <button
+              className="btn btn-sm btn-outline-dark mb-1"
+              onClick={async () => {
+                try {
+                  await save((content) => {
+                    fileSaver(new Blob([JSON.stringify(content)]), "gephi-lite.json");
+                  });
+                } catch (e) {
+                  console.error(e);
+                  notify({ type: "error", message: t("menu.download.gephi-lite-error").toString() });
+                }
+              }}
+            >
+              <FaDownload className="me-1" />
+              {t("menu.download.gephi-lite").toString()}
             </button>
           </div>
 
