@@ -1,13 +1,14 @@
 import { FilteredGraph, stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 
+import { computeAllDynamicAttributes } from "../graph/dynamicAttributes";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { Scalar } from "../types";
 import { buildTopologicalFiltersDefinitions } from "./topological";
 import { FilterType, RangeFilterType, TermsFilterType } from "./types";
 
-export { getEmptyFiltersState, serializeFiltersState, parseFiltersState } from "@gephi/gephi-lite-sdk";
+export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "@gephi/gephi-lite-sdk";
 
 /**
  * Actual filtering helpers:
@@ -74,7 +75,12 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
         filter.script ? filter.script(nodeID, fullGraph.getNodeAttributes(nodeID), fullGraph) : true,
       );
     } else {
-      nodes = graph.filterNodes((nodeID) => filterValue(nodeData[nodeID][filter.field], filter));
+      nodes = graph.filterNodes((nodeID) => {
+        const value = filter.field.dynamic
+          ? computeAllDynamicAttributes("nodes", graph)[nodeID][filter.field.field]
+          : nodeData[nodeID][filter.field.field];
+        return filterValue(value, filter);
+      });
     }
     return subgraph(graph, nodes) as G;
   }
@@ -88,7 +94,12 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
         filter.script ? filter.script(edgeID, fullGraph.getEdgeAttributes(edgeID), fullGraph) : true,
       );
     } else {
-      edges = graph.filterEdges((edgeID) => filterValue(edgeData[edgeID][filter.field], filter));
+      edges = graph.filterEdges((edgeID) => {
+        const value = filter.field.dynamic
+          ? computeAllDynamicAttributes("edges", graph)[edgeID][filter.field.field]
+          : edgeData[edgeID][filter.field.field];
+        filterValue(value, filter);
+      });
     }
     const res = graph.emptyCopy() as G;
     edges.forEach((id) => res.addEdgeWithKey(id, graph.source(id), graph.target(id), graph.getEdgeAttributes(id)));

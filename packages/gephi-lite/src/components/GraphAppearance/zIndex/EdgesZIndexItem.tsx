@@ -1,31 +1,40 @@
+import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import {
+  useAppearance,
+  useAppearanceActions,
+  useDynamicItemData,
+  useGraphDataset,
+} from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type LabelOption =
   | { value: string; type: "none"; field?: undefined; label: string }
-  | { value: string; type: "field"; field: string; label: string };
+  | { value: string; type: "field"; field: ItemDataField; label: string };
 
 export const EdgesZIndexItem: FC = () => {
   const itemType: ItemType = "edges";
   const { t } = useTranslation();
   const { edgeFields } = useGraphDataset();
+  const { dynamicEdgeFields } = useDynamicItemData();
   const { edgesZIndex } = useAppearance();
   const { setEdgesZIndexAppearance } = useAppearanceActions();
 
-  const numberFields: FieldModel[] = edgeFields.filter((field) => field.quantitative);
+  const numberFields: FieldModel<"edges", boolean>[] = [...edgeFields, ...dynamicEdgeFields].filter(
+    (field) => field.quantitative,
+  );
   const labelOptions = useMemo(() => {
     return [
       { value: "none", type: "none", label: t(`appearance.zIndex.none`) as string },
       ...numberFields.map((field) => ({
         value: `field::${field.id}`,
         type: "field",
-        field: field.id,
+        field: { field: field.id, dynamic: field.dynamic },
         label: field.id,
       })),
     ] as LabelOption[];

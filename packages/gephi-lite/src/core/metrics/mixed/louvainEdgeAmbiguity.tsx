@@ -70,34 +70,31 @@ const VisualizeAmbiguityForm: FC<{
   const previewAppearance = useMemo<AppearanceState>(() => {
     const itemsData = graphDatasetAtom.get().nodeData;
     const values = uniqFieldvaluesAsStrings(itemsData, attributeNames["modularityClass"]);
-    return {
+    const newAppearance: AppearanceState = {
       ...initialAppearance,
       nodesColor: {
-        itemType: "nodes",
         type: "partition",
-        field: attributeNames["modularityClass"],
+        field: { field: attributeNames["modularityClass"] },
         colorPalette: getPalette(values),
         missingColor: DEFAULT_NODE_COLOR,
       },
       edgesColor: {
-        itemType: "edges",
         type: "source",
       },
       edgesRefinementColor: {
-        itemType: "edges",
         type: "refinement",
-        field: attributeNames["ambiguityScore"],
+        field: { field: attributeNames["ambiguityScore"] },
         factor: 1,
         targetColor: "#ffffff",
       },
       edgesZIndex: {
-        itemType: "edges",
         type: "field",
-        field: attributeNames["coMembershipScore"],
+        field: { field: attributeNames["coMembershipScore"] },
         reversed: false,
       },
       backgroundColor: "#000000",
     };
+    return newAppearance;
   }, [attributeNames, initialAppearance]);
   const [preview, setPreview] = useState(false);
   const preserveRef = useRef(false);

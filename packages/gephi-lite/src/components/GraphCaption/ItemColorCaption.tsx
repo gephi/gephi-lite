@@ -4,6 +4,7 @@ import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Color, EdgeColor, RefinementColor } from "../../core/appearance/types";
+import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
 import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./index";
@@ -22,7 +23,11 @@ export const ItemsColorCaption: FC<
   if (itemsColor.field)
     result = (
       <>
-        <CaptionItemTitle itemType={itemType} field={itemsColor.field} vizVariable="color" />
+        <CaptionItemTitle
+          itemType={itemType}
+          field={staticDynamicAttributeLabel(itemsColor.field)}
+          vizVariable="color"
+        />
 
         {/* PARTITION */}
         {extend && itemsColor.type === "partition" && "occurrences" in extend && (
@@ -69,7 +74,7 @@ export const ItemsColorCaption: FC<
       <>
         {result}
         <p className="small">
-          <span className="text-muted">Edges with high</span> {itemsRefinementColor.field}{" "}
+          <span className="text-muted">Edges with high</span> {staticDynamicAttributeLabel(itemsRefinementColor.field)}{" "}
           <span className="text-muted">
             tend to the color{" "}
             <span

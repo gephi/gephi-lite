@@ -5,6 +5,7 @@ import { Context, FC, ReactNode, createContext, useContext } from "react";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { filtersActions, filtersAtom } from "../filters";
 import {
+  dynamicItemDataAtom,
   filteredGraphAtom,
   graphDatasetActions,
   graphDatasetAtom,
@@ -64,6 +65,7 @@ const ATOMS = {
   session: sessionAtom,
   origin: originAtom,
   user: userAtom,
+  dynamicItemData: dynamicItemDataAtom,
 };
 type AtomName = keyof typeof ATOMS;
 
@@ -85,6 +87,7 @@ const CONTEXTS = {
   sigmaGraph: createContext(ATOMS.sigmaGraph),
   origin: createContext(ATOMS.origin),
   user: createContext(ATOMS.user),
+  dynamicItemData: createContext(ATOMS.dynamicItemData),
 };
 
 /**
@@ -140,6 +143,7 @@ export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
 export const useOrigin = makeUseAtom(CONTEXTS.origin);
 export const useUser = makeUseAtom(CONTEXTS.user);
+export const useDynamicItemData = makeUseAtom(CONTEXTS.dynamicItemData);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);

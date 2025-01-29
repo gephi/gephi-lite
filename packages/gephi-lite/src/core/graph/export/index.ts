@@ -3,7 +3,7 @@ import { write } from "graphology-gexf";
 import { toUndirected } from "graphology-operators";
 
 import { applyVisualProperties } from "../../appearance/utils";
-import { filteredGraphAtom, graphDatasetAtom, visualGettersAtom } from "../index";
+import { dynamicItemDataAtom, filteredGraphAtom, graphDatasetAtom, visualGettersAtom } from "../index";
 import { dataGraphToFullGraph } from "../utils";
 import { ExportState } from "./types";
 
@@ -29,11 +29,12 @@ export const exportAsGexf = asyncAction(async (callback: (content: string) => vo
     // get the full graph
     const graphDataset = graphDatasetAtom.get();
     const filteredGraph = filteredGraphAtom.get();
+    const dynamicNodeData = dynamicItemDataAtom.get();
     let graphToExport = dataGraphToFullGraph(graphDataset, filteredGraph);
 
     // apply current apperanc eon the graph
     const visualGetters = visualGettersAtom.get();
-    applyVisualProperties(graphToExport, graphDataset, visualGetters);
+    applyVisualProperties(graphToExport, graphDataset, dynamicNodeData, visualGetters);
 
     // change the type of the graph based on the meta type (default is directed)
     if (graphDataset.metadata.type === "undirected") graphToExport = toUndirected(graphToExport);

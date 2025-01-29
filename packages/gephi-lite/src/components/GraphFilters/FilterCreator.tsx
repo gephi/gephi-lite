@@ -1,3 +1,4 @@
+import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { capitalize } from "lodash";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -15,12 +16,13 @@ export interface FilterOption {
   value: string;
   label: string | JSX.Element;
   disabled?: boolean;
-  field?: string;
+  field?: ItemDataField;
   type: string;
 }
 
 export const FilterCreator: FC = () => {
   const { nodeFields, edgeFields, metadata } = useGraphDataset();
+  //TODO dynamic
   const { t } = useTranslation();
   const { addFilter } = useFiltersActions();
   const filters = useFilters();
@@ -63,7 +65,7 @@ export const FilterCreator: FC = () => {
               </>
             ),
             type: "range",
-            field: field.id,
+            field: { field: field.id, dynamic: field.dynamic },
           });
         if (!!field.qualitative)
           options.push({
@@ -74,7 +76,7 @@ export const FilterCreator: FC = () => {
               </>
             ),
             type: "terms",
-            field: field.id,
+            field: { field: field.id, dynamic: field.dynamic },
           });
         return options;
       });

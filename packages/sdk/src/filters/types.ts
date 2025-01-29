@@ -1,32 +1,30 @@
-import { DatalessGraph, FullGraph, ItemData, ItemType } from "../graph";
+import { DatalessGraph, FullGraph, ItemData, ItemDataField, ItemType } from "../graph";
 
 export interface BaseFilter {
   type: string;
   itemType: ItemType;
+  field: ItemDataField;
 }
 
 export type RangeFilterType = BaseFilter & {
   type: "range";
   itemType: ItemType;
-  field: string;
   keepMissingValues?: boolean;
 } & { min?: number; max?: number };
 
 export interface TermsFilterType extends BaseFilter {
   type: "terms";
   itemType: ItemType;
-  field: string;
   terms?: Set<string>;
   keepMissingValues?: boolean;
 }
 
-export interface ScriptFilterType extends BaseFilter {
+export interface ScriptFilterType extends Omit<BaseFilter, "field"> {
   type: "script";
-  itemType: ItemType;
   script?: (itemID: string, attributes: ItemData, fullGraph: FullGraph) => boolean;
 }
 
-export interface TopologicalFilterType extends Omit<BaseFilter, "itemType"> {
+export interface TopologicalFilterType extends Omit<BaseFilter, "itemType" | "field"> {
   type: "topological";
   topologicalFilterId: string;
   parameters: unknown[];

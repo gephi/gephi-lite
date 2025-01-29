@@ -16,8 +16,9 @@ import { SearchState } from "../search/types";
 import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { ItemType } from "../types";
+import { computeAllDynamicAttributes, dynamicAttributes } from "./dynamicAttributes";
 import { GraphOrigin } from "./import/types";
-import { FieldModel, GraphDataset, SigmaGraph } from "./types";
+import { DynamicItemData, FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
   cleanNode,
@@ -185,7 +186,23 @@ export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
 export const filteredGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphsAtom],
   (graphDataset, filteredGraphCache) => {
+    console.log("compute new filteredGraphAtom");
     return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
+  },
+  { checkInput: false },
+);
+export const dynamicItemDataAtom = derivedAtom(
+  // filteredGraphsAtom is added in the dependencies because derived from derived are not triggered correctly. To be investigated later
+  [filteredGraphAtom, filteredGraphsAtom],
+  (filteredGraphCache) => {
+    const dynamicNodeData: DynamicItemData = {
+      dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
+      dynamicNodeFields: dynamicAttributes.nodes?.map((n) => n.field) || [],
+      dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
+
+      dynamicEdgeFields: dynamicAttributes.edges?.map((n) => n.field) || [],
+    };
+    return dynamicNodeData;
   },
   { checkInput: false },
 );
@@ -196,14 +213,19 @@ export const parentFilteredGraphAtom = derivedAtom(
   },
   { checkInput: false },
 );
-export const visualGettersAtom = derivedAtom([graphDatasetAtom, appearanceAtom], getAllVisualGetters, {
-  checkInput: false,
-});
+export const visualGettersAtom = derivedAtom(
+  [graphDatasetAtom, dynamicItemDataAtom, appearanceAtom],
+  getAllVisualGetters,
+  {
+    checkInput: false,
+  },
+);
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters, graph: SigmaGraph | undefined) => {
+    const dynamicItemData = dynamicItemDataAtom.get();
     const newGraph = dataGraphToSigmaGraph(dataset, filteredGraph);
-    applyVisualProperties(newGraph, dataset, visualGetters);
+    applyVisualProperties(newGraph, dataset, dynamicItemData, visualGetters);
 
     if (graph) {
       graph.clear();
@@ -247,6 +269,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph") || updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
     const filtersState = filtersAtom.get();
+    console.log("fullgraph changed, computed new filtered graphs");
     const newCache = applyFilters(graphDataset, filtersState.past, []);
     filteredGraphsAtom.set(newCache);
   }
@@ -257,6 +280,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   }
 
   // When fields changed, check if filter or appearance use it
+  // here we test only static field
   if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
     const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
     const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
@@ -264,9 +288,8 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     // filters
     const filtersState = filtersAtom.get();
     const filterFilters = (f: FilterType) =>
-      !("field" in f) ||
-      (f.itemType === "nodes" && nodeFields.includes(f.field)) ||
-      (f.itemType === "edges" && edgeFields.includes(f.field));
+      // here we test only static field
+      !("field" in f) || nodeFields.includes(f.field.field) || edgeFields.includes(f.field.field);
     filtersAtom.set({
       past: filtersState.past.filter(filterFilters),
       future: filtersState.future.filter(filterFilters),
@@ -282,8 +305,10 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
           appearanceElement &&
           !isString(appearanceElement) &&
           appearanceElement.field &&
-          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field)) ||
-            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field)))
+          // here we test only static field
+          !appearanceElement.field.dynamic &&
+          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field.field)) ||
+            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field.field)))
         ) {
           // this appearance element is based on a field which is not in the model anymore
           // let's reset it
@@ -309,7 +334,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
         // - if partitions palette are still in sync with the field values
         case "partition":
           // check if deprecated appearance state
-          values = uniqFieldvaluesAsStrings(itemsData, appearanceElement.field);
+          values = uniqFieldvaluesAsStrings(itemsData, appearanceElement.field.field);
 
           // checking with the actual palette miss some values. It's ok if it has more available.
           if (

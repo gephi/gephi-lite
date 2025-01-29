@@ -1,3 +1,4 @@
+import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
@@ -10,7 +11,7 @@ import { DEFAULT_SELECT_PROPS } from "../../consts";
 
 type LabelOption =
   | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
-  | { value: string; type: "field"; field: string; label: string };
+  | { value: string; type: "field"; field: ItemDataField; label: string };
 
 export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
   const { t } = useTranslation();

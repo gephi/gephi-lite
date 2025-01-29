@@ -169,6 +169,7 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
       ...inferFieldType(values, graph.order),
     });
   });
+
   forEach(edgeAttributeValues, (values, key) => {
     dataset.edgeFields.push({
       id: key,

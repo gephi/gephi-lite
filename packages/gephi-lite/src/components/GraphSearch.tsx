@@ -99,8 +99,9 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
           fuzzy: 0.2,
           filter: type ? (result) => result.type === type : undefined,
           boost: {
-            ...(nodesLabel.type === "field" ? { [nodesLabel.field]: 2 } : { label: 2 }),
-            ...(edgesLabel.type === "field" ? { [edgesLabel.field]: 2 } : { label: 2 }),
+            // TODO: check if we index dynamicDataAttribute
+            ...(nodesLabel.type === "field" ? { [nodesLabel.field.field]: 2 } : { label: 2 }),
+            ...(edgesLabel.type === "field" ? { [edgesLabel.field.field]: 2 } : { label: 2 }),
           },
         })
         .map((item) => ({ id: item.id, type: item.type }));

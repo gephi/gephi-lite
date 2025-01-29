@@ -1,9 +1,9 @@
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { ItemData, ItemType } from "../graph";
+import { ItemDataField, ItemType, StaticDynamicItemData } from "../graph";
 
 interface AppearanceBaseElement {
-  field?: string;
+  field?: ItemDataField;
 }
 
 interface NoFieldValue<T extends string> extends AppearanceBaseElement {
@@ -21,7 +21,7 @@ export type TransformationMethod = { pow: number } | "log" | { spline: [[number,
 
 export interface RankingSize extends AppearanceBaseElement {
   type: "ranking";
-  field: string;
+  field: ItemDataField;
   minSize: number;
   maxSize: number;
   transformationMethod?: TransformationMethod;
@@ -42,20 +42,20 @@ export interface ColorScalePointType {
 }
 export interface RankingColor extends AppearanceBaseElement {
   type: "ranking";
-  field: string;
+  field: ItemDataField;
   colorScalePoints: ColorScalePointType[];
   transformationMethod?: { pow: number } | "log" | { spline: [[number, number], [number, number]] };
   missingColor: string;
 }
 export interface PartitionColor extends AppearanceBaseElement {
   type: "partition";
-  field: string;
+  field: ItemDataField;
   colorPalette: Record<string, string>;
   missingColor: string;
 }
 export interface RefinementColor extends AppearanceBaseElement {
   type: "refinement";
-  field: string;
+  field: ItemDataField;
   factor: number;
   targetColor: string;
   missingColor?: string;
@@ -69,7 +69,7 @@ export type DataStringAttr = NoFieldValue<"data">;
 export type FixedStringAttr = NoFieldValue<"fixed"> & { value: string };
 export interface FieldStringAttr extends AppearanceBaseElement {
   type: "field";
-  field: string;
+  field: ItemDataField;
   missingValue: string | null;
 }
 export type StringAttr = NoStringAttr | DataStringAttr | FixedStringAttr | FieldStringAttr;
@@ -87,7 +87,7 @@ export interface BooleanAppearance extends AppearanceBaseElement {
 // Z-index management:
 export interface ZIndexFieldAttr extends AppearanceBaseElement {
   type: "field";
-  field: string;
+  field: ItemDataField;
   reversed: boolean;
 }
 
@@ -138,9 +138,9 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
   edgesZIndex: "edges",
 };
 
-export type NumberGetter = (data: ItemData) => number;
-export type ColorGetter = (data: ItemData, edgeId?: string) => string;
-export type StringAttrGetter = (data: ItemData) => string | null;
+export type NumberGetter = (data: StaticDynamicItemData) => number;
+export type ColorGetter = (data: StaticDynamicItemData, edgeId?: string) => string;
+export type StringAttrGetter = (data: StaticDynamicItemData) => string | null;
 
 /**
  * This state contains the visual getters, i.e. the functions to get a node or

@@ -1,3 +1,4 @@
+import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -5,8 +6,12 @@ import Select from "react-select";
 
 import { Color } from "../../../core/appearance/types";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR, DEFAULT_REFINEMENT_COLOR } from "../../../core/appearance/utils";
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
-import { graphDatasetAtom } from "../../../core/graph";
+import {
+  useAppearance,
+  useAppearanceActions,
+  useDynamicItemData,
+  useGraphDataset,
+} from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
 import { uniqFieldvaluesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
@@ -17,11 +22,12 @@ import { ColorRankingEditor } from "./ColorRankingEditor";
 import { RefinementColorEditor } from "./RefinementColorEditor";
 import { getPalette } from "./utils";
 
-type ColorOption = { value: string; label: string | JSX.Element; field?: string; type: string };
+type ColorOption = { value: string; label: string | JSX.Element; field?: ItemDataField; type: string };
 
 export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
-  const { nodeFields, edgeFields } = useGraphDataset();
+  const { nodeData, edgeData, nodeFields, edgeFields } = useGraphDataset();
+  const { dynamicNodeData, dynamicEdgeData, dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const appearance = useAppearance();
   const { setColorAppearance, setRefinementColorAppearance } = useAppearanceActions();
 
@@ -29,12 +35,14 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const colorRefinement = itemType === "nodes" ? appearance.nodesRefinementColor : appearance.edgesRefinementColor;
   const baseValue = itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
   const defaultRefinementField = useMemo(
-    () => (itemType === "nodes" ? nodeFields : edgeFields).find((field) => field.quantitative),
-    [edgeFields, itemType, nodeFields],
+    () =>
+      (itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : edgeFields).find((field) => field.quantitative),
+    [edgeFields, itemType, nodeFields, dynamicNodeFields],
   );
 
   const options: ColorOption[] = useMemo(() => {
-    const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
+    const allFields: FieldModel<ItemType, boolean>[] =
+      itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
     return [
       {
         value: "data",
@@ -53,11 +61,11 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           ]
         : []),
       ...allFields.flatMap((field) => {
-        const options = [];
+        const options: ColorOption[] = [];
         if (!!field.quantitative)
           options.push({
             value: `ranking::${field.id}`,
-            field: field.id,
+            field: { field: field.id, dynamic: field.dynamic },
             type: "ranking",
             label: (
               <>
@@ -68,7 +76,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         if (!!field.qualitative)
           options.push({
             value: `partition::${field.id}`,
-            field: field.id,
+            field: { field: field.id, dynamic: field.dynamic },
             type: "partition",
             label: (
               <>
@@ -79,7 +87,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         return options;
       }),
     ];
-  }, [edgeFields, itemType, nodeFields, t]);
+  }, [edgeFields, itemType, nodeFields, dynamicNodeFields, dynamicEdgeFields, t]);
   const selectedOption =
     options.find((option) => option.type === color.type && option.field === color.field) || options[0];
 
@@ -119,9 +127,16 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 missingColor: baseValue,
               });
             } else {
-              const field = option.field as string;
-              const itemsData = graphDatasetAtom.get()[itemType === "nodes" ? "nodeData" : "edgeData"];
-              const values = uniqFieldvaluesAsStrings(itemsData, field);
+              const field = option.field;
+              let values: string[] = [];
+
+              if (field.dynamic) {
+                const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
+                values = uniqFieldvaluesAsStrings(itemsData, field.field);
+              } else {
+                const itemsData = itemType === "nodes" ? nodeData : edgeData;
+                values = uniqFieldvaluesAsStrings(itemsData, field.field);
+              }
 
               setColorAppearance(itemType, {
                 type: "partition",
@@ -176,7 +191,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                   ? {
                       type: "refinement",
                       targetColor: DEFAULT_REFINEMENT_COLOR,
-                      field: defaultRefinementField.id,
+                      field: { field: defaultRefinementField.id, dynamic: defaultRefinementField.dynamic },
                       factor: 0.5,
                     }
                   : undefined,

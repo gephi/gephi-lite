@@ -3,6 +3,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 
 import { Size } from "../../core/appearance/types";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
+import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { shortenNumber } from "../GraphFilters/utils";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { GraphCaptionProps, RangeExtends } from "./index";
@@ -34,9 +35,21 @@ const ItemSizeCaption: FC<
 
     setItemSizeState({
       minValue: extend.min,
-      minSize: sigma.scaleSize(getItemSize({ [itemsSize.field]: extend.min })) * (itemType === "node" ? 2 : 1),
+      minSize:
+        sigma.scaleSize(
+          getItemSize({
+            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.field]: extend.min },
+            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.field]: extend.min } : {},
+          }),
+        ) * (itemType === "node" ? 2 : 1),
       maxValue: extend.max,
-      maxSize: sigma.scaleSize(getItemSize({ [itemsSize.field]: extend.max })) * (itemType === "node" ? 2 : 1),
+      maxSize:
+        sigma.scaleSize(
+          getItemSize({
+            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.field]: extend.max },
+            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.field]: extend.max } : {},
+          }),
+        ) * (itemType === "node" ? 2 : 1),
     });
   }, [getItemSize, sigma, itemsSize.field, extend, itemType]);
 
@@ -61,7 +74,7 @@ const ItemSizeCaption: FC<
         <CaptionItemTitle
           vizVariable="size"
           itemType={itemType}
-          field={itemsSize.field}
+          field={staticDynamicAttributeLabel(itemsSize.field)}
           transformationMethod={itemsSize.transformationMethod}
         />
         {itemSizeState && (

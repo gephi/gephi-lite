@@ -3,7 +3,7 @@ import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getItemAttributes } from "../core/appearance/utils";
-import { useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
+import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
 
 export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boolean }> = ({ label, color, hidden }) => {
   const { t } = useTranslation();
@@ -19,12 +19,13 @@ export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boole
 
 export const NodeComponentById: FC<{ id: string }> = ({ id }) => {
   const graphDataset = useGraphDataset();
+  const dynamicItemData = useDynamicItemData();
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
 
   const data = useMemo(
-    () => getItemAttributes("nodes", id, filteredGraph, graphDataset, visualGetters),
-    [id, graphDataset, visualGetters, filteredGraph],
+    () => getItemAttributes("nodes", id, filteredGraph, graphDataset, dynamicItemData, visualGetters),
+    [id, graphDataset, visualGetters, dynamicItemData, filteredGraph],
   );
 
   return <NodeComponent {...data} />;

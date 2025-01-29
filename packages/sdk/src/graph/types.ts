@@ -10,6 +10,7 @@ export const SCALAR_TYPES = new Set(["boolean", "number", "string", "undefined"]
 
 export type ItemType = "nodes" | "edges";
 export type ItemData = Record<string, Scalar>;
+export type StaticDynamicItemData = { static: ItemData; dynamic: ItemData };
 
 /**
  * Items data:
@@ -45,11 +46,17 @@ export interface GraphMetadata {
  * Model:
  * ******
  */
-export interface FieldModel<T extends ItemType = ItemType> {
+export interface FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = false> {
   id: string;
   itemType: T;
   quantitative: null | { unit?: string | null };
   qualitative: null | { separator?: string | null };
+  dynamic?: Dynamic;
+}
+
+export interface ItemDataField {
+  field: string;
+  dynamic?: boolean;
 }
 
 export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {
@@ -94,3 +101,20 @@ export interface GraphDataset {
   fullGraph: DatalessGraph;
 }
 export type SerializedGraphDataset = Omit<GraphDataset, "fullGraph"> & { fullGraph: SerializedGraph };
+
+// Dynamic data for nodes which are recomputed from topology (like degree)
+export interface DynamicItemData {
+  dynamicNodeData: Record<string, Record<string, Scalar>>;
+  dynamicNodeFields: FieldModel<"nodes", true>[];
+  dynamicEdgeData: Record<string, Record<string, Scalar>>;
+  dynamicEdgeFields: FieldModel<"edges", true>[];
+}
+
+export type DynamicItemDataSpec<IT extends ItemType> = {
+  field: FieldModel<IT, true>;
+  compute: (id: string, graph: DatalessGraph) => Scalar;
+};
+export type DynamicItemsDataSpec = {
+  nodes: DynamicItemDataSpec<"nodes">[];
+  edges: DynamicItemDataSpec<"edges">[];
+};

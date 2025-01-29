@@ -1,3 +1,4 @@
+import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -5,18 +6,24 @@ import Select from "react-select";
 
 import { Size } from "../../../core/appearance/types";
 import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import {
+  useAppearance,
+  useAppearanceActions,
+  useDynamicItemData,
+  useGraphDataset,
+} from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
 import { SizeFixedEditor } from "./SizeFixedEditor";
 import { SizeRankingEditor } from "./SizeRankingEditor";
 
-type SizeOption = { value: string; label: string | JSX.Element; field?: string; type: string };
+type SizeOption = { value: string; label: string | JSX.Element; field?: ItemDataField; type: string };
 
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
+  const { dynamicNodeFields } = useDynamicItemData();
   const appearance = useAppearance();
   const { setSizeAppearance } = useAppearanceActions();
 
@@ -24,8 +31,10 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const size = itemType === "nodes" ? appearance.nodesSize : appearance.edgesSize;
 
   const options: SizeOption[] = useMemo(() => {
-    const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
+    const allFields: FieldModel<ItemType, boolean>[] =
+      itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : edgeFields;
     return [
+      // TODO: replace type data once we switched technical attribute as normal ones
       {
         value: "data",
         type: "data",
@@ -37,18 +46,18 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       },
       { value: "fixed", type: "fixed", label: t("appearance.size.fixed") as string },
       ...allFields.flatMap((field) => {
-        const options = [];
+        const options: SizeOption[] = [];
         if (!!field.quantitative)
           options.push({
             value: `ranking::${field.id}`,
-            field: field.id,
+            field: { field: field.id, dynamic: field.dynamic },
             type: "ranking",
             label: field.id,
           });
         return options;
       }),
     ];
-  }, [edgeFields, itemType, nodeFields, t]);
+  }, [edgeFields, itemType, nodeFields, dynamicNodeFields, t]);
 
   const selectedOption =
     options.find((option) => option.type === size.type && option.field === size.field) || options[0];

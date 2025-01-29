@@ -14,6 +14,7 @@ import { NodeComponent } from "../../components/Node";
 import { ItemIcons } from "../../components/common-icons";
 import { getItemAttributes } from "../../core/appearance/utils";
 import {
+  useDynamicItemData,
   useFilteredGraph,
   useGraphDataset,
   useGraphDatasetActions,
@@ -48,6 +49,7 @@ function SelectedItem<
   const { openModal } = useModal();
 
   const graphDataset = useGraphDataset();
+  const dynamicItemData = useDynamicItemData();
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
   const { deleteItems } = useGraphDatasetActions();
@@ -62,7 +64,7 @@ function SelectedItem<
     [data, id, renderingData, selectionSize, t, type],
   );
 
-  const item = getItemAttributes(type, id, filteredGraph, graphDataset, visualGetters);
+  const item = getItemAttributes(type, id, filteredGraph, graphDataset, dynamicItemData, visualGetters);
   let content: ReactNode;
   if (type === "nodes") {
     content = <NodeComponent label={item.label} color={item.color} hidden={item.hidden} />;
@@ -72,6 +74,7 @@ function SelectedItem<
       graphDataset.fullGraph.source(id),
       filteredGraph,
       graphDataset,
+      dynamicItemData,
       visualGetters,
     );
     const target = getItemAttributes(
@@ -79,6 +82,7 @@ function SelectedItem<
       graphDataset.fullGraph.target(id),
       filteredGraph,
       graphDataset,
+      dynamicItemData,
       visualGetters,
     );
 
@@ -191,6 +195,7 @@ export const Selection: FC = () => {
   const { type, items } = useSelection();
   const { select, reset } = useSelectionActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
+  const { dynamicNodeData } = useDynamicItemData();
   const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
 
@@ -271,7 +276,7 @@ export const Selection: FC = () => {
               key={item}
               type={type}
               selectionSize={items.size}
-              data={type === "nodes" ? nodeData[item] : edgeData[item]}
+              data={type === "nodes" ? { ...nodeData[item], ...dynamicNodeData[item] } : edgeData[item]}
               renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
             />
           )}

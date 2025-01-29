@@ -1,18 +1,20 @@
+import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
 import { RefinementColor } from "../../../core/appearance/types";
 import { useGraphDataset } from "../../../core/context/dataContexts";
+import { staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
 
-type Option = { value: string; label: string };
-function stringToOption(str: string): Option {
+type Option = { value: ItemDataField; label: string };
+function stringToOption(field: ItemDataField): Option {
   return {
-    value: str,
-    label: str,
+    value: field,
+    label: staticDynamicAttributeLabel(field),
   };
 }
 
@@ -28,8 +30,8 @@ export const RefinementColorEditor: FC<{
       (itemType === "nodes" ? nodeFields : edgeFields)
         .filter((field) => field.quantitative)
         .map((field) => ({
-          value: field.id,
-          label: field.id,
+          value: { field: field.id, dynamic: field.dynamic },
+          label: staticDynamicAttributeLabel({ field: field.id, dynamic: field.dynamic }),
         })),
     [edgeFields, itemType, nodeFields],
   );

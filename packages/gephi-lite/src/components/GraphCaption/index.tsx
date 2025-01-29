@@ -1,3 +1,4 @@
+import { ItemDataField, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, mapValues } from "lodash";
 import { FC, useEffect, useMemo, useState } from "react";
@@ -5,8 +6,14 @@ import { useTranslation } from "react-i18next";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { BiCollapseAlt } from "react-icons/bi";
 
-import { useAppearance, useFilteredGraph, useGraphDataset, useLayoutState } from "../../core/context/dataContexts";
-import { ItemData } from "../../core/graph/types";
+import {
+  useAppearance,
+  useDynamicItemData,
+  useFilteredGraph,
+  useGraphDataset,
+  useLayoutState,
+} from "../../core/context/dataContexts";
+import { mergeStaticDynamicData, staticDynamicAttributeKey } from "../../core/graph/dynamicAttributes";
 import { ItemsColorCaption } from "./ItemColorCaption";
 import ItemSizeCaption from "./ItemSizeCaption";
 import { LayoutQualityCaption } from "./LayoutQualityCaption";
@@ -16,46 +23,61 @@ export interface GraphCaptionProps {
 }
 
 export interface RangeExtends {
+  field: ItemDataField;
   min: number;
   max: number;
   missing?: boolean;
 }
-export type PartitionExtends = { occurrences: Record<string, number>; missing?: boolean };
+export type PartitionExtends = { field: ItemDataField; occurrences: Record<string, number>; missing?: boolean };
 
 const getAttributeRanges = (
   itemIds: string[],
-  itemData: Record<string, ItemData>,
-  rankingFields: string[],
-  partitionFields: string[],
+  dynamicItemData: Record<string, StaticDynamicItemData>,
+  rankingFields: ItemDataField[],
+  partitionFields: ItemDataField[],
 ) => {
   return itemIds.reduce(
-    (acc, n) => {
+    (acc, id) => {
+      const getFieldValue = (field: ItemDataField) =>
+        field.dynamic ? dynamicItemData[id].dynamic[field.field] : dynamicItemData[id].static[field.field];
       // rankings
-      const rankings = mapValues(acc.ranking, (value, key) => {
-        const fieldValue = itemData[n][key];
+      const rankings = mapValues(acc.ranking, (rangeExtend) => {
+        const fieldValue = getFieldValue(rangeExtend.field);
         if (fieldValue && (typeof fieldValue === "number" || !isNaN(+fieldValue)))
-          return { ...value, min: Math.min(value.min, +fieldValue), max: Math.max(value.max, +fieldValue) };
-        else return { ...value, missing: true };
+          return {
+            ...rangeExtend,
+            min: Math.min(rangeExtend.min, +fieldValue),
+            max: Math.max(rangeExtend.max, +fieldValue),
+          };
+        else return { ...rangeExtend, missing: true };
       });
       // partitions
-      const partitions = mapValues(acc.partition, (value, key) => {
-        const fieldValue = itemData[n][key];
+      const partitions = mapValues(acc.partition, (partition) => {
+        const fieldValue = getFieldValue(partition.field);
         if (fieldValue !== null && fieldValue !== undefined)
           return {
-            ...value,
+            ...partition,
             occurrences: {
-              ...value.occurrences,
-              ["" + fieldValue]: (value.occurrences ? value.occurrences["" + fieldValue] || 0 : 0) + 1,
+              ...partition.occurrences,
+              ["" + fieldValue]: (partition.occurrences ? partition.occurrences["" + fieldValue] || 0 : 0) + 1,
             },
           };
-        else return { ...value, missing: true };
+        else return { ...partition, missing: true };
       });
 
       return { ranking: { ...acc.ranking, ...rankings }, partition: { ...acc.partition, ...partitions } };
     },
     {
-      ranking: fromPairs(rankingFields.map((f) => [f, { min: Infinity, max: -Infinity } as RangeExtends])),
-      partition: fromPairs(partitionFields.map((f) => [f, {} as PartitionExtends])),
+      ranking: fromPairs(
+        rankingFields.map((f) => [
+          // TODO this key could theoritically collide with existing but chances are odd
+          staticDynamicAttributeKey(f),
+          { field: f, min: Infinity, max: -Infinity } as RangeExtends,
+        ]),
+      ),
+      partition: fromPairs(
+        partitionFields.map((f) => [staticDynamicAttributeKey(f), { field: f } as PartitionExtends]),
+      ),
     },
   );
 };
@@ -64,6 +86,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   const appearance = useAppearance();
   const filteredGraph = useFilteredGraph();
   const { nodeData, edgeData } = useGraphDataset();
+  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const { quality } = useLayoutState();
@@ -97,7 +120,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is string => f !== null);
+      .filter((f): f is ItemDataField => f !== null);
     const nodePartitionFields = [appearance.nodesColor, appearance.nodesSize]
       .map((appearanceSpec) => {
         if (appearanceSpec.type === "partition") {
@@ -105,12 +128,12 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is string => f !== null);
+      .filter((f): f is ItemDataField => f !== null);
 
     if (nodeRankingFields.length > 0 || nodePartitionFields.length > 0) {
       attributesExtends.node = getAttributeRanges(
         filteredGraph.nodes(),
-        nodeData,
+        mergeStaticDynamicData(nodeData, dynamicNodeData),
         nodeRankingFields,
         nodePartitionFields,
       );
@@ -123,7 +146,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is string => f !== null);
+      .filter((f): f is ItemDataField => f !== null);
     const edgePartitionFields = [appearance.edgesColor, appearance.edgesSize]
       .map((appearanceSpec) => {
         if (appearanceSpec.type === "partition") {
@@ -131,26 +154,25 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is string => f !== null);
+      .filter((f): f is ItemDataField => f !== null);
 
     if (edgeRankingFields.length > 0 || edgePartitionFields.length > 0) {
       attributesExtends.edge = getAttributeRanges(
         filteredGraph.edges(),
-        edgeData,
+        mergeStaticDynamicData(edgeData, dynamicEdgeData),
         edgeRankingFields,
         edgePartitionFields,
       );
     }
 
     return attributesExtends;
-  }, [appearance, filteredGraph, nodeData, edgeData]);
+  }, [appearance, filteredGraph, nodeData, dynamicNodeData, edgeData, dynamicEdgeData]);
 
-  //sigma.getNodeDisplayData(id).size
   const nodeSizeExtends = appearance.nodesSize.field
-    ? vizAttributesExtends.node["ranking"][appearance.nodesSize.field]
+    ? vizAttributesExtends.node["ranking"][staticDynamicAttributeKey(appearance.nodesSize.field)]
     : undefined;
   const edgeSizeExtends = appearance.edgesSize.field
-    ? vizAttributesExtends.edge["ranking"][appearance.edgesSize.field]
+    ? vizAttributesExtends.edge["ranking"][staticDynamicAttributeKey(appearance.edgesSize.field)]
     : undefined;
 
   return (
@@ -178,7 +200,11 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
                 minimal={minimal}
                 itemsColor={appearance.nodesColor}
                 itemsRefinementColor={appearance.nodesRefinementColor}
-                extend={vizAttributesExtends.node[appearance.nodesColor.type][appearance.nodesColor.field]}
+                extend={
+                  vizAttributesExtends.node[appearance.nodesColor.type][
+                    staticDynamicAttributeKey(appearance.nodesColor.field)
+                  ]
+                }
               />
             )}
             <ItemSizeCaption
@@ -196,7 +222,9 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
                 itemsRefinementColor={appearance.edgesRefinementColor}
                 extend={
                   appearance.edgesColor.field
-                    ? vizAttributesExtends.edge[appearance.edgesColor.type][appearance.edgesColor.field]
+                    ? vizAttributesExtends.edge[appearance.edgesColor.type][
+                        staticDynamicAttributeKey(appearance.edgesColor.field)
+                      ]
                     : undefined
                 }
               />
