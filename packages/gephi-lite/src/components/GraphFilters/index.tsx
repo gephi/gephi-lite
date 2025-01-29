@@ -22,7 +22,7 @@ const FilterInStack: FC<{
 
   const editMode = !!active && filterIndex === filters.past.length - 1;
   // internalEditMode is an internal state which is used to mimic edit/confirm state for the last filter
-  // indeed this filter is always active but it's unecessary to bring this weird status to the user
+  // indeed this filter is always active, but it's unnecessary to bring this weird status to the user
   // thus the internalEditMode is used to toggle Edit/Confirmed state for the last filter without affecting others filters state
   const [internalEditMode, setInternalEditMode] = useState<boolean>(editMode);
   useEffect(() => setInternalEditMode(editMode), [editMode]);

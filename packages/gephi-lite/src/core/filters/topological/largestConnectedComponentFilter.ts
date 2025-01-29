@@ -3,13 +3,16 @@ import { subgraph } from "graphology-operators";
 import { t } from "i18next";
 import { flatten, sortBy } from "lodash";
 
-import { FilterNumberParameter, TopologicalFilterType } from "../types";
+import { FilterNumberParameter, TopologicalFilterDefinition } from "../types";
 
-export const largestConnectedComponentFilter: TopologicalFilterType<[FilterNumberParameter]> = {
+export const buildLargestConnectedComponentFilterDefinition = (): TopologicalFilterDefinition<
+  [FilterNumberParameter]
+> => ({
   type: "topological",
   id: "largestConnectedComponent",
   label: t("filters.topology.largestConnectedComponent.label"),
-  summary: ([numberParam]) => t("filters.topology.largestConnectedComponent.summary", { number: numberParam.value }),
+  summary: ([numberOfComponents]) =>
+    t("filters.topology.largestConnectedComponent.summary", { number: numberOfComponents }),
   parameters: [
     {
       id: "numberOfComponents",
@@ -20,10 +23,10 @@ export const largestConnectedComponentFilter: TopologicalFilterType<[FilterNumbe
       min: 1,
     },
   ],
-  filter(parameters, graph) {
+  filter([numberOfComponents], graph) {
     const components = connectedComponents(graph);
-    const componentstoKeep = sortBy(components, (c) => -1 * c.length).slice(0, parameters[0].value || 1);
+    const componentstoKeep = sortBy(components, (c) => -1 * c.length).slice(0, numberOfComponents);
 
     return subgraph(graph, flatten(componentstoKeep));
   },
-};
+});

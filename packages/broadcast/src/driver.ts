@@ -1,4 +1,10 @@
-import { AppearanceState, GraphDataset, deserializeDataset, serializeDataset } from "@gephi/gephi-lite-sdk";
+import {
+  AppearanceState,
+  FiltersState,
+  GraphDataset,
+  deserializeDataset,
+  serializeDataset,
+} from "@gephi/gephi-lite-sdk";
 import EventEmitter from "events";
 import { SerializedGraph } from "graphology-types";
 import { isPlainObject } from "lodash";
@@ -9,6 +15,7 @@ import {
   EventBroadcastMessage,
   GephiLiteEvents,
   GetAppearanceMethod,
+  GetFiltersMethod,
   GetGraphDatasetMethod,
   GetGraphMethod,
   GetVersionMethod,
@@ -20,6 +27,7 @@ import {
   PingMethod,
   ReplyMessage,
   SetAppearanceMethod,
+  SetFiltersMethod,
   SetGraphDatasetMethod,
   TypedEventEmitter,
 } from "./types";
@@ -108,6 +116,16 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
   getGraph() {
     return this.callMethod<GetGraphMethod>("getGraph");
   }
+  async getGraphDataset() {
+    const dataset = await this.callMethod<GetGraphDatasetMethod>("getGraphDataset");
+    return deserializeDataset(dataset);
+  }
+  setGraphDataset(dataset: GraphDataset) {
+    return this.callMethod<SetGraphDatasetMethod>("setGraphDataset", serializeDataset(dataset));
+  }
+  mergeGraphDataset(dataset: Partial<GraphDataset>) {
+    return this.callMethod<MergeGraphDatasetMethod>("mergeGraphDataset", serializeDataset(dataset));
+  }
   getAppearance() {
     return this.callMethod<GetAppearanceMethod>("getAppearance");
   }
@@ -117,14 +135,11 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
   mergeAppearance(appearance: Partial<AppearanceState>) {
     return this.callMethod<MergeAppearanceMethod>("mergeAppearance", appearance);
   }
-  getGraphDataset() {
-    return this.callMethod<GetGraphDatasetMethod>("getGraphDataset").then((dataset) => deserializeDataset(dataset));
+  getFilters() {
+    return this.callMethod<GetFiltersMethod>("getFilters");
   }
-  setGraphDataset(dataset: GraphDataset) {
-    return this.callMethod<SetGraphDatasetMethod>("setGraphDataset", serializeDataset(dataset));
-  }
-  mergeGraphDataset(dataset: Partial<GraphDataset>) {
-    return this.callMethod<MergeGraphDatasetMethod>("mergeGraphDataset", serializeDataset(dataset));
+  setFilters(filters: FiltersState) {
+    return this.callMethod<SetFiltersMethod>("setFilters", filters);
   }
 
   /**

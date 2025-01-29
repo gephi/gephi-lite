@@ -1,4 +1,4 @@
-import { ItemData, ItemType } from "../graph";
+import { DatalessGraph, FullGraph, ItemData, ItemType } from "../graph";
 
 export interface BaseFilter {
   type: string;
@@ -20,20 +20,24 @@ export interface TermsFilterType extends BaseFilter {
   keepMissingValues?: boolean;
 }
 
-export interface TopologicalFilterType {
-  type: "topological";
-  method?: string; // TODO
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  arguments?: any; // TODO
-}
-
 export interface ScriptFilterType extends BaseFilter {
   type: "script";
   itemType: ItemType;
-  script?: (itemID: string, attributes: ItemData, fullGraph: unknown) => boolean;
+  script?: (itemID: string, attributes: ItemData, fullGraph: FullGraph) => boolean;
+}
+
+export interface TopologicalFilterType extends Omit<BaseFilter, "itemType"> {
+  type: "topological";
+  topologicalFilterId: string;
+  parameters: unknown[];
 }
 
 export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterType | ScriptFilterType;
+
+export interface FilteredGraph {
+  filterFingerprint: string;
+  graph: DatalessGraph;
+}
 
 export interface FiltersState {
   past: FilterType[];

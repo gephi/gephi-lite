@@ -220,7 +220,7 @@
         "summary": "The {{number}} largest"
       },
       "kCore": {
-        "label": "kCore",
+        "label": "K-Core",
         "core": "k: minimum degree nodes should have",
         "summary": "{{core}}-Core"
       },

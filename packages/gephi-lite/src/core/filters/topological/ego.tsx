@@ -2,30 +2,30 @@ import { subgraph } from "graphology-operators";
 import { t } from "i18next";
 
 import { NodeComponentById } from "../../../components/Node";
-import { FilterEnumParameter, FilterNodeParameter, FilterNumberParameter, TopologicalFilterType } from "../types";
+import { FilterEnumParameter, FilterNodeParameter, FilterNumberParameter, TopologicalFilterDefinition } from "../types";
 
 export type TraversalMode = "in" | "out" | "both";
 
-export const egoFilter = (
+export const buildEgoFilterDefinition = (
   directed: boolean,
-): TopologicalFilterType<[FilterNodeParameter, FilterNumberParameter, FilterEnumParameter<TraversalMode>]> => ({
+): TopologicalFilterDefinition<[FilterNodeParameter, FilterNumberParameter, FilterEnumParameter<TraversalMode>]> => ({
   type: "topological",
   id: "ego",
   label: t("filters.topology.ego.label"),
-  summary: (params) => (
+  summary: ([egoId, depth, direction]) => (
     <div>
-      {params[0].value && (
+      {typeof egoId === "string" && (
         <div className="d-inline-block">
-          <NodeComponentById id={params[0].value} />
+          <NodeComponentById id={egoId} />
         </div>
       )}
       <span className="ms-1 align-top">
         {t("filters.topology.ego.summary_depth", {
-          depth: params[1].value || params[1].defaultValue,
+          depth: depth,
         }) +
           (directed
             ? ` ${t("filters.topology.ego.summary_direction", {
-                direction: t(`filters.topology.ego.direction.${params[2].value || params[2].defaultValue}`),
+                direction: t(`filters.topology.ego.direction.${direction}`),
               })}`
             : "")}
       </span>
@@ -60,10 +60,7 @@ export const egoFilter = (
       hidden: !directed,
     },
   ],
-  filter(parameters, graph) {
-    const ego = parameters[0].value;
-    const direction = parameters[2].value || parameters[2].defaultValue;
-
+  filter([egoId, maxDepth, direction], graph) {
     const getNeighbors = (n: string) => {
       return direction === "in"
         ? graph.inboundNeighbors(n)
@@ -72,11 +69,10 @@ export const egoFilter = (
           : graph.neighbors(n);
     };
 
-    if (ego !== undefined && graph.hasNode(ego)) {
-      const nodes = new Set([ego]);
-      const maxDepth = parameters[1].value || parameters[1].defaultValue;
+    if (typeof egoId !== "string" && graph.hasNode(egoId)) {
+      const nodes = new Set([egoId as string]);
       let depth = 0;
-      let neighbors = new Set([ego]);
+      let neighbors = new Set([egoId as string]);
       while (depth <= maxDepth && neighbors.size > 0) {
         const nextIterationNeighbors = new Set<string>();
         neighbors.forEach((n) => {

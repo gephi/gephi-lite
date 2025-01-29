@@ -1,69 +1,34 @@
 import { ReactNode } from "react";
 
-import { DatalessGraph, FullGraph, ItemData } from "../graph/types";
-import { ItemType } from "../types";
+import { DatalessGraph } from "../graph/types";
 
-export interface BaseFilter {
-  type: string;
-  itemType: ItemType;
-}
-
-export type RangeFilterType = BaseFilter & {
-  type: "range";
-  itemType: ItemType;
-  field: string;
-  keepMissingValues?: boolean;
-} & { min?: number; max?: number };
-
-export interface TermsFilterType extends BaseFilter {
-  type: "terms";
-  itemType: ItemType;
-  field: string;
-  terms?: Set<string>;
-  keepMissingValues?: boolean;
-}
-
-export interface ScriptFilterType extends BaseFilter {
-  type: "script";
-  itemType: ItemType;
-  script?: (itemID: string, attributes: ItemData, fullGraph: FullGraph) => boolean;
-}
-
-export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterType | ScriptFilterType;
-
-export interface FiltersState {
-  past: FilterType[];
-  future: FilterType[];
-}
+export {
+  type BaseFilter,
+  type RangeFilterType,
+  type TermsFilterType,
+  type ScriptFilterType,
+  type TopologicalFilterType,
+  type FilterType,
+  type FiltersState,
+  type FilteredGraph,
+} from "@gephi/gephi-lite-sdk";
 
 /**
- * Filtering steps:
- * ****************
+ * Topological filters definitions
+ * *******************************
  */
-export interface FilteredGraph {
-  filterFingerprint: string;
-  graph: DatalessGraph;
-}
-
-/**
- * Topological filters
- * *******************
- */
-
 interface BaseFilterParameter {
   id: string;
   type: string;
   label: string;
   required: boolean;
   defaultValue?: unknown;
-  value?: unknown;
   hidden?: boolean;
 }
 
 export interface FilterBooleanParameter extends BaseFilterParameter {
   type: "boolean";
   defaultValue: boolean;
-  value?: boolean;
 }
 
 export interface FilterNumberParameter extends BaseFilterParameter {
@@ -72,19 +37,16 @@ export interface FilterNumberParameter extends BaseFilterParameter {
   max?: number;
   step?: number;
   defaultValue: number;
-  value?: number;
 }
 
 export interface FilterEnumParameter<E extends string> extends BaseFilterParameter {
   type: "enum";
   options: { value: E; label: string }[];
   defaultValue: E;
-  value?: E;
 }
 
 export interface FilterNodeParameter extends BaseFilterParameter {
   type: "node";
-  value?: string;
 }
 
 export type FilterParameter =
@@ -93,13 +55,17 @@ export type FilterParameter =
   | FilterEnumParameter<string>
   | FilterNodeParameter;
 
-export interface TopologicalFilterType<ParametersType extends FilterParameter[] = FilterParameter[]> {
+export type FilterParameterValueArray<P extends readonly FilterParameter[]> = {
+  [I in keyof P]: P[I]["defaultValue"];
+};
+
+export interface TopologicalFilterDefinition<ParametersType extends FilterParameter[] = FilterParameter[]> {
   type: "topological";
   id: string;
   label: string;
   parameters: ParametersType;
-  summary: (parameters: ParametersType) => ReactNode;
-  filter: (parameters: ParametersType, graph: DatalessGraph) => DatalessGraph;
+  summary: (parameters: FilterParameterValueArray<ParametersType>) => ReactNode;
+  filter: (parameters: FilterParameterValueArray<ParametersType>, graph: DatalessGraph) => DatalessGraph;
 }
 
 // largest connected components
