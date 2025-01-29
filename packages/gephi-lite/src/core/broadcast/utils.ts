@@ -1,14 +1,16 @@
 import { GephiLiteDriver } from "@gephi/gephi-lite-broadcast";
-import { AppearanceState } from "@gephi/gephi-lite-sdk";
+import { AppearanceState, FiltersState } from "@gephi/gephi-lite-sdk";
 
 import { appearanceAtom } from "../appearance";
+import { filtersAtom } from "../filters";
 import { graphDatasetAtom } from "../graph";
 import { GraphDataset } from "../graph/types";
 
 export async function openInNewTab({
   dataset = graphDatasetAtom.get(),
   appearance = appearanceAtom.get(),
-}: { dataset?: GraphDataset; appearance?: AppearanceState } = {}) {
+  filters = filtersAtom.get(),
+}: { dataset?: GraphDataset; appearance?: AppearanceState; filters?: FiltersState } = {}) {
   const driver = new GephiLiteDriver();
 
   await new Promise<void>((resolve) => {
@@ -21,11 +23,7 @@ export async function openInNewTab({
     });
   });
 
-  // Feed graph:
-  await driver.setGraphDataset(dataset);
-
-  // Set graph appearance:
-  await driver.setAppearance(appearance);
+  await Promise.all([driver.setGraphDataset(dataset), driver.setAppearance(appearance), driver.setFilters(filters)]);
 
   driver.destroy();
 }

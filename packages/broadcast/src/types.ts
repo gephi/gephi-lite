@@ -1,4 +1,4 @@
-import { AppearanceState, SerializedGraphDataset } from "@gephi/gephi-lite-sdk";
+import { AppearanceState, FiltersState, SerializedGraphDataset } from "@gephi/gephi-lite-sdk";
 import EventEmitter from "events";
 import { SerializedGraph } from "graphology-types";
 
@@ -99,7 +99,7 @@ export interface EventBroadcastMessage<E extends BaseEvent<string, unknown> = Ba
  *   - [x] getGraph(): SerializedFullGraph / importGraph(graph: FullGraph)
  *   - [x] setGraphDataset / getGraphDataset / mergeGraphDataset
  *   - [x] setGraphAppearance / getGraphAppearance / mergeGraphAppearance
- *   - [ ] setFilters / getFilters
+ *   - [x] setFilters / getFilters
  *   - [ ] setSelection / getSelection
  *
  * 2. Other methods:
@@ -139,6 +139,9 @@ export type GetAppearanceMethod = BaseMethod<"getAppearance", [], AppearanceStat
 export type SetAppearanceMethod = BaseMethod<"setAppearance", [AppearanceState]>;
 export type MergeAppearanceMethod = BaseMethod<"mergeAppearance", [Partial<AppearanceState>]>;
 
+export type GetFiltersMethod = BaseMethod<"getFilters", [], FiltersState>;
+export type SetFiltersMethod = BaseMethod<"setFilters", [FiltersState]>;
+
 export type GephiLiteMethod =
   | PingMethod
   | GetVersionMethod
@@ -149,7 +152,9 @@ export type GephiLiteMethod =
   | MergeGraphDatasetMethod
   | GetAppearanceMethod
   | SetAppearanceMethod
-  | MergeAppearanceMethod;
+  | MergeAppearanceMethod
+  | GetFiltersMethod
+  | SetFiltersMethod;
 
 export type GephiLiteMethodBroadcastMessage =
   | MethodBroadcastMessage<PingMethod>
@@ -161,7 +166,9 @@ export type GephiLiteMethodBroadcastMessage =
   | MethodBroadcastMessage<MergeGraphDatasetMethod>
   | MethodBroadcastMessage<GetAppearanceMethod>
   | MethodBroadcastMessage<SetAppearanceMethod>
-  | MethodBroadcastMessage<MergeAppearanceMethod>;
+  | MethodBroadcastMessage<MergeAppearanceMethod>
+  | MethodBroadcastMessage<GetFiltersMethod>
+  | MethodBroadcastMessage<SetFiltersMethod>;
 
 /**
  * Event types:

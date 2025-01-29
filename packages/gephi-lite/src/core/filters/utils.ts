@@ -1,10 +1,11 @@
-import { stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
+import { FilteredGraph, stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { Scalar } from "../types";
-import { FilterType, FilteredGraph, RangeFilterType, TermsFilterType } from "./types";
+import { topologicalFilters } from "./topological";
+import { FilterType, RangeFilterType, TermsFilterType } from "./types";
 
 export { getEmptyFiltersState, serializeFiltersState, parseFiltersState } from "@gephi/gephi-lite-sdk";
 
@@ -57,7 +58,11 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
   const { nodeData, edgeData } = dataset;
 
   if (filter.type === "topological") {
-    return filter.filter(filter.parameters, graph) as G;
+    const definition = topologicalFilters(dataset.metadata.type !== "undirected").find(
+      (f) => f.id === filter.topologicalFilterId,
+    );
+    if (!definition) throw new Error(`Topological filter definition "${filter.topologicalFilterId}" not found.`);
+    return definition.filter(filter.parameters, graph) as G;
   }
 
   // Nodes:

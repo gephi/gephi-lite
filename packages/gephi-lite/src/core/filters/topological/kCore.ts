@@ -1,13 +1,13 @@
 import { kCore } from "graphology-cores";
 import { t } from "i18next";
 
-import { FilterNumberParameter, TopologicalFilterType } from "../types";
+import { FilterNumberParameter, TopologicalFilterDefinition } from "../types";
 
-export const kCoreFilter: TopologicalFilterType<[FilterNumberParameter]> = {
+export const kCoreFilter: TopologicalFilterDefinition<[FilterNumberParameter]> = {
   type: "topological",
   id: "kCore",
   label: t("filters.topology.kCore.label"),
-  summary: ([coreParam]) => t("filters.topology.kCore.summary", { core: coreParam.value }),
+  summary: ([core]) => t("filters.topology.kCore.summary", { core: core }),
   parameters: [
     {
       id: "core",
@@ -18,7 +18,7 @@ export const kCoreFilter: TopologicalFilterType<[FilterNumberParameter]> = {
       min: 1,
     },
   ],
-  filter(parameters, graph) {
-    return kCore(graph, parameters[0].value || parameters[0].defaultValue);
+  filter([core], graph) {
+    return kCore(graph, core);
   },
 };

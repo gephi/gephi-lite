@@ -144,11 +144,20 @@ export const FilterCreator: FC = () => {
                       else setFilterCreation({ itemType: filterApplicationType, type: "script" });
                       break;
                     }
-                    case "topological":
-                      setFilterCreation(
-                        topologicalFilters(metadata.type !== "undirected").find((f) => f.id === selectedOption.value) ||
-                          null,
+                    case "topological": {
+                      const filterDefinition = topologicalFilters(metadata.type !== "undirected").find(
+                        (f) => f.id === selectedOption.value,
                       );
+                      setFilterCreation(
+                        filterDefinition
+                          ? {
+                              type: "topological",
+                              topologicalFilterId: filterDefinition.id,
+                              parameters: filterDefinition.parameters.map((param) => param.defaultValue),
+                            }
+                          : null,
+                      );
+                    }
                   }
                 }
               }}

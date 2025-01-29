@@ -18,6 +18,8 @@ import { assert } from "typia";
 import { config } from "../../config";
 import { appearanceAtom } from "../appearance";
 import { resetStates } from "../context/dataContexts";
+import { filtersAtom } from "../filters";
+import { FiltersState } from "../filters/types";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
 import { importStateAtom } from "../graph/import";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
@@ -81,6 +83,13 @@ const BROADCAST_METHODS: {
   },
   mergeAppearance: async (appearance: Partial<AppearanceState>) => {
     appearanceAtom.set((state) => ({ ...state, ...appearance }));
+  },
+
+  getFilters: async () => {
+    return filtersAtom.get();
+  },
+  setFilters: async (filters: FiltersState) => {
+    filtersAtom.set(filters);
   },
 };
 

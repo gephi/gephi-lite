@@ -9,7 +9,7 @@ import { ImFileEmpty } from "react-icons/im";
 import { Loader } from "../../components/Loader";
 import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
-import { openInNewTab } from "../../core/broadcast/driver";
+import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import { useExportActions, useExportState, useGraphDatasetActions, useOrigin } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";

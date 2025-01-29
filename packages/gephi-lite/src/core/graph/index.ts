@@ -1,4 +1,4 @@
-import { APPEARANCE_ITEM_TYPES, AppearanceState, getEmptyAppearanceState } from "@gephi/gephi-lite-sdk";
+import { APPEARANCE_ITEM_TYPES, AppearanceState, FilteredGraph, getEmptyAppearanceState } from "@gephi/gephi-lite-sdk";
 import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
 import EventEmitter from "events";
 import { Attributes } from "graphology-types";
@@ -9,7 +9,7 @@ import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { filtersAtom } from "../filters";
-import { FilterType, FilteredGraph } from "../filters/types";
+import { FilterType } from "../filters/types";
 import { applyFilters } from "../filters/utils";
 import { itemsRemove, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
