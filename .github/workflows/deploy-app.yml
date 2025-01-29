@@ -9,6 +9,8 @@ jobs:
     env:
       CI: false
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
+      VITE_MATOMO_URL: "https://matomo.ouestware.com"
+      VITE_MATOMO_SITEID: 32
     steps:
       - name: Checkout
         uses: actions/checkout@v2

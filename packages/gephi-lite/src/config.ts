@@ -9,4 +9,17 @@ export const config = {
     client_id: "938f561199e6e55c739b",
     scopes: ["gist"],
   },
+  matomo: {
+    urlBase: import.meta.env.VITE_MATOMO_URL,
+    siteId: import.meta.env.VITE_MATOMO_SITEID || 0,
+    heartBeat: {
+      active: true,
+      seconds: 15,
+    },
+    configurations: {
+      disableCookies: true,
+      setSecureCookie: true,
+      setRequestMethod: "POST",
+    },
+  },
 };

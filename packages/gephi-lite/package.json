@@ -28,8 +28,9 @@
     "sigma": "3.0.0"
   },
   "dependencies": {
-    "@gephi/gephi-lite-sdk": "0.5.2",
+    "@datapunt/matomo-tracker-react": "^0.5.1",
     "@gephi/gephi-lite-broadcast": "0.5.2",
+    "@gephi/gephi-lite-sdk": "0.5.2",
     "@monaco-editor/react": "^4.6.0",
     "@octokit/auth-oauth-device": "^7.1.2",
     "@octokit/core": "^6.1.3",

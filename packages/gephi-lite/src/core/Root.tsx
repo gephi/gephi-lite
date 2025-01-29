@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { ErrorComponent } from "../components/Error";
+import { MatomoProvider } from "../components/Matomo";
 import { NotFoundPage } from "../views/NotFoundPage";
 import { GraphPage } from "../views/graphPage";
 import { Initialize } from "./Initialize";
@@ -21,23 +22,25 @@ export const Root: FC = () => {
       }}
     >
       <HashRouter>
-        <UIContext.Provider
-          value={{
-            ...emptyUIContext,
-            portalTarget: portalTarget,
-          }}
-        >
-          <AtomsContextsRoot>
-            <Initialize>
-              <Routes>
-                <Route path="/" element={<GraphPage />} />
+        <MatomoProvider>
+          <UIContext.Provider
+            value={{
+              ...emptyUIContext,
+              portalTarget: portalTarget,
+            }}
+          >
+            <AtomsContextsRoot>
+              <Initialize>
+                <Routes>
+                  <Route path="/" element={<GraphPage />} />
 
-                {/* Error pages: */}
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Initialize>
-          </AtomsContextsRoot>
-        </UIContext.Provider>
+                  {/* Error pages: */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Initialize>
+            </AtomsContextsRoot>
+          </UIContext.Provider>
+        </MatomoProvider>
       </HashRouter>
     </ErrorBoundary>
   );
