@@ -1,11 +1,10 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "@gephi/gephi-lite-sdk";
+import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
 import { i18n } from "../../locales/provider";
 import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
   return {
-    recentRemoteFiles: [],
     layoutsParameters: {},
     metrics: {},
     // default is the local detected by i18n
@@ -29,14 +28,14 @@ export function getCurrentPreferences(): Preferences {
  * Preferences lifecycle helpers (state serialization / deserialization):
  */
 export function serializePreferences(preferences: Preferences): string {
-  return stringifyWithSetsAndFunctions(preferences);
+  return gephiLiteStringify(preferences);
 }
 
 export function parsePreferences(rawPreferences: string): Preferences | null {
   try {
     // TODO:
     // Validate the actual data
-    return parseWithSetsAndFunctions(rawPreferences);
+    return gephiLiteParse(rawPreferences);
   } catch (e) {
     console.error(e);
     return null;

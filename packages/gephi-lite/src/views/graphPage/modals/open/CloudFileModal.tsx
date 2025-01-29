@@ -21,9 +21,9 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { notify } = useNotifications();
   const { loading, error, getFiles, openFile } = useCloudProvider();
   // list files retrived from the cloud
-  const [files, setFiles] = useState<Array<CloudFile>>([]);
+  const [files, setFiles] = useState<Array<Omit<CloudFile, "format">>>([]);
   // the selected file by the user
-  const [selected, setSelected] = useState<CloudFile | null>(null);
+  const [selected, setSelected] = useState<Omit<CloudFile, "format"> | null>(null);
   // for the pagination
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);

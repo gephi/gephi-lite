@@ -1,6 +1,6 @@
 import { MultiGraph } from "graphology";
 
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "../utils";
+import { gephiLiteParse, gephiLiteStringify } from "../utils";
 import { GraphDataset, SerializedGraphDataset } from "./types";
 
 export * from "./types";
@@ -44,13 +44,13 @@ export function deserializeDataset(
 }
 
 export function datasetToString(dataset: GraphDataset): string {
-  return stringifyWithSetsAndFunctions(serializeDataset(dataset));
+  return gephiLiteStringify(serializeDataset(dataset));
 }
 export function parseDataset(rawDataset: string): GraphDataset | null {
   try {
     // TODO:
     // Validate the actual data
-    return deserializeDataset(parseWithSetsAndFunctions(rawDataset) as SerializedGraphDataset);
+    return deserializeDataset(gephiLiteParse(rawDataset) as SerializedGraphDataset);
   } catch (e) {
     console.error(e);
     return null;

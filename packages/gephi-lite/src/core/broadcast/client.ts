@@ -18,10 +18,10 @@ import { assert } from "typia";
 import { config } from "../../config";
 import { appearanceAtom } from "../appearance";
 import { resetStates } from "../context/dataContexts";
+import { fileAtom } from "../file";
 import { filtersAtom } from "../filters";
 import { FiltersState } from "../filters/types";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
-import { importStateAtom } from "../graph/import";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
 import { resetCamera } from "../sigma";
 
@@ -42,21 +42,20 @@ const BROADCAST_METHODS: {
     return config.version;
   },
   importGraph: async (data) => {
-    if (importStateAtom.get().type === "loading") throw new Error("A file is already being loaded");
-    importStateAtom.set({ type: "loading" });
+    if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");
+    fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
 
     try {
       const graph = Graph.from(data);
-
       const { setGraphDataset } = graphDatasetActions;
       resetStates(false);
       setGraphDataset({ ...initializeGraphDataset(graph) });
       resetCamera({ forceRefresh: true });
     } catch (e) {
-      importStateAtom.set({ type: "error", message: (e as Error).message });
+      fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
       throw e;
     } finally {
-      importStateAtom.set({ type: "idle" });
+      fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
     }
   },
   getGraph: async () => {

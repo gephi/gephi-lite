@@ -324,3 +324,23 @@ export function uniqFieldvaluesAsStrings(items: Record<string, ItemData>, field:
     }),
   ) as string[];
 }
+
+// /**
+//  * Generate the original graph from the graphDataset.
+//  */
+// export function graphDatasetToGraphData(graphDataset: GraphDataset): DataGraph {
+//   const graph = graphDataset.fullGraph.copy();
+//   Object.entries(graphDataset.nodeData).map(([key, value]) => {
+//     graph.updateNodeAttributes(key, (attrs) => ({ ...attrs, ...value }));
+//   });
+//   Object.entries(graphDataset.edgeData).map(([key, value]) => {
+//     graph.updateEdgeAttributes(key, (attrs) => ({ ...attrs, ...value }));
+//   });
+//   Object.entries(graphDataset.nodeRenderingData).map(([key, value]) => {
+//     graph.updateNodeAttributes(key, (attrs) => ({ ...attrs, ...value }));
+//   });
+//   Object.entries(graphDataset.edgeRenderingData).map(([key, value]) => {
+//     graph.updateEdgeAttributes(key, (attrs) => ({ ...attrs, ...value }));
+//   });
+//   return graph;
+// }

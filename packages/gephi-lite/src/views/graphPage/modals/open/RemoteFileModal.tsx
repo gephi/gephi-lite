@@ -4,8 +4,7 @@ import { FaFolderOpen, FaTimes } from "react-icons/fa";
 
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
-import { useImportActions, useImportState } from "../../../../core/context/dataContexts";
-import { RemoteFile } from "../../../../core/graph/import/types";
+import { useFile, useFileActions } from "../../../../core/context/dataContexts";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { isUrl } from "../../../../utils/check";
@@ -16,8 +15,10 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const [url, setUrl] = useState<string>("");
 
-  const { type: fileStateType } = useImportState();
-  const { importFile } = useImportActions();
+  const { open } = useFileActions();
+  const {
+    status: { type: fileStateType },
+  } = useFile();
 
   const isFormValid = useMemo(() => {
     return url ? isUrl(url) : false;
@@ -26,9 +27,9 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const openRemote = useCallback(async () => {
     if (isFormValid) {
       try {
-        const file: RemoteFile = { type: "remote", url, filename: extractFilename(url) };
-        await importFile(file);
-        notify({ type: "success", message: t("graph.open.remote.success", { filename: file.filename }).toString() });
+        const filename = extractFilename(url);
+        await open({ type: "remote", url, filename });
+        notify({ type: "success", message: t("graph.open.remote.success", { filename }).toString() });
         cancel();
       } catch (e) {
         console.error(e);
@@ -39,7 +40,7 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         });
       }
     }
-  }, [isFormValid, url, cancel, notify, t, importFile]);
+  }, [isFormValid, url, cancel, notify, t, open]);
 
   return (
     <Modal

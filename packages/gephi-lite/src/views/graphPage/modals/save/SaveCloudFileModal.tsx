@@ -5,6 +5,8 @@ import { FaSave, FaTimes } from "react-icons/fa";
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
 import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
+import { useFile, useFileActions } from "../../../../core/context/dataContexts";
+import { getFilename } from "../../../../core/file/utils";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 import { useConnectedUser } from "../../../../core/user";
@@ -14,6 +16,8 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const [user] = useConnectedUser();
   const { loading, error, createFile } = useCloudProvider();
   const { notify } = useNotifications();
+  const { exportAsGephiLite } = useFileActions();
+  const { current } = useFile();
 
   const [filename, setFilename] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -24,25 +28,35 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
     setIsValid(filename.length > 0);
   }, [filename]);
 
+  useEffect(() => {
+    setFilename(getFilename(current?.filename || "", "gephi-lite"));
+  }, [current]);
+
   const save = useCallback(async () => {
     if (isValid) {
-      try {
-        await createFile({
-          filename,
-          description,
-          isPublic,
-        });
-        cancel();
-        notify({ type: "success", message: t("graph.save.cloud.success", { filename }).toString() });
-      } catch (e) {
-        console.error(e);
-      }
+      await exportAsGephiLite(async (content) => {
+        try {
+          await createFile(
+            {
+              filename,
+              description,
+              isPublic,
+              format: "gephi-lite",
+            },
+            content,
+          );
+          cancel();
+          notify({ type: "success", message: t("graph.save.github.success", { filename }).toString() });
+        } catch (e) {
+          console.error(e);
+        }
+      });
     }
-  }, [isValid, createFile, filename, description, isPublic, cancel, notify, t]);
+  }, [isValid, createFile, filename, description, isPublic, cancel, notify, t, exportAsGephiLite]);
 
   return (
     <Modal
-      title={t("graph.save.cloud.title", {
+      title={t("graph.save.github.title", {
         provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
       }).toString()}
       onClose={() => cancel()}
@@ -54,7 +68,7 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
         <div className="mb-3">
           <label htmlFor="filename" className="form-label">
-            {t("graph.save.cloud.field.filename").toString()}
+            {t("graph.save.github.field.filename").toString()}
           </label>
           <input
             id="filename"
@@ -68,7 +82,7 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
         <div className="mb-3">
           <label htmlFor="description" className="form-label">
-            {t("graph.save.cloud.field.description").toString()}
+            {t("graph.save.github.field.description").toString()}
           </label>
           <textarea
             id="description"
@@ -89,7 +103,7 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
               onChange={(e) => setIsPublic(e.target.checked)}
             />
             <label className="form-check-label" htmlFor="isPublic">
-              {t("graph.save.cloud.field.isPublic").toString()}
+              {t("graph.save.github.field.isPublic").toString()}
             </label>
           </div>
         </div>

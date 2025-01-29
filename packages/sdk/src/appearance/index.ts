@@ -1,4 +1,4 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "../utils";
+import { gephiLiteParse, gephiLiteStringify } from "../utils";
 import { type AppearanceState } from "./types";
 
 export * from "./types";
@@ -73,13 +73,13 @@ export function getEmptyAppearanceState(): AppearanceState {
  * Appearance lifecycle helpers (state serialization / deserialization):
  */
 export function serializeAppearanceState(appearance: AppearanceState): string {
-  return stringifyWithSetsAndFunctions(appearance);
+  return gephiLiteStringify(appearance);
 }
 export function parseAppearanceState(rawAppearance: string): AppearanceState | null {
   try {
     // TODO:
     // Validate the actual data
-    return { ...getEmptyAppearanceState(), ...parseWithSetsAndFunctions(rawAppearance) };
+    return { ...getEmptyAppearanceState(), ...gephiLiteParse(rawAppearance) };
   } catch (e) {
     return null;
   }

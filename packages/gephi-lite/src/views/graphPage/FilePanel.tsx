@@ -1,5 +1,5 @@
 import fileSaver from "file-saver";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { BsFiletypePng } from "react-icons/bs";
 import { FaDownload, FaRegFolderOpen, FaRegSave } from "react-icons/fa";
@@ -11,11 +11,11 @@ import { FileIcon, SingInIcon } from "../../components/common-icons";
 import { SignInModal } from "../../components/user/SignInModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useExportActions, useExportState, useGraphDatasetActions, useOrigin } from "../../core/context/dataContexts";
+import { useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
-import { checkFilenameExtension } from "../../utils/check";
 import ConfirmModal from "./modals/ConfirmModal";
 import { CloudFileModal } from "./modals/open/CloudFileModal";
 import { LocalFileModal } from "./modals/open/LocalFileModal";
@@ -28,11 +28,140 @@ export const FilePanel: FC = () => {
   const [user] = useConnectedUser();
   const { notify } = useNotifications();
   const { t } = useTranslation("translation");
-  const origin = useOrigin();
   const { loading, saveFile } = useCloudProvider();
-  const { exportAsGexf } = useExportActions();
-  const { type: exportState } = useExportState();
+  const { exportAsGexf, exportAsGephiLite } = useFileActions();
+  const {
+    current: currentFile,
+    status: { type: exportState },
+  } = useFile();
   const { resetGraph } = useGraphDatasetActions();
+
+  const opens = useMemo(
+    () => [
+      {
+        id: "new",
+        enabled: true,
+        icon: ImFileEmpty,
+        onClick: () => {
+          openModal({
+            component: ConfirmModal,
+            arguments: {
+              title: t(`graph.open.new.title`),
+              message: t(`graph.open.new.message`),
+              successMsg: t(`graph.open.new.success`),
+            },
+            beforeSubmit: () => resetGraph(),
+          });
+        },
+      },
+      {
+        id: "github",
+        enabled: user && user.provider,
+        icon: FaRegFolderOpen,
+        onClick: () => {
+          openModal({ component: CloudFileModal, arguments: {} });
+        },
+      },
+      {
+        id: "local",
+        enabled: true,
+        icon: FaRegFolderOpen,
+        onClick: () => {
+          openModal({ component: LocalFileModal, arguments: {} });
+        },
+      },
+      {
+        id: "remote",
+        enabled: true,
+        icon: FaRegFolderOpen,
+        onClick: () => {
+          openModal({ component: RemoteFileModal, arguments: {} });
+        },
+      },
+    ],
+    [user, openModal, resetGraph, t],
+  );
+
+  const saves = useMemo(
+    () => [
+      {
+        id: "save",
+        enabled: currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user,
+        icon: FaRegSave,
+        onClick: async () => {
+          try {
+            await saveFile();
+            notify({
+              type: "success",
+              message: t("graph.save.name").toString(),
+            });
+          } catch (e) {
+            console.error(e);
+            notify({ type: "error", message: t("graph.save.github.error").toString() });
+          }
+        },
+      },
+      {
+        id: "local",
+        enabled: true,
+        icon: FaRegSave,
+        onClick: async () => {
+          console.time("exportAsGephiLite");
+          try {
+            await exportAsGephiLite((content) => {
+              fileSaver(new Blob([content]), getFilename(currentFile?.filename || "gephi-lite", "gephi-lite"));
+            });
+            notify({ type: "success", message: t("menu.save.local.success").toString() });
+          } catch (e) {
+            console.error(e);
+            notify({ type: "error", message: t("menu.save.local.error").toString() });
+          } finally {
+            console.timeEnd("exportAsGephiLite");
+          }
+        },
+      },
+      {
+        id: "github",
+        enabled: user && user.provider,
+        icon: FaRegSave,
+        onClick: () => {
+          openModal({ component: SaveCloudFileModal, arguments: {} });
+        },
+      },
+    ],
+    [openModal, user, currentFile, t, notify, exportAsGephiLite, saveFile],
+  );
+
+  const exports = useMemo(
+    () => [
+      {
+        id: "png",
+        icon: BsFiletypePng,
+        onClick: () => {
+          openModal({ component: ExportPNGModal, arguments: {} });
+        },
+      },
+      {
+        id: "gexf",
+        icon: FaDownload,
+        onClick: async () => {
+          try {
+            await exportAsGexf((content) => {
+              fileSaver(
+                new Blob([JSON.stringify(content)]),
+                getFilename(currentFile?.filename || "gephi-lite", "gexf"),
+              );
+            });
+            notify({ type: "success", message: t("graph.export.gexf.success").toString() });
+          } catch (e) {
+            console.error(e);
+            notify({ type: "error", message: t("graph.export.gexf.error").toString() });
+          }
+        },
+      },
+    ],
+    [notify, t, openModal, exportAsGexf, currentFile],
+  );
 
   return (
     <>
@@ -45,6 +174,24 @@ export const FilePanel: FC = () => {
       <hr className="m-0" />
 
       <div className="panel-block-grow">
+        {/* CLONE */}
+        <div className="mb-3">
+          <button
+            className="btn btn-sm btn-outline-dark mb-3"
+            onClick={async () => {
+              await openInNewTab();
+              notify({
+                type: "success",
+                message: t("graph.clone_in_new_tab.success").toString(),
+              });
+            }}
+          >
+            <FaClone className="me-1" />
+            {t("graph.clone_in_new_tab.title").toString()}
+          </button>
+        </div>
+
+        {/* SIGNIN */}
         {!user?.provider && (
           <>
             <p className="small">{t("file.login_capabilities")}</p>
@@ -60,159 +207,53 @@ export const FilePanel: FC = () => {
           </>
         )}
 
+        {/* OPEN */}
         <div className="position-relative">
-          {/* Save links */}
-          <h3 className="fs-5">{t("graph.save.title")}</h3>
-          {user && user.provider && (
-            <>
-              {origin && origin.type === "cloud" && checkFilenameExtension(origin.filename, "gexf") && (
-                <div>
-                  <button
-                    className="btn btn-sm btn-outline-dark mb-1"
-                    onClick={async () => {
-                      try {
-                        await saveFile();
-                        notify({
-                          type: "success",
-                          message: t("graph.save.cloud.success", { filename: origin.filename }).toString(),
-                        });
-                      } catch (e) {
-                        console.error(e);
-                        notify({ type: "error", message: t("graph.save.cloud.error").toString() });
-                      }
-                    }}
-                  >
-                    <FaRegSave className="me-1" />
-                    {t("menu.save.default").toString()}
-                  </button>
-                </div>
-              )}
-              <div>
-                <button
-                  className="btn btn-sm btn-outline-dark mb-1"
-                  onClick={() => {
-                    openModal({ component: SaveCloudFileModal, arguments: {} });
-                  }}
-                >
-                  <FaRegSave className="me-1" />
-                  {t("menu.save.cloud", { provider: t(`providers.${user.provider.type}`) }).toString()}
+          <h3 className="fs-5">{t("graph.open.title")}</h3>
+          {opens
+            .filter((e) => e.enabled)
+            .map((openDef) => (
+              <div key={openDef.id}>
+                <button className="btn btn-sm btn-outline-dark mb-1" onClick={openDef.onClick}>
+                  <openDef.icon className="me-1" />
+                  {t(`graph.open.${openDef.id}.title`)}
                 </button>
               </div>
-              <div>
-                <hr className="dropdown-divider" />
-              </div>
-            </>
-          )}
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={async () => {
-                try {
-                  await exportAsGexf((content) => {
-                    fileSaver(new Blob([content]), origin?.filename || "gephi-lite.gexf");
-                  });
-                } catch (e) {
-                  console.error(e);
-                  notify({ type: "error", message: t("menu.download.gexf-error").toString() });
-                }
-              }}
-            >
-              <FaDownload className="me-1" />
-              {t("menu.download.gexf").toString()}
-            </button>
-          </div>
+            ))}
+        </div>
 
-          {/* Open links */}
-          <h3 className="fs-5 mt-3">{t("graph.open.title")}</h3>
-          {user && user.provider && (
-            <div>
-              <button
-                className="btn btn-sm btn-outline-dark mb-1"
-                onClick={() => {
-                  openModal({ component: CloudFileModal, arguments: {} });
-                }}
-              >
-                <FaRegFolderOpen className="me-1" />
-                {t(`menu.open.cloud`, { provider: t(`providers.${user.provider.type}`) }).toString()}
+        {/* SAVE */}
+        <div className="position-relative  mt-3">
+          <h3 className="fs-5">{t("graph.save.title")}</h3>
+          {saves
+            .filter((e) => e.enabled)
+            .map((saveDef) => (
+              <div key={saveDef.id}>
+                <button className="btn btn-sm btn-outline-dark mb-1" onClick={saveDef.onClick}>
+                  <saveDef.icon className="me-1" />
+                  {t(`graph.save.${saveDef.id}.title`)}
+                </button>
+              </div>
+            ))}
+        </div>
+
+        {/* EXPORT */}
+        <div className="position-relative mt-3">
+          <h3 className="fs-5">{t("graph.export.title")}</h3>
+          {exports.map((exportDef) => (
+            <div key={exportDef.id}>
+              <button className="btn btn-sm btn-outline-dark mb-1" onClick={exportDef.onClick}>
+                <exportDef.icon className="me-1" />
+                {t(`graph.export.${exportDef.id}.title`)}
               </button>
             </div>
-          )}
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={() => {
-                openModal({ component: LocalFileModal, arguments: {} });
-              }}
-            >
-              <FaRegFolderOpen className="me-1" />
-              {t(`menu.open.local`).toString()}
-            </button>
-          </div>
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={() => {
-                openModal({ component: RemoteFileModal, arguments: {} });
-              }}
-            >
-              <FaRegFolderOpen className="me-1" />
-              {t(`menu.open.remote`).toString()}
-            </button>
-          </div>
-
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              title={t(`menu.open.new`).toString()}
-              onClick={() => {
-                openModal({
-                  component: ConfirmModal,
-                  arguments: {
-                    title: t(`graph.open.new.title`),
-                    message: t(`graph.open.new.message`),
-                    successMsg: t(`graph.open.new.success`),
-                  },
-                  beforeSubmit: () => resetGraph(),
-                });
-              }}
-            >
-              <ImFileEmpty className="me-1" />
-              {t("menu.open.new").toString()}
-            </button>
-          </div>
-
-          {/* Export links */}
-          <h3 className="fs-5 mt-3">{t("graph.export.title")}</h3>
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={() => {
-                openModal({ component: ExportPNGModal, arguments: {} });
-              }}
-            >
-              <BsFiletypePng className="me-1" />
-              {t("graph.export.png.title").toString()}
-            </button>
-          </div>
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={async () => {
-                await openInNewTab();
-                notify({
-                  type: "success",
-                  message: t("graph.export.clone_in_new_tab.success").toString(),
-                });
-              }}
-            >
-              <FaClone className="me-1" />
-              {t("graph.export.clone_in_new_tab.title").toString()}
-            </button>
-          </div>
-
-          {(loading || exportState === "loading") && <Loader />}
+          ))}
         </div>
+
+        {(loading || exportState === "loading") && <Loader />}
       </div>
+
+      {(loading || exportState === "loading") && <Loader />}
     </>
   );
 };

@@ -5,7 +5,7 @@ import { FaFolderOpen, FaTimes } from "react-icons/fa";
 import { DropInput } from "../../../../components/DropInput";
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
-import { useImportActions, useImportState } from "../../../../core/context/dataContexts";
+import { useFile, useFileActions } from "../../../../core/context/dataContexts";
 import { ModalProps } from "../../../../core/modals/types";
 import { useNotifications } from "../../../../core/notifications";
 
@@ -14,8 +14,10 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
 
-  const { type: importStateType } = useImportState();
-  const { importFile } = useImportActions();
+  const {
+    status: { type: importStateType },
+  } = useFile();
+  const { open } = useFileActions();
 
   return (
     <Modal title={t("graph.open.local.title").toString()} onClose={() => cancel()}>
@@ -43,7 +45,7 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           onClick={async () => {
             if (file) {
               try {
-                await importFile({
+                await open({
                   type: "local",
                   filename: file.name,
                   updatedAt: new Date(file.lastModified),

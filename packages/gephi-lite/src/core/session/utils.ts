@@ -1,4 +1,4 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "@gephi/gephi-lite-sdk";
+import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
 import { Session } from "./types";
 
@@ -13,13 +13,13 @@ export function getEmptySession(): Session {
  * Preferences lifecycle helpers (state serialization / deserialization):
  */
 export function serializeSession(session: Session): string {
-  return stringifyWithSetsAndFunctions(session);
+  return gephiLiteStringify(session);
 }
 
 export function parseSession(rawSession: string): Session | null {
   try {
     // Validate the actual data
-    return parseWithSetsAndFunctions(rawSession);
+    return gephiLiteParse(rawSession);
   } catch (e) {
     console.error(e);
     return null;

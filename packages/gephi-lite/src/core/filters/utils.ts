@@ -1,4 +1,4 @@
-import { FilteredGraph, stringifyWithSetsAndFunctions, toNumber, toString } from "@gephi/gephi-lite-sdk";
+import { FilteredGraph, gephiLiteStringify, toNumber, toString } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 
 import { computeAllDynamicAttributes } from "../graph/dynamicAttributes";
@@ -108,7 +108,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
 }
 
 export function getFilterFingerprint(filter: FilterType): string {
-  return stringifyWithSetsAndFunctions(filter);
+  return gephiLiteStringify(filter);
 }
 
 export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache: FilteredGraph[]): FilteredGraph[] {

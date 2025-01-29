@@ -4,6 +4,7 @@ import { isNil } from "lodash";
 import { FaGithub } from "react-icons/fa";
 
 import { checkFilenameExtension } from "../../../utils/check";
+import { getFilename } from "../../file/utils";
 import { CloudFile, CloudProvider } from "../types";
 
 export type GistFile =
@@ -32,8 +33,8 @@ export class GithubProvider implements CloudProvider {
   /**
    * Get Gist GEXF files.
    */
-  async getFiles(skip: number, limit: number): Promise<Array<CloudFile>> {
-    let result: Array<CloudFile> = [];
+  async getFiles(skip: number, limit: number): Promise<Array<Omit<CloudFile, "format">>> {
+    let result: Array<Omit<CloudFile, "format">> = [];
     let ghPage = 0;
     let reachEnd = false;
 
@@ -64,7 +65,7 @@ export class GithubProvider implements CloudProvider {
   /**
    * Get a file by id (without content)
    */
-  async getFile(id: string): Promise<CloudFile | null> {
+  async getFile(id: string): Promise<Omit<CloudFile, "format"> | null> {
     const response = await this.octokit.request("GET /gists/{gist_id}", {
       gist_id: id,
     });
@@ -104,22 +105,19 @@ export class GithubProvider implements CloudProvider {
   /**
    * Create a gist on github
    */
-  async createFile(
-    file: Pick<CloudFile, "filename" | "description" | "isPublic">,
-    content: string,
-  ): Promise<CloudFile> {
-    const fileWithExt = file.filename.endsWith(".gexf") ? file.filename : `${file.filename}.gexf`;
+  async createFile(file: CloudFile, content: string): Promise<CloudFile> {
+    const filename = getFilename(file.filename, file.format);
     const body = {
       description: file.description || file.filename,
       public: file.isPublic || false,
       files: {
-        [fileWithExt]: {
+        [filename]: {
           content,
         },
       },
     };
     const result = await this.octokit.request("POST /gists", body);
-    return this.gistToCloudFile(result.data);
+    return { ...this.gistToCloudFile(result.data), format: file.format };
   }
 
   /**
@@ -139,7 +137,7 @@ export class GithubProvider implements CloudProvider {
       gist_id: file.id,
       ...body,
     });
-    return this.gistToCloudFile(result.data);
+    return { ...this.gistToCloudFile(result.data), format: file.format };
   }
 
   /**
@@ -170,7 +168,7 @@ export class GithubProvider implements CloudProvider {
     updated_at?: string;
     files?: { [key: string]: GistFile };
     html_url?: string;
-  }): CloudFile {
+  }): Omit<CloudFile, "format"> {
     if (!gist.id) throw new Error(`Gist ${JSON.stringify(gist)} has no ID`);
     const file = this.getGraphFile(gist);
     if (!file) throw new Error(`File can't be find on gist ${gist.id}`);

@@ -32,22 +32,6 @@
   "user": {
     "avatar_alt": "Avatar de {{name}}"
   },
-  "menu": {
-    "open": {
-      "cloud": "Ouvrir un graphe depuis {{provider}}",
-      "remote": "Ouvrir un graphe distant",
-      "local": "Ouvrir un graphe local",
-      "new": "Créer un nouveau graphe"
-    },
-    "save": {
-      "default": "Enregistrer",
-      "cloud": "Enregistrer sur {{provider}} sous..."
-    },
-    "download": {
-      "gexf": "Enregistrer le graphe localement",
-      "gexf-error": "Une erreur s'est produite lors de la génération du fichier GEXF"
-    }
-  },
   "providers": {
     "github": "GitHub"
   },
@@ -305,10 +289,10 @@
         "success": "Le fichier {{filename}} a bien été ouvert",
         "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier votre connexion et vous assurer que le fichier est valide."
       },
-      "cloud": {
-        "title": "Ouvrir un fichier depuis {{provider}}",
-        "no-data": "Vous n'avez aucun fichier GEXF, GRAPHML ou JSON au format Graphology d'enregistré sur {{provider}}",
-        "file-open-external": "Ouvrir {{filename}} sur {{provider}}",
+      "github": {
+        "title": "Ouvrir un fichier depuis Github",
+        "no-data": "Vous n'avez aucun fichier GEXF, GRAPHML ou JSON au format Graphology d'enregistré sur Github",
+        "file-open-external": "Ouvrir {{filename}} sur Github",
         "select-file": "Sélectionner un fichier",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement."
@@ -321,8 +305,9 @@
     },
     "save": {
       "title": "Enregistrer le graphe",
-      "cloud": {
-        "title": "Enregistrer dans {{provider}} sous...",
+      "name": "Enregistrer",
+      "github": {
+        "title": "Enregistrer dans Github sous...",
         "field": {
           "filename": "Nom du fichier",
           "description": "Description",
@@ -330,20 +315,34 @@
         },
         "success": "Le fichier {{filename}} a bien été enregistré",
         "error": "Une erreur s'est produite lors de l'enregistrement de votre graphe. Veuillez vérifier votre connexion ou réessayer ultérieurement."
+      },
+      "local": {
+        "title": "Enregistrer en local",
+        "success":"Le graphe a bien été enregistré",
+        "error": "Une erreur s'est produite lors de l'enregistrement de votre graphe. Veuillez vérifier votre connexion ou réessayer ultérieurement."
       }
     },
     "export": {
       "title": "Exporter le graphe",
       "png": {
         "title": "Exporter une capture d'écran en PNG",
-        "success": "L'exportation PNG de votre graphe a bien été enregistrée.",
+        "success": "L'export PNG de votre graphe a bien été réalisé.",
         "fields": {
           "filename": "Nom du fichier",
           "width": "Largeur (en pixels)",
           "height": "Hauteur (en pixels)",
           "preserve_camera": "Conserver la position actuelle de la caméra"
         }
+      },
+      "gexf": {
+        "title": "Exporter en GEXF",
+        "success": "L'export en GEXF de votre graphe a bien été réalisé.",
+        "error": "Une erreur s'est produite lors de l'export de votre graphe. Veuillez vérifier votre connexion ou réessayer ultérieurement."
       }
+    },
+    "clone_in_new_tab": {
+      "title": "Dupliquer dans un nouvel onglet",
+      "success": "La duplication de votre graphe a réussie."
     },
     "caption": {
       "color": "Couleurs des {{itemType}}",

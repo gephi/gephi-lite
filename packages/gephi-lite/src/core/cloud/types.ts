@@ -1,6 +1,6 @@
-import { GraphFile } from "../graph/import/types";
+import { AbstractFile } from "../file/types";
 
-export interface CloudFile extends GraphFile {
+export interface CloudFile extends AbstractFile {
   type: "cloud";
   id: string;
   description?: string;
@@ -24,12 +24,12 @@ export interface CloudProvider {
   /**
    * Make a call to the provider to find files
    */
-  getFiles(skip?: number, limit?: number): Promise<Array<CloudFile>>;
+  getFiles(skip?: number, limit?: number): Promise<Array<Omit<CloudFile, "format">>>;
 
   /**
    * Make a call to retrieve the cloudfile by its id.
    */
-  getFile(id: string): Promise<CloudFile | null>;
+  getFile(id: string): Promise<Omit<CloudFile, "format"> | null>;
 
   /**
    * Make a call to retrieve the content of the file.
@@ -38,9 +38,11 @@ export interface CloudProvider {
 
   /**
    * Create a file.
-   * For dev, filename can lack the '.gexf', you must add it if missing
    */
-  createFile(file: Pick<CloudFile, "filename" | "description" | "isPublic">, content: string): Promise<CloudFile>;
+  createFile(
+    file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">,
+    content: string,
+  ): Promise<CloudFile>;
 
   /**
    * Save/Update a file.

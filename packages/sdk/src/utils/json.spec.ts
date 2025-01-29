@@ -1,4 +1,4 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "./json";
+import { gephiLiteParse, gephiLiteStringify } from "./json";
 
 const CLASSIC_DATASET = {
   name: "John Doe",
@@ -23,31 +23,31 @@ const SETS_DATASET_STRING =
 describe("JSON utilities", () => {
   describe("#parse and #stringify together", () => {
     it("should work with 'classic' data", () => {
-      expect(parseWithSetsAndFunctions(stringifyWithSetsAndFunctions(CLASSIC_DATASET))).toEqual(CLASSIC_DATASET);
+      expect(gephiLiteParse(gephiLiteStringify(CLASSIC_DATASET))).toEqual(CLASSIC_DATASET);
     });
 
     it("should work with sets", () => {
-      expect(parseWithSetsAndFunctions(stringifyWithSetsAndFunctions(SETS_DATASET))).toEqual(SETS_DATASET);
+      expect(gephiLiteParse(gephiLiteStringify(SETS_DATASET))).toEqual(SETS_DATASET);
     });
   });
 
   describe("#stringify", () => {
     it("should work with 'classic' data", () => {
-      expect(stringifyWithSetsAndFunctions(CLASSIC_DATASET)).toBe(CLASSIC_DATASET_STRING);
+      expect(gephiLiteStringify(CLASSIC_DATASET)).toBe(CLASSIC_DATASET_STRING);
     });
 
     it("should work with sets", () => {
-      expect(stringifyWithSetsAndFunctions(SETS_DATASET)).toBe(SETS_DATASET_STRING);
+      expect(gephiLiteStringify(SETS_DATASET)).toBe(SETS_DATASET_STRING);
     });
   });
 
   describe("#parse", () => {
     it("should work with 'classic' data", () => {
-      expect(parseWithSetsAndFunctions(CLASSIC_DATASET_STRING)).toEqual(CLASSIC_DATASET);
+      expect(gephiLiteParse(CLASSIC_DATASET_STRING)).toEqual(CLASSIC_DATASET);
     });
 
     it("should work with sets", () => {
-      expect(parseWithSetsAndFunctions(SETS_DATASET_STRING)).toEqual(SETS_DATASET);
+      expect(gephiLiteParse(SETS_DATASET_STRING)).toEqual(SETS_DATASET);
     });
   });
 });

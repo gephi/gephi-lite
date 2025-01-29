@@ -8,6 +8,10 @@ import { getEmptyFiltersState, serializeFiltersState } from "./utils";
  * Producers:
  * **********
  */
+export const setFilters: Producer<FiltersState, [FiltersState]> = (filters) => {
+  return () => filters;
+};
+
 export const addFilter: Producer<FiltersState, [FilterType]> = (filter) => {
   return (state) => ({
     ...state,
@@ -114,6 +118,7 @@ export const replaceCurrentFilter: Producer<FiltersState, [FilterType]> = (filte
 export const filtersAtom = atom<FiltersState>(getEmptyFiltersState());
 
 export const filtersActions = {
+  setFilters: producerToAction(setFilters, filtersAtom),
   addFilter: producerToAction(addFilter, filtersAtom),
   resetFilters: producerToAction(resetFilters, filtersAtom),
   openPastFilter: producerToAction(openPastFilter, filtersAtom),

@@ -1,4 +1,4 @@
-import { parseWithSetsAndFunctions, stringifyWithSetsAndFunctions } from "../utils";
+import { gephiLiteParse, gephiLiteStringify } from "../utils";
 import { FiltersState } from "./types";
 
 export * from "./types";
@@ -17,13 +17,13 @@ export function getEmptyFiltersState(): FiltersState {
  * Filters lifecycle helpers (state serialization / deserialization):
  */
 export function serializeFiltersState(filters: FiltersState): string {
-  return stringifyWithSetsAndFunctions(filters);
+  return gephiLiteStringify(filters);
 }
 export function parseFiltersState(rawFilters: string): FiltersState | null {
   try {
     // TODO:
     // Validate the actual data
-    return parseWithSetsAndFunctions(rawFilters);
+    return gephiLiteParse(rawFilters);
   } catch (e) {
     console.error(e);
     return null;
