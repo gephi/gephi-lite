@@ -12,6 +12,7 @@ import {
   useDynamicItemData,
   useGraphDataset,
 } from "../../../core/context/dataContexts";
+import { staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
@@ -23,7 +24,7 @@ type SizeOption = { value: string; label: string | JSX.Element; field?: ItemData
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
-  const { dynamicNodeFields } = useDynamicItemData();
+  const { dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const appearance = useAppearance();
   const { setSizeAppearance } = useAppearanceActions();
 
@@ -32,7 +33,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   const options: SizeOption[] = useMemo(() => {
     const allFields: FieldModel<ItemType, boolean>[] =
-      itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : edgeFields;
+      itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
     return [
       // TODO: replace type data once we switched technical attribute as normal ones
       {
@@ -47,20 +48,24 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       { value: "fixed", type: "fixed", label: t("appearance.size.fixed") as string },
       ...allFields.flatMap((field) => {
         const options: SizeOption[] = [];
-        if (!!field.quantitative)
+        if (!!field.quantitative) {
+          const staticDynamicField = { field: field.id, dynamic: field.dynamic };
           options.push({
-            value: `ranking::${field.id}`,
+            value: `ranking::${staticDynamicAttributeLabel(staticDynamicField)}`,
             field: { field: field.id, dynamic: field.dynamic },
             type: "ranking",
-            label: field.id,
+            label: staticDynamicAttributeLabel(staticDynamicField),
           });
+        }
         return options;
       }),
     ];
-  }, [edgeFields, itemType, nodeFields, dynamicNodeFields, t]);
+  }, [edgeFields, itemType, nodeFields, dynamicNodeFields, dynamicEdgeFields, t]);
 
   const selectedOption =
-    options.find((option) => option.type === size.type && option.field === size.field) || options[0];
+    options.find(
+      (option) => option.type === size.type && option.field && size.field && option.field.field === size.field.field,
+    ) || options[0];
 
   return (
     <div className="panel-block">

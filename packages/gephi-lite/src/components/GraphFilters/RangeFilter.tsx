@@ -5,11 +5,16 @@ import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useDynamicItemData, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
 import { parentFilteredGraphAtom } from "../../core/graph";
-import { getFieldValue, mergeStaticDynamicData, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
+import {
+  computeAllDynamicAttributes,
+  getFieldValue,
+  mergeStaticDynamicData,
+  staticDynamicAttributeLabel,
+} from "../../core/graph/dynamicAttributes";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { findRanges, shortenNumber } from "./utils";
 
@@ -39,7 +44,6 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
   const parentGraph = useReadAtom(parentFilteredGraphAtom);
 
   const { nodeData, edgeData } = useGraphDataset();
-  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
 
   const { t } = useTranslation();
   const { replaceCurrentFilter } = useFiltersActions();
@@ -49,7 +53,10 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
   useEffect(() => {
     const itemData = mergeStaticDynamicData(
       filter.itemType === "nodes" ? nodeData : edgeData,
-      filter.itemType === "nodes" ? dynamicNodeData : dynamicEdgeData,
+      // dynamic field should be calculated from parentraph and not from the useDynamicItemData which provide data in the current graph
+      filter.itemType === "nodes"
+        ? computeAllDynamicAttributes("nodes", parentGraph)
+        : computeAllDynamicAttributes("edges", parentGraph),
     );
 
     const values = flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
@@ -81,7 +88,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         maxCount: Math.max(...rangeValues.map((r) => r.values.length)),
       });
     }
-  }, [filter.itemType, filter.field, parentGraph, nodeData, edgeData, dynamicNodeData, dynamicEdgeData]);
+  }, [filter.itemType, filter.field, parentGraph, nodeData, edgeData]);
 
   const marks: SliderProps["marks"] = rangeMetric
     ? mapValues(

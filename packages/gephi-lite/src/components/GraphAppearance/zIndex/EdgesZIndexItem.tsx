@@ -9,6 +9,7 @@ import {
   useDynamicItemData,
   useGraphDataset,
 } from "../../../core/context/dataContexts";
+import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
@@ -31,12 +32,16 @@ export const EdgesZIndexItem: FC = () => {
   const labelOptions = useMemo(() => {
     return [
       { value: "none", type: "none", label: t(`appearance.zIndex.none`) as string },
-      ...numberFields.map((field) => ({
-        value: `field::${field.id}`,
-        type: "field",
-        field: { field: field.id, dynamic: field.dynamic },
-        label: field.id,
-      })),
+      ...numberFields.map((field) => {
+        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
+
+        return {
+          value: staticDynamicAttributeKey(staticDynamicField),
+          type: "field",
+          field: staticDynamicField,
+          label: staticDynamicAttributeLabel(staticDynamicField),
+        };
+      }),
     ] as LabelOption[];
   }, [numberFields, t]);
   const selectedLabelOption: LabelOption | null = useMemo(

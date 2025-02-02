@@ -47,7 +47,7 @@ export const mergeStaticDynamicData = (
   staticData: Record<string, ItemData>,
   dynamicData: Record<string, ItemData>,
 ): Record<string, StaticDynamicItemData> => {
-  return mapValues(staticData, (staticItemData, id) => ({ static: staticItemData, dynamic: dynamicData[id] }));
+  return mapValues(staticData, (staticItemData, id) => ({ static: staticItemData, dynamic: dynamicData[id] || {} }));
 };
 
 export const staticDynamicAttributeKey = (field: ItemDataField) =>

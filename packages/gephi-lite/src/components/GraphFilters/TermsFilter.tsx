@@ -5,17 +5,21 @@ import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
-import { useDynamicItemData, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
 import { parentFilteredGraphAtom } from "../../core/graph";
-import { getFieldValue, mergeStaticDynamicData, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
+import {
+  computeAllDynamicAttributes,
+  getFieldValue,
+  mergeStaticDynamicData,
+  staticDynamicAttributeLabel,
+} from "../../core/graph/dynamicAttributes";
 import { DEFAULT_SELECT_PROPS } from "../consts";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   const parentGraph = useReadAtom(parentFilteredGraphAtom);
   const { nodeData, edgeData } = useGraphDataset();
-  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
 
   const { t } = useTranslation();
   const { replaceCurrentFilter } = useFiltersActions();
@@ -24,7 +28,10 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   useEffect(() => {
     const itemData = mergeStaticDynamicData(
       filter.itemType === "nodes" ? nodeData : edgeData,
-      filter.itemType === "nodes" ? dynamicNodeData : dynamicEdgeData,
+      // dynamic field should be calculated from parentraph and not from the useDynamicItemData which provide data in the current graph
+      filter.itemType === "nodes"
+        ? computeAllDynamicAttributes("nodes", parentGraph)
+        : computeAllDynamicAttributes("edges", parentGraph),
     );
     const terms = countBy(
       flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
@@ -34,7 +41,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
       identity,
     );
     setDataTerms(terms);
-  }, [filter, parentGraph, nodeData, edgeData, dynamicNodeData, dynamicEdgeData]);
+  }, [filter, parentGraph, nodeData, edgeData]);
 
   return (
     <div className="my-3 w-100">

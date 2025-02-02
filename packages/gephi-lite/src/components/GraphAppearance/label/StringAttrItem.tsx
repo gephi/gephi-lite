@@ -4,7 +4,13 @@ import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
 import { StringAttr } from "../../../core/appearance/types";
-import { useAppearance, useAppearanceActions, useGraphDataset } from "../../../core/context/dataContexts";
+import {
+  useAppearance,
+  useAppearanceActions,
+  useDynamicItemData,
+  useGraphDataset,
+} from "../../../core/context/dataContexts";
+import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../../consts";
@@ -16,6 +22,7 @@ type LabelOption =
 export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
   const { t } = useTranslation();
   const { nodeFields, edgeFields } = useGraphDataset();
+  const { dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const { nodesLabel, edgesLabel, nodesImage } = useAppearance();
   const { setLabelAppearance, setNodeImagesAppearance } = useAppearanceActions();
   const setValue = useCallback(
@@ -23,23 +30,35 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
     [setLabelAppearance, setNodeImagesAppearance, itemKey, itemType],
   );
 
-  const allFields: FieldModel[] = itemType === "nodes" ? nodeFields : edgeFields;
   const currentDef = itemKey === "images" ? nodesImage : itemType === "nodes" ? nodesLabel : edgesLabel;
-  const labelOptions = useMemo(() => {
+  const labelOptions: LabelOption[] = useMemo(() => {
+    const allFields: FieldModel<ItemType, boolean>[] =
+      itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
+    const fieldType = "field" as const;
     return [
       { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) as string },
-      ...allFields.map((field) => ({
-        value: `field::${field.id}`,
-        type: "field",
-        field: field.id,
-        label: field.id,
-      })),
+      ...allFields.map((field) => {
+        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
+        return {
+          value: `field::${staticDynamicAttributeKey(staticDynamicField)}`,
+          type: fieldType,
+          field: staticDynamicField,
+          label: staticDynamicAttributeLabel(staticDynamicField),
+        };
+      }),
       { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) as string },
       { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) as string },
-    ] as LabelOption[];
-  }, [allFields, itemKey, t]);
+    ];
+  }, [nodeFields, edgeFields, dynamicNodeFields, dynamicEdgeFields, itemKey, itemType, t]);
   const selectedLabelOption: LabelOption | null = useMemo(
-    () => labelOptions.find((option) => option.type === currentDef.type && option.field === currentDef.field) || null,
+    () =>
+      labelOptions.find(
+        (option) =>
+          option.type === currentDef.type &&
+          option.field &&
+          currentDef.field &&
+          option.field.field === currentDef.field.field,
+      ) || null,
     [labelOptions, currentDef.field, currentDef.type],
   );
 

@@ -12,6 +12,7 @@ import {
   useDynamicItemData,
   useGraphDataset,
 } from "../../../core/context/dataContexts";
+import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { uniqFieldvaluesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
@@ -62,25 +63,28 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         : []),
       ...allFields.flatMap((field) => {
         const options: ColorOption[] = [];
+        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
         if (!!field.quantitative)
           options.push({
-            value: `ranking::${field.id}`,
-            field: { field: field.id, dynamic: field.dynamic },
+            value: `ranking::${staticDynamicAttributeKey(staticDynamicField)}`,
+            field: staticDynamicField,
             type: "ranking",
             label: (
               <>
-                {field.id} <small className="text-muted">({t("appearance.color.quanti")})</small>
+                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
+                <small className="text-muted">({t("appearance.color.quanti")})</small>
               </>
             ),
           });
         if (!!field.qualitative)
           options.push({
-            value: `partition::${field.id}`,
-            field: { field: field.id, dynamic: field.dynamic },
+            value: `partition::${staticDynamicAttributeKey(staticDynamicField)}`,
+            field: staticDynamicField,
             type: "partition",
             label: (
               <>
-                {field.id} <small className="text-muted">({t("appearance.color.quali")})</small>
+                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
+                <small className="text-muted">({t("appearance.color.quali")})</small>
               </>
             ),
           });
@@ -89,7 +93,9 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     ];
   }, [edgeFields, itemType, nodeFields, dynamicNodeFields, dynamicEdgeFields, t]);
   const selectedOption =
-    options.find((option) => option.type === color.type && option.field === color.field) || options[0];
+    options.find(
+      (option) => option.type === color.type && option.field && color.field && option.field.field === color.field.field,
+    ) || options[0];
 
   return (
     <div className="panel-block">

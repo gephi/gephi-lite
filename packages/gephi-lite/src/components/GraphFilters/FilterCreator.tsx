@@ -5,9 +5,10 @@ import { useTranslation } from "react-i18next";
 import { CgAddR } from "react-icons/cg";
 import Select from "react-select";
 
-import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useDynamicItemData, useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { buildTopologicalFiltersDefinitions } from "../../core/filters/topological";
 import { FilterType } from "../../core/filters/types";
+import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
 import { DEFAULT_SELECT_PROPS } from "../consts";
@@ -22,7 +23,7 @@ export interface FilterOption {
 
 export const FilterCreator: FC = () => {
   const { nodeFields, edgeFields, metadata } = useGraphDataset();
-  //TODO dynamic
+  const { dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const { t } = useTranslation();
   const { addFilter } = useFiltersActions();
   const filters = useFilters();
@@ -53,30 +54,36 @@ export const FilterCreator: FC = () => {
       setFilterOptions(topologicalFiltersOptions);
     } else {
       // Fields filters
-      const allFields: FieldModel[] = filterApplicationType === "nodes" ? nodeFields : edgeFields;
+      const allFields: FieldModel<ItemType, boolean>[] =
+        filterApplicationType === "nodes"
+          ? [...nodeFields, ...dynamicNodeFields]
+          : [...edgeFields, ...dynamicEdgeFields];
       const fieldFiltersOptions: FilterOption[] = allFields.flatMap((field) => {
         const options = [];
+        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
         if (field.quantitative)
           options.push({
-            value: `range::${field.id}`,
+            value: `range::${staticDynamicAttributeKey(staticDynamicField)}`,
             label: (
               <>
-                {field.id} <span className="text-muted">({t("filters.range")})</span>
+                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
+                <span className="text-muted">({t("filters.range")})</span>
               </>
             ),
             type: "range",
-            field: { field: field.id, dynamic: field.dynamic },
+            field: staticDynamicField,
           });
         if (!!field.qualitative)
           options.push({
             value: `term::${field.id}`,
             label: (
               <>
-                {field.id} <span className="text-muted">({t("filters.terms")})</span>
+                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
+                <span className="text-muted">({t("filters.terms")})</span>
               </>
             ),
             type: "terms",
-            field: { field: field.id, dynamic: field.dynamic },
+            field: staticDynamicField,
           });
         return options;
       });
@@ -88,7 +95,15 @@ export const FilterCreator: FC = () => {
       };
       setFilterOptions([...fieldFiltersOptions, scriptFilterOption]);
     }
-  }, [filterApplicationType, edgeFields, nodeFields, t, topologicalFiltersDefinitions]);
+  }, [
+    filterApplicationType,
+    edgeFields,
+    nodeFields,
+    t,
+    topologicalFiltersDefinitions,
+    dynamicEdgeFields,
+    dynamicNodeFields,
+  ]);
 
   if (!isOpened) {
     return (
