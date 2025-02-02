@@ -1,7 +1,7 @@
 {
   "name": "@gephi/gephi-lite-broadcast",
+  "description": "A browser library to control a Gephi Lite instance using the Broadcast Channel API",
   "version": "0.5.2",
-  "description": "TODO",
   "main": "dist/gephi-gephi-lite-broadcast.cjs.js",
   "module": "dist/gephi-gephi-lite-broadcast.esm.js",
   "files": [

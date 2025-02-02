@@ -8,6 +8,11 @@ It is currently under active developments, so features can evolve quite quickly.
 
 You can read more about the intent of this project on the [Gephi blog](https://gephi.wordpress.com/2022/11/15/gephi-lite/).
 
+This repository is the [monorepo](https://en.wikipedia.org/wiki/Monorepo) containing Gephi Lite, as well as other satellite packages:
+
+- **[@gephi/gephi-lite-sdk](packages/broadcast)** contains core Gephi Lite types and utils
+- **[@gephi/gephi-lite-broadcast](packages/broadcast)** exports TypeScript helpers to control a Gephi Lite instance in another tab or frame, from other web application
+
 ## License
 
 Gephi Lite source code is distributed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html).
@@ -104,13 +109,13 @@ $> npm install
 $> npm run build
 ```
 
-On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this settings : `VITE_GITHUB_PROXY: "https://githubapi.gephi.org"`.
+On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this setting : `VITE_GITHUB_PROXY: "https://githubapi.gephi.org"`.
 
 Then on our server, we configured NGINX with this following settings:
 
 ```nginx
 server {
-    listen       443 ssl;
+    listen 443 ssl;
     server_name githubapi.gephi.org;
 
     ssl_certificate /etc/letsencrypt/live/githubapi.gephi.org/fullchain.pem;
