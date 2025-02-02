@@ -562,7 +562,7 @@
           "coMembershipScore": "Edge co-membership attribute name (i.e. the percentage of times Louvain set the same community for both of its extremities)",
           "ambiguityScore": "Edge ambiguity score name (the inverse of the consensus of all the Louvain runs, 0 when all Louvain runs agree, and 1 when they disagree the most)",
           "meanAmbiguityScore": "Node average linked edges ambiguity score attribute name",
-          "modularityClass": "Node modularity classes (based one on single run, for coloring purpose mostly)"
+          "sourceCommunityId": "Edge source modularity classes (for coloring purpose in the preview only)"
         },
         "parameters": {
           "runs": {
@@ -579,10 +579,8 @@
           }
         },
         "preview": "Observe ambiguity visually",
-        "preview_description": "One way to represent the edges ambiguity visually, is to use the modularity classes to color nodes and edges, while highlighting in white the most ambiguous edges.",
-        "activate_preview": "Enable preview settings",
-        "deactivate_preview": "Disable preview settings",
-        "preserve_preview": "Preserve preview settings when closing this form"
+        "preview_subtitle": "(will open a new tab)",
+        "preview_description": "One way to represent the edges ambiguity visually, is to use the modularity classes to color edges, while highlighting in white the most ambiguous nodes and edges."
       }
     }
   },

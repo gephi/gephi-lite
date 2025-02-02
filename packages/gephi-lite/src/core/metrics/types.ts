@@ -72,7 +72,7 @@ export interface Metric<Outputs extends Partial<Record<ItemType, string[]>>> {
   };
   additionalControl?: ComponentType<{
     parameters: Record<string, unknown>;
-    attributeNames: Record<string, unknown>;
+    attributeNames: Record<string, string>;
     submitCount: number;
   }>;
 }

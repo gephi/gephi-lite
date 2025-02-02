@@ -1,14 +1,14 @@
 import Graph from "graphology";
 import louvain from "graphology-communities-louvain/experimental/robust-randomness";
-import { mapValues, mean, zipObject } from "lodash";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { keyBy, mapValues, mean, zipObject } from "lodash";
+import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getPalette } from "../../../components/GraphAppearance/color/utils";
 import { AppearanceState } from "../../appearance/types";
 import { DEFAULT_NODE_COLOR } from "../../appearance/utils";
-import { useAppearance, useAppearanceActions } from "../../context/dataContexts";
-import { graphDatasetAtom } from "../../graph";
+import { openInNewTab } from "../../broadcast/utils";
+import { useAppearance, useFilters, useGraphDataset } from "../../context/dataContexts";
 import { FullGraph } from "../../graph/types";
 import { uniqFieldvaluesAsStrings } from "../../graph/utils";
 import { Metric } from "../types";
@@ -64,104 +64,99 @@ const VisualizeAmbiguityForm: FC<{
 }> = ({ attributeNames }) => {
   const { t } = useTranslation();
   const appearance = useAppearance();
-  const { setFullState } = useAppearanceActions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const initialAppearance = useMemo(() => appearance, []);
-  const previewAppearance = useMemo<AppearanceState>(() => {
-    const itemsData = graphDatasetAtom.get().nodeData;
-    const values = uniqFieldvaluesAsStrings(itemsData, attributeNames["modularityClass"]);
+  const dataset = useGraphDataset();
+  const filters = useFilters();
+  const isDisabled = useMemo(() => {
+    const nodeFields = keyBy(dataset.nodeFields, "id");
+    const edgeFields = keyBy(dataset.edgeFields, "id");
+
+    return (
+      !nodeFields[attributeNames["meanAmbiguityScore"]] ||
+      !edgeFields[attributeNames["coMembershipScore"]] ||
+      !edgeFields[attributeNames["ambiguityScore"]] ||
+      !edgeFields[attributeNames["sourceCommunityId"]]
+    );
+  }, [attributeNames, dataset.edgeFields, dataset.nodeFields]);
+  const getPreviewAppearance = useCallback(() => {
+    const itemsData = dataset.edgeData;
+    const values = uniqFieldvaluesAsStrings(itemsData, attributeNames["sourceCommunityId"]);
     const newAppearance: AppearanceState = {
-      ...initialAppearance,
+      ...appearance,
       nodesColor: {
-        type: "partition",
-        field: { field: attributeNames["modularityClass"] },
-        colorPalette: getPalette(values),
-        missingColor: DEFAULT_NODE_COLOR,
+        type: "fixed",
+        value: "#ffffff",
+      },
+      nodesSize: {
+        type: "ranking",
+        field: { field: attributeNames["meanAmbiguityScore"] },
+        minSize: 2,
+        maxSize: 15,
+        missingSize: 2,
       },
       edgesColor: {
-        type: "source",
+        type: "partition",
+        field: { field: attributeNames["sourceCommunityId"] },
+        colorPalette: getPalette(values),
+        missingColor: DEFAULT_NODE_COLOR,
       },
       edgesRefinementColor: {
         type: "refinement",
         field: { field: attributeNames["ambiguityScore"] },
-        factor: 1,
+        factor: 0.8,
         targetColor: "#ffffff",
+      },
+      edgesSize: {
+        type: "fixed",
+        value: 3,
       },
       edgesZIndex: {
         type: "field",
         field: { field: attributeNames["coMembershipScore"] },
         reversed: false,
       },
-      backgroundColor: "#000000",
+      backgroundColor: "#666666",
     };
     return newAppearance;
-  }, [attributeNames, initialAppearance]);
-  const [preview, setPreview] = useState(false);
-  const preserveRef = useRef(false);
-
-  // Swap appearance on preview update:
-  useEffect(() => {
-    setFullState(preview ? previewAppearance : initialAppearance);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preview]);
-
-  // Restore initial appearance before unmounting:
-  useEffect(() => {
-    return () => {
-      if (!preserveRef.current) setFullState(initialAppearance);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [appearance, attributeNames, dataset.edgeData]);
 
   return (
     <>
       <hr />
 
-      <h6 className="m-0 d-flex align-items-center">{t("statistics.mixed.louvainEdgeAmbiguity.preview")}</h6>
+      <h6 className="m-0 d-flex align-items-center">{}</h6>
       <p className="text-muted small">{t("statistics.mixed.louvainEdgeAmbiguity.preview_description")}</p>
-      <button type="button" className="btn btn-dark w-100" onClick={() => setPreview((v) => !v)}>
-        {preview
-          ? t("statistics.mixed.louvainEdgeAmbiguity.deactivate_preview")
-          : t("statistics.mixed.louvainEdgeAmbiguity.activate_preview")}
+      <button
+        type="button"
+        className="btn btn-dark w-100"
+        onClick={() =>
+          openInNewTab({
+            dataset,
+            filters,
+            appearance: getPreviewAppearance(),
+          })
+        }
+        disabled={isDisabled}
+      >
+        {t("statistics.mixed.louvainEdgeAmbiguity.preview")}
+        <div className="small">{t("statistics.mixed.louvainEdgeAmbiguity.preview_subtitle")}</div>
       </button>
-      <div className="form-check mt-2">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          onChange={(e) => {
-            preserveRef.current = e.target.checked;
-          }}
-          id="louvainEdgeAmbiguity-preservePreviewState"
-        />
-        <label className="form-check-label" htmlFor="louvainEdgeAmbiguity-preservePreviewState">
-          {t("statistics.mixed.louvainEdgeAmbiguity.preserve_preview")}
-        </label>
-      </div>
     </>
   );
 };
 
-const VisualizeAmbiguityFormWrapper: FC<{
-  submitCount: number;
-  attributeNames: Record<string, unknown>;
-}> = ({ submitCount, attributeNames }) => {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fixedAttributeNames = useMemo(() => attributeNames as Record<string, string>, [submitCount]);
-
-  if (!submitCount) return null;
-
-  return <VisualizeAmbiguityForm attributeNames={fixedAttributeNames} />;
-};
-
 export const louvainEdgeAmbiguity: Metric<{
-  edges: ["coMembershipScore", "ambiguityScore"];
-  nodes: ["meanAmbiguityScore", "modularityClass"];
+  edges: ["coMembershipScore", "ambiguityScore", "sourceCommunityId"];
+  nodes: ["meanAmbiguityScore"];
 }> = {
   id: "louvainEdgeAmbiguity",
   description: true,
   outputs: {
-    edges: { coMembershipScore: quantitativeOnly, ambiguityScore: quantitativeOnly },
-    nodes: { modularityClass: qualitativeOnly, meanAmbiguityScore: quantitativeOnly },
+    edges: {
+      coMembershipScore: quantitativeOnly,
+      ambiguityScore: quantitativeOnly,
+      sourceCommunityId: qualitativeOnly,
+    },
+    nodes: { meanAmbiguityScore: quantitativeOnly },
   },
   parameters: [
     {
@@ -202,17 +197,21 @@ export const louvainEdgeAmbiguity: Metric<{
       resolution: parameters.resolution,
       getEdgeWeight: parameters.getEdgeWeight || null,
     });
+    const edgeCommunities: Record<string, number> = {};
+    graph.forEachEdge((edge, _, source) => {
+      edgeCommunities[edge] = communities[source];
+    });
 
     return {
       edges: {
         coMembershipScore: coMembershipEdgeScores,
         ambiguityScore: ambiguityEdgeScores,
+        sourceCommunityId: edgeCommunities,
       },
       nodes: {
         meanAmbiguityScore: meanAmbiguityNodeScores,
-        modularityClass: communities,
       },
     };
   },
-  additionalControl: VisualizeAmbiguityFormWrapper,
+  additionalControl: VisualizeAmbiguityForm,
 };
