@@ -23,7 +23,8 @@ export async function openInNewTab({
     });
   });
 
-  await Promise.all([driver.setGraphDataset(dataset), driver.setAppearance(appearance), driver.setFilters(filters)]);
+  await Promise.all([driver.setAppearance(appearance), driver.setFilters(filters)]);
+  await driver.setGraphDataset(dataset);
 
   driver.destroy();
 }
