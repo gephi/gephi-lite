@@ -123,6 +123,18 @@ function SelectedItem<
             {
               label: (
                 <>
+                  <MdSelectAll className="me-2" />
+                  {t(`selection.select_node_neighbors`)}
+                </>
+              ),
+              onClick: () => {
+                select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
+              },
+              disabled: item.hidden,
+            },
+            {
+              label: (
+                <>
                   <MdFilterCenterFocus className="me-2" />
                   {t(`selection.focus_${type}`)}
                 </>

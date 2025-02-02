@@ -74,6 +74,7 @@
     "hidden_edges_one": "One hidden selected edge",
     "hidden_edges": "{{count}} hidden selected edges",
     "select_all": "Select all",
+    "select_node_neighbors": "Select node's neighbors",
     "unselect_all": "Unselect all",
     "unselect_all_hidden_nodes": "Unselect all hidden edges",
     "unselect_all_hidden_edges": "Unselect all hidden edges",
