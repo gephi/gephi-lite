@@ -186,7 +186,6 @@ export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
 export const filteredGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphsAtom],
   (graphDataset, filteredGraphCache) => {
-    console.log("compute new filteredGraphAtom");
     return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
   },
   { checkInput: false },
@@ -269,7 +268,6 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph") || updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
     const filtersState = filtersAtom.get();
-    console.log("fullgraph changed, computed new filtered graphs");
     const newCache = applyFilters(graphDataset, filtersState.past, []);
     filteredGraphsAtom.set(newCache);
   }
