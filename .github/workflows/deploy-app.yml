@@ -13,10 +13,10 @@ jobs:
       VITE_MATOMO_SITEID: 32
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: packages/gephi-lite/build # The folder the action should deploy.
