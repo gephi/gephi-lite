@@ -146,8 +146,12 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
    * Helper/lifecycle methods:
    * *************************
    */
-  openGephiLite({ baseUrl = "/gephi-lite", target = "_blank" }: { baseUrl?: string; target?: string } = {}) {
-    return open(`${baseUrl}?broadcast=${this.name}`, target);
+  openGephiLite({
+    baseUrl = "/gephi-lite",
+    target = "_blank",
+    features = "noopener",
+  }: { baseUrl?: string; target?: string; features?: string } = {}) {
+    return open(`${baseUrl}?broadcast=${this.name}`, target, features);
   }
   destroy(): void {
     this.channel.onmessage = null;
