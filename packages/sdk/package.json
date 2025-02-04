@@ -7,6 +7,9 @@
   "files": [
     "/dist"
   ],
+  "scripts": {
+    "test": "vitest run src"
+  },
   "sideEffects": false,
   "homepage": "https://gephi.org/gephi-lite",
   "bugs": "http://github.com/jacomyal/sigma.js/issues",

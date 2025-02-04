@@ -29,3 +29,4 @@ test-results/
 playwright-report/
 playwright/.cache/
 tsconfig.tsbuildinfo
+**/__screenshots__

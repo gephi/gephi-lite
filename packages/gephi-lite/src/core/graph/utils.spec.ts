@@ -41,7 +41,7 @@ describe("Graph utilities", () => {
   });
 
   describe("#guessSeparator", () => {
-    it("should propertly detect classic detectors", () => {
+    it("should properly detect classic detectors", () => {
       expect(
         guessSeparator([
           "TypeScript",
