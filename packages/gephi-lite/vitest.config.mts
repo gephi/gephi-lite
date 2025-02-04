@@ -14,4 +14,7 @@ export default defineConfig({
       headless: true,
     },
   },
+  optimizeDeps: {
+    exclude: ["chromium-bidi"],
+  },
 });
