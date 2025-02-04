@@ -1,12 +1,17 @@
 import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { capitalize } from "lodash";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CgAddR } from "react-icons/cg";
 import Select from "react-select";
 
-import { useDynamicItemData, useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
-import { buildTopologicalFiltersDefinitions } from "../../core/filters/topological";
+import {
+  useDynamicItemData,
+  useFilters,
+  useFiltersActions,
+  useGraphDataset,
+  useTopologicalFilters,
+} from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../core/graph/types";
@@ -22,15 +27,12 @@ export interface FilterOption {
 }
 
 export const FilterCreator: FC = () => {
-  const { nodeFields, edgeFields, metadata } = useGraphDataset();
+  const { nodeFields, edgeFields } = useGraphDataset();
   const { dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const { t } = useTranslation();
   const { addFilter } = useFiltersActions();
   const filters = useFilters();
-  const topologicalFiltersDefinitions = useMemo(
-    () => buildTopologicalFiltersDefinitions(metadata.type !== "undirected"),
-    [metadata],
-  );
+  const topologicalFiltersDefinitions = useTopologicalFilters();
 
   const [isOpened, setIsOpened] = useState(false);
   const [filterApplicationType, setFilterApplicationType] = useState<ItemType | "topological">("nodes");

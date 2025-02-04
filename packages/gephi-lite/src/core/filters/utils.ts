@@ -5,8 +5,7 @@ import { computeAllDynamicAttributes } from "../graph/dynamicAttributes";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { Scalar } from "../types";
-import { buildTopologicalFiltersDefinitions } from "./topological";
-import { FilterType, RangeFilterType, TermsFilterType } from "./types";
+import { FilterType, RangeFilterType, TermsFilterType, TopologicalFilterDefinition } from "./types";
 
 export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "@gephi/gephi-lite-sdk";
 
@@ -55,13 +54,12 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
   graph: G,
   dataset: GraphDataset,
   filter: FilterType,
+  topologicalFiltersDefinitions: TopologicalFilterDefinition[],
 ): G {
   const { nodeData, edgeData } = dataset;
 
   if (filter.type === "topological") {
-    const definition = buildTopologicalFiltersDefinitions(dataset.metadata.type !== "undirected").find(
-      (f) => f.id === filter.topologicalFilterId,
-    );
+    const definition = topologicalFiltersDefinitions.find((f) => f.id === filter.topologicalFilterId);
     if (!definition) throw new Error(`Topological filter definition "${filter.topologicalFilterId}" not found.`);
     return definition.filter(filter.parameters, graph) as G;
   }
@@ -111,7 +109,12 @@ export function getFilterFingerprint(filter: FilterType): string {
   return gephiLiteStringify(filter);
 }
 
-export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache: FilteredGraph[]): FilteredGraph[] {
+export function applyFilters(
+  dataset: GraphDataset,
+  filters: FilterType[],
+  cache: FilteredGraph[],
+  topologicalFiltersDefinitions: TopologicalFilterDefinition[],
+): FilteredGraph[] {
   const steps: FilteredGraph[] = [];
   filters.reduce((graph, filter, i) => {
     const filterFingerprint = getFilterFingerprint(filter);
@@ -122,7 +125,7 @@ export function applyFilters(dataset: GraphDataset, filters: FilterType[], cache
       subgraph = cacheStep.graph;
     } else {
       cache = [];
-      subgraph = filterGraph(graph, dataset, filter);
+      subgraph = filterGraph(graph, dataset, filter, topologicalFiltersDefinitions);
     }
 
     steps.push({ filterFingerprint, graph: subgraph });

@@ -11,6 +11,7 @@ import {
   graphDatasetActions,
   graphDatasetAtom,
   sigmaGraphAtom,
+  topologicalFiltersAtom,
   visualGettersAtom,
 } from "../graph";
 import { layoutActions, layoutStateAtom } from "../layouts";
@@ -57,6 +58,7 @@ const ATOMS = {
   graphDataset: graphDatasetAtom,
   filteredGraph: filteredGraphAtom,
   visualGetters: visualGettersAtom,
+  topologicalFilters: topologicalFiltersAtom,
   search: searchAtom,
   layoutState: layoutStateAtom,
   session: sessionAtom,
@@ -72,6 +74,7 @@ const CONTEXTS = {
   graphDataset: createContext(ATOMS.graphDataset),
   file: createContext(ATOMS.file),
   visualGetters: createContext(ATOMS.visualGetters),
+  topologicalFilters: createContext(ATOMS.topologicalFilters),
   layoutState: createContext(ATOMS.layoutState),
   preferences: createContext(ATOMS.preferences),
   search: createContext(ATOMS.search),
@@ -133,6 +136,7 @@ export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
+export const useTopologicalFilters = makeUseAtom(CONTEXTS.topologicalFilters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
 export const useUser = makeUseAtom(CONTEXTS.user);

@@ -9,6 +9,7 @@ import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { filtersAtom } from "../filters";
+import { buildTopologicalFiltersDefinitions } from "../filters/topological";
 import { FilterType } from "../filters/types";
 import { applyFilters } from "../filters/utils";
 import { itemsRemove, searchActions, searchAtom } from "../search";
@@ -217,6 +218,9 @@ export const visualGettersAtom = derivedAtom(
     checkInput: false,
   },
 );
+export const topologicalFiltersAtom = derivedAtom(graphDatasetAtom, ({ metadata }) =>
+  buildTopologicalFiltersDefinitions(metadata.type !== "undirected"),
+);
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters, graph: SigmaGraph | undefined) => {
@@ -266,7 +270,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph") || updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
     const filtersState = filtersAtom.get();
-    const newCache = applyFilters(graphDataset, filtersState.past, []);
+    const newCache = applyFilters(graphDataset, filtersState.past, [], topologicalFiltersAtom.get());
     filteredGraphsAtom.set(newCache);
   }
 
@@ -370,6 +374,6 @@ filtersAtom.bind((filtersState) => {
   const cache = filteredGraphsAtom.get();
   const dataset = graphDatasetAtom.get();
 
-  const newCache = applyFilters(dataset, filtersState.past, cache);
+  const newCache = applyFilters(dataset, filtersState.past, cache, topologicalFiltersAtom.get());
   filteredGraphsAtom.set(newCache);
 });
