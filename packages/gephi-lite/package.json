@@ -7,7 +7,8 @@
     "start": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest run src",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "vitest run src",
     "test:e2e": "playwright test",
     "translations-scan": "i18next-scanner --config ../../i18next-scanner.config.ts packages/gephi-lite/src/**/*.{ts,tsx}",
     "prepare": "ts-patch install && typia patch"
