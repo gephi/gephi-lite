@@ -8,14 +8,17 @@ It is currently under active developments, so features can evolve quite quickly.
 
 You can read more about the intent of this project on the [Gephi blog](https://gephi.wordpress.com/2022/11/15/gephi-lite/).
 
-This repository is the [monorepo](https://en.wikipedia.org/wiki/Monorepo) containing Gephi Lite, as well as other satellite packages:
-
-- **[@gephi/gephi-lite-sdk](packages/broadcast)** contains core Gephi Lite types and utils
-- **[@gephi/gephi-lite-broadcast](packages/broadcast)** exports TypeScript helpers to control a Gephi Lite instance in another tab or frame, from other web application
-
 ## License
 
 Gephi Lite source code is distributed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html).
+
+## Repository structure
+
+The codebase is organized as a [monorepo](https://en.wikipedia.org/wiki/Monorepo):
+
+- **[packages/gephi-lite](packages/gephi-lite)** contains core Gephi Lite types and utils
+- **[packages/sdk](packages/sdk) ([`@gephi/gephi-lite` on NPM](https://www.npmjs.com/package/@gephi/gephi-lite))** contains core Gephi Lite types and utils
+- **[packages/broadcast](packages/broadcast) ([`@gephi/gephi-lite-sdk` on NPM](https://www.npmjs.com/package/@gephi/gephi-lite-sdk))** exports TypeScript helpers to control a Gephi Lite instance in another tab or frame, from other web application
 
 ## Run locally
 
