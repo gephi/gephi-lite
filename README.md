@@ -16,9 +16,9 @@ Gephi Lite source code is distributed under the [GNU General Public License v3](
 
 The codebase is organized as a [monorepo](https://en.wikipedia.org/wiki/Monorepo):
 
-- **[packages/gephi-lite](packages/gephi-lite)** contains core Gephi Lite types and utils
-- **[packages/sdk](packages/sdk) ([`@gephi/gephi-lite` on NPM](https://www.npmjs.com/package/@gephi/gephi-lite))** contains core Gephi Lite types and utils
-- **[packages/broadcast](packages/broadcast) ([`@gephi/gephi-lite-sdk` on NPM](https://www.npmjs.com/package/@gephi/gephi-lite-sdk))** exports TypeScript helpers to control a Gephi Lite instance in another tab or frame, from other web application
+- **[packages/gephi-lite](packages/gephi-lite)** contains Gephi Lite application code
+- **[packages/sdk](packages/sdk) ([`@gephi/gephi-lite-sdk` on NPM](https://www.npmjs.com/package/@gephi/gephi-lite))** contains core Gephi Lite types and utils
+- **[packages/broadcast](packages/broadcast) ([`@gephi/gephi-lite-broadcast` on NPM](https://www.npmjs.com/package/@gephi/gephi-lite-sdk))** exports TypeScript helpers to control a Gephi Lite instance in another tab or frame, from other web application
 
 ## Run locally
 
