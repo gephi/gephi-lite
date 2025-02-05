@@ -150,6 +150,15 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       }
     }
 
+    // Clean URL:
+    if (broadcastID) {
+      const newSearch = new URLSearchParams(location.search);
+      newSearch.delete("broadcast");
+      const searchStr = newSearch.toString();
+      const cleanedURL = location.pathname + (searchStr ? "?" + searchStr : "");
+      history.replaceState(null, "", cleanedURL);
+    }
+
     if (showWelcomeModal)
       openModal({
         component: WelcomeModal,
