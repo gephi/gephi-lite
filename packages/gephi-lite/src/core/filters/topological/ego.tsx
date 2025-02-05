@@ -69,7 +69,7 @@ export const buildEgoFilterDefinition = (
           : graph.neighbors(n);
     };
 
-    if (typeof egoId !== "string" && graph.hasNode(egoId)) {
+    if (typeof egoId === "string" && graph.hasNode(egoId)) {
       const nodes = new Set([egoId as string]);
       let depth = 0;
       let neighbors = new Set([egoId as string]);
