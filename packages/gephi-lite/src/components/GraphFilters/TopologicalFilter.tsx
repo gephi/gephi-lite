@@ -99,7 +99,7 @@ export const TopologicalFilter: FC<{
       <div className="fs-5">{filterDefinition.label}</div>
       {!editMode && (
         <div className="flex-grow-1">
-          <span className="fs-6">{filterDefinition.summary(filterDefinition.parameters)}</span>{" "}
+          <span className="fs-6">{filterDefinition.summary(filter.parameters)}</span>{" "}
         </div>
       )}
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}

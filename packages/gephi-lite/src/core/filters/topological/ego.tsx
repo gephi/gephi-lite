@@ -15,11 +15,11 @@ export const buildEgoFilterDefinition = (
   summary: ([egoId, depth, direction]) => (
     <div>
       {typeof egoId === "string" && (
-        <div className="d-inline-block">
+        <div className="d-inline-block me-1">
           <NodeComponentById id={egoId} />
         </div>
       )}
-      <span className="ms-1 align-top">
+      <span className="align-top">
         {t("filters.topology.ego.summary_depth", {
           depth: depth,
         }) +
