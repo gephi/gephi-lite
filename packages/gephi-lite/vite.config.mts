@@ -1,4 +1,5 @@
 import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import react from "@vitejs/plugin-react-swc";
 import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
@@ -21,6 +22,10 @@ export default defineConfig({
         lintCommand: "eslint src --max-warnings=0",
       },
     }),
+    sentryVitePlugin({
+      org: "ouestware",
+      project: "javascript-react",
+    }),
   ],
   resolve: {
     alias: {
@@ -35,6 +40,7 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    sourcemap: true,
   },
   server: {
     open: false,

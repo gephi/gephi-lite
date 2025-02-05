@@ -22,4 +22,7 @@ export const config = {
       setRequestMethod: "POST",
     },
   },
+  sentry: {
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+  },
 };
