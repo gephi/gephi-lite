@@ -2,9 +2,10 @@ import { MultiGraph } from "graphology";
 import { Attributes, GraphType, SerializedGraph } from "graphology-types";
 
 /**
- * Base types:
+ * BASE TYPES:
  * ***********
  */
+
 export type Scalar = boolean | number | string | undefined | null;
 export const SCALAR_TYPES = new Set(["boolean", "number", "string", "undefined"]);
 
@@ -13,9 +14,10 @@ export type ItemData = Record<string, Scalar>;
 export type StaticDynamicItemData = { static: ItemData; dynamic: ItemData };
 
 /**
- * Items data:
+ * ITEMS DATA:
  * ***********
  */
+
 export interface EdgeRenderingData extends Attributes {
   label?: string | null;
   color?: string;
@@ -43,8 +45,12 @@ export interface GraphMetadata {
 }
 
 /**
- * Model:
+ * MODEL:
  * ******
+ */
+
+/**
+ * Describes how Gephi Lite should interpret a nodes or edges field.
  */
 export interface FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = false> {
   id: string;
@@ -68,8 +74,12 @@ export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> &
 };
 
 /**
- * Graphs:
+ * GRAPHS:
  * *******
+ */
+
+/**
+ * A Graphology graph, without any attribute, to just describe the topology of a graph.
  */
 export type DatalessGraph = MultiGraph;
 export type SigmaGraph = MultiGraph<NodeRenderingData, EdgeRenderingData>;
@@ -77,8 +87,13 @@ export type DataGraph = MultiGraph<ItemData, ItemData>;
 export type FullGraph = MultiGraph<ItemData & NodeRenderingData, ItemData & EdgeRenderingData>;
 
 /**
- * States:
+ * STATES:
  * *******
+ */
+
+/**
+ * A canonical structure that contains the topology of a graph, its nodes and edges attributes and rendering attributes,
+ * as well as the models to know how to interpret all the attributes.
  */
 export interface GraphDataset {
   // The mandatory rendering data is stored in typed indices:

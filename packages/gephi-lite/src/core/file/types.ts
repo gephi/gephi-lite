@@ -5,13 +5,11 @@ import { FiltersState } from "../filters/types";
 import { GraphDataset } from "../graph/types";
 
 /**
- * Type for the file format of gephi-lite.
- * We save :
- *  - the gephi-lite version for checking compatibilities in the futur
- *  - the full graph with its metadata
- *  - filters
- *  - appearance
- *  - selection
+ * A serializable structure, to allow Gephi Lite to load and save graphs, with their surrounding context.
+ * This includes:
+ * - The full graph dataset
+ * - The filters state
+ * - The appearance state
  */
 export type GephiLiteFileFormat = {
   type: "gephi-lite";

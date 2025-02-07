@@ -25,14 +25,14 @@ export function serializeDataset(
 ): SerializedGraphDataset | Partial<SerializedGraphDataset> {
   return dataset.fullGraph
     ? { ...dataset, fullGraph: dataset.fullGraph.export() }
-    : (dataset as Partial<SerializedGraphDataset>);
+    : (dataset as Omit<Partial<SerializedGraphDataset>, "fullGraph">);
 }
 export function deserializeDataset(dataset: SerializedGraphDataset): GraphDataset;
 export function deserializeDataset(dataset: Partial<SerializedGraphDataset>): Partial<GraphDataset>;
 export function deserializeDataset(
   dataset: SerializedGraphDataset | Partial<SerializedGraphDataset>,
 ): Partial<GraphDataset> | GraphDataset {
-  if (!dataset.fullGraph) return dataset as Partial<GraphDataset>;
+  if (!dataset.fullGraph) return dataset as Omit<Partial<GraphDataset>, "fullGraph">;
 
   const fullGraph = new MultiGraph();
   fullGraph.import(dataset.fullGraph);

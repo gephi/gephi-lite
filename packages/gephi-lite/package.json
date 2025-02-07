@@ -5,12 +5,13 @@
   "license": "gpl-3.0",
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run generate-json-schema",
     "serve": "vite preview",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run src",
     "test:e2e": "playwright test",
     "translations-scan": "i18next-scanner --config ../../i18next-scanner.config.ts packages/gephi-lite/src/**/*.{ts,tsx}",
+    "generate-json-schema": "typescript-json-schema src/core/file/types.ts GephiLiteFileFormat -o build/gephi-lite-format.schema.json",
     "prepare": "ts-patch install && typia patch"
   },
   "browserslist": {
@@ -111,6 +112,7 @@
     "http-proxy-middleware": "^3.0.3",
     "i18next-scanner": "^4.6.0",
     "sass": "1.77.6",
+    "typescript-json-schema": "^0.65.1",
     "ts-patch": "^3.3.0",
     "typia": "^7.6.0",
     "vite": "^6.0.11",

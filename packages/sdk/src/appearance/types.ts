@@ -94,8 +94,9 @@ export interface ZIndexFieldAttr extends AppearanceBaseElement {
 export type ZIndexAttr = NoFieldValue<"none"> | ZIndexFieldAttr;
 
 /**
- * This state contains everything needed to generate the visual getters:
+ * Describes how each visual variable should be used to render the graph in Gephi Lite.
  */
+
 export interface AppearanceState {
   showEdges: BooleanAppearance;
   nodesSize: Size;
