@@ -577,7 +577,7 @@
             "description": "Une résolution plus élevée devrait produire plus de communautés."
           }
         },
-        "preview": "Observer visuellement l'ambiguïté visuellement",
+        "preview": "Observer visuellement l'ambiguïté",
         "preview_subtitle": "(ouvre un nouvel onglet)",
         "preview_description": "Une manière de représenter l'ambiguïté dans les liens visuellement, est de colorer les liens par la classe de modularité de leurs sources, puis de mettre en évidence les nœuds et les liens les plus ambigus"
       }
