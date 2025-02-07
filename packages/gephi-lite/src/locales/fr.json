@@ -27,6 +27,9 @@
     "form": {
       "required": "Champs requis",
       "unique": "Une autre entrée existe déjà avec cette valeur"
+    },
+    "deprecated": {
+      "gexf_search_params": "Le paramètre d'URL `gexf=` pour ouvrir un fichier automatiquement a été renommé `file=` dans la version 0.4.0. Utiliser le paramètre gexf est déprécié, et pourrait ne plus fonctionner dans une version future. Veuillez utiliser `file=` à la place."
     }
   },
   "user": {
@@ -71,6 +74,7 @@
     "hidden_edges_one": "Un lien sélectionné masqué",
     "hidden_edges": "{{count}} liens sélectionnés masqués",
     "select_all": "Sélectionner tout",
+    "select_node_neighbors": "Sélectionner les voisins du nœud",
     "unselect_all": "Tout désélectionner",
     "unselect_all_hidden_nodes": "Tout désélectionner pour les nœuds masqués",
     "unselect_all_hidden_edges": "Tout désélectionner pour les liens masqués",
@@ -100,10 +104,8 @@
       "spline": "spline"
     },
     "graph": {
-      "background": {
-        "title": "Arrière-plan",
-        "color": "Couleur"
-      }
+      "background_color": "Couleur d'arrière-plan",
+      "layout_grid_color": "Couleur de la grille d'évaluation de la spatialisation"
     },
     "color": {
       "title": "Couleur",
@@ -120,7 +122,14 @@
       "source_description": "Chaque lien est coloré en fonction de son nœud source.",
       "target_description": "Chaque lien est coloré en fonction de son nœud cible.",
       "scale_point": "Point d'échelle",
-      "ranking_intro": "Ajoutez des points de couleur sur cette échelle"
+      "ranking_intro": "Ajoutez des points de couleur sur cette échelle",
+      "enable_color_shading": "Nuancer la couleur des {{items}}",
+      "shading_attribute": "Nuancer les {{items}} suivant l'attribut...",
+      "shading_color": "Couleur cible",
+      "shading_factor": "Degré de variation",
+      "shading_factor_description": "Détermine à quel point les {{items}} doivent être nuancés. Utilisez 1 pour nuancer jusqu'à la couleur cible, ou 0.1 pour ne nuancer que jusqu'à 10% de la couleur cible.",
+      "shading_caption_1": "Les {{items}} sont nuancés vers la couleur",
+      "shading_caption_2": "suivant leur valeur de {{attribute}}."
     },
     "labels": {
       "title": "Libellés",
@@ -138,7 +147,11 @@
       "adapts_to_zoom": "Dans quelle mesure les libellés doivent-ils augmenter avec le zoom",
       "density": "Combien de libellés doivent apparaître à tout moment",
       "data_description": "Tous les libellés des {{items}} sont ceux du fichier de données d'entrée.",
-      "none_description": "Tous les {{items}} n'ont pas de libellé affiché."
+      "none_description": "Tous les {{items}} n'ont pas de libellé affiché.",
+      "ellipsis": {
+        "enabled": "Tronquer les labels",
+        "max_length": "Taille maximale des labels"
+      }
     },
     "images": {
       "title": "Images",
@@ -150,6 +163,15 @@
       "default_value": "Image pour {{items}} sans valeur valide",
       "data_description": "Toutes les images des {{items}} sont ceux du fichier de données d'entrée.",
       "none_description": "Tous les {{items}} n'ont pas d'image affichée."
+    },
+    "zIndex": {
+      "title": "Profondeur",
+      "description": "Permet de modifier quels {{items}} doivent être affichés devant.",
+      "none": "Profondeur par défaut (plus rapide)",
+      "set_values_from": "Trier la profondeur par...",
+      "none_description": "Gephi Lite affiche tous les {{items}} dans l'ordre où il les rencontre.",
+      "reverse_order": "Inverse l'ordre des éléments (valeurs les plus basses devant)",
+      "default_value": ""
     },
     "size": {
       "title": "Taille",
@@ -177,7 +199,33 @@
     "activated": "Filtre activé",
     "create_filter": "Créer un filtre",
     "keepMissingValues": "Conserver les valeurs manquantes",
-    "inapplicable": "Filtre désactivé : une seule valeur disponible"
+    "inapplicable": "Filtre désactivé : une seule valeur disponible",
+    "topology": {
+      "largestConnectedComponent": {
+        "label": "Composantes connexes",
+        "number": "Nombre de composantes à garder",
+        "summary_one": "La plus grande",
+        "summary": "Les {{number}} plus grandes"
+      },
+      "kCore": {
+        "label": "K-Cœur",
+        "core": "k : degré minimal des nœuds à garder",
+        "summary": "{{core}}-Cœur"
+      },
+      "ego": {
+        "label": "Réseau égocentré",
+        "ego": "Nœud « ego »",
+        "core": "profondeur : distance maximum entre les nœuds à garder et le nœud « ego »",
+        "summary_depth": "à la profondeur {{depth}}",
+        "summary_direction": "vers {{direction}}",
+        "direction": {
+          "label": "Suivant...",
+          "in": "les liens entrant",
+          "out": "les liens sortants",
+          "both": "tous les liens"
+        }
+      }
+    }
   },
   "edition": {
     "create_nodes": "Créer un nouveau nœud",
@@ -202,7 +250,11 @@
     "confirm_delete_nodes": "Êtes-vous sûr de vouloir supprimer {{count}} nœuds ?",
     "confirm_delete_edges_one": "Êtes-vous sûr de vouloir supprimer ce lien ?",
     "confirm_delete_edges": "Êtes-vous sûr de vouloir supprimer {{count}} liens ?",
-    "search_nodes": "Rechercher par libellé de nœud..."
+    "search_nodes": "Rechercher par libellé de nœud...",
+    "delete_nodes_attributes": "Supprimer l'attribut '{{name}}' des nœuds",
+    "delete_edges_attributes": "Supprimer l'attribut '{{name}}' des liens",
+    "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
+    "delete_attributes_success": "L'attribut '{{name}}' a bien été supprimé."
   },
   "graph": {
     "title": "Graphe",
@@ -273,6 +325,11 @@
         "attribute-name": "Nom de l'attribut",
         "attribute-value": "Valeur de l'attribut",
         "new-attribute": "Ajouter un nouvel attribut"
+      },
+      "warnings": {
+        "missing": "{{nbValues}} valeurs manquantes",
+        "wrong": "{{nbValues}} valeurs ne sont pas quantitatives",
+        "allMissing": "Aucune valeur dans le graphe"
       }
     },
     "open": {
@@ -318,7 +375,7 @@
       },
       "local": {
         "title": "Enregistrer en local",
-        "success":"Le graphe a bien été enregistré",
+        "success": "Le graphe a bien été enregistré",
         "error": "Une erreur s'est produite lors de l'enregistrement de votre graphe. Veuillez vérifier votre connexion ou réessayer ultérieurement."
       }
     },
@@ -495,6 +552,35 @@
           "custom": "Nom de l'attribut sur lequel stocker la métrique"
         }
       }
+    },
+    "mixed": {
+      "louvainEdgeAmbiguity": {
+        "title": "Ambiguïté des liens dans la méthode de Louvain",
+        "description": "Cet algorithme permet d'explorer l'ambiguïté dans la détection des communautés avec la méthode de Louvain. Il exécute l'algorithme de Louvain N fois, puis analyse comment les résultats varient au cours de multiples exécutions, en vérifiant pour chaque lien si ses extrémités appartiennent ou non à la même communauté.",
+        "attributes": {
+          "coMembershipScore": "Attribut de co-appartenance des liens (c’est-à-dire le pourcentage de fois où Louvain a assigné la même communauté aux deux extrémités d’un lien)",
+          "ambiguityScore": "Attribut du score d'ambiguïté des liens (l'inverse du consensus de toutes les exécutions de Louvain, donc 0 si la décision est toujours la même, et 1 si elle varie 50% du temps)",
+          "meanAmbiguityScore": "Moyenne des scores d'ambiguïté des liens adjacents",
+          "sourceCommunityId": "Classe de modularité des sources des liens (uniquement utilisé pour )"
+        },
+        "parameters": {
+          "runs": {
+            "title": "Exécutions de Louvain",
+            "description": "Le nombre de fois qu'il faut exécuter la méthode de Louvain"
+          },
+          "getEdgeWeight": {
+            "title": "Attribut pour le poids des liens pour Louvain",
+            "description": "Un attribut des liens qui peut représenter leurs poids"
+          },
+          "resolution": {
+            "title": "Résolution",
+            "description": "Une résolution plus élevée devrait produire plus de communautés."
+          }
+        },
+        "preview": "Observer visuellement l'ambiguïté visuellement",
+        "preview_subtitle": "(ouvre un nouvel onglet)",
+        "preview_description": "Une manière de représenter l'ambiguïté dans les liens visuellement, est de colorer les liens par la classe de modularité de leurs sources, puis de mettre en évidence les nœuds et les liens les plus ambigus"
+      }
     }
   },
   "layouts": {
@@ -654,6 +740,14 @@
       "title": "Spatialisation personnalisée",
       "description": "Écrivez votre propre spatialisation en créant une fonction qui renvoie un objet {x, y} pour chaque nœud",
       "parameters": {}
+    },
+    "quality": {
+      "title": "Qualité de la spatialisation",
+      "description": "Les nœuds connectés sont-ils rapprochés grâce à la spatialisation ?",
+      "enable": "Activer la \"connected-closeness\"",
+      "showGrid": "Afficher la grille Δmax",
+      "caption_CMax": "des liens sont plus courts que Δmax grâce à la spatialisation",
+      "caption_deltaMax": "Taille de la grille = Δmax = "
     }
   },
   "file": {
@@ -723,13 +817,15 @@
       "placeholder": "Rechercher un nœud...",
       "no_result": "Aucun nœud trouvé",
       "help": "Écrire quelque chose pour trouver un nœud",
-      "other_result": "... et {{count}} autres nœuds"
+      "other_result": "... et {{count}} autres nœuds",
+      "select_all": "Sélectionner tous les {{count}} nœuds"
     },
     "edges": {
       "placeholder": "Rechercher un lien...",
       "no_result": "Aucun lien trouvée",
       "help": "Écrire quelque chose pour trouver un lien",
-      "other_result": "... et {{count}} autres liens"
+      "other_result": "... et {{count}} autres liens",
+      "select_all": "Sélectionner tous les {{count}} liens"
     }
   },
   "settings": {
@@ -741,6 +837,7 @@
         "description": "Toutes les données courantes seront perdues, même celle stockée dans le navigateur. Voulez-vous continuer ?",
         "success": "Mise à zéro de l'application"
       }
-    }
+    },
+    "theme": "Choisissez un thème"
   }
 }
