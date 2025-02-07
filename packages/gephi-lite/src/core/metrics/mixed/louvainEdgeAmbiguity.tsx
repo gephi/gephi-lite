@@ -99,8 +99,8 @@ const VisualizeAmbiguityForm: FC<{
         colorPalette: getPalette(values),
         missingColor: DEFAULT_NODE_COLOR,
       },
-      edgesRefinementColor: {
-        type: "refinement",
+      edgesShadingColor: {
+        type: "shading",
         field: { field: attributeNames["ambiguityScore"] },
         factor: 0.8,
         targetColor: "#ffffff",

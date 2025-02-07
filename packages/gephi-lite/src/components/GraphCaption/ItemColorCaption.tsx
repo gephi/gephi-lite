@@ -3,7 +3,7 @@ import { sortBy, toPairs } from "lodash";
 import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Color, EdgeColor, RefinementColor } from "../../core/appearance/types";
+import { Color, EdgeColor, ShadingColor } from "../../core/appearance/types";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
@@ -11,14 +11,36 @@ import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./index";
 
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
-    itemType: "node" | "edge";
+    itemType: "nodes" | "edges";
     itemsColor: Color | EdgeColor;
-    itemsRefinementColor?: RefinementColor;
+    itemsShadingColor?: ShadingColor;
     extend?: RangeExtends | PartitionExtends;
   }
-> = ({ itemType, minimal, itemsColor, itemsRefinementColor, extend }) => {
+> = ({ itemType, minimal, itemsColor, itemsShadingColor, extend }) => {
   const { t } = useTranslation();
   let result: ReactNode = null;
+
+  if (itemsShadingColor)
+    result = (
+      <p className="small color-shade-caption mt-2 mb-0">
+        <span className="text-muted">
+          {t(`appearance.color.shading_caption_1`, {
+            items: t(`graph.model.${itemType}`),
+            attribute: staticDynamicAttributeLabel(itemsShadingColor.field),
+          })}
+        </span>{" "}
+        <span
+          className={cx("d-inline-block ms-1", itemType === "nodes" && "disc", itemType === "edges" && "rectangle")}
+          style={{ backgroundColor: itemsShadingColor.targetColor }}
+        />{" "}
+        <span className="text-muted">
+          {t(`appearance.color.shading_caption_2`, {
+            items: t(`graph.model.${itemType}`),
+            attribute: staticDynamicAttributeLabel(itemsShadingColor.field),
+          })}
+        </span>
+      </p>
+    );
 
   if (itemsColor.field)
     result = (
@@ -41,12 +63,12 @@ export const ItemsColorCaption: FC<
             ].map(([label, color]) => (
               <div
                 key={label}
-                title={`${itemsColor.field}: ${label} ${extend.occurrences[label]} ${t(`graph.model.${itemType}s`, {
+                title={`${itemsColor.field}: ${label} ${extend.occurrences[label]} ${t(`graph.model.${itemType}`, {
                   count: extend.occurrences[label],
                 })}`}
               >
                 <span
-                  className={cx(itemType === "node" && "disc", itemType === "edge" && "rectangle", "flex-shrink-0")}
+                  className={cx(itemType === "nodes" && "disc", itemType === "edges" && "rectangle", "flex-shrink-0")}
                   style={{ backgroundColor: color }}
                 />
                 <span className="label">{label}</span>
@@ -54,36 +76,21 @@ export const ItemsColorCaption: FC<
             ))}
           </div>
         )}
+
         {/* RANKING */}
         {extend && itemsColor.type === "ranking" && "min" in extend && (
           <div className={cx(minimal && "minimal", "item-colors ranking")}>
             <ColorSlider colorScalePoints={itemsColor.colorScalePoints} extend={extend} />
           </div>
         )}
+
+        {result}
       </>
     );
   else if (itemsColor.type === "source" || itemsColor.type === "target")
     result = (
       <>
         <CaptionItemTitle itemType={itemType} field={t(`appearance.color.${itemsColor.type}`)} vizVariable="color" />
-      </>
-    );
-
-  if (itemsRefinementColor)
-    result = (
-      <>
-        {result}
-        <p className="small">
-          <span className="text-muted">Edges with high</span> {staticDynamicAttributeLabel(itemsRefinementColor.field)}{" "}
-          <span className="text-muted">
-            tend to the color{" "}
-            <span
-              className={cx("d-inline-block ms-1", itemType === "node" && "disc", itemType === "edge" && "rectangle")}
-              style={{ backgroundColor: itemsRefinementColor.targetColor }}
-            />
-            .
-          </span>
-        </p>
       </>
     );
 

@@ -1,3 +1,4 @@
+import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { FC, useCallback, useEffect, useState } from "react";
 
@@ -10,7 +11,7 @@ import { GraphCaptionProps, RangeExtends } from "./index";
 
 const ItemSizeCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
-    itemType: "node" | "edge";
+    itemType: ItemType;
     itemsSize: Size;
     extend?: RangeExtends;
   }
@@ -18,7 +19,7 @@ const ItemSizeCaption: FC<
   const sigma = useSigmaAtom();
   // update nodeSize Size to camera updates from Sigma
   const visualGetters = useVisualGetters();
-  const getItemSize = itemType === "node" ? visualGetters.getNodeSize : visualGetters.getEdgeSize;
+  const getItemSize = itemType === "nodes" ? visualGetters.getNodeSize : visualGetters.getEdgeSize;
 
   const [itemSizeState, setItemSizeState] = useState<
     | {
@@ -41,7 +42,7 @@ const ItemSizeCaption: FC<
             static: itemsSize.field.dynamic ? {} : { [itemsSize.field.field]: extend.min },
             dynamic: itemsSize.field.dynamic ? { [itemsSize.field.field]: extend.min } : {},
           }),
-        ) * (itemType === "node" ? 2 : 1),
+        ) * (itemType === "nodes" ? 2 : 1),
       maxValue: extend.max,
       maxSize:
         sigma.scaleSize(
@@ -49,7 +50,7 @@ const ItemSizeCaption: FC<
             static: itemsSize.field.dynamic ? {} : { [itemsSize.field.field]: extend.max },
             dynamic: itemsSize.field.dynamic ? { [itemsSize.field.field]: extend.max } : {},
           }),
-        ) * (itemType === "node" ? 2 : 1),
+        ) * (itemType === "nodes" ? 2 : 1),
     });
   }, [getItemSize, sigma, itemsSize.field, extend, itemType]);
 
@@ -82,7 +83,7 @@ const ItemSizeCaption: FC<
             <div className="item-size">
               <div className="item-wrapper">
                 <div
-                  className={cx(itemType === "node" ? "dotted-circle" : "dotted-rectangle")}
+                  className={cx(itemType === "nodes" ? "dotted-circle" : "dotted-rectangle")}
                   style={{
                     width: itemSizeState?.minSize,
                     height: itemSizeState?.minSize,
@@ -101,7 +102,7 @@ const ItemSizeCaption: FC<
             <div className="item-size">
               <div className="item-wrapper">
                 <div
-                  className={cx(itemType === "node" ? "dotted-circle" : "dotted-rectangle")}
+                  className={cx(itemType === "nodes" ? "dotted-circle" : "dotted-rectangle")}
                   style={{
                     width: itemSizeState?.maxSize,
                     height: itemSizeState?.maxSize,

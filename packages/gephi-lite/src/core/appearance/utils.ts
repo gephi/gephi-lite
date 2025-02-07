@@ -42,7 +42,7 @@ export {
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
   DEFAULT_NODE_SIZE,
-  DEFAULT_REFINEMENT_COLOR,
+  DEFAULT_SHADING_COLOR,
 } from "@gephi/gephi-lite-sdk";
 
 /**
@@ -142,7 +142,7 @@ export function makeGetColor<
   itemType: T["itemType"],
   { nodeData, edgeData, nodeRenderingData, fullGraph }: GraphDataset,
   { dynamicNodeData, dynamicEdgeData }: DynamicItemData,
-  { nodesColor, edgesColor, nodesRefinementColor, edgesRefinementColor }: AppearanceState,
+  { nodesColor, edgesColor, nodesShadingColor, edgesShadingColor }: AppearanceState,
   getters?: VisualGetters,
 ): ColorGetter | null {
   const itemsValues = mergeStaticDynamicData(
@@ -150,7 +150,7 @@ export function makeGetColor<
     itemType === "nodes" ? dynamicNodeData : dynamicEdgeData,
   );
   const colorsDef = itemType === "nodes" ? nodesColor : edgesColor;
-  const refinementDef = itemType === "nodes" ? nodesRefinementColor : edgesRefinementColor;
+  const shadingDef = itemType === "nodes" ? nodesShadingColor : edgesShadingColor;
 
   let getColor: ColorGetter | null = null;
   switch (colorsDef.type) {
@@ -210,30 +210,30 @@ export function makeGetColor<
     else getColor = () => DEFAULT_EDGE_COLOR;
   }
 
-  if (getColor && refinementDef) {
+  if (getColor && shadingDef) {
     let min = Infinity,
       max = -Infinity;
     forEach(itemsValues, (data) => {
-      const value = toNumber(getFieldValue(data, refinementDef.field));
+      const value = toNumber(getFieldValue(data, shadingDef.field));
       if (typeof value === "number") {
         min = Math.min(min, value);
         max = Math.max(max, value);
       }
     });
-    const factor = refinementDef.factor / (max - min || 1);
+    const factor = shadingDef.factor / (max - min || 1);
 
     const rawGetColor = getColor;
     getColor = (data: StaticDynamicItemData, edgeId?: string) => {
       const color = rawGetColor(data, edgeId);
-      const value = toNumber(getFieldValue(data, refinementDef.field));
+      const value = toNumber(getFieldValue(data, shadingDef.field));
 
       if (typeof value === "number") {
         return chroma
-          .scale([color, refinementDef.targetColor])(value === max ? refinementDef.factor : (value - min) * factor)
+          .scale([color, shadingDef.targetColor])(value === max ? shadingDef.factor : (value - min) * factor)
           .hex();
       }
 
-      return refinementDef.missingColor || color;
+      return shadingDef.missingColor || color;
     };
   }
 

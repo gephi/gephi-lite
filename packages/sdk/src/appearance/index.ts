@@ -11,7 +11,7 @@ export const DEFAULT_NODE_LABEL_SIZE = 14;
 export const DEFAULT_EDGE_LABEL_SIZE = 14;
 export const DEFAULT_BACKGROUND_COLOR = "#FFFFFF00";
 export const DEFAULT_LAYOUT_GRID_COLOR = "#666666";
-export const DEFAULT_REFINEMENT_COLOR = "#ffffff";
+export const DEFAULT_SHADING_COLOR = "#ffffff";
 
 export function getEmptyAppearanceState(): AppearanceState {
   return {

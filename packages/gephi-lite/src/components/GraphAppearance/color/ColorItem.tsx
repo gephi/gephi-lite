@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Select from "react-select";
 
 import { Color } from "../../../core/appearance/types";
-import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR, DEFAULT_REFINEMENT_COLOR } from "../../../core/appearance/utils";
+import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR, DEFAULT_SHADING_COLOR } from "../../../core/appearance/utils";
 import {
   useAppearance,
   useAppearanceActions,
@@ -20,7 +20,7 @@ import { DEFAULT_SELECT_PROPS } from "../../consts";
 import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
-import { RefinementColorEditor } from "./RefinementColorEditor";
+import { ShadingColorEditor } from "./ShadingColorEditor";
 import { getPalette } from "./utils";
 
 type ColorOption = { value: string; label: string | JSX.Element; field?: ItemDataField; type: string };
@@ -30,12 +30,12 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { nodeData, edgeData, nodeFields, edgeFields } = useGraphDataset();
   const { dynamicNodeData, dynamicEdgeData, dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const appearance = useAppearance();
-  const { setColorAppearance, setRefinementColorAppearance } = useAppearanceActions();
+  const { setColorAppearance, setShadingColorAppearance } = useAppearanceActions();
 
   const color = itemType === "nodes" ? appearance.nodesColor : appearance.edgesColor;
-  const colorRefinement = itemType === "nodes" ? appearance.nodesRefinementColor : appearance.edgesRefinementColor;
+  const colorShading = itemType === "nodes" ? appearance.nodesShadingColor : appearance.edgesShadingColor;
   const baseValue = itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
-  const defaultRefinementField = useMemo(
+  const defaultShadingField = useMemo(
     () =>
       (itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : edgeFields).find((field) => field.quantitative),
     [edgeFields, itemType, nodeFields, dynamicNodeFields],
@@ -182,39 +182,39 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         />
       )}
 
-      {/* Colors refinement */}
-      {(colorRefinement || defaultRefinementField) && (
-        <div className="form-check mt-2">
+      {/* Colors shading */}
+      {(colorShading || defaultShadingField) && (
+        <div className="form-check mt-3">
           <input
             className="form-check-input"
             type="checkbox"
-            checked={!!colorRefinement}
+            checked={!!colorShading}
             onChange={(e) => {
-              if (!defaultRefinementField) return;
-              setRefinementColorAppearance(
+              if (!defaultShadingField) return;
+              setShadingColorAppearance(
                 itemType,
                 e.target.checked
                   ? {
-                      type: "refinement",
-                      targetColor: DEFAULT_REFINEMENT_COLOR,
-                      field: { field: defaultRefinementField.id, dynamic: defaultRefinementField.dynamic },
+                      type: "shading",
+                      targetColor: DEFAULT_SHADING_COLOR,
+                      field: { field: defaultShadingField.id, dynamic: defaultShadingField.dynamic },
                       factor: 0.5,
                     }
                   : undefined,
               );
             }}
-            id={`${itemType}-enableColorRefinement`}
+            id={`${itemType}-enableColorShading`}
           />
-          <label className="form-check-label" htmlFor={`${itemType}-enableColorRefinement`}>
-            {t("appearance.color.enable_color_refinement", { items: t(`graph.model.${itemType}`) })}
+          <label className="form-check-label" htmlFor={`${itemType}-enableColorShading`}>
+            {t("appearance.color.enable_color_shading", { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>
       )}
-      {colorRefinement && (
-        <RefinementColorEditor
+      {colorShading && (
+        <ShadingColorEditor
           itemType={itemType}
-          color={colorRefinement}
-          setColor={(newColor) => setRefinementColorAppearance(itemType, newColor)}
+          color={colorShading}
+          setColor={(newColor) => setShadingColorAppearance(itemType, newColor)}
         />
       )}
     </div>

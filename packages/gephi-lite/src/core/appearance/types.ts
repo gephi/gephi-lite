@@ -11,7 +11,7 @@ export {
   type ColorScalePointType,
   type RankingColor,
   type PartitionColor,
-  type RefinementColor,
+  type ShadingColor,
   type Color,
   type EdgeColor,
   type NoStringAttr,

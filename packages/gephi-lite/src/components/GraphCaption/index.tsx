@@ -196,10 +196,10 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
           <div className={cx("caption-items", !enabled && "d-none")}>
             {appearance.nodesColor.field !== undefined && (
               <ItemsColorCaption
-                itemType="node"
+                itemType="nodes"
                 minimal={minimal}
                 itemsColor={appearance.nodesColor}
-                itemsRefinementColor={appearance.nodesRefinementColor}
+                itemsShadingColor={appearance.nodesShadingColor}
                 extend={
                   vizAttributesExtends.node[appearance.nodesColor.type][
                     staticDynamicAttributeKey(appearance.nodesColor.field)
@@ -209,17 +209,17 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
             )}
             <ItemSizeCaption
               minimal={minimal}
-              itemType="node"
+              itemType="nodes"
               itemsSize={appearance.nodesSize}
               extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
             />
             {(appearance.edgesColor.field !== undefined ||
               ["source", "target"].includes(appearance.edgesColor.type)) && (
               <ItemsColorCaption
-                itemType="edge"
+                itemType="edges"
                 minimal={minimal}
                 itemsColor={appearance.edgesColor}
-                itemsRefinementColor={appearance.edgesRefinementColor}
+                itemsShadingColor={appearance.edgesShadingColor}
                 extend={
                   appearance.edgesColor.field
                     ? vizAttributesExtends.edge[appearance.edgesColor.type][
@@ -231,7 +231,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
             )}
             <ItemSizeCaption
               minimal={minimal}
-              itemType="edge"
+              itemType="edges"
               itemsSize={appearance.edgesSize}
               extend={edgeSizeExtends && "min" in edgeSizeExtends ? edgeSizeExtends : undefined}
             />

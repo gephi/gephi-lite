@@ -1,3 +1,4 @@
+import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,12 +7,12 @@ import { TransformationMethod } from "../../core/appearance/types";
 
 const ICON_NAMES = {
   color: {
-    node: "icon-node_color",
-    edge: "icon-node_link_color",
+    nodes: "icon-node_color",
+    edges: "icon-node_link_color",
   },
   size: {
-    node: "icon-node_size",
-    edge: "icon-node_link_weight",
+    nodes: "icon-node_size",
+    edges: "icon-node_link_weight",
   },
 };
 
@@ -50,14 +51,14 @@ const TransformationMethodLabel: FC<{ field: string; transformationMethod?: Tran
 };
 
 export const CaptionItemTitle: FC<{
-  itemType: "node" | "edge";
+  itemType: ItemType;
   vizVariable: "color" | "size";
   field: string;
   transformationMethod?: TransformationMethod;
 }> = ({ itemType, field, vizVariable, transformationMethod }) => {
   const { t } = useTranslation();
   const label = t(`graph.caption.${vizVariable}`, {
-    itemType: t(`graph.model.${itemType}s`, { count: 2 }) + "",
+    itemType: t(`graph.model.${itemType}`, { count: 2 }) + "",
   }).toString();
 
   return (

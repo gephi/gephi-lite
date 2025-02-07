@@ -123,10 +123,13 @@
       "target_description": "Each edge is colored as its target.",
       "scale_point": "Scale point",
       "ranking_intro": "Add color points on this scale",
-      "enable_color_refinement": "Refine {{items}} colors",
-      "refinement_color": "Refinement color",
-      "refinement_factor": "Refinement factor",
-      "refinement_factor_description": "Use 1 to interpolate onto the refinement color. Use 0.1 to interpolate only 10% of the way."
+      "enable_color_shading": "Shade {{items}} colors",
+      "shading_attribute": "Shade {{items}} along attribute...",
+      "shading_color": "Target color",
+      "shading_factor": "Shading degree",
+      "shading_factor_description": "Defines how much {{items}} should be shaded. Use 1 to shade all the way to the target color, or 0.1 to shade only 10% of the way, for instance.",
+      "shading_caption_1": "The {{items}} are shaded to the color",
+      "shading_caption_2": "according to their {{attribute}} values."
     },
     "labels": {
       "title": "Labels",
@@ -163,7 +166,7 @@
     },
     "zIndex": {
       "title": "Depth",
-      "description": "Allows customizing which {{items}} should be rendered in the front. Higher values are rendered in the front, lower values in the back.",
+      "description": "Allows customizing which {{items}} should be rendered in the front.",
       "none": "Default (faster)",
       "set_values_from": "Set depth from...",
       "none_description": "Gephi Lite renders all {{items}} in the order it meets them.",
@@ -372,8 +375,8 @@
       },
       "local": {
         "title": "Save graph locally",
-        "success":"Graph has been saved locally",
-        "error":"Failed to save the graph locally"
+        "success": "Graph has been saved locally",
+        "error": "Failed to save the graph locally"
       }
     },
     "export": {
@@ -836,11 +839,5 @@
       }
     },
     "theme": "Choose a theme"
-  },
-  "broadcast": {
-    "title": "Broadcast {{id}}",
-    "untrusted_message": "Latest message was untrusted. You might want to check the BroadcastChannel setup.",
-    "unimplemented_message": "Messages of type \"{{type}}\" are not implemented yet.",
-    "type_error": "Latest message was not properly typed:"
   }
 }

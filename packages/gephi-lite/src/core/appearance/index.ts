@@ -8,7 +8,7 @@ import {
   Color,
   LabelEllipsis,
   LabelSize,
-  RefinementColor,
+  ShadingColor,
   Size,
   StringAttr,
   ZIndexAttr,
@@ -43,13 +43,13 @@ const setLayoutGridColorAppearance: Producer<AppearanceState, [string | undefine
 const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemType, color) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
 };
-const setRefinementColorAppearance: Producer<AppearanceState, [ItemType, RefinementColor | undefined]> = (
+const setShadingColorAppearance: Producer<AppearanceState, [ItemType, ShadingColor | undefined]> = (
   itemType,
-  refinementColor,
+  shadingColor,
 ) => {
   return (state) => ({
     ...state,
-    [itemType === "nodes" ? "nodesRefinementColor" : "edgesRefinementColor"]: refinementColor,
+    [itemType === "nodes" ? "nodesShadingColor" : "edgesShadingColor"]: shadingColor,
   });
 };
 
@@ -90,7 +90,7 @@ export const appearanceActions = {
   setShowEdges: producerToAction(setShowEdges, appearanceAtom),
   setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
   setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),
-  setRefinementColorAppearance: producerToAction(setRefinementColorAppearance, appearanceAtom),
+  setShadingColorAppearance: producerToAction(setShadingColorAppearance, appearanceAtom),
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
   setLayoutGridColorAppearance: producerToAction(setLayoutGridColorAppearance, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),

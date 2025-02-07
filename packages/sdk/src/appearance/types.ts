@@ -53,8 +53,8 @@ export interface PartitionColor extends AppearanceBaseElement {
   colorPalette: Record<string, string>;
   missingColor: string;
 }
-export interface RefinementColor extends AppearanceBaseElement {
-  type: "refinement";
+export interface ShadingColor extends AppearanceBaseElement {
+  type: "shading";
   field: ItemDataField;
   factor: number;
   targetColor: string;
@@ -103,9 +103,9 @@ export interface AppearanceState {
   backgroundColor: string;
   layoutGridColor: string;
   nodesColor: Color;
-  nodesRefinementColor?: RefinementColor;
+  nodesShadingColor?: ShadingColor;
   edgesColor: EdgeColor;
-  edgesRefinementColor?: RefinementColor;
+  edgesShadingColor?: ShadingColor;
   nodesLabel: StringAttr;
   edgesLabel: StringAttr;
   nodesLabelSize: LabelSize;
@@ -122,7 +122,7 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
 
   nodesSize: "nodes",
   nodesColor: "nodes",
-  nodesRefinementColor: "nodes",
+  nodesShadingColor: "nodes",
   nodesLabel: "nodes",
   nodesLabelSize: "nodes",
   nodesLabelEllipsis: "nodes",
@@ -131,7 +131,7 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
   showEdges: "edges",
   edgesSize: "edges",
   edgesColor: "edges",
-  edgesRefinementColor: "edges",
+  edgesShadingColor: "edges",
   edgesLabel: "edges",
   edgesLabelSize: "edges",
   edgesLabelEllipsis: "edges",
