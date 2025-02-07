@@ -1,5 +1,21 @@
 # Gephi Lite - Changelog:
 
+## 0.6.0 version aka FOSDEM 2025
+
+This version has been developed in a one-week iteration organized at the [2025 Gephi Lite sprint](https://www.ouestware.com/2025/02/10/gephi-lite-0-6-en/), right before FOSDEM 2025.
+
+### New features
+
+- New visual variables: **Edges depth**, nodes/edges **color shading**
+- New appearance option: **Crop node/edge labels** over N characters
+- New button "**Select node neighbors**" in selected node options menu
+- Gephi Lite **JSON file format**, to save/load graphs with their surrounding context (appearance, filters)
+- The code structure has been refactored as a [monorepo](https://en.wikipedia.org/wiki/Monorepo)
+- New **[`@gephi/gephi-lite-broadcast`](https://www.npmjs.com/package/@gephi/gephi-lite-broadcast)** TypeScript library, to drive Gephi Lite from other web applications
+- New "**Clone graph in a new tab**" button
+- **Topological filters**: _k_-core, ego networks and largest connected components
+- Visualising ambiguity in Louvain community detection (experimental)
+
 ## 0.5.2
 
 This version is just published to allow testing scripting Gephi Lite, using the [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) API.
@@ -18,9 +34,9 @@ misc:
 
 - upgrade Graphology Gexf to 0.13.2
 
-## 0.5.0 aka The 2024 Gephi week edition
+## 0.5.0 version aka The 2024 Gephi week edition
 
-This version has been developed in a one week iteration organized at the [2024 Gephi week workshop](https://gephi.wordpress.com/2024/06/13/gephi-week-2024-peek-from-the-inside/).
+This version has been developed in a one-week iteration organized at the [2024 Gephi week workshop](https://gephi.wordpress.com/2024/06/13/gephi-week-2024-peek-from-the-inside/).
 
 Special thanks to [Anders Kristian Munk](https://github.com/akmunk), [Johan Irving Sølotft](https://github.com/Johansoltoft) and [Lasse Uhrskov Kristensen](https://github.com/watchforest) for testing the app and reporting ideas and issues.
 
@@ -61,7 +77,7 @@ Correcting some regressions:
 
 ## 0.4.0 version aka FOSDEM 2024
 
-This version has been developed in a one week iteration preceding the FOSDEM 2024 conference where we presented the [genesis of Gephi Lite](https://fosdem.org/2024/schedule/event/fosdem-2024-3253-bridging-research-and-open-source-the-genesis-of-gephi-lite/).
+This version has been developed in a one-week iteration preceding the FOSDEM 2024 conference where we presented the [genesis of Gephi Lite](https://fosdem.org/2024/schedule/event/fosdem-2024-3253-bridging-research-and-open-source-the-genesis-of-gephi-lite/).
 
 ### New features
 
