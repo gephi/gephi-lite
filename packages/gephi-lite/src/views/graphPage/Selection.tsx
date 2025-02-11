@@ -1,3 +1,4 @@
+import { StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +23,8 @@ import {
   useSelectionActions,
   useVisualGetters,
 } from "../../core/context/dataContexts";
-import { EdgeRenderingData, ItemData, NodeRenderingData } from "../../core/graph/types";
+import { mergeStaticDynamicData, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
+import { EdgeRenderingData, NodeRenderingData } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
 import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
@@ -41,7 +43,7 @@ function SelectedItem<
 }: {
   type: T["type"];
   id: string;
-  data: ItemData;
+  data: StaticDynamicItemData;
   renderingData: T["data"];
   selectionSize?: number;
 }) {
@@ -49,7 +51,6 @@ function SelectedItem<
   const { openModal } = useModal();
 
   const graphDataset = useGraphDataset();
-  const dynamicItemData = useDynamicItemData();
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
   const { deleteItems } = useGraphDatasetActions();
@@ -57,14 +58,20 @@ function SelectedItem<
   const attributes = useMemo(
     () =>
       selectionSize === 1
-        ? [[t(`graph.model.${type}-data.id`) as string, id], ...toPairs(data), ...toPairs(renderingData)].filter(
-            ([, value]) => !isNil(value),
-          )
+        ? [
+            { label: t(`graph.model.${type}-data.id`) as string, value: id },
+            ...toPairs(data.static).map(([field, value]) => ({ label: field, value })),
+            ...toPairs(data.dynamic).map(([field, value]) => ({
+              label: staticDynamicAttributeLabel({ field, dynamic: true }),
+              value,
+            })),
+            ...toPairs(renderingData).map(([field, value]) => ({ label: field, value })),
+          ].filter(({ value }) => !isNil(value))
         : null,
     [data, id, renderingData, selectionSize, t, type],
   );
 
-  const item = getItemAttributes(type, id, filteredGraph, graphDataset, dynamicItemData, visualGetters);
+  const item = getItemAttributes(type, id, filteredGraph, data, graphDataset, visualGetters);
   let content: ReactNode;
   if (type === "nodes") {
     content = <NodeComponent label={item.label} color={item.color} hidden={item.hidden} />;
@@ -73,16 +80,16 @@ function SelectedItem<
       "nodes",
       graphDataset.fullGraph.source(id),
       filteredGraph,
+      data,
       graphDataset,
-      dynamicItemData,
       visualGetters,
     );
     const target = getItemAttributes(
       "nodes",
       graphDataset.fullGraph.target(id),
       filteredGraph,
+      data,
       graphDataset,
-      dynamicItemData,
       visualGetters,
     );
 
@@ -184,9 +191,9 @@ function SelectedItem<
       </h4>
       {attributes && (
         <ul className="ms-4 list-unstyled small">
-          {attributes.map(([key, value]) => (
-            <li key={key} className="overflow-hidden">
-              <span className="text-muted">{key}:</span>{" "}
+          {attributes.map(({ label, value }) => (
+            <li key={label} className="overflow-hidden">
+              <span className="text-muted">{label}:</span>{" "}
               <span className="text-ellipsis">
                 <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>
                   {typeof value === "boolean" ? value.toString() : value}
@@ -207,9 +214,16 @@ export const Selection: FC = () => {
   const { type, items } = useSelection();
   const { select, reset } = useSelectionActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
-  const { dynamicNodeData } = useDynamicItemData();
+  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
+
+  const mergedStaticDynamicItemData = useMemo(() => {
+    return mergeStaticDynamicData(
+      type === "nodes" ? nodeData : edgeData,
+      type === "nodes" ? dynamicNodeData : dynamicEdgeData,
+    );
+  }, [nodeData, dynamicNodeData, dynamicEdgeData, edgeData, type]);
 
   const ItemIcon = ItemIcons[type];
 
@@ -288,7 +302,8 @@ export const Selection: FC = () => {
               key={item}
               type={type}
               selectionSize={items.size}
-              data={type === "nodes" ? { ...nodeData[item], ...dynamicNodeData[item] } : edgeData[item]}
+              data={mergedStaticDynamicItemData[item]}
+              //TODO: add dynamic
               renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
             />
           )}
@@ -325,7 +340,7 @@ export const Selection: FC = () => {
                   key={item}
                   type={type}
                   selectionSize={items.size}
-                  data={type === "nodes" ? nodeData[item] : edgeData[item]}
+                  data={mergedStaticDynamicItemData[item]}
                   renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
                 />
               )}

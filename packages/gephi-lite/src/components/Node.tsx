@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { getItemAttributes } from "../core/appearance/utils";
 import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
+import { mergeStaticDynamicData } from "../core/graph/dynamicAttributes";
 
 export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boolean }> = ({ label, color, hidden }) => {
   const { t } = useTranslation();
@@ -24,7 +25,15 @@ export const NodeComponentById: FC<{ id: string }> = ({ id }) => {
   const filteredGraph = useFilteredGraph();
 
   const data = useMemo(
-    () => getItemAttributes("nodes", id, filteredGraph, graphDataset, dynamicItemData, visualGetters),
+    () =>
+      getItemAttributes(
+        "nodes",
+        id,
+        filteredGraph,
+        mergeStaticDynamicData(graphDataset.nodeData, dynamicItemData.dynamicNodeData)[id],
+        graphDataset,
+        visualGetters,
+      ),
     [id, graphDataset, visualGetters, dynamicItemData, filteredGraph],
   );
 

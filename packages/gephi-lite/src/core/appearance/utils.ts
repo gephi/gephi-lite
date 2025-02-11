@@ -396,14 +396,10 @@ export function getItemAttributes(
   type: ItemType,
   id: string,
   filteredGraph: DatalessGraph,
+  itemData: StaticDynamicItemData,
   graphDataset: GraphDataset,
-  dynamicItemData: DynamicItemData,
   visualGetters: VisualGetters,
 ): { label: string | undefined; color: string; hidden?: boolean; directed?: boolean } {
-  const data =
-    type === "nodes"
-      ? { static: graphDataset.nodeData[id], dynamic: dynamicItemData.dynamicNodeData[id] }
-      : { static: graphDataset.edgeData[id], dynamic: dynamicItemData.dynamicEdgeData[id] };
   const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
   const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
   const getColor = type === "nodes" ? visualGetters.getNodeColor : visualGetters.getEdgeColor;
@@ -411,8 +407,8 @@ export function getItemAttributes(
   const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
 
   return {
-    label: (getLabel ? getLabel(data) : renderingData.label) || undefined,
-    color: getColor ? getColor(data, id) : renderingData.color || defaultColor,
+    label: (getLabel ? getLabel(itemData) : renderingData.label) || undefined,
+    color: getColor ? getColor(itemData, id) : renderingData.color || defaultColor,
     hidden,
     directed: graphDataset.metadata.type !== "undirected",
   };

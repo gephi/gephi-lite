@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { getItemAttributes } from "../core/appearance/utils";
 import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
+import { mergeStaticDynamicData } from "../core/graph/dynamicAttributes";
 import { NodeComponent } from "./Node";
 
 export const EdgeComponent: FC<{
@@ -39,7 +40,7 @@ export const EdgeComponent: FC<{
 
 export const EdgeComponentById: FC<{ id: string }> = ({ id }) => {
   const graphDataset = useGraphDataset();
-  const dynamicItemData = useDynamicItemData();
+  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
 
@@ -48,25 +49,32 @@ export const EdgeComponentById: FC<{ id: string }> = ({ id }) => {
       "nodes",
       graphDataset.fullGraph.source(id),
       filteredGraph,
+      mergeStaticDynamicData(graphDataset.nodeData, dynamicNodeData)[graphDataset.fullGraph.source(id)],
       graphDataset,
-      dynamicItemData,
       visualGetters,
     );
     const target = getItemAttributes(
       "nodes",
       graphDataset.fullGraph.target(id),
       filteredGraph,
+      mergeStaticDynamicData(graphDataset.nodeData, dynamicNodeData)[graphDataset.fullGraph.target(id)],
       graphDataset,
-      dynamicItemData,
       visualGetters,
     );
-    const data = getItemAttributes("edges", id, filteredGraph, graphDataset, dynamicItemData, visualGetters);
+    const data = getItemAttributes(
+      "edges",
+      id,
+      filteredGraph,
+      mergeStaticDynamicData(graphDataset.edgeData, dynamicEdgeData)[id],
+      graphDataset,
+      visualGetters,
+    );
     return {
       ...data,
       source,
       target,
     };
-  }, [id, graphDataset, visualGetters, dynamicItemData, filteredGraph]);
+  }, [id, graphDataset, visualGetters, dynamicNodeData, dynamicEdgeData, filteredGraph]);
 
   return <EdgeComponent {...data} />;
 };
