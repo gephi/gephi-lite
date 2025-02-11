@@ -104,7 +104,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
     : {};
 
   return rangeMetric ? (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()} className="w-100">
       {rangeMetric.max !== rangeMetric.min ? (
         <ul className="list-unstyled range-filter">
           {(rangeMetric.ranges || []).map((range) => {
