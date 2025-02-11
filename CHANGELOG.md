@@ -6,6 +6,7 @@ This version has been developed in a one-week iteration organized at the [2025 G
 
 ### New features
 
+- Possibility to use nodes degrees as a **dynamic attribute** along normal attributes in various places
 - New visual variables: **Edges depth**, nodes/edges **color shading**
 - New appearance option: **Crop node/edge labels** over N characters
 - New button "**Select node neighbors**" in selected node options menu
