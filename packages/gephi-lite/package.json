@@ -26,7 +26,6 @@
     ]
   },
   "overrides": {
-    "sigma": "3.0.0",
     "vite": {
       "sass": "1.77.6"
     }
@@ -88,6 +87,7 @@
     "react-slider": "^2.0.6",
     "react-tether": "^3.0.3",
     "react-use-konami": "^1.1.0",
+    "sigma": "^3.0.0",
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {

@@ -7,7 +7,6 @@ export function deserializer(_: string, value: any): any {
     return new Set(gephiLiteParse(value[1]));
   }
   if (Array.isArray(value) && value.length === 3 && value[0] === "<<Function" && value[2] === "Function>>") {
-    // eslint-disable-next-line no-new-func
     return new Function(`return ${value[1]}`)();
   }
   if (value && typeof value === "object" && "nodes" in value && "edges" in value) {
