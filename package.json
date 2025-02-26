@@ -10,6 +10,7 @@
     "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
     "start": "preconstruct dev && npm run start --workspace=@gephi/gephi-lite",
     "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspaces --if-present",
     "build": "preconstruct build && npm run build --workspace=@gephi/gephi-lite",
     "postinstall": "preconstruct dev",
     "postpublish": "preconstruct dev"
