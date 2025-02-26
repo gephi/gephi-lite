@@ -1,7 +1,7 @@
 {
   "name": "@gephi/gephi-lite-sdk",
   "description": "Gephi Lite core types and utils functions",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "main": "dist/gephi-gephi-lite-sdk.cjs.js",
   "module": "dist/gephi-gephi-lite-sdk.esm.js",
   "files": [
