@@ -80,7 +80,7 @@ export function parseAppearanceState(rawAppearance: string): AppearanceState | n
     // TODO:
     // Validate the actual data
     return { ...getEmptyAppearanceState(), ...gephiLiteParse(rawAppearance) };
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 }

@@ -1,4 +1,4 @@
-import { Scalar } from "../graph/types.ts";
+import { Scalar } from "../graph";
 import { toNumber, toScalar, toString } from "./casting";
 
 describe("Casting utilities", () => {
@@ -53,7 +53,6 @@ describe("Casting utilities", () => {
     });
 
     it("should work with other types", () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tests = [
         [new Date(), undefined],
         [{ abc: 123 }, undefined],
