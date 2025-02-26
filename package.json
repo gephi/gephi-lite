@@ -29,6 +29,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
+    "lerna": "^8.2.0",
     "playwright": "^1.50.1",
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
