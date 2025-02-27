@@ -96,7 +96,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
         const value = filter.field.dynamic
           ? computeAllDynamicAttributes("edges", graph)[edgeID][filter.field.field]
           : edgeData[edgeID][filter.field.field];
-        filterValue(value, filter);
+        return filterValue(value, filter);
       });
     }
     const res = graph.emptyCopy() as G;
