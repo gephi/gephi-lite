@@ -147,10 +147,7 @@ export const FilePanel: FC = () => {
         onClick: async () => {
           try {
             await exportAsGexf((content) => {
-              fileSaver(
-                new Blob([JSON.stringify(content)]),
-                getFilename(currentFile?.filename || "gephi-lite", "gexf"),
-              );
+              fileSaver(new Blob([content]), getFilename(currentFile?.filename || "gephi-lite", "gexf"));
             });
             notify({ type: "success", message: t("graph.export.gexf.success").toString() });
           } catch (e) {
