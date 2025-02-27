@@ -1,5 +1,4 @@
-import { isBoolean, isNumber, isString } from "lodash";
-
+import { isScalar } from "../../../utils/check";
 import { graphDatasetAtom } from "../../graph";
 import { FullGraph } from "../../graph/types";
 import { dataGraphToFullGraph } from "../../graph/utils";
@@ -36,8 +35,8 @@ export const edgeScript: Metric<{ edges: ["custom"] }> = {
         const id = fullGraph.edges()[0];
         const attributes = fullGraph.getEdgeAttributes(id);
         const result = fn(id, attributes, 0, fullGraph);
-        if (!isNumber(result) && !isString(result) && !isBoolean(result))
-          throw new Error("Function must returns a number or a string");
+        if (!isScalar(result))
+          throw new Error("Function must returns a number, a string, a boolean, null or undefined");
       },
       defaultValue: edgeMetricCustomFn,
     },

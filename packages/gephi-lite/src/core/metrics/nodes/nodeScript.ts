@@ -1,5 +1,4 @@
-import { isBoolean, isNumber, isString } from "lodash";
-
+import { isScalar } from "../../../utils/check";
 import { graphDatasetAtom } from "../../graph";
 import { FullGraph } from "../../graph/types";
 import { dataGraphToFullGraph } from "../../graph/utils";
@@ -36,8 +35,8 @@ export const nodeScript: Metric<{ nodes: ["custom"] }> = {
         const id = fullGraph.nodes()[0];
         const attributs = fullGraph.getNodeAttributes(id);
         const result = fn(id, attributs, 0, fullGraph);
-        if (!isNumber(result) && !isString(result) && !isBoolean(result))
-          throw new Error("Function must return either a number or a string");
+        if (!isScalar(result))
+          throw new Error("Function must returns a number, a string, a boolean, null or undefined");
       },
       defaultValue: nodeMetricCustomFn,
     },
