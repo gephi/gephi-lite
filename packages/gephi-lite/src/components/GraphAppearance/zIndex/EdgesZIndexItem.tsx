@@ -38,7 +38,7 @@ export const EdgesZIndexItem: FC = () => {
         return {
           value: staticDynamicAttributeKey(staticDynamicField),
           type: "field",
-          field: staticDynamicField,
+          field: staticDynamicField.field,
           label: staticDynamicAttributeLabel(staticDynamicField),
         };
       }),
