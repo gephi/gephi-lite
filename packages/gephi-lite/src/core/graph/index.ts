@@ -1,4 +1,10 @@
-import { APPEARANCE_ITEM_TYPES, AppearanceState, FilteredGraph, getEmptyAppearanceState } from "@gephi/gephi-lite-sdk";
+import {
+  APPEARANCE_ITEM_TYPES,
+  AppearanceState,
+  FilteredGraph,
+  FiltersState,
+  getEmptyAppearanceState,
+} from "@gephi/gephi-lite-sdk";
 import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
 import EventEmitter from "events";
 import { Attributes } from "graphology-types";
@@ -11,11 +17,12 @@ import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils"
 import { filtersAtom } from "../filters";
 import { buildTopologicalFiltersDefinitions } from "../filters/topological";
 import { FilterType } from "../filters/types";
-import { applyFilters } from "../filters/utils";
+import { applyFilters, getEmptyFiltersState } from "../filters/utils";
 import { itemsRemove, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
 import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
+import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
 import { computeAllDynamicAttributes, dynamicAttributes } from "./dynamicAttributes";
 import { DynamicItemData, FieldModel, GraphDataset, SigmaGraph } from "./types";
@@ -31,7 +38,7 @@ import {
 
 /**
  * Producers:
- * **********graphToExport
+ * **********
  */
 const setGraphDataset: Producer<GraphDataset, [GraphDataset]> = (dataset) => {
   return () => dataset;
@@ -172,8 +179,13 @@ const updateEdge: Producer<GraphDataset, [string, Attributes]> = (edge, attribut
   };
 };
 
-const resetGraph: Producer<GraphDataset, []> = () => {
-  return () => getEmptyGraphDataset();
+const resetGraph: MultiProducer<[FiltersState, AppearanceState, SelectionState, GraphDataset], []> = () => {
+  return [
+    () => getEmptyFiltersState(),
+    () => getEmptyAppearanceState(),
+    () => getEmptySelectionState(),
+    () => getEmptyGraphDataset(),
+  ];
 };
 
 /**
@@ -253,7 +265,7 @@ export const graphDatasetActions = {
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
   deleteItems: multiProducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
-  resetGraph: producerToAction(resetGraph, graphDatasetAtom),
+  resetGraph: multiProducerToAction(resetGraph, [filtersAtom, appearanceAtom, selectionAtom, graphDatasetAtom]),
 };
 
 /**
