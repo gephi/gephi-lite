@@ -46,8 +46,8 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ env.IMAGE_NAME }}:${{ env.PACKAGE_VERSION }}
-            type=raw,value=${{ env.IMAGE_NAME }}:latest
+            type=raw,value=${{ env.PACKAGE_VERSION }}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         id: push
@@ -56,7 +56,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.PACKAGE_VERSION }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
