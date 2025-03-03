@@ -45,6 +45,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ env.PACKAGE_VERSION }}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         id: push
@@ -53,7 +56,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          addLatest: true
           tags: ${{ env.PACKAGE_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
 
