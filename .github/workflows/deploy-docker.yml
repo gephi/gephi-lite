@@ -46,8 +46,8 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ env.PACKAGE_VERSION }}
-            type=raw,value=latest
+            type=raw,value=${{ env.IMAGE_NAME }}:${{ env.PACKAGE_VERSION }}
+            type=raw,value=${{ env.IMAGE_NAME }}:latest
 
       - name: Build and push Docker image
         id: push
