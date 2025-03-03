@@ -1,8 +1,8 @@
 name: Publish Docker image
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -30,6 +30,10 @@ jobs:
         env:
           BASE_URL: "./"
 
+      - uses: nyaa8/package-version@v1
+        with:
+          path: "packages/gephi-lite/package.json"
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -49,7 +53,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          addLatest: true
+          tags: ${{ env.PACKAGE_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
