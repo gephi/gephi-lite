@@ -93,9 +93,12 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     ];
   }, [edgeFields, itemType, nodeFields, dynamicNodeFields, dynamicEdgeFields, t]);
   const selectedOption =
-    options.find(
-      (option) => option.type === color.type && option.field && color.field && option.field.field === color.field.field,
-    ) || options[0];
+    options.find((option) => {
+      if (!color.field) {
+        return color.type === option.type;
+      }
+      return option.type === color.type && option.field && color.field && option.field.field === color.field.field;
+    }) || options[0];
 
   return (
     <div className="panel-block">
