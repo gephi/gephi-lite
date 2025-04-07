@@ -93,7 +93,7 @@ export const FilePanel: FC = () => {
             await saveFile();
             notify({
               type: "success",
-              message: t("graph.save.name").toString(),
+              message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
             });
           } catch (e) {
             console.error(e);
@@ -111,7 +111,10 @@ export const FilePanel: FC = () => {
             await exportAsGephiLite((content) => {
               fileSaver(new Blob([content]), getFilename(currentFile?.filename || "gephi-lite", "gephi-lite"));
             });
-            notify({ type: "success", message: t("menu.save.local.success").toString() });
+            notify({
+              type: "success",
+              message: t("menu.save.local.success").toString(),
+            });
           } catch (e) {
             console.error(e);
             notify({ type: "error", message: t("menu.save.local.error").toString() });

@@ -41,14 +41,14 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
   return (
     <Modal
-      title={t("graph.open.cloud.title", {
+      title={t("graph.open.github.title", {
         provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
       }).toString()}
       onClose={() => cancel()}
       className="modal-lg"
     >
       <>
-        {error && <p className="text-center text-danger">{t("graph.open.cloud.error")}</p>}
+        {error && <p className="text-center text-danger">{t("graph.open.github.error")}</p>}
 
         {files.length > 0 && (
           <>
@@ -78,7 +78,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
                       <a
                         className="link-dark m-2"
                         href={file.webUrl}
-                        title={t("graph.open.cloud.file-open-external", {
+                        title={t("graph.open.github.file-open-external", {
                           filename: file.filename,
                           provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
                         }).toString()}
@@ -107,7 +107,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         )}
         {!loading && files.length === 0 && (
           <p className="text-info">
-            {t("graph.open.cloud.no-data", {
+            {t("graph.open.github.no-data", {
               provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
             }).toString()}
           </p>
@@ -125,7 +125,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           title={
             selected
               ? t("common.open_file", { filename: selected.filename }).toString()
-              : t("graph.open.cloud.select-file").toString()
+              : t("graph.open.github.select-file").toString()
           }
           onClick={async () => {
             if (selected) {
@@ -133,14 +133,14 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
                 await openFile(selected);
                 notify({
                   type: "success",
-                  message: t("graph.open.cloud.success", { filename: selected.filename }).toString(),
+                  message: t("graph.open.github.success", { filename: selected.filename }).toString(),
                 });
                 cancel();
               } catch (e) {
                 console.error(e);
                 notify({
                   type: "error",
-                  message: t("graph.open.cloud.error") as string,
+                  message: t("graph.open.github.error") as string,
                   title: t("gephi-lite.title") as string,
                 });
               }

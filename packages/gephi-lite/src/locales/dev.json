@@ -370,13 +370,16 @@
           "description": "Description",
           "isPublic": "Create a public gist"
         },
-        "success": "File {{filename}} has been successfully saved",
+        "success": "File '{{filename}}' has been successfully saved",
         "error": "An error occurred while saving your graph. Please check your connectivity or try later."
       },
       "local": {
         "title": "Save graph locally",
         "success": "Graph has been saved locally",
         "error": "Failed to save the graph locally"
+      },
+      "save": {
+        "title": "Save"
       }
     },
     "export": {

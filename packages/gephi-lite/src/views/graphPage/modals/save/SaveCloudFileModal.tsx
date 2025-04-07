@@ -64,7 +64,7 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       className="modal"
     >
       <>
-        {error && <p className="text-center text-danger">{t("graph.save.cloud.error").toString()}</p>}
+        {error && <p className="text-center text-danger">{t("graph.save.github.error").toString()}</p>}
 
         <div className="mb-3">
           <label htmlFor="filename" className="form-label">
