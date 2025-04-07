@@ -9,7 +9,7 @@ import { CloudFile } from "./types";
 export function useCloudProvider() {
   const [user] = useConnectedUser();
   const { current: currentFile } = useFile();
-  const { open, exportAsGexf, setCurrentFile } = useFileActions();
+  const { open, exportAsGephiLite, setCurrentFile } = useFileActions();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -56,7 +56,7 @@ export function useCloudProvider() {
     try {
       if (isNil(user)) throw new Error("You must be logged !");
       if (!currentFile || currentFile.type !== "cloud") throw new Error("Not a cloud graph");
-      await exportAsGexf(async (content) => {
+      await exportAsGephiLite(async (content) => {
         await user.provider.saveFile(currentFile as CloudFile, content);
       });
     } catch (e) {
@@ -65,7 +65,7 @@ export function useCloudProvider() {
     } finally {
       setLoading(false);
     }
-  }, [user, exportAsGexf, currentFile]);
+  }, [user, exportAsGephiLite, currentFile]);
 
   /**
    * Save the current graph in the provider.
