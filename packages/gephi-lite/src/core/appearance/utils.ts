@@ -194,12 +194,13 @@ export function makeGetColor<
         ? (id?: string) => id && fullGraph.source(id)
         : (id?: string) => id && fullGraph.target(id);
 
-    if (getNodeColor && nodesColor.type !== "data")
+    if (getNodeColor) {
+      const nodesValues = mergeStaticDynamicData(nodeData, dynamicNodeData);
       getColor = (_, edgeId?: string) => {
         const node = nodeForColor(edgeId);
-        return node ? getNodeColor(itemsValues[node]) : DEFAULT_NODE_COLOR;
+        return node ? getNodeColor(nodesValues[node]) : DEFAULT_NODE_COLOR;
       };
-    else if (nodesColor.type === "data")
+    } else if (nodesColor.type === "data") {
       // special case when node are colored by data have to reach nodeRenderingData instead of normal getNodeColor
       getColor = (_, edgeId?: string) => {
         const node = nodeForColor(edgeId);
@@ -207,7 +208,9 @@ export function makeGetColor<
           ? nodeRenderingData[node].color || DEFAULT_NODE_COLOR
           : DEFAULT_NODE_COLOR;
       };
-    else getColor = () => DEFAULT_EDGE_COLOR;
+    } else {
+      getColor = () => DEFAULT_EDGE_COLOR;
+    }
   }
 
   if (getColor && shadingDef) {
