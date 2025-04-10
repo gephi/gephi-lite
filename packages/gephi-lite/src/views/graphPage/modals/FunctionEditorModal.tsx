@@ -2,7 +2,7 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CodeEditorIcon, RunIcon, SaveIcon } from "../../../components/common-icons";
+import { CodeEditorIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
 import { usePreferences } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
@@ -107,13 +107,11 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
           className="btn btn-primary"
           onClick={() => save(false, code)}
         >
-          <SaveIcon className="me-1" />
           {t("common.save")}
         </button>
 
         {withSaveAndRun && (
           <button type="submit" title={t("common.save-and-run").toString()} className="btn btn-primary">
-            <RunIcon className="me-1" />
             {t("common.save-and-run")}
           </button>
         )}
