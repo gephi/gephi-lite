@@ -2,7 +2,7 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CloseIcon, CodeEditorIcon, RunIcon, SaveIcon } from "../../../components/common-icons";
+import { CodeEditorIcon, RunIcon, SaveIcon } from "../../../components/common-icons";
 import { Modal } from "../../../components/modals";
 import { usePreferences } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
@@ -95,10 +95,9 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
         <button
           type="button"
           title={t("common.cancel").toString()}
-          className="btn btn-secondary"
+          className="btn btn-outline-dark"
           onClick={() => cancel()}
         >
-          <CloseIcon className="me-1" />
           {t("common.cancel")}
         </button>
         <button
