@@ -2,7 +2,7 @@ import cx from "classnames";
 import { debounce } from "lodash";
 import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { OptionProps, SingleValueProps } from "react-select";
+import { type DropdownIndicatorProps, OptionProps, SingleValueProps, components } from "react-select";
 import AsyncSelect from "react-select/async";
 
 import { useAppearance, useSearch } from "../core/context/dataContexts";
@@ -10,7 +10,7 @@ import { ItemType } from "../core/types";
 import { EdgeComponentById } from "./Edge";
 import { NodeComponentById } from "./Node";
 import { SearchIcon } from "./common-icons";
-import { DEFAULT_SELECT_PROPS } from "./consts";
+import { DEFAULT_SELECT_PROPS } from "./forms/Select";
 
 export interface OptionItem {
   id: string;
@@ -25,41 +25,38 @@ export interface OptionMessage {
 
 export type Option = OptionItem | OptionMessage;
 
-const OptionComponent = ({ data, innerProps, className, isFocused }: OptionProps<Option, false>) => {
+const OptionComponent = ({ data, ...innerProps }: OptionProps<Option, false>) => {
   const { t } = useTranslation();
 
   return (
-    <div
-      {...innerProps}
-      className={cx(className, isFocused && "selected")}
-      onMouseMove={undefined}
-      onMouseOver={undefined}
-    >
-      <div className={cx(className, "d-flex m-1 hoverable text-ellipsis d-flex align-items-center")}>
-        {data.type === "nodes" && <NodeComponentById id={data.id} />}
-        {data.type === "edges" && <EdgeComponentById id={data.id} />}
-        {data.type === "message" && (
-          <div className="text-center p-2 text-muted">
-            <span>{t(`search.${data.i18nCode}`, data.i18nParams)}</span>
-          </div>
-        )}
-      </div>
-    </div>
+    <components.Option {...innerProps} data={data} className={cx("text-ellipsis d-flex ", innerProps.className)}>
+      {data.type === "nodes" && <NodeComponentById id={data.id} />}
+      {data.type === "edges" && <EdgeComponentById id={data.id} />}
+      {data.type === "message" && (
+        <div className="text-center text-muted">
+          <span>{t(`search.${data.i18nCode}`, data.i18nParams)}</span>
+        </div>
+      )}
+    </components.Option>
   );
 };
 
-const IndicatorComponent = () => {
+const IndicatorComponent = (props: DropdownIndicatorProps<Option, false>) => {
   return (
-    <div className="text-center p-2">
-      <SearchIcon size="1.5rem" />
-    </div>
+    <components.DropdownIndicator {...props} className="text-center">
+      <SearchIcon />
+    </components.DropdownIndicator>
   );
 };
 
-const SingleValue = ({ data }: SingleValueProps<Option>) => {
-  if (data.type === "nodes") return <NodeComponentById id={data.id} />;
-  if (data.type === "edges") return <EdgeComponentById id={data.id} />;
-  return null;
+const SingleValue = ({ data, ...innerProps }: SingleValueProps<Option, false>) => {
+  if (data.type === "message") return null;
+  return (
+    <components.SingleValue {...innerProps} data={data}>
+      {data.type === "nodes" && <NodeComponentById id={data.id} />}
+      {data.type === "edges" && <EdgeComponentById id={data.id} />}
+    </components.SingleValue>
+  );
 };
 
 interface GraphSearchProps {
@@ -124,6 +121,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
       components={{
         SingleValue,
         Option: OptionComponent,
+        IndicatorSeparator: null,
         DropdownIndicator: IndicatorComponent,
         NoOptionsMessage: (props) => {
           const { t } = useTranslation();
@@ -137,19 +135,6 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
             </div>
           );
         },
-      }}
-      styles={{
-        menu: (styles) => ({ ...styles, borderRadius: 0 }),
-        control: (styles) => {
-          return {
-            ...styles,
-          };
-        },
-        valueContainer: (provided) => ({
-          ...provided,
-          display: "flex",
-          flexWrap: "nowrap",
-        }),
       }}
     />
   );

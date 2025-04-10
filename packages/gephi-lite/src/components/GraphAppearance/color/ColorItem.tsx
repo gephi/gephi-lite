@@ -2,7 +2,6 @@ import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import Select from "react-select";
 
 import { Color } from "../../../core/appearance/types";
 import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR, DEFAULT_SHADING_COLOR } from "../../../core/appearance/utils";
@@ -16,7 +15,7 @@ import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../..
 import { FieldModel } from "../../../core/graph/types";
 import { uniqFieldvaluesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
-import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { Select } from "../../forms/Select";
 import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
@@ -105,7 +104,6 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <h3 className="fs-5">{t("appearance.color.title")}</h3>
       <label htmlFor={`${itemType}-colorMode`}>{t("appearance.color.set_color_from")}</label>
       <Select<ColorOption>
-        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-colorMode`}
         options={options}
         value={selectedOption}

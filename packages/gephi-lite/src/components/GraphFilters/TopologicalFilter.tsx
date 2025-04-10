@@ -29,6 +29,7 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
                   <div key={i} className="mt-1">
                     <label className="form-check-label small">{p.label}</label>
                     <GraphSearch
+                      className="form-control-sm"
                       onChange={(option) => {
                         if (option === null || "id" in option) {
                           replaceCurrentFilter({

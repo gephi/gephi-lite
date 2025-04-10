@@ -1,14 +1,13 @@
 import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import Select from "react-select";
 
 import { ShadingColor } from "../../../core/appearance/types";
 import { useGraphDataset } from "../../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
-import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { Select } from "../../forms/Select";
 
 type Option = { value: ItemDataField; label: string };
 function stringToOption(field: ItemDataField): Option {
@@ -42,7 +41,6 @@ export const ShadingColorEditor: FC<{
         {t("appearance.color.shading_attribute", { items: t(`graph.model.${itemType}`) })}
       </label>
       <Select<Option>
-        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-shadingColorAttribute`}
         options={fieldOptions}
         value={stringToOption(color.field)}

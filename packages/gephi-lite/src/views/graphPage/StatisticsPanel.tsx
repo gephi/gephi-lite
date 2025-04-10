@@ -4,12 +4,12 @@ import { capitalize, cloneDeep, flatMap, isNil, keyBy, map, mapValues } from "lo
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
-import Select, { GroupBase } from "react-select";
+import { GroupBase } from "react-select";
 
 import { InformationTooltip } from "../../components/InformationTooltip";
 import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
-import { DEFAULT_SELECT_PROPS } from "../../components/consts";
+import { Select } from "../../components/forms/Select";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
@@ -395,8 +395,7 @@ export const StatisticsPanel: FC = () => {
         </h2>
         <p className="text-muted small d-none d-md-block">{t("statistics.description")}</p>
 
-        <Select<MetricOption, false>
-          {...DEFAULT_SELECT_PROPS}
+        <Select<MetricOption>
           options={options}
           value={option}
           onChange={setOption}

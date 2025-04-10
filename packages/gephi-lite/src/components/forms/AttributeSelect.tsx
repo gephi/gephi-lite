@@ -1,7 +1,8 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useMemo } from "react";
 
 import { ItemType } from "../../core/types";
 import { Attribute } from "../GraphPartitioning/GraphPartitioningForm";
+import { Select } from "./Select";
 
 type AttributeSelectProps = {
   id?: string;
@@ -42,24 +43,25 @@ export const AttributeSelect: FC<AttributeSelectProps> = ({
   useEffect(() => {
     if (defaultToFirstAttribute && !attributeId) onChange(attributes[0]?.id);
   }, [defaultToFirstAttribute, attributeId, onChange, attributes]);
+
+  const options = useMemo(() => {
+    return [
+      ...(emptyOptionLabel ? [{ value: "", label: "" }] : []),
+      ...attributes.map((a) => ({
+        value: a.id,
+        label: a.id,
+      })),
+    ];
+  }, [attributes, emptyOptionLabel]);
+
   return (
-    <select
+    <Select
       id={id}
-      disabled={disabled}
+      isDisabled={disabled}
       className="form-select"
-      value={attributeId || ""}
-      onChange={(e) => onChange(e.target.value === "" ? undefined : e.target.value)}
-    >
-      {emptyOptionLabel && (
-        <option key="" value="">
-          {emptyOptionLabel}
-        </option>
-      )}
-      {attributes.map((na) => (
-        <option key={na.id} value={na.id}>
-          {na.id}
-        </option>
-      ))}
-    </select>
+      value={{ value: attributeId || "", label: attributeId || "" }}
+      options={options}
+      onChange={(e) => onChange(e ? e.value : undefined)}
+    />
   );
 };

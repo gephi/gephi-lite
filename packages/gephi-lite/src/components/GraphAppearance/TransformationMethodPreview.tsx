@@ -6,7 +6,7 @@ import { makeGetValue } from "../../core/appearance/utils";
 
 export const TransformationMethodPreview: FC<{ method?: TransformationMethod }> = ({ method }) => {
   const getValue = makeGetValue(method);
-  const size = 40;
+  const size = 30;
   const margin = 2;
   return (
     <>

@@ -75,13 +75,6 @@
 /**
  * Vendors:
  */
-.react-select__menu, .react-select__menu-portal {
-  z-index: $zindex-dropdown !important;
-}
-.react-select__option--is-selected .text-muted {
-  color: $gray-300 !important;
-}
-
 .edge {
   display: flex;
   flex-direction: column;

@@ -1,7 +1,6 @@
 import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import Select from "react-select";
 
 import { StringAttr } from "../../../core/appearance/types";
 import {
@@ -13,7 +12,7 @@ import {
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
-import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { Select } from "../../forms/Select";
 
 type LabelOption =
   | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
@@ -72,8 +71,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
     <div className="panel-block">
       <h3 className="fs-5">{t(`appearance.${itemKey}.title`)}</h3>
       <label htmlFor={`${itemType}-${itemKey}sMode`}>{t(`appearance.${itemKey}.set_labels_from`)}</label>
-      <Select<LabelOption>
-        {...DEFAULT_SELECT_PROPS}
+      <Select<LabelOption | null>
         id={`${itemType}-labelsMode`}
         options={labelOptions}
         value={selectedLabelOption}

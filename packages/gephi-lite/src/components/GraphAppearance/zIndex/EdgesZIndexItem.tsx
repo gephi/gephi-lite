@@ -1,7 +1,6 @@
 import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import Select from "react-select";
 
 import {
   useAppearance,
@@ -12,7 +11,7 @@ import {
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
-import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { Select } from "../../forms/Select";
 
 type LabelOption =
   | { value: string; type: "none"; field?: undefined; label: string }
@@ -54,8 +53,7 @@ export const EdgesZIndexItem: FC = () => {
       <h3 className="fs-5">{t(`appearance.zIndex.title`)}</h3>
       <p className="text-muted">{t(`appearance.zIndex.description`, { items: t("graph.model.edges") })}</p>
       <label htmlFor={`${itemType}-zIndexMode`}>{t(`appearance.zIndex.set_values_from`)}</label>
-      <Select<LabelOption>
-        {...DEFAULT_SELECT_PROPS}
+      <Select<LabelOption | null>
         id={`${itemType}-zIndexMode`}
         options={labelOptions}
         value={selectedLabelOption}

@@ -5,14 +5,13 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { FaPlay, FaStop } from "react-icons/fa";
-import Select from "react-select";
 
 import { InformationTooltip } from "../../components/InformationTooltip";
 import { LoaderFill } from "../../components/Loader";
 import MessageTooltip from "../../components/MessageTooltip";
 import { CodeEditorIcon, LayoutsIcon } from "../../components/common-icons";
-import { DEFAULT_SELECT_PROPS } from "../../components/consts";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
+import { Select } from "../../components/forms/Select";
 import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
 import { useGraphDataset, useLayoutActions, useLayoutState, useSigmaGraph } from "../../core/context/dataContexts";
 import { FieldModel } from "../../core/graph/types";
@@ -352,8 +351,7 @@ export const LayoutsPanel: FC = () => {
         </h2>
         <p className="text-muted small d-none d-md-block">{t("layouts.description")}</p>
 
-        <Select<LayoutOption, false>
-          {...DEFAULT_SELECT_PROPS}
+        <Select<LayoutOption | null>
           options={options}
           value={option}
           onChange={(option) => {

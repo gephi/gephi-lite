@@ -1,29 +1,108 @@
-.react-select__control {
-  background-color: var(--bs-body-bg) !important;
-}
-.react-select__input,
-.react-select__single-value {
-  color: var(--bs-body-color) !important;
-}
-.react-select__menu-list {
-  background-color: var(--bs-body-bg) !important;
-}
-.react-select__option {
-  background-color: var(--bs-body-bg) !important;
-  &:hover {
-    cursor: pointer;
-    background-color: var(--bs-border-color) !important;
+// CSS for react-select looks like a select in bootstrap
+div.react-select__control {
+
+  // apply the bootstrap form-control class
+  @extend .form-control;
+  display: flex;
+  &:hover{
+    @extend .form-control;
+    display: flex;
+  }
+
+  // this code is a copy of the bootstrap form-control for the ":focus"
+  &.react-select__control--is-focused  {
+    color: $input-focus-color;
+    background-color: $input-focus-bg;
+    border-color: $input-focus-border-color;
+    outline: 0;
+    @if $enable-shadows {
+      @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+    } @else {
+      // Avoid using mixin so we can pass custom focus shadow properly
+      box-shadow: $input-focus-box-shadow;
+    }
+  }
+
+  // add placeholder color
+  .react-select__placeholder, .react-select__indicator {
+    color:var(--bs-secondary-color)
+  }
+  
+  // for cursor to be at the beginning of the input
+  .react-select__value-container, .react-select__input-container, .react-select__indicator  {
+    padding: 0;
+    margin: 0;
+    display: grid;
+  }
+
+  // on multi value, display element in a row with the curosr at the end
+  .react-select__value-container--is-multi.react-select__value-container--has-value {
+    display: flex;
+
+    .react-select__multi-value {
+      background-color: var(--bs-secondary-bg);
+
+      .react-select__multi-value__label {
+        color: var(--bs-body-color);
+      }
+    }
+  }
+
+  .react-select__input,
+  .react-select__single-value {
+    color: var(--bs-body-color) !important;
   }
 }
-.react-select__option--is-selected,
-.react-select__option--is-focused,
-.selected {
-  background-color: var(--bs-primary) !important;
-  &:hover {
-    cursor: pointer;
-    background-color: var(--bs-primary) !important;
+
+// this section is about the dropdown menu
+.react-select__menu-portal{
+  // if you use a select in a modal, it must be over
+  @extend .over-modal;
+
+  .react-select__menu {
+    background-color: transparent;
+    margin: 4px 0;
+    border: 1px solid var(--bs-border-color);
+    border-radius:var(--bs-border-radius);
+
+    .react-select__menu-list {
+      display: flex;
+      flex-direction: column;
+      padding:0;
+      border-radius:var(--bs-border-radius);
+      background-color: var(--bs-tertiary-bg) !important;
+    }
+    .react-select__option {
+      width: auto;
+      flex-grow: 1;
+    }
+
+    .react-select__option--is-selected .text-muted, .react-select__option--is-focused .text-muted {
+      color: var(--bs-white) !important;
+    }
+    .react-select__option--is-focused {
+      color: var(--bs-white) !important;
+      background-color: var(--bs-primary) !important;
+      border-radius:var(--bs-border-radius);
+    }
+    .react-select__option--is-selected{
+      color: var(--bs-body-bg) !important;
+      border-radius:var(--bs-border-radius);
+    }
+    .react-select__multi-value__remove {
+      color: var(--bs-body-bg) !important;
+    }
   }
 }
-.react-select__multi-value__remove {
-  color: var(--bs-body-bg) !important;
+
+// This is for the small variant of react-select
+// for bootstrap 
+div.form-control-sm {
+  padding: 0;
+  div.react-select__control {
+    @extend .form-control-sm;
+  }
+  .react-select__value-container,  .react-select__indicator  {
+    padding: 0 0.5rem;
+  }
 }
