@@ -45,7 +45,11 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
           </>
         ),
       },
-      { value: "fixed", type: "fixed", label: t("appearance.size.fixed") as string },
+      {
+        value: "fixed",
+        type: "fixed",
+        label: t("appearance.size.fixed") as string,
+      },
       ...allFields.flatMap((field) => {
         const options: SizeOption[] = [];
         if (!!field.quantitative) {
@@ -63,9 +67,12 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   }, [edgeFields, itemType, nodeFields, dynamicNodeFields, dynamicEdgeFields, t]);
 
   const selectedOption =
-    options.find(
-      (option) => option.type === size.type && option.field && size.field && option.field.field === size.field.field,
-    ) || options[0];
+    options.find((option) => {
+      if (!size.field) {
+        return size.type === option.type;
+      }
+      return option.type === size.type && option.field && size.field && option.field.field === size.field.field;
+    }) || options[0];
 
   return (
     <div className="panel-block">
