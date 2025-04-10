@@ -113,11 +113,11 @@ export const FilePanel: FC = () => {
             });
             notify({
               type: "success",
-              message: t("menu.save.local.success").toString(),
+              message: t("graph.save.local.success").toString(),
             });
           } catch (e) {
             console.error(e);
-            notify({ type: "error", message: t("menu.save.local.error").toString() });
+            notify({ type: "error", message: t("graph.save.local.error").toString() });
           } finally {
             console.timeEnd("exportAsGephiLite");
           }
