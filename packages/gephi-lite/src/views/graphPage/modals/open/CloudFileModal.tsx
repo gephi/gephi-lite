@@ -2,7 +2,7 @@ import byteSize from "byte-size";
 import cx from "classnames";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaExternalLinkAlt, FaFolderOpen, FaLock, FaSync, FaTimes } from "react-icons/fa";
+import { FaExternalLinkAlt, FaFolderOpen, FaLock, FaSync } from "react-icons/fa";
 
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
@@ -97,7 +97,11 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
             </table>
             {hasMore && (
               <div className="d-flex justify-content-center">
-                <button title="Load next page" className="btn btn-primary btn-sm" onClick={() => setPage(page + 1)}>
+                <button
+                  title="Load next page"
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() => setPage(page + 1)}
+                >
                   <FaSync className="me-1" />
                   {t("common.load-more").toString()}
                 </button>
@@ -115,8 +119,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         {loading && <Loader />}
       </>
       <>
-        <button title="Cancel" className="btn btn-danger" onClick={() => cancel()}>
-          <FaTimes className="me-1" />
+        <button title="Cancel" className="btn btn-outline-dark" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>
         <button
