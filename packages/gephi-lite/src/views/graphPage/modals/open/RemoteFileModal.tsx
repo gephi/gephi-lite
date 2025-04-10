@@ -1,6 +1,5 @@
 import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaFolderOpen, FaTimes } from "react-icons/fa";
 
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
@@ -73,8 +72,12 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       </>
 
       <>
-        <button type="reset" title={t("common.cancel").toString()} className="btn btn-danger" onClick={() => cancel()}>
-          <FaTimes className="me-1" />
+        <button
+          type="reset"
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-dark"
+          onClick={() => cancel()}
+        >
           {t("common.cancel").toString()}
         </button>
         <button
@@ -83,7 +86,6 @@ export const RemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           disabled={!isFormValid || fileStateType === "loading"}
           title={url ? t("common.open_file", { filename: extractFilename(url) }).toString() : ""}
         >
-          <FaFolderOpen className="me-1" />
           {t("common.open").toString()}
         </button>
       </>

@@ -342,6 +342,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         <button type="button" className="btn btn-outline-dark" onClick={() => cancel()}>
           {t("common.cancel")}
         </button>
+
         <button type="submit" className="btn btn-primary">
           {isNew ? t("edition.create_edges") : t("edition.update_edges")}
         </button>

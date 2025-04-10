@@ -269,6 +269,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
         <button type="button" className="btn btn-outline-dark" onClick={() => cancel()}>
           {t("common.cancel")}
         </button>
+
         <button type="submit" className="btn btn-primary">
           {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
         </button>

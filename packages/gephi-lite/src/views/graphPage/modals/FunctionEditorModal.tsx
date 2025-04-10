@@ -100,6 +100,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
         >
           {t("common.cancel")}
         </button>
+
         <button
           type="button"
           title={t("common.save").toString()}
@@ -109,6 +110,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
           <SaveIcon className="me-1" />
           {t("common.save")}
         </button>
+
         {withSaveAndRun && (
           <button type="submit" title={t("common.save-and-run").toString()} className="btn btn-primary">
             <RunIcon className="me-1" />

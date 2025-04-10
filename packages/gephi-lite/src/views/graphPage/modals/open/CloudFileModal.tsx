@@ -2,7 +2,7 @@ import byteSize from "byte-size";
 import cx from "classnames";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaExternalLinkAlt, FaFolderOpen, FaLock, FaSync } from "react-icons/fa";
+import { FaExternalLinkAlt, FaLock, FaSync } from "react-icons/fa";
 
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
@@ -122,6 +122,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         <button title="Cancel" className="btn btn-outline-dark" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>
+
         <button
           className="btn btn-primary"
           disabled={!selected}
@@ -150,7 +151,6 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
             }
           }}
         >
-          <FaFolderOpen className="me-1" />
           {t("common.open").toString()}
         </button>
       </>

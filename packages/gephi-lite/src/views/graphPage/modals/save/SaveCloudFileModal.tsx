@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaSave, FaTimes } from "react-icons/fa";
 
 import { Loader } from "../../../../components/Loader";
 import { Modal } from "../../../../components/modals";
@@ -112,10 +111,15 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       </>
 
       <>
-        <button type="reset" title={t("common.cancel").toString()} className="btn btn-danger" onClick={() => cancel()}>
-          <FaTimes className="me-1" />
+        <button
+          type="reset"
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-dark"
+          onClick={() => cancel()}
+        >
           {t("common.cancel").toString()}
         </button>
+
         <button
           type="submit"
           title={t("common.save").toString()}
@@ -123,7 +127,6 @@ export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           disabled={!isValid || loading}
           onClick={() => save()}
         >
-          <FaSave className="me-1" />
           {t("common.save").toString()}
         </button>
       </>

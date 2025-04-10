@@ -1,6 +1,5 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaFolderOpen, FaTimes } from "react-icons/fa";
 
 import { DropInput } from "../../../../components/DropInput";
 import { Loader } from "../../../../components/Loader";
@@ -34,10 +33,10 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         {importStateType === "loading" && <Loader />}
       </>
       <>
-        <button title={t("common.cancel").toString()} className="btn btn-danger" onClick={() => cancel()}>
-          <FaTimes className="me-1" />
+        <button title={t("common.cancel").toString()} className="btn btn-outline-dark" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>
+
         <button
           className="btn btn-primary"
           disabled={!file}
@@ -68,7 +67,6 @@ export const LocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
             }
           }}
         >
-          <FaFolderOpen className="me-1" />
           {t("common.open").toString()}
         </button>
       </>

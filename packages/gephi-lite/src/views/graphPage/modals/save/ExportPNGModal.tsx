@@ -1,7 +1,6 @@
 import fileSaver from "file-saver";
 import { FC, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaSave, FaTimes } from "react-icons/fa";
 
 import { Modal } from "../../../../components/modals";
 import { useAppearance, useSigmaAtom } from "../../../../core/context/dataContexts";
@@ -114,12 +113,15 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       </>
 
       <>
-        <button type="reset" title={t("common.cancel").toString()} className="btn btn-danger" onClick={() => cancel()}>
-          <FaTimes className="me-1" />
+        <button
+          type="reset"
+          title={t("common.cancel").toString()}
+          className="btn btn-outline-dark"
+          onClick={() => cancel()}
+        >
           {t("common.cancel").toString()}
         </button>
         <button type="submit" title={t("common.save").toString()} className="btn btn-primary ms-2">
-          <FaSave className="me-1" />
           {t("common.save").toString()}
         </button>
       </>

@@ -29,10 +29,10 @@ const ConfirmModal: FC<
     >
       <>{message}</>
       <>
-        <button type="reset" className="btn btn-outline-primary" onClick={() => cancel()}>
+        <button type="reset" className="btn btn-outline-dark" onClick={() => cancel()}>
           {cancelMsg || (t("common.cancel") as string)}
         </button>
-        <button type="submit" className="btn btn-danger">
+        <button type="submit" className="btn btn-primary">
           {confirmMsg || (t("common.confirm") as string)}
         </button>
       </>
