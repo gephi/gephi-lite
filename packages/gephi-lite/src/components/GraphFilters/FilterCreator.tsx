@@ -3,7 +3,6 @@ import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CgAddR } from "react-icons/cg";
-import Select from "react-select";
 
 import {
   useDynamicItemData,
@@ -16,7 +15,7 @@ import { FilterType } from "../../core/filters/types";
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
-import { DEFAULT_SELECT_PROPS } from "../consts";
+import { Select } from "../forms/Select";
 
 export interface FilterOption {
   value: string;
@@ -133,7 +132,6 @@ export const FilterCreator: FC = () => {
         <div>
           {t("filters.filter")}{" "}
           <Select
-            {...DEFAULT_SELECT_PROPS}
             onChange={(o) => setFilterApplicationType(o?.value as ItemType | "topological")}
             options={[
               { label: capitalize(t("graph.model.nodes").toString()), value: "nodes" },
@@ -146,7 +144,6 @@ export const FilterCreator: FC = () => {
           {t("filters.using")}
           {filterOptions.length > 0 && (
             <Select
-              {...DEFAULT_SELECT_PROPS}
               value={selectedFilterOption}
               isClearable={true}
               onChange={(selectedOption) => {

@@ -2,7 +2,6 @@ import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import Select from "react-select";
 
 import { Size } from "../../../core/appearance/types";
 import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
@@ -15,7 +14,7 @@ import {
 import { staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
-import { DEFAULT_SELECT_PROPS } from "../../consts";
+import { Select } from "../../forms/Select";
 import { SizeFixedEditor } from "./SizeFixedEditor";
 import { SizeRankingEditor } from "./SizeRankingEditor";
 
@@ -79,7 +78,6 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       <h3 className="fs-5">{t("appearance.size.title")}</h3>
       <label htmlFor={`${itemType}-sizeMode`}>{t("appearance.size.set_size_from")}</label>
       <Select<SizeOption>
-        {...DEFAULT_SELECT_PROPS}
         id={`${itemType}-sizeMode`}
         options={options}
         value={selectedOption}

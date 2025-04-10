@@ -3,7 +3,6 @@ import { useReadAtom } from "@ouestware/atoms";
 import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Select from "react-select";
 
 import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
@@ -14,7 +13,7 @@ import {
   mergeStaticDynamicData,
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
-import { DEFAULT_SELECT_PROPS } from "../consts";
+import { Select } from "../forms/Select";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
@@ -46,7 +45,6 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   return (
     <div className="my-3 w-100">
       <Select
-        {...DEFAULT_SELECT_PROPS}
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
         onChange={(options) => {
           const selectedValues = new Set(options.map((o) => o.value));

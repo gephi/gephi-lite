@@ -2,9 +2,9 @@ import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { Select } from "./Select";
 
 const GraphTypeValues = ["directed", "undirected", "mixed"] as const;
-type GraphType = (typeof GraphTypeValues)[number];
 
 export const GraphMetadataForm: FC = () => {
   const { metadata } = useGraphDataset();
@@ -83,22 +83,12 @@ export const GraphMetadataForm: FC = () => {
         <label htmlFor="graph-type" className="form-label">
           {t("graph.metadata.graph-type")}
         </label>
-        <select
+        <Select
           id="graph-type"
-          value={metadata?.type || "undirected"}
-          onChange={(e) => {
-            setGraphMeta({
-              ...metadata,
-              type: e.target.value as GraphType,
-            });
-          }}
-        >
-          {GraphTypeValues.map((v) => (
-            <option key={v} value={v}>
-              {t(`graph.model.${v}`)}
-            </option>
-          ))}
-        </select>
+          value={{ value: metadata?.type || "mixed", label: t(`graph.model.${metadata?.type || "mixed"}`) }}
+          options={GraphTypeValues.map((v) => ({ value: v, label: t(`graph.model.${v}`) }))}
+          onChange={(e) => setGraphMeta({ ...metadata, type: e ? e.value : "mixed" })}
+        />
       </div>
     </form>
   );

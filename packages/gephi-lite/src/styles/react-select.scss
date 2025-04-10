@@ -1,29 +1,85 @@
-.react-select__control {
-  background-color: var(--bs-body-bg) !important;
-}
-.react-select__input,
-.react-select__single-value {
-  color: var(--bs-body-color) !important;
-}
-.react-select__menu-list {
-  background-color: var(--bs-body-bg) !important;
-}
-.react-select__option {
-  background-color: var(--bs-body-bg) !important;
-  &:hover {
-    cursor: pointer;
-    background-color: var(--bs-border-color) !important;
+
+div.react-select__control {
+  @extend .form-control;
+  display: flex;
+
+  &:hover{
+    @extend .form-control;
+    display: flex;
+  }
+
+  &.react-select__control--is-focused  {
+    color: $input-focus-color;
+    background-color: $input-focus-bg;
+    border-color: $input-focus-border-color;
+    outline: 0;
+    @if $enable-shadows {
+      @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+    } @else {
+      // Avoid using mixin so we can pass custom focus shadow properly
+      box-shadow: $input-focus-box-shadow;
+    }
+  }
+
+  .react-select__placeholder, .react-select__indicator {
+    color:var(--bs-secondary-color)
+  }
+  
+  .react-select__value-container, .react-select__input-container, .react-select__indicator  {
+    padding: 0;
+    margin: 0;
+    display: grid;
+  }
+
+  .react-select__input,
+  .react-select__single-value {
+    color: var(--bs-body-color) !important;
   }
 }
-.react-select__option--is-selected,
-.react-select__option--is-focused,
-.selected {
-  background-color: var(--bs-primary) !important;
-  &:hover {
-    cursor: pointer;
-    background-color: var(--bs-primary) !important;
+
+.react-select__menu-portal{
+  .react-select__menu {
+    background-color: transparent;
+    margin: 2px 0;
+    border: 1px solid var(--bs-border-color);
+
+    .react-select__menu-list {
+      display: flex;
+      flex-direction: column;
+      padding:0;
+      border-radius:var(--bs-border-radius);
+      background-color: var(--bs-body-bg) !important;
+    }
+    .react-select__option {
+      width: auto;
+      flex-grow: 1;
+      &:hover {
+        cursor: pointer;
+        background-color: var(--bs-border-color) !important;
+      }
+    }
+    .react-select__option--is-focused,
+    .selected {
+      background-color: var(--bs-primary) !important;
+      &:hover {
+        cursor: pointer;
+        background-color: var(--bs-primary) !important;
+      }
+    }
+    .react-select__multi-value__remove {
+      color: var(--bs-body-bg) !important;
+    }
   }
 }
-.react-select__multi-value__remove {
-  color: var(--bs-body-bg) !important;
+
+div.form-control-sm {
+  padding: 0;
+  
+  div.react-select__control {
+    @extend .form-control-sm;
+  }
+
+  .react-select__value-container,  .react-select__indicator  {
+    padding: 0 0.5rem;
+  }
 }

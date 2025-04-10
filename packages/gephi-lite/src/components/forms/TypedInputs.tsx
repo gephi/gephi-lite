@@ -4,10 +4,9 @@ import Slider from "rc-slider";
 import { MarkObj } from "rc-slider/lib/Marks";
 import { SliderProps } from "rc-slider/lib/Slider";
 import React, { FC, InputHTMLAttributes, ReactNode, useMemo } from "react";
-import Select from "react-select";
 
 import MessageTooltip from "../MessageTooltip";
-import { DEFAULT_SELECT_PROPS } from "../consts";
+import { Select } from "./Select";
 
 interface BaseTypedInputProps {
   id: string;
@@ -173,10 +172,9 @@ export const EnumInput: FC<
           {label}
         </label>
         <Select<EnumOption>
-          {...DEFAULT_SELECT_PROPS}
           isDisabled={disabled}
           isClearable={!required}
-          className={className}
+          className={cx("form-control-sm", className)}
           placeholder={placeholder}
           value={option || null}
           options={options}
