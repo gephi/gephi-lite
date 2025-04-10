@@ -76,7 +76,7 @@ export const CloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
                     <td>
                       {file.filename}
                       <a
-                        className="link-secondary m-2"
+                        className="lin-primary m-2"
                         href={file.webUrl}
                         title={t("graph.open.github.file-open-external", {
                           filename: file.filename,
