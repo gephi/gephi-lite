@@ -31,6 +31,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
   );
 
   const currentDef = itemKey === "images" ? nodesImage : itemType === "nodes" ? nodesLabel : edgesLabel;
+
   const labelOptions: LabelOption[] = useMemo(() => {
     const allFields: FieldModel<ItemType, boolean>[] =
       itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
@@ -50,15 +51,20 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
       { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) as string },
     ];
   }, [nodeFields, edgeFields, dynamicNodeFields, dynamicEdgeFields, itemKey, itemType, t]);
+
   const selectedLabelOption: LabelOption | null = useMemo(
     () =>
-      labelOptions.find(
-        (option) =>
+      labelOptions.find((option) => {
+        if (!currentDef.field) {
+          return option.type === currentDef.type;
+        }
+        return (
           option.type === currentDef.type &&
           option.field &&
           currentDef.field &&
-          option.field.field === currentDef.field.field,
-      ) || null,
+          option.field.field === currentDef.field.field
+        );
+      }) || null,
     [labelOptions, currentDef.field, currentDef.type],
   );
 
