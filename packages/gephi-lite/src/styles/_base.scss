@@ -75,7 +75,7 @@
 /**
  * Vendors:
  */
-.react-select__menu {
+.react-select__menu, .react-select__menu-portal {
   z-index: $zindex-dropdown !important;
 }
 .react-select__option--is-selected .text-muted {
