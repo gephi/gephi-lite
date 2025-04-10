@@ -84,7 +84,6 @@ export const GraphMetadataForm: FC = () => {
           {t("graph.metadata.graph-type")}
         </label>
         <select
-          className="form-select"
           id="graph-type"
           value={metadata?.type || "undirected"}
           onChange={(e) => {

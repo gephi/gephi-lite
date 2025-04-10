@@ -10,6 +10,7 @@ import { FaTimes } from "react-icons/fa";
 import Select from "react-select";
 import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
 
+import { DEFAULT_SELECT_PROPS } from "../../../../components/consts";
 import { Modal } from "../../../../components/modals";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
 import { UIContext } from "../../../../core/context/uiContext";
@@ -214,6 +215,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             }}
             render={({ field: { onChange, ...field } }) => (
               <Select
+                {...DEFAULT_SELECT_PROPS}
                 {...field}
                 {...nodeSelectProps}
                 className={cx(errors.source && "form-control react-select is-invalid")}
@@ -238,6 +240,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             }}
             render={({ field: { onChange, ...field } }) => (
               <Select
+                {...DEFAULT_SELECT_PROPS}
                 {...field}
                 {...nodeSelectProps}
                 className={cx(errors.target && "form-control react-select is-invalid")}
