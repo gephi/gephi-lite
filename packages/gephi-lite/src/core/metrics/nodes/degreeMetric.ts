@@ -6,7 +6,7 @@ import { quantitativeOnly } from "../utils";
 
 export const degreeMetric: Metric<{ nodes: ["degree"] }> = {
   id: "degree",
-  description: true,
+  description: false,
   outputs: {
     nodes: {
       degree: quantitativeOnly,
