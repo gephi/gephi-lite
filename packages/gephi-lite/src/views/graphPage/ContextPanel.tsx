@@ -5,7 +5,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 
 import { GraphSearch, Option, OptionItem } from "../../components/GraphSearch";
 import { ContextIcon } from "../../components/common-icons";
-import { useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { useFilteredGraph, useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { useSelectionActions } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ItemType } from "../../core/types";
@@ -14,17 +14,18 @@ import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
 import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
 
 const GraphStat: FC<{ type: ItemType; current: number; total: number }> = ({ type, current, total }) => {
+  const { locale } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
 
   return (
     <div className="d-flex flex-row mb-2">
       <span className="fs-5 flex-grow-1">
-        {capitalize(t(`graph.model.${type}`) as string) + ":"} {current}
+        {capitalize(t(`graph.model.${type}`) as string) + ":"} {current.toLocaleString(locale)}
         {current !== total && (
           <>
             <span className="small">
-              /{total}
+              /{total.toLocaleString(locale)}
               <span className="ms-2 text-muted">({((current / total) * 100).toFixed(0)}%)</span>
             </span>
           </>

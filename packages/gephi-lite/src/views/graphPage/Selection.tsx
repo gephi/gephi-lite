@@ -19,6 +19,7 @@ import {
   useFilteredGraph,
   useGraphDataset,
   useGraphDatasetActions,
+  usePreferences,
   useSelection,
   useSelectionActions,
   useVisualGetters,
@@ -47,6 +48,7 @@ function SelectedItem<
   renderingData: T["data"];
   selectionSize?: number;
 }) {
+  const { locale } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
 
@@ -190,15 +192,19 @@ function SelectedItem<
         </Dropdown>
       </h4>
       {attributes && (
-        <ul className="ms-4 list-unstyled small">
+        <ul className="list-unstyled small">
           {attributes.map(({ label, value }) => (
             <li key={label} className="overflow-hidden">
-              <span className="text-muted">{label}:</span>{" "}
-              <span className="text-ellipsis">
+              <div className="text-muted small text-break">{label}</div>{" "}
+              <div className="mb-1 text-break">
                 <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>
-                  {typeof value === "boolean" ? value.toString() : value}
+                  {typeof value === "boolean"
+                    ? value.toString()
+                    : typeof value === "number"
+                      ? value.toLocaleString(locale)
+                      : value}
                 </ReactLinkify>
-              </span>
+              </div>
             </li>
           ))}
         </ul>
