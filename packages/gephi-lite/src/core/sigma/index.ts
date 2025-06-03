@@ -127,14 +127,23 @@ export const resetCamera = ({
     const nodes = filteredGraph.nodes();
     for (let i = 0, l = nodes.length; i < l; i++) {
       const node = nodes[i];
-      const { x, y } = dataset.nodeRenderingData[node];
-      minX = Math.min(minX, x);
-      minY = Math.min(minY, y);
-      maxX = Math.max(maxX, x);
-      maxY = Math.max(maxY, y);
+      const { x, y, size = 1 } = dataset.nodeRenderingData[node];
+
+      minX = Math.min(minX, x - size);
+      minY = Math.min(minY, y - size);
+      maxX = Math.max(maxX, x + size);
+      maxY = Math.max(maxY, y + size);
     }
 
-    const bbox = { x: [minX, maxX] as Extent, y: [minY, maxY] as Extent };
+    // This bit of code prevents zooming fully on the graph, when there are only 1, 2 or 3 nodes:
+    const extentX = maxX - minX;
+    const extentY = maxY - minY;
+    const marginFactor = Math.max(3 - nodes.length, 0);
+
+    const bbox = {
+      x: [minX - marginFactor * extentX, maxX + marginFactor * extentX] as Extent,
+      y: [minY - marginFactor * extentY, maxY + marginFactor * extentY] as Extent,
+    };
     sigma.setCustomBBox(bbox);
   } else {
     sigma.setCustomBBox(sigma.getBBox());
