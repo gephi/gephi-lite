@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CgRemoveR } from "react-icons/cg";
 
-import { useFilters, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFilters, useFiltersActions, useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
 import { FilterCreator } from "./FilterCreator";
 import { RangeFilter } from "./RangeFilter";
@@ -103,6 +103,7 @@ const FiltersStack: FC<{ filters: FilterType[]; active?: boolean }> = ({ filters
 };
 
 const GraphFilters: FC = () => {
+  const { locale } = usePreferences();
   const filters = useFilters();
 
   const { t } = useTranslation();
@@ -124,8 +125,8 @@ const GraphFilters: FC = () => {
         <div>
           <div className="fs-5">{t("filters.full_graph")}</div>
           <div className="small text-muted">
-            {fullGraph.order} {t("graph.model.nodes", { count: fullGraph.order })}, {fullGraph.size}{" "}
-            {t("graph.model.edges", { count: fullGraph.size })}
+            {fullGraph.order.toLocaleString(locale)} {t("graph.model.nodes", { count: fullGraph.order })},{" "}
+            {fullGraph.size.toLocaleString(locale)} {t("graph.model.edges", { count: fullGraph.size })}
           </div>
         </div>
       </div>
