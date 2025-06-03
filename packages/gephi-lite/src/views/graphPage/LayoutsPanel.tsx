@@ -334,6 +334,13 @@ export const LayoutsPanel: FC = () => {
   );
   const [option, setOption] = useState<LayoutOption | null>(null);
 
+  useEffect(() => {
+    return () => {
+      stopLayout();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <div className="panel-block">
