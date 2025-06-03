@@ -14,11 +14,12 @@ export const EdgeComponent: FC<{
   color: string;
   hidden?: boolean;
   directed?: boolean;
-}> = ({ label, color, source, target, hidden, directed }) => {
+  className?: string;
+}> = ({ label, color, source, target, hidden, directed, className }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="d-flex flex-column">
+    <div className={cx("d-flex flex-column", className)}>
       <div className="text-ellipsis small">
         <NodeComponent {...source} />
       </div>
@@ -27,7 +28,7 @@ export const EdgeComponent: FC<{
           <span className={cx(hidden ? "dotted" : "dash", "edge-body")} style={{ borderColor: color }} />{" "}
           {directed && <span className="edge-arrow" style={{ borderTopColor: color }} />}
         </div>
-        <span className={cx("text-ellipsis", hidden && "text-muted flex-grow-1", !label && "fst-italic")}>
+        <span className={cx("text-ellipsis my-1", hidden && "text-muted flex-grow-1", !label && "fst-italic")}>
           {label || t("selection.edge_no_label")}
         </span>
       </div>

@@ -1,10 +1,11 @@
 import { StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import { groupBy, isNil, toPairs } from "lodash";
-import { FC, ReactNode, useMemo } from "react";
+import { FC, ReactNode, useEffect, useMemo, useState } from "react";
+import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { AiFillEdit } from "react-icons/ai";
 import { BiTargetLock } from "react-icons/bi";
-import { BsFillTrashFill, BsThreeDotsVertical } from "react-icons/bs";
+import { BsChevronDown, BsChevronUp, BsFillTrashFill, BsThreeDotsVertical } from "react-icons/bs";
 import { MdDeselect, MdFilterCenterFocus, MdSelectAll } from "react-icons/md";
 import ReactLinkify from "react-linkify";
 
@@ -48,6 +49,8 @@ function SelectedItem<
   renderingData: T["data"];
   selectionSize?: number;
 }) {
+  const initiallyExpanded = useMemo(() => selectionSize === 1, [selectionSize]);
+  const [expanded, setExpanded] = useState(initiallyExpanded);
   const { locale } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
@@ -59,18 +62,16 @@ function SelectedItem<
   const { select, unselect } = useSelectionActions();
   const attributes = useMemo(
     () =>
-      selectionSize === 1
-        ? [
-            { label: t(`graph.model.${type}-data.id`) as string, value: id },
-            ...toPairs(data.static).map(([field, value]) => ({ label: field, value })),
-            ...toPairs(data.dynamic).map(([field, value]) => ({
-              label: staticDynamicAttributeLabel({ field, dynamic: true }),
-              value,
-            })),
-            ...toPairs(renderingData).map(([field, value]) => ({ label: field, value })),
-          ].filter(({ value }) => !isNil(value))
-        : null,
-    [data, id, renderingData, selectionSize, t, type],
+      [
+        { label: t(`graph.model.${type}-data.id`) as string, value: id },
+        ...toPairs(data.static).map(([field, value]) => ({ label: field, value })),
+        ...toPairs(data.dynamic).map(([field, value]) => ({
+          label: staticDynamicAttributeLabel({ field, dynamic: true }),
+          value,
+        })),
+        ...toPairs(renderingData).map(([field, value]) => ({ label: field, value })),
+      ].filter(({ value }) => !isNil(value)),
+    [data, id, renderingData, t, type],
   );
 
   const item = getItemAttributes(type, id, filteredGraph, data, graphDataset, visualGetters);
@@ -95,8 +96,14 @@ function SelectedItem<
       visualGetters,
     );
 
-    content = <EdgeComponent {...item} source={source} target={target} />;
+    content = <EdgeComponent {...item} source={source} target={target} className="mb-2" />;
   }
+
+  useEffect(() => {
+    // Close item if a new item has been added to the selection:
+    // Open item if it is newly alone:
+    setExpanded(initiallyExpanded);
+  }, [initiallyExpanded]);
 
   return (
     <li className={`selected-${type}-item mt-2`}>
@@ -104,6 +111,10 @@ function SelectedItem<
         <div className="flex-grow-1 flex-shrink-1 text-ellipsis" title={item.label}>
           {content}
         </div>
+
+        <button className="btn btn-sm ms-1 pe-0 flex-shrink-0" onClick={() => setExpanded(!expanded)}>
+          {expanded ? <BsChevronUp /> : <BsChevronDown />}
+        </button>
 
         <Dropdown
           options={[
@@ -186,12 +197,12 @@ function SelectedItem<
             },
           ]}
         >
-          <button className="btn btn-sm ms-1 flex-shrink-0">
+          <button className="btn btn-sm flex-shrink-0">
             <BsThreeDotsVertical />
           </button>
         </Dropdown>
       </h4>
-      {attributes && (
+      <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
         <ul className="list-unstyled small">
           {attributes.map(({ label, value }) => (
             <li key={label} className="overflow-hidden">
@@ -208,7 +219,7 @@ function SelectedItem<
             </li>
           ))}
         </ul>
-      )}
+      </AnimateHeight>
     </li>
   );
 }
