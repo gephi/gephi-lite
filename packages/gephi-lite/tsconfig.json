@@ -3,7 +3,7 @@
   "include": ["./src", "./types"],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "types": ["vite/client", "vitest/globals"],
+    "types": ["vite/client"],
     "esModuleInterop": true,
     "typeRoots": ["node_modules", "../../node_modules"],
     "plugins": [

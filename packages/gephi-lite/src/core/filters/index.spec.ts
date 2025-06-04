@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { deleteCurrentFilter } from "./index";
 import { getEmptyFiltersState } from "./utils";
 

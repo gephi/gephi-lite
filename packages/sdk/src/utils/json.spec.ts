@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { gephiLiteParse, gephiLiteStringify } from "./json";
 
 const CLASSIC_DATASET = {

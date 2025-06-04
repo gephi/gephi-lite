@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { guessSeparator, inferFieldType } from "./utils";
 
 describe("Graph utilities", () => {

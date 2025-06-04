@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { filterValue } from "./utils";
 
 describe("Filters utilities", () => {

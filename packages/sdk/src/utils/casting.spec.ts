@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { Scalar } from "../graph";
 import { toNumber, toScalar, toString } from "./casting";
 
