@@ -1,0 +1,35 @@
+import { keys } from "lodash";
+import { FC } from "react";
+import { Link, useParams } from "react-router";
+
+// ADD PAGES
+import Buttons from "./Buttons.mdx";
+import SearchBar from "./SearchBar.mdx";
+
+const PARAM_2_PAGE: Record<string, (props: unknown) => JSX.Element> = {
+  buttons: Buttons,
+  "search-bar": SearchBar,
+};
+// END PAGES SECTION
+
+const DesignSystemPage: FC = () => {
+  const { page } = useParams();
+
+  return (
+    <div className="container design-system-page">
+      <h1>Welcome</h1>
+
+      <ul className="d-flex flex-column">
+        {keys(PARAM_2_PAGE).map((p) => (
+          <Link key={p} to={`/design-system/${p}`}>
+            {p}
+          </Link>
+        ))}
+      </ul>
+
+      {page && page in PARAM_2_PAGE && PARAM_2_PAGE[page]({})}
+    </div>
+  );
+};
+
+export default DesignSystemPage;
