@@ -1,0 +1,21 @@
+//RESET
+.gl-btn-text,
+.gl-btn-outline,
+.gl-btn-fill {
+  border: 0;
+  border-radius: 8px;
+  color: $gl-color-dark;
+}
+
+.gl-btn-text {
+  background-color: transparent;
+}
+
+.gl-btn-outline {
+  border: 1;
+  background-color: transparent;
+}
+.gl-btn-fill {
+  background-color: $gl-color-dark;
+  color: $gl-color-white;
+}
