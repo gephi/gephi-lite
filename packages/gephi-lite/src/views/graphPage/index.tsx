@@ -106,7 +106,7 @@ export const GraphPage: FC = () => {
   );
 
   return (
-    <Layout id="graph-page">
+    <Layout>
       {/* Menu panel on left*/}
       <div className="left-panel">
         <GraphSummary className="px-3 mb-3" />
