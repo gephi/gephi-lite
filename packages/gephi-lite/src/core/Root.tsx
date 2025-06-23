@@ -4,6 +4,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { ErrorComponent } from "../components/Error";
 import { MatomoProvider } from "../components/Matomo";
+import { DesignSystemPage } from "../designSystem/page";
 import { NotFoundPage } from "../views/NotFoundPage";
 import { GraphPage } from "../views/graphPage";
 import { Initialize } from "./Initialize";
@@ -32,8 +33,8 @@ export const Root: FC = () => {
             <AtomsContextsRoot>
               <Initialize>
                 <Routes>
+                  <Route path="/design-system" element={<DesignSystemPage />} />
                   <Route path="/" element={<GraphPage />} />
-
                   {/* Error pages: */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
