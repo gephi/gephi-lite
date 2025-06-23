@@ -91,6 +91,7 @@
     "sigma": "^3.0.0"
   },
   "devDependencies": {
+    "@mdx-js/rollup": "^3.1.0",
     "@ryoppippi/unplugin-typia": "^1.2.0",
     "@types/byte-size": "^8.1.2",
     "@types/chroma-js": "^3.1.0",

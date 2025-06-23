@@ -1,5 +1,7 @@
+import mdx from "@mdx-js/rollup";
 import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
 import react from "@vitejs/plugin-react-swc";
+import { PluginOption } from "vite";
 import checker from "vite-plugin-checker";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
@@ -10,6 +12,7 @@ export default defineConfig({
   base: BASE_URL,
   plugins: [
     UnpluginTypia({}),
+    mdx() as unknown as PluginOption,
     react(),
     svgr(),
     checker({
