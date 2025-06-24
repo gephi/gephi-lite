@@ -3,6 +3,7 @@ import { reduce } from "lodash";
 import { Context, FC, ReactNode, createContext, useContext } from "react";
 
 import { appearanceActions, appearanceAtom } from "../appearance";
+import { dataTableActions, dataTableAtom } from "../dataTable";
 import { fileActions, fileAtom } from "../file";
 import { filtersActions, filtersAtom } from "../filters";
 import {
@@ -51,6 +52,7 @@ const ATOMS = {
   filters: filtersAtom,
   selection: selectionAtom,
   file: fileAtom,
+  dataTable: dataTableAtom,
   appearance: appearanceAtom,
   sigmaState: sigmaStateAtom,
   sigmaGraph: sigmaGraphAtom,
@@ -69,6 +71,7 @@ type AtomName = keyof typeof ATOMS;
 
 const CONTEXTS = {
   appearance: createContext(ATOMS.appearance),
+  dataTable: createContext(ATOMS.dataTable),
   filters: createContext(ATOMS.filters),
   filteredGraph: createContext(ATOMS.filteredGraph),
   graphDataset: createContext(ATOMS.graphDataset),
@@ -132,6 +135,7 @@ export const useFile = makeUseAtom(CONTEXTS.file);
 export const useAppearance = makeUseAtom(CONTEXTS.appearance);
 export const useSigmaState = makeUseAtom(CONTEXTS.sigmaState);
 export const useSigmaGraph = makeUseAtom(CONTEXTS.sigmaGraph);
+export const useDataTable = makeUseAtom(CONTEXTS.dataTable);
 export const usePreferences = makeUseAtom(CONTEXTS.preferences);
 export const useGraphDataset = makeUseAtom(CONTEXTS.graphDataset);
 export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
@@ -145,6 +149,7 @@ export const useDynamicItemData = makeUseAtom(CONTEXTS.dynamicItemData);
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
 export const useSelectionActions = makeUseActions(selectionActions);
+export const useDataTableActions = makeUseActions(dataTableActions);
 export const useAppearanceActions = makeUseActions(appearanceActions);
 export const useGraphDatasetActions = makeUseActions(graphDatasetActions);
 export const usePreferencesActions = makeUseActions(preferencesActions);
