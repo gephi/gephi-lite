@@ -1,9 +1,10 @@
 import { getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, sortBy, take, uniq, values } from "lodash";
+import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
+import { inferFieldType } from "./fieldModel";
 import {
   DataGraph,
   DatalessGraph,
@@ -17,77 +18,10 @@ import {
   SigmaGraph,
 } from "./types";
 
-export { parseDataset, datasetToString, getEmptyGraphDataset } from "@gephi/gephi-lite-sdk";
+export { datasetToString, getEmptyGraphDataset, parseDataset } from "@gephi/gephi-lite-sdk";
 
 export function getRandomNodeCoordinate(): number {
   return Math.random() * 100;
-}
-
-/**
- * This function takes an array of string values, and tries various separators
- * to see if one does match enough values.
- */
-const SEPARATORS = [";", ",", "|"] as const;
-type Separator = (typeof SEPARATORS)[number];
-export function guessSeparator(values: string[]): string | null {
-  const separatorsFrequencies = SEPARATORS.reduce(
-    (iter, sep) => ({
-      ...iter,
-      [sep]: 0,
-    }),
-    {},
-  ) as Record<Separator, number>;
-
-  values.forEach((value) =>
-    SEPARATORS.forEach((sep) => {
-      const split = value.split(sep);
-      if (split.length > 1 && split.every((s) => !!s && !s.match(/(^ | $)/))) separatorsFrequencies[sep]++;
-    }),
-  );
-
-  const bestSeparator = sortBy(
-    SEPARATORS.filter((sep) => !!separatorsFrequencies[sep]),
-    (sep) => -separatorsFrequencies[sep],
-  )[0];
-  return bestSeparator || null;
-}
-
-/**
- * This function takes an unqualified field model and a list af values, and
- * guesses whether that field should be considered qualitative and/or
- * quantitative:
- */
-export function inferFieldType<T extends ItemType = ItemType>(
-  values: Scalar[],
-  itemsCount: number,
-): Pick<FieldModel<T>, "quantitative" | "qualitative"> {
-  const res: Pick<FieldModel<T>, "quantitative" | "qualitative"> = {
-    qualitative: null,
-    quantitative: null,
-  };
-
-  if (values.every((v) => isNumber(v))) {
-    res.quantitative = { unit: null };
-  }
-
-  const separator = guessSeparator(
-    take(
-      values.map((v) => "" + v),
-      100,
-    ),
-  );
-  const uniqValues = uniq(separator ? values.flatMap((v) => (v + "").split(separator)) : values);
-  const uniqValuesCount = uniqValues.length;
-
-  if (
-    uniqValuesCount > 1 &&
-    uniqValuesCount < 50 &&
-    uniqValuesCount < Math.max(separator ? itemsCount : Math.pow(itemsCount, 0.75), 5)
-  ) {
-    res.qualitative = { separator };
-  }
-
-  return res;
 }
 
 export function cleanNode(_node: string, attributes: Attributes): { data: ItemData; renderingData: NodeRenderingData } {
