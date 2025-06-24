@@ -1,2 +1,49 @@
-$gl-color-dark: black;
-$gl-color-white: white
+//Foundation
+
+//Neutral Palette
+$gl-neutral-100: #ffffff;
+$gl-neutral-95: #fcfcfc;
+$gl-neutral-90: #f7f7f7;
+$gl-neutral-80: #f1f1f1;
+$gl-neutral-70: #eaeaea;
+$gl-neutral-60: #e3e3e3;
+$gl-neutral-50: #d4d4d4;
+$gl-neutral-40: #a9a9a9;
+$gl-neutral-30: #545454;
+$gl-neutral-20: #353535;
+$gl-neutral-10: #292929;
+$gl-neutral-05: #252525;
+$gl-neutral-00: #1d1d1d;
+
+//Colors
+$gl-surface: $gl-neutral-95;
+
+//Surface
+:root {
+  --gl-surface: #{$gl-neutral-95};
+
+  --gl-onSurface: #{$gl-neutral-10};
+  --gl-onSurface-variant: #{$gl-neutral-30};
+
+  --gl-surface-highest: #{$gl-neutral-100};
+  --gl-surface-high: #{$gl-neutral-90};
+
+  --gl-surface-border: #{$gl-neutral-40};
+}
+
+:root[data-bs-theme="dark"] {
+  --gl-surface: #{$gl-neutral-00};
+
+  --gl-surface-highest: #{$gl-neutral-05};
+  --gl-surface-high: #{$gl-neutral-10};
+}
+
+//Systemic
+
+:root {
+  --gl-sys-surface: #{$gl-neutral-10};
+}
+
+:root[data-bs-theme="dark"] {
+  --gl-contrast: #{$gl-neutral-90};
+}
