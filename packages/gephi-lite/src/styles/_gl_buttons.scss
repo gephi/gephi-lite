@@ -1,13 +1,18 @@
 //RESET
-.gl-btn-text,
-.gl-btn-outline,
-.gl-btn-fill {
-  border: 0;
-  border-radius: 8px;
-  color: $gl-color-dark;
+.gl-btn,
+.ibtn {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  color: inherit;
+  font: inherit;
 }
 
 .gl-btn {
+  background-color: var(--gl-contrast);
 }
 .gl-btn-toggle {
 }
@@ -16,15 +21,7 @@
 .gl-ibtn-toggle {
 }
 
-.gl-btn-text {
-  background-color: transparent;
-}
-
 .gl-btn-outline {
   border: 1;
   background-color: transparent;
-}
-.gl-btn-fill {
-  background-color: $gl-color-dark;
-  color: $gl-color-white;
 }
