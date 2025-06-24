@@ -15,7 +15,7 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
 
   return (
     <form
-      className="input-group mb-3"
+      className="input-group"
       onSubmit={(e) => {
         e.preventDefault();
         if (search !== input) onChange(search);
@@ -41,9 +41,8 @@ export const TopBar: FC<{ type: ItemType; search: string; onSearchChange: (searc
   onSearchChange,
 }) => {
   return (
-    <div className="top-bar flex-shrink-0 d-flex flex-row p-2">
-      <section></section>
-      <section className="flex-grow-1"></section>
+    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2">
+      <section className="flex-grow-1">TODO</section>
       <section>
         <SearchForm type={type} input={search} onChange={onSearchChange} />
       </section>

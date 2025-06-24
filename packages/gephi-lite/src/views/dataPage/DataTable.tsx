@@ -1,5 +1,6 @@
 import { ItemData, ItemType } from "@gephi/gephi-lite-sdk";
 import {
+  Column,
   ColumnDef,
   Row,
   Table,
@@ -11,7 +12,8 @@ import {
 } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
-import { FC, RefObject, useMemo, useRef } from "react";
+import { CSSProperties, FC, RefObject, useMemo, useRef } from "react";
+import { ScrollSyncPane } from "react-scroll-sync";
 
 import { EdgeComponentById } from "../../components/Edge";
 import { NodeComponentById } from "../../components/Node";
@@ -24,6 +26,21 @@ import {
 } from "../../core/context/dataContexts";
 
 type ItemRow = { id: string; selected: boolean; data: ItemData };
+
+const getCommonPinningStyles = (column: Column<ItemRow>, isInHead?: boolean): CSSProperties => {
+  const isPinned = column.getIsPinned();
+  const isLastLeftPinnedColumn = isPinned === "left" && column.getIsLastColumn("left");
+
+  return {
+    borderRightWidth: isLastLeftPinnedColumn ? 2 : undefined,
+    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    opacity: isPinned ? 0.95 : 1,
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    zIndex: isPinned ? (isInHead ? 3 : 1) : undefined,
+  };
+};
 
 const TableBodyRow: FC<{
   row: Row<ItemRow>;
@@ -41,13 +58,7 @@ const TableBodyRow: FC<{
     >
       {row.getVisibleCells().map((cell) => {
         return (
-          <td
-            key={cell.id}
-            style={{
-              display: "flex",
-              width: cell.column.getSize(),
-            }}
-          >
+          <td key={cell.id} style={{ ...getCommonPinningStyles(cell.column) }}>
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </td>
         );
@@ -63,8 +74,8 @@ const TableBody: FC<{
   const { rows } = table.getRowModel();
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
-    count: rows.length,
     overscan: 5,
+    count: rows.length,
     estimateSize: () => 41,
     getScrollElement: () => tableContainerRef.current,
     measureElement:
@@ -109,6 +120,7 @@ const useDataTableColumns = () => {
         header: () => null,
         size: 30,
         enableResizing: false,
+        enablePinning: true,
         cell: (props) => (
           <>
             <input
@@ -127,6 +139,7 @@ const useDataTableColumns = () => {
       columnHelper.display({
         id: "preview",
         header: "Preview",
+        enablePinning: true,
         cell: (props) =>
           type === "nodes" ? (
             <NodeComponentById id={props.row.getValue("id")} />
@@ -153,6 +166,11 @@ const useDataTableColumns = () => {
 
   return {
     columns,
+    columnPinningState: {
+      columnPinning: {
+        left: ["selected", "preview"],
+      },
+    },
   };
 };
 
@@ -163,7 +181,7 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
 
   const { columnsState } = useDataTable();
   const { updateColumnSizing, updateColumnSizingInfo } = useDataTableActions();
-  const { columns } = useDataTableColumns();
+  const { columns, columnPinningState } = useDataTableColumns();
 
   const rows = useMemo<ItemRow[]>(
     () => itemIDs.map((id) => ({ id, selected: selectionType === "nodes" && items.has(id), data: data[id] })),
@@ -171,7 +189,6 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
   );
 
   const tableContainerRef = useRef<HTMLTableElement>(null);
-
   const table = useReactTable({
     data: rows,
     columns,
@@ -183,63 +200,68 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
       minSize: 30,
       enableResizing: true,
     },
-    state: columnsState,
+    state: {
+      ...columnsState,
+      ...columnPinningState,
+    },
     onColumnSizingChange: updateColumnSizing,
     onColumnSizingInfoChange: updateColumnSizingInfo,
   });
 
   return (
     <div className="position-absolute inset-0">
-      <table
-        className={cx("table table-bordered", table.getState().columnSizingInfo.isResizingColumn && "is-resizing")}
-        ref={tableContainerRef}
-      >
-        <thead className="table-light">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <th
-                    key={header.id}
-                    style={{
-                      width: header.getSize(),
-                    }}
-                  >
-                    <div
-                      {...{
-                        className: header.column.getCanSort() ? "cursor-pointer select-none" : "",
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}
-                    >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {{
-                        asc: " 🔼",
-                        desc: " 🔽",
-                      }[header.column.getIsSorted() as string] ?? null}
+      <ScrollSyncPane innerRef={tableContainerRef}>
+        <table
+          ref={tableContainerRef}
+          className={cx(
+            "data-table table table-bordered",
+            table.getState().columnSizingInfo.isResizingColumn && "is-resizing",
+          )}
+        >
+          <thead className="table-light">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <th key={header.id} style={{ ...getCommonPinningStyles(header.column, true) }}>
                       <div
                         {...{
-                          className: `resizer ${header.column.getIsResizing() ? "is-resizing" : ""}`,
-                          onTouchStart: header.getResizeHandler(),
-                          onDoubleClick: () => header.column.resetSize(),
-                          onClick: (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                          },
-                          onMouseDown: (e) => {
-                            e.preventDefault();
-                            header.getResizeHandler()(e);
-                          },
+                          className: header.column.getCanSort() ? "cursor-pointer select-none" : "",
+                          onClick: header.column.getToggleSortingHandler(),
                         }}
-                      />
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <TableBody table={table} tableContainerRef={tableContainerRef} />
-      </table>
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {{
+                          asc: " 🔼",
+                          desc: " 🔽",
+                        }[header.column.getIsSorted() as string] ?? null}
+                        {header.column.getCanResize() && (
+                          <div
+                            {...{
+                              className: `resizer ${header.column.getIsResizing() ? "is-resizing" : ""}`,
+                              onTouchStart: header.getResizeHandler(),
+                              onDoubleClick: () => header.column.resetSize(),
+                              onClick: (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              },
+                              onMouseDown: (e) => {
+                                e.preventDefault();
+                                header.getResizeHandler()(e);
+                              },
+                            }}
+                          />
+                        )}
+                      </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <TableBody table={table} tableContainerRef={tableContainerRef} />
+        </table>
+      </ScrollSyncPane>
     </div>
   );
 };
