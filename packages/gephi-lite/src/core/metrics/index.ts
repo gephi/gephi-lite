@@ -1,5 +1,6 @@
+import { inferFieldType } from "../graph/fieldModel";
 import { DatalessGraph, FieldModel, GraphDataset } from "../graph/types";
-import { dataGraphToFullGraph, inferFieldType } from "../graph/utils";
+import { dataGraphToFullGraph } from "../graph/utils";
 import { ItemType } from "../types";
 import { Metric, MetricReport } from "./types";
 

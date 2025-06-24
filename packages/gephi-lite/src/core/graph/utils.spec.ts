@@ -1,34 +1,30 @@
 import { describe, expect, it } from "vitest";
 
-import { guessSeparator, inferFieldType } from "./utils";
+import { guessSeparator, inferFieldType } from "./fieldModel";
 
 describe("Graph utilities", () => {
   describe("#inferFieldType", () => {
     it("should properly handle a list of differing numbers", () => {
       expect(inferFieldType([123, -123, 456, 789, Infinity], 5)).toEqual({
-        quantitative: { unit: null },
-        qualitative: null,
+        type: "number",
       });
     });
 
     it("should properly handle a list of differing strings", () => {
       expect(inferFieldType(["Alexis", "Benoit", "Paul", "Guillaume", "Mathieu"], 5)).toEqual({
-        quantitative: null,
-        qualitative: null,
+        type: "text",
       });
     });
 
     it("should properly handle a list of repeating strings", () => {
       expect(inferFieldType(["Nantes", "Nantes", "Nantes", "Paris", "Paris"], 5)).toEqual({
-        quantitative: null,
-        qualitative: { separator: null },
+        type: "category",
       });
     });
 
     it("should properly handle a list of repeating numbers", () => {
       expect(inferFieldType([44, 44, 44, 75, 75], 5)).toEqual({
-        quantitative: { unit: null },
-        qualitative: { separator: null },
+        type: "number",
       });
     });
 
@@ -36,8 +32,14 @@ describe("Graph utilities", () => {
       expect(
         inferFieldType(["TypeScript", "Neo4J,TypeScript", "Python,TypeScript", "TypeScript,Python", "TypeScript"], 5),
       ).toEqual({
-        quantitative: null,
-        qualitative: { separator: "," },
+        type: "keywords",
+        separator: ",",
+      });
+    });
+
+    it("should properly detect date", () => {
+      expect(inferFieldType(["2025-06", "2023", "2012-06-03", "2025-06-24T15:30:21.907Z"], 5)).toEqual({
+        type: "date",
       });
     });
   });
