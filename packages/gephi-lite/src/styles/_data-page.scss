@@ -2,77 +2,17 @@
   width: 100%;
   height: 100%;
 
-  table {
-    border: $table-border-color;
-    display: grid;
-    max-width: 100%;
-    height: 100%;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
 
-    &.is-resizing {
-      cursor: col-resize;
+  .menu-bar,
+  .table-top-bar {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
 
-      .resizer:not(.is-resizing) {
-        display: none;
-      }
-    }
-
-    thead {
-      position: sticky;
-      z-index: 1;
-      top: 0;
-
-      tr {
-        display: flex;
-        width: fit-content;
-
-        th {
-          display: flex;
-          font-weight: $font-weight-base;
-          position: relative;
-
-          .resizer {
-            position: absolute;
-            top: 0;
-            height: 100%;
-            right: -1px;
-            width: 5px;
-            background: $gray-500;
-            cursor: col-resize;
-            user-select: none;
-            touch-action: none;
-
-            &.is-resizing {
-              opacity: 1;
-              background: $black;
-            }
-          }
-
-          @media (hover: hover) {
-            .resizer {
-              opacity: 0;
-            }
-
-            &:hover .resizer {
-              opacity: 1;
-            }
-          }
-        }
-      }
-    }
-
-    tbody {
-      display: grid;
-      position: relative;
-
-      tr {
-        display: flex;
-        position: absolute;
-
-        td {
-          display: flex;
-        }
-      }
-    }
+  .data-table-container {
+    flex-grow: 1;
+    flex-shrink: 1;
   }
 }
