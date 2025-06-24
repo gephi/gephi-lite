@@ -1,19 +1,16 @@
-import { ItemType } from "@gephi/gephi-lite-sdk";
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo } from "react";
 
-import { useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { doesItemMatch } from "../../utils/search";
 import { Layout } from "../layout";
 import { DataTable } from "./DataTable";
 import { TopBar } from "./TopBar";
 
 export const DataPage: FC = () => {
+  const { type, search } = useDataTable();
+  const { updateQuery } = useDataTableActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields } = useGraphDataset();
   const graph = useFilteredGraph();
-  const [{ type, search }, setState] = useState<{ type: ItemType; search: string }>({
-    type: "nodes",
-    search: "",
-  });
   const { matchingItems, otherItems } = useMemo(() => {
     let matchingItems: string[] = [];
     const otherItems: string[] = [];
@@ -35,12 +32,12 @@ export const DataPage: FC = () => {
     }
 
     return { matchingItems, otherItems };
-  }, [edgeData, edgeFields, edgeRenderingData, graph, nodeData, nodeFields, nodeRenderingData, search, type]);
+  }, [type, graph, nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields, search]);
 
   return (
     <Layout>
       <div id="data-page" className="d-flex flex-column">
-        <TopBar type={type} search={search} onSearchChange={(search) => setState((state) => ({ ...state, search }))} />
+        <TopBar type={type} search={search} onSearchChange={(query) => updateQuery({ query })} />
         <section className="flex-grow-1 position-relative">
           <DataTable type={type} itemIDs={matchingItems} />
         </section>
