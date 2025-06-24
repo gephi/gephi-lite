@@ -17,7 +17,7 @@ const DesignSystemPage: FC = () => {
 
   return (
     <div className="container design-system-page">
-      <h1>Welcome</h1>
+      <h1>Gephi Lite Design System</h1>
 
       <ul className="d-flex flex-column">
         {keys(PARAM_2_PAGE).map((p) => (
