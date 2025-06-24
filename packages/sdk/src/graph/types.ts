@@ -52,14 +52,23 @@ export interface GraphMetadata {
 /**
  * Describes how Gephi Lite should interpret a nodes or edges field.
  */
-export interface FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = false> {
+
+export type FieldModelTypeSpec =
+  | { type: "text" } // Textual content "unique" i.e. suitable for reading not for filtering neither for appearance
+  | { type: "number" } // Quantifiable values suitable for ranking appearance and filtering by range
+  | { type: "category" } // Terms regrouping many items suitable for partition appearance and select filtering
+  | { type: "keywords"; separator: string } // multiple terms for one items suitable for select filtering, can't be used for appearance
+  | { type: "date"; format?: string }; // if no format Gephi Lite will write ISOString.
+
+export type FieldModelType = FieldModelTypeSpec["type"];
+
+export type FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = false> = {
   id: string;
   itemType: T;
-  quantitative: null | { unit?: string | null };
-  qualitative: null | { separator?: string | null };
   dynamic?: Dynamic;
-}
+} & FieldModelTypeSpec;
 
+//TODO : remove this type?
 export interface ItemDataField {
   field: string;
   dynamic?: boolean;
