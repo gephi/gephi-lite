@@ -7,7 +7,8 @@ export function getEmptyDataTableState(): DataTableState {
   return {
     type: "nodes",
     search: "",
-    columnsState: {
+    dataTableState: {
+      // Columns sizing:
       columnSizing: {},
       columnSizingInfo: {
         columnSizingStart: [],
@@ -17,6 +18,8 @@ export function getEmptyDataTableState(): DataTableState {
         startOffset: null,
         startSize: null,
       },
+      // Sorting:
+      sorting: [],
     },
   };
 }

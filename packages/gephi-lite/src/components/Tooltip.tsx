@@ -75,11 +75,13 @@ const Tooltip = forwardRef<
       attachment="top right"
       targetAttachment="bottom right"
       constraints={[{ to: "window", attachment: "together", pin: true }]}
-      {...{ ...tether }}
+      {...tether}
       renderTarget={(ref) => (
         <div
           ref={ref}
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setShowTooltip("click");
           }}
           onMouseEnter={() => {
