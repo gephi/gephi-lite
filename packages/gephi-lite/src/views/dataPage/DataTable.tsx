@@ -10,11 +10,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
+import cx from "classnames";
 import { FC, RefObject, useMemo, useRef } from "react";
 
 import { EdgeComponentById } from "../../components/Edge";
 import { NodeComponentById } from "../../components/Node";
-import { useGraphDataset, useSelection, useSelectionActions } from "../../core/context/dataContexts";
+import {
+  useDataTable,
+  useDataTableActions,
+  useGraphDataset,
+  useSelection,
+  useSelectionActions,
+} from "../../core/context/dataContexts";
 
 type ItemRow = { id: string; selected: boolean; data: ItemData };
 
@@ -29,10 +36,7 @@ const TableBodyRow: FC<{
       ref={(node) => rowVirtualizer.measureElement(node)}
       key={row.id}
       style={{
-        display: "flex",
-        position: "absolute",
-        transform: `translateY(${virtualRow.start}px)`,
-        width: "100%",
+        top: `${virtualRow.start}px`,
       }}
     >
       {row.getVisibleCells().map((cell) => {
@@ -72,9 +76,7 @@ const TableBody: FC<{
   return (
     <tbody
       style={{
-        display: "grid",
         height: `${rowVirtualizer.getTotalSize()}px`,
-        position: "relative",
       }}
     >
       {rowVirtualizer.getVirtualItems().map((virtualRow) => {
@@ -92,21 +94,13 @@ const TableBody: FC<{
   );
 };
 
-export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, itemIDs }) => {
-  const { nodeData, edgeData, nodeFields, edgeFields } = useGraphDataset();
-  const { type: selectionType, items } = useSelection();
-  const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
-  const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
-
-  const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
+const useDataTableColumns = () => {
+  const { type } = useDataTable();
   const { toggle } = useSelectionActions();
-  const rows = useMemo<ItemRow[]>(
-    () => itemIDs.map((id) => ({ id, selected: selectionType === "nodes" && items.has(id), data: data[id] })),
-    [itemIDs, items, data, selectionType],
-  );
+  const { nodeFields, edgeFields } = useGraphDataset();
 
-  const tableContainerRef = useRef<HTMLTableElement>(null);
-
+  const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
+  const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
   const columns = useMemo<ColumnDef<ItemRow>[]>(
     () => [
       // Agnostic columns;
@@ -114,6 +108,7 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
         id: "selected",
         header: () => null,
         size: 30,
+        enableResizing: false,
         cell: (props) => (
           <>
             <input
@@ -156,32 +151,57 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
     [columnHelper, fields, toggle, type],
   );
 
+  return {
+    columns,
+  };
+};
+
+export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, itemIDs }) => {
+  const { nodeData, edgeData } = useGraphDataset();
+  const { type: selectionType, items } = useSelection();
+  const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
+
+  const { columnsState } = useDataTable();
+  const { updateColumnSizing, updateColumnSizingInfo } = useDataTableActions();
+  const { columns } = useDataTableColumns();
+
+  const rows = useMemo<ItemRow[]>(
+    () => itemIDs.map((id) => ({ id, selected: selectionType === "nodes" && items.has(id), data: data[id] })),
+    [itemIDs, items, data, selectionType],
+  );
+
+  const tableContainerRef = useRef<HTMLTableElement>(null);
+
   const table = useReactTable({
     data: rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    columnResizeMode: "onChange",
+    defaultColumn: {
+      maxSize: 400,
+      minSize: 30,
+      enableResizing: true,
+    },
+    state: columnsState,
+    onColumnSizingChange: updateColumnSizing,
+    onColumnSizingInfoChange: updateColumnSizingInfo,
   });
 
   return (
     <div className="position-absolute inset-0">
-      <table className="table d-grid w-100 h-100 overflow-auto" ref={tableContainerRef}>
-        <thead
-          style={{
-            display: "grid",
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-          }}
-        >
+      <table
+        className={cx("table table-bordered", table.getState().columnSizingInfo.isResizingColumn && "is-resizing")}
+        ref={tableContainerRef}
+      >
+        <thead className="table-light">
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} style={{ display: "flex", width: "100%" }}>
+            <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <th
                     key={header.id}
                     style={{
-                      display: "flex",
                       width: header.getSize(),
                     }}
                   >
@@ -196,6 +216,21 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
                         asc: " 🔼",
                         desc: " 🔽",
                       }[header.column.getIsSorted() as string] ?? null}
+                      <div
+                        {...{
+                          className: `resizer ${header.column.getIsResizing() ? "is-resizing" : ""}`,
+                          onTouchStart: header.getResizeHandler(),
+                          onDoubleClick: () => header.column.resetSize(),
+                          onClick: (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          },
+                          onMouseDown: (e) => {
+                            e.preventDefault();
+                            header.getResizeHandler()(e);
+                          },
+                        }}
+                      />
                     </div>
                   </th>
                 );
