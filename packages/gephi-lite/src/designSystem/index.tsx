@@ -1,5 +1,5 @@
 import { keys } from "lodash";
-import { FC } from "react";
+import { FC, createElement } from "react";
 import { Link, useParams } from "react-router";
 
 // ADD PAGES
@@ -27,7 +27,7 @@ const DesignSystemPage: FC = () => {
         ))}
       </ul>
 
-      {page && page in PARAM_2_PAGE && PARAM_2_PAGE[page]({})}
+      {page && page in PARAM_2_PAGE && createElement(PARAM_2_PAGE[page])}
     </div>
   );
 };
