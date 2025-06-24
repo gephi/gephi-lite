@@ -28,20 +28,37 @@
         font-weight: $font-weight-base;
         position: relative;
 
+        & > div.content-wrapper {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: baseline;
+
+          & > * {
+            flex-shrink: 0;
+          }
+
+          & > .column-title {
+            flex-shrink: 1;
+            flex-grow: 1;
+            @extend .text-ellipsis;
+          }
+        }
+
         .resizer {
           position: absolute;
           top: 0;
           height: 100%;
           right: -1px;
           width: 5px;
-          background: $gray-500;
+          background: $gray-300;
           cursor: col-resize;
           user-select: none;
           touch-action: none;
 
           &.is-resizing {
             opacity: 1;
-            background: $black;
+            background: $gray-500;
           }
         }
 
