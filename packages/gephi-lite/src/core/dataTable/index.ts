@@ -1,5 +1,5 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
-import { ColumnSizingInfoState, Updater } from "@tanstack/react-table";
+import { ColumnSizingInfoState, SortingState, Updater } from "@tanstack/react-table";
 import { ColumnSizingState } from "@tanstack/table-core";
 
 import { DataTableState } from "./types";
@@ -18,24 +18,47 @@ export const updateQuery: Producer<DataTableState, [{ query?: string }]> = ({ qu
 export const updateColumnSizing: Producer<DataTableState, [Updater<ColumnSizingState>]> = (updater) => {
   return (state) => ({
     ...state,
-    columnsState: {
-      ...state.columnsState,
-      columnSizing:
-        typeof updater === "function" ? updater(state.columnsState.columnSizing) : state.columnsState.columnSizing,
+    dataTableState: {
+      ...state.dataTableState,
+      columnSizing: typeof updater === "function" ? updater(state.dataTableState.columnSizing) : updater,
     },
   });
 };
 export const updateColumnSizingInfo: Producer<DataTableState, [Updater<ColumnSizingInfoState>]> = (updater) => {
   return (state) => ({
     ...state,
-    columnsState: {
-      ...state.columnsState,
-      columnSizingInfo:
-        typeof updater === "function"
-          ? updater(state.columnsState.columnSizingInfo)
-          : state.columnsState.columnSizingInfo,
+    dataTableState: {
+      ...state.dataTableState,
+      columnSizingInfo: typeof updater === "function" ? updater(state.dataTableState.columnSizingInfo) : updater,
     },
   });
+};
+export const setSort: Producer<DataTableState, [Updater<SortingState>]> = (updater) => {
+  return (state) => ({
+    ...state,
+    dataTableState: {
+      ...state.dataTableState,
+      sorting: typeof updater === "function" ? updater(state.dataTableState.sorting) : updater,
+    },
+  });
+};
+export const toggleSort: Producer<DataTableState, [string]> = (column) => {
+  return (state) => {
+    const sorting = state.dataTableState.sorting;
+    const newSorting: SortingState = [];
+
+    const { id, desc } = sorting[0] || {};
+    if (column !== id) newSorting.push({ id: column, desc: false });
+    else if (!desc) newSorting.push({ id, desc: true });
+
+    return {
+      ...state,
+      dataTableState: {
+        ...state.dataTableState,
+        sorting: newSorting,
+      },
+    };
+  };
 };
 
 /**
@@ -48,4 +71,6 @@ export const dataTableActions = {
   updateQuery: producerToAction(updateQuery, dataTableAtom),
   updateColumnSizing: producerToAction(updateColumnSizing, dataTableAtom),
   updateColumnSizingInfo: producerToAction(updateColumnSizingInfo, dataTableAtom),
+  setSort: producerToAction(setSort, dataTableAtom),
+  toggleSort: producerToAction(toggleSort, dataTableAtom),
 } as const;

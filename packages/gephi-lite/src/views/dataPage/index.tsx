@@ -28,6 +28,7 @@ const Panel: FC<{ collapsed?: boolean; children: [ReactNode, ReactNode] }> = ({
         </button>
       </div>
       <div className={cx("flex-grow-1 flex-shrink-1 position-relative", isCollapsed && "d-none")}>{content}</div>
+      <div className="border border-bottom" />
     </>
   );
 };
