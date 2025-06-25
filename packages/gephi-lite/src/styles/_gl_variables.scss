@@ -1,49 +1,136 @@
-//Foundation
+//-------- Reference tokens
+
+//---- Color
 
 //Neutral Palette
-$gl-neutral-100: #ffffff;
-$gl-neutral-95: #fcfcfc;
-$gl-neutral-90: #f7f7f7;
-$gl-neutral-80: #f1f1f1;
-$gl-neutral-70: #eaeaea;
-$gl-neutral-60: #e3e3e3;
-$gl-neutral-50: #d4d4d4;
-$gl-neutral-40: #a9a9a9;
-$gl-neutral-30: #545454;
-$gl-neutral-20: #353535;
-$gl-neutral-10: #292929;
-$gl-neutral-05: #252525;
-$gl-neutral-00: #1d1d1d;
+$gl-ref-color-neutral-00: #ffffff;
+$gl-ref-color-neutral-05: #fcfcfc;
+$gl-ref-color-neutral-10: #f7f7f7;
+//$gl-ref-color-neutral-20: #f1f1f1;
+$gl-ref-color-neutral-30: #eaeaea;
+//$gl-ref-color-neutral-40: #e3e3e3;
+//$gl-ref-color-neutral-50: #d4d4d4;
+$gl-ref-color-neutral-60: #a9a9a9;
+$gl-ref-color-neutral-70: #696969;
+//$gl-ref-color-neutral-75: #353535;
+$gl-ref-color-neutral-80: #292929;
+$gl-ref-color-neutral-85: #252525;
+$gl-ref-color-neutral-95: #1d1d1d;
 
-//Colors
-$gl-surface: $gl-neutral-95;
+//---- Opacity
+
+$gl-opacity-0: 0;
+$gl-opacity-8: 0.08;
+$gl-opacity-10: 0.1;
+$gl-opacity-50: 0.5;
+$gl-opacity-75: 0.75;
+
+//---- Dimension
+
+$gl-ref-dimension-base: 0.5rem;
+$gl-ref-dimension-linear-0: calc($gl-ref-dimension-base * 0);
+$gl-ref-dimension-linear-050: calc($gl-ref-dimension-base * 0.5);
+$gl-ref-dimension-linear-100: $gl-ref-dimension-base;
+$gl-ref-dimension-linear-150: calc($gl-ref-dimension-base * 1.5);
+$gl-ref-dimension-linear-200: calc($gl-ref-dimension-base * 2);
+$gl-ref-dimension-linear-225: calc($gl-ref-dimension-base * 2.25);
+$gl-ref-dimension-linear-300: calc($gl-ref-dimension-base * 3);
+$gl-ref-dimension-linear-400: calc($gl-ref-dimension-base * 4);
+$gl-ref-dimension-linear-600: calc($gl-ref-dimension-base * 6);
+$gl-ref-dimension-linear-800: calc($gl-ref-dimension-base * 8);
+$gl-ref-dimension-linear-1600: calc($gl-ref-dimension-base * 16);
+$gl-ref-dimension-linear-3200: calc($gl-ref-dimension-base * 32);
+
+//---- Border Radius
+
+$gl-ref-radius-4: 0.25rem;
+$gl-ref-radius-8: 0.5rem;
+$gl-ref-radius-full: 99rem;
+
+//------- System tokens
+
+//----Color
 
 //Surface
 :root {
-  --gl-surface: #{$gl-neutral-95};
+  --gl-sys-color-surface: #{$gl-ref-color-neutral-10};
 
-  --gl-onSurface: #{$gl-neutral-10};
-  --gl-onSurface-variant: #{$gl-neutral-30};
+  --gl-sys-color-container-surface-highest: #{$gl-ref-color-neutral-00};
+  --gl-sys-color-container-surface-high: #{$gl-ref-color-neutral-05};
 
-  --gl-surface-highest: #{$gl-neutral-100};
-  --gl-surface-high: #{$gl-neutral-90};
+  --gl-sys-color-surface-border: #{$gl-ref-color-neutral-30};
 
-  --gl-surface-border: #{$gl-neutral-40};
+  --gl-sys-color-onSurface: #{$gl-ref-color-neutral-80};
+  --gl-sys-color-onSurface-low: #{$gl-ref-color-neutral-70};
 }
 
 :root[data-bs-theme="dark"] {
-  --gl-surface: #{$gl-neutral-00};
+  --gl-sys-color-surface: #{$gl-ref-color-neutral-95};
 
-  --gl-surface-highest: #{$gl-neutral-05};
-  --gl-surface-high: #{$gl-neutral-10};
+  --gl-sys-color-container-surface-highest: #{$gl-ref-color-neutral-85};
+  --gl-sys-color-container-surface-high: #{$gl-ref-color-neutral-80};
+
+  --gl-sys-color-surface-border: #{$gl-ref-color-neutral-60};
+
+  --gl-sys-color-onSurface: #{$gl-ref-color-neutral-30};
+  --gl-sys-color-onSurface-low: #{$gl-ref-color-neutral-60};
 }
 
-//Systemic
+//Component
+:root {
+  --gl-sys-color-component-surface: #{$gl-ref-color-neutral-80};
+
+  --gl-sys-color-component-border: #{$gl-ref-color-neutral-80};
+
+  --gl-sys-color-onComponentSurface: #{$gl-ref-color-neutral-30};
+}
+
+:root[data-bs-theme="dark"] {
+  --gl-sys-color-component-surface: #{$gl-ref-color-neutral-30};
+
+  --gl-sys-color-component-border: #{$gl-ref-color-neutral-30};
+
+  --gl-sys-color-onComponentSurface: #{$gl-ref-color-neutral-80};
+}
+
+//----Opacity
+:root {
+  --gl-sys-opacity-state-layer-hover: #{$gl-opacity-8};
+  --gl-sys-opacity-state-layer-disabled: #{$gl-opacity-10};
+
+  --gl-sys-opacity-onComponentSurface-disabled: #{$gl-opacity-50};
+}
+
+//----Size
+
+//Icon
+:root {
+  --gl-sys-size-icon-sm: #{$gl-ref-dimension-linear-200};
+  --gl-sys-size-icon-md: #{$gl-ref-dimension-linear-225};
+  --gl-sys-size-icon-lg: #{$gl-ref-dimension-linear-300};
+  --gl-sys-size-icon-xl: #{$gl-ref-dimension-linear-800};
+}
+
+//Container
+:root {
+  --gl-sys-size-container-lg: #{$gl-ref-dimension-linear-3200};
+}
+
+//----Space
 
 :root {
-  --gl-sys-surface: #{$gl-neutral-10};
+  --gl-sys-size-icon-none: #{$gl-ref-dimension-linear-0};
+  --gl-sys-size-icon-xs: #{$gl-ref-dimension-linear-050};
+  --gl-sys-size-icon-sm: #{$gl-ref-dimension-linear-100};
+  --gl-sys-size-icon-md: #{$gl-ref-dimension-linear-200};
+  --gl-sys-size-icon-lg: #{$gl-ref-dimension-linear-400};
+  --gl-sys-size-icon-xl: #{$gl-ref-dimension-linear-800};
 }
 
-:root[data-bs-theme="dark"] {
-  --gl-contrast: #{$gl-neutral-90};
+//---- Radius
+
+:root {
+  --gl-sys-radius-sm: #{$gl-ref-radius-4};
+  --gl-sys-radius-md: #{$gl-ref-radius-8};
+  --gl-sys-radius-full: #{$gl-ref-radius-full};
 }
