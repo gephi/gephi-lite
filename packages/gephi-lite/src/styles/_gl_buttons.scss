@@ -1,27 +1,19 @@
 //RESET
-.gl-btn,
-.ibtn {
+.gl-btn {
   border: none;
   margin: 0;
   padding: 0;
   width: auto;
-  overflow: visible;
+  overflow: hidden;
 
   color: inherit;
   font: inherit;
 }
 
 .gl-btn {
-  background-color: var(--gl-contrast);
-}
-.gl-btn-toggle {
-}
-.gl-ibtn {
-}
-.gl-ibtn-toggle {
-}
-
-.gl-btn-outline {
-  border: 1;
-  background-color: transparent;
+  @extend .btn;
+  color: var(--gl-sys-color-onSurface);
+  background-color: var(--gl-sys-color-component-surface);
+  border-radius: var(--gl-sys-radius-md);
+  padding: var(--gl-sys-space-xs) var(--gl-sys-space-sm);
 }
