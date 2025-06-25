@@ -3,7 +3,19 @@ import { Column } from "@tanstack/react-table";
 import { CSSProperties, ComponentType, FC, PropsWithChildren, createElement } from "react";
 import { PiArrowDown, PiArrowUp, PiArrowsDownUp } from "react-icons/pi";
 
-export type ItemRow = { id: string; selected: boolean; data: ItemData };
+export const SPECIFIC_COLUMNS = {
+  id: "id",
+  selected: "selected",
+  preview: "preview",
+  degree: "degree",
+  sourceId: "sourceId",
+  targetId: "targetId",
+} as const;
+
+type BaseItemRow = { id: string; selected: boolean; data: ItemData };
+export type NodeItemRow = BaseItemRow & { degree: number };
+export type EdgeItemRow = BaseItemRow & { sourceId: string; targetId: string };
+export type ItemRow = NodeItemRow | EdgeItemRow;
 
 export const ARROWS = {
   asc: PiArrowDown,
@@ -23,12 +35,6 @@ export const Arrow: FC<{
 
   return <ArrowIcon className={className} />;
 };
-
-export const SPECIFIC_COLUMNS = {
-  id: "id",
-  selected: "selected",
-  preview: "preview",
-} as const;
 
 export const getCommonPinningStyles = (column: Column<ItemRow>, isInHead?: boolean): CSSProperties => {
   const isPinned = column.getIsPinned();

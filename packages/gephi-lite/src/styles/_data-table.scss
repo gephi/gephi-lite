@@ -1,4 +1,5 @@
 .data-table {
+  background: $gray-100;
   border: $table-border-color;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -27,6 +28,10 @@
         display: flex;
         font-weight: $font-weight-base;
         position: relative;
+
+        &.protected {
+          background: $gray-200;
+        }
 
         & > div.content-wrapper {
           width: 100%;
