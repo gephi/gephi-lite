@@ -43,9 +43,9 @@ export const Header: FC = () => {
       },
       {
         label: t("pages.data_laboratory"),
-        path: "/data_laboratory",
+        path: "/data",
         icon: { normal: DataLaboratoryIcon, fill: DataLaboratoryIconFill },
-        isCurrent: location.pathname === "/data_laboratory",
+        isCurrent: location.pathname === "/data",
       },
     ],
     [location.pathname, t],
