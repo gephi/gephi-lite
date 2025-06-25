@@ -3,7 +3,7 @@ import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { PiCaretDown, PiCaretRight } from "react-icons/pi";
 import { ScrollSync } from "react-scroll-sync";
 
-import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { useDataTable, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { doesItemMatch } from "../../utils/search";
 import { Layout } from "../layout";
 import { TopBar } from "./TopBar";
@@ -35,7 +35,6 @@ const Panel: FC<{ collapsed?: boolean; children: [ReactNode, ReactNode] }> = ({
 
 export const DataPage: FC = () => {
   const { type, search } = useDataTable();
-  const { updateQuery } = useDataTableActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields } = useGraphDataset();
   const graph = useFilteredGraph();
   const { matchingItems, otherItems } = useMemo(() => {
@@ -65,25 +64,25 @@ export const DataPage: FC = () => {
     <Layout>
       <ScrollSync enabled horizontal vertical={false}>
         <div id="data-page" className="d-flex flex-column">
-          <TopBar type={type} search={search} onSearchChange={(query) => updateQuery({ query })} />
+          <TopBar />
           {search ? (
             <>
               <Panel>
                 <>
                   <strong>{matchingItems.length}</strong> {type} matching the search query
                 </>
-                <DataTable type={type} itemIDs={matchingItems} />
+                <DataTable itemIDs={matchingItems} />
               </Panel>
               <Panel collapsed>
                 <>
                   <strong>{otherItems.length}</strong> {type} not matching the search query
                 </>
-                <DataTable type={type} itemIDs={otherItems} />
+                <DataTable itemIDs={otherItems} />
               </Panel>
             </>
           ) : (
             <section className="flex-grow-1 position-relative">
-              <DataTable type={type} itemIDs={matchingItems} />
+              <DataTable itemIDs={matchingItems} />
             </section>
           )}
         </div>
