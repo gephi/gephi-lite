@@ -9,11 +9,14 @@ import { BsChevronDown, BsChevronUp, BsFillTrashFill, BsThreeDotsVertical } from
 import { MdDeselect, MdFilterCenterFocus, MdSelectAll } from "react-icons/md";
 import ReactLinkify from "react-linkify";
 
+import ConfirmModal from "../../components//modals/ConfirmModal";
 import Dropdown from "../../components/Dropdown";
 import { EdgeComponent } from "../../components/Edge";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
 import { NodeComponent } from "../../components/Node";
 import { ItemIcons } from "../../components/common-icons";
+import UpdateEdgeModal from "../../components/modals/edition/UpdateEdgeModal";
+import UpdateNodeModal from "../../components/modals/edition/UpdateNodeModal";
 import { getItemAttributes } from "../../core/appearance/utils";
 import {
   useDynamicItemData,
@@ -30,9 +33,6 @@ import { EdgeRenderingData, NodeRenderingData } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
 import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
-import ConfirmModal from "./modals/ConfirmModal";
-import UpdateEdgeModal from "./modals/edition/UpdateEdgeModal";
-import UpdateNodeModal from "./modals/edition/UpdateNodeModal";
 
 function SelectedItem<
   T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },

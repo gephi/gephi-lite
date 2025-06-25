@@ -6,28 +6,17 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { FaPlay, FaStop } from "react-icons/fa";
 
-import { InformationTooltip } from "../../components/InformationTooltip";
-import { LoaderFill } from "../../components/Loader";
-import MessageTooltip from "../../components/MessageTooltip";
-import { CodeEditorIcon, LayoutsIcon } from "../../components/common-icons";
-import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
-import { Select } from "../../components/forms/Select";
-import { BooleanInput, EnumInput, NumberInput } from "../../components/forms/TypedInputs";
-import { useGraphDataset, useLayoutActions, useLayoutState, useSigmaGraph } from "../../core/context/dataContexts";
-import { FieldModel } from "../../core/graph/types";
-import { getFilteredDataGraph } from "../../core/graph/utils";
-import { LAYOUTS } from "../../core/layouts/collection";
-import { Layout, LayoutScriptParameter } from "../../core/layouts/types";
-import { useModal } from "../../core/modals";
-import { useNotifications } from "../../core/notifications";
-import { sessionAtom } from "../../core/session";
-import { FunctionEditorModal } from "./modals/FunctionEditorModal";
-
-type LayoutOption = {
-  value: string;
-  label: string;
-  layout: Layout;
-};
+import { LoaderFill } from "../../../../components/Loader";
+import MessageTooltip from "../../../../components/MessageTooltip";
+import { CodeEditorIcon } from "../../../../components/common-icons";
+import { BooleanInput, EnumInput, NumberInput } from "../../../../components/forms/TypedInputs";
+import { FunctionEditorModal } from "../../../../components/modals/FunctionEditorModal";
+import { useGraphDataset, useSigmaGraph } from "../../../../core/context/dataContexts";
+import { FieldModel } from "../../../../core/graph/types";
+import { getFilteredDataGraph } from "../../../../core/graph/utils";
+import { Layout, LayoutScriptParameter } from "../../../../core/layouts/types";
+import { useModal } from "../../../../core/modals";
+import { sessionAtom } from "../../../../core/session";
 
 export const LayoutForm: FC<{
   layout: Layout;
@@ -313,83 +302,5 @@ export const LayoutForm: FC<{
         </button>
       </div>
     </form>
-  );
-};
-
-export const LayoutsPanel: FC = () => {
-  const { t } = useTranslation();
-  const { notify } = useNotifications();
-  const { startLayout, stopLayout } = useLayoutActions();
-  const { type } = useLayoutState();
-
-  const options: Array<LayoutOption> = useMemo(
-    () =>
-      LAYOUTS.map((l) => ({
-        value: l.id,
-        label: t(`layouts.${l.id}.title`),
-        layout: l,
-      })),
-    [t],
-  );
-  const [option, setOption] = useState<LayoutOption | null>(null);
-
-  useEffect(() => {
-    return () => {
-      stopLayout();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <>
-      <div className="panel-block">
-        <h2 className="fs-4 d-flex align-items-center gap-1">
-          <LayoutsIcon className="me-1" /> {t("layouts.title")}
-          <InformationTooltip>
-            <p className="text-muted small">{t("layouts.description")}</p>
-          </InformationTooltip>
-        </h2>
-        <p className="text-muted small d-none d-md-block">{t("layouts.description")}</p>
-
-        <Select<LayoutOption | null>
-          options={options}
-          value={option}
-          onChange={(option) => {
-            setOption(option);
-            stopLayout();
-          }}
-          placeholder={t("layouts.placeholder")}
-        />
-      </div>
-
-      {option?.layout ? (
-        <>
-          <hr className="m-0" />
-          <LayoutForm
-            key={option.layout.id}
-            layout={option.layout}
-            onStart={async (params) => {
-              try {
-                await startLayout(option.layout.id, params);
-              } catch (e) {
-                notify({ type: "error", message: (e as Error).message });
-              }
-            }}
-            onStop={() => {
-              stopLayout();
-            }}
-            isRunning={type === "running"}
-            onCancel={() => {
-              stopLayout();
-              setOption(null);
-            }}
-          />
-        </>
-      ) : (
-        <div className="flex-grow-1" />
-      )}
-      <hr className="m-0" />
-      <LayoutQualityForm />
-    </>
   );
 };

@@ -709,7 +709,7 @@
   },
   "search": {
     "graph": {
-      "placeholder": "Search for nodes, edges ...",
+      "placeholder": "Search nodes, edges",
       "no_result": "No results",
       "help": "Type something to search",
       "other_result": "... and {{count}} other results",

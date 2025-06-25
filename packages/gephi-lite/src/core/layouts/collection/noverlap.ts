@@ -1,12 +1,12 @@
-import NoverlapLayout, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
+import NoverlapLayoutSUpervisor, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 
 import { WorkerLayout } from "../types";
 
-export const NOverlapLayout = {
+export const NoverlapLayout = {
   id: "noverlap",
   type: "worker",
   description: true,
-  supervisor: NoverlapLayout,
+  supervisor: NoverlapLayoutSUpervisor,
   parameters: [
     { id: "gridSize", type: "number", description: true, defaultValue: 20 },
     { id: "margin", type: "number", description: true, defaultValue: 5 },
