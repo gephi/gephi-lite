@@ -1,4 +1,4 @@
-import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
+import { FieldModelTypeSpec, NodeRenderingData, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, omit, pick } from "lodash";
 import { FC, useMemo } from "react";
@@ -9,10 +9,8 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
-import { NodeRenderingData } from "../../../core/graph/types";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
-import { Scalar } from "../../../core/types";
 import { Modal } from "../../modals";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
