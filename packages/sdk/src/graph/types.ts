@@ -1,5 +1,6 @@
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType, SerializedGraph } from "graphology-types";
+import { DateTime } from "luxon";
 
 /**
  * BASE TYPES:
@@ -8,6 +9,8 @@ import { Attributes, GraphType, SerializedGraph } from "graphology-types";
 
 export type Scalar = boolean | number | string | undefined | null;
 export const SCALAR_TYPES = new Set(["boolean", "number", "string", "undefined"]);
+
+export type ModelValueType = string | string[] | DateTime | number | undefined;
 
 export type ItemType = "nodes" | "edges";
 export type ItemData = Record<string, Scalar>;
@@ -67,12 +70,6 @@ export type FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = 
   itemType: T;
   dynamic?: Dynamic;
 } & FieldModelTypeSpec;
-
-//TODO : remove this type?
-export interface ItemDataField {
-  field: string;
-  dynamic?: boolean;
-}
 
 export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {
   stats: {

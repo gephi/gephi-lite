@@ -1,6 +1,18 @@
+import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import { IconType } from "react-icons";
-import { BsCircle, BsCodeSlash, BsFillPlayFill, BsGithub, BsSlashLg } from "react-icons/bs";
-import { BsExclamationTriangle } from "react-icons/bs";
+import {
+  Bs123,
+  BsAlphabetUppercase,
+  BsBodyText,
+  BsCalendar3,
+  BsCircle,
+  BsCodeSlash,
+  BsExclamationTriangle,
+  BsFillPlayFill,
+  BsFillTagsFill,
+  BsGithub,
+  BsSlashLg,
+} from "react-icons/bs";
 import { GrOverview } from "react-icons/gr";
 import { ImFilesEmpty } from "react-icons/im";
 import { MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
@@ -74,3 +86,11 @@ export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
 export const AutoThemeIcon = PiCircleHalf;
 export const AutoThemeSelectedIcon = PiCircleHalfFill;
+
+export const FieldModelIcons: Record<FieldModelType, IconType> = {
+  text: BsBodyText,
+  number: Bs123,
+  category: BsAlphabetUppercase,
+  keywords: BsFillTagsFill,
+  date: BsCalendar3,
+};

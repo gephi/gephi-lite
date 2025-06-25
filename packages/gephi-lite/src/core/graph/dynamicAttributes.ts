@@ -1,13 +1,14 @@
 import {
   DynamicItemsDataSpec,
+  FieldModel,
   ItemData,
-  ItemDataField,
   ItemType,
   Scalar,
   StaticDynamicItemData,
 } from "@gephi/gephi-lite-sdk";
 import { fromPairs, mapValues } from "lodash";
 
+import { castScalarToModelValue } from "./fieldModel";
 import { DatalessGraph } from "./types";
 
 /**
@@ -17,7 +18,7 @@ import { DatalessGraph } from "./types";
 export const dynamicAttributes: DynamicItemsDataSpec = {
   nodes: [
     {
-      field: { id: "degree", itemType: "nodes", qualitative: null, quantitative: { unit: null }, dynamic: true },
+      field: { id: "degree", itemType: "nodes", type: "number", dynamic: true },
       compute: (nodeId: string, graph: DatalessGraph) => {
         return graph.degree(nodeId);
       },
@@ -50,12 +51,12 @@ export const mergeStaticDynamicData = (
   return mapValues(staticData, (staticItemData, id) => ({ static: staticItemData, dynamic: dynamicData[id] || {} }));
 };
 
-export const staticDynamicAttributeKey = (field: ItemDataField) =>
-  `${field.dynamic ? "dynamic" : "static"}.${field.field}`;
+export const staticDynamicAttributeKey = (field: FieldModel<ItemType, boolean>) =>
+  `${field.dynamic ? "dynamic" : "static"}.${field.id}`;
 
-export const staticDynamicAttributeLabel = (field: ItemDataField) =>
-  `${field.field} ${field.dynamic ? " (dynamic)" : ""}`;
+export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>) =>
+  `${field.id} ${field.dynamic ? " (dynamic)" : ""}`;
 
-export const getFieldValue = (data: StaticDynamicItemData, field: ItemDataField) => {
-  return field.dynamic ? data.dynamic[field.field] : data.static[field.field];
+export const getFieldValue = (data: StaticDynamicItemData, field: FieldModel<ItemType, boolean>) => {
+  return castScalarToModelValue(field.dynamic ? data.dynamic[field.id] : data.static[field.id], field);
 };

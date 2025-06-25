@@ -1,4 +1,3 @@
-import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -15,14 +14,15 @@ import { FilterType } from "../../core/filters/types";
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
+import { FieldModelIcons } from "../common-icons";
 import { Select } from "../forms/Select";
 
 export interface FilterOption {
   value: string;
   label: string | JSX.Element;
   disabled?: boolean;
-  field?: ItemDataField;
-  type: string;
+  field?: FieldModel;
+  type: "terms" | "range" | "script" | "unsupported" | "topological";
 }
 
 export const FilterCreator: FC = () => {
@@ -59,42 +59,65 @@ export const FilterCreator: FC = () => {
         filterApplicationType === "nodes"
           ? [...nodeFields, ...dynamicNodeFields]
           : [...edgeFields, ...dynamicEdgeFields];
-      const fieldFiltersOptions: FilterOption[] = allFields.flatMap((field) => {
-        const options = [];
-        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
-        if (field.quantitative)
-          options.push({
-            value: `range::${staticDynamicAttributeKey(staticDynamicField)}`,
+      const fieldFiltersOptions: FilterOption[] = allFields
+        .filter((field): field is FieldModel => field.type !== "text")
+        .map((field): FilterOption => {
+          const Icon = FieldModelIcons[field.type];
+          switch (field.type) {
+            case "number":
+            case "date":
+              return {
+                value: `range::${staticDynamicAttributeKey(field)}`,
+                label: (
+                  <>
+                    <Icon className="me-1" />
+                    {staticDynamicAttributeLabel(field)}
+                  </>
+                ),
+                type: "range",
+                field,
+              };
+            //default to please TS
+            case "category":
+            case "keywords":
+            default:
+              return {
+                value: `term::${field.id}`,
+                label: (
+                  <>
+                    <Icon className="me-1" />
+                    {staticDynamicAttributeLabel(field)}
+                  </>
+                ),
+                type: "terms",
+                field: field,
+              };
+          }
+        });
+      //TODO: allow filter on text attribute with a new search filter
+      const unsupportedFieldFilters = allFields
+        .filter((field): field is FieldModel => field.type !== "text")
+        .map((field): FilterOption => {
+          const Icon = FieldModelIcons[field.type];
+          return {
+            value: `unsupported::${field.id}`,
             label: (
               <>
-                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
-                <span className="text-muted">({t("filters.range")})</span>
-              </>
-            ),
-            type: "range",
-            field: staticDynamicField,
-          });
-        if (!!field.qualitative)
-          options.push({
-            value: `term::${field.id}`,
-            label: (
-              <>
-                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
-                <span className="text-muted">({t("filters.terms")})</span>
+                <Icon className="me-1" />
+                {staticDynamicAttributeLabel(field)}
               </>
             ),
             type: "terms",
-            field: staticDynamicField,
-          });
-        return options;
-      });
+            field,
+          };
+        });
 
       const scriptFilterOption: FilterOption = {
         value: "script",
         label: t("filters.script") as string,
         type: "script",
       };
-      setFilterOptions([...fieldFiltersOptions, scriptFilterOption]);
+      setFilterOptions([...fieldFiltersOptions, scriptFilterOption, ...unsupportedFieldFilters]);
     }
   }, [
     filterApplicationType,

@@ -1,3 +1,4 @@
+import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import { ConnectedClosenessResult } from "graphology-metrics/layout-quality/connected-closeness";
 import { Coordinates } from "sigma/types";
@@ -33,7 +34,7 @@ export interface LayoutNumberParameter extends BaseLayoutParameter {
 export interface LayoutAttributeParameter extends BaseLayoutParameter {
   type: "attribute";
   itemType: ItemType;
-  restriction?: "qualitative" | "quantitative";
+  restriction?: FieldModelType[];
 }
 
 type LayoutScriptFunction = (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };

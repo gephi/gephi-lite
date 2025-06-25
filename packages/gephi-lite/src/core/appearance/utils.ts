@@ -3,12 +3,11 @@ import {
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
   StaticDynamicItemData,
-  toNumber,
   toString,
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity } from "lodash";
+import { forEach, identity, isNumber } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
@@ -49,7 +48,7 @@ export {
  * Actual appearance helpers:
  */
 
-export const makeGetValue = (method?: TransformationMethod): ((value?: number) => number | undefined) => {
+export const makeTransformValue = (method?: TransformationMethod): ((value?: number) => number | undefined) => {
   // linear
   if (!method) return identity;
   if (typeof method !== "string") {
@@ -83,23 +82,29 @@ export function makeGetNumberAttr<
   let getNumberValue: NumberGetter | null = null;
   switch (numberAttrDef.type) {
     case "ranking": {
-      const getValue = makeGetValue(numberAttrDef.transformationMethod);
+      const transformValue = makeTransformValue(numberAttrDef.transformationMethod);
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = getValue(toNumber(getFieldValue(data, numberAttrDef.field)));
-        if (typeof value === "number") {
-          min = Math.min(min, value);
-          max = Math.max(max, value);
+        const value = getFieldValue(data, numberAttrDef.field);
+        const transformedValue = transformValue(isNumber(value) ? value : undefined);
+        if (typeof transformedValue === "number") {
+          min = Math.min(min, transformedValue);
+          max = Math.max(max, transformedValue);
         }
       });
       const delta = max - min || 1;
       const ratio = (numberAttrDef.maxSize - numberAttrDef.minSize) / delta;
       getNumberValue = (data: StaticDynamicItemData) => {
-        const value = getValue(toNumber(getFieldValue(data, numberAttrDef.field)));
+        const value = getFieldValue(data, numberAttrDef.field);
+        const transformedValue = transformValue(isNumber(value) ? value : undefined);
 
-        if (typeof value === "number" && !isNaN(value) && Math.abs(value) !== Infinity) {
-          return (value - min) * ratio + numberAttrDef.minSize;
+        if (
+          typeof transformedValue === "number" &&
+          !isNaN(transformedValue) &&
+          Math.abs(transformedValue) !== Infinity
+        ) {
+          return (transformedValue - min) * ratio + numberAttrDef.minSize;
         }
         return numberAttrDef.missingSize;
       };
@@ -109,7 +114,7 @@ export function makeGetNumberAttr<
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = toNumber(getFieldValue(data, numberAttrDef.field));
+        const value = getFieldValue(data, numberAttrDef.field);
         if (typeof value === "number") {
           min = Math.min(min, value);
           max = Math.max(max, value);
@@ -119,7 +124,7 @@ export function makeGetNumberAttr<
       const delta = max - min || 1;
       const ratio = (maxIndex - minIndex) / delta;
       getNumberValue = (data: StaticDynamicItemData) => {
-        const value = toNumber(getFieldValue(data, numberAttrDef.field));
+        const value = getFieldValue(data, numberAttrDef.field);
 
         if (typeof value === "number" && !isNaN(value) && Math.abs(value) !== Infinity) {
           return (value - min) * ratio + minIndex;
@@ -156,15 +161,17 @@ export function makeGetColor<
   switch (colorsDef.type) {
     case "partition":
       getColor = (data: StaticDynamicItemData) => {
-        const value = getFieldValue(data, colorsDef.field) as string;
-        return value in colorsDef.colorPalette ? colorsDef.colorPalette[value] : colorsDef.missingColor;
+        const value = getFieldValue(data, colorsDef.field);
+        return typeof value === "string" && value in colorsDef.colorPalette
+          ? colorsDef.colorPalette[value]
+          : colorsDef.missingColor;
       };
       break;
     case "ranking": {
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = toNumber(getFieldValue(data, colorsDef.field));
+        const value = getFieldValue(data, colorsDef.field);
         if (typeof value === "number") {
           min = Math.min(min, value);
           max = Math.max(max, value);
@@ -175,7 +182,7 @@ export function makeGetColor<
         .scale(colorsDef.colorScalePoints.map((point) => point.color))
         .domain(colorsDef.colorScalePoints.map((csp) => csp.scalePoint));
       getColor = (data: StaticDynamicItemData) => {
-        const value = toNumber(getFieldValue(data, colorsDef.field));
+        const value = getFieldValue(data, colorsDef.field);
         if (typeof value === "number") {
           return colorScale((value - min) / delta).hex();
         }
@@ -217,7 +224,7 @@ export function makeGetColor<
     let min = Infinity,
       max = -Infinity;
     forEach(itemsValues, (data) => {
-      const value = toNumber(getFieldValue(data, shadingDef.field));
+      const value = getFieldValue(data, shadingDef.field);
       if (typeof value === "number") {
         min = Math.min(min, value);
         max = Math.max(max, value);
@@ -228,7 +235,7 @@ export function makeGetColor<
     const rawGetColor = getColor;
     getColor = (data: StaticDynamicItemData, edgeId?: string) => {
       const color = rawGetColor(data, edgeId);
-      const value = toNumber(getFieldValue(data, shadingDef.field));
+      const value = getFieldValue(data, shadingDef.field);
 
       if (typeof value === "number") {
         return chroma
@@ -264,9 +271,7 @@ export function makeGetStringAttr<
     case "field":
       getLabel = (data) => {
         const label = toString(
-          stringAttrDef.field.dynamic
-            ? data.dynamic[stringAttrDef.field.field]
-            : data.static[stringAttrDef.field.field],
+          stringAttrDef.field.dynamic ? data.dynamic[stringAttrDef.field.id] : data.static[stringAttrDef.field.id],
         );
         return typeof label === "string" ? label : stringAttrDef.missingValue;
       };

@@ -1,4 +1,3 @@
-import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -15,7 +14,7 @@ import { Select } from "../../forms/Select";
 
 type LabelOption =
   | { value: string; type: "none"; field?: undefined; label: string }
-  | { value: string; type: "field"; field: ItemDataField; label: string };
+  | { value: string; type: "field"; field: FieldModel<ItemType, boolean>; label: string };
 
 export const EdgesZIndexItem: FC = () => {
   const itemType: ItemType = "edges";
@@ -26,19 +25,17 @@ export const EdgesZIndexItem: FC = () => {
   const { setEdgesZIndexAppearance } = useAppearanceActions();
 
   const numberFields: FieldModel<"edges", boolean>[] = [...edgeFields, ...dynamicEdgeFields].filter(
-    (field) => field.quantitative,
+    (field) => field.type === "number",
   );
   const labelOptions = useMemo(() => {
     return [
       { value: "none", type: "none", label: t(`appearance.zIndex.none`) as string },
       ...numberFields.map((field) => {
-        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
-
         return {
-          value: staticDynamicAttributeKey(staticDynamicField),
+          value: staticDynamicAttributeKey(field),
           type: "field",
-          field: staticDynamicField.field,
-          label: staticDynamicAttributeLabel(staticDynamicField),
+          field,
+          label: staticDynamicAttributeLabel(field),
         };
       }),
     ] as LabelOption[];

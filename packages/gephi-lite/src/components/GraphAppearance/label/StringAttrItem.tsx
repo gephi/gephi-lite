@@ -1,4 +1,3 @@
-import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -16,7 +15,7 @@ import { Select } from "../../forms/Select";
 
 type LabelOption =
   | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
-  | { value: string; type: "field"; field: ItemDataField; label: string };
+  | { value: string; type: "field"; field: FieldModel<ItemType, boolean>; label: string };
 
 export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
   const { t } = useTranslation();
@@ -38,12 +37,11 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
     return [
       { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) as string },
       ...allFields.map((field) => {
-        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
         return {
-          value: `field::${staticDynamicAttributeKey(staticDynamicField)}`,
+          value: `field::${staticDynamicAttributeKey(field)}`,
           type: fieldType,
-          field: staticDynamicField,
-          label: staticDynamicAttributeLabel(staticDynamicField),
+          field,
+          label: staticDynamicAttributeLabel(field),
         };
       }),
       { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) as string },
@@ -58,10 +56,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
           return option.type === currentDef.type;
         }
         return (
-          option.type === currentDef.type &&
-          option.field &&
-          currentDef.field &&
-          option.field.field === currentDef.field.field
+          option.type === currentDef.type && option.field && currentDef.field && option.field.id === currentDef.field.id
         );
       }) || null,
     [labelOptions, currentDef.field, currentDef.type],

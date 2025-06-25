@@ -1,4 +1,12 @@
-import { FieldModelTypeSpec, Scalar, toDate, toNumber, toString, toStringArray } from "@gephi/gephi-lite-sdk";
+import {
+  FieldModelTypeSpec,
+  ModelValueType,
+  Scalar,
+  toDate,
+  toNumber,
+  toString,
+  toStringArray,
+} from "@gephi/gephi-lite-sdk";
 import { isNumber, sortBy, take, uniq } from "lodash";
 import { DateTime } from "luxon";
 
@@ -70,10 +78,7 @@ export function inferFieldType(values: Scalar[], itemsCount: number): FieldModel
   return { type: "text" };
 }
 
-export function formatScalar(
-  scalar: Scalar,
-  fieldModel: FieldModelTypeSpec,
-): string | number | DateTime | string[] | undefined {
+export function castScalarToModelValue(scalar: Scalar, fieldModel: FieldModelTypeSpec): ModelValueType {
   switch (fieldModel.type) {
     case "number":
       return toNumber(scalar);
@@ -86,12 +91,6 @@ export function formatScalar(
       return toDate(scalar, fieldModel.format);
   }
 }
-
-// Is field suitable for range/terms filter
-// => extract value method for filterValue in /packages/gephi-lite/src/core/filters/utils.ts
-
-// Is field suitable for rank/partition appearance
-// => extract value method for makeGetNumberAttr and makeGetColor in packages/gephi-lite/src/core/appearance/utils.ts
 
 // Raw data level
 // ItemsData with Scalar value(see toScalar in packages/sdk/src/utils/casting.ts)
