@@ -41,11 +41,7 @@ const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: ta
                 className={cx("dropdown-item", option.disabled && "disabled")}
                 title={option.title}
                 disabled={option.disabled}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  option.onClick();
-                }}
+                onClick={option.onClick}
               >
                 {option.label}
               </button>

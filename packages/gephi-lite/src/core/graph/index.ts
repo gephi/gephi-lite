@@ -241,9 +241,16 @@ const createEdge: Producer<GraphDataset, [string, Attributes, string, string]> =
     };
   };
 };
-const updateNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
+const updateNode: Producer<GraphDataset, [string, Attributes, { merge?: boolean }?]> = (
+  node,
+  attributes,
+  { merge } = {},
+) => {
   return (state) => {
-    const { data, renderingData } = cleanNode(node, attributes);
+    const { data, renderingData } = cleanNode(
+      node,
+      merge ? { ...state.nodeData[node], ...state.nodeRenderingData[node], ...attributes } : attributes,
+    );
     const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
     return {
       ...state,
@@ -253,9 +260,16 @@ const updateNode: Producer<GraphDataset, [string, Attributes]> = (node, attribut
     };
   };
 };
-const updateEdge: Producer<GraphDataset, [string, Attributes]> = (edge, attributes) => {
+const updateEdge: Producer<GraphDataset, [string, Attributes, { merge?: boolean }?]> = (
+  edge,
+  attributes,
+  { merge } = {},
+) => {
   return (state) => {
-    const { data, renderingData } = cleanEdge(edge, attributes);
+    const { data, renderingData } = cleanEdge(
+      edge,
+      merge ? { ...state.edgeData[edge], ...state.edgeRenderingData[edge], ...attributes } : attributes,
+    );
     const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
     return {
       ...state,

@@ -38,6 +38,7 @@
     "@octokit/auth-oauth-device": "^7.1.2",
     "@octokit/core": "^6.1.3",
     "@ouestware/atoms": "^0.0.1-alpha.3",
+    "@ouestware/hooks": "^0.0.1-alpha.6",
     "@react-sigma/core": "^5.0.2",
     "@sigma/node-image": "^3.0.0",
     "@tanstack/react-table": "^8.21.3",

@@ -1,7 +1,6 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { PiDotsThreeVertical } from "react-icons/pi";
-import ReactLinkify from "react-linkify";
 
 import Dropdown from "../../../components/Dropdown";
 import { EdgeComponentById } from "../../../components/Edge";
@@ -15,7 +14,7 @@ import {
   useSelectionActions,
 } from "../../../core/context/dataContexts";
 import { useModal } from "../../../core/modals";
-import { DEFAULT_LINKIFY_PROPS } from "../../../utils/url";
+import { DataCell } from "./DataCell";
 import { Arrow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
 
 function getReadOnlyColumn(field: keyof ItemRow, size = 180): ColumnDef<ItemRow> {
@@ -35,7 +34,9 @@ function getReadOnlyColumn(field: keyof ItemRow, size = 180): ColumnDef<ItemRow>
           arrow={header.column.getIsSorted() || null}
           wrapper={({ children }) => (
             <div>
-              <button className="btn small p-0">{children}</button>
+              <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
+                {children}
+              </button>
             </div>
           )}
         />
@@ -251,9 +252,12 @@ export const useDataTableColumns = (itemIDs: string[]) => {
           </>
         ),
         cell: (props) => (
-          <span className="text-ellipsis">
-            <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{props.row.getValue(`field::${field.id}`)}</ReactLinkify>
-          </span>
+          <DataCell
+            type={type}
+            id={props.row.getValue("id")}
+            field={field.id}
+            value={props.row.getValue(`field::${field.id}`)}
+          />
         ),
       })),
     ],

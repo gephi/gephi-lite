@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .data-table {
   background: $gray-100;
   border: $table-border-color;
@@ -90,6 +92,17 @@
 
       td {
         display: flex;
+
+        padding: map.get($spacers, 1);
+        &.editable {
+          padding: 0;
+
+          .data-cell {
+            width: 100%;
+            padding: map.get($spacers, 1);
+            @extend .text-ellipsis;
+          }
+        }
       }
     }
   }
