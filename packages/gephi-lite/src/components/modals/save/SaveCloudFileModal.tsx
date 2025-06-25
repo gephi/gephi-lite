@@ -1,14 +1,14 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Loader } from "../../../../components/Loader";
-import { Modal } from "../../../../components/modals";
-import { useCloudProvider } from "../../../../core/cloud/useCloudProvider";
-import { useFile, useFileActions } from "../../../../core/context/dataContexts";
-import { getFilename } from "../../../../core/file/utils";
-import { ModalProps } from "../../../../core/modals/types";
-import { useNotifications } from "../../../../core/notifications";
-import { useConnectedUser } from "../../../../core/user";
+import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
+import { useFile, useFileActions } from "../../../core/context/dataContexts";
+import { getFilename } from "../../../core/file/utils";
+import { ModalProps } from "../../../core/modals/types";
+import { useNotifications } from "../../../core/notifications";
+import { useConnectedUser } from "../../../core/user";
+import { Loader } from "../../Loader";
+import { Modal } from "../../modals";
 
 export const SaveCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();

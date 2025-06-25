@@ -1,9 +1,9 @@
 import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Modal } from "../../../components/modals";
-import { ModalProps } from "../../../core/modals/types";
-import { useNotifications } from "../../../core/notifications";
+import { ModalProps } from "../../core/modals/types";
+import { useNotifications } from "../../core/notifications";
+import { Modal } from "../modals";
 
 const ConfirmModal: FC<
   ModalProps<{

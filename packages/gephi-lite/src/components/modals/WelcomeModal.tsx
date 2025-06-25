@@ -3,22 +3,22 @@ import { useTranslation } from "react-i18next";
 import { FaRegFolderOpen } from "react-icons/fa";
 import { ImFileEmpty } from "react-icons/im";
 
-import { version } from "../../../../package.json";
-import GephiLogo from "../../../assets/gephi-logo.svg?react";
-import { Loader } from "../../../components/Loader";
-import LocalSwitcher from "../../../components/LocalSwitcher";
-import { ThemeSwicther } from "../../../components/ThemeSwitcher";
-import { GitHubIcon } from "../../../components/common-icons";
-import { Modal } from "../../../components/modals";
-import { useFile, useFileActions, useGraphDatasetActions } from "../../../core/context/dataContexts";
-import { useModal } from "../../../core/modals";
-import { ModalProps } from "../../../core/modals/types";
-import { useNotifications } from "../../../core/notifications";
-import { useConnectedUser } from "../../../core/user";
+import { version } from "../../../package.json";
+import GephiLogo from "../../assets/gephi-logo.svg?react";
+import { useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { useModal } from "../../core/modals";
+import { ModalProps } from "../../core/modals/types";
+import { useNotifications } from "../../core/notifications";
+import { useConnectedUser } from "../../core/user";
+import { Loader } from "../Loader";
+import LocalSwitcher from "../LocalSwitcher";
+import { ThemeSwicther } from "../ThemeSwitcher";
+import { GitHubIcon } from "../common-icons";
+import { Modal } from "../modals";
 import ConfirmModal from "./ConfirmModal";
-import { CloudFileModal } from "./open/CloudFileModal";
-import { LocalFileModal } from "./open/LocalFileModal";
-import { RemoteFileModal } from "./open/RemoteFileModal";
+import { OpenCloudFileModal } from "./open/CloudFileModal";
+import { OpenLocalFileModal } from "./open/LocalFileModal";
+import { OpenRemoteFileModal } from "./open/RemoteFileModal";
 
 const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 
@@ -100,7 +100,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                   className="btn btn-sm btn-outline-dark"
                   title={t(`graph.open.github.title`).toString()}
                   onClick={() => {
-                    openModal({ component: CloudFileModal, arguments: {} });
+                    openModal({ component: OpenCloudFileModal, arguments: {} });
                   }}
                 >
                   <FaRegFolderOpen className="me-1" />
@@ -113,7 +113,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="btn btn-sm btn-outline-dark"
                 title={t(`graph.open.local.title`).toString()}
                 onClick={() => {
-                  openModal({ component: LocalFileModal, arguments: {} });
+                  openModal({ component: OpenLocalFileModal, arguments: {} });
                 }}
               >
                 <FaRegFolderOpen className="me-1" />
@@ -125,7 +125,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="btn btn-sm btn-outline-dark"
                 title={t(`graph.open.remote.title`).toString()}
                 onClick={() => {
-                  openModal({ component: RemoteFileModal, arguments: {} });
+                  openModal({ component: OpenRemoteFileModal, arguments: {} });
                 }}
               >
                 <FaRegFolderOpen className="me-1" />

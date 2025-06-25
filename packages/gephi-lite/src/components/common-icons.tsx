@@ -1,28 +1,58 @@
 import { IconType } from "react-icons";
-import { BiNetworkChart } from "react-icons/bi";
-import { BsCircle, BsCodeSlash, BsFillPlayFill, BsGithub, BsPalette, BsSearch, BsSlashLg } from "react-icons/bs";
+import { BsCircle, BsCodeSlash, BsFillPlayFill, BsGithub, BsSlashLg } from "react-icons/bs";
 import { BsExclamationTriangle } from "react-icons/bs";
-import { GrOverview, GrScorecard } from "react-icons/gr";
+import { GrOverview } from "react-icons/gr";
 import { ImFilesEmpty } from "react-icons/im";
-import { IoSettingsOutline } from "react-icons/io5";
-import { MdClose, MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
-import { RiFilterFill } from "react-icons/ri";
-import { TbCircles } from "react-icons/tb";
+import { MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
+import {
+  PiArrowSquareOut,
+  PiCaretDown,
+  PiCaretLeft,
+  PiCaretRight,
+  PiCaretUp,
+  PiChartBar,
+  PiCheck,
+  PiCircleHalf,
+  PiCircleHalfFill,
+  PiFunnel,
+  PiGear,
+  PiGraph,
+  PiGraphFill,
+  PiMagnifyingGlass,
+  PiMoonStars,
+  PiMoonStarsFill,
+  PiPalette,
+  PiPolygon,
+  PiSun,
+  PiSunFill,
+  PiTable,
+  PiTableFill,
+  PiX,
+} from "react-icons/pi";
 
 import { ItemType } from "../core/types";
 
-export const GraphIcon = BiNetworkChart;
-export const StatisticsIcon = GrScorecard;
-export const AppearanceIcon = BsPalette;
-export const FiltersIcon = RiFilterFill;
-export const LayoutsIcon = TbCircles;
+export const GraphIcon = PiGraph;
+export const GraphIconFill = PiGraphFill;
+export const DataLaboratoryIcon = PiTable;
+export const DataLaboratoryIconFill = PiTableFill;
+export const CaretDownIcon = PiCaretDown;
+export const CaretUpIcon = PiCaretUp;
+export const CaretLeftIcon = PiCaretLeft;
+export const CaretRightIcon = PiCaretRight;
+export const AppearanceIcon = PiPalette;
+export const FiltersIcon = PiFunnel;
+export const StatisticsIcon = PiChartBar;
+export const LayoutsIcon = PiPolygon;
+export const ExternalLink = PiArrowSquareOut;
+
 export const FileIcon = ImFilesEmpty;
 export const GitHubIcon = BsGithub;
 export const SingInIcon = MdLogin;
 export const SignOutIcon = MdLogout;
 export const ContextIcon = GrOverview;
 export const RetryIcon = MdOutlineRefresh;
-export const SettingsIcon = IoSettingsOutline;
+export const SettingsIcon = PiGear;
 export const DangerIcon = BsExclamationTriangle;
 
 export const NodeIcon = BsCircle;
@@ -35,5 +65,12 @@ export const ItemIcons: Record<ItemType, IconType> = {
 export const CodeEditorIcon = BsCodeSlash;
 export const SaveIcon = MdOutlineSaveAlt;
 export const RunIcon = BsFillPlayFill;
-export const CloseIcon = MdClose;
-export const SearchIcon = BsSearch;
+export const CloseIcon = PiX;
+export const SearchIcon = PiMagnifyingGlass;
+export const CheckedIcon = PiCheck;
+export const DarkThemeIcon = PiMoonStars;
+export const DarkThemeSelectedIcon = PiMoonStarsFill;
+export const LightThemeIcon = PiSun;
+export const LightThemeSelectedIcon = PiSunFill;
+export const AutoThemeIcon = PiCircleHalf;
+export const AutoThemeSelectedIcon = PiCircleHalfFill;

@@ -1,41 +1,66 @@
-import { FC } from "react";
-import { MdContrast, MdDarkMode, MdLightMode } from "react-icons/md";
+import { FC, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { usePreferences, usePreferencesActions } from "../core/context/dataContexts";
-import { Preferences } from "../core/preferences/types";
-import Tooltip from "./Tooltip";
+import Dropdown from "./Dropdown";
+import {
+  AutoThemeIcon,
+  AutoThemeSelectedIcon,
+  CheckedIcon,
+  DarkThemeIcon,
+  DarkThemeSelectedIcon,
+  LightThemeIcon,
+  LightThemeSelectedIcon,
+} from "./common-icons";
 
 export const ThemeSwicther: FC<unknown> = () => {
   const { theme } = usePreferences();
   const { changeTheme } = usePreferencesActions();
+  const { t } = useTranslation();
+
+  const themeOptions = useMemo(
+    () => [
+      {
+        label: (
+          <span>
+            {theme === "auto" ? <AutoThemeSelectedIcon /> : <AutoThemeIcon />}
+            <span className="mx-1">{t("settings.theme.auto")}</span>
+            {theme === "auto" && <CheckedIcon className="float-end" />}
+          </span>
+        ),
+        onClick: () => changeTheme("auto"),
+      },
+      {
+        label: (
+          <span>
+            {theme === "light" ? <LightThemeSelectedIcon /> : <LightThemeIcon />}
+            <span className="mx-1">{t("settings.theme.light")}</span>
+            {theme === "light" && <CheckedIcon className="float-end" />}
+          </span>
+        ),
+        onClick: () => changeTheme("light"),
+      },
+      {
+        label: (
+          <span>
+            {theme === "dark" ? <DarkThemeIcon /> : <DarkThemeIcon />}
+            <span className="mx-1">{t("settings.theme.dark")}</span>
+            {theme === "dark" && <CheckedIcon className="float-end" />}
+          </span>
+        ),
+        onClick: () => changeTheme("dark"),
+      },
+    ],
+    [t, theme, changeTheme],
+  );
+
   return (
-    <Tooltip closeOnClickContent attachment="top middle" targetAttachment="bottom middle">
-      <button className="btn p-0 fs-4">
-        {theme === "auto" && <MdContrast />}
-        {theme === "light" && <MdLightMode />}
-        {theme === "dark" && <MdDarkMode />}
+    <Dropdown options={themeOptions}>
+      <button className="btn dropdown-toggle">
+        {theme === "auto" && <AutoThemeSelectedIcon />}
+        {theme === "light" && <LightThemeSelectedIcon />}
+        {theme === "dark" && <DarkThemeSelectedIcon />}
       </button>
-      <div className="dropdown-menu show over-modal position-relative">
-        {(["auto", "light", "dark"] as Preferences["theme"][]).map((theme) => (
-          <button key={theme} className="dropdown-item" onClick={() => changeTheme(theme)}>
-            {theme === "auto" && (
-              <span>
-                <MdContrast /> Auto
-              </span>
-            )}
-            {theme === "light" && (
-              <span>
-                <MdLightMode /> Light
-              </span>
-            )}
-            {theme === "dark" && (
-              <span>
-                <MdDarkMode /> Dark
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-    </Tooltip>
+    </Dropdown>
   );
 };

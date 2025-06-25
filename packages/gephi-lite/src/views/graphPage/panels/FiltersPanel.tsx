@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import GraphFilters from "../../components/GraphFilters";
-import { InformationTooltip } from "../../components/InformationTooltip";
-import { FiltersIcon } from "../../components/common-icons";
+import GraphFilters from "../../../components/GraphFilters";
+import { InformationTooltip } from "../../../components/InformationTooltip";
+import { FiltersIcon } from "../../../components/common-icons";
 
 export const FiltersPanel: FC = () => {
   const { t } = useTranslation();

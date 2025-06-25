@@ -1,202 +1,142 @@
 import cx from "classnames";
-import { isNil } from "lodash";
-import { ComponentType, FC, ReactNode, useMemo, useState } from "react";
+import { type ComponentType, FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsFillInfoSquareFill, BsX } from "react-icons/bs";
-import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
+import type { IconType } from "react-icons";
 
-import GephiLogo from "../../assets/gephi-logo.svg?react";
-import {
-  AppearanceIcon,
-  FileIcon,
-  FiltersIcon,
-  GraphIcon,
-  LayoutsIcon,
-  StatisticsIcon,
-} from "../../components/common-icons";
-import { UserAvatar } from "../../components/user/UserAvatar";
-import { config } from "../../config";
-import { useFilters, useSelection } from "../../core/context/dataContexts";
-import { useModal } from "../../core/modals";
+import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
+import GraphFilters from "../../components/GraphFilters";
+import { GraphSearchSelection } from "../../components/GraphSearchSelection";
+import { GraphSummary } from "../../components/GraphSummary";
+import { type MenuItem, NavMenu } from "../../components/NavMenu";
+import { AppearanceIcon, FiltersIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
+import { useSelection } from "../../core/context/dataContexts";
+import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout } from "../layout";
-import { AppearancePanel } from "./AppearancePanel";
-import { ContextPanel } from "./ContextPanel";
-import { FilePanel } from "./FilePanel";
-import { FiltersPanel } from "./FiltersPanel";
-import { GraphDataPanel } from "./GraphDataPanel";
 import { GraphRendering } from "./GraphRendering";
-import { LayoutsPanel } from "./LayoutsPanel";
-import { StatisticsPanel } from "./StatisticsPanel";
-import { UserSettingsPanel } from "./UserSettingsPanel";
-import { WelcomeModal } from "./modals/WelcomeModal";
+import { Selection } from "./Selection";
+import { StatisticsPanel } from "./panels/StatisticsPanel";
+import { LayoutsPanel } from "./panels/layouts/LayoutPanel";
 
-type Tool = {
-  type: "tool";
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-  panel: ComponentType;
-  badge?: {
-    content: ReactNode;
-    status?: "danger" | "warning" | "success" | "secondary";
-  };
-};
-type Button = { type: "button"; label: string; icon: ComponentType<{ className?: string }>; onClick: () => void };
+type ToolCommon = { id: string; i18nKey: string };
+type ToolCommonWithIcon = ToolCommon & { icon: IconType };
+type Tool = ToolCommon & { panel: ComponentType };
+type ToolSection = ToolCommonWithIcon & ({ children: Tool[] } | { panel: ComponentType });
 
-const GephiLiteButton: FC = () => {
-  return <GephiLogo style={{ height: "2em" }} />;
-};
+const TOOL_MENU: ToolSection[] = [
+  {
+    id: "layout",
+    i18nKey: "layouts.title",
+    icon: LayoutsIcon,
+    children: LAYOUTS.map((layout) => ({
+      id: `layout-${layout.id}`,
+      i18nKey: `layouts.${layout.id}.title`,
+      panel: () => <LayoutsPanel layout={layout} />,
+    })),
+  },
+  {
+    id: "appearance",
+    i18nKey: "appearance.title",
+    icon: AppearanceIcon,
+    children: [
+      {
+        id: "appearance-nodes",
+        i18nKey: "appearance.menu.nodes",
+        panel: () => <GraphItemAppearance itemType="nodes" />,
+      },
+      {
+        id: "appearance-edges",
+        i18nKey: "appearance.menu.edges",
+        panel: () => <GraphItemAppearance itemType="edges" />,
+      },
+      {
+        id: "appearance-labels",
+        i18nKey: "appearance.menu.labels",
+        panel: () => <div>TODO</div>,
+      },
+      {
+        id: "appearance-background",
+        i18nKey: "appearance.menu.background",
+        panel: () => <GraphGraphAppearance />,
+      },
+    ],
+  },
+  {
+    id: "filters",
+    i18nKey: "filters.title",
+    icon: FiltersIcon,
+    panel: () => <GraphFilters />,
+  },
+  {
+    id: "statistics",
+    i18nKey: "statistics.title",
+    icon: StatisticsIcon,
+    panel: StatisticsPanel,
+  },
+];
 
 export const GraphPage: FC = () => {
-  const [contextOpened, setContextOpened] = useState<boolean>(window.innerWidth >= 1200);
   const { t } = useTranslation();
-  const { openModal } = useModal();
-  const filterState = useFilters();
-  const selection = useSelection();
+  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
+  const { items } = useSelection();
 
-  const TOOLS: (Tool | Button | { type: "space" } | { type: "filler" })[] = useMemo(
-    () => [
-      {
-        type: "button",
-        label: t("gephi-lite.title"),
-        icon: GephiLiteButton,
-        onClick: () => {
-          openModal({
-            component: WelcomeModal,
-            arguments: {},
-          });
-        },
-      },
-      { type: "space" },
-      { type: "tool", label: t("file.title"), icon: FileIcon, panel: FilePanel },
-      { type: "tool", label: t("graph.title"), icon: GraphIcon, panel: GraphDataPanel },
-      { type: "tool", label: t("statistics.title"), icon: StatisticsIcon, panel: StatisticsPanel },
-      { type: "space" },
-      { type: "tool", label: t("appearance.title"), icon: AppearanceIcon, panel: AppearancePanel },
-      {
-        type: "tool",
-        label: t("filters.title"),
-        icon: FiltersIcon,
-        panel: FiltersPanel,
-        badge: {
-          content:
-            filterState.future.length + filterState.past.length
-              ? filterState.future.length + filterState.past.length
-              : null,
-          status: filterState.past.length === 0 && filterState.future.length > 0 ? "secondary" : "warning",
-        },
-      },
-      {
-        type: "tool",
-        label: t("layouts.title"),
-        icon: LayoutsIcon,
-        panel: LayoutsPanel,
-      },
-      { type: "filler" },
-      {
-        type: "button",
-        label: t("gephi-lite.info"),
-        icon: BsFillInfoSquareFill,
-        onClick: () => {
-          window.open(config.website_url, "_blank", "noopener");
-        },
-      },
-      { type: "tool", label: t("settings.title"), icon: UserAvatar, panel: UserSettingsPanel },
-    ],
-    [openModal, t, filterState],
+  const toolsMenu = useMemo(
+    () =>
+      TOOL_MENU.map((item) => {
+        if ("children" in item) {
+          return {
+            id: item.id,
+            label: t(item.i18nKey),
+            icon: item.icon,
+            children: item.children.map((subItem) => ({
+              id: subItem.id,
+              label: t(subItem.i18nKey),
+              onClick: () => setSelectedTool({ id: subItem.id, panel: subItem.panel }),
+            })),
+          };
+        } else {
+          return {
+            id: item.id,
+            label: t(item.i18nKey),
+            icon: item.icon,
+            onClick: () => setSelectedTool({ id: item.id, panel: item.panel }),
+          };
+        }
+      }) as MenuItem[],
+    [t],
   );
 
-  const [toolIndex, setToolIndex] = useState<number | null>(null);
-  const tool = useMemo(() => {
-    if (toolIndex === null) return null;
-    const toolAt = TOOLS[toolIndex];
-    return toolAt.type === "tool" ? toolAt : null;
-  }, [TOOLS, toolIndex]);
-
   return (
-    <Layout>
-      <div id="graph-page">
-        <div className="toolbar d-flex flex-column pt-2 pb-1">
-          {TOOLS.map((t, i) =>
-            t.type === "space" ? (
-              <br key={i} className="my-3" />
-            ) : t.type === "filler" ? (
-              <div key={i} className="flex-grow-1" />
-            ) : (
-              <button
-                key={i}
-                title={t.label}
-                type="button"
-                className={cx("d-flex justify-content-center fs-5 position-relative", toolIndex === i && "active")}
-                onClick={() => {
-                  if (t.type === "tool") {
-                    if (t === tool) setToolIndex(null);
-                    else setToolIndex(i);
-                  } else if (t.type === "button") {
-                    t.onClick();
-                  }
-                }}
-              >
-                <t.icon />
-                {t.type === "tool" && !isNil(t.badge) && !isNil(t.badge.content) && (
-                  <span
-                    style={{ fontSize: "10px !important" }}
-                    className={cx(
-                      "position-absolute translate-middle badge rounded-pill",
-                      t.badge.status && `bg-${t.badge.status}`,
-                    )}
-                  >
-                    {t.badge.content}
-                  </span>
-                )}
-              </button>
-            ),
-          )}
-        </div>
-        <div className={cx("left-panel-wrapper", tool && "deployed")}>
-          {tool && (
-            <div className="left-panel border-end">
-              <button
-                className="btn btn-icon btn-close-panel"
-                aria-label="close panel"
-                onClick={() => setToolIndex(null)}
-              >
-                <BsX />
-              </button>
-              <tool.panel />
-            </div>
-          )}
-        </div>
-        <div className="filler">
-          <div className="stage">
-            <GraphRendering />
+    <Layout id="graph-page">
+      {/* Menu panel on left*/}
+      <div className="left-panel">
+        <GraphSummary className="px-3 mb-3" />
+        <GraphSearchSelection className="mb-3 mx-1" />
+        <NavMenu className="mx-2" menu={toolsMenu} selected={selectedTool?.id} />
+      </div>
+
+      {/* Extended left panel */}
+      <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
+        {selectedTool && (
+          <>
             <button
               type="button"
-              className="right-panel-btn d-flex justify-content-center align-items-center"
-              onClick={() => setContextOpened((v) => !v)}
-            >
-              {contextOpened ? <HiChevronDoubleRight /> : <HiChevronDoubleLeft />}
-              {!!selection.items.size && (
-                <span className="position-absolute translate-middle badge rounded-pill bg-warning">
-                  {selection.items.size}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-        <div className={cx("right-panel-wrapper", contextOpened && "deployed")}>
-          {contextOpened && (
-            <div className="right-panel border-start">
-              <ContextPanel />
-              <button
-                type="button"
-                className="right-panel-btn  justify-content-center align-items-center"
-                onClick={() => setContextOpened((v) => !v)}
-              >
-                <HiChevronDoubleRight />
-              </button>
-            </div>
-          )}
-        </div>
+              className="btn-close float-end"
+              aria-label="Close"
+              onClick={() => setSelectedTool(undefined)}
+            ></button>
+            <selectedTool.panel />
+          </>
+        )}
+      </div>
+
+      {/* Graph viz */}
+      <div className="filler">
+        <GraphRendering />
+      </div>
+
+      {/* Right panel */}
+      <div className={cx("right-panel-wrapper p-3", items.size > 0 && "deployed")}>
+        {items.size > 0 && <Selection />}
       </div>
     </Layout>
   );

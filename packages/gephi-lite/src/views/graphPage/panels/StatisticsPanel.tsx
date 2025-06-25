@@ -6,21 +6,21 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { GroupBase } from "react-select";
 
-import { InformationTooltip } from "../../components/InformationTooltip";
-import MessageTooltip from "../../components/MessageTooltip";
-import { CodeEditorIcon, StatisticsIcon } from "../../components/common-icons";
-import { Select } from "../../components/forms/Select";
-import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../components/forms/TypedInputs";
-import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
-import { FieldModel } from "../../core/graph/types";
-import { computeMetric } from "../../core/metrics";
-import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
-import { Metric, MetricScriptParameter } from "../../core/metrics/types";
-import { useModal } from "../../core/modals";
-import { useNotifications } from "../../core/notifications";
-import { sessionAtom } from "../../core/session";
-import { ItemType } from "../../core/types";
-import { FunctionEditorModal } from "./modals/FunctionEditorModal";
+import { InformationTooltip } from "../../../components/InformationTooltip";
+import MessageTooltip from "../../../components/MessageTooltip";
+import { CodeEditorIcon, StatisticsIcon } from "../../../components/common-icons";
+import { Select } from "../../../components/forms/Select";
+import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../../components/forms/TypedInputs";
+import { FunctionEditorModal } from "../../../components/modals/FunctionEditorModal";
+import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../../core/context/dataContexts";
+import { FieldModel } from "../../../core/graph/types";
+import { computeMetric } from "../../../core/metrics";
+import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../../core/metrics/collections";
+import { Metric, MetricScriptParameter } from "../../../core/metrics/types";
+import { useModal } from "../../../core/modals";
+import { useNotifications } from "../../../core/notifications";
+import { sessionAtom } from "../../../core/session";
+import { ItemType } from "../../../core/types";
 
 type MetricOption = {
   // id/name of the metric
