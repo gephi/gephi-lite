@@ -1,6 +1,5 @@
 import cx from "classnames";
 import { FC, ReactNode, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 import { getItemAttributes } from "../core/appearance/utils";
 import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
@@ -16,10 +15,8 @@ export const EdgeComponent: FC<{
   directed?: boolean;
   className?: string;
 }> = ({ label, color, source, target, hidden, directed, className }) => {
-  const { t } = useTranslation();
-
   return (
-    <div className={cx("d-flex flex-column", className)}>
+    <div className={cx("d-flex flex-column mw-100", className)}>
       <div className="text-ellipsis small">
         <NodeComponent {...source} />
       </div>
@@ -28,9 +25,11 @@ export const EdgeComponent: FC<{
           <span className={cx(hidden ? "dotted" : "dash", "edge-body")} style={{ borderColor: color }} />{" "}
           {directed && <span className="edge-arrow" style={{ borderTopColor: color }} />}
         </div>
-        <span className={cx("text-ellipsis my-1", hidden && "text-muted flex-grow-1", !label && "fst-italic")}>
-          {label || t("selection.edge_no_label")}
-        </span>
+        {label && (
+          <span className={cx("text-ellipsis my-1", hidden && "text-muted flex-grow-1", !label && "fst-italic")}>
+            {label}
+          </span>
+        )}
       </div>
       <div className="text-ellipsis small">
         <NodeComponent {...target} />

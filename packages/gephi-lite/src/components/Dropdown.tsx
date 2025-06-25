@@ -12,8 +12,9 @@ type OptionCommon = {
 
 type OptionLink = OptionCommon & { url: string };
 type OptionAction = OptionCommon & { onClick: () => void | Promise<void> };
+type OptionText = Omit<OptionCommon, "type"> & { type: "text" };
 type OptionDivider = { type: "divider" };
-export type Option = OptionLink | OptionAction | OptionDivider;
+export type Option = OptionLink | OptionAction | OptionText | OptionDivider;
 
 const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: target, options }) => {
   return (
@@ -23,6 +24,7 @@ const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: ta
         {options.map((option, i) => (
           <Fragment key={i}>
             {option.type === "divider" && <div className="dropdown-divider" />}
+            {option.type === "text" && <div className="dropdown-item-text">{option.label}</div>}
             {"url" in option && (
               <a
                 className={cx("dropdown-item", option.disabled && "disabled")}
