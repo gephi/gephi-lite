@@ -6,8 +6,8 @@ import { ScrollSync } from "react-scroll-sync";
 import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { doesItemMatch } from "../../utils/search";
 import { Layout } from "../layout";
-import { DataTable } from "./DataTable";
 import { TopBar } from "./TopBar";
+import { DataTable } from "./dataTable/DataTable";
 
 const Panel: FC<{ collapsed?: boolean; children: [ReactNode, ReactNode] }> = ({
   collapsed,

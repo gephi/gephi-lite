@@ -8,7 +8,7 @@ import {
 import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
 import EventEmitter from "events";
 import { Attributes } from "graphology-types";
-import { forEach, isNil, isString, keys, last, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keys, last, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -69,6 +69,93 @@ const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
     };
   };
 };
+const moveFieldModel: Producer<GraphDataset, [ItemType, string, number]> = (
+  type: ItemType,
+  id: string,
+  offset: number,
+) => {
+  return (state) => {
+    const key = type === "nodes" ? "nodeFields" : "edgeFields";
+    const newFields: FieldModel[] = state[key].slice(0);
+    const currentIndex = newFields.findIndex((f) => f.id === id);
+    if (currentIndex === -1) return state;
+
+    const newIndex = clamp(currentIndex + offset, 0, newFields.length - 1);
+    // Extract the field:
+    const [field] = newFields.splice(currentIndex, 1);
+    // Insert it at the wanted position:
+    newFields.splice(newIndex, 0, field);
+
+    return {
+      ...state,
+      [key]: newFields,
+    };
+  };
+};
+const createFieldModel: Producer<GraphDataset, [FieldModel, number?]> = (fieldModel, index?: number) => {
+  return (state) => {
+    const key = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
+    const newFields: FieldModel[] = state[key].slice(0);
+    const newIndex = clamp(index ?? newFields.length - 1, 0, newFields.length - 1);
+
+    // Insert it at the wanted position:
+    newFields.splice(newIndex, 0, fieldModel);
+    return {
+      ...state,
+      [key]: newFields,
+    };
+  };
+};
+const deleteFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
+  return (state) => {
+    const type = fieldModel.itemType;
+    const dataKey = type === "nodes" ? "nodeData" : "edgeData";
+    const fieldsKey = type === "nodes" ? "nodeFields" : "edgeFields";
+    const newFields: FieldModel[] = state[fieldsKey].filter((f) => f.id !== fieldModel.id);
+
+    return {
+      ...state,
+      [fieldsKey]: newFields,
+      [dataKey]: mapValues(state[dataKey], (data) => omit(data, fieldModel.id)),
+    };
+  };
+};
+const duplicateFieldModel: Producer<GraphDataset, [FieldModel, string?, number?]> = (fieldModel, id, index) => {
+  const type = fieldModel.itemType;
+  if (fieldModel.id === id)
+    throw new Error(`The new ${type} field model id must be different from the existing one "${id}"`);
+
+  return (state) => {
+    const dataKey = type === "nodes" ? "nodeData" : "edgeData";
+    const fieldsKey = type === "nodes" ? "nodeFields" : "edgeFields";
+    const fields = new Set(state[fieldsKey].map((f) => f.id));
+    if (isNil(id)) {
+      let i = 1;
+      let newId = `${fieldModel.id} (${i})`;
+      while (fields.has(newId)) {
+        i++;
+        newId = `${fieldModel.id} (${i})`;
+      }
+      id = newId;
+    }
+
+    const newFieldModel = {
+      ...fieldModel,
+      id,
+    };
+    const newFields: FieldModel[] = state[fieldsKey].slice(0);
+    if (fields.has(id)) throw new Error(`A ${type} field model with id "${id}" already exists`);
+
+    const newIndex = clamp(index ?? newFields.findIndex((f) => f.id === fieldModel.id) + 1, 0, newFields.length - 1);
+    newFields.splice(newIndex, 0, newFieldModel);
+    return {
+      ...state,
+      [fieldsKey]: newFields,
+      [dataKey]: mapValues(state[dataKey], (data) => ({ ...data, [id as string]: data[fieldModel.id] })),
+    };
+  };
+};
+
 const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = (positions) => {
   return (state) => ({
     ...state,
@@ -254,17 +341,28 @@ export const sigmaGraphAtom = derivedAtom(
 );
 
 export const graphDatasetActions = {
+  // Meta:
   setGraphMeta: producerToAction(setGraphMeta, graphDatasetAtom),
   editGraphMeta: producerToAction(editGraphMeta, graphDatasetAtom),
+
+  // Graph model:
   setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
-  setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
-  setNodePositions: producerToAction(setNodePositions, graphDatasetAtom),
+  moveFieldModel: producerToAction(moveFieldModel, graphDatasetAtom),
+  createFieldModel: producerToAction(createFieldModel, graphDatasetAtom),
+  deleteFieldModel: producerToAction(deleteFieldModel, graphDatasetAtom),
+  duplicateFieldModel: producerToAction(duplicateFieldModel, graphDatasetAtom),
+
+  // Graph items:
   createNode: producerToAction(createNode, graphDatasetAtom),
   createEdge: producerToAction(createEdge, graphDatasetAtom),
   updateNode: producerToAction(updateNode, graphDatasetAtom),
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
   deleteItems: multiProducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
+
+  // Larger actions:
+  setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),
+  setNodePositions: producerToAction(setNodePositions, graphDatasetAtom),
   resetGraph: multiProducerToAction(resetGraph, [filtersAtom, appearanceAtom, selectionAtom, graphDatasetAtom]),
 };
 
