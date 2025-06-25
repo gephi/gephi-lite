@@ -30,7 +30,11 @@ const TableBodyRow: FC<{
     >
       {row.getVisibleCells().map((cell) => {
         return (
-          <td key={cell.id} style={{ ...getCommonPinningStyles(cell.column) }}>
+          <td
+            key={cell.id}
+            style={{ ...getCommonPinningStyles(cell.column) }}
+            className={cx(!(cell.column.id in SPECIFIC_COLUMNS) && "editable")}
+          >
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </td>
         );

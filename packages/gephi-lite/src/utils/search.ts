@@ -4,6 +4,8 @@ export function normalize(str: string): string {
   return str.toLowerCase().trim();
 }
 
+const SEARCHABLE_TYPES = new Set<FieldModel["type"]>(["text", "category", "keywords"]);
+
 export function doesItemMatch(
   id: string,
   label: string | null | undefined,
@@ -17,8 +19,8 @@ export function doesItemMatch(
     normalize(id).includes(normalizedQuery) ||
     (label && normalize(label).includes(normalizedQuery)) ||
     fields.some(
-      ({ qualitative, id }) =>
-        !!qualitative && typeof data[id] === "string" && normalize(data[id]).includes(normalizedQuery),
+      ({ type, id }) =>
+        SEARCHABLE_TYPES.has(type) && typeof data[id] === "string" && normalize(data[id]).includes(normalizedQuery),
     )
   );
 }

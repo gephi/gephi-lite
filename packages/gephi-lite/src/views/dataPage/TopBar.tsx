@@ -3,6 +3,7 @@ import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { PiMagnifyingGlass, PiX } from "react-icons/pi";
 
+import ConfirmModal from "../../components/modals/ConfirmModal";
 import {
   useDataTable,
   useDataTableActions,
@@ -10,7 +11,6 @@ import {
   useSelection,
 } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
-import ConfirmModal from "../graphPage/modals/ConfirmModal";
 
 const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) => void }> = ({
   type,
