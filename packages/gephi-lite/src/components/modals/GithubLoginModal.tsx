@@ -3,11 +3,11 @@ import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BsClipboard, BsGithub } from "react-icons/bs";
 
-import { Loader, Spinner } from "../../../components/Loader";
-import { Modal } from "../../../components/modals";
-import { ModalProps } from "../../modals/types";
-import { useNotifications } from "../../notifications";
-import { useGithubAuth } from "./useGithubAuth";
+import { useGithubAuth } from "../../core/cloud/github/useGithubAuth";
+import { ModalProps } from "../../core/modals/types";
+import { useNotifications } from "../../core/notifications";
+import { Loader, Spinner } from "../Loader";
+import { Modal } from "../modals";
 
 export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
@@ -24,7 +24,6 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
 
   useEffect(() => {
     if (user) {
-      // TODO: SAVE USER IN THE CONTEXT
       submit({});
     }
   }, [user, submit]);

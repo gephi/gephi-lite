@@ -8,12 +8,12 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 
-import { Modal } from "../../../../components/modals";
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
-import { FieldModel, NodeRenderingData } from "../../../../core/graph/types";
-import { ModalProps } from "../../../../core/modals/types";
-import { useNotifications } from "../../../../core/notifications";
-import { Scalar } from "../../../../core/types";
+import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
+import { FieldModel, NodeRenderingData } from "../../../core/graph/types";
+import { ModalProps } from "../../../core/modals/types";
+import { useNotifications } from "../../../core/notifications";
+import { Scalar } from "../../../core/types";
+import { Modal } from "../../modals";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
   id?: string;

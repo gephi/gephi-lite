@@ -10,8 +10,8 @@ import { ScriptFilterType } from "../../core/filters/types";
 import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
-import { FunctionEditorModal } from "../../views/graphPage/modals/FunctionEditorModal";
 import { CodeEditorIcon } from "../common-icons";
+import { FunctionEditorModal } from "../modals/FunctionEditorModal";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const nodeFilterCustomFn = new Function(`return (

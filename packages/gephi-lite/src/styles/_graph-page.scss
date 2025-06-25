@@ -46,11 +46,11 @@
     }
   }
 
-  .toolbar,
   .filler,
   .left-panel-wrapper,
   .right-panel-wrapper {
     flex-shrink: 0;
+    background-color: var(--bs-body-bg);
   }
 
   .toolbar {
@@ -79,7 +79,7 @@
     width: 0;
     overflow-x: hidden;
     transition: 0.3s width;
-    background: var(--panels-bg);
+    background: var(--bs-body-bg);
     position: relative;
   }
 
@@ -89,7 +89,7 @@
   .left-panel,
   .right-panel {
     @include media-breakpoint-up(lg) {
-      width: 350px;
+      width: 256px;
     }
     @include media-breakpoint-down(lg) {
       width: 33vw;
@@ -158,25 +158,6 @@
     }
   }
 
-  .left-panel {
-    position: absolute;
-    right: 0;
-  }
-
-  .right-panel-btn {
-    border: none;
-    outline: none;
-    background: var(--toolbar-bg);
-    border-radius: $border-radius 0 0 $border-radius;
-    width: 2.5em;
-    height: 2.5em;
-    text-align: center;
-    font-size: $h5-font-size;
-
-    position: absolute;
-    top: 14px;
-    right: 0;
-  }
 
   .filler {
     flex-grow: 1;
@@ -185,14 +166,10 @@
   }
 
   .right-panel {
-    .btn-close-panel {
-      left: 0;
-    }
+    background-color: var(--bs-body-bg);
   }
   .left-panel {
-    .btn-close-panel {
-      right: 0;
-    }
+    background-color: var(--bs-body-bg);
   }
 
   // z-indexing management:
@@ -207,6 +184,7 @@
   }
   .toolbar,
   .sigma-controls,
+  .left-panel,
   .left-panel-wrapper,
   .right-panel-btn,
   .right-panel-wrapper {

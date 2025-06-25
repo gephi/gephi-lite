@@ -1,38 +1,50 @@
 import cx from "classnames";
-import { FC, ReactNode } from "react";
+import { FC, Fragment, ReactNode } from "react";
 
 import Tooltip from "./Tooltip";
 
-export type Option =
-  | {
-      type?: "option";
-      label: ReactNode;
-      title?: ReactNode;
-      onClick: () => void;
-      disabled?: boolean;
-    }
-  | { type: "divider" };
+type OptionCommon = {
+  type?: "option";
+  label: ReactNode;
+  title?: string;
+  disabled?: boolean;
+};
+
+type OptionLink = OptionCommon & { url: string };
+type OptionAction = OptionCommon & { onClick: () => void | Promise<void> };
+type OptionDivider = { type: "divider" };
+export type Option = OptionLink | OptionAction | OptionDivider;
 
 const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: target, options }) => {
   return (
     <Tooltip hoverable closeOnClickContent>
       {target}
       <div className="dropdown-menu show over-modal position-relative">
-        {options.map((option, i) =>
-          option.type === "divider" ? (
-            <div className="dropdown-divider" key={i} />
-          ) : (
-            <button
-              key={i}
-              className={cx("dropdown-item", option.disabled && "disabled")}
-              onClick={() => {
-                option.onClick();
-              }}
-            >
-              {option.label}
-            </button>
-          ),
-        )}
+        {options.map((option, i) => (
+          <Fragment key={i}>
+            {option.type === "divider" && <div className="dropdown-divider" />}
+            {"url" in option && (
+              <a
+                className={cx("dropdown-item", option.disabled && "disabled")}
+                href={option.url}
+                title={option.title}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {option.label}
+              </a>
+            )}
+            {"onClick" in option && (
+              <button
+                className={cx("dropdown-item", option.disabled && "disabled")}
+                title={option.title}
+                onClick={option.onClick}
+              >
+                {option.label}
+              </button>
+            )}
+          </Fragment>
+        ))}
       </div>
     </Tooltip>
   );

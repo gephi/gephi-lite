@@ -9,14 +9,14 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
 
-import { Select } from "../../../../components/forms/Select";
-import { Modal } from "../../../../components/modals";
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../../core/context/dataContexts";
-import { UIContext } from "../../../../core/context/uiContext";
-import { EdgeRenderingData, FieldModel } from "../../../../core/graph/types";
-import { ModalProps } from "../../../../core/modals/types";
-import { useNotifications } from "../../../../core/notifications";
-import { Scalar } from "../../../../core/types";
+import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
+import { UIContext } from "../../../core/context/uiContext";
+import { EdgeRenderingData, FieldModel } from "../../../core/graph/types";
+import { ModalProps } from "../../../core/modals/types";
+import { useNotifications } from "../../../core/notifications";
+import { Scalar } from "../../../core/types";
+import { Select } from "../../forms/Select";
+import { Modal } from "../../modals";
 
 interface NodeOption {
   label: string;

@@ -2,11 +2,11 @@ import fileSaver from "file-saver";
 import { FC, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Modal } from "../../../../components/modals";
-import { useAppearance, useSigmaAtom } from "../../../../core/context/dataContexts";
-import { ModalProps } from "../../../../core/modals/types";
-import { useNotifications } from "../../../../core/notifications";
-import { getGraphSnapshot } from "../../../../utils/sigma";
+import { useAppearance, useSigmaAtom } from "../../../core/context/dataContexts";
+import { ModalProps } from "../../../core/modals/types";
+import { useNotifications } from "../../../core/notifications";
+import { getGraphSnapshot } from "../../../utils/sigma";
+import { Modal } from "../../modals";
 
 export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();

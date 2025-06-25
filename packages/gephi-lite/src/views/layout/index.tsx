@@ -1,14 +1,23 @@
+import cx from "classnames";
 import { FC, PropsWithChildren } from "react";
 
 import { Modals } from "../../components/modals";
 import Notifications from "../../components/notifications";
+import { Header } from "./Header";
 
-export const Layout: FC<PropsWithChildren> = ({ children }) => {
+interface LayoutProps {
+  id?: string;
+  className?: string;
+}
+export const Layout: FC<PropsWithChildren<LayoutProps>> = ({ children, className, id }) => {
   return (
-    <div id="app-root">
-      <main>{children}</main>
+    <>
+      <Header />
+      <main id={id} className={cx("container-fluid", className)}>
+        {children}
+      </main>
       <Modals />
       <Notifications />
-    </div>
+    </>
   );
 };

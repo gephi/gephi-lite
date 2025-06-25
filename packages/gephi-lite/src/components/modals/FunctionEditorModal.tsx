@@ -2,11 +2,11 @@ import Editor, { Monaco } from "@monaco-editor/react";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CodeEditorIcon } from "../../../components/common-icons";
-import { Modal } from "../../../components/modals";
-import { usePreferences } from "../../../core/context/dataContexts";
-import { ModalProps } from "../../../core/modals/types";
-import { getAppliedTheme } from "../../../core/preferences/utils";
+import { usePreferences } from "../../core/context/dataContexts";
+import { ModalProps } from "../../core/modals/types";
+import { getAppliedTheme } from "../../core/preferences/utils";
+import { CodeEditorIcon } from "../common-icons";
+import { Modal } from "../modals";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 interface FunctionEditorModalProps<T = Function> {

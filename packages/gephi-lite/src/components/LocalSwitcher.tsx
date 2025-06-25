@@ -1,48 +1,40 @@
-import localeEmoji from "locale-emoji";
 import { toPairs } from "lodash";
-import { FC, ReactNode } from "react";
-import { HiMiniLanguage } from "react-icons/hi2";
+import { FC, useMemo } from "react";
 
 import { usePreferences, usePreferencesActions } from "../core/context/dataContexts";
 import { LOCALES } from "../locales/LOCALES";
-import Tooltip from "./Tooltip";
+import Dropdown from "./Dropdown";
+import { CheckedIcon } from "./common-icons";
 
-const DEFAULT_FLAG = <HiMiniLanguage className="fs-5" />;
-
-function getIcon(locale: string): ReactNode {
-  return locale === "dev" ? DEFAULT_FLAG : localeEmoji(locale) || DEFAULT_FLAG;
-}
 const AVAILABLE_LOCALES = toPairs(LOCALES)
   .filter(([key]) => import.meta.env.MODE === "development" || key !== "dev")
   .map(([key, locale]) => ({
     value: key,
-    label: (
-      <>
-        {getIcon(key)} {locale.label}
-      </>
-    ),
+    label: <>{locale.label}</>,
   }));
 
 const LocalSwitcher: FC = () => {
   const { locale } = usePreferences();
   const { changeLocale } = usePreferencesActions();
+
+  const localeOptions = useMemo(
+    () =>
+      AVAILABLE_LOCALES.map((l) => ({
+        label: (
+          <span>
+            <span className="me-1">{l.label}</span>
+            {l.value === locale && <CheckedIcon className="float-end" />}
+          </span>
+        ),
+        onClick: () => changeLocale(l.value),
+      })),
+    [locale, changeLocale],
+  );
+
   return (
-    <Tooltip closeOnClickContent attachment="top middle" targetAttachment="bottom middle">
-      <button className="btn p-0 fs-4">{getIcon(locale)}</button>
-      <div className="dropdown-menu show over-modal position-relative">
-        {AVAILABLE_LOCALES.map((option, i) => (
-          <button
-            key={i}
-            className="dropdown-item"
-            onClick={() => {
-              changeLocale(option.value);
-            }}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </Tooltip>
+    <Dropdown options={localeOptions}>
+      <button className="btn dropdown-toggle">{locale}</button>
+    </Dropdown>
   );
 };
 

@@ -144,11 +144,7 @@ export const GraphRendering: FC = () => {
   return (
     <>
       <SigmaContainer
-        className={cx(
-          "position-absolute inset-0",
-          !isReady && "visually-hidden",
-          (hoveredNode || hoveredEdge) && "cursor-pointer",
-        )}
+        className={cx(!isReady && "visually-hidden", (hoveredNode || hoveredEdge) && "cursor-pointer")}
         style={{ backgroundColor }}
         graph={sigmaGraph}
         settings={sigmaSettings}
@@ -166,9 +162,9 @@ export const GraphRendering: FC = () => {
           )}
           <MarqueeController />
         </div>
+        <InteractionsController />
+        <GraphCaptionLayer />
       </SigmaContainer>
-      <InteractionsController />
-      <GraphCaptionLayer />
     </>
   );
 };

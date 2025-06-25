@@ -6,6 +6,7 @@ import { ErrorComponent } from "../components/Error";
 import { MatomoProvider } from "../components/Matomo";
 import { DesignSystemPage } from "../designSystem/page";
 import { NotFoundPage } from "../views/NotFoundPage";
+import { DataLaboratoryPage } from "../views/dataLaboratoryPage";
 import { GraphPage } from "../views/graphPage";
 import { Initialize } from "./Initialize";
 import { AtomsContextsRoot } from "./context/dataContexts";
@@ -35,6 +36,7 @@ export const Root: FC = () => {
                 <Routes>
                   <Route path="/design-system" element={<DesignSystemPage />} />
                   <Route path="/" element={<GraphPage />} />
+                  <Route path="/data" element={<DataLaboratoryPage />} />
                   {/* Error pages: */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

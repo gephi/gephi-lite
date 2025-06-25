@@ -2,7 +2,7 @@ import { CirclePackLayout } from "./collection/circlePack";
 import { CircularLayout } from "./collection/circular";
 import { ForceLayout } from "./collection/force";
 import { ForceAtlas2Layout } from "./collection/forceAtlas2";
-import { NOverlapLayout } from "./collection/noverlap";
+import { NoverlapLayout } from "./collection/noverlap";
 import { RandomLayout } from "./collection/random";
 import { ScriptLayout } from "./collection/script";
 import { Layout } from "./types";
@@ -16,6 +16,6 @@ export const LAYOUTS: Array<Layout> = [
   CirclePackLayout,
   ForceAtlas2Layout,
   ForceLayout,
-  NOverlapLayout,
+  NoverlapLayout,
   ScriptLayout,
 ];

@@ -3,9 +3,9 @@ import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
+import { WelcomeModal } from "../components/modals/WelcomeModal";
 import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
-import { WelcomeModal } from "../views/graphPage/modals/WelcomeModal";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
 import { useFileActions, useGraphDatasetActions } from "./context/dataContexts";

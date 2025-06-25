@@ -8,9 +8,9 @@ import { useGraphDataset, useGraphDatasetActions } from "../../core/context/data
 import { FieldModelWithStats } from "../../core/graph/types";
 import { countExistingValues } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
-import ConfirmModal from "../../views/graphPage/modals/ConfirmModal";
 import { Toggle } from "../Toggle";
 import { EdgeIcon, NodeIcon } from "../common-icons";
+import ConfirmModal from "../modals/ConfirmModal";
 
 const FieldModelsComponent: FC<{ fields: FieldModelWithStats[] }> = ({ fields }) => {
   const { setFieldModel, deleteItemsAttribute } = useGraphDatasetActions();

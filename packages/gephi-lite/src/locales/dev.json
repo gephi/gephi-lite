@@ -11,7 +11,9 @@
   },
   "gephi-lite": {
     "title": "Gephi Lite",
-    "info": "More info on Gephi Lite"
+    "info": "More info on Gephi Lite",
+    "open_welcome_modal": "Open welcome modal",
+    "github_link": "Gephi Lite on github"
   },
   "error": {
     "title": "Error",
@@ -53,9 +55,6 @@
     "cannot_restore": "Your graph cannot be restored.",
     "restore_successful": "Your work graph has been restored."
   },
-  "context": {
-    "title": "Data overview"
-  },
   "selection": {
     "nodes_zero": "No selected node",
     "nodes_one": "One selected node",
@@ -94,6 +93,12 @@
     "ranking": "Ranking",
     "show_edges": "Show edges",
     "no_caption": "(no caption)",
+    "menu": {
+      "nodes": "Nodes",
+      "edges": "Edges",
+      "labels": "Labels",
+      "background": "Background"
+    },
     "transformation_methods": {
       "title": "Transformation methods",
       "linear": "linear",
@@ -805,12 +810,18 @@
         "copy_code": "Copy the code below, and click on \"Open GitHub\" button. It will opened a new tab, on which GitHub will ask you the code",
         "copy_success": "Code saved in clipboard",
         "waiting_validation": "Waiting validation"
-      }
+      },
+      "disconnect":{
+        "title":"Disconnect from github?",
+        "message":"Are you sure you want to disconnect gephi-lite from github?",
+        "action":"Disconnect",
+        "success": "You have been disconnected fom github"
+      } 
     }
   },
   "search": {
     "graph": {
-      "placeholder": "Search for nodes, edges ...",
+      "placeholder": "Search nodes, edges",
       "no_result": "No results",
       "help": "Type something to search",
       "other_result": "... and {{count}} other results",
@@ -842,6 +853,27 @@
         "success": "Application's state has been cleared"
       }
     },
-    "theme": "Choose a theme"
+    "theme":  {
+      "auto": "Auto",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "pages": {
+      "graph": "Graph",
+      "data_laboratory": "Data"
+  },
+  "workspace": {
+    "menu": {
+      "open":"Open...",
+      "new": "Create a new workspace",
+      "duplicate": "Duplicate in a new tab",
+      "save_as":"Save as",
+      "save":"Save",
+      "export_image":"Export image",
+      "export_graph_file":"Export graph file",
+      "github_signin": "Link to Github",
+      "github_signout": "Disconnect from github"
+    }
   }
 }
