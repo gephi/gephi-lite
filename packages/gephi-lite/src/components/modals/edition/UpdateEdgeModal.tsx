@@ -1,6 +1,6 @@
-import { toNumber } from "@gephi/gephi-lite-sdk";
+import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, isNil, map, omit, pick, reverse } from "lodash";
+import { fromPairs, map, omit, pick, reverse } from "lodash";
 import { FC, useContext, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -11,7 +11,7 @@ import { StateManagerProps } from "react-select/dist/declarations/src/useStateMa
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
 import { UIContext } from "../../../core/context/uiContext";
-import { EdgeRenderingData, FieldModel } from "../../../core/graph/types";
+import { EdgeRenderingData } from "../../../core/graph/types";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { Scalar } from "../../../core/types";
@@ -27,7 +27,7 @@ interface UpdatedEdgeState extends Omit<EdgeRenderingData, "rawWeight"> {
   id: string;
   source: NodeOption;
   target: NodeOption;
-  attributes: ({ key: string; value: Scalar } & Partial<Pick<FieldModel<"nodes">, "qualitative" | "quantitative">>)[];
+  attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
 
 const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, arguments: { edgeId } }) => {
@@ -299,8 +299,10 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
               )}
             </div>
             <div className="flex-grow-1 me-2">
+              {/* MODEL EDITION IS MISSING ONLY SCALAR EDITION... */}
               <input
-                type={isNil(field.qualitative) && !isNil(field.quantitative) ? "number" : "text"}
+                //TODO: date, keywords...
+                type={field.type === "number" ? "number" : "text"}
                 className="form-control"
                 placeholder={t("graph.model.edges-data.attribute-value") as string}
                 {...register(`attributes.${i}.value`)}
@@ -328,7 +330,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
           <button
             type="button"
             className="btn btn-outline-dark"
-            onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "" }))}
+            onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "", type: "text" }))}
           >
             <AiOutlinePlusCircle className="me-2" /> {t("graph.model.edges-data.new-attribute")}
           </button>

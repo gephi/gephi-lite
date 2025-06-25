@@ -17,6 +17,7 @@ export function nodeToDocument(graphDataset: GraphDataset, id: string): Document
     type: "nodes",
     label: graphDataset.nodeRenderingData[id].label,
     // to avoid collision with our internal data, we prefix properties
+    // TODO: should we cast scalar to modelvalue ?
     ...mapKeys(graphDataset.nodeData[id], (_value, key) => `prop_${key}`),
   };
 }

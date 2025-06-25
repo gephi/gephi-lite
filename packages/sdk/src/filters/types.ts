@@ -1,9 +1,9 @@
-import { DatalessGraph, FullGraph, ItemData, ItemDataField, ItemType } from "../graph";
+import { DatalessGraph, FieldModel, FullGraph, ItemData, ItemType } from "../graph";
 
 export interface BaseFilter {
   type: string;
   itemType: ItemType;
-  field: ItemDataField;
+  field: FieldModel;
 }
 
 export type RangeFilterType = BaseFilter & {

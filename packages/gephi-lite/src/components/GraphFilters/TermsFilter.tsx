@@ -1,4 +1,3 @@
-import { toString } from "@gephi/gephi-lite-sdk";
 import { useReadAtom } from "@ouestware/atoms";
 import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
@@ -35,8 +34,8 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
     const terms = countBy(
       flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
         const v = getFieldValue(itemData[itemId], filter.field);
-        return [toString(v)];
-      }) as string[],
+        return v;
+      }).filter((v) => typeof v === "string"),
       identity,
     );
     setDataTerms(terms);

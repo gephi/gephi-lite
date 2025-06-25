@@ -3,17 +3,16 @@ import { toSimple } from "graphology-operators";
 
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
-import { quantitativeOnly } from "../utils";
 
 export const disparityMetric: Metric<{ edges: ["disparity"] }> = {
   id: "disparity",
-  outputs: { edges: { disparity: quantitativeOnly } },
+  outputs: { edges: { disparity: { type: "number" } } },
   parameters: [
     {
       id: "getEdgeWeight",
       type: "attribute",
       itemType: "edges",
-      restriction: "quantitative",
+      restriction: ["number"],
     },
   ],
   fn(

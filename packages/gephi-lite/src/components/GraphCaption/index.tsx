@@ -1,4 +1,4 @@
-import { ItemDataField, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ItemType, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, mapValues } from "lodash";
 import { FC, useEffect, useMemo, useState } from "react";
@@ -23,23 +23,27 @@ export interface GraphCaptionProps {
 }
 
 export interface RangeExtends {
-  field: ItemDataField;
+  field: FieldModel<ItemType, boolean>;
   min: number;
   max: number;
   missing?: boolean;
 }
-export type PartitionExtends = { field: ItemDataField; occurrences: Record<string, number>; missing?: boolean };
+export type PartitionExtends = {
+  field: FieldModel<ItemType, boolean>;
+  occurrences: Record<string, number>;
+  missing?: boolean;
+};
 
 const getAttributeRanges = (
   itemIds: string[],
   dynamicItemData: Record<string, StaticDynamicItemData>,
-  rankingFields: ItemDataField[],
-  partitionFields: ItemDataField[],
+  rankingFields: FieldModel<ItemType, boolean>[],
+  partitionFields: FieldModel<ItemType, boolean>[],
 ) => {
   return itemIds.reduce(
     (acc, id) => {
-      const getFieldValue = (field: ItemDataField) =>
-        field.dynamic ? dynamicItemData[id].dynamic[field.field] : dynamicItemData[id].static[field.field];
+      const getFieldValue = (field: FieldModel<ItemType, boolean>) =>
+        field.dynamic ? dynamicItemData[id].dynamic[field.id] : dynamicItemData[id].static[field.id];
       // rankings
       const rankings = mapValues(acc.ranking, (rangeExtend) => {
         const fieldValue = getFieldValue(rangeExtend.field);
@@ -120,7 +124,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is ItemDataField => f !== null);
+      .filter((f): f is FieldModel => f !== null);
     const nodePartitionFields = [appearance.nodesColor, appearance.nodesSize]
       .map((appearanceSpec) => {
         if (appearanceSpec.type === "partition") {
@@ -128,7 +132,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is ItemDataField => f !== null);
+      .filter((f): f is FieldModel => f !== null);
 
     if (nodeRankingFields.length > 0 || nodePartitionFields.length > 0) {
       attributesExtends.node = getAttributeRanges(
@@ -146,7 +150,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is ItemDataField => f !== null);
+      .filter((f): f is FieldModel => f !== null);
     const edgePartitionFields = [appearance.edgesColor, appearance.edgesSize]
       .map((appearanceSpec) => {
         if (appearanceSpec.type === "partition") {
@@ -154,7 +158,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         }
         return null;
       })
-      .filter((f): f is ItemDataField => f !== null);
+      .filter((f): f is FieldModel => f !== null);
 
     if (edgeRankingFields.length > 0 || edgePartitionFields.length > 0) {
       attributesExtends.edge = getAttributeRanges(

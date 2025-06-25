@@ -301,7 +301,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     const filtersState = filtersAtom.get();
     const filterFilters = (f: FilterType) =>
       // here we test only static field
-      !("field" in f) || nodeFields.includes(f.field.field) || edgeFields.includes(f.field.field);
+      !("field" in f) || nodeFields.includes(f.field.id) || edgeFields.includes(f.field.id);
     filtersAtom.set({
       past: filtersState.past.filter(filterFilters),
       future: filtersState.future.filter(filterFilters),
@@ -319,8 +319,8 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
           appearanceElement.field &&
           // here we test only static field
           !appearanceElement.field.dynamic &&
-          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field.field)) ||
-            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field.field)))
+          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field.id)) ||
+            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field.id)))
         ) {
           // this appearance element is based on a field which is not in the model anymore
           // let's reset it
@@ -346,7 +346,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
         // - if partitions palette are still in sync with the field values
         case "partition":
           // check if deprecated appearance state
-          values = uniqFieldvaluesAsStrings(itemsData, appearanceElement.field.field);
+          values = uniqFieldvaluesAsStrings(itemsData, appearanceElement.field.id);
 
           // checking with the actual palette miss some values. It's ok if it has more available.
           if (

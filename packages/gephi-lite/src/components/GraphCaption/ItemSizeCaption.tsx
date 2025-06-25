@@ -39,16 +39,16 @@ const ItemSizeCaption: FC<
       minSize:
         sigma.scaleSize(
           getItemSize({
-            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.field]: extend.min },
-            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.field]: extend.min } : {},
+            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.id]: extend.min },
+            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.id]: extend.min } : {},
           }),
         ) * (itemType === "nodes" ? 2 : 1),
       maxValue: extend.max,
       maxSize:
         sigma.scaleSize(
           getItemSize({
-            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.field]: extend.max },
-            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.field]: extend.max } : {},
+            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.id]: extend.max },
+            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.id]: extend.max } : {},
           }),
         ) * (itemType === "nodes" ? 2 : 1),
     });

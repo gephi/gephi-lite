@@ -195,12 +195,11 @@ export function newItemModel<T extends ItemType>(
       ...newAttributes.map((newAttribute) => {
         // we don't use utils.inderFieldType here as we only have one value and we know for sure it's not a multiple
         // TODO: discuss if we can do some better inference
-        const type = isNumber(itemAttributes[newAttribute]) ? "quantitative" : "qualitative";
+        const type = isNumber(itemAttributes[newAttribute]) ? "number" : "text";
         const fieldModel: FieldModel<T> = {
           id: newAttribute,
           itemType,
-          qualitative: type === "qualitative" ? {} : null,
-          quantitative: type === "quantitative" ? {} : null,
+          type,
         };
         console.debug(`updating ${itemType} fieldModel with new attributes : ${JSON.stringify(fieldModel, null, 2)}`);
         return fieldModel;
@@ -233,7 +232,9 @@ export function countExistingValues(
         nbItems += 1;
         // is format correct?
         const value = item[fm.id];
-        if (fm.quantitative && typeof item[fm.id] !== "number" && !isNil(value) && isNaN(+value)) nbCastIssues += 1;
+        //TODO: if we keep this we need to cover all model value type cases
+        if (fm.type === "number" && typeof item[fm.id] !== "number" && !isNil(value) && isNaN(+value))
+          nbCastIssues += 1;
       } else nbMissingValues += 1;
     });
     return {

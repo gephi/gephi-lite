@@ -28,7 +28,12 @@ import {
   useSelectionActions,
   useVisualGetters,
 } from "../../core/context/dataContexts";
-import { mergeStaticDynamicData, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
+import {
+  dynamicAttributes,
+  mergeStaticDynamicData,
+  staticDynamicAttributeLabel,
+} from "../../core/graph/dynamicAttributes";
+import { castScalarToModelValue } from "../../core/graph/fieldModel";
 import { EdgeRenderingData, NodeRenderingData } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
 import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
@@ -56,23 +61,28 @@ function SelectedItem<
   const { openModal } = useModal();
 
   const graphDataset = useGraphDataset();
+
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
   const { deleteItems } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
-  const attributes = useMemo(
-    () =>
-      [
-        { label: t(`graph.model.${type}-data.id`) as string, value: id },
-        ...toPairs(data.static).map(([field, value]) => ({ label: field, value })),
-        ...toPairs(data.dynamic).map(([field, value]) => ({
-          label: staticDynamicAttributeLabel({ field, dynamic: true }),
-          value,
-        })),
-        ...toPairs(renderingData).map(([field, value]) => ({ label: field, value })),
-      ].filter(({ value }) => !isNil(value)),
-    [data, id, renderingData, t, type],
-  );
+
+  const attributes = useMemo(() => {
+    const fields = type === "edges" ? graphDataset.edgeFields : graphDataset.nodeFields;
+
+    return [
+      { label: t(`graph.model.${type}-data.id`) as string, value: id },
+      ...fields.map((field) => ({
+        label: staticDynamicAttributeLabel(field),
+        value: castScalarToModelValue(data.static[field.id], field),
+      })),
+      ...dynamicAttributes[type].map(({ field }) => ({
+        label: staticDynamicAttributeLabel(field),
+        value: castScalarToModelValue(data.dynamic[field.id], field),
+      })),
+      ...toPairs(renderingData).map(([field, value]) => ({ label: field, value })),
+    ].filter(({ value }) => !isNil(value));
+  }, [graphDataset.nodeFields, graphDataset.edgeFields, data, id, renderingData, t, type]);
 
   const item = getItemAttributes(type, id, filteredGraph, data, graphDataset, visualGetters);
   let content: ReactNode;

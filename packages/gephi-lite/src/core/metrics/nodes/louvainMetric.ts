@@ -2,18 +2,17 @@ import louvain from "graphology-communities-louvain";
 
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
-import { qualitativeOnly } from "../utils";
 
 export const louvainMetric: Metric<{ nodes: ["modularityClass"] }> = {
   id: "louvain",
   description: true,
-  outputs: { nodes: { modularityClass: qualitativeOnly } },
+  outputs: { nodes: { modularityClass: { type: "number" } } },
   parameters: [
     {
       id: "getEdgeWeight",
       type: "attribute",
       itemType: "edges",
-      restriction: "quantitative",
+      restriction: ["number"],
       description: true,
     },
     {

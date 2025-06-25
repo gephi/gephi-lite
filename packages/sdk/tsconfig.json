@@ -16,7 +16,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "declaration": true
+    "declaration": true,
+    "typeRoots": ["node_modules", "../../node_modules"],
   },
   "include": ["src"]
 }

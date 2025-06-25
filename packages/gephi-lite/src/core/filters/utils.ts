@@ -1,10 +1,12 @@
-import { FilteredGraph, gephiLiteStringify, toNumber, toString } from "@gephi/gephi-lite-sdk";
+import { FilteredGraph, ModelValueType, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
+import { isNumber } from "lodash";
+import { DateTime } from "luxon";
 
 import { computeAllDynamicAttributes } from "../graph/dynamicAttributes";
+import { castScalarToModelValue } from "../graph/fieldModel";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
-import { Scalar } from "../types";
 import { FilterType, RangeFilterType, TermsFilterType, TopologicalFilterDefinition } from "./types";
 
 export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "@gephi/gephi-lite-sdk";
@@ -13,30 +15,38 @@ export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "
  * Actual filtering helpers:
  */
 export function filterValue(
-  value: Scalar,
+  value: ModelValueType,
   filter: Omit<RangeFilterType, "field" | "itemType"> | Omit<TermsFilterType, "field" | "itemType">,
 ): boolean {
+  // missingValues
+  if (value === undefined) {
+    return !!filter.keepMissingValues;
+  }
+
   switch (filter.type) {
     case "range": {
-      const number = toNumber(value);
       return (
-        (typeof number === "number" &&
+        (typeof value === "number" &&
           inRangeIncluded(
-            number,
+            value,
             typeof filter.min === "number" ? filter.min : -Infinity,
             typeof filter.max === "number" ? filter.max : Infinity,
           )) ||
-        (typeof number !== "number" && !!filter.keepMissingValues)
+        //TODO: filter on date
+        (typeof value !== "number" && !!filter.keepMissingValues)
       );
     }
     case "terms": {
-      if (!filter.terms) return true;
-      const string = toString(value);
-      return (
-        (typeof string === "string" && filter.terms.has(string)) ||
-        (typeof string !== "string" && !!filter.keepMissingValues)
-      );
+      if (filter.terms === undefined) return true;
+      else {
+        if (value instanceof DateTime || isNumber(value)) {
+          return !!filter.keepMissingValues;
+        }
+        const strings = Array.isArray(value) ? value : [value];
+        return strings.some((string) => !filter.terms || filter.terms.has(string));
+      }
     }
+    // TODO: search filter
   }
 }
 
@@ -73,10 +83,12 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
         filter.script ? filter.script(nodeID, fullGraph.getNodeAttributes(nodeID), fullGraph) : true,
       );
     } else {
+      const dynamicNodeData = filter.field.dynamic ? computeAllDynamicAttributes("nodes", graph) : {};
       nodes = graph.filterNodes((nodeID) => {
-        const value = filter.field.dynamic
-          ? computeAllDynamicAttributes("nodes", graph)[nodeID][filter.field.field]
-          : nodeData[nodeID][filter.field.field];
+        const value = castScalarToModelValue(
+          filter.field.dynamic ? dynamicNodeData[nodeID][filter.field.id] : nodeData[nodeID][filter.field.id],
+          filter.field,
+        );
         return filterValue(value, filter);
       });
     }
@@ -92,10 +104,12 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
         filter.script ? filter.script(edgeID, fullGraph.getEdgeAttributes(edgeID), fullGraph) : true,
       );
     } else {
+      const dynamicEdgeData = filter.field.dynamic ? computeAllDynamicAttributes("edges", graph) : {};
       edges = graph.filterEdges((edgeID) => {
-        const value = filter.field.dynamic
-          ? computeAllDynamicAttributes("edges", graph)[edgeID][filter.field.field]
-          : edgeData[edgeID][filter.field.field];
+        const value = castScalarToModelValue(
+          filter.field.dynamic ? dynamicEdgeData[edgeID][filter.field.id] : edgeData[edgeID][filter.field.id],
+          filter.field,
+        );
         return filterValue(value, filter);
       });
     }

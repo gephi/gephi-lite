@@ -37,5 +37,8 @@
       "default": "./dist/gephi-gephi-lite-sdk.cjs.js"
     },
     "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "luxon": "^3.6.1"
   }
 }
