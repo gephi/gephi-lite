@@ -1,4 +1,4 @@
-import { ItemDataField } from "@gephi/gephi-lite-sdk";
+import { FieldModel } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,8 +9,8 @@ import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
 import { Select } from "../../forms/Select";
 
-type Option = { value: ItemDataField; label: string };
-function stringToOption(field: ItemDataField): Option {
+type Option = { value: FieldModel<ItemType, boolean>; label: string };
+function stringToOption(field: FieldModel<ItemType, boolean>): Option {
   return {
     value: field,
     label: staticDynamicAttributeLabel(field),
@@ -27,10 +27,11 @@ export const ShadingColorEditor: FC<{
   const fieldOptions = useMemo(
     () =>
       (itemType === "nodes" ? nodeFields : edgeFields)
-        .filter((field) => field.quantitative)
+        // TODO : should we allow date here ?
+        .filter((field) => field.type === "number")
         .map((field) => ({
-          value: { field: field.id, dynamic: field.dynamic },
-          label: staticDynamicAttributeLabel({ field: field.id, dynamic: field.dynamic }),
+          value: field,
+          label: staticDynamicAttributeLabel(field),
         })),
     [edgeFields, itemType, nodeFields],
   );

@@ -1,6 +1,6 @@
-import { toNumber } from "@gephi/gephi-lite-sdk";
+import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, isNil, omit, pick } from "lodash";
+import { fromPairs, omit, pick } from "lodash";
 import { FC, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -9,7 +9,7 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
-import { FieldModel, NodeRenderingData } from "../../../core/graph/types";
+import { NodeRenderingData } from "../../../core/graph/types";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { Scalar } from "../../../core/types";
@@ -17,7 +17,7 @@ import { Modal } from "../../modals";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
   id?: string;
-  attributes: ({ key: string; value: Scalar } & Partial<Pick<FieldModel<"nodes">, "qualitative" | "quantitative">>)[];
+  attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
 
 const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, arguments: { nodeId } }) => {
@@ -229,8 +229,10 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
               )}
             </div>
             <div className="flex-grow-1 me-2">
+              {/* MODEL EDITION IS MISSING ONLY SCALAR EDITION... */}
               <input
-                type={isNil(field.qualitative) && !isNil(field.quantitative) ? "number" : "text"}
+                //TODO: date, keywords...
+                type={field.type === "number" ? "number" : "text"}
                 className={cx("form-control flex-grow-1 me-2", (errors.attributes || [])[i]?.value && "is-invalid")}
                 placeholder={t("graph.model.nodes-data.attribute-value") as string}
                 {...register(`attributes.${i}.value`)}
@@ -258,7 +260,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
           <button
             type="button"
             className="btn btn-outline-dark"
-            onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "" }))}
+            onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "", type: "text" }))}
           >
             <AiOutlinePlusCircle className="me-2" /> {t("graph.model.nodes-data.new-attribute")}
           </button>

@@ -12,7 +12,6 @@ import { useAppearance, useFilters, useGraphDataset } from "../../context/dataCo
 import { FullGraph } from "../../graph/types";
 import { uniqFieldvaluesAsStrings } from "../../graph/utils";
 import { Metric } from "../types";
-import { qualitativeOnly, quantitativeOnly } from "../utils";
 
 function computeLouvainEdgeScores(
   graph: Graph,
@@ -88,20 +87,20 @@ const VisualizeAmbiguityForm: FC<{
       },
       nodesSize: {
         type: "ranking",
-        field: { field: attributeNames["meanAmbiguityScore"] },
+        field: { id: attributeNames["meanAmbiguityScore"], type: "number", itemType: "nodes" },
         minSize: 2,
         maxSize: 15,
         missingSize: 2,
       },
       edgesColor: {
         type: "partition",
-        field: { field: attributeNames["sourceCommunityId"] },
+        field: { id: attributeNames["sourceCommunityId"], type: "category", itemType: "edges" },
         colorPalette: getPalette(values),
         missingColor: DEFAULT_NODE_COLOR,
       },
       edgesShadingColor: {
         type: "shading",
-        field: { field: attributeNames["ambiguityScore"] },
+        field: { id: attributeNames["ambiguityScore"], type: "number", itemType: "edges" },
         factor: 0.8,
         targetColor: "#ffffff",
       },
@@ -111,7 +110,7 @@ const VisualizeAmbiguityForm: FC<{
       },
       edgesZIndex: {
         type: "field",
-        field: { field: attributeNames["coMembershipScore"] },
+        field: { id: attributeNames["coMembershipScore"], type: "number", itemType: "edges" },
         reversed: false,
       },
       backgroundColor: "#666666",
@@ -152,11 +151,11 @@ export const louvainEdgeAmbiguity: Metric<{
   description: true,
   outputs: {
     edges: {
-      coMembershipScore: quantitativeOnly,
-      ambiguityScore: quantitativeOnly,
-      sourceCommunityId: qualitativeOnly,
+      coMembershipScore: { type: "number" },
+      ambiguityScore: { type: "number" },
+      sourceCommunityId: { type: "category" },
     },
-    nodes: { meanAmbiguityScore: quantitativeOnly },
+    nodes: { meanAmbiguityScore: { type: "number" } },
   },
   parameters: [
     {
@@ -168,7 +167,7 @@ export const louvainEdgeAmbiguity: Metric<{
       id: "getEdgeWeight",
       type: "attribute",
       itemType: "edges",
-      restriction: "quantitative",
+      restriction: ["number"],
     },
     {
       id: "resolution",

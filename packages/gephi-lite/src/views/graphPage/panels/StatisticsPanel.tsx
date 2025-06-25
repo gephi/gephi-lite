@@ -269,7 +269,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
                   onChange={(v) => onChange("parameters", param.id, v)}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel<any>[])
-                    .filter((field) => (param.restriction ? !!field[param.restriction] : true))
+                    .filter((field) => (param.restriction ? param.restriction.includes(field.type) : true))
                     .map((field) => ({
                       value: field.id,
                       label: field.id,

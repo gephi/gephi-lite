@@ -2,14 +2,13 @@ import { toNumber } from "lodash";
 
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
-import { quantitativeOnly } from "../utils";
 
 export const degreeMetric: Metric<{ nodes: ["degree"] }> = {
   id: "degree",
   description: false,
   outputs: {
     nodes: {
-      degree: quantitativeOnly,
+      degree: { type: "number" },
     },
   },
   parameters: [
@@ -23,7 +22,7 @@ export const degreeMetric: Metric<{ nodes: ["degree"] }> = {
       id: "getEdgeWeight",
       type: "attribute",
       itemType: "edges",
-      restriction: "quantitative",
+      restriction: ["number"],
     },
   ],
   fn(

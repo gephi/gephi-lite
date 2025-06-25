@@ -46,13 +46,13 @@ export function computeMetric(
       }
 
       // Update field model:
-      let qualiQuanti = metric.outputs[itemType][score];
-      if (qualiQuanti === undefined) qualiQuanti = inferFieldType(Object.values(values), itemsCount);
+      let fieldModelType = metric.outputs[itemType][score];
+      if (fieldModelType === undefined) fieldModelType = inferFieldType(Object.values(values), itemsCount);
 
       updatedFieldModels.push({
         itemType,
         id: attributeName,
-        ...qualiQuanti,
+        ...fieldModelType,
       });
     }
   }

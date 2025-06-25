@@ -2,10 +2,10 @@ import { range } from "lodash";
 import { FC } from "react";
 
 import { TransformationMethod } from "../../core/appearance/types";
-import { makeGetValue } from "../../core/appearance/utils";
+import { makeTransformValue } from "../../core/appearance/utils";
 
 export const TransformationMethodPreview: FC<{ method?: TransformationMethod }> = ({ method }) => {
-  const getValue = makeGetValue(method);
+  const getValue = makeTransformValue(method);
   const size = 30;
   const margin = 2;
   return (

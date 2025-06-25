@@ -1,3 +1,4 @@
+import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import MiniSearch from "minisearch";
 
@@ -12,12 +13,13 @@ import { edgeToDocument, getEmptySearchState, nodeToDocument } from "./utils";
  */
 export const indexAll: Producer<SearchState, []> = () => {
   const graphDataset = graphDatasetAtom.get();
+  const searchableModelFieldTypes: FieldModelType[] = ["category", "keywords", "text"];
   const index = new MiniSearch({
     idField: "itemId",
     fields: [
       "label",
-      ...graphDataset.nodeFields.filter((f) => f.qualitative).map((f) => f.id),
-      ...graphDataset.edgeFields.filter((f) => f.quantitative).map((f) => f.id),
+      ...graphDataset.nodeFields.filter((f) => searchableModelFieldTypes.includes(f.type)).map((f) => f.id),
+      ...graphDataset.edgeFields.filter((f) => searchableModelFieldTypes.includes(f.type)).map((f) => f.id),
     ],
     storeFields: ["itemId", "id", "type"],
     processTerm: (term, _fieldName) =>

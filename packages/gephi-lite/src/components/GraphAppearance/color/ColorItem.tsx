@@ -1,4 +1,3 @@
-import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -15,6 +14,7 @@ import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../..
 import { FieldModel } from "../../../core/graph/types";
 import { uniqFieldvaluesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
+import { FieldModelIcons } from "../../common-icons";
 import { Select } from "../../forms/Select";
 import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
@@ -22,7 +22,12 @@ import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ShadingColorEditor } from "./ShadingColorEditor";
 import { getPalette } from "./utils";
 
-type ColorOption = { value: string; label: string | JSX.Element; field?: ItemDataField; type: string };
+type ColorOption = {
+  value: string;
+  label: string | JSX.Element;
+  field?: FieldModel<ItemType, boolean>;
+  type: "data" | "fixed" | "ranking" | "partition" | "unsupported" | "source" | "target";
+};
 
 export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -36,59 +41,84 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const baseValue = itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
   const defaultShadingField = useMemo(
     () =>
-      (itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : edgeFields).find((field) => field.quantitative),
+      (itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : edgeFields).find(
+        (field) => field.type === "number",
+      ),
     [edgeFields, itemType, nodeFields, dynamicNodeFields],
   );
 
   const options: ColorOption[] = useMemo(() => {
     const allFields: FieldModel<ItemType, boolean>[] =
       itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
+    const dataOption: ColorOption = {
+      value: "data",
+      type: "data",
+      label: (
+        <>
+          {t("appearance.color.data")} <small className="text-muted">{t("appearance.no_caption")}</small>
+        </>
+      ),
+    };
+    const FixedOption: ColorOption = { value: "fixed", type: "fixed", label: t("appearance.color.fixed") as string };
+    const edgeOptions: ColorOption[] = [
+      { value: "source", type: "source", label: t("appearance.color.source") as string },
+      { value: "target", type: "target", label: t("appearance.color.target") as string },
+    ];
     return [
-      {
-        value: "data",
-        type: "data",
-        label: (
-          <>
-            {t("appearance.color.data")} <small className="text-muted">{t("appearance.no_caption")}</small>
-          </>
-        ),
-      },
-      { value: "fixed", type: "fixed", label: t("appearance.color.fixed") as string },
-      ...(itemType === "edges"
-        ? [
-            { value: "source", type: "source", label: t("appearance.color.source") as string },
-            { value: "target", type: "target", label: t("appearance.color.target") as string },
-          ]
-        : []),
-      ...allFields.flatMap((field) => {
-        const options: ColorOption[] = [];
-        const staticDynamicField = { field: field.id, dynamic: field.dynamic };
-        if (!!field.quantitative)
-          options.push({
-            value: `ranking::${staticDynamicAttributeKey(staticDynamicField)}`,
-            field: staticDynamicField,
-            type: "ranking",
+      dataOption,
+      FixedOption,
+      ...(itemType === "edges" ? edgeOptions : []),
+      ...allFields
+        .filter((f): f is FieldModel<ItemType, boolean> => ["date", "number", "category"].includes(f.type))
+        .map((field): ColorOption => {
+          const Icon = FieldModelIcons[field.type];
+          switch (field.type) {
+            case "date":
+            case "number":
+              return {
+                value: `ranking::${staticDynamicAttributeKey(field)}`,
+                field,
+                type: "ranking",
+
+                label: (
+                  <>
+                    <Icon className="me-1" />
+                    {staticDynamicAttributeLabel(field)}
+                  </>
+                ),
+              };
+            case "category":
+            default:
+              return {
+                value: `partition::${staticDynamicAttributeKey(field)}`,
+                field: field,
+                type: "partition",
+                label: (
+                  <>
+                    <Icon className="me-1" />
+                    {staticDynamicAttributeLabel(field)}
+                  </>
+                ),
+              };
+          }
+        }),
+      // unsupported options are listed after the supported ones
+      ...allFields
+        .filter((f): f is FieldModel<ItemType, boolean> => !["date", "number", "category"].includes(f.type))
+        .map((field): ColorOption => {
+          const Icon = FieldModelIcons[field.type];
+          return {
+            value: `unsupported::${staticDynamicAttributeKey(field)}`,
+            field,
+            type: "unsupported",
             label: (
               <>
-                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
-                <small className="text-muted">({t("appearance.color.quanti")})</small>
+                <Icon className="me-1" />
+                {staticDynamicAttributeLabel(field)}
               </>
             ),
-          });
-        if (!!field.qualitative)
-          options.push({
-            value: `partition::${staticDynamicAttributeKey(staticDynamicField)}`,
-            field: staticDynamicField,
-            type: "partition",
-            label: (
-              <>
-                {staticDynamicAttributeLabel(staticDynamicField)}{" "}
-                <small className="text-muted">({t("appearance.color.quali")})</small>
-              </>
-            ),
-          });
-        return options;
-      }),
+          };
+        }),
     ];
   }, [edgeFields, itemType, nodeFields, dynamicNodeFields, dynamicEdgeFields, t]);
   const selectedOption =
@@ -96,7 +126,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       if (!color.field) {
         return color.type === option.type;
       }
-      return option.type === color.type && option.field && color.field && option.field.field === color.field.field;
+      return option.type === color.type && option.field && color.field && option.field.id === color.field.id;
     }) || options[0];
 
   return (
@@ -107,6 +137,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         id={`${itemType}-colorMode`}
         options={options}
         value={selectedOption}
+        isOptionDisabled={(option) => option.type === "unsupported"}
         onChange={(option) => {
           if (isEqual(selectedOption, option)) return;
 
@@ -139,10 +170,10 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
               if (field.dynamic) {
                 const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
-                values = uniqFieldvaluesAsStrings(itemsData, field.field);
+                values = uniqFieldvaluesAsStrings(itemsData, field.id);
               } else {
                 const itemsData = itemType === "nodes" ? nodeData : edgeData;
-                values = uniqFieldvaluesAsStrings(itemsData, field.field);
+                values = uniqFieldvaluesAsStrings(itemsData, field.id);
               }
 
               setColorAppearance(itemType, {
@@ -198,7 +229,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                   ? {
                       type: "shading",
                       targetColor: DEFAULT_SHADING_COLOR,
-                      field: { field: defaultShadingField.id, dynamic: defaultShadingField.dynamic },
+                      field: defaultShadingField,
                       factor: 0.5,
                     }
                   : undefined,

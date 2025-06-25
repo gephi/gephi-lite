@@ -1,4 +1,3 @@
-import { ItemDataField } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,11 +13,12 @@ import {
 import { staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
+import { FieldModelIcons } from "../../common-icons";
 import { Select } from "../../forms/Select";
 import { SizeFixedEditor } from "./SizeFixedEditor";
 import { SizeRankingEditor } from "./SizeRankingEditor";
 
-type SizeOption = { value: string; label: string | JSX.Element; field?: ItemDataField; type: string };
+type SizeOption = { value: string; label: string | JSX.Element; field?: FieldModel<ItemType, boolean>; type: string };
 
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -51,13 +51,18 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       },
       ...allFields.flatMap((field) => {
         const options: SizeOption[] = [];
-        if (!!field.quantitative) {
-          const staticDynamicField = { field: field.id, dynamic: field.dynamic };
+        if (field.type === "number") {
+          const Icon = FieldModelIcons[field.type];
           options.push({
-            value: `ranking::${staticDynamicAttributeLabel(staticDynamicField)}`,
-            field: { field: field.id, dynamic: field.dynamic },
+            value: `ranking::${staticDynamicAttributeLabel(field)}`,
+            field,
             type: "ranking",
-            label: staticDynamicAttributeLabel(staticDynamicField),
+            label: (
+              <>
+                <Icon className="me-1" />
+                {staticDynamicAttributeLabel(field)}
+              </>
+            ),
           });
         }
         return options;
@@ -70,7 +75,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       if (!size.field) {
         return size.type === option.type;
       }
-      return option.type === size.type && option.field && size.field && option.field.field === size.field.field;
+      return option.type === size.type && option.field && size.field && option.field.id === size.field.id;
     }) || options[0];
 
   return (

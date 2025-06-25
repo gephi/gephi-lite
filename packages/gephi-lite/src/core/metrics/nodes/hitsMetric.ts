@@ -3,17 +3,16 @@ import { toSimple } from "graphology-operators";
 
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
-import { quantitativeOnly } from "../utils";
 
 export const hitsMetric: Metric<{ nodes: ["hubs", "authorities"] }> = {
   id: "hits",
-  outputs: { nodes: { hubs: quantitativeOnly, authorities: quantitativeOnly } },
+  outputs: { nodes: { hubs: { type: "number" }, authorities: { type: "number" } } },
   parameters: [
     {
       id: "getEdgeWeight",
       type: "attribute",
       itemType: "edges",
-      restriction: "quantitative",
+      restriction: ["number"],
     },
     {
       id: "maxIterations",

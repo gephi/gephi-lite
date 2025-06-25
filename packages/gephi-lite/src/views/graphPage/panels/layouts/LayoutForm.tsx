@@ -189,7 +189,7 @@ export const LayoutForm: FC<{
                   disabled={isRunning}
                   onChange={(v) => onChangeParameters(param.id, v)}
                   options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
-                    .filter((field) => (param.restriction ? !!field[param.restriction] : true))
+                    .filter((field) => (param.restriction ? param.restriction.includes(field.type) : true))
                     .map((field) => ({
                       value: field.id,
                       label: field.id,

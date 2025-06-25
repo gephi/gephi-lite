@@ -2,17 +2,16 @@ import { pagerank } from "graphology-metrics/centrality";
 
 import { EdgeRenderingData, FullGraph } from "../../graph/types";
 import { Metric } from "../types";
-import { quantitativeOnly } from "../utils";
 
 export const pageRankMetric: Metric<{ nodes: ["pagerank"] }> = {
   id: "pagerank",
-  outputs: { nodes: { pagerank: quantitativeOnly } },
+  outputs: { nodes: { pagerank: { type: "number" } } },
   parameters: [
     {
       id: "getEdgeWeight",
       type: "attribute",
       itemType: "edges",
-      restriction: "quantitative",
+      restriction: ["number"],
     },
     {
       id: "alpha",
