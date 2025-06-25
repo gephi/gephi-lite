@@ -1,12 +1,17 @@
-import { ItemType } from "@gephi/gephi-lite-sdk";
 import { Row, Table, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
 import { FC, RefObject, useMemo, useRef } from "react";
 import { ScrollSyncPane } from "react-scroll-sync";
 
-import { useDataTable, useDataTableActions, useGraphDataset, useSelection } from "../../../core/context/dataContexts";
-import { ItemRow, getCommonPinningStyles } from "./consts";
+import {
+  useDataTable,
+  useDataTableActions,
+  useDynamicItemData,
+  useGraphDataset,
+  useSelection,
+} from "../../../core/context/dataContexts";
+import { ItemRow, SPECIFIC_COLUMNS, getCommonPinningStyles } from "./consts";
 import { useDataTableColumns } from "./useDataTableColumns";
 
 const TableBodyRow: FC<{
@@ -72,18 +77,39 @@ const TableBody: FC<{
   );
 };
 
-export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, itemIDs }) => {
-  const { nodeData, edgeData } = useGraphDataset();
+export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
+  const { nodeData, edgeData, fullGraph } = useGraphDataset();
+  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const { type: selectionType, items } = useSelection();
-  const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
 
-  const { dataTableState } = useDataTable();
+  const { type, dataTableState } = useDataTable();
   const { updateColumnSizing, updateColumnSizingInfo, setSort } = useDataTableActions();
   const { columns, columnPinningState } = useDataTableColumns(itemIDs);
 
+  const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
+  const dynamicData = useMemo(
+    () => (type === "nodes" ? dynamicNodeData : dynamicEdgeData),
+    [dynamicNodeData, dynamicEdgeData, type],
+  );
   const rows = useMemo<ItemRow[]>(
-    () => itemIDs.map((id) => ({ id, selected: selectionType === type && items.has(id), data: data[id] })),
-    [itemIDs, selectionType, type, items, data],
+    () =>
+      itemIDs.map((id) =>
+        type === "nodes"
+          ? {
+              id,
+              selected: selectionType === type && items.has(id),
+              degree: dynamicData[id].degree as number,
+              data: data[id],
+            }
+          : {
+              id,
+              selected: selectionType === type && items.has(id),
+              sourceId: fullGraph.source(id),
+              targetId: fullGraph.target(id),
+              data: data[id],
+            },
+      ),
+    [itemIDs, type, selectionType, items, dynamicData, data, fullGraph],
   );
 
   const tableContainerRef = useRef<HTMLTableElement>(null);
@@ -121,7 +147,11 @@ export const DataTable: FC<{ type: ItemType; itemIDs: string[] }> = ({ type, ite
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} style={{ ...getCommonPinningStyles(header.column, true) }}>
+                    <th
+                      key={header.id}
+                      style={{ ...getCommonPinningStyles(header.column, true) }}
+                      className={cx(header.id in SPECIFIC_COLUMNS && "protected")}
+                    >
                       <div
                         className={cx("content-wrapper", header.column.getCanSort() && "cursor-pointer select-none")}
                       >

@@ -18,6 +18,33 @@ import { useModal } from "../../../core/modals";
 import { DEFAULT_LINKIFY_PROPS } from "../../../utils/url";
 import { Arrow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
 
+function getReadOnlyColumn(field: keyof ItemRow, size = 180): ColumnDef<ItemRow> {
+  return {
+    id: field,
+    accessorFn: (row) => row[field],
+    cell: (props) => <span className="text-ellipsis">{props.row.getValue(field)}</span>,
+    meta: {
+      protected: true,
+    },
+    header: ({ header }) => (
+      <>
+        <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
+          {field}
+        </span>
+        <Arrow
+          arrow={header.column.getIsSorted() || null}
+          wrapper={({ children }) => (
+            <div>
+              <button className="btn small p-0">{children}</button>
+            </div>
+          )}
+        />
+      </>
+    ),
+    size,
+  };
+}
+
 export const useDataTableColumns = (itemIDs: string[]) => {
   const { type } = useDataTable();
   const { openModal } = useModal();
@@ -37,6 +64,9 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         size: 60,
         enableResizing: false,
         enablePinning: true,
+        meta: {
+          protected: true,
+        },
         header: ({ header }) => (
           <div
             className="text-center w-100 d-flex flex-row align-items-center justify-content-between"
@@ -86,6 +116,9 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         id: SPECIFIC_COLUMNS.preview,
         header: () => <span className="column-title">Preview</span>,
         enablePinning: true,
+        meta: {
+          protected: true,
+        },
         cell: (props) =>
           type === "nodes" ? (
             <NodeComponentById id={props.row.getValue("id")} />
@@ -93,25 +126,15 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             <EdgeComponentById id={props.row.getValue("id")} />
           ),
       }),
-      {
-        id: SPECIFIC_COLUMNS.id,
-        accessorFn: ({ id }) => id,
-        header: ({ header }) => (
-          <>
-            <span className="column-title">ID</span>
-            <Arrow
-              arrow={header.column.getIsSorted() || null}
-              wrapper={({ children }) => (
-                <div>
-                  <button className="btn small p-0">{children}</button>
-                </div>
-              )}
-            />
-          </>
-        ),
-        size: 60,
-        cell: (props) => <span className="text-ellipsis">{props.row.getValue("id")}</span>,
-      },
+
+      // Type specific dynamic / read-only columns:
+      getReadOnlyColumn("id"),
+      ...(type === "nodes"
+        ? [getReadOnlyColumn(SPECIFIC_COLUMNS.degree as keyof ItemRow, 120)]
+        : [
+            getReadOnlyColumn(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
+            getReadOnlyColumn(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
+          ]),
 
       // Dataset-specific columns;
       ...fields.map<ColumnDef<ItemRow>>((field, i, a) => ({
@@ -211,6 +234,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                       component: ConfirmModal,
                       arguments: {
                         title: `Delete ${type} attribute "${field.id}"`,
+                        successMsg: `The ${type} attribute "${field.id}" has successfully been deleted.`,
                         message: `Are you sure you want to delete the ${type} attribute "${field.id}"?`,
                       },
                       afterSubmit: () => {
