@@ -97,7 +97,6 @@ $gl-ref-radius-full: 99rem;
 :root {
   --gl-sys-opacity-state-layer-hover: #{$gl-opacity-8};
   --gl-sys-opacity-state-layer-disabled: #{$gl-opacity-10};
-
   --gl-sys-opacity-onComponentSurface-disabled: #{$gl-opacity-50};
 }
 
@@ -119,12 +118,12 @@ $gl-ref-radius-full: 99rem;
 //----Space
 
 :root {
-  --gl-sys-size-icon-none: #{$gl-ref-dimension-linear-0};
-  --gl-sys-size-icon-xs: #{$gl-ref-dimension-linear-050};
-  --gl-sys-size-icon-sm: #{$gl-ref-dimension-linear-100};
-  --gl-sys-size-icon-md: #{$gl-ref-dimension-linear-200};
-  --gl-sys-size-icon-lg: #{$gl-ref-dimension-linear-400};
-  --gl-sys-size-icon-xl: #{$gl-ref-dimension-linear-800};
+  --gl-sys-space-none: #{$gl-ref-dimension-linear-0};
+  --gl-sys-space-xs: #{$gl-ref-dimension-linear-050};
+  --gl-sys-space-sm: #{$gl-ref-dimension-linear-100};
+  --gl-sys-space-md: #{$gl-ref-dimension-linear-200};
+  --gl-sys-space-lg: #{$gl-ref-dimension-linear-400};
+  --gl-sys-space-xl: #{$gl-ref-dimension-linear-800};
 }
 
 //---- Radius
