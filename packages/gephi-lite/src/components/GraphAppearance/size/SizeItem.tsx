@@ -47,7 +47,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       {
         value: "fixed",
         type: "fixed",
-        label: t("appearance.size.fixed") as string,
+        label: t("appearance.size.fixed"),
       },
       ...allFields.flatMap((field) => {
         const options: SizeOption[] = [];

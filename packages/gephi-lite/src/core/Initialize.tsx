@@ -121,8 +121,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         console.error(e);
         notify({
           type: "error",
-          message: t("graph.open.remote.error") as string,
-          title: t("gephi-lite.title") as string,
+          message: t("graph.open.remote.error"),
+          title: t("gephi-lite.title"),
         });
       }
     }

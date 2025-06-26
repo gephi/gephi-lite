@@ -33,7 +33,7 @@ import {
   datasetToString,
   getEmptyGraphDataset,
   newItemModel,
-  uniqFieldvaluesAsStrings,
+  uniqFieldValuesAsStrings,
 } from "./utils";
 
 /**
@@ -151,7 +151,7 @@ const duplicateFieldModel: Producer<GraphDataset, [FieldModel, string?, number?]
     return {
       ...state,
       [fieldsKey]: newFields,
-      [dataKey]: mapValues(state[dataKey], (data) => ({ ...data, [id as string]: data[fieldModel.id] })),
+      [dataKey]: mapValues(state[dataKey], (data) => ({ ...data, [id!]: data[fieldModel.id] })),
     };
   };
 };
@@ -458,7 +458,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
         // - if partitions palette are still in sync with the field values
         case "partition":
           // check if deprecated appearance state
-          values = uniqFieldvaluesAsStrings(itemsData, appearanceElement.field.id);
+          values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
 
           // checking with the actual palette miss some values. It's ok if it has more available.
           if (

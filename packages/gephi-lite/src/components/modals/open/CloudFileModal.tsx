@@ -61,8 +61,8 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
           console.error(e);
           notify({
             type: "error",
-            message: t("graph.open.github.error") as string,
-            title: t("gephi-lite.title") as string,
+            message: t("graph.open.github.error"),
+            title: t("gephi-lite.title"),
           });
         }
       }

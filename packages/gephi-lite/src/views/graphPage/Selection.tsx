@@ -71,7 +71,7 @@ function SelectedItem<
     const fields = type === "edges" ? graphDataset.edgeFields : graphDataset.nodeFields;
 
     return [
-      { label: t(`graph.model.${type}-data.id`) as string, value: id },
+      { label: t(`graph.model.${type}-data.id`), value: id },
       ...fields.map((field) => ({
         label: staticDynamicAttributeLabel(field),
         value: castScalarToModelValue(data.static[field.id], field),

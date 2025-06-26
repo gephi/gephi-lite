@@ -154,14 +154,14 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
           items: itemTypesName,
           metrics: Object.values(metricConfig.attributeNames).join(", "),
           count: Object.values(metricConfig.attributeNames).length,
-        }) as string,
+        }),
       );
     } catch (e) {
       const message = e instanceof Error ? e.message : t("error.unknown");
       notify({
         type: "error",
         message,
-        title: t("statistics.title") as string,
+        title: t("statistics.title"),
       });
     }
   }, [
@@ -197,14 +197,14 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
                 key={`${itemType}-${value}`}
                 required
                 id={`statistics-${itemType}-${metric.id}-params-${value}`}
-                label={t(`${prefix}.attributes.${value}`) as string}
+                label={t(`${prefix}.attributes.${value}`)}
                 value={metricConfig.attributeNames[value]}
                 onChange={(v) => onChange("attributeNames", value, v)}
                 warning={
                   !!fieldsIndex[itemType][metricConfig.attributeNames[value]]
-                    ? (t(`statistics.${itemType}_attribute_already_exists`, {
+                    ? t(`statistics.${itemType}_attribute_already_exists`, {
                         field: metricConfig.attributeNames[value],
-                      }) as string)
+                      })
                     : undefined
                 }
               />
@@ -219,11 +219,9 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
               {param.type === "number" && (
                 <NumberInput
                   id={id}
-                  label={t(`${prefix}.parameters.${param.id}.title`) as string}
+                  label={t(`${prefix}.parameters.${param.id}.title`)}
                   required={param.required}
-                  description={
-                    param.description ? (t(`${prefix}.parameters.${param.id}.description`) as string) : undefined
-                  }
+                  description={param.description ? t(`${prefix}.parameters.${param.id}.description`) : undefined}
                   value={metricConfig.parameters[param.id] as number}
                   onChange={(v) => onChange("parameters", param.id, v)}
                 />
@@ -231,11 +229,9 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
               {param.type === "boolean" && (
                 <BooleanInput
                   id={id}
-                  label={t(`${prefix}.parameters.${param.id}.title`) as string}
+                  label={t(`${prefix}.parameters.${param.id}.title`)}
                   required={param.required}
-                  description={
-                    param.description ? (t(`${prefix}.parameters.${param.id}.description`) as string) : undefined
-                  }
+                  description={param.description ? t(`${prefix}.parameters.${param.id}.description`) : undefined}
                   value={metricConfig.parameters[param.id] as boolean}
                   onChange={(v) => onChange("parameters", param.id, v)}
                 />
@@ -243,28 +239,24 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
               {param.type === "enum" && (
                 <EnumInput
                   id={id}
-                  label={t(`${prefix}.parameters.${param.id}.title`) as string}
+                  label={t(`${prefix}.parameters.${param.id}.title`)}
                   required={param.required}
-                  description={
-                    param.description ? (t(`${prefix}.parameters.${param.id}.description`) as string) : undefined
-                  }
+                  description={param.description ? t(`${prefix}.parameters.${param.id}.description`) : undefined}
                   value={metricConfig.parameters[param.id] as string}
                   onChange={(v) => onChange("parameters", param.id, v)}
                   options={param.values.map(({ id }) => ({
                     value: id,
-                    label: t(`${prefix}.parameters.${param.id}.values.${id}`) as string,
+                    label: t(`${prefix}.parameters.${param.id}.values.${id}`),
                   }))}
                 />
               )}
               {param.type === "attribute" && (
                 <EnumInput
                   id={id}
-                  label={t(`${prefix}.parameters.${param.id}.title`) as string}
+                  label={t(`${prefix}.parameters.${param.id}.title`)}
                   required={param.required}
-                  description={
-                    param.description ? (t(`${prefix}.parameters.${param.id}.description`) as string) : undefined
-                  }
-                  placeholder={t("common.none") as string}
+                  description={param.description ? t(`${prefix}.parameters.${param.id}.description`) : undefined}
+                  placeholder={t("common.none")}
                   value={metricConfig.parameters[param.id] as string}
                   onChange={(v) => onChange("parameters", param.id, v)}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -356,7 +348,7 @@ export const StatisticsPanel: FC = () => {
   const options: GroupBase<MetricOption>[] = useMemo(
     () => [
       {
-        label: capitalize(t("graph.model.nodes") as string),
+        label: capitalize(t("graph.model.nodes")),
         options: NODE_METRICS.map((metric) => ({
           value: metric.id,
           label: t(`statistics.nodes.${metric.id}.title`),
@@ -364,7 +356,7 @@ export const StatisticsPanel: FC = () => {
         })),
       },
       {
-        label: capitalize(t("graph.model.edges") as string),
+        label: capitalize(t("graph.model.edges")),
         options: EDGE_METRICS.map((metric) => ({
           value: metric.id,
           label: t(`statistics.edges.${metric.id}.title`),
@@ -372,7 +364,7 @@ export const StatisticsPanel: FC = () => {
         })),
       },
       {
-        label: capitalize(t("graph.model.mixed") as string),
+        label: capitalize(t("graph.model.mixed")),
         options: MIXED_METRICS.map((metric) => ({
           value: metric.id,
           label: t(`statistics.mixed.${metric.id}.title`),

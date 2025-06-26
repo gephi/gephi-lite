@@ -61,7 +61,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
   const attributes = watch("attributes");
   return (
     <Modal
-      title={(isNew ? t("edition.create_nodes") : t("edition.update_nodes")) as string}
+      title={isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
       onClose={() => cancel()}
       className="modal-lg"
       onSubmit={handleSubmit((data) => {
@@ -208,7 +208,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
               <input
                 type="text"
                 className={cx("form-control", (errors.attributes || [])[i]?.key && "is-invalid")}
-                placeholder={t("graph.model.nodes-data.attribute-name") as string}
+                placeholder={t("graph.model.nodes-data.attribute-name")}
                 {...register(`attributes.${i}.key`, {
                   required: "true",
                   validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
@@ -232,7 +232,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
                 //TODO: date, keywords...
                 type={field.type === "number" ? "number" : "text"}
                 className={cx("form-control flex-grow-1 me-2", (errors.attributes || [])[i]?.value && "is-invalid")}
-                placeholder={t("graph.model.nodes-data.attribute-value") as string}
+                placeholder={t("graph.model.nodes-data.attribute-value")}
                 {...register(`attributes.${i}.value`)}
               />
               {(errors.attributes || [])[i]?.value && (
