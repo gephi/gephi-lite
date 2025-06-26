@@ -123,29 +123,30 @@ export const DataPage: FC = () => {
     <Layout id="data-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
-        <GraphSummary className="px-3 mb-3" />
-        <GraphSearchSelection className="mb-3 mx-1" />
-        <NavMenu
-          className="mx-2"
-          menu={MENU}
-          selected={selectedTool?.id}
-          onSelectedChange={(item) =>
-            setSelectedTool(
-              item.panel
-                ? {
-                    id: item.id,
-                    panel: item.panel,
-                  }
-                : undefined,
-            )
-          }
-        />
+        <div className="panel-content">
+          <GraphSummary className="px-3 mb-3" />
+          <GraphSearchSelection className="mb-3 mx-1" />
+          <NavMenu
+            menu={MENU}
+            selected={selectedTool?.id}
+            onSelectedChange={(item) =>
+              setSelectedTool(
+                item.panel
+                  ? {
+                      id: item.id,
+                      panel: item.panel,
+                    }
+                  : undefined,
+              )
+            }
+          />
+        </div>
       </div>
 
       {/* Extended left panel */}
       <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
         {selectedTool && (
-          <>
+          <div className="panel-content">
             <button
               type="button"
               className="btn-close float-end"
@@ -153,7 +154,7 @@ export const DataPage: FC = () => {
               onClick={() => setSelectedTool(undefined)}
             ></button>
             <selectedTool.panel />
-          </>
+          </div>
         )}
       </div>
 

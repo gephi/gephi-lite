@@ -83,34 +83,31 @@ export const GraphPage: FC = () => {
   return (
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
-      <div className="left-panel gl-container-highest-bg gl-border gl-p-md gl-gap-lg gl-panel">
-        <GraphSummary className="px-3 mb-3" />
-        <GraphSearchSelection className="mb-3 mx-1" />
-        <NavMenu
-          menu={MENU}
-          selected={selectedTool?.id}
-          onSelectedChange={(item) =>
-            setSelectedTool(
-              item.panel
-                ? {
-                    id: item.id,
-                    panel: item.panel,
-                  }
-                : undefined,
-            )
-          }
-        />
+      <div className="left-panel">
+        <div className="panel-content">
+          <GraphSummary className="px-3 mb-3" />
+          <GraphSearchSelection className="mb-3 mx-1" />
+          <NavMenu
+            menu={MENU}
+            selected={selectedTool?.id}
+            onSelectedChange={(item) =>
+              setSelectedTool(
+                item.panel
+                  ? {
+                      id: item.id,
+                      panel: item.panel,
+                    }
+                  : undefined,
+              )
+            }
+          />
+        </div>
       </div>
 
       {/* Extended left panel */}
-      <div
-        className={cx(
-          "left-panel-wrapper gl-container-highest-bg gl-border gl-panel gl-p-md",
-          selectedTool && "deployed",
-        )}
-      >
+      <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
         {selectedTool && (
-          <>
+          <div className="panel-content">
             <button
               type="button"
               className="btn-close float-end"
@@ -118,7 +115,7 @@ export const GraphPage: FC = () => {
               onClick={() => setSelectedTool(undefined)}
             ></button>
             <selectedTool.panel />
-          </>
+          </div>
         )}
       </div>
 
