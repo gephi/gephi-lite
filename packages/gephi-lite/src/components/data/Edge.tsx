@@ -1,9 +1,9 @@
 import cx from "classnames";
 import { FC, ReactNode, useMemo } from "react";
 
-import { getItemAttributes } from "../core/appearance/utils";
-import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
-import { mergeStaticDynamicData } from "../core/graph/dynamicAttributes";
+import { getItemAttributes } from "../../core/appearance/utils";
+import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../../core/context/dataContexts";
+import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { NodeComponent } from "./Node";
 
 export const EdgeComponent: FC<{

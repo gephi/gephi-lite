@@ -7,8 +7,8 @@ import AsyncSelect from "react-select/async";
 
 import { useAppearance, useSearch } from "../core/context/dataContexts";
 import { ItemType } from "../core/types";
-import { EdgeComponentById } from "./Edge";
-import { NodeComponentById } from "./Node";
+import { EdgeComponentById } from "./data/Edge";
+import { NodeComponentById } from "./data/Node";
 import { SearchIcon } from "./common-icons";
 import { DEFAULT_SELECT_PROPS } from "./forms/Select";
 

@@ -12,9 +12,9 @@ import ReactLinkify from "react-linkify";
 
 import ConfirmModal from "../../components//modals/ConfirmModal";
 import Dropdown from "../../components/Dropdown";
-import { EdgeComponent } from "../../components/Edge";
+import { EdgeComponent } from "../../components/data/Edge";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
-import { NodeComponent } from "../../components/Node";
+import { NodeComponent } from "../../components/data/Node";
 import UpdateEdgeModal from "../../components/modals/edition/UpdateEdgeModal";
 import UpdateNodeModal from "../../components/modals/edition/UpdateNodeModal";
 import { getItemAttributes } from "../../core/appearance/utils";
