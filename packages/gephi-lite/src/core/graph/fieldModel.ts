@@ -47,6 +47,16 @@ export function guessSeparator(values: string[]): string | null {
 export function inferFieldType(values: Scalar[], itemsCount: number): FieldModelTypeSpec {
   // NUMBER
   if (values.every((v) => isNumber(v))) {
+    // Numbers non uniq & in series from 0 or 1 => category
+    const uniqValues = sortBy(uniq(values));
+    if (uniqValues.length < values.length) {
+      const isSeriesFrom0Or1 = uniqValues.every(
+        (v, i) => (i === 0 && (v === 0 || v === 1)) || i === uniqValues.length - 1 || v === uniqValues[i + 1] - 1,
+      );
+
+      if (isSeriesFrom0Or1) return { type: "category" };
+    }
+
     return { type: "number" };
   }
   // DATE
