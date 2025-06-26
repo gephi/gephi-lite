@@ -9,6 +9,7 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import guessFormat from "@gristlabs/moment-guess";
 import { isNumber, sortBy, take, toPairs, uniq } from "lodash";
+import { DateTime } from "luxon";
 
 /**
  * This function takes an array of string values, and tries various separators
@@ -64,10 +65,12 @@ export function inferFieldType(values: Scalar[], itemsCount: number): FieldModel
   if (
     values.every((v) => {
       try {
-        const _dateFormat = guessFormat("" + v);
+        const _dateFormat = guessFormat("" + v, "");
         // format guesser can return multiple choices, we just pick one
         const dateFormat = Array.isArray(_dateFormat) ? _dateFormat[0] : _dateFormat;
-        dateFormats[dateFormat] = (dateFormats[dateFormat] || 0) + 1;
+        const correctedDateFormat = dateFormat.replaceAll("Y", "y").replaceAll("D", "d");
+
+        dateFormats[correctedDateFormat] = (dateFormats[correctedDateFormat] || 0) + 1;
         return true;
       } catch {
         return false;
@@ -115,13 +118,23 @@ export function castScalarToModelValue(scalar: Scalar, fieldModel: FieldModelTyp
   }
 }
 
-// Raw data level
-// ItemsData with Scalar value(see toScalar in packages/sdk/src/utils/casting.ts)
+export class CastValueError extends Error {}
 
-// FieldModel level
-// Describe how to interprete raw data
-
-// Field Models influence:
-// Field Selection in Appearance/Filters like in packages/gephi-lite/src/components/GraphAppearance/color/ColorItem.tsx
-// How to extract values from raw Data to fuel Appearance/filters (not done today)
-// How to build Field Edition UI for users see packages/gephi-lite/src/views/graphPage/modals/edition/UpdateNodeModal.tsx
+export function serializeModelValueToScalar(value: ModelValueType, fieldModel: FieldModelTypeSpec): Scalar {
+  switch (fieldModel.type) {
+    case "number":
+      if (typeof value !== "number") throw new CastValueError("Wrong number value");
+      return value;
+    case "category":
+    case "text":
+      if (typeof value !== "string") throw new CastValueError(`Wrong ${fieldModel.type} value`);
+      return value;
+    case "keywords":
+      if (!Array.isArray(value) || value.some((v) => typeof v !== "string"))
+        throw new CastValueError("Wrong keywords value");
+      return value.join(fieldModel.separator);
+    case "date":
+      if (!(value instanceof DateTime)) throw new CastValueError("Wrong Date value");
+      return value.toFormat(fieldModel.format);
+  }
+}

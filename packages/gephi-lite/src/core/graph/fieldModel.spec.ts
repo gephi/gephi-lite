@@ -1,9 +1,16 @@
 import { shuffle } from "lodash";
+import { DateTime } from "luxon";
 import { describe, expect, it } from "vitest";
 
-import { guessSeparator, inferFieldType } from "./fieldModel";
+import {
+  CastValueError,
+  castScalarToModelValue,
+  guessSeparator,
+  inferFieldType,
+  serializeModelValueToScalar,
+} from "./fieldModel";
 
-describe("Graph utilities", () => {
+describe("Field Model", () => {
   describe("#inferFieldType", () => {
     it("should properly handle a list of differing numbers", () => {
       expect(inferFieldType([123, -123, 456, 789, Infinity], 5)).toEqual({
@@ -19,6 +26,12 @@ describe("Graph utilities", () => {
 
     it("should properly handle a list of repeating strings", () => {
       expect(inferFieldType(["Nantes", "Nantes", "Nantes", "Paris", "Paris"], 5)).toEqual({
+        type: "category",
+      });
+    });
+
+    it("should properly handle a list of repeating strings", () => {
+      expect(inferFieldType(["true", "true", "true", "false", "false"], 5)).toEqual({
         type: "category",
       });
     });
@@ -69,7 +82,7 @@ describe("Graph utilities", () => {
         inferFieldType(["2025-06", "2023", "2012-06-03", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
       ).toEqual({
         type: "date",
-        format: "YYYY-MM-DD",
+        format: "yyyy-MM-dd",
       });
     });
 
@@ -78,13 +91,19 @@ describe("Graph utilities", () => {
         inferFieldType(["2025", "2023", "2012", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
       ).toEqual({
         type: "date",
-        format: "YYYY",
+        format: "yyyy",
+      });
+    });
+    it("should properly detect date and format", () => {
+      expect(inferFieldType(["2025-06-24T15:30:21.907Z"], 1)).toEqual({
+        type: "date",
+        format: "yyyy-MM-ddTHH:mm:ss.SSS[Z]",
       });
     });
     it("should properly detect date and format", () => {
       expect(inferFieldType(["2025/05/06", "2023/05/08", "2012/12/31", "2012/12/01", "2021/11/03"], 5)).toEqual({
         type: "date",
-        format: "YYYY/MM/DD",
+        format: "yyyy/MM/dd",
       });
     });
     it("should properly detect wrong date and format", () => {
@@ -106,6 +125,84 @@ describe("Graph utilities", () => {
           "TypeScript",
         ]),
       ).toEqual(",");
+    });
+  });
+
+  describe("#castScalarToModelValue", () => {
+    it("should properly cast integer", () => {
+      expect(castScalarToModelValue("12", { type: "number" })).toEqual(12);
+    });
+    it("should properly cast integer", () => {
+      expect(castScalarToModelValue(12, { type: "number" })).toEqual(12);
+    });
+    it("should properly cast float", () => {
+      expect(castScalarToModelValue("1.3", { type: "number" })).toEqual(1.3);
+    });
+    it("should properly cast float", () => {
+      expect(castScalarToModelValue(1.3, { type: "number" })).toEqual(1.3);
+    });
+    it("should properly cast scientific notation", () => {
+      expect(castScalarToModelValue("1e5", { type: "number" })).toEqual(1e5);
+    });
+    it("should properly cast NaN to undefined", () => {
+      expect(castScalarToModelValue("notANumber", { type: "number" })).toEqual(undefined);
+    });
+    it("should properly cast text", () => {
+      expect(castScalarToModelValue("abc", { type: "text" })).toEqual("abc");
+    });
+    it("should properly cast category", () => {
+      expect(castScalarToModelValue("cat", { type: "text" })).toEqual("cat");
+    });
+    it("should properly cast category", () => {
+      expect(castScalarToModelValue(true, { type: "category" })).toEqual("true");
+    });
+    it("should properly cast keywords", () => {
+      expect(castScalarToModelValue("tag1", { type: "keywords", separator: "," })).toEqual(["tag1"]);
+    });
+    it("should properly cast keywords", () => {
+      expect(castScalarToModelValue("tag1,tag2,tag1", { type: "keywords", separator: "," })).toEqual([
+        "tag1",
+        "tag2",
+        "tag1",
+      ]);
+    });
+    it("should properly cast date", () => {
+      expect(castScalarToModelValue("2025/05/06", { type: "date", format: "yyyy/MM/dd" })).toEqual(
+        DateTime.fromISO("2025-05-06"),
+      );
+    });
+    it("should properly cast date", () => {
+      expect(castScalarToModelValue("2025-06", { type: "date", format: "yyyy-MM" })).toEqual(
+        DateTime.fromISO("2025-06"),
+      );
+    });
+    it("should properly cast error date", () => {
+      expect(castScalarToModelValue("not a date", { type: "date", format: "yyyy-MM" })).toEqual(undefined);
+    });
+  });
+
+  describe("#serializeModelValueToScalar", () => {
+    it("should properly serialize integer", () => {
+      expect(serializeModelValueToScalar(12, { type: "number" })).toEqual(12);
+      expect(serializeModelValueToScalar(1.3, { type: "number" })).toEqual(1.3);
+    });
+    it("should properly serialize category/text", () => {
+      expect(serializeModelValueToScalar("tag", { type: "category" })).toEqual("tag");
+      expect(serializeModelValueToScalar("tag", { type: "text" })).toEqual("tag");
+    });
+    it("should properly serialize keywords", () => {
+      expect(serializeModelValueToScalar(["tag1", "tag2", "tag1"], { type: "keywords", separator: ";" })).toEqual(
+        "tag1;tag2;tag1",
+      );
+    });
+    it("should properly serialize date", () => {
+      expect(
+        serializeModelValueToScalar(DateTime.fromISO("2025-12-08"), { type: "date", format: "yyyy/dd/MM" }),
+      ).toEqual("2025/08/12");
+    });
+    it("should properly throw when scalar can not be generated", () => {
+      expect(() => serializeModelValueToScalar(undefined, { type: "category" })).toThrow(CastValueError);
+      expect(() => serializeModelValueToScalar(undefined, { type: "date", format: "yyyy" })).toThrow(CastValueError);
     });
   });
 });
