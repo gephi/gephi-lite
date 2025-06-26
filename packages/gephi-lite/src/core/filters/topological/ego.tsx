@@ -1,7 +1,7 @@
 import { subgraph } from "graphology-operators";
 import { t } from "i18next";
 
-import { NodeComponentById } from "../../../components/Node";
+import { NodeComponentById } from "../../../components/data/Node";
 import { FilterEnumParameter, FilterNodeParameter, FilterNumberParameter, TopologicalFilterDefinition } from "../types";
 
 export type TraversalMode = "in" | "out" | "both";

@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
 import Dropdown from "../../../components/Dropdown";
-import { EdgeComponentById } from "../../../components/Edge";
-import { NodeComponentById } from "../../../components/Node";
+import { EdgeComponentById } from "../../../components/data/Edge";
+import { NodeComponentById } from "../../../components/data/Node";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
 import {
   useDataTable,
@@ -252,7 +252,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
           <DataCell
             type={type}
             id={props.row.getValue("id")}
-            field={field.id}
+            field={field}
             value={props.row.getValue(`field::${field.id}`)}
           />
         ),

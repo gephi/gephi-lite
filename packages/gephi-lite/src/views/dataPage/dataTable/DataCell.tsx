@@ -1,31 +1,31 @@
-import { ItemType, Scalar } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ReactLinkify from "react-linkify";
 import TetherComponent from "react-tether";
 
+import { EditItemAttribute, RenderItemAttribute } from "../../../components/data/Attribute";
 import { useGraphDatasetActions } from "../../../core/context/dataContexts";
-import { DEFAULT_LINKIFY_PROPS } from "../../../utils/url";
 
-export const ReadDataCell = forwardRef<HTMLSpanElement, { value: Scalar; onDoubleClick?: MouseEventHandler }>(
-  ({ value, onDoubleClick }, ref) => {
-    return (
-      <span ref={ref} className="data-cell" onDoubleClick={onDoubleClick}>
-        <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify>
-      </span>
-    );
-  },
-);
+export const ReadDataCell = forwardRef<
+  HTMLSpanElement,
+  { value: Scalar; field: FieldModel; onDoubleClick?: MouseEventHandler }
+>(({ value, field, onDoubleClick }, ref) => {
+  return (
+    <span ref={ref} className="data-cell" onDoubleClick={onDoubleClick}>
+      <RenderItemAttribute value={value} field={field} />
+    </span>
+  );
+});
 
-export const EditDataCell: FC<{ type: ItemType; id: string; field: string; value: Scalar; close: () => void }> = ({
-  type,
-  id,
-  field,
-  close,
-  value: initialValue,
-}) => {
+export const EditDataCell: FC<{
+  type: ItemType;
+  id: string;
+  field: FieldModel;
+  value: Scalar;
+  close: () => void;
+}> = ({ type, id, field, close, value: initialValue }) => {
   const { t } = useTranslation();
-  const [value, setValue] = useState(initialValue + "");
+  const [value, setValue] = useState<Scalar>(initialValue);
   const { updateNode, updateEdge } = useGraphDatasetActions();
   const update = type === "nodes" ? updateNode : updateEdge;
 
@@ -59,7 +59,7 @@ export const EditDataCell: FC<{ type: ItemType; id: string; field: string; value
       constraints={[{ to: "scrollparent", attachment: "together", pin: true }]}
       renderTarget={(ref) => (
         <div ref={ref}>
-          <ReadDataCell ref={targetWrapper} value={value} />
+          <ReadDataCell ref={targetWrapper} value={value} field={field} />
         </div>
       )}
       renderElement={(ref) => (
@@ -69,11 +69,11 @@ export const EditDataCell: FC<{ type: ItemType; id: string; field: string; value
             className="bg-light"
             onSubmit={(e) => {
               e.preventDefault();
-              update(id, { [field]: value }, { merge: true });
+              update(id, { [field.id]: value }, { merge: true });
               close();
             }}
           >
-            <textarea autoFocus className="form-control" value={value} onChange={(e) => setValue(e.target.value)} />
+            <EditItemAttribute field={field} value={value} onChange={(value) => setValue(value)} />
             <div className="text-end">
               <button className="btn btn-small">{t("datatable.save_cell")}</button>
             </div>
@@ -84,11 +84,11 @@ export const EditDataCell: FC<{ type: ItemType; id: string; field: string; value
   );
 };
 
-export const DataCell: FC<{ type: ItemType; id: string; field: string; value: Scalar }> = (props) => {
+export const DataCell: FC<{ type: ItemType; id: string; field: FieldModel; value: Scalar }> = (props) => {
   const [isEditing, setIsEditing] = useState(false);
 
   return !isEditing ? (
-    <ReadDataCell value={props.value} onDoubleClick={() => setIsEditing(true)} />
+    <ReadDataCell {...props} onDoubleClick={() => setIsEditing(true)} />
   ) : (
     <EditDataCell {...props} close={() => setIsEditing(false)} />
   );
