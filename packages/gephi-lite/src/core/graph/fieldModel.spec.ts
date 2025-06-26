@@ -1,3 +1,4 @@
+import { shuffle } from "lodash";
 import { describe, expect, it } from "vitest";
 
 import { guessSeparator, inferFieldType } from "./fieldModel";
@@ -24,6 +25,32 @@ describe("Graph utilities", () => {
 
     it("should properly handle a list of repeating numbers", () => {
       expect(inferFieldType([44, 44, 44, 75, 75], 5)).toEqual({
+        type: "number",
+      });
+    });
+
+    // categories as numbers
+    it("should properly handle a list of repeating numbers from 1 in series", () => {
+      const numbersFromSeriesRepeating = shuffle([1, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 7]);
+      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+        type: "category",
+      });
+    });
+    it("should properly handle a list of repeating numbers from 0 in series", () => {
+      const numbersFromSeriesRepeating = shuffle([0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 7]);
+      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+        type: "category",
+      });
+    });
+    it("should properly handle a list of repeating numbers in almost series", () => {
+      const numbersFromSeriesRepeating = shuffle([0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 7, 10]);
+      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+        type: "number",
+      });
+    });
+    it("should properly handle a list of repeating numbers in almost series", () => {
+      const numbersFromSeriesRepeating = shuffle([2, 2, 3, 4, 5, 5, 5, 6, 6, 7, 10]);
+      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
         type: "number",
       });
     });
