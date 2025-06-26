@@ -30,10 +30,10 @@ const ConfirmModal: FC<
       <>{message}</>
       <>
         <button type="reset" className="btn btn-outline-dark" onClick={() => cancel()}>
-          {cancelMsg || (t("common.cancel") as string)}
+          {cancelMsg || t("common.cancel")}
         </button>
         <button type="submit" className="btn btn-primary">
-          {confirmMsg || (t("common.confirm") as string)}
+          {confirmMsg || t("common.confirm")}
         </button>
       </>
     </Modal>

@@ -19,7 +19,7 @@ const GraphStat: FC<{ className?: string; type: ItemType; current: number; total
 
   return (
     <div className={cx("d-flex flex-column", className)}>
-      <div>{capitalize(t(`graph.model.${type}`) as string)}</div>
+      <div>{capitalize(t(`graph.model.${type}`))}</div>
       <div>
         <span>
           {current.toLocaleString(locale)}

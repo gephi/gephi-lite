@@ -43,7 +43,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
     () => ({
       classNames: { menuPortal: () => "over-modal" },
       menuPortalTarget: portalTarget,
-      placeholder: t("edition.search_nodes") as string,
+      placeholder: t("edition.search_nodes"),
       // reverse to show the last inserted node first see #152
       options: reverse(map(nodeRenderingData, ({ label }, value) => ({ value, label: label || value }))),
     }),
@@ -91,7 +91,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
 
   return (
     <Modal
-      title={(isNew ? t("edition.create_edges") : t("edition.update_edges")) as string}
+      title={isNew ? t("edition.create_edges") : t("edition.update_edges")}
       onClose={() => cancel()}
       className="modal-lg"
       onSubmit={handleSubmit((data) => {
@@ -280,7 +280,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
               <input
                 type="text"
                 className="form-control"
-                placeholder={t("graph.model.edges-data.attribute-name") as string}
+                placeholder={t("graph.model.edges-data.attribute-name")}
                 {...register(`attributes.${i}.key`, {
                   required: "true",
                   validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
@@ -304,7 +304,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
                 //TODO: date, keywords...
                 type={field.type === "number" ? "number" : "text"}
                 className="form-control"
-                placeholder={t("graph.model.edges-data.attribute-value") as string}
+                placeholder={t("graph.model.edges-data.attribute-value")}
                 {...register(`attributes.${i}.value`)}
               />
               {(errors.attributes || [])[i]?.value && (

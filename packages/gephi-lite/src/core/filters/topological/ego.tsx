@@ -70,9 +70,9 @@ export const buildEgoFilterDefinition = (
     };
 
     if (typeof egoId === "string" && graph.hasNode(egoId)) {
-      const nodes = new Set([egoId as string]);
+      const nodes = new Set([egoId]);
       let depth = 0;
-      let neighbors = new Set([egoId as string]);
+      let neighbors = new Set([egoId]);
       while (depth <= maxDepth && neighbors.size > 0) {
         const nextIterationNeighbors = new Set<string>();
         neighbors.forEach((n) => {

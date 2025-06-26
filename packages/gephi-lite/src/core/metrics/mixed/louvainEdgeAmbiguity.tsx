@@ -10,7 +10,7 @@ import { DEFAULT_NODE_COLOR } from "../../appearance/utils";
 import { openInNewTab } from "../../broadcast/utils";
 import { useAppearance, useFilters, useGraphDataset } from "../../context/dataContexts";
 import { FullGraph } from "../../graph/types";
-import { uniqFieldvaluesAsStrings } from "../../graph/utils";
+import { uniqFieldValuesAsStrings } from "../../graph/utils";
 import { Metric } from "../types";
 
 function computeLouvainEdgeScores(
@@ -78,7 +78,7 @@ const VisualizeAmbiguityForm: FC<{
   }, [attributeNames, dataset.edgeFields, dataset.nodeFields]);
   const getPreviewAppearance = useCallback(() => {
     const itemsData = dataset.edgeData;
-    const values = uniqFieldvaluesAsStrings(itemsData, attributeNames["sourceCommunityId"]);
+    const values = uniqFieldValuesAsStrings(itemsData, attributeNames["sourceCommunityId"]);
     const newAppearance: AppearanceState = {
       ...appearance,
       nodesColor: {

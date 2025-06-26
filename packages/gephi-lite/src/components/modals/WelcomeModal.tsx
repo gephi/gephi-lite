@@ -38,8 +38,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     if (fileStateType === "error") {
       notify({
         type: "error",
-        message: t("graph.open.remote.error") as string,
-        title: t("gephi-lite.title") as string,
+        message: t("graph.open.remote.error"),
+        title: t("gephi-lite.title"),
       });
     }
   }, [fileStateType, notify, t]);
@@ -77,8 +77,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                         await open(file);
                         notify({
                           type: "success",
-                          message: t("graph.open.remote.success", { filename: file.filename }) as string,
-                          title: t("gephi-lite.title") as string,
+                          message: t("graph.open.remote.success", { filename: file.filename }),
+                          title: t("gephi-lite.title"),
                         });
                         submit({});
                       }}
@@ -168,8 +168,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                     });
                     notify({
                       type: "success",
-                      message: t("graph.open.remote.success", { filename: sample }) as string,
-                      title: t("gephi-lite.title") as string,
+                      message: t("graph.open.remote.success", { filename: sample }),
+                      title: t("gephi-lite.title"),
                     });
                     submit({});
                   }}

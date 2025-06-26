@@ -35,7 +35,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
       itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
     const fieldType = "field" as const;
     return [
-      { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) as string },
+      { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) },
       ...allFields.map((field) => {
         return {
           value: `field::${staticDynamicAttributeKey(field)}`,
@@ -44,8 +44,8 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
           label: staticDynamicAttributeLabel(field),
         };
       }),
-      { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) as string },
-      { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) as string },
+      { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) },
+      { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) },
     ];
   }, [nodeFields, edgeFields, dynamicNodeFields, dynamicEdgeFields, itemKey, itemType, t]);
 
