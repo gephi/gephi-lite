@@ -15,7 +15,6 @@ import Dropdown from "../../components/Dropdown";
 import { EdgeComponent } from "../../components/Edge";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
 import { NodeComponent } from "../../components/Node";
-import { ItemIcons } from "../../components/common-icons";
 import UpdateEdgeModal from "../../components/modals/edition/UpdateEdgeModal";
 import UpdateNodeModal from "../../components/modals/edition/UpdateNodeModal";
 import { getItemAttributes } from "../../core/appearance/utils";
@@ -236,14 +235,9 @@ function SelectedItem<
 }
 
 export const Selection: FC<{ className?: string }> = ({ className }) => {
-  const { t } = useTranslation();
-  const { openModal } = useModal();
-
   const { type, items } = useSelection();
-  const { select, reset } = useSelectionActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
-  const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
 
   const mergedStaticDynamicItemData = useMemo(() => {
@@ -252,8 +246,6 @@ export const Selection: FC<{ className?: string }> = ({ className }) => {
       type === "nodes" ? dynamicNodeData : dynamicEdgeData,
     );
   }, [nodeData, dynamicNodeData, dynamicEdgeData, edgeData, type]);
-
-  const ItemIcon = ItemIcons[type];
 
   const isVisible =
     type === "nodes" ? filteredGraph.hasNode.bind(filteredGraph) : filteredGraph.hasEdge.bind(filteredGraph);

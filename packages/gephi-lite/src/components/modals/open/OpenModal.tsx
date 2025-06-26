@@ -1,15 +1,22 @@
-import { type ComponentType, type FC, useEffect, useMemo, useState } from "react";
+import { type ComponentType, type FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { ModalProps } from "../../../core/modals/types";
 import type { AsyncStatus } from "../../../utils/promises";
-import { NavMenu } from "../../NavMenu";
+import { type MenuItem, NavMenu } from "../../NavMenu";
 import { Modal } from "../../modals";
 import { OpenCloudFileForm } from "./CloudFileModal";
 import { OpenLocalFileForm } from "./LocalFileModal";
 import { OpenRemoteFileForm } from "./RemoteFileModal";
 
-const OPEN_COLLECTION = [
+type OpenCollectionMenuItem = MenuItem<{
+  component: ComponentType<{
+    id?: string;
+    onStatusChange: (status: AsyncStatus) => void;
+  }>;
+}>;
+
+const OPEN_COLLECTION_MENU: OpenCollectionMenuItem[] = [
   {
     id: "local",
     i18nKey: "graph.open.local.title",
@@ -29,27 +36,8 @@ const OPEN_COLLECTION = [
 
 export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
-  const [selectedOpen, setSelectedOpen] = useState<{ id: string; component: ComponentType }>({
-    id: "",
-    component: () => null,
-  });
+  const [selectedOpen, setSelectedOpen] = useState<OpenCollectionMenuItem>(OPEN_COLLECTION_MENU[0]);
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
-
-  const openList = useMemo(
-    () =>
-      OPEN_COLLECTION.map((item) => ({
-        id: item.id,
-        label: t(item.i18nKey),
-        onClick: () =>
-          setSelectedOpen({
-            id: item.id,
-            component: () => <item.component id="openForm" onStatusChange={setStatus} />,
-          }),
-      })),
-    [t],
-  );
-
-  useEffect(() => openList[0].onClick(), [openList]);
 
   useEffect(() => {
     console.log(status);
@@ -61,10 +49,14 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
     <Modal className="modal-lg" title={t("workspace.menu.open").toString()} onClose={() => cancel()} doNotPreserveData>
       <div className="d-flex align-items-stretch overflow-hidden">
         <div className="border-end pe-3 me-3 overflow-hidden">
-          <NavMenu menu={openList} selected={selectedOpen?.id} />
+          <NavMenu
+            menu={OPEN_COLLECTION_MENU}
+            selected={selectedOpen?.id}
+            onSelectedChange={(item) => setSelectedOpen(item)}
+          />
         </div>
         <div className="flex-grow-1 overflow-auto">
-          <selectedOpen.component />
+          <selectedOpen.component id="openForm" onStatusChange={setStatus} />
         </div>
       </div>
       <>

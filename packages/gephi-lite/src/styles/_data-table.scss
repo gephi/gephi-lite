@@ -93,7 +93,8 @@
       td {
         display: flex;
 
-        padding: map.get($spacers, 1);
+        padding: map.get($spacers, 1) map.get($spacers, 2);
+
         &.editable {
           padding: 0;
 
