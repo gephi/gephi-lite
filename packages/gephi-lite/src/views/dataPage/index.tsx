@@ -9,7 +9,16 @@ import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
 import { type MenuItem, NavMenu, ToolSection } from "../../components/NavMenu";
-import { AppearanceIcon, FiltersIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
+import {
+  AppearanceIcon,
+  AppearanceIconFill,
+  FiltersIcon,
+  FiltersIconFill,
+  LayoutsIcon,
+  LayoutsIconFill,
+  StatisticsIcon,
+  StatisticsIconFill,
+} from "../../components/common-icons";
 import { useDataTable, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { doesItemMatch } from "../../utils/search";
@@ -23,7 +32,7 @@ const TOOL_MENU: ToolSection[] = [
   {
     id: "layout",
     i18nKey: "layouts.title",
-    icon: LayoutsIcon,
+    icon: { normal: LayoutsIcon, fill: LayoutsIconFill },
     children: LAYOUTS.map((layout) => ({
       id: `layout-${layout.id}`,
       i18nKey: `layouts.${layout.id}.title`,
@@ -33,7 +42,7 @@ const TOOL_MENU: ToolSection[] = [
   {
     id: "appearance",
     i18nKey: "appearance.title",
-    icon: AppearanceIcon,
+    icon: { normal: AppearanceIcon, fill: AppearanceIconFill },
     children: [
       {
         id: "appearance-nodes",
@@ -60,13 +69,13 @@ const TOOL_MENU: ToolSection[] = [
   {
     id: "filters",
     i18nKey: "filters.title",
-    icon: FiltersIcon,
+    icon: { normal: FiltersIcon, fill: FiltersIconFill },
     panel: () => <GraphFilters />,
   },
   {
     id: "statistics",
     i18nKey: "statistics.title",
-    icon: StatisticsIcon,
+    icon: { normal: StatisticsIcon, fill: StatisticsIconFill },
     panel: StatisticsPanel,
   },
 ];

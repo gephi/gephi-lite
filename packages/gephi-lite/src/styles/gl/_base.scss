@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+html {
+  body {
+    font-family: "DM Sans", sans-serif;
+    font-size: 16px;
+    background-color: $gl-sys-color-bg;
+    color: $gl-sys-color-onBg;
+
+    #root {
+      header {
+        z-index: 200
+      }
+
+      main {
+        top: -1px;
+      }
+
+      .gl-container-bg {
+        background-color: $gl-sys-color-bg;
+        color: $gl-sys-color-onBg;
+
+        .text-muted {
+          color: $gl-sys-color-onBg-muted;
+        }
+      }
+
+      .gl-container-high-bg {
+        @extend .gl-container-bg;
+        background-color: $gl-sys-color-container-bg-high;
+      }
+
+      .gl-container-highest-bg {
+        @extend .gl-container-bg;
+        background-color: $gl-sys-color-container-bg-highest;
+      }
+
+      .gl-container-muted-bg {
+        @extend .gl-container-bg;
+        background-color: $gl-sys-color-onComponentBg;
+      }
+
+    }
+  }
+}

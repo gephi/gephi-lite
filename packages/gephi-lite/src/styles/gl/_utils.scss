@@ -1,0 +1,72 @@
+// Padding
+// ------------------------------------------
+.gl-p-none { padding: $gl-sys-space-none; }
+.gl-p-xs   { padding: $gl-sys-space-xs; }
+.gl-p-sm   { padding: $gl-sys-space-sm; }
+.gl-p-md   { padding: $gl-sys-space-md; }
+.gl-p-lg   { padding: $gl-sys-space-lg; }
+.gl-p-xl   { padding: $gl-sys-space-xl; }
+// padding x
+.gl-px-none { padding-left: $gl-sys-space-none; padding-right: $gl-sys-space-none; }
+.gl-px-xs   { padding-left: $gl-sys-space-xs;   padding-right: $gl-sys-space-xs; }
+.gl-px-sm   { padding-left: $gl-sys-space-sm;   padding-right: $gl-sys-space-sm; }
+.gl-px-md   { padding-left: $gl-sys-space-md;   padding-right: $gl-sys-space-md; }
+.gl-px-lg   { padding-left: $gl-sys-space-lg;   padding-right: $gl-sys-space-lg; }
+.gl-px-xl   { padding-left: $gl-sys-space-xl;   padding-right: $gl-sys-space-xl; }
+// padding y
+.gl-py-none { padding-top: $gl-sys-space-none; padding-bottom: $gl-sys-space-none; }
+.gl-py-xs   { padding-top: $gl-sys-space-xs;   padding-bottom: $gl-sys-space-xs; }
+.gl-py-sm   { padding-top: $gl-sys-space-sm;   padding-bottom: $gl-sys-space-sm; }
+.gl-py-md   { padding-top: $gl-sys-space-md;   padding-bottom: $gl-sys-space-md; }
+.gl-py-lg   { padding-top: $gl-sys-space-lg;   padding-bottom: $gl-sys-space-lg; }
+.gl-py-xl   { padding-top: $gl-sys-space-xl;   padding-bottom: $gl-sys-space-xl; }
+
+// Margin
+// ------------------------------------------
+.gl-m-none { margin: $gl-sys-space-none; }
+.gl-m-xs   { margin: $gl-sys-space-xs; }
+.gl-m-sm   { margin: $gl-sys-space-sm; }
+.gl-m-md   { margin: $gl-sys-space-md; }
+.gl-m-lg   { margin: $gl-sys-space-lg; }
+.gl-m-xl   { margin: $gl-sys-space-xl; }
+// margin x
+.gl-mx-none { margin-left: $gl-sys-space-none; margin-right: $gl-sys-space-none; }
+.gl-mx-xs   { margin-left: $gl-sys-space-xs;   margin-right: $gl-sys-space-xs; }
+.gl-mx-sm   { margin-left: $gl-sys-space-sm;   margin-right: $gl-sys-space-sm; }
+.gl-mx-md   { margin-left: $gl-sys-space-md;   margin-right: $gl-sys-space-md; }
+.gl-mx-lg   { margin-left: $gl-sys-space-lg;   margin-right: $gl-sys-space-lg; }
+.gl-mx-xl   { margin-left: $gl-sys-space-xl;   margin-right: $gl-sys-space-xl; }
+// margin y
+.gl-my-none { margin-top: $gl-sys-space-none; margin-bottom: $gl-sys-space-none; }
+.gl-my-xs   { margin-top: $gl-sys-space-xs;   margin-bottom: $gl-sys-space-xs; }
+.gl-my-sm   { margin-top: $gl-sys-space-sm;   margin-bottom: $gl-sys-space-sm; }
+.gl-my-md   { margin-top: $gl-sys-space-md;   margin-bottom: $gl-sys-space-md; }
+.gl-my-lg   { margin-top: $gl-sys-space-lg;   margin-bottom: $gl-sys-space-lg; }
+.gl-my-xl   { margin-top: $gl-sys-space-xl;   margin-bottom: $gl-sys-space-xl; }
+
+// Gap
+// -------------------------------------------
+.gl-gap-none { gap: $gl-sys-space-none; }
+.gl-gap-xs   { gap: $gl-sys-space-xs; }
+.gl-gap-sm   { gap: $gl-sys-space-sm; }
+.gl-gap-md   { gap: $gl-sys-space-md; }
+.gl-gap-lg   { gap: $gl-sys-space-lg; }
+.gl-gap-xl   { gap: $gl-sys-space-xl; }
+// Gap x
+.gl-gap-x-none { row-gap:$gl-sys-space-none; }
+.gl-gap-x-xs   { row-gap:$gl-sys-space-xs; }
+.gl-gap-x-sm   { row-gap:$gl-sys-space-sm; }
+.gl-gap-x-md   { row-gap:$gl-sys-space-md; }
+.gl-gap-x-lg   { row-gap:$gl-sys-space-lg; }
+.gl-gap-x-xl   { row-gap:$gl-sys-space-xl; }
+// Gap Y
+.gl-gap-y-none { column-gap: $gl-sys-space-none; }
+.gl-gap-y-xs   { column-gap: $gl-sys-space-xs; }
+.gl-gap-y-sm   { column-gap: $gl-sys-space-sm; }
+.gl-gap-y-md   { column-gap: $gl-sys-space-md; }
+.gl-gap-y-lg   { column-gap: $gl-sys-space-lg; }
+.gl-gap-y-xl   { column-gap: $gl-sys-space-xl; }
+
+// Border
+// -----------------------------------------
+.gl-border { border: 1px solid $gl-sys-color-border;}
