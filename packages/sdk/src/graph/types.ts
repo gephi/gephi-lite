@@ -61,7 +61,7 @@ export type FieldModelTypeSpec =
   | { type: "number" } // Quantifiable values suitable for ranking appearance and filtering by range
   | { type: "category" } // Terms regrouping many items suitable for partition appearance and select filtering
   | { type: "keywords"; separator: string } // multiple terms for one items suitable for select filtering, can't be used for appearance
-  | { type: "date"; format?: string }; // if no format Gephi Lite will write ISOString.
+  | { type: "date"; format: string }; // if no format Gephi Lite will write ISOString.
 
 export type FieldModelType = FieldModelTypeSpec["type"];
 
