@@ -70,7 +70,7 @@ export function NavMenu<T = unknown>({
       {menu.map((item) => (
         <li key={item.id}>
           <button
-            className={cx("btn w-100 text-start", selected === item.id && "btn-dark")}
+            className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
             onClick={() => {
               if ("children" in item) toggleSection(item.id);
               else onSelectedChange(item);
@@ -81,11 +81,11 @@ export function NavMenu<T = unknown>({
 
           {/* Render sub actions as list */}
           {"children" in item && collapsed.has(item.id) && (
-            <ul className="list-unstyled gl-mx-md gl-gap-xs">
+            <ul className="list-unstyled gl-mx-md gl-gap-xs d-flex flex-column">
               {item.children.map((item) => (
                 <li key={item.id} className="gl-mx-sm">
                   <button
-                    className={cx("btn w-100 text-start", selected === item.id && "btn-dark")}
+                    className={cx("btn w-100 text-start", selected === item.id && "gl-btn-fill")}
                     onClick={() => onSelectedChange(item)}
                   >
                     <ItemMenuInner item={item} />
