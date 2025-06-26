@@ -26,24 +26,75 @@ import { PiGraph } from "react-icons/pi";
 
 </div>}
 
-`.gl-btn-text`
+#### Three styles :
 
-<button className="gl-btn-text">text</button>
+{<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
-`.gl-btn-outline`
+<button className="gl-btn gl-btn-fill">
+  <PiGraph className="" /> Filled
+</button>
 
-<button className="gl-btn-outline">outline</button>
-<button className="gl-btn-fill">fill</button>
+<button className="gl-btn gl-btn-outline">
+  <PiGraph className="" /> Outlined
+</button>
 
-### Interactive modifier/extra classes
-
-#### Toggle
-
-<button className="btn btn-text btn-toggle">toggle</button>
-
-#### Drop down
+<button className="gl-btn">
+  <PiGraph className="" /> Text
+</button>
+</div>}
 
 ### States
+
+#### Filled
+
+{<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
+
+<button className="gl-btn gl-btn-fill">Enabled</button>
+
+<button className="gl-btn gl-btn-fill" disabled>
+  Disabled
+</button>
+
+<button className="gl-btn gl-btn-fill gl-btn-fill-hovered">Hovered</button>
+
+<button className="gl-btn gl-btn-fill gl-btn-fill-focused">Focused</button>
+
+<button className="gl-btn gl-btn-fill gl-btn-fill-pressed">Pressed</button>
+</div>}
+
+#### Outlined
+
+{<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
+
+<button className="gl-btn gl-btn-outline">Enabled</button>
+
+<button className="gl-btn gl-btn-outline" disabled>
+  Disabled
+</button>
+
+<button className="gl-btn gl-btn-outline gl-btn-hovered">Hovered</button>
+
+<button className="gl-btn gl-btn-outline gl-btn-focused">Focused</button>
+
+<button className="gl-btn gl-btn-outline gl-btn-outline-pressed">Pressed</button>
+</div>}
+
+#### Text
+
+{<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
+
+<button className="gl-btn">Enabled</button>
+
+<button className="gl-btn" disabled>
+  Disabled
+</button>
+
+<button className="gl-btn gl-btn-hovered">Hovered</button>
+
+<button className="gl-btn gl-btn-focused">Focused</button>
+
+<button className="gl-btn gl-btn-pressed">Pressed</button>
+</div>}
 
 ### Size
 
