@@ -1,0 +1,78 @@
+@use "sass:color";
+
+.gl-btn {
+
+  @extend .btn;
+  @extend .gl-px-sm;
+  @extend .gl-py-xs;
+  @extend .gl-text-ui;
+  border-radius: $gl-sys-radius-md;
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: color.mix($gl-sys-color-container-bg-highest, $gl-sys-color-onBg, 92%);
+    border-color: color.mix($gl-sys-color-container-bg-highest, $gl-sys-color-onBg, 92%);
+  }
+
+  &:focus-visible {
+    background-color: color.mix($gl-sys-color-container-bg-highest, $gl-sys-color-onBg, 90%);
+    border-color: color.mix($gl-sys-color-container-bg-highest, $gl-sys-color-onBg, 90%);
+    box-shadow: 0 0 0 4px rgba($gl-sys-color-component-bg, 0.33);
+  }
+
+  &:active {
+    background-color: $gl-sys-color-component-bg !important;
+    border-color: $gl-sys-color-component-bg !important;
+    color: $gl-sys-color-onComponentBg !important;
+  }
+
+  &:disabled {
+    color: rgba($gl-sys-color-onBg, $gl-sys-opacity-onComponentBg-disabled);
+    border-color: color.mix($gl-sys-color-container-bg-highest, $gl-sys-color-onBg, 90%);
+    background-color: color.mix($gl-sys-color-container-bg-highest, $gl-sys-color-onBg, 90%);
+    opacity: unset;
+
+  }
+
+  &.gl-btn-fill {
+    background-color: $gl-sys-color-component-bg;
+    color: $gl-sys-color-onComponentBg;
+    border-color: $gl-sys-color-component-bg;
+
+    &:hover {
+      color: $gl-sys-color-onComponentBg;
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 92%);
+    }
+
+    &:focus-visible {
+      color: $gl-sys-color-onComponentBg;
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 90%);
+      box-shadow: 0 0 0 4px rgba($gl-sys-color-component-bg, 0.33);
+    }
+
+    &:active {
+      color: $gl-sys-color-onComponentBg;
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 80%);
+    }
+
+    &:disabled {
+      color: rgba($gl-sys-color-onComponentBg, $gl-sys-opacity-onComponentBg-disabled);
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 90%);
+      opacity: unset;
+    }
+  }
+
+  &.gl-btn-outline {
+    border: 1px solid $gl-sys-color-component-border;
+
+    &:active {
+      color: $gl-sys-color-onComponentBg;
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 80%);
+      border-color: transparent;
+    }
+
+    &:disabled {
+      border: 1px solid rgba($gl-sys-color-component-border, $gl-sys-opacity-onComponentBg-disabled);
+    }
+  }
+}
