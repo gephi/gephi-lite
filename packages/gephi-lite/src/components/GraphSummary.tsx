@@ -47,7 +47,7 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
           <GraphStat className="" type="nodes" current={filteredGraph.order} total={fullGraph.order} />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
         </div>
-        <span>{t(`graph.model.${type || "mixed"}`)}</span>
+        <span>{t(`graph.model.${type || "mixed"}_graph`)}</span>
       </div>
     </div>
   );

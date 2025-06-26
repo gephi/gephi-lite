@@ -1,6 +1,7 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
 import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiMagnifyingGlass, PiX } from "react-icons/pi";
 
 import ConfirmModal from "../../components/modals/ConfirmModal";
@@ -17,6 +18,7 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
   input,
   onChange,
 }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState(input);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
       <input
         type="text"
         className="form-control"
-        placeholder={`Search for ${type}...`}
+        placeholder={t(`search.${type}.placeholder`)}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -49,6 +51,7 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
 };
 
 export const TopBar: FC = () => {
+  const { t } = useTranslation();
   const { openModal } = useModal();
   const { type, search } = useDataTable();
   const { updateQuery } = useDataTableActions();
@@ -58,14 +61,16 @@ export const TopBar: FC = () => {
 
   return (
     <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2">
-      <section>{capitalize(type)}</section>
+      <section>{capitalize(t(`graph.model.${type}`))}</section>
       <section className="flex-grow-1 d-flex flex-row align-items-baseline justify-content-center gap-1">
-        <button className="btn" disabled={selectionActionDisabled} onClick={() => console.log("TODO")}>
-          Edit selected {type}
+        <button className="btn" disabled={true /*selectionActionDisabled*/} onClick={() => console.log("TODO")}>
+          {t(`edition.edit_selected_${type}`)}
         </button>
-        <button className="btn" disabled={selectionActionDisabled} onClick={() => console.log("TODO")}>
-          Merge selected {type}
-        </button>
+        {type === "nodes" && (
+          <button className="btn" disabled={true /*selectionActionDisabled*/} onClick={() => console.log("TODO")}>
+            {t(`edition.merge_selected_nodes`)}
+          </button>
+        )}
         <button
           className="btn"
           disabled={selectionActionDisabled}
@@ -73,9 +78,9 @@ export const TopBar: FC = () => {
             openModal({
               component: ConfirmModal,
               arguments: {
-                title: `Delete selected ${type}`,
-                message: `Are you sure you want to delete the ${items.size} selected ${type}?`,
-                successMsg: `The ${items.size} selected ${type} have successfully been deleted.`,
+                title: t(`edition.delete_selected_${type}`),
+                message: t(`edition.confirm_delete_${type}`, { count: items.size }),
+                successMsg: t(`edition.delete_${type}_success`, { count: items.size }),
               },
               afterSubmit: () => {
                 deleteItems(type, Array.from(items));
@@ -83,7 +88,7 @@ export const TopBar: FC = () => {
             })
           }
         >
-          Delete selected {type}
+          {t(`edition.delete_selected_${type}`)}
         </button>
       </section>
       <section>

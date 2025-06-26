@@ -32,6 +32,7 @@ const TableBodyRow: FC<{
         return (
           <td
             key={cell.id}
+            data-field={cell.column.id}
             style={{ ...getCommonPinningStyles(cell.column) }}
             className={cx(!(cell.column.id in SPECIFIC_COLUMNS) && "editable")}
           >

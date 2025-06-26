@@ -1,5 +1,7 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { size } from "lodash";
+import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
 import Dropdown from "../../../components/Dropdown";
@@ -17,39 +19,11 @@ import { useModal } from "../../../core/modals";
 import { DataCell } from "./DataCell";
 import { Arrow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
 
-function getReadOnlyColumn(field: keyof ItemRow, size = 180): ColumnDef<ItemRow> {
-  return {
-    id: field,
-    accessorFn: (row) => row[field],
-    cell: (props) => <span className="text-ellipsis">{props.row.getValue(field)}</span>,
-    meta: {
-      protected: true,
-    },
-    header: ({ header }) => (
-      <>
-        <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
-          {field}
-        </span>
-        <Arrow
-          arrow={header.column.getIsSorted() || null}
-          wrapper={({ children }) => (
-            <div>
-              <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
-                {children}
-              </button>
-            </div>
-          )}
-        />
-      </>
-    ),
-    size,
-  };
-}
-
 export const useDataTableColumns = (itemIDs: string[]) => {
+  const { t } = useTranslation();
   const { type } = useDataTable();
   const { openModal } = useModal();
-  const { nodeFields, edgeFields } = useGraphDataset();
+  const { nodeFields, edgeFields, nodeData, edgeData } = useGraphDataset();
 
   const { setSort } = useDataTableActions();
   const { toggle, select, unselect } = useSelectionActions();
@@ -57,6 +31,37 @@ export const useDataTableColumns = (itemIDs: string[]) => {
 
   const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
   const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
+  const getReadOnlyColumn = useCallback(
+    (field: keyof ItemRow, size = 180): ColumnDef<ItemRow> => {
+      return {
+        id: field,
+        accessorFn: (row) => row[field],
+        cell: (props) => <span className="text-ellipsis">{props.row.getValue(field)}</span>,
+        meta: {
+          protected: true,
+        },
+        header: ({ header }) => (
+          <>
+            <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
+              {t(`datatable.protected_columns.${field}`)}
+            </span>
+            <Arrow
+              arrow={header.column.getIsSorted() || null}
+              wrapper={({ children }) => (
+                <div>
+                  <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
+                    {children}
+                  </button>
+                </div>
+              )}
+            />
+          </>
+        ),
+        size,
+      };
+    },
+    [t],
+  );
   const columns = useMemo<ColumnDef<ItemRow>[]>(
     () => [
       // Agnostic columns;
@@ -115,7 +120,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       }),
       columnHelper.display({
         id: SPECIFIC_COLUMNS.preview,
-        header: () => <span className="column-title">Preview</span>,
+        header: () => <span className="column-title">{t("datatable.protected_columns.preview")}</span>,
         enablePinning: true,
         meta: {
           protected: true,
@@ -161,50 +166,39 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             <Dropdown
               options={[
                 {
-                  type: "text",
-                  label: <strong>{field.id}</strong>,
-                },
-                {
-                  type: "text",
-                  label: "TODO: insert data type",
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: <>Modify column</>,
+                  label: t("datatable.modify_column"),
                   onClick: () => console.log("TODO"),
                 },
                 {
                   type: "divider",
                 },
                 {
-                  label: <>Duplicate column</>,
+                  label: t("datatable.duplicate_column"),
                   onClick: () => duplicateFieldModel(field),
                 },
                 {
-                  label: <>Move to the left</>,
+                  label: t("datatable.move_left"),
                   disabled: !i,
                   onClick: () => moveFieldModel(type, field.id, -1),
                 },
                 {
-                  label: <>Move to the right</>,
+                  label: t("datatable.move_right"),
                   disabled: i === a.length - 1,
                   onClick: () => moveFieldModel(type, field.id, +1),
                 },
                 {
-                  label: <>Insert new column to the left</>,
+                  label: t("datatable.insert_left"),
                   onClick: () => console.log("TODO"),
                 },
                 {
-                  label: <>Insert new column to the right</>,
+                  label: t("datatable.insert_right"),
                   onClick: () => console.log("TODO"),
                 },
                 {
                   type: "divider",
                 },
                 {
-                  label: <>Sort A→Z (0→9)</>,
+                  label: t("datatable.sort_asc"),
                   onClick: () => {
                     setSort([
                       {
@@ -215,7 +209,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                   },
                 },
                 {
-                  label: <>Sort Z→A (9→0)</>,
+                  label: t("datatable.sort_desc"),
                   onClick: () => {
                     setSort([
                       {
@@ -229,14 +223,17 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                   type: "divider",
                 },
                 {
-                  label: <>Delete attribute</>,
+                  label: t("edition.delete_attribute"),
                   onClick: () =>
                     openModal({
                       component: ConfirmModal,
                       arguments: {
-                        title: `Delete ${type} attribute "${field.id}"`,
-                        successMsg: `The ${type} attribute "${field.id}" has successfully been deleted.`,
-                        message: `Are you sure you want to delete the ${type} attribute "${field.id}"?`,
+                        title: t(`edition.delete_${type}_attributes`, { name: field.id }),
+                        message: t("edition.confirm_delete_attributes", {
+                          nbValues: size(type === "nodes" ? nodeData : edgeData),
+                          name: field.id,
+                        }),
+                        successMsg: t(`edition.delete_attributes_success`, { name: field.id }),
                       },
                       afterSubmit: () => {
                         deleteFieldModel(field);
@@ -265,12 +262,16 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       columnHelper,
       deleteFieldModel,
       duplicateFieldModel,
+      edgeData,
       fields,
+      getReadOnlyColumn,
       itemIDs,
       moveFieldModel,
+      nodeData,
       openModal,
       select,
       setSort,
+      t,
       toggle,
       type,
       unselect,
