@@ -289,7 +289,7 @@
     },
     "partitioning": {
       "title": "Partitioning",
-      "description": "To apply appearance or filters differently on different groups of {{items}}, partition your graph using any node qualitative attribute.",
+      "description": "To apply appearance or filters differently on different groups of {{items}}, partition your graph using any category attribute.",
       "partition": "Partition {{items}} on",
       "status_no_partition": "{{items}} are not partitioned",
       "status_item_preview": "The {{items}} will be grouped into",
@@ -302,10 +302,6 @@
     "model": {
       "title": "Attributes' Model",
       "no_attributes": "There is no attribute in the model yet.",
-      "attribute": {
-        "qualitative": "Qualitative",
-        "quantitative": "Quantitative"
-      },
       "directed": "Directed",
       "undirected": "Undirected",
       "mixed": "Mixed",

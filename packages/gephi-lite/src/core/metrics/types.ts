@@ -52,8 +52,6 @@ export type MetricParameter =
   | MetricAttributeParameter
   | MetricScriptParameter;
 
-export type MetricType = { string: "qualitative"; type: string | boolean } | { string: "quantitative"; type: number };
-
 export interface Metric<Outputs extends Partial<Record<ItemType, string[]>>> {
   id: string;
   outputs: {

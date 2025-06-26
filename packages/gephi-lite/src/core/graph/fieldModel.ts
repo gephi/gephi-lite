@@ -42,8 +42,7 @@ export function guessSeparator(values: string[]): string | null {
 
 /**
  * This function takes an unqualified field model and a list af values, and
- * guesses whether that field should be considered qualitative and/or
- * quantitative:
+ * guesses the field type
  */
 export function inferFieldType(values: Scalar[], itemsCount: number): FieldModelTypeSpec {
   // NUMBER

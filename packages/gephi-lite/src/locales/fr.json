@@ -288,10 +288,6 @@
     "model": {
       "title": "Modèle d'attributs",
       "no_attributes": "Il n'y a pas encore d'attribut dans le modèle.",
-      "attribute": {
-        "qualitative": "Qualitatif",
-        "quantitative": "Quantitatif"
-      },
       "directed": "Orienté",
       "undirected": "Non orienté",
       "mixed": "Mixte",

@@ -58,7 +58,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
           value: undefined,
-          ...pick(nf, ["qualitative", "quantitative"]),
+          ...pick(nf, ["type", "format", "separator"]),
         })),
       };
 
@@ -72,7 +72,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
       attributes: edgeFields.map((nf) => ({
         key: nf.id,
         value: edgeData[edgeId][nf.id],
-        ...pick(nf, ["qualitative", "quantitative"]),
+        ...pick(nf, ["type", "format", "separator"]),
       })),
     };
   }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, nodeRenderingData, edgeFields]);
