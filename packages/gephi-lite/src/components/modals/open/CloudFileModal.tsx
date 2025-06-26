@@ -125,11 +125,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
           </table>
           {hasMore && (
             <div className="d-flex justify-content-center">
-              <button
-                title="Load next page"
-                className="btn btn-outline-primary btn-sm"
-                onClick={() => setPage(page + 1)}
-              >
+              <button title="Load next page" className="gl-btn gl-btn-outline" onClick={() => setPage(page + 1)}>
                 <FaSync className="me-1" />
                 {t("common.load-more").toString()}
               </button>

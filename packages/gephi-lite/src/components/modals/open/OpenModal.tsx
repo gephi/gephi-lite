@@ -47,23 +47,23 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
   return (
     <Modal className="modal-lg" title={t("workspace.menu.open").toString()} onClose={() => cancel()} doNotPreserveData>
-      <div className="d-flex align-items-stretch overflow-hidden">
-        <div className="border-end pe-3 me-3 overflow-hidden">
+      <div className="d-flex align-items-stretch">
+        <div className="border-end pe-3 me-3">
           <NavMenu
             menu={OPEN_COLLECTION_MENU}
             selected={selectedOpen?.id}
             onSelectedChange={(item) => setSelectedOpen(item)}
           />
         </div>
-        <div className="flex-grow-1 overflow-auto">
+        <div className="flex-grow-1">
           <selectedOpen.component id="openForm" onStatusChange={setStatus} />
         </div>
       </div>
       <>
-        <button title={t("common.cancel").toString()} className="btn btn-outline-dark" onClick={() => cancel()}>
+        <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>
-        <button form="openForm" className="btn btn-primary" disabled={status.type === "loading"}>
+        <button form="openForm" className="gl-btn gl-btn-fill" disabled={status.type === "loading"}>
           {t("common.open").toString()}
         </button>
       </>
