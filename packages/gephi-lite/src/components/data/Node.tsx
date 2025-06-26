@@ -2,9 +2,9 @@ import cx from "classnames";
 import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { getItemAttributes } from "../core/appearance/utils";
-import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../core/context/dataContexts";
-import { mergeStaticDynamicData } from "../core/graph/dynamicAttributes";
+import { getItemAttributes } from "../../core/appearance/utils";
+import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../../core/context/dataContexts";
+import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 
 export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boolean }> = ({ label, color, hidden }) => {
   const { t } = useTranslation();

@@ -197,7 +197,10 @@ describe("Field Model", () => {
     });
     it("should properly serialize date", () => {
       expect(
-        serializeModelValueToScalar(DateTime.fromISO("2025-12-08"), { type: "date", format: "yyyy/dd/MM" }),
+        serializeModelValueToScalar(DateTime.fromISO("2025-12-08") as DateTime<true>, {
+          type: "date",
+          format: "yyyy/dd/MM",
+        }),
       ).toEqual("2025/08/12");
     });
     it("should properly throw when scalar can not be generated", () => {

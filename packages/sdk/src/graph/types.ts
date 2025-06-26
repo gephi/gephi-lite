@@ -10,8 +10,6 @@ import { DateTime } from "luxon";
 export type Scalar = boolean | number | string | undefined | null;
 export const SCALAR_TYPES = new Set(["boolean", "number", "string", "undefined"]);
 
-export type ModelValueType = string | string[] | DateTime | number | undefined;
-
 export type ItemType = "nodes" | "edges";
 export type ItemData = Record<string, Scalar>;
 export type StaticDynamicItemData = { static: ItemData; dynamic: ItemData };
@@ -55,15 +53,41 @@ export interface GraphMetadata {
 /**
  * Describes how Gephi Lite should interpret a nodes or edges field.
  */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+export type FieldModelAbstraction = {
+  text: {
+    expectedOutput: string;
+    options: {};
+  };
+  number: {
+    expectedOutput: number;
+    options: {};
+  };
+  category: {
+    expectedOutput: string;
+    options: {};
+  };
+  keywords: {
+    expectedOutput: string[];
+    options: {
+      separator: string;
+    };
+  };
+  date: {
+    expectedOutput: DateTime<true>;
+    options: {
+      format: string;
+    };
+  };
+};
+export type FieldModelType = keyof FieldModelAbstraction;
 
-export type FieldModelTypeSpec =
-  | { type: "text" } // Textual content "unique" i.e. suitable for reading not for filtering neither for appearance
-  | { type: "number" } // Quantifiable values suitable for ranking appearance and filtering by range
-  | { type: "category" } // Terms regrouping many items suitable for partition appearance and select filtering
-  | { type: "keywords"; separator: string } // multiple terms for one items suitable for select filtering, can't be used for appearance
-  | { type: "date"; format: string }; // if no format Gephi Lite will write ISOString.
-
-export type FieldModelType = FieldModelTypeSpec["type"];
+type FieldModelTypeSpecGeneric<K extends FieldModelType = FieldModelType> = {
+  type: K;
+} & FieldModelAbstraction[K]["options"];
+export type FieldModelTypeSpec = {
+  [K in FieldModelType]: FieldModelTypeSpecGeneric<K>;
+}[keyof FieldModelAbstraction];
 
 export type FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = false> = {
   id: string;
@@ -78,6 +102,8 @@ export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> &
     nbMissingValues: number;
   };
 };
+
+export type ModelValueType = FieldModelAbstraction[FieldModelType]["expectedOutput"] | undefined;
 
 /**
  * GRAPHS:
