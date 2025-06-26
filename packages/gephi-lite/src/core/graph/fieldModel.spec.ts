@@ -64,9 +64,32 @@ describe("Graph utilities", () => {
       });
     });
 
-    it("should properly detect date", () => {
-      expect(inferFieldType(["2025-06", "2023", "2012-06-03", "2025-06-24T15:30:21.907Z"], 5)).toEqual({
+    it("should properly detect date and format", () => {
+      expect(
+        inferFieldType(["2025-06", "2023", "2012-06-03", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
+      ).toEqual({
         type: "date",
+        format: "YYYY-MM-DD",
+      });
+    });
+
+    it("should properly detect date and format", () => {
+      expect(
+        inferFieldType(["2025", "2023", "2012", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
+      ).toEqual({
+        type: "date",
+        format: "YYYY",
+      });
+    });
+    it("should properly detect date and format", () => {
+      expect(inferFieldType(["2025/05/06", "2023/05/08", "2012/12/31", "2012/12/01", "2021/11/03"], 5)).toEqual({
+        type: "date",
+        format: "YYYY/MM/DD",
+      });
+    });
+    it("should properly detect wrong date and format", () => {
+      expect(inferFieldType(["2025/05/06", "2023/05/08", "2012/12/32", "2012/12/01", "2021/11/03"], 5)).toEqual({
+        type: "text",
       });
     });
   });
