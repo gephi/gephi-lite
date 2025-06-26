@@ -1,8 +1,13 @@
 import cx from "classnames";
-import { type FC, useCallback, useState } from "react";
+import { type ComponentType, type FC, useCallback, useState } from "react";
 import { IconType } from "react-icons";
 
 import { CaretDownIcon, CaretRightIcon } from "./common-icons";
+
+type ToolCommon = { id: string; i18nKey: string };
+type ToolCommonWithIcon = ToolCommon & { icon: IconType };
+type Tool = ToolCommon & { panel: ComponentType };
+export type ToolSection = ToolCommonWithIcon & ({ children: Tool[] } | { panel: ComponentType });
 
 interface MenuCommon {
   id: string;
