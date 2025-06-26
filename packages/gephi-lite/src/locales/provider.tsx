@@ -14,6 +14,10 @@ i18n
     debug: import.meta.env.MODE !== "production",
     fallbackLng: DEFAULT_LOCALE,
     resources: LOCALES,
+    react: {
+      transSupportBasicHtmlNodes: true,
+      transKeepBasicHtmlNodesFor: ["br", "strong", "i"],
+    },
     detection: {
       order: ["querystring", "navigator"],
       lookupQuerystring: "lang",

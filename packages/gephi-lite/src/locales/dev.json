@@ -229,10 +229,13 @@
     }
   },
   "edition": {
+    "data_creation": "Data creation",
     "create_nodes": "Create new node",
     "create_edges": "Create new edge",
     "create_nodes_success": "The node has successfully been created.",
     "create_edges_success": "The edge has successfully been created.",
+    "create_nodes_field": "Create nodes attribute",
+    "create_edges_field": "Create edges attribute",
     "update_this_nodes": "Edit this node",
     "update_this_edges": "Edit this edge",
     "update_nodes": "Edit existing node",
@@ -251,7 +254,17 @@
     "confirm_delete_nodes": "Are you sure you want to delete {{count}} nodes?",
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
     "confirm_delete_edges": "Are you sure you want to delete {{count}} edges?",
+    "delete_nodes_success_one": "The node has successfully been deleted.",
+    "delete_nodes_success": "The {{count}} nodes have successfully been deleted.",
+    "delete_edges_success_one": "The edge has successfully been deleted.",
+    "delete_edges_success": "The {{count}} edges have successfully been deleted.",
+    "delete_selected_nodes": "Delete selected nodes",
+    "delete_selected_edges": "Delete selected edges",
+    "edit_selected_nodes": "Edit selected nodes",
+    "edit_selected_edges": "Edit selected edges",
+    "merge_selected_nodes": "Merge selected nodes",
     "search_nodes": "Search on node labels...",
+    "delete_attribute": "Delete attribute",
     "delete_nodes_attributes": "Delete the '{{name}}' node attribute",
     "delete_edges_attributes": "Delete the '{{name}}' edge attribute",
     "confirm_delete_attributes": "This deletion will remove {{nbValues}} values from the graph. Are you sure you want to delete the attribute {{name}}?",
@@ -296,6 +309,9 @@
       "directed": "Directed",
       "undirected": "Undirected",
       "mixed": "Mixed",
+      "directed_graph": "Directed graph",
+      "undirected_graph": "Undirected graph",
+      "mixed_graph": "Mixed graph",
       "graph": "graph",
       "nodes_one": "node",
       "nodes_zero": "node",
@@ -411,6 +427,37 @@
       "title": "Caption",
       "disabled": "Caption is available once appearance has been set."
     }
+  },
+  "datatable": {
+    "nodes_matching_zero": "<strong>No node</strong> matching the search query",
+    "nodes_matching_one": "<strong>{{count}}</strong> node matching the search query",
+    "nodes_matching": "<strong>{{count}}</strong> nodes matching the search query",
+    "nodes_not_matching_zero": "<strong>No node</strong> not matching the search query",
+    "nodes_not_matching_one": "<strong>{{count}}</strong> node not matching the search query",
+    "nodes_not_matching": "<strong>{{count}}</strong> nodes not matching the search query",
+    "edges_matching_zero": "<strong>No edge</strong> matching the search query",
+    "edges_matching_one": "<strong>{{count}}</strong> edge matching the search query",
+    "edges_matching": "<strong>{{count}}</strong> edges matching the search query",
+    "edges_not_matching_zero": "<strong>No edge</strong> not matching the search query",
+    "edges_not_matching_one": "<strong>{{count}}</strong> edge not matching the search query",
+    "edges_not_matching": "<strong>{{count}}</strong> edges not matching the search query",
+    "save_cell": "Save cell",
+    "protected_columns": {
+      "id": "ID",
+      "selected": "Selected?",
+      "preview": "Preview",
+      "degree": "Degree",
+      "sourceId": "Source ID",
+      "targetId": "Target ID"
+    },
+    "sort_asc": "Sort A→Z (0→9)",
+    "sort_desc": "Sort Z→A (9→0)",
+    "modify_column": "Modify column",
+    "duplicate_column": "Duplicate column",
+    "move_left": "Move to the left",
+    "move_right": "Move to the right",
+    "insert_left": "Insert new column to the left",
+    "insert_right": "Insert new column to the right"
   },
   "statistics": {
     "title": "Statistics",
@@ -806,12 +853,12 @@
         "copy_success": "Code saved in clipboard",
         "waiting_validation": "Waiting validation"
       },
-      "disconnect":{
-        "title":"Disconnect from github?",
-        "message":"Are you sure you want to disconnect gephi-lite from github?",
-        "action":"Disconnect",
+      "disconnect": {
+        "title": "Disconnect from github?",
+        "message": "Are you sure you want to disconnect gephi-lite from github?",
+        "action": "Disconnect",
         "success": "You have been disconnected fom github"
-      } 
+      }
     }
   },
   "search": {
@@ -848,25 +895,25 @@
         "success": "Application's state has been cleared"
       }
     },
-    "theme":  {
+    "theme": {
       "auto": "Auto",
       "light": "Light",
       "dark": "Dark"
     }
   },
   "pages": {
-      "graph": "Graph",
-      "data_laboratory": "Data"
+    "graph": "Graph",
+    "data_laboratory": "Data"
   },
   "workspace": {
     "menu": {
-      "open":"Open...",
+      "open": "Open...",
       "new": "Create a new workspace",
       "duplicate": "Duplicate in a new tab",
-      "save_as":"Save as",
-      "save":"Save",
-      "export_image":"Export image",
-      "export_graph_file":"Export graph file",
+      "save_as": "Save as",
+      "save": "Save",
+      "export_image": "Export image",
+      "export_graph_file": "Export graph file",
       "github_signin": "Link to Github",
       "github_signout": "Disconnect from github"
     }

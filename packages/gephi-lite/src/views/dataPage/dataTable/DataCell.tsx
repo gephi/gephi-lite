@@ -1,5 +1,6 @@
 import { ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import ReactLinkify from "react-linkify";
 import TetherComponent from "react-tether";
 
@@ -23,6 +24,7 @@ export const EditDataCell: FC<{ type: ItemType; id: string; field: string; value
   close,
   value: initialValue,
 }) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState(initialValue + "");
   const { updateNode, updateEdge } = useGraphDatasetActions();
   const update = type === "nodes" ? updateNode : updateEdge;
@@ -73,7 +75,7 @@ export const EditDataCell: FC<{ type: ItemType; id: string; field: string; value
           >
             <textarea autoFocus className="form-control" value={value} onChange={(e) => setValue(e.target.value)} />
             <div className="text-end">
-              <button className="btn btn-small">Save cell</button>
+              <button className="btn btn-small">{t("datatable.save_cell")}</button>
             </div>
           </form>
         </div>

@@ -1,12 +1,11 @@
 import cx from "classnames";
-import { type ComponentType, FC, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { type ComponentType, FC, useState } from "react";
 
 import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
-import { type MenuItem, NavMenu, ToolSection } from "../../components/NavMenu";
+import { type MenuItem, NavMenu } from "../../components/NavMenu";
 import {
   AppearanceIcon,
   AppearanceIconFill,
@@ -25,7 +24,7 @@ import { Selection } from "./Selection";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
 import { LayoutsPanel } from "./panels/layouts/LayoutPanel";
 
-const TOOL_MENU: ToolSection[] = [
+const MENU: MenuItem<{ panel?: ComponentType }>[] = [
   {
     id: "layout",
     i18nKey: "layouts.title",
@@ -78,43 +77,29 @@ const TOOL_MENU: ToolSection[] = [
 ];
 
 export const GraphPage: FC = () => {
-  const { t } = useTranslation();
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
   const { items } = useSelection();
-
-  const toolsMenu = useMemo(
-    () =>
-      TOOL_MENU.map((item) => {
-        if ("children" in item) {
-          return {
-            id: item.id,
-            label: t(item.i18nKey),
-            icon: item.icon,
-            children: item.children.map((subItem) => ({
-              id: subItem.id,
-              label: t(subItem.i18nKey),
-              onClick: () => setSelectedTool({ id: subItem.id, panel: subItem.panel }),
-            })),
-          };
-        } else {
-          return {
-            id: item.id,
-            label: t(item.i18nKey),
-            icon: item.icon,
-            onClick: () => setSelectedTool({ id: item.id, panel: item.panel }),
-          };
-        }
-      }) as MenuItem[],
-    [t],
-  );
 
   return (
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel gl-container-highest-bg gl-border gl-p-md gl-gap-lg gl-panel">
-        <GraphSummary />
-        <GraphSearchSelection />
-        <NavMenu menu={toolsMenu} selected={selectedTool?.id} />
+        <GraphSummary className="px-3 mb-3" />
+        <GraphSearchSelection className="mb-3 mx-1" />
+        <NavMenu
+          menu={MENU}
+          selected={selectedTool?.id}
+          onSelectedChange={(item) =>
+            setSelectedTool(
+              item.panel
+                ? {
+                    id: item.id,
+                    panel: item.panel,
+                  }
+                : undefined,
+            )
+          }
+        />
       </div>
 
       {/* Extended left panel */}
