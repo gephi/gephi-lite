@@ -7,8 +7,8 @@ import {
   toString,
   toStringArray,
 } from "@gephi/gephi-lite-sdk";
-import { isNumber, sortBy, take, uniq } from "lodash";
-import { DateTime } from "luxon";
+import guessFormat from "@gristlabs/moment-guess";
+import { isNumber, sortBy, take, toPairs, uniq } from "lodash";
 
 /**
  * This function takes an array of string values, and tries various separators
@@ -60,10 +60,23 @@ export function inferFieldType(values: Scalar[], itemsCount: number): FieldModel
     return { type: "number" };
   }
   // DATE
-
-  if (values.every((v) => DateTime.fromISO("" + v).isValid))
-    // TODO: detect ISO format
-    return { type: "date" };
+  const dateFormats: Record<string, number> = {};
+  if (
+    values.every((v) => {
+      try {
+        const _dateFormat = guessFormat("" + v);
+        // format guesser can return multiple choices, we just pick one
+        const dateFormat = Array.isArray(_dateFormat) ? _dateFormat[0] : _dateFormat;
+        dateFormats[dateFormat] = (dateFormats[dateFormat] || 0) + 1;
+        return true;
+      } catch {
+        return false;
+      }
+    })
+  ) {
+    const [format] = sortBy(toPairs(dateFormats), ([, count]) => -1 * count)[0];
+    return { type: "date", format };
+  }
 
   // KEYWORDS and CATEGORY
   const separator = guessSeparator(
