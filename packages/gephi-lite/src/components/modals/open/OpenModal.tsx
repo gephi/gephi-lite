@@ -63,7 +63,7 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         <div className="border-end pe-3 me-3 overflow-hidden">
           <NavMenu menu={openList} selected={selectedOpen?.id} />
         </div>
-        <div className="flex-grow-1 overflow-scroll">
+        <div className="flex-grow-1 overflow-auto">
           <selectedOpen.component />
         </div>
       </div>

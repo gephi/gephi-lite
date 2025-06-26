@@ -171,7 +171,7 @@ export const Header: FC = () => {
   );
 
   return (
-    <header className="container-fluid border-bottom px-0">
+    <header className="gl-container-high-bg gl-border container-fluid border-bottom px-0">
       <div className="row gx-0">
         <div className="col-4 d-flex justify-content-start align-items-center">
           <Dropdown options={workspaceMenuList}>

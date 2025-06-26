@@ -1,4 +1,5 @@
 import { StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
+import cx from "classnames";
 import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
@@ -216,8 +217,8 @@ function SelectedItem<
         <ul className="list-unstyled small">
           {attributes.map(({ label, value }) => (
             <li key={label} className="overflow-hidden">
-              <div className="text-muted small text-break">{label}</div>{" "}
-              <div className="mb-1 text-break">
+              <div className="gl-container-muted-bg text-break gl-border gl-px-sm gl-py-xs">{label}</div>{" "}
+              <div className="mb-1 text-break gl-px-sm">
                 <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>
                   {typeof value === "boolean"
                     ? value.toString()
@@ -234,7 +235,7 @@ function SelectedItem<
   );
 }
 
-export const Selection: FC = () => {
+export const Selection: FC<{ className?: string }> = ({ className }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
 
@@ -259,66 +260,8 @@ export const Selection: FC = () => {
   const { visible = [], hidden = [] } = groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
 
   return (
-    <>
-      <h3 className="fs-5 d-flex flex-row align-items-center mb-0">
-        <div className="flex-grow-1 flex-shrink-1 text-ellipsis d-flex flex-row align-items-center ">
-          <ItemIcon className="me-1" />
-          {t(hidden.length ? `selection.visible_${type}` : `selection.${type}`, { count: visible.length })}
-        </div>
-
-        <Dropdown
-          options={[
-            {
-              label: (
-                <>
-                  <MdSelectAll className="me-1" /> {t("selection.select_all")}
-                </>
-              ),
-              onClick: () =>
-                select({
-                  type,
-                  items: new Set<string>(type === "nodes" ? filteredGraph.nodes() : filteredGraph.edges()),
-                }),
-            },
-            {
-              label: (
-                <>
-                  <MdDeselect className="me-1" /> {t("selection.unselect_all")}
-                </>
-              ),
-              onClick: () => reset(),
-              disabled: !items.size,
-            },
-            { type: "divider" },
-            {
-              label: (
-                <>
-                  <BsFillTrashFill className="me-2" /> {t(`edition.delete_${type}`, { count: items.size })}
-                </>
-              ),
-              onClick: () => {
-                openModal({
-                  component: ConfirmModal,
-                  arguments: {
-                    title: t(`edition.delete_${type}`, { count: 0 }),
-                    message: t(`edition.confirm_delete_${type}`, { count: items.size }),
-                  },
-                  afterSubmit: () => {
-                    deleteItems(type, Array.from(items));
-                  },
-                });
-              },
-              disabled: !items.size,
-            },
-          ]}
-        >
-          <button className="btn ms-1 pe-2 flex-shrink-0">
-            <BsThreeDotsVertical />
-          </button>
-        </Dropdown>
-      </h3>
-
-      <ul className="list-unstyled">
+    <div className={cx(className)}>
+      <ul className="list-unstyled  gl-m-none">
         <InfiniteScroll
           pageSize={50}
           data={visible}
@@ -340,22 +283,6 @@ export const Selection: FC = () => {
       {!!hidden.length && (
         <>
           <hr />
-
-          <h3 className="fs-5">
-            <ItemIcon className="me-1" />
-            {t(`selection.hidden_${type}`, { count: hidden.length })}
-          </h3>
-
-          <div>
-            <button
-              className="btn btn-sm btn-outline-dark mb-1"
-              onClick={() => select({ type, items: new Set(visible), replace: true })}
-              disabled={!items.size}
-            >
-              <MdDeselect className="me-1" /> {t(`selection.unselect_all_hidden_${type}`)}
-            </button>
-          </div>
-
           <ul className="list-unstyled">
             <InfiniteScroll
               scrollableTarget={"selection"}
@@ -375,6 +302,6 @@ export const Selection: FC = () => {
           </ul>
         </>
       )}
-    </>
+    </div>
   );
 };

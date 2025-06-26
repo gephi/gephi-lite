@@ -23,10 +23,12 @@ import {
   PiCaretRight,
   PiCaretUp,
   PiChartBar,
+  PiChartBarFill,
   PiCheck,
   PiCircleHalf,
   PiCircleHalfFill,
   PiFunnel,
+  PiFunnelFill,
   PiGear,
   PiGraph,
   PiGraphFill,
@@ -34,7 +36,9 @@ import {
   PiMoonStars,
   PiMoonStarsFill,
   PiPalette,
+  PiPaletteFill,
   PiPolygon,
+  PiPolygonFill,
   PiSun,
   PiSunFill,
   PiTable,
@@ -53,9 +57,13 @@ export const CaretUpIcon = PiCaretUp;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
 export const AppearanceIcon = PiPalette;
+export const AppearanceIconFill = PiPaletteFill;
 export const FiltersIcon = PiFunnel;
+export const FiltersIconFill = PiFunnelFill;
 export const StatisticsIcon = PiChartBar;
+export const StatisticsIconFill = PiChartBarFill;
 export const LayoutsIcon = PiPolygon;
+export const LayoutsIconFill = PiPolygonFill;
 export const ExternalLink = PiArrowSquareOut;
 
 export const FileIcon = ImFilesEmpty;
