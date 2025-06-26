@@ -12,7 +12,7 @@ import {
 } from "../../../core/context/dataContexts";
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
-import { uniqFieldvaluesAsStrings } from "../../../core/graph/utils";
+import { uniqFieldValuesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
 import { FieldModelIcons } from "../../common-icons";
 import { Select } from "../../forms/Select";
@@ -59,10 +59,10 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         </>
       ),
     };
-    const FixedOption: ColorOption = { value: "fixed", type: "fixed", label: t("appearance.color.fixed") as string };
+    const FixedOption: ColorOption = { value: "fixed", type: "fixed", label: t("appearance.color.fixed") };
     const edgeOptions: ColorOption[] = [
-      { value: "source", type: "source", label: t("appearance.color.source") as string },
-      { value: "target", type: "target", label: t("appearance.color.target") as string },
+      { value: "source", type: "source", label: t("appearance.color.source") },
+      { value: "target", type: "target", label: t("appearance.color.target") },
     ];
     return [
       dataOption,
@@ -170,10 +170,10 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
               if (field.dynamic) {
                 const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
-                values = uniqFieldvaluesAsStrings(itemsData, field.id);
+                values = uniqFieldValuesAsStrings(itemsData, field.id);
               } else {
                 const itemsData = itemType === "nodes" ? nodeData : edgeData;
-                values = uniqFieldvaluesAsStrings(itemsData, field.id);
+                values = uniqFieldValuesAsStrings(itemsData, field.id);
               }
 
               setColorAppearance(itemType, {

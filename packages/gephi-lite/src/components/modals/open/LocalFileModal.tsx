@@ -43,8 +43,8 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
         console.error(e);
         notify({
           type: "error",
-          message: t("graph.open.local.error") as string,
-          title: t("gephi-lite.title") as string,
+          message: t("graph.open.local.error"),
+          title: t("gephi-lite.title"),
         });
       }
     },

@@ -29,7 +29,7 @@ export const EdgesZIndexItem: FC = () => {
   );
   const labelOptions = useMemo(() => {
     return [
-      { value: "none", type: "none", label: t(`appearance.zIndex.none`) as string },
+      { value: "none", type: "none", label: t(`appearance.zIndex.none`) },
       ...numberFields.map((field) => {
         return {
           value: staticDynamicAttributeKey(field),

@@ -250,7 +250,7 @@ export function countExistingValues(
 /**
  * This functions returns all uniq values in one item field
  */
-export function uniqFieldvaluesAsStrings(items: Record<string, ItemData>, field: string) {
+export function uniqFieldValuesAsStrings(items: Record<string, ItemData>, field: string) {
   return uniq(
     flatMap(items, (itemData) => {
       const v = itemData[field];

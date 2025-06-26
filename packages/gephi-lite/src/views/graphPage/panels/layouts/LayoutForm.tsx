@@ -116,7 +116,7 @@ export const LayoutForm: FC<{
       try {
         onStart(layoutParameters);
         if (layout.type === "sync")
-          setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) as string }) as string);
+          setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
       } catch (e) {
         console.error(e);
       }
@@ -144,11 +144,9 @@ export const LayoutForm: FC<{
               {param.type === "number" && (
                 <NumberInput
                   id={id}
-                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`)}
                   description={
-                    param.description
-                      ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
-                      : undefined
+                    param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                   }
                   value={value as number}
                   disabled={isRunning}
@@ -162,11 +160,9 @@ export const LayoutForm: FC<{
               {param.type === "boolean" && (
                 <BooleanInput
                   id={id}
-                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`)}
                   description={
-                    param.description
-                      ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
-                      : undefined
+                    param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                   }
                   value={!!value as boolean}
                   disabled={isRunning}
@@ -177,14 +173,12 @@ export const LayoutForm: FC<{
               {param.type === "attribute" && (
                 <EnumInput
                   id={id}
-                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`) as string}
+                  label={t(`layouts.${layout.id}.parameters.${param.id}.title`)}
                   required={param.required}
                   description={
-                    param.description
-                      ? (t(`layouts.${layout.id}.parameters.${param.id}.description`) as string)
-                      : undefined
+                    param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                   }
-                  placeholder={t("common.none") as string}
+                  placeholder={t("common.none")}
                   value={value as string}
                   disabled={isRunning}
                   onChange={(v) => onChangeParameters(param.id, v)}
@@ -264,14 +258,14 @@ export const LayoutForm: FC<{
             key={id}
             type="reset"
             className="btn text-nowrap mt-1 btn-secondary"
-            title={description ? (t(`layouts.${layout.id}.buttons.${id}.description`) as string) : undefined}
+            title={description ? t(`layouts.${layout.id}.buttons.${id}.description`) : undefined}
             onClick={() => {
               const graph = getFilteredDataGraph(dataset, sigmaGraph);
               setParameters(getSettings(layoutParameters, graph));
             }}
             disabled={isRunning}
           >
-            {t(`layouts.${layout.id}.buttons.${id}.title`) as string}
+            {t(`layouts.${layout.id}.buttons.${id}.title`)}
           </button>
         ))}
         <button
