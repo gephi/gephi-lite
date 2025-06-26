@@ -34,7 +34,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
         attributes: nodeFields.map((nf) => ({
           key: nf.id,
           value: undefined,
-          ...pick(nf, ["qualitative", "quantitative"]),
+          ...pick(nf, ["type", "format", "separator"]),
         })),
       };
 
@@ -44,7 +44,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
       attributes: nodeFields.map((nf) => ({
         key: nf.id,
         value: nodeData[nodeId][nf.id],
-        ...pick(nf, ["qualitative", "quantitative"]),
+        ...pick(nf, ["type", "format", "separator"]),
       })),
     };
   }, [isNew, nodeId, nodeRenderingData, nodeData, nodeFields]);
