@@ -7,7 +7,16 @@ import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
 import { type MenuItem, NavMenu, ToolSection } from "../../components/NavMenu";
-import { AppearanceIcon, FiltersIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
+import {
+  AppearanceIcon,
+  AppearanceIconFill,
+  FiltersIcon,
+  FiltersIconFill,
+  LayoutsIcon,
+  LayoutsIconFill,
+  StatisticsIcon,
+  StatisticsIconFill,
+} from "../../components/common-icons";
 import { useSelection } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout } from "../layout";
@@ -20,7 +29,7 @@ const TOOL_MENU: ToolSection[] = [
   {
     id: "layout",
     i18nKey: "layouts.title",
-    icon: LayoutsIcon,
+    icon: { normal: LayoutsIcon, fill: LayoutsIconFill },
     children: LAYOUTS.map((layout) => ({
       id: `layout-${layout.id}`,
       i18nKey: `layouts.${layout.id}.title`,
@@ -30,7 +39,7 @@ const TOOL_MENU: ToolSection[] = [
   {
     id: "appearance",
     i18nKey: "appearance.title",
-    icon: AppearanceIcon,
+    icon: { normal: AppearanceIcon, fill: AppearanceIconFill },
     children: [
       {
         id: "appearance-nodes",
@@ -57,13 +66,13 @@ const TOOL_MENU: ToolSection[] = [
   {
     id: "filters",
     i18nKey: "filters.title",
-    icon: FiltersIcon,
+    icon: { normal: FiltersIcon, fill: FiltersIconFill },
     panel: () => <GraphFilters />,
   },
   {
     id: "statistics",
     i18nKey: "statistics.title",
-    icon: StatisticsIcon,
+    icon: { normal: StatisticsIcon, fill: StatisticsIconFill },
     panel: StatisticsPanel,
   },
 ];
@@ -102,14 +111,19 @@ export const GraphPage: FC = () => {
   return (
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
-      <div className="left-panel">
-        <GraphSummary className="px-3 mb-3" />
-        <GraphSearchSelection className="mb-3 mx-1" />
-        <NavMenu className="mx-2" menu={toolsMenu} selected={selectedTool?.id} />
+      <div className="left-panel gl-container-highest-bg gl-border gl-p-md gl-gap-lg gl-panel">
+        <GraphSummary />
+        <GraphSearchSelection />
+        <NavMenu menu={toolsMenu} selected={selectedTool?.id} />
       </div>
 
       {/* Extended left panel */}
-      <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
+      <div
+        className={cx(
+          "left-panel-wrapper gl-container-highest-bg gl-border gl-panel gl-p-md",
+          selectedTool && "deployed",
+        )}
+      >
         {selectedTool && (
           <>
             <button
@@ -129,8 +143,10 @@ export const GraphPage: FC = () => {
       </div>
 
       {/* Right panel */}
-      <div className={cx("right-panel-wrapper p-3", items.size > 0 && "deployed")}>
-        {items.size > 0 && <Selection />}
+      <div
+        className={cx("gl-panel right-panel-wrapper gl-container-highest-bg gl-border ", items.size > 0 && "deployed")}
+      >
+        {items.size > 0 && <Selection className="gl-p-md" />}
       </div>
     </Layout>
   );

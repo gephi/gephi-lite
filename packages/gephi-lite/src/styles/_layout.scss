@@ -4,9 +4,10 @@
   flex-direction: column;
 
   header {
-    & > .row {
+    &>.row {
       height: 40px;
     }
+
     background: $gray-100;
     flex-shrink: 0;
   }
@@ -45,7 +46,7 @@
     padding-right: 0;
     padding-left: 0;
 
-    & > button {
+    &>button {
       border: none;
       outline: none;
       border-radius: $border-radius 0 0 $border-radius;
@@ -76,19 +77,24 @@
     flex-shrink: 0;
 
     @include media-breakpoint-up(lg) {
-      width: 256px;
+      width: $gl-ref-dimension-linear-3200;
     }
+
     @include media-breakpoint-down(lg) {
       width: 33vw;
     }
+
     @include media-breakpoint-down(md) {
       width: calc(50vw - $toolbar-width);
     }
+
     .right-panel-btn {
       display: none;
     }
+
     @include media-breakpoint-down(sm) {
       width: calc(100vw - $toolbar-width);
+
       .right-panel-btn {
         display: flex;
       }
@@ -114,18 +120,18 @@
       top: 0;
 
       padding: 0.1rem 0.2rem;
+
       svg {
         width: 1.5rem !important;
         height: 1.5rem !important;
       }
     }
 
-    padding-top: 0.5rem;
-
     .panel-block,
     .panel-block-grow {
       padding: 1rem;
     }
+
     .panel-block {
       flex-shrink: 0;
     }
@@ -137,6 +143,7 @@
       flex-shrink: 1;
       overflow: auto;
     }
+
     .panel-wrapper,
     .panel-block-grow {
       flex-grow: 1;
@@ -151,10 +158,4 @@
     position: relative;
   }
 
-  .right-panel {
-    background-color: var(--bs-body-bg);
-  }
-  .left-panel {
-    background-color: var(--bs-body-bg);
-  }
 }

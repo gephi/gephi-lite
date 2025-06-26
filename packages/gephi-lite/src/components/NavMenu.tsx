@@ -5,14 +5,22 @@ import { IconType } from "react-icons";
 import { CaretDownIcon, CaretRightIcon } from "./common-icons";
 
 type ToolCommon = { id: string; i18nKey: string };
-type ToolCommonWithIcon = ToolCommon & { icon: IconType };
+type ToolCommonWithIcon = ToolCommon & {
+  icon: {
+    normal: IconType;
+    fill: IconType;
+  };
+};
 type Tool = ToolCommon & { panel: ComponentType };
 export type ToolSection = ToolCommonWithIcon & ({ children: Tool[] } | { panel: ComponentType });
 
 interface MenuCommon {
   id: string;
   label: string;
-  icon?: IconType;
+  icon?: {
+    normal: IconType;
+    fill: IconType;
+  };
 }
 type MenuAction = MenuCommon & { onClick: () => void };
 type MenuSection = MenuCommon & { children: MenuAction[] };
@@ -21,7 +29,9 @@ export type MenuItem = MenuSection | MenuAction;
 const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpened }) => {
   return (
     <div className="d-flex align-items-center w-100">
-      <span>{item.icon && <item.icon className="me-1" />}</span>
+      <span>
+        {item.icon && (isOpened ? <item.icon.fill className="me-1" /> : <item.icon.normal className="me-1" />)}
+      </span>
       <span className="flex-grow-1">{item.label}</span>
       {isOpened !== undefined && <span>{isOpened ? <CaretDownIcon /> : <CaretRightIcon />}</span>}
     </div>
@@ -49,7 +59,7 @@ export const NavMenu: FC<NavMenuProps> = ({ className, menu, selected }) => {
   }, []);
 
   return (
-    <ul className={cx("nav-menu list-unstyled d-flex flex-column", className)}>
+    <ul className={cx("nav-menu list-unstyled d-flex flex-column gl-gap-md", className)}>
       {menu.map((item) => (
         <li key={item.label}>
           <button
@@ -64,9 +74,9 @@ export const NavMenu: FC<NavMenuProps> = ({ className, menu, selected }) => {
 
           {/* Render sub actions as list */}
           {"children" in item && collapsed.has(item.id) && (
-            <ul className="list-unstyled ms-3">
+            <ul className="list-unstyled gl-mx-md gl-gap-xs">
               {item.children.map((action) => (
-                <li key={action.label} className="ms-1">
+                <li key={action.label} className="gl-mx-sm">
                   <button
                     className={cx("btn w-100 text-start", selected === action.id && "btn-dark")}
                     onClick={action.onClick}

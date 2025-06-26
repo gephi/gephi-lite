@@ -21,13 +21,11 @@ const GraphStat: FC<{ className?: string; type: ItemType; current: number; total
     <div className={cx("d-flex flex-column", className)}>
       <div>{capitalize(t(`graph.model.${type}`) as string)}</div>
       <div>
-        <span>{current.toLocaleString(locale)}</span>
-        {isFiltered && (
-          <div className="d-flex flex-column">
-            <span>({((current / total) * 100).toFixed(1)}%)</span>
-            <span className="text-muted">of {total.toLocaleString(locale)}</span>
-          </div>
-        )}
+        <span>
+          {current.toLocaleString(locale)}
+          {isFiltered && <> ({((current / total) * 100).toFixed(1)}%)</>}
+        </span>
+        {isFiltered && <div className="text-muted">of {total.toLocaleString(locale)}</div>}
       </div>
     </div>
   );
@@ -42,13 +40,15 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
   } = useGraphDataset();
 
   return (
-    <div className={cx("graph-summary", className)}>
-      <div className="graph-title mb-1">{title}</div>
-      <div className="d-flex flex-row mb-1">
-        <GraphStat className="flex-grow-1 me-1" type="nodes" current={filteredGraph.order} total={fullGraph.order} />
-        <GraphStat className="flex-grow-1" type="edges" current={filteredGraph.size} total={fullGraph.size} />
+    <div className={cx("graph-summary d-flex flex-column gl-gap-sm", className)}>
+      <div className="graph-title gl-px-sm">{title}</div>
+      <div className="gl-px-sm gl-gap-y-sm d-flex flex-column">
+        <div className="d-flex flex-row flex-wrap gl-gap-x-sm gl-gap-y-md" style={{ lineHeight: 1.2 }}>
+          <GraphStat className="" type="nodes" current={filteredGraph.order} total={fullGraph.order} />
+          <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
+        </div>
+        <span>{t(`graph.model.${type || "mixed"}`)}</span>
       </div>
-      <span>{t(`graph.model.${type || "mixed"}`)} graph</span>
     </div>
   );
 };
