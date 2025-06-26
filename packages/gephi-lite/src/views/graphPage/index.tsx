@@ -1,13 +1,12 @@
 import cx from "classnames";
 import { type ComponentType, FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { IconType } from "react-icons";
 
 import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
-import { type MenuItem, NavMenu } from "../../components/NavMenu";
+import { type MenuItem, NavMenu, ToolSection } from "../../components/NavMenu";
 import { AppearanceIcon, FiltersIcon, LayoutsIcon, StatisticsIcon } from "../../components/common-icons";
 import { useSelection } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
@@ -16,11 +15,6 @@ import { GraphRendering } from "./GraphRendering";
 import { Selection } from "./Selection";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
 import { LayoutsPanel } from "./panels/layouts/LayoutPanel";
-
-type ToolCommon = { id: string; i18nKey: string };
-type ToolCommonWithIcon = ToolCommon & { icon: IconType };
-type Tool = ToolCommon & { panel: ComponentType };
-type ToolSection = ToolCommonWithIcon & ({ children: Tool[] } | { panel: ComponentType });
 
 const TOOL_MENU: ToolSection[] = [
   {
@@ -106,7 +100,7 @@ export const GraphPage: FC = () => {
   );
 
   return (
-    <Layout id="graph-page">
+    <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
         <GraphSummary className="px-3 mb-3" />
