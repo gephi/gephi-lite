@@ -265,7 +265,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
         </div>
       </div>
 
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         <button type="button" className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}
         </button>

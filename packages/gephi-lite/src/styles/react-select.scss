@@ -7,11 +7,11 @@ div.react-select__control {
 
   &:hover {
     @extend .form-control;
-    @extend .gl-px-sm;
+    @extend .gl-px-2;
     display: flex;
   }
 
-  @extend .gl-px-sm;
+  @extend .gl-px-2;
 
 
   // this code is a copy of the bootstrap form-control for the ":focus"
@@ -34,7 +34,7 @@ div.react-select__control {
   // add placeholder color
   .react-select__placeholder,
   .react-select__indicator {
-    @extend .gl-mx-none;
+    @extend .gl-mx-0;
     color: var(--bs-secondary-color)
   }
 
@@ -86,8 +86,8 @@ div.react-select__control {
     }
 
     .react-select__option {
-      @extend .gl-px-sm;
-      @extend .gl-py-sm;
+      @extend .gl-px-2;
+      @extend .gl-py-2;
       width: auto;
       flex-grow: 1;
     }

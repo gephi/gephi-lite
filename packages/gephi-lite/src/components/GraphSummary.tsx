@@ -40,10 +40,10 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
   } = useGraphDataset();
 
   return (
-    <div className={cx("graph-summary d-flex flex-column gl-gap-sm", className)}>
-      <div className="graph-title gl-px-sm">{title}</div>
-      <div className="gl-px-sm gl-gap-x-sm d-flex flex-column">
-        <div className="d-flex flex-row flex-wrap gl-gap-x-sm gl-gap-y-md" style={{ lineHeight: 1.2 }}>
+    <div className={cx("graph-summary d-flex flex-column gl-gap-2", className)}>
+      <div className="graph-title gl-px-2">{title}</div>
+      <div className="gl-px-2 gl-gap-x-2 d-flex flex-column">
+        <div className="d-flex flex-row flex-wrap gl-gap-x-2 gl-gap-y-3" style={{ lineHeight: 1.2 }}>
           <GraphStat className="" type="nodes" current={filteredGraph.order} total={fullGraph.order} />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
         </div>

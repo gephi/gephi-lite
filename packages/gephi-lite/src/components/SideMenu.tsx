@@ -66,9 +66,9 @@ export function SideMenu<T = unknown>({
   }, []);
 
   return (
-    <ul className={cx("nav-menu list-unstyled d-flex flex-column gl-gap-md", className)}>
+    <ul className={cx("nav-menu list-unstyled d-flex flex-column gl-gap-3", className)}>
       {menu.map((item) => (
-        <li key={item.id} className="d-flex flex-column gl-gap-xs">
+        <li key={item.id} className="d-flex flex-column gl-gap-1">
           <button
             className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
             onClick={() => {
@@ -81,9 +81,9 @@ export function SideMenu<T = unknown>({
 
           {/* Render sub actions as list */}
           {"children" in item && collapsed.has(item.id) && (
-            <ul className="list-unstyled gl-mx-md gl-gap-xs d-flex flex-column">
+            <ul className="list-unstyled gl-mx-3 gl-gap-1 d-flex flex-column">
               {item.children.map((item) => (
-                <li key={item.id} className="gl-mx-sm">
+                <li key={item.id} className="gl-mx-2">
                   <button
                     className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
                     onClick={() => onSelectedChange(item)}

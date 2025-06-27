@@ -31,7 +31,7 @@ const ColorPicker: FC<
             },
           }}
         />
-        <div className="text-end gl-gap-xs d-flex justify-content-end">
+        <div className="text-end gl-gap-1 d-flex justify-content-end">
           {clearable && (
             <button className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onChange(undefined)}>
               <CloseIcon />

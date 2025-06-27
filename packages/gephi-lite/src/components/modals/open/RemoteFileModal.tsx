@@ -91,7 +91,7 @@ export const OpenRemoteFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   return (
     <Modal title={t("graph.open.local.title").toString()}>
       <OpenRemoteFileForm id={"remoteFileForm"} onStatusChange={(s) => setStatus(s)} />
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>

@@ -68,7 +68,7 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
           </div>
         )}
       </>
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         {!loading && url && code && (
           <button
             className="gl-btn gl-btn-fill"
