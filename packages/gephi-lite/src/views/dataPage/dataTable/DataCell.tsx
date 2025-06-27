@@ -55,18 +55,23 @@ export const EditDataCell: FC<{
     <TetherComponent
       attachment="top left"
       targetAttachment="top left"
-      className=""
-      constraints={[{ to: "scrollparent", attachment: "together", pin: true }]}
+      className="data-cell-edition"
+      constraints={[{ to: "scrollParent", attachment: "together", pin: true }]}
       renderTarget={(ref) => (
         <div ref={ref}>
           <ReadDataCell ref={targetWrapper} value={value} field={field} />
         </div>
       )}
       renderElement={(ref) => (
-        <div ref={ref}>
+        <div
+          ref={ref}
+          style={{
+            minWidth: Math.max(200, targetWrapper?.current?.offsetWidth ?? 0),
+          }}
+        >
           <form
             ref={elementWrapper}
-            className="bg-light"
+            className="bg-light z-"
             onSubmit={(e) => {
               e.preventDefault();
               update(id, { [field.id]: value }, { merge: true });

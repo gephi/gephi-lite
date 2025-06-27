@@ -26,7 +26,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   useEffect(() => {
     const itemData = mergeStaticDynamicData(
       filter.itemType === "nodes" ? nodeData : edgeData,
-      // dynamic field should be calculated from parentraph and not from the useDynamicItemData which provide data in the current graph
+      // dynamic field should be calculated from parent graph and not from the useDynamicItemData which provide data in the current graph
       filter.itemType === "nodes"
         ? computeAllDynamicAttributes("nodes", parentGraph)
         : computeAllDynamicAttributes("edges", parentGraph),

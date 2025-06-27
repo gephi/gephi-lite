@@ -3,14 +3,13 @@ import { debounce } from "lodash";
 import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { type DropdownIndicatorProps, OptionProps, SingleValueProps, components } from "react-select";
-import AsyncSelect from "react-select/async";
 
 import { useAppearance, useSearch } from "../core/context/dataContexts";
 import { ItemType } from "../core/types";
+import { SearchIcon } from "./common-icons";
 import { EdgeComponentById } from "./data/Edge";
 import { NodeComponentById } from "./data/Node";
-import { SearchIcon } from "./common-icons";
-import { DEFAULT_SELECT_PROPS } from "./forms/Select";
+import { AsyncSelect } from "./forms/Select";
 
 export interface OptionItem {
   id: string;
@@ -110,7 +109,6 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
 
   return (
     <AsyncSelect<Option>
-      {...DEFAULT_SELECT_PROPS}
       className={className}
       isClearable
       controlShouldRenderValue={!!value}
@@ -121,7 +119,6 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
       components={{
         SingleValue,
         Option: OptionComponent,
-        IndicatorSeparator: null,
         DropdownIndicator: IndicatorComponent,
         NoOptionsMessage: (props) => {
           const { t } = useTranslation();

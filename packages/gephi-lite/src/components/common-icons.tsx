@@ -37,6 +37,8 @@ import {
   PiMoonStarsFill,
   PiPalette,
   PiPaletteFill,
+  PiPlusCircle,
+  PiPlusCircleFill,
   PiPolygon,
   PiPolygonFill,
   PiSun,
@@ -52,6 +54,8 @@ export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
 export const DataLaboratoryIcon = PiTable;
 export const DataLaboratoryIconFill = PiTableFill;
+export const DataCreationIcon = PiPlusCircle;
+export const DataCreationIconFill = PiPlusCircleFill;
 export const CaretDownIcon = PiCaretDown;
 export const CaretUpIcon = PiCaretUp;
 export const CaretLeftIcon = PiCaretLeft;

@@ -9,10 +9,10 @@ import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
 import { type MenuItem, NavMenu } from "../../components/NavMenu";
 import {
+  DataCreationIcon,
+  DataCreationIconFill,
   FiltersIcon,
   FiltersIconFill,
-  GraphIcon,
-  GraphIconFill,
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
@@ -27,7 +27,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
   {
     id: "data-creation",
     i18nKey: "edition.data_creation",
-    icon: { normal: GraphIcon, fill: GraphIconFill },
+    icon: { normal: DataCreationIcon, fill: DataCreationIconFill },
     children: [
       {
         id: "data-creation-node",
