@@ -4,7 +4,7 @@
   flex-direction: column;
 
   header {
-    &>.row {
+    & > .row {
       height: 40px;
     }
 
@@ -46,7 +46,7 @@
     padding-right: 0;
     padding-left: 0;
 
-    &>button {
+    & > button {
       border: none;
       outline: none;
       border-radius: $border-radius 0 0 $border-radius;
@@ -75,21 +75,22 @@
   .right-panel-wrapper {
     @extend .gl-border;
     @extend .gl-container-highest-bg;
-
-    .panel-content {
-      @extend .gl-p-3;
-    }
   }
 
   .left-panel {
     @extend .gl-gap-4;
+  }
+  .left-panel-wrapper .panel-content {
+    position: absolute;
+    right: 0;
   }
 
   // PANEL SIZES: both wrapper and panel need the same size for animation purposes
   .left-panel-wrapper.deployed,
   .right-panel-wrapper.deployed,
   .left-panel,
-  .right-panel {
+  .right-panel,
+  .panel-content {
     flex-shrink: 0;
 
     @include media-breakpoint-up(lg) {

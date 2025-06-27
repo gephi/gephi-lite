@@ -128,7 +128,7 @@ export const DataPage: FC = () => {
     <Layout id="data-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
-        <div className="panel-content gl-gap-4 d-flex flex-column">
+        <div className="panel-content gl-p-3 gl-gap-4 d-flex flex-column">
           <GraphSummary />
           <GraphSearchSelection />
           <SideMenu
@@ -151,7 +151,7 @@ export const DataPage: FC = () => {
       {/* Extended left panel */}
       <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
         {selectedTool && (
-          <div className="panel-content">
+          <div className="panel-content gl-p-3">
             <button
               type="button"
               className="btn-close float-end"
