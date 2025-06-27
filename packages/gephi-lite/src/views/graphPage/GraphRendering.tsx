@@ -124,8 +124,8 @@ export const GraphRendering: FC = () => {
   );
   const sigmaSettings: Partial<Settings> = useMemo(
     () => ({
-      labelFont: "Poppins, Arial, Helvetica, Geneva",
-      edgeLabelFont: "Poppins, Arial, Helvetica, Geneva",
+      labelFont: "'DM Sans', sans-serif",
+      edgeLabelFont: "'DM Sans', sans-serif",
       enableEdgeEvents: true,
       renderEdgeLabels: true,
       zIndex: true,
