@@ -123,9 +123,9 @@ export const DataPage: FC = () => {
     <Layout id="data-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
-        <div className="panel-content">
-          <GraphSummary className="px-3 mb-3" />
-          <GraphSearchSelection className="mb-3 mx-1" />
+        <div className="panel-content gl-gap-lg d-flex flex-column">
+          <GraphSummary />
+          <GraphSearchSelection />
           <SideMenu
             menu={MENU}
             selected={selectedTool?.id}
