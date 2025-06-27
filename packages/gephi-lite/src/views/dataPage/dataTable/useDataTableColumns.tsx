@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
 import Dropdown from "../../../components/Dropdown";
+import { FieldModelIcon } from "../../../components/common-icons";
 import { EdgeComponentById } from "../../../components/data/Edge";
 import { NodeComponentById } from "../../../components/data/Node";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
@@ -149,7 +150,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         header: ({ header }) => (
           <>
             <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
-              {field.id}
+              <FieldModelIcon type={field.type} /> {field.id}
             </span>
 
             <Arrow
