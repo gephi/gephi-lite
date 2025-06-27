@@ -1,5 +1,6 @@
 import cx from "classnames";
 import { type ComponentType, FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
@@ -9,6 +10,7 @@ import { type MenuItem, SideMenu } from "../../components/SideMenu";
 import {
   AppearanceIcon,
   AppearanceIconFill,
+  CloseIcon,
   FiltersIcon,
   FiltersIconFill,
   LayoutsIcon,
@@ -83,12 +85,13 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
 export const GraphPage: FC = () => {
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
   const { items } = useSelection();
+  const { t } = useTranslation();
 
   return (
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
-      <div className="left-panel">
-        <div className="panel-content gl-p-3 gl-gap-4 d-flex flex-column">
+      <div className="panel">
+        <div className="panel-body">
           <GraphSummary />
           <GraphSearchSelection />
           <SideMenu
@@ -109,15 +112,17 @@ export const GraphPage: FC = () => {
       </div>
 
       {/* Extended left panel */}
-      <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
+      <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
         {selectedTool && (
-          <div className="panel-content gl-p-3">
+          <div className="panel-body">
             <button
               type="button"
-              className="btn-close float-end"
-              aria-label="Close"
+              className="gl-btn-close gl-btn"
+              aria-label={t("commons.close")}
               onClick={() => setSelectedTool(undefined)}
-            ></button>
+            >
+              <CloseIcon />
+            </button>
             <selectedTool.panel />
           </div>
         )}
@@ -129,10 +134,8 @@ export const GraphPage: FC = () => {
       </div>
 
       {/* Right panel */}
-      <div
-        className={cx("gl-panel right-panel-wrapper gl-container-highest-bg gl-border ", items.size > 0 && "deployed")}
-      >
-        <div className="panel-content">{items.size > 0 && <Selection className="gl-p-3" />}</div>
+      <div className={cx("panel panel-expandable ", items.size > 0 && "deployed")}>
+        <div className="panel-body">{items.size > 0 && <Selection className="gl-p-3" />}</div>
       </div>
     </Layout>
   );

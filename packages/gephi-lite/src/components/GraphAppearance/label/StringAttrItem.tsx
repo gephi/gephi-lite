@@ -95,12 +95,12 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
       />
 
       {currentDef.type === "data" && (
-        <p className="fst-italic text-muted small m-0">
+        <p className="form-text small text-muted">
           {t(`appearance.${itemKey}.data_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}
       {currentDef.type === "none" && (
-        <p className="fst-italic text-muted small m-0">
+        <p className="form-text small text-muted">
           {t(`appearance.${itemKey}.none_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}

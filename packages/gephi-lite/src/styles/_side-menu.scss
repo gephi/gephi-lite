@@ -1,0 +1,51 @@
+ul.side-menu,
+ul.side-menu ul {
+  @extend .gl-m-0;
+  @extend .gl-p-0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    @extend .gl-gap-1;
+  }
+
+}
+
+ul.side-menu {
+  @extend .gl-gap-3;
+
+  ul {
+    @extend .gl-gap-1;
+    position: relative;
+
+    &:before {
+      position: absolute;
+      content: "";
+      border: 1px solid var(--gl-body-color);
+      top: 0;
+      bottom: 0;
+      left: 1rem;
+    }
+
+    li {
+      margin-left: calc(1.125rem + $gl-ref-dimension-linear-050);
+    }
+  }
+
+  li {
+    .side-menu-icon {
+      display: flex;
+      align-items: center;
+      margin-right: $gl-ref-dimension-linear-050;
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+
+    .side-menu-item {
+      flex-grow: 1;
+    }
+  }
+}

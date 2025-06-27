@@ -68,7 +68,7 @@ export const ShadingColorEditor: FC<{
           {t("appearance.color.shading_factor")}
         </label>
       </div>
-      <p className="fst-italic text-muted small m-0">
+      <p className="form-text small text-muted">
         {t(`appearance.color.shading_factor_description`, { items: t(`graph.model.${itemType}`) })}
       </p>
     </>

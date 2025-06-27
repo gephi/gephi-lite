@@ -1,78 +1,149 @@
 // Padding
 // ------------------------------------------
-.gl-p-0 { padding: $gl-sys-space-none; }
-.gl-p-1   { padding: $gl-sys-space-xs; }
-.gl-p-2   { padding: $gl-sys-space-sm; }
-.gl-p-3   { padding: $gl-sys-space-md; }
-.gl-p-4   { padding: $gl-sys-space-lg; }
-.gl-p-5   { padding: $gl-sys-space-xl; }
-// padding x
-.gl-px-0 { padding-left: $gl-sys-space-none; padding-right: $gl-sys-space-none; }
-.gl-px-1   { padding-left: $gl-sys-space-xs;   padding-right: $gl-sys-space-xs; }
-.gl-px-2   { padding-left: $gl-sys-space-sm;   padding-right: $gl-sys-space-sm; }
-.gl-px-3   { padding-left: $gl-sys-space-md;   padding-right: $gl-sys-space-md; }
-.gl-px-4   { padding-left: $gl-sys-space-lg;   padding-right: $gl-sys-space-lg; }
-.gl-px-5   { padding-left: $gl-sys-space-xl;   padding-right: $gl-sys-space-xl; }
-// padding y
-.gl-py-0 { padding-top: $gl-sys-space-none; padding-bottom: $gl-sys-space-none; }
-.gl-py-1   { padding-top: $gl-sys-space-xs;   padding-bottom: $gl-sys-space-xs; }
-.gl-py-2   { padding-top: $gl-sys-space-sm;   padding-bottom: $gl-sys-space-sm; }
-.gl-py-3   { padding-top: $gl-sys-space-md;   padding-bottom: $gl-sys-space-md; }
-.gl-py-4   { padding-top: $gl-sys-space-lg;   padding-bottom: $gl-sys-space-lg; }
-.gl-py-5   { padding-top: $gl-sys-space-xl;   padding-bottom: $gl-sys-space-xl; }
+@mixin padding-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      padding: $space;
+    }
+  }
+}
+
+@mixin padding-x-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      padding-left: $space;
+      padding-right: $space;
+    }
+  }
+}
+
+@mixin padding-y-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      padding-top: $space;
+      padding-bottom: $space;
+    }
+  }
+}
+
+.gl-p {
+  @include padding-modifier;
+}
+
+.gl-px {
+  @include padding-x-modifier;
+}
+
+.gl-py {
+  @include padding-y-modifier;
+}
+
 
 // Margin
 // ------------------------------------------
-.gl-m-0 { margin: $gl-sys-space-none; }
-.gl-m-1   { margin: $gl-sys-space-xs; }
-.gl-m-2   { margin: $gl-sys-space-sm; }
-.gl-m-3   { margin: $gl-sys-space-md; }
-.gl-m-4   { margin: $gl-sys-space-lg; }
-.gl-m-5   { margin: $gl-sys-space-xl; }
-// margin x
-.gl-mx-0 { margin-left: $gl-sys-space-none; margin-right: $gl-sys-space-none; }
-.gl-mx-1   { margin-left: $gl-sys-space-xs;   margin-right: $gl-sys-space-xs; }
-.gl-mx-2   { margin-left: $gl-sys-space-sm;   margin-right: $gl-sys-space-sm; }
-.gl-mx-3   { margin-left: $gl-sys-space-md;   margin-right: $gl-sys-space-md; }
-.gl-mx-4   { margin-left: $gl-sys-space-lg;   margin-right: $gl-sys-space-lg; }
-.gl-mx-5   { margin-left: $gl-sys-space-xl;   margin-right: $gl-sys-space-xl; }
-// margin y
-.gl-my-0 { margin-top: $gl-sys-space-none; margin-bottom: $gl-sys-space-none; }
-.gl-my-1   { margin-top: $gl-sys-space-xs;   margin-bottom: $gl-sys-space-xs; }
-.gl-my-2   { margin-top: $gl-sys-space-sm;   margin-bottom: $gl-sys-space-sm; }
-.gl-my-3   { margin-top: $gl-sys-space-md;   margin-bottom: $gl-sys-space-md; }
-.gl-my-4   { margin-top: $gl-sys-space-lg;   margin-bottom: $gl-sys-space-lg; }
-.gl-my-5   { margin-top: $gl-sys-space-xl;   margin-bottom: $gl-sys-space-xl; }
+@mixin margin-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      margin: $space;
+    }
+  }
+}
+
+@mixin margin-x-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      margin-left: $space;
+      margin-right: $space;
+    }
+  }
+}
+
+@mixin margin-y-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      margin-top: $space;
+      margin-bottom: $space;
+    }
+  }
+}
+
+.gl-m {
+  @include margin-modifier;
+}
+
+.gl-mx {
+  @include margin-x-modifier;
+}
+
+.gl-my {
+  @include margin-y-modifier;
+}
 
 // Gap
 // -------------------------------------------
-.gl-gap-0 { gap: $gl-sys-space-none; }
-.gl-gap-1   { gap: $gl-sys-space-xs; }
-.gl-gap-2   { gap: $gl-sys-space-sm; }
-.gl-gap-3   { gap: $gl-sys-space-md; }
-.gl-gap-4   { gap: $gl-sys-space-lg; }
-.gl-gap-5   { gap: $gl-sys-space-xl; }
-// Gap x
-.gl-gap-x-0 { row-gap:$gl-sys-space-none; }
-.gl-gap-x-1 { row-gap:$gl-sys-space-xs; }
-.gl-gap-x-2 { row-gap:$gl-sys-space-sm; }
-.gl-gap-x-3 { row-gap:$gl-sys-space-md; }
-.gl-gap-x-4 { row-gap:$gl-sys-space-lg; }
-.gl-gap-x-5 { row-gap:$gl-sys-space-xl; }
-// Gap Y
-.gl-gap-y-0 { column-gap: $gl-sys-space-none; }
-.gl-gap-y-1 { column-gap: $gl-sys-space-xs; }
-.gl-gap-y-2 { column-gap: $gl-sys-space-sm; }
-.gl-gap-y-3 { column-gap: $gl-sys-space-md; }
-.gl-gap-y-4 { column-gap: $gl-sys-space-lg; }
-.gl-gap-y-5 { column-gap: $gl-sys-space-xl; }
+@mixin gap-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      gap: $space;
+    }
+  }
+}
+
+@mixin gap-x-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      row-gap: $space;
+    }
+  }
+}
+
+@mixin gap-y-modifier {
+  @each $name, $space in $gl-spacers {
+    &-#{$name} {
+      column-gap: $space;
+    }
+  }
+}
+
+.gl-gap {
+  @include gap-modifier;
+}
+
+.gl-gap-x {
+  @include gap-x-modifier;
+}
+
+.gl-gap-y {
+  @include gap-y-modifier;
+}
+
+// Rounded
+// -----------------------------------------
+@mixin border-radius-modifier {
+  @each $name, $radius in $gl-radius {
+    &-#{$name} {
+      border-radius: $radius;
+    }
+  }
+}
+
+.gl-rounded {
+  @include border-radius-modifier;
+}
 
 // Border
 // -----------------------------------------
-.gl-border { border: 1px solid $gl-sys-color-border;}
+.gl-border {
+  border: 1px solid $gl-sys-color-border;
+}
 
 
 // Text
 // -----------------------------------------
-.gl-text-section { line-height: 1.4 !important; }
-.gl-text-ui { line-height: 1.1 !important; }
+.gl-text-section {
+  line-height: 1.4 !important;
+}
+
+.gl-text-ui {
+  line-height: 1.1 !important;
+}
