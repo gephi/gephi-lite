@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import type { ModalProps } from "../../../core/modals/types";
 import type { AsyncStatus } from "../../../utils/promises";
-import { type MenuItem, NavMenu } from "../../NavMenu";
+import { type MenuItem, SideMenu } from "../../SideMenu";
 import { Modal } from "../../modals";
 import { OpenCloudFileForm } from "./CloudFileModal";
 import { OpenLocalFileForm } from "./LocalFileModal";
@@ -54,7 +54,7 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
     >
       <div className="d-flex align-items-stretch">
         <div className="border-end pe-3 me-3">
-          <NavMenu
+          <SideMenu
             menu={OPEN_COLLECTION_MENU}
             selected={selectedOpen?.id}
             onSelectedChange={(item) => setSelectedOpen(item)}
