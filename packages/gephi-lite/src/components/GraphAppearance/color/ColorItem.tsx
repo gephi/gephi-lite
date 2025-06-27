@@ -188,7 +188,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       />
 
       {(color.type === "data" || color.type === "source" || color.type === "target") && (
-        <p className="fst-italic text-muted small m-0">
+        <p className="form-text small text-muted">
           {t(`appearance.color.${color.type}_description`, { items: t(`graph.model.${itemType}`) })}
         </p>
       )}

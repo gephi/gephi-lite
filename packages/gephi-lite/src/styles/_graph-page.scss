@@ -6,6 +6,7 @@
     position: absolute;
     inset: 0;
   }
+
   .sigma-container,
   .sigma-layers {
     position: absolute;
@@ -15,12 +16,15 @@
     top: 0;
     margin-left: -50vw;
   }
+
   .react-sigma {
     z-index: -1;
   }
+
   .graph-layout-grid {
     z-index: -1;
   }
+
   .sigma-controls {
     .btn-dark {
       color: var(--bs-btn-hover-color);
@@ -39,18 +43,17 @@
   .filler {
     z-index: 110;
   }
+
   .stage {
     z-index: 120;
   }
+
   .sigma-mouse {
     z-index: 130;
   }
-  .toolbar,
+
   .sigma-controls,
-  .left-panel,
-  .left-panel-wrapper,
-  .right-panel-btn,
-  .right-panel-wrapper {
+  .panel {
     z-index: 140;
   }
 }

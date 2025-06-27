@@ -52,7 +52,6 @@
 
 // Application styles:
 @import "base";
-@import "layout";
 @import "graph-page";
 @import "data";
 @import "data-page";
@@ -67,4 +66,6 @@
 @import "react-select";
 @import "rc-slider";
 @import "transition";
+@import "panel";
+@import "side-menu";
 @import "dark";

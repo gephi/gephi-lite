@@ -6,16 +6,29 @@ html {
     font-family: "DM Sans", sans-serif;
     font-size: 16px;
     line-height: 1.1;
-    background-color: $gl-sys-color-bg;
-    color: $gl-sys-color-onBg;
+    background-color: var(--gl-body-bg);
+    color: var(--gl-body-color);
 
     #root {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+
       header {
-        z-index: 200
+        z-index: 200;
+
+        &>.row {
+          height: 40px;
+        }
       }
 
       main {
         top: -1px;
+        flex-shrink: 1;
+        flex-grow: 1;
+        overflow: hidden;
+        display: flex;
+        padding: 0;
       }
 
       p,
@@ -24,27 +37,27 @@ html {
       }
 
       .gl-container-bg {
-        background-color: $gl-sys-color-bg;
-        color: $gl-sys-color-onBg;
+        background-color: var(--gl-container-bg);
+        color: var(--gl-container-color);
 
         .text-muted {
-          color: $gl-sys-color-onBg-muted;
+          color: var(--gl-muted-color);
         }
       }
 
       .gl-container-high-bg {
         @extend .gl-container-bg;
-        background-color: $gl-sys-color-container-bg-high;
+        background-color: var(--gl-container-high-bg);
       }
 
       .gl-container-highest-bg {
         @extend .gl-container-bg;
-        background-color: $gl-sys-color-container-bg-highest;
+        background-color: var(--gl-container-highest-bg);
       }
 
       .gl-container-muted-bg {
         @extend .gl-container-bg;
-        background-color: $gl-sys-color-onComponentBg;
+        background-color: var(--gl-muted-bg);
       }
 
     }

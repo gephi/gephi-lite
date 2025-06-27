@@ -36,27 +36,13 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
       )}
 
       <ColorItem itemType={itemType} />
-
-      <hr className="m-0" />
       <SizeItem itemType={itemType} />
-
-      <hr className="m-0" />
       <StringAttrItem itemType={itemType} itemKey="labels" />
       <LabelSizeItem itemType={itemType} />
       <LabelEllipsis itemType={itemType} />
 
-      {itemType === "nodes" && (
-        <>
-          <hr className="m-0" />
-          <StringAttrItem itemType={itemType} itemKey="images" />
-        </>
-      )}
-      {itemType === "edges" && (
-        <>
-          <hr className="m-0" />
-          <EdgesZIndexItem />
-        </>
-      )}
+      {itemType === "nodes" && <StringAttrItem itemType={itemType} itemKey="images" />}
+      {itemType === "edges" && <EdgesZIndexItem />}
     </>
   );
 };
