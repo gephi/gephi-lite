@@ -187,22 +187,24 @@ export const AttributeEditors: {
       />
     );
   },
-  date: ({ value, onChange, id, autoFocus }) => {
+  date: ({ value, onChange, id, autoFocus, field }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
       if (ref.current && autoFocus) ref.current.focus();
     }, [autoFocus]);
 
     //TODO: use an more advanced date time input which allow partial date input to respect requested format
+    const inputType = field.format.includes("h") ? "datetime-local" : "date";
+    const inputDateFormat = field.format.includes("h") ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd";
     return (
       <input
         id={id}
         ref={ref}
         className="form-control"
-        type="datetime-local"
-        value={value?.toFormat("yyyy-MM-dd'T'HH:mm") ?? ""}
+        type={inputType}
+        value={value?.toFormat(inputDateFormat) ?? ""}
         onChange={(e) => {
-          const date = e.target.value ? DateTime.fromFormat(e.target.value, "yyyy-MM-dd'T'HH:mm") : undefined;
+          const date = e.target.value ? DateTime.fromFormat(e.target.value, inputDateFormat) : undefined;
           onChange(date?.isValid ? date : undefined);
         }}
       />
