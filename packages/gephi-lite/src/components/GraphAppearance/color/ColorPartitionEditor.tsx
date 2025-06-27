@@ -47,7 +47,7 @@ export const ColorPartitionEditor: FC<{
 
         {!expanded && <div className="filler-fade-out position-absolute bottom-0" />}
         <div className="w-100 bottom-0 position-absolute text-center">
-          <button className="btn btn-sm btn-dark" onClick={() => setExpanded(!expanded)}>
+          <button className="gl-btn gl-btn-outline" onClick={() => setExpanded(!expanded)}>
             {expanded ? t("common.show_less") : t("common.show_more")}
           </button>
         </div>

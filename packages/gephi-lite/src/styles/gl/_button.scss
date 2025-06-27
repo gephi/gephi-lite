@@ -23,9 +23,9 @@
 
   &:active,
   &.gl-btn-pressed {
-    background-color: $gl-sys-color-component-bg !important;
-    border-color: $gl-sys-color-component-bg !important;
-    color: $gl-sys-color-onComponentBg !important;
+    background-color: $gl-sys-color-component-bg;
+    border-color: $gl-sys-color-component-bg;
+    color: $gl-sys-color-onComponentBg;
   }
 
   &:disabled {

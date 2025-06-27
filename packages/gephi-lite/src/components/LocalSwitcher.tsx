@@ -33,7 +33,7 @@ const LocalSwitcher: FC = () => {
 
   return (
     <Dropdown options={localeOptions}>
-      <button className="btn dropdown-toggle">{locale}</button>
+      <button className="gl-btn dropdown-toggle">{locale}</button>
     </Dropdown>
   );
 };

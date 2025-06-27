@@ -45,7 +45,7 @@ const MessageTooltip: FC<{
     <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
       <button
         type="button"
-        className="btn p-0 text"
+        className="gl-btn gt-btn-icon p-0 text"
         onMouseEnter={() => {
           if (timeout) window.clearTimeout(timeout);
         }}

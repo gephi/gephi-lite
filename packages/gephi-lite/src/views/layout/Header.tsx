@@ -170,11 +170,11 @@ export const Header: FC = () => {
   );
 
   return (
-    <header className="gl-container-high-bg gl-border container-fluid border-bottom px-0">
+    <header className="gl-container-high-bg gl-border container-fluid border-bottom gl-px-md">
       <div className="row gx-0">
         <div className="col-4 d-flex justify-content-start align-items-center">
           <Dropdown options={workspaceMenuList}>
-            <button className="btn dropdown-toggle px-3">Workspace</button>
+            <button className="gl-btn dropdown-toggle">Workspace</button>
           </Dropdown>
         </div>
         <div className="col-4  d-flex justify-content-center align-items-center">
@@ -182,7 +182,7 @@ export const Header: FC = () => {
             <Link
               key={JSON.stringify(navItem)}
               to={navItem.path}
-              className={cx("btn mx-1", navItem.isCurrent ? "btn-dark" : "btn-light")}
+              className={cx("gl-btn mx-1", navItem.isCurrent ? "gl-btn-fill" : "")}
             >
               {navItem.isCurrent ? <navItem.icon.fill /> : <navItem.icon.normal />}
               {navItem.label}
@@ -193,7 +193,7 @@ export const Header: FC = () => {
           <ThemeSwicther />
           <LocalSwitcher />
           <Dropdown options={logoMenuList}>
-            <button className="btn dropdown-toggle">
+            <button className="gl-btn dropdown-toggle">
               <GephiLogo height={"1em"} width={"1em"} />
             </button>
           </Dropdown>

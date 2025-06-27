@@ -1,9 +1,9 @@
 import { FC, useRef } from "react";
 import { SketchPicker } from "react-color";
-import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 import { hexToRgba, rgbaToHex } from "../utils/colors";
 import Tooltip, { TooltipAPI } from "./Tooltip";
+import { CheckedIcon, CloseIcon } from "./common-icons";
 
 const ColorPicker: FC<
   (
@@ -18,7 +18,7 @@ const ColorPicker: FC<
       <button type="button" className="btn disc border border-secondary" style={{ background: color || "#ffffff" }}>
         <span style={{ color: "transparent" }}>X</span>
       </button>
-      <div className="custom-color-picker">
+      <div className="custom-color-picker gl-border">
         <SketchPicker
           color={color ? hexToRgba(color) : undefined}
           onChange={(color) => onChange(rgbaToHex(color.rgb))}
@@ -31,14 +31,14 @@ const ColorPicker: FC<
             },
           }}
         />
-        <div className="text-end">
+        <div className="text-end gl-gap-xs d-flex justify-content-end">
           {clearable && (
-            <button className="btn btn-sm btn-outline-dark ms-2" onClick={() => onChange(undefined)}>
-              <AiOutlineClose />
+            <button className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onChange(undefined)}>
+              <CloseIcon />
             </button>
           )}
-          <button className="btn btn-sm btn-primary ms-2" onClick={() => tooltipRef.current?.close()}>
-            <AiOutlineCheck />
+          <button className="gl-btn gl-btn-icon gl-btn-fill" onClick={() => tooltipRef.current?.close()}>
+            <CheckedIcon />
           </button>
         </div>
       </div>

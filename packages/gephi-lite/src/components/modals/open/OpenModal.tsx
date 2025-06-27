@@ -46,7 +46,12 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   }, [status, cancel]);
 
   return (
-    <Modal className="modal-lg" title={t("workspace.menu.open").toString()} onClose={() => cancel()} doNotPreserveData>
+    <Modal
+      className="modal-lg"
+      title={<span className="gl-px-sm">{t("workspace.menu.open").toString()}</span>}
+      onClose={() => cancel()}
+      doNotPreserveData
+    >
       <div className="d-flex align-items-stretch">
         <div className="border-end pe-3 me-3">
           <NavMenu
@@ -59,14 +64,14 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           <selectedOpen.component id="openForm" onStatusChange={setStatus} />
         </div>
       </div>
-      <>
+      <div className="gl-gap-sm d-flex">
         <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>
         <button form="openForm" className="gl-btn gl-btn-fill" disabled={status.type === "loading"}>
           {t("common.open").toString()}
         </button>
-      </>
+      </div>
     </Modal>
   );
 };
