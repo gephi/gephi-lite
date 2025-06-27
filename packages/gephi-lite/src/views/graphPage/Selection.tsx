@@ -11,9 +11,9 @@ import { InfiniteScroll } from "../../components/InfiniteScroll";
 import { CaretDownIcon, CaretUpIcon, ThreeDotsVerticalIcon } from "../../components/common-icons";
 import { RenderItemAttribute, RenderText } from "../../components/data/Attribute";
 import { EdgeComponent } from "../../components/data/Edge";
+import { EditEdgeModal } from "../../components/data/EditEdge";
+import { EditNodeModal } from "../../components/data/EditNode";
 import { NodeComponent } from "../../components/data/Node";
-import UpdateEdgeModal from "../../components/modals/edition/UpdateEdgeModal";
-import UpdateNodeModal from "../../components/modals/edition/UpdateNodeModal";
 import { getItemAttributes } from "../../core/appearance/utils";
 import {
   useDynamicItemData,
@@ -139,8 +139,8 @@ function SelectedItem<
               label: t(`edition.update_this_${type}`),
               onClick: () =>
                 type === "nodes"
-                  ? openModal({ component: UpdateNodeModal, arguments: { nodeId: id } })
-                  : openModal({ component: UpdateEdgeModal, arguments: { edgeId: id } }),
+                  ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
+                  : openModal({ component: EditEdgeModal, arguments: { edgeId: id } }),
             },
             {
               label: t(`edition.delete_this_${type}`),

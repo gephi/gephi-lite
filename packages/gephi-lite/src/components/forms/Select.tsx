@@ -1,11 +1,13 @@
 import { isNil } from "lodash";
-import { LegacyRef, ReactNode } from "react";
+import { LegacyRef, ReactNode, useContext } from "react";
 import { PiCaretDown } from "react-icons/pi";
 import ReactSelect, { Props, type SelectInstance } from "react-select";
 import AsyncReactSelect, { AsyncProps } from "react-select/async";
 import AsyncCreatableReactSelect, { AsyncCreatableProps } from "react-select/async-creatable";
 import CreatableReactSelect, { CreatableProps } from "react-select/creatable";
 import { GroupBase } from "react-select/dist/declarations/src/types";
+
+import { UIContext } from "../../core/context/uiContext";
 
 export const DEFAULT_SELECT_PROPS = {
   classNamePrefix: "react-select",
@@ -31,8 +33,10 @@ export function Select<T = BaseOption, IsMulti extends boolean = false>({
   ref,
   ...props
 }: Props<T, IsMulti> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+  const { portalTarget } = useContext(UIContext);
   return (
     <ReactSelect<T, IsMulti>
+      menuPortalTarget={portalTarget}
       {...DEFAULT_SELECT_PROPS}
       {...props}
       components={{
@@ -48,8 +52,10 @@ export function AsyncSelect<T = BaseOption, IsMulti extends boolean = false>({
   ref,
   ...props
 }: AsyncProps<T, IsMulti, GroupBase<T>> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+  const { portalTarget } = useContext(UIContext);
   return (
     <AsyncReactSelect<T, IsMulti>
+      menuPortalTarget={portalTarget}
       {...DEFAULT_SELECT_PROPS}
       {...props}
       components={{
@@ -65,8 +71,10 @@ export function CreatableSelect<T = BaseOption, IsMulti extends boolean = false>
   ref,
   ...props
 }: CreatableProps<T, IsMulti, GroupBase<T>> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+  const { portalTarget } = useContext(UIContext);
   return (
     <CreatableReactSelect<T, IsMulti>
+      menuPortalTarget={portalTarget}
       {...DEFAULT_SELECT_PROPS}
       {...props}
       components={{
@@ -82,8 +90,10 @@ export function AsyncCreatableSelect<T = BaseOption, IsMulti extends boolean = f
   ref,
   ...props
 }: AsyncCreatableProps<T, IsMulti, GroupBase<T>> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+  const { portalTarget } = useContext(UIContext);
   return (
     <AsyncCreatableReactSelect<T, IsMulti>
+      menuPortalTarget={portalTarget}
       {...DEFAULT_SELECT_PROPS}
       {...props}
       components={{
