@@ -19,6 +19,7 @@ import { GroupBase } from "react-select/dist/declarations/src/types";
 import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
 import { useDataCollection } from "../../hooks/useDataCollection";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
+import { FieldModelIcon } from "../common-icons";
 import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
 /**
@@ -183,6 +184,7 @@ export const AttributeEditors: {
     );
   },
   date: ({ value, onChange }) => (
+    //TODO: use an more advanced date time input which allow partial date input to respect requested format
     <input
       autoFocus
       className="form-control"
@@ -218,5 +220,22 @@ export const EditItemAttribute: FC<{ field: FieldModel; value: Scalar; onChange:
       onChange={(value) => onChange(serializeModelValueToScalar(value, field))}
       field={field}
     />
+  );
+};
+
+/**
+ * Render Attribute label
+ * **********************
+ */
+
+export const AttributeLabel: FC<{ field: FieldModel } & React.HTMLProps<HTMLSpanElement>> = ({
+  field,
+  ...spanProps
+}) => {
+  return (
+    <span {...spanProps}>
+      <FieldModelIcon className="me-1" type={field.type} />
+      {field.label || field.id}
+    </span>
   );
 };

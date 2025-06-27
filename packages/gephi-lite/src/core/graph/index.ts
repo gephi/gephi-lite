@@ -96,7 +96,7 @@ const createFieldModel: Producer<GraphDataset, [FieldModel, number?]> = (fieldMo
   return (state) => {
     const key = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
     const newFields: FieldModel[] = state[key].slice(0);
-    const newIndex = clamp(index ?? newFields.length - 1, 0, newFields.length - 1);
+    const newIndex = index !== undefined ? clamp(index, 0, newFields.length) : newFields.length;
 
     // Insert it at the wanted position:
     newFields.splice(newIndex, 0, fieldModel);
