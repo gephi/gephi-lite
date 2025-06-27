@@ -239,9 +239,9 @@ export const LayoutForm: FC<{
         {isRunning && <LoaderFill />}
       </div>
 
-      <hr className="m-0" />
+      <hr className="gl-my-3" />
 
-      <div className="z-over-loader panel-block d-flex flex-row flex-wrap align-items-center justify-content-end gl-py-3 gl-gap-2">
+      <div className="z-over-loader panel-block d-flex flex-row flex-wrap align-items-center justify-content-end gl-gap-2">
         {success && (
           <MessageTooltip
             openOnMount={2000}

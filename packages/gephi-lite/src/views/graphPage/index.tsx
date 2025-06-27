@@ -16,6 +16,7 @@ import {
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
+import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { Layout } from "../layout";
@@ -29,11 +30,14 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
     id: "layout",
     i18nKey: "layouts.title",
     icon: { normal: LayoutsIcon, fill: LayoutsIconFill },
-    children: LAYOUTS.map((layout) => ({
-      id: `layout-${layout.id}`,
-      i18nKey: `layouts.${layout.id}.title`,
-      panel: () => <LayoutsPanel layout={layout} />,
-    })),
+    children: [
+      ...LAYOUTS.map((layout) => ({
+        id: `layout-${layout.id}`,
+        i18nKey: `layouts.${layout.id}.title`,
+        panel: () => <LayoutsPanel layout={layout} />,
+      })),
+      { id: "layout-quality", i18nKey: "layouts.quality.title", panel: () => <LayoutQualityForm /> },
+    ],
   },
   {
     id: "appearance",

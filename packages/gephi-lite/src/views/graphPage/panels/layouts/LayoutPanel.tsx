@@ -1,6 +1,5 @@
 import { type FC, useEffect } from "react";
 
-import { LayoutQualityForm } from "../../../../components/forms/LayoutQualityForm";
 import { useLayoutActions, useLayoutState } from "../../../../core/context/dataContexts";
 import type { Layout } from "../../../../core/layouts/types";
 import { useNotifications } from "../../../../core/notifications";
@@ -37,8 +36,6 @@ export const LayoutsPanel: FC<{ layout: Layout }> = ({ layout }) => {
           stopLayout();
         }}
       />
-      <hr className="m-0" />
-      <LayoutQualityForm />
     </>
   );
 };
