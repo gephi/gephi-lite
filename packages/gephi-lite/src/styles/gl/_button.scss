@@ -43,25 +43,25 @@
     &:hover,
     &.gl-btn-fill-hovered {
       color: $gl-sys-color-onComponentBg;
-      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 92%);
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 84%);
     }
 
     &:focus-visible,
     &.gl-btn-fill-focused {
       color: $gl-sys-color-onComponentBg;
-      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 90%);
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 80%);
       box-shadow: 0 0 0 4px rgba($gl-sys-color-component-bg, 0.33);
     }
 
     &:active,
     &.gl-btn-fill-pressed {
       color: $gl-sys-color-onComponentBg;
-      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 80%);
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 60%);
     }
 
     &:disabled {
       color: rgba($gl-sys-color-onComponentBg, $gl-sys-opacity-onComponentBg-disabled);
-      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 90%);
+      background-color: color.mix($gl-sys-color-component-bg, $gl-sys-color-onComponentBg, 80%);
       opacity: unset;
     }
   }
