@@ -1,0 +1,56 @@
+$panel-width: $gl-ref-dimension-linear-3200;
+
+.panels-layout {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .filler {
+    flex-grow: 1;
+    flex-shrink: 1;
+    position: relative;
+  }
+
+
+  .panel {
+    @extend .gl-container-highest-bg;
+    @extend .gl-border;
+    display: flex;
+    flex-direction: column;
+    z-index: 140;
+    overflow: hidden;
+
+    .panel-body {
+      @extend .gl-p-3;
+      @extend .gl-gap-4;
+      display: flex;
+      flex-direction: column;
+      width: $panel-width;
+      overflow: auto;
+    }
+  }
+
+  .panel-expandable {
+    width: 0;
+    overflow-x: hidden;
+    transition: 0.3s width;
+    position: relative;
+    border: none;
+
+    &.deployed {
+      @extend .gl-border;
+      width: $panel-width;
+
+      &.panel-left {
+        border-left: 0;
+      }
+
+    }
+  }
+
+}

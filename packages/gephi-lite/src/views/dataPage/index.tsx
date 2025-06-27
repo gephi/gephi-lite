@@ -9,6 +9,7 @@ import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
 import { type MenuItem, SideMenu } from "../../components/SideMenu";
 import {
+  CloseIcon,
   DataCreationIcon,
   DataCreationIconFill,
   FiltersIcon,
@@ -127,8 +128,8 @@ export const DataPage: FC = () => {
   return (
     <Layout id="data-page" className="panels-layout">
       {/* Menu panel on left*/}
-      <div className="left-panel">
-        <div className="panel-content gl-p-3 gl-gap-4 d-flex flex-column">
+      <div className="panel">
+        <div className="panel-body">
           <GraphSummary />
           <GraphSearchSelection />
           <SideMenu
@@ -149,15 +150,17 @@ export const DataPage: FC = () => {
       </div>
 
       {/* Extended left panel */}
-      <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
+      <div className={cx("panel panel-expandable", selectedTool && "deployed")}>
         {selectedTool && (
-          <div className="panel-content gl-p-3">
+          <div className="panel-body">
             <button
               type="button"
-              className="btn-close float-end"
+              className="gl-btn-close gl-btn"
               aria-label={t("commons.close")}
               onClick={() => setSelectedTool(undefined)}
-            ></button>
+            >
+              <CloseIcon />
+            </button>
             <selectedTool.panel close={() => setSelectedTool(undefined)} />
           </div>
         )}

@@ -39,7 +39,7 @@ export const NumberInput: FC<
         value={typeof value === "number" ? value : defaultValue || ""}
         onChange={(e) => onChange(isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber)}
       />
-      {description && <div className="form-text small text-muted">{description}</div>}
+      {description && <p className="form-text small text-muted">{description}</p>}
     </div>
   );
 };
@@ -87,7 +87,7 @@ export const SliderInput: FC<
           {...SLIDER_STYLE}
         />
       </div>
-      {description && <div className="form-text small text-muted">{description}</div>}
+      {description && <p className="form-text small text-muted">{description}</p>}
     </div>
   );
 };
@@ -119,7 +119,7 @@ export const StringInput: FC<
           />
         )}
       </div>
-      {description && <div className="form-text small text-muted">{description}</div>}
+      {description && <p className="form-text small text-muted">{description}</p>}
     </div>
   );
 };
@@ -143,7 +143,7 @@ export const BooleanInput: FC<
           {label}
         </label>
       </div>
-      {description && <div className="form-text small text-muted">{description}</div>}
+      {description && <p className="form-text small text-muted">{description}</p>}
     </>
   );
 };
@@ -181,7 +181,7 @@ export const EnumInput: FC<
           onChange={(o) => onChange(o?.value || null)}
         />
       </div>
-      {description && <div className="form-text small text-muted">{description}</div>}
+      {description && <p className="form-text small text-muted">{description}</p>}
     </>
   );
 };

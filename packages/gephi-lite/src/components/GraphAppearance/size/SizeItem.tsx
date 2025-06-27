@@ -113,7 +113,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       />
 
       {size.type === "data" && (
-        <p className="fst-italic text-muted small m-0">
+        <p className="form-text small text-muted">
           {t("appearance.size.data_description", { items: t(`graph.model.${itemType}`) })}
         </p>
       )}

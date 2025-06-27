@@ -26,13 +26,11 @@ const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpe
   return (
     <div className="d-flex align-items-center w-100">
       {"label" in item ? (
-        <span className="flex-grow-1">{item.label}</span>
+        <span className="side-menu-item">{item.label}</span>
       ) : (
         <>
-          <span>
-            {item.icon && (isOpened ? <item.icon.fill className="me-1" /> : <item.icon.normal className="me-1" />)}
-          </span>
-          <span className="flex-grow-1">{t(item.i18nKey)}</span>
+          {item.icon && <span className="side-menu-icon">{isOpened ? <item.icon.fill /> : <item.icon.normal />}</span>}
+          <span className="side-menu-item">{t(item.i18nKey)}</span>
         </>
       )}
       {isOpened !== undefined && <span>{isOpened ? <CaretDownIcon /> : <CaretRightIcon />}</span>}
@@ -66,9 +64,9 @@ export function SideMenu<T = unknown>({
   }, []);
 
   return (
-    <ul className={cx("nav-menu list-unstyled d-flex flex-column gl-gap-3", className)}>
+    <ul className={cx("side-menu", className)}>
       {menu.map((item) => (
-        <li key={item.id} className="d-flex flex-column gl-gap-1">
+        <li key={item.id}>
           <button
             className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
             onClick={() => {
@@ -81,9 +79,9 @@ export function SideMenu<T = unknown>({
 
           {/* Render sub actions as list */}
           {"children" in item && collapsed.has(item.id) && (
-            <ul className="list-unstyled gl-mx-3 gl-gap-1 d-flex flex-column">
+            <ul>
               {item.children.map((item) => (
-                <li key={item.id} className="gl-mx-2">
+                <li key={item.id}>
                   <button
                     className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
                     onClick={() => onSelectedChange(item)}
