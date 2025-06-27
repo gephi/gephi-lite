@@ -28,7 +28,8 @@
     },
     "form": {
       "required": "Field is required",
-      "unique": "Value must be unique, and a data with the same value already exist"
+      "unique": "Value must be unique, and a data with the same value already exist",
+      "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\"."
     },
     "deprecated": {
       "gexf_search_params": "The `gexf=` url params to open a graph file has been renamed as `file=` in version 0.4.0. Using gexf params is deprecated  and might be removed in future version. Please use `file=` instead."
@@ -343,6 +344,14 @@
         "missing": "{{nbValues}} missing values",
         "wrong": "{{nbValues}} values are not quantitative",
         "allMissing": "No values in the graph"
+      },
+      "field": {
+        "id": "identifier",
+        "label": "label",
+        "type": "type",
+        "date-format": "Date format",
+        "separator": "Keywords separator",
+        "will_be_serialized_as": "{{type}} will be serialized as"
       }
     },
     "open": {
@@ -448,12 +457,14 @@
     },
     "sort_asc": "Sort A→Z (0→9)",
     "sort_desc": "Sort Z→A (9→0)",
+    "create_column": "Create column",
     "modify_column": "Modify column",
     "duplicate_column": "Duplicate column",
     "move_left": "Move to the left",
     "move_right": "Move to the right",
     "insert_left": "Insert new column to the left",
-    "insert_right": "Insert new column to the right"
+    "insert_right": "Insert new column to the right",
+    "column_label": "label"
   },
   "statistics": {
     "title": "Statistics",

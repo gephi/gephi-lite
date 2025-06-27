@@ -16,6 +16,7 @@ import {
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
+import { FieldModelForm } from "../../components/forms/FieldModelForm";
 import { useDataTable, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { doesItemMatch } from "../../utils/search";
 import { StatisticsPanel } from "../graphPage/panels/StatisticsPanel";
@@ -23,7 +24,7 @@ import { Layout } from "../layout";
 import { TopBar } from "./TopBar";
 import { DataTable } from "./dataTable/DataTable";
 
-const MENU: MenuItem<{ panel?: ComponentType }>[] = [
+const MENU: MenuItem<{ panel?: ComponentType<{ close: () => void }> }>[] = [
   {
     id: "data-creation",
     i18nKey: "edition.data_creation",
@@ -42,12 +43,12 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       {
         id: "data-creation-node-field",
         i18nKey: "edition.create_nodes_field",
-        panel: () => <>TODO</>,
+        panel: ({ close }) => <FieldModelForm itemType="nodes" onCancel={close} onSuccess={close} />,
       },
       {
         id: "data-creation-edge-field",
         i18nKey: "edition.create_edges_field",
-        panel: () => <>TODO</>,
+        panel: ({ close }) => <FieldModelForm itemType="edges" onCancel={close} />,
       },
     ],
   },
@@ -117,7 +118,9 @@ export const DataPage: FC = () => {
     return { matchingItems, otherItems };
   }, [type, graph, nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields, search]);
 
-  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
+  const [selectedTool, setSelectedTool] = useState<
+    undefined | { id: string; panel: ComponentType<{ close: () => void }> }
+  >(undefined);
 
   return (
     <Layout id="data-page" className="panels-layout">
@@ -153,7 +156,7 @@ export const DataPage: FC = () => {
               aria-label={t("commons.close")}
               onClick={() => setSelectedTool(undefined)}
             ></button>
-            <selectedTool.panel />
+            <selectedTool.panel close={() => setSelectedTool(undefined)} />
           </div>
         )}
       </div>
