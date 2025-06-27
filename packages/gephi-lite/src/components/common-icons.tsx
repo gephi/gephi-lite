@@ -1,4 +1,5 @@
 import { FieldModelType } from "@gephi/gephi-lite-sdk";
+import { FC } from "react";
 import { IconType } from "react-icons";
 import {
   Bs123,
@@ -15,6 +16,7 @@ import {
 } from "react-icons/bs";
 import { GrOverview } from "react-icons/gr";
 import { ImFilesEmpty } from "react-icons/im";
+import { IconBaseProps } from "react-icons/lib/iconBase";
 import { MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
 import {
   PiArrowSquareOut,
@@ -117,4 +119,8 @@ export const FieldModelIcons: Record<FieldModelType, IconType> = {
   category: BsAlphabetUppercase,
   keywords: BsFillTagsFill,
   date: BsCalendar3,
+};
+export const FieldModelIcon: FC<IconBaseProps & { type: FieldModelType }> = ({ type, ...props }) => {
+  const Icon = FieldModelIcons[type];
+  return <Icon {...props} />;
 };

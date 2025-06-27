@@ -8,10 +8,10 @@ import { useGraphDatasetActions } from "../../../core/context/dataContexts";
 
 export const ReadDataCell = forwardRef<
   HTMLSpanElement,
-  { value: Scalar; field: FieldModel; onDoubleClick?: MouseEventHandler }
->(({ value, field, onDoubleClick }, ref) => {
+  { value: Scalar; field: FieldModel; onClick?: MouseEventHandler }
+>(({ value, field, onClick }, ref) => {
   return (
-    <span ref={ref} className="data-cell" onDoubleClick={onDoubleClick}>
+    <span ref={ref} className="data-cell" onClick={onClick}>
       <RenderItemAttribute value={value} field={field} />
     </span>
   );
@@ -93,7 +93,7 @@ export const DataCell: FC<{ type: ItemType; id: string; field: FieldModel; value
   const [isEditing, setIsEditing] = useState(false);
 
   return !isEditing ? (
-    <ReadDataCell {...props} onDoubleClick={() => setIsEditing(true)} />
+    <ReadDataCell {...props} onClick={() => setIsEditing(true)} />
   ) : (
     <EditDataCell {...props} close={() => setIsEditing(false)} />
   );
