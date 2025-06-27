@@ -133,7 +133,6 @@ export const Header: FC = () => {
                   openModal({
                     component: ConfirmModal,
                     beforeSubmit: () => {
-                      console.log("test");
                       setUser(null);
                     },
                     arguments: {
