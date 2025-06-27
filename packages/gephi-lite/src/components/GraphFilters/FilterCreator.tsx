@@ -205,7 +205,7 @@ export const FilterCreator: FC = () => {
             />
           )}
         </div>
-        <div className="d-flex justify-content-end gl-py-md gl-gap-sm">
+        <div className="d-flex justify-content-end gl-py-3 gl-gap-2">
           <button type="button" className="gl-btn gl-btn-outline" onClick={() => setIsOpened(false)}>
             {t("common.cancel")}
           </button>

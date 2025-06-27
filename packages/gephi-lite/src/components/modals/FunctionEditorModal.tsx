@@ -91,7 +91,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
           }}
         />
       </>
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         <button
           type="button"
           title={t("common.cancel").toString()}

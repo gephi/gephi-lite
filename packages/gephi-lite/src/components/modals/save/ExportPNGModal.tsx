@@ -112,7 +112,7 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         </div>
       </>
 
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         <button
           type="reset"
           title={t("common.cancel").toString()}

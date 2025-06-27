@@ -320,7 +320,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
 
       <hr className="m-0" />
 
-      <div className="z-over-loader panel-block d-flex flex-row align-items-center  gl-py-md gl-gap-sm">
+      <div className="z-over-loader panel-block d-flex flex-row align-items-center  gl-py-3 gl-gap-2">
         {success && (
           <MessageTooltip
             openOnMount={2000}

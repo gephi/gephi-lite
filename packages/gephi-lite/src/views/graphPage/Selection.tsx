@@ -168,8 +168,8 @@ function SelectedItem<
         <ul className="list-unstyled small">
           {attributes.map((attribute, i) => (
             <li key={i} className="overflow-hidden">
-              <div className="gl-container-muted-bg text-break gl-border gl-px-sm gl-py-xs">{attribute.label}</div>{" "}
-              <div className="mb-1 text-break gl-px-sm">
+              <div className="gl-container-muted-bg text-break gl-border gl-px-2 gl-py-1">{attribute.label}</div>{" "}
+              <div className="mb-1 text-break gl-px-2">
                 {attribute.field ? (
                   <RenderItemAttribute value={attribute.value} field={attribute.field} />
                 ) : (
@@ -203,7 +203,7 @@ export const Selection: FC<{ className?: string }> = ({ className }) => {
 
   return (
     <div className={cx(className)}>
-      <ul className="list-unstyled  gl-m-none">
+      <ul className="list-unstyled  gl-m-0">
         <InfiniteScroll
           pageSize={50}
           data={visible}

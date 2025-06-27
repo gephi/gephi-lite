@@ -4,7 +4,7 @@
   flex-direction: column;
 
   header {
-    & > .row {
+    &>.row {
       height: 40px;
     }
 
@@ -46,7 +46,7 @@
     padding-right: 0;
     padding-left: 0;
 
-    & > button {
+    &>button {
       border: none;
       outline: none;
       border-radius: $border-radius 0 0 $border-radius;
@@ -77,12 +77,12 @@
     @extend .gl-container-highest-bg;
 
     .panel-content {
-      @extend .gl-p-md;
+      @extend .gl-p-3;
     }
   }
 
   .left-panel {
-    @extend .gl-gap-lg;
+    @extend .gl-gap-4;
   }
 
   // PANEL SIZES: both wrapper and panel need the same size for animation purposes

@@ -1,71 +1,71 @@
 // Padding
 // ------------------------------------------
-.gl-p-none { padding: $gl-sys-space-none; }
-.gl-p-xs   { padding: $gl-sys-space-xs; }
-.gl-p-sm   { padding: $gl-sys-space-sm; }
-.gl-p-md   { padding: $gl-sys-space-md; }
-.gl-p-lg   { padding: $gl-sys-space-lg; }
-.gl-p-xl   { padding: $gl-sys-space-xl; }
+.gl-p-0 { padding: $gl-sys-space-none; }
+.gl-p-1   { padding: $gl-sys-space-xs; }
+.gl-p-2   { padding: $gl-sys-space-sm; }
+.gl-p-3   { padding: $gl-sys-space-md; }
+.gl-p-4   { padding: $gl-sys-space-lg; }
+.gl-p-5   { padding: $gl-sys-space-xl; }
 // padding x
-.gl-px-none { padding-left: $gl-sys-space-none; padding-right: $gl-sys-space-none; }
-.gl-px-xs   { padding-left: $gl-sys-space-xs;   padding-right: $gl-sys-space-xs; }
-.gl-px-sm   { padding-left: $gl-sys-space-sm;   padding-right: $gl-sys-space-sm; }
-.gl-px-md   { padding-left: $gl-sys-space-md;   padding-right: $gl-sys-space-md; }
-.gl-px-lg   { padding-left: $gl-sys-space-lg;   padding-right: $gl-sys-space-lg; }
-.gl-px-xl   { padding-left: $gl-sys-space-xl;   padding-right: $gl-sys-space-xl; }
+.gl-px-0 { padding-left: $gl-sys-space-none; padding-right: $gl-sys-space-none; }
+.gl-px-1   { padding-left: $gl-sys-space-xs;   padding-right: $gl-sys-space-xs; }
+.gl-px-2   { padding-left: $gl-sys-space-sm;   padding-right: $gl-sys-space-sm; }
+.gl-px-3   { padding-left: $gl-sys-space-md;   padding-right: $gl-sys-space-md; }
+.gl-px-4   { padding-left: $gl-sys-space-lg;   padding-right: $gl-sys-space-lg; }
+.gl-px-5   { padding-left: $gl-sys-space-xl;   padding-right: $gl-sys-space-xl; }
 // padding y
-.gl-py-none { padding-top: $gl-sys-space-none; padding-bottom: $gl-sys-space-none; }
-.gl-py-xs   { padding-top: $gl-sys-space-xs;   padding-bottom: $gl-sys-space-xs; }
-.gl-py-sm   { padding-top: $gl-sys-space-sm;   padding-bottom: $gl-sys-space-sm; }
-.gl-py-md   { padding-top: $gl-sys-space-md;   padding-bottom: $gl-sys-space-md; }
-.gl-py-lg   { padding-top: $gl-sys-space-lg;   padding-bottom: $gl-sys-space-lg; }
-.gl-py-xl   { padding-top: $gl-sys-space-xl;   padding-bottom: $gl-sys-space-xl; }
+.gl-py-0 { padding-top: $gl-sys-space-none; padding-bottom: $gl-sys-space-none; }
+.gl-py-1   { padding-top: $gl-sys-space-xs;   padding-bottom: $gl-sys-space-xs; }
+.gl-py-2   { padding-top: $gl-sys-space-sm;   padding-bottom: $gl-sys-space-sm; }
+.gl-py-3   { padding-top: $gl-sys-space-md;   padding-bottom: $gl-sys-space-md; }
+.gl-py-4   { padding-top: $gl-sys-space-lg;   padding-bottom: $gl-sys-space-lg; }
+.gl-py-5   { padding-top: $gl-sys-space-xl;   padding-bottom: $gl-sys-space-xl; }
 
 // Margin
 // ------------------------------------------
-.gl-m-none { margin: $gl-sys-space-none; }
-.gl-m-xs   { margin: $gl-sys-space-xs; }
-.gl-m-sm   { margin: $gl-sys-space-sm; }
-.gl-m-md   { margin: $gl-sys-space-md; }
-.gl-m-lg   { margin: $gl-sys-space-lg; }
-.gl-m-xl   { margin: $gl-sys-space-xl; }
+.gl-m-0 { margin: $gl-sys-space-none; }
+.gl-m-1   { margin: $gl-sys-space-xs; }
+.gl-m-2   { margin: $gl-sys-space-sm; }
+.gl-m-3   { margin: $gl-sys-space-md; }
+.gl-m-4   { margin: $gl-sys-space-lg; }
+.gl-m-5   { margin: $gl-sys-space-xl; }
 // margin x
-.gl-mx-none { margin-left: $gl-sys-space-none; margin-right: $gl-sys-space-none; }
-.gl-mx-xs   { margin-left: $gl-sys-space-xs;   margin-right: $gl-sys-space-xs; }
-.gl-mx-sm   { margin-left: $gl-sys-space-sm;   margin-right: $gl-sys-space-sm; }
-.gl-mx-md   { margin-left: $gl-sys-space-md;   margin-right: $gl-sys-space-md; }
-.gl-mx-lg   { margin-left: $gl-sys-space-lg;   margin-right: $gl-sys-space-lg; }
-.gl-mx-xl   { margin-left: $gl-sys-space-xl;   margin-right: $gl-sys-space-xl; }
+.gl-mx-0 { margin-left: $gl-sys-space-none; margin-right: $gl-sys-space-none; }
+.gl-mx-1   { margin-left: $gl-sys-space-xs;   margin-right: $gl-sys-space-xs; }
+.gl-mx-2   { margin-left: $gl-sys-space-sm;   margin-right: $gl-sys-space-sm; }
+.gl-mx-3   { margin-left: $gl-sys-space-md;   margin-right: $gl-sys-space-md; }
+.gl-mx-4   { margin-left: $gl-sys-space-lg;   margin-right: $gl-sys-space-lg; }
+.gl-mx-5   { margin-left: $gl-sys-space-xl;   margin-right: $gl-sys-space-xl; }
 // margin y
-.gl-my-none { margin-top: $gl-sys-space-none; margin-bottom: $gl-sys-space-none; }
-.gl-my-xs   { margin-top: $gl-sys-space-xs;   margin-bottom: $gl-sys-space-xs; }
-.gl-my-sm   { margin-top: $gl-sys-space-sm;   margin-bottom: $gl-sys-space-sm; }
-.gl-my-md   { margin-top: $gl-sys-space-md;   margin-bottom: $gl-sys-space-md; }
-.gl-my-lg   { margin-top: $gl-sys-space-lg;   margin-bottom: $gl-sys-space-lg; }
-.gl-my-xl   { margin-top: $gl-sys-space-xl;   margin-bottom: $gl-sys-space-xl; }
+.gl-my-0 { margin-top: $gl-sys-space-none; margin-bottom: $gl-sys-space-none; }
+.gl-my-1   { margin-top: $gl-sys-space-xs;   margin-bottom: $gl-sys-space-xs; }
+.gl-my-2   { margin-top: $gl-sys-space-sm;   margin-bottom: $gl-sys-space-sm; }
+.gl-my-3   { margin-top: $gl-sys-space-md;   margin-bottom: $gl-sys-space-md; }
+.gl-my-4   { margin-top: $gl-sys-space-lg;   margin-bottom: $gl-sys-space-lg; }
+.gl-my-5   { margin-top: $gl-sys-space-xl;   margin-bottom: $gl-sys-space-xl; }
 
 // Gap
 // -------------------------------------------
-.gl-gap-none { gap: $gl-sys-space-none; }
-.gl-gap-xs   { gap: $gl-sys-space-xs; }
-.gl-gap-sm   { gap: $gl-sys-space-sm; }
-.gl-gap-md   { gap: $gl-sys-space-md; }
-.gl-gap-lg   { gap: $gl-sys-space-lg; }
-.gl-gap-xl   { gap: $gl-sys-space-xl; }
+.gl-gap-0 { gap: $gl-sys-space-none; }
+.gl-gap-1   { gap: $gl-sys-space-xs; }
+.gl-gap-2   { gap: $gl-sys-space-sm; }
+.gl-gap-3   { gap: $gl-sys-space-md; }
+.gl-gap-4   { gap: $gl-sys-space-lg; }
+.gl-gap-5   { gap: $gl-sys-space-xl; }
 // Gap x
-.gl-gap-x-none { row-gap:$gl-sys-space-none; }
-.gl-gap-x-xs   { row-gap:$gl-sys-space-xs; }
-.gl-gap-x-sm   { row-gap:$gl-sys-space-sm; }
-.gl-gap-x-md   { row-gap:$gl-sys-space-md; }
-.gl-gap-x-lg   { row-gap:$gl-sys-space-lg; }
-.gl-gap-x-xl   { row-gap:$gl-sys-space-xl; }
+.gl-gap-x-0 { row-gap:$gl-sys-space-none; }
+.gl-gap-x-1 { row-gap:$gl-sys-space-xs; }
+.gl-gap-x-2 { row-gap:$gl-sys-space-sm; }
+.gl-gap-x-3 { row-gap:$gl-sys-space-md; }
+.gl-gap-x-4 { row-gap:$gl-sys-space-lg; }
+.gl-gap-x-5 { row-gap:$gl-sys-space-xl; }
 // Gap Y
-.gl-gap-y-none { column-gap: $gl-sys-space-none; }
-.gl-gap-y-xs   { column-gap: $gl-sys-space-xs; }
-.gl-gap-y-sm   { column-gap: $gl-sys-space-sm; }
-.gl-gap-y-md   { column-gap: $gl-sys-space-md; }
-.gl-gap-y-lg   { column-gap: $gl-sys-space-lg; }
-.gl-gap-y-xl   { column-gap: $gl-sys-space-xl; }
+.gl-gap-y-0 { column-gap: $gl-sys-space-none; }
+.gl-gap-y-1 { column-gap: $gl-sys-space-xs; }
+.gl-gap-y-2 { column-gap: $gl-sys-space-sm; }
+.gl-gap-y-3 { column-gap: $gl-sys-space-md; }
+.gl-gap-y-4 { column-gap: $gl-sys-space-lg; }
+.gl-gap-y-5 { column-gap: $gl-sys-space-xl; }
 
 // Border
 // -----------------------------------------
