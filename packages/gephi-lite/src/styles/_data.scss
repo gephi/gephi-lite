@@ -1,5 +1,6 @@
 .edit-node,
 .edit-edge {
+  width: 100%;
   display: flex;
   flex-direction: column;
   @extend .gl-gap-3;
