@@ -132,7 +132,7 @@ export const FilterCreator: FC = () => {
   if (!isOpened) {
     return (
       <div className="filter-item d-flex align-items-center justify-content-center">
-        <button type="button" className="btn btn-outline-dark border-0" onClick={() => setIsOpened(true)}>
+        <button type="button" className="gl-btn" onClick={() => setIsOpened(true)}>
           <CgAddR /> {t("filters.add_filter")}
         </button>
       </div>
@@ -205,11 +205,11 @@ export const FilterCreator: FC = () => {
             />
           )}
         </div>
-        <div className="d-flex justify-content-end mt-3">
-          <button type="button" className="btn btn-outline-dark me-2" onClick={() => setIsOpened(false)}>
+        <div className="d-flex justify-content-end gl-py-md gl-gap-sm">
+          <button type="button" className="gl-btn gl-btn-outline" onClick={() => setIsOpened(false)}>
             {t("common.cancel")}
           </button>
-          <button type="submit" className="btn btn-dark" disabled={filterCreation === null}>
+          <button type="submit" className="gl-btn gl-btn-fill" disabled={filterCreation === null}>
             {t("filters.create_filter")}
           </button>
         </div>

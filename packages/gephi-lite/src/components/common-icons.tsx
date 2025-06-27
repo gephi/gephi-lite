@@ -18,6 +18,7 @@ import { ImFilesEmpty } from "react-icons/im";
 import { MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
 import {
   PiArrowSquareOut,
+  PiArrowsOut,
   PiCaretDown,
   PiCaretLeft,
   PiCaretRight,
@@ -27,12 +28,16 @@ import {
   PiCheck,
   PiCircleHalf,
   PiCircleHalfFill,
+  PiDotsThreeVertical,
   PiFunnel,
   PiFunnelFill,
   PiGear,
+  PiGpsFix,
   PiGraph,
   PiGraphFill,
   PiMagnifyingGlass,
+  PiMagnifyingGlassMinus,
+  PiMagnifyingGlassPlus,
   PiMoonStars,
   PiMoonStarsFill,
   PiPalette,
@@ -45,6 +50,7 @@ import {
   PiSunFill,
   PiTable,
   PiTableFill,
+  PiTrash,
   PiX,
 } from "react-icons/pi";
 
@@ -68,7 +74,13 @@ export const StatisticsIcon = PiChartBar;
 export const StatisticsIconFill = PiChartBarFill;
 export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
-export const ExternalLink = PiArrowSquareOut;
+export const ExternalLinkIcon = PiArrowSquareOut;
+export const LocateIcon = PiGpsFix;
+export const ZoomInIcon = PiMagnifyingGlassPlus;
+export const ZoomOutIcon = PiMagnifyingGlassMinus;
+export const FullScreenIcon = PiArrowsOut;
+export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
+export const TrashIcon = PiTrash;
 
 export const FileIcon = ImFilesEmpty;
 export const GitHubIcon = BsGithub;
@@ -90,8 +102,8 @@ export const CodeEditorIcon = BsCodeSlash;
 export const SaveIcon = MdOutlineSaveAlt;
 export const RunIcon = BsFillPlayFill;
 export const CloseIcon = PiX;
-export const SearchIcon = PiMagnifyingGlass;
 export const CheckedIcon = PiCheck;
+export const SearchIcon = PiMagnifyingGlass;
 export const DarkThemeIcon = PiMoonStars;
 export const DarkThemeSelectedIcon = PiMoonStarsFill;
 export const LightThemeIcon = PiSun;

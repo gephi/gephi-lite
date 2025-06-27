@@ -55,11 +55,11 @@ const InteractionsController: FC = () => {
   const { isFullScreen, toggle } = useFullScreen();
   const sigma = useSigmaAtom();
 
-  const btnClassName = "btn btn-ico btn-dark btn-sm mt-1";
+  const btnClassName = "gl-btn gl-btn-icon gl-btn-fill";
   const zoomOptions = { duration: 200, factor: 1.5 };
 
   return (
-    <div className="position-absolute d-flex flex-column sigma-controls" style={{ right: 10, bottom: 10 }}>
+    <div className="position-absolute d-flex flex-column sigma-controls gl-gap-xs" style={{ right: 10, bottom: 10 }}>
       <button
         className={btnClassName}
         onClick={() => sigma.getCamera().animatedZoom(zoomOptions)}

@@ -4,14 +4,11 @@ import { groupBy, toPairs } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
-import { AiFillEdit } from "react-icons/ai";
-import { BiTargetLock } from "react-icons/bi";
-import { BsChevronDown, BsChevronUp, BsFillTrashFill, BsThreeDotsVertical } from "react-icons/bs";
-import { MdDeselect, MdFilterCenterFocus, MdSelectAll } from "react-icons/md";
 
 import ConfirmModal from "../../components//modals/ConfirmModal";
 import Dropdown from "../../components/Dropdown";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
+import { CaretDownIcon, CaretUpIcon, ThreeDotsVerticalIcon } from "../../components/common-icons";
 import { RenderItemAttribute, RenderText } from "../../components/data/Attribute";
 import { EdgeComponent } from "../../components/data/Edge";
 import { NodeComponent } from "../../components/data/Node";
@@ -107,19 +104,14 @@ function SelectedItem<
           {content}
         </div>
 
-        <button className="btn btn-sm ms-1 pe-0 flex-shrink-0" onClick={() => setExpanded(!expanded)}>
-          {expanded ? <BsChevronUp /> : <BsChevronDown />}
+        <button className="gl-btn gl-btn-icon" onClick={() => setExpanded(!expanded)}>
+          {expanded ? <CaretUpIcon /> : <CaretDownIcon />}
         </button>
 
         <Dropdown
           options={[
             {
-              label: (
-                <>
-                  <BiTargetLock className="me-2" />
-                  {t(`selection.locate_on_graph`)}
-                </>
-              ),
+              label: t(`selection.locate_on_graph`),
               onClick: () => {
                 if (type === "nodes") focusCameraOnNode(id);
                 else focusCameraOnEdge(id);
@@ -127,56 +119,31 @@ function SelectedItem<
               disabled: item.hidden,
             },
             {
-              label: (
-                <>
-                  <MdDeselect className="me-2" />
-                  {t(`selection.unselect_${type}`)}
-                </>
-              ),
+              label: t(`selection.unselect_${type}`),
               onClick: () => unselect({ type, items: new Set([id]) }),
             },
             {
-              label: (
-                <>
-                  <MdSelectAll className="me-2" />
-                  {t(`selection.select_node_neighbors`)}
-                </>
-              ),
+              label: t(`selection.select_node_neighbors`),
               onClick: () => {
                 select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
               },
               disabled: item.hidden,
             },
             {
-              label: (
-                <>
-                  <MdFilterCenterFocus className="me-2" />
-                  {t(`selection.focus_${type}`)}
-                </>
-              ),
+              label: t(`selection.focus_${type}`),
               onClick: () => select({ type, items: new Set([id]), replace: true }),
               disabled: item.hidden || selectionSize === 1,
             },
             { type: "divider" },
             {
-              label: (
-                <>
-                  <AiFillEdit className="me-2" />
-                  {t(`edition.update_this_${type}`)}
-                </>
-              ),
+              label: t(`edition.update_this_${type}`),
               onClick: () =>
                 type === "nodes"
                   ? openModal({ component: UpdateNodeModal, arguments: { nodeId: id } })
                   : openModal({ component: UpdateEdgeModal, arguments: { edgeId: id } }),
             },
             {
-              label: (
-                <>
-                  <BsFillTrashFill className="me-2" />
-                  {t(`edition.delete_this_${type}`)}
-                </>
-              ),
+              label: t(`edition.delete_this_${type}`),
               onClick: () => {
                 openModal({
                   component: ConfirmModal,
@@ -192,8 +159,8 @@ function SelectedItem<
             },
           ]}
         >
-          <button className="btn btn-sm flex-shrink-0">
-            <BsThreeDotsVertical />
+          <button className="gl-btn gl-btn-icon">
+            <ThreeDotsVerticalIcon />
           </button>
         </Dropdown>
       </h4>

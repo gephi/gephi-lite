@@ -28,14 +28,14 @@ const ConfirmModal: FC<
       }}
     >
       <>{message}</>
-      <>
-        <button type="reset" className="btn btn-outline-dark" onClick={() => cancel()}>
+      <div className="gl-gap-sm d-flex">
+        <button type="reset" className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {cancelMsg || t("common.cancel")}
         </button>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="gl-btn gl-btn-fill">
           {confirmMsg || t("common.confirm")}
         </button>
-      </>
+      </div>
     </Modal>
   );
 };

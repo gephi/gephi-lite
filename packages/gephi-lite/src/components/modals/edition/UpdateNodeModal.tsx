@@ -5,12 +5,12 @@ import { FC, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
+import { TrashIcon } from "../../common-icons";
 import { Modal } from "../../modals";
 
 interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
@@ -241,7 +241,7 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
             </div>
             <button
               type="button"
-              className="btn btn-sm btn-danger flex-shrink-0"
+              className="gl-btn btn-danger flex-shrink-0"
               title={t("edition.delete_nodes_attributes", { name: field.key })}
               onClick={() =>
                 setValue(
@@ -250,14 +250,14 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
                 )
               }
             >
-              <BsFillTrashFill />
+              <TrashIcon />
             </button>
           </div>
         ))}
         <div className="col-12">
           <button
             type="button"
-            className="btn btn-outline-dark"
+            className="gl-btn gl-btn-outline"
             onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "", type: "text" }))}
           >
             <AiOutlinePlusCircle className="me-2" /> {t("graph.model.nodes-data.new-attribute")}
@@ -265,15 +265,15 @@ const UpdateNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, 
         </div>
       </div>
 
-      <>
-        <button type="button" className="btn btn-outline-dark" onClick={() => cancel()}>
+      <div className="gl-gap-sm d-flex">
+        <button type="button" className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}
         </button>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="gl-btn gl-btn-fill">
           {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
         </button>
-      </>
+      </div>
     </Modal>
   );
 };

@@ -85,7 +85,7 @@ export function NavMenu<T = unknown>({
               {item.children.map((item) => (
                 <li key={item.id} className="gl-mx-sm">
                   <button
-                    className={cx("btn w-100 text-start", selected === item.id && "gl-btn-fill")}
+                    className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
                     onClick={() => onSelectedChange(item)}
                   >
                     <ItemMenuInner item={item} />

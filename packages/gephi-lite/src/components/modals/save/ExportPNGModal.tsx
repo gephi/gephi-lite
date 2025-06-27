@@ -112,19 +112,19 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
         </div>
       </>
 
-      <>
+      <div className="gl-gap-sm d-flex">
         <button
           type="reset"
           title={t("common.cancel").toString()}
-          className="btn btn-outline-dark"
+          className="gl-btn gl-btn-outline"
           onClick={() => cancel()}
         >
           {t("common.cancel").toString()}
         </button>
-        <button type="submit" title={t("common.save").toString()} className="btn btn-primary ms-2">
+        <button type="submit" title={t("common.save").toString()} className="gl-btn gl-btn-fill">
           {t("common.save").toString()}
         </button>
-      </>
+      </div>
     </Modal>
   );
 };

@@ -91,11 +91,11 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
           }}
         />
       </>
-      <>
+      <div className="gl-gap-sm d-flex">
         <button
           type="button"
           title={t("common.cancel").toString()}
-          className="btn btn-outline-dark"
+          className="gl-btn gl-btn-outline"
           onClick={() => cancel()}
         >
           {t("common.cancel")}
@@ -104,18 +104,18 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
         <button
           type="button"
           title={t("common.save").toString()}
-          className="btn btn-primary"
+          className="gl-btn gl-btn-fill"
           onClick={() => save(false, code)}
         >
           {t("common.save")}
         </button>
 
         {withSaveAndRun && (
-          <button type="submit" title={t("common.save-and-run").toString()} className="btn btn-primary">
+          <button type="submit" title={t("common.save-and-run").toString()} className="gl-btn gl-btn-fill">
             {t("common.save-and-run")}
           </button>
         )}
-      </>
+      </div>
     </Modal>
   );
 }

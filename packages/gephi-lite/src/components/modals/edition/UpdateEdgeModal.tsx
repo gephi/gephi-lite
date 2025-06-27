@@ -5,7 +5,6 @@ import { FC, useContext, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { BsFillTrashFill } from "react-icons/bs";
 import { FaTimes } from "react-icons/fa";
 import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
 
@@ -15,6 +14,7 @@ import { EdgeRenderingData } from "../../../core/graph/types";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { Scalar } from "../../../core/types";
+import { TrashIcon } from "../../common-icons";
 import { Select } from "../../forms/Select";
 import { Modal } from "../../modals";
 
@@ -192,7 +192,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             <input type="text" id="updateEdge-label" className="form-control" {...register("label")} />
             <button
               type="button"
-              className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"
+              className="gl-btn gl-btn-outline flex-shrink-0 ms-2"
               onClick={() => setValue("label", undefined)}
             >
               <FaTimes />
@@ -265,7 +265,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
           />
           <button
             type="button"
-            className="btn btn-sm btn-outline-dark flex-shrink-0 ms-2"
+            className="gl-btn gl-btn-outline flex-shrink-0 ms-2"
             onClick={() => setValue("weight", undefined)}
           >
             <FaTimes />
@@ -313,7 +313,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             </div>
             <button
               type="button"
-              className="btn btn-sm btn-danger flex-shrink-0"
+              className="gl-btn btn-danger flex-shrink-0"
               title={t("edition.delete_edges_attributes", { name: field.key })}
               onClick={() =>
                 setValue(
@@ -322,14 +322,14 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
                 )
               }
             >
-              <BsFillTrashFill />
+              <TrashIcon />
             </button>
           </div>
         ))}
         <div className="col-12">
           <button
             type="button"
-            className="btn btn-outline-dark"
+            className="gl-btn gl-btn-outline"
             onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "", type: "text" }))}
           >
             <AiOutlinePlusCircle className="me-2" /> {t("graph.model.edges-data.new-attribute")}
@@ -337,15 +337,15 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         </div>
       </div>
 
-      <>
-        <button type="button" className="btn btn-outline-dark" onClick={() => cancel()}>
+      <div className="gl-gap-sm d-flex">
+        <button type="button" className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}
         </button>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="gl-btn gl-btn-fill">
           {isNew ? t("edition.create_edges") : t("edition.update_edges")}
         </button>
-      </>
+      </div>
     </Modal>
   );
 };
