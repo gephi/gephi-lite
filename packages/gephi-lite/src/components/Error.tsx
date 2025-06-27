@@ -40,7 +40,7 @@ export const ErrorComponent: FC<FallbackProps> = ({ error, resetErrorBoundary })
 
           <p className="mt-3">{t("error.message")}</p>
 
-          <div className="d-flex justify-content-center gl-gap-sm">
+          <div className="d-flex justify-content-center gl-gap-2">
             <a className="gl-btn gl-btn-outline" rel="noreferrer" target="_blank" href={errorToGithubLink(error)}>
               <GitHubIcon /> {t("error.report")}
             </a>

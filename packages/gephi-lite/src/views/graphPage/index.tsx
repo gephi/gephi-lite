@@ -84,7 +84,7 @@ export const GraphPage: FC = () => {
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
-        <div className="panel-content gl-gap-lg d-flex flex-column">
+        <div className="panel-content gl-gap-4 d-flex flex-column">
           <GraphSummary />
           <GraphSearchSelection />
           <SideMenu
@@ -128,7 +128,7 @@ export const GraphPage: FC = () => {
       <div
         className={cx("gl-panel right-panel-wrapper gl-container-highest-bg gl-border ", items.size > 0 && "deployed")}
       >
-        {items.size > 0 && <Selection className="gl-p-md" />}
+        {items.size > 0 && <Selection className="gl-p-3" />}
       </div>
     </Layout>
   );

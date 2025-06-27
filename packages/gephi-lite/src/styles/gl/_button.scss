@@ -3,8 +3,8 @@
 .gl-btn,
 :not(.btn-check)+.gl-btn {
   @extend .btn;
-  @extend .gl-px-sm;
-  @extend .gl-py-xs;
+  @extend .gl-px-2;
+  @extend .gl-py-1;
   @extend .gl-text-ui;
   border-radius: $gl-sys-radius-md;
   border: 1px solid transparent;

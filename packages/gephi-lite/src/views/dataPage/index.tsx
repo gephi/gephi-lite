@@ -123,7 +123,7 @@ export const DataPage: FC = () => {
     <Layout id="data-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
-        <div className="panel-content gl-gap-lg d-flex flex-column">
+        <div className="panel-content gl-gap-4 d-flex flex-column">
           <GraphSummary />
           <GraphSearchSelection />
           <SideMenu

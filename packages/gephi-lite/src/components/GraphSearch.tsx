@@ -123,7 +123,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
         NoOptionsMessage: (props) => {
           const { t } = useTranslation();
           return (
-            <div className="gl-p-sm text-muted">
+            <div className="gl-p-2 text-muted">
               {props.selectProps.inputValue.length > 0 ? (
                 <span>{t(`search.${type || "graph"}.no_result`)}</span>
               ) : (

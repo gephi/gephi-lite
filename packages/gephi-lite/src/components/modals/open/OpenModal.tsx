@@ -48,7 +48,7 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   return (
     <Modal
       className="modal-lg"
-      title={<span className="gl-px-sm">{t("workspace.menu.open").toString()}</span>}
+      title={<span className="gl-px-2">{t("workspace.menu.open").toString()}</span>}
       onClose={() => cancel()}
       doNotPreserveData
     >
@@ -64,7 +64,7 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
           <selectedOpen.component id="openForm" onStatusChange={setStatus} />
         </div>
       </div>
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>

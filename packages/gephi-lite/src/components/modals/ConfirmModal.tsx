@@ -28,7 +28,7 @@ const ConfirmModal: FC<
       }}
     >
       <>{message}</>
-      <div className="gl-gap-sm d-flex">
+      <div className="gl-gap-2 d-flex">
         <button type="reset" className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {cancelMsg || t("common.cancel")}
         </button>
