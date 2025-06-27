@@ -84,7 +84,7 @@ export const GraphPage: FC = () => {
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
       <div className="left-panel">
-        <div className="panel-content gl-gap-4 d-flex flex-column">
+        <div className="panel-content gl-p-3 gl-gap-4 d-flex flex-column">
           <GraphSummary />
           <GraphSearchSelection />
           <SideMenu
@@ -107,7 +107,7 @@ export const GraphPage: FC = () => {
       {/* Extended left panel */}
       <div className={cx("left-panel-wrapper", selectedTool && "deployed")}>
         {selectedTool && (
-          <div className="panel-content">
+          <div className="panel-content gl-p-3">
             <button
               type="button"
               className="btn-close float-end"
@@ -128,7 +128,7 @@ export const GraphPage: FC = () => {
       <div
         className={cx("gl-panel right-panel-wrapper gl-container-highest-bg gl-border ", items.size > 0 && "deployed")}
       >
-        {items.size > 0 && <Selection className="gl-p-3" />}
+        <div className="panel-content">{items.size > 0 && <Selection className="gl-p-3" />}</div>
       </div>
     </Layout>
   );
