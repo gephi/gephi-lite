@@ -1,7 +1,14 @@
 @use "sass:map";
 
+$table-bg: $gray-200;
+$table-editable-columns-cell-bg: $white;
+$table-editable-columns-cell-hover-bg: $gray-100;
+$table-editable-columns-header-bg: $gray-200;
+$table-non-editable-columns-cell-bg: $gray-100;
+$table-non-editable-columns-header-bg: $gray-300;
+
 .data-table {
-  background: $gray-100;
+  background: $table-bg;
   border: $table-border-color;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -31,8 +38,9 @@
         font-weight: $font-weight-base;
         position: relative;
 
+        background: $table-editable-columns-header-bg;
         &.protected {
-          background: $gray-200;
+          background: $table-non-editable-columns-header-bg;
         }
 
         & > div.content-wrapper {
@@ -94,6 +102,15 @@
         display: flex;
 
         padding: map.get($spacers, 1) map.get($spacers, 2);
+
+        background: $table-non-editable-columns-cell-bg;
+        &.editable {
+          background: $table-editable-columns-cell-bg;
+
+          &:hover {
+            background: $table-editable-columns-cell-hover-bg;
+          }
+        }
 
         &.editable {
           padding: 0;

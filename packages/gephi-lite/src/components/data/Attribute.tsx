@@ -10,7 +10,7 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import { isNil } from "lodash";
 import { DateTime } from "luxon";
-import { FC, createElement, useCallback, useMemo } from "react";
+import { FC, createElement, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import ReactLinkify from "react-linkify";
 import { MultiValueProps, OptionProps, SingleValueProps, components } from "react-select";
@@ -73,22 +73,40 @@ export const AttributeEditors: {
     field: FieldModel<ItemType, false, K>;
   }>;
 } = {
-  text: ({ value, onChange }) => (
-    <input
-      className="form-control"
-      type="string"
-      value={value || ""}
-      onChange={(e) => onChange(e.target.value || undefined)}
-    />
-  ),
-  number: ({ value, onChange }) => (
-    <input
-      className="form-control"
-      type="number"
-      value={value || ""}
-      onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
-    />
-  ),
+  text: ({ value, onChange }) => {
+    const ref = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      if (ref.current) ref.current.focus();
+    }, []);
+
+    return (
+      <input
+        ref={ref}
+        autoFocus
+        className="form-control"
+        type="string"
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value || undefined)}
+      />
+    );
+  },
+  number: ({ value, onChange }) => {
+    const ref = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      if (ref.current) ref.current.focus();
+    }, []);
+
+    return (
+      <input
+        ref={ref}
+        autoFocus
+        className="form-control"
+        type="number"
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
+      />
+    );
+  },
   category: ({ value, onChange, field }) => {
     const values = useDataCollection(field);
     const options = useMemo(() => Array.from(values).map(optionize), [values]);
@@ -111,6 +129,7 @@ export const AttributeEditors: {
 
     return (
       <CreatableSelect<BaseOption>
+        autoFocus
         menuPosition="absolute"
         value={!isNil(value) ? optionize(value) : undefined}
         onChange={(newValue) => onChange(newValue?.value)}
@@ -150,8 +169,9 @@ export const AttributeEditors: {
 
     return (
       <CreatableSelect<BaseOption, true>
-        menuPosition="absolute"
         isMulti
+        autoFocus
+        menuPosition="absolute"
         value={value?.map(optionize)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
         options={options}
@@ -164,6 +184,7 @@ export const AttributeEditors: {
   },
   date: ({ value, onChange }) => (
     <input
+      autoFocus
       className="form-control"
       type="datetime-local"
       value={value?.toFormat("yyyy-MM-dd'T'HH:mm") ?? ""}
