@@ -1,11 +1,23 @@
-import { FieldModelAbstraction, FieldModelTypeSpec, ModelValueType, Scalar } from "@gephi/gephi-lite-sdk";
+/* eslint-disable react-hooks/rules-of-hooks */
+import {
+  FieldModel,
+  FieldModelAbstraction,
+  FieldModelType,
+  FieldModelTypeSpec,
+  ItemType,
+  ModelValueType,
+  Scalar,
+} from "@gephi/gephi-lite-sdk";
 import { isNil } from "lodash";
 import { DateTime } from "luxon";
-import { FC, createElement } from "react";
+import { FC, createElement, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import ReactLinkify from "react-linkify";
+import { MultiValueProps, OptionProps, SingleValueProps, components } from "react-select";
+import { GroupBase } from "react-select/dist/declarations/src/types";
 
 import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
+import { useDataCollection } from "../../hooks/useDataCollection";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
@@ -22,7 +34,6 @@ export const AttributeRenderers: {
 } = {
   text: ({ value }) => (!isNil(value) ? <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify> : null),
   number: ({ value }) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { i18n } = useTranslation();
     return !isNil(value) ? <>{value.toLocaleString(i18n.language)}</> : null;
   },
@@ -56,12 +67,11 @@ export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar 
  * ************
  */
 export const AttributeEditors: {
-  [K in keyof FieldModelAbstraction]: FC<
-    {
-      value?: FieldModelAbstraction[K]["expectedOutput"];
-      onChange: (value?: FieldModelAbstraction[K]["expectedOutput"]) => void;
-    } & FieldModelAbstraction[K]["options"]
-  >;
+  [K in FieldModelType]: FC<{
+    value?: FieldModelAbstraction[K]["expectedOutput"];
+    onChange: (value?: FieldModelAbstraction[K]["expectedOutput"]) => void;
+    field: FieldModel<ItemType, false, K>;
+  }>;
 } = {
   text: ({ value, onChange }) => (
     <input
@@ -79,22 +89,76 @@ export const AttributeEditors: {
       onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
     />
   ),
-  category: ({ value, onChange }) => {
+  category: ({ value, onChange, field }) => {
+    const values = useDataCollection(field);
+    const options = useMemo(() => Array.from(values).map(optionize), [values]);
+    const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
+      const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
+      return (
+        <Option {...props}>
+          <RenderCategory value={props.data.value} />
+        </Option>
+      );
+    }, []);
+    const SingleValueComponent = useCallback((props: SingleValueProps<BaseOption, false>) => {
+      const SingleValue = components.SingleValue<BaseOption, false, GroupBase<BaseOption>>;
+      return (
+        <SingleValue {...props}>
+          <RenderCategory value={props.data.value} />
+        </SingleValue>
+      );
+    }, []);
+
     return (
       <CreatableSelect<BaseOption>
         menuPosition="absolute"
         value={!isNil(value) ? optionize(value) : undefined}
         onChange={(newValue) => onChange(newValue?.value)}
+        options={options}
+        components={{
+          Option: OptionComponent,
+          SingleValue: SingleValueComponent,
+        }}
       />
     );
   },
-  keywords: ({ value, onChange }) => {
+  keywords: ({ value, onChange, field }) => {
+    const values = useDataCollection(field);
+    const options = useMemo(() => Array.from(values).map(optionize), [values]);
+    const OptionComponent = useCallback(
+      (props: OptionProps<BaseOption, true>) => {
+        const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;
+        return (
+          <Option {...props}>
+            <RenderKeywords value={[props.data.value]} separator={field.separator} />
+          </Option>
+        );
+      },
+      [field.separator],
+    );
+    const MultiValueContainerComponent = useCallback(
+      (props: MultiValueProps<BaseOption, true>) => {
+        const MultiValueContainer = components.MultiValueContainer<BaseOption, true, GroupBase<BaseOption>>;
+        return (
+          <MultiValueContainer {...props}>
+            <RenderKeywords value={[props.data.value]} separator={field.separator} />
+          </MultiValueContainer>
+        );
+      },
+      [field.separator],
+    );
+
     return (
       <CreatableSelect<BaseOption, true>
         menuPosition="absolute"
         isMulti
         value={value?.map(optionize)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
+        options={options}
+        components={{
+          Option: OptionComponent,
+          MultiValueContainer: MultiValueContainerComponent,
+        }}
       />
     );
   },
@@ -116,21 +180,22 @@ export const EditCategory = AttributeEditors.category;
 export const EditKeywords = AttributeEditors.keywords;
 export const EditDate = AttributeEditors.date;
 
-export const EditItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar; onChange: (value: Scalar) => void }> = ({
+export const EditItemAttribute: FC<{ field: FieldModel; value: Scalar; onChange: (value: Scalar) => void }> = ({
   field,
   value,
   onChange,
 }) => {
   const EditComponent = AttributeEditors[field.type] as FC<{
-    value?: ModelValueType;
-    onChange: (value?: ModelValueType) => void;
+    value?: FieldModelAbstraction[FieldModelType]["expectedOutput"];
+    onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
+    field: FieldModel;
   }>;
 
   return (
     <EditComponent
       value={castScalarToModelValue(value, field)}
       onChange={(value) => onChange(serializeModelValueToScalar(value, field))}
-      {...field}
+      field={field}
     />
   );
 };
