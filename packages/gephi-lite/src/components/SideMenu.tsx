@@ -40,7 +40,7 @@ const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpe
   );
 };
 
-export function NavMenu<T = unknown>({
+export function SideMenu<T = unknown>({
   className,
   menu,
   selected,
@@ -68,7 +68,7 @@ export function NavMenu<T = unknown>({
   return (
     <ul className={cx("nav-menu list-unstyled d-flex flex-column gl-gap-md", className)}>
       {menu.map((item) => (
-        <li key={item.id}>
+        <li key={item.id} className="d-flex flex-column gl-gap-xs">
           <button
             className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
             onClick={() => {

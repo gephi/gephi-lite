@@ -7,7 +7,7 @@ import { ScrollSync } from "react-scroll-sync";
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
-import { type MenuItem, NavMenu } from "../../components/NavMenu";
+import { type MenuItem, SideMenu } from "../../components/SideMenu";
 import {
   DataCreationIcon,
   DataCreationIconFill,
@@ -126,7 +126,7 @@ export const DataPage: FC = () => {
         <div className="panel-content">
           <GraphSummary className="px-3 mb-3" />
           <GraphSearchSelection className="mb-3 mx-1" />
-          <NavMenu
+          <SideMenu
             menu={MENU}
             selected={selectedTool?.id}
             onSelectedChange={(item) =>
