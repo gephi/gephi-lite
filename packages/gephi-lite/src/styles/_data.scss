@@ -1,0 +1,19 @@
+.edit-node,
+.edit-edge {
+  display: flex;
+  flex-direction: column;
+  @extend .gl-gap-3;
+
+  .form-inputs {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    @extend .gl-gap-2;
+  }
+
+  .form-buttons {
+    justify-content: end;
+    display: flex;
+    @extend .gl-gap-2;
+  }
+}

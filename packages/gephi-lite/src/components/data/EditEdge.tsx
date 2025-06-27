@@ -1,54 +1,42 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, map, omit, pick, reverse } from "lodash";
-import { FC, useContext, useMemo } from "react";
+import { fromPairs, keyBy, omit, pick } from "lodash";
+import { FC, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import { FaTimes } from "react-icons/fa";
-import { StateManagerProps } from "react-select/dist/declarations/src/useStateManager";
 
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../../core/context/dataContexts";
-import { UIContext } from "../../../core/context/uiContext";
-import { EdgeRenderingData } from "../../../core/graph/types";
-import { ModalProps } from "../../../core/modals/types";
-import { useNotifications } from "../../../core/notifications";
-import { Scalar } from "../../../core/types";
-import { TrashIcon } from "../../common-icons";
-import { Select } from "../../forms/Select";
-import { Modal } from "../../modals";
-
-interface NodeOption {
-  label: string;
-  value: string;
-}
+import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import { EdgeRenderingData } from "../../core/graph/types";
+import { ModalProps } from "../../core/modals/types";
+import { useNotifications } from "../../core/notifications";
+import { Scalar } from "../../core/types";
+import { GraphSearch } from "../GraphSearch";
+import { FieldModelIcon } from "../common-icons";
+import { Modal } from "../modals";
+import { EditItemAttribute } from "./Attribute";
 
 interface UpdatedEdgeState extends Omit<EdgeRenderingData, "rawWeight"> {
   id: string;
-  source: NodeOption;
-  target: NodeOption;
+  source: string;
+  target: string;
   attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
 
-const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, arguments: { edgeId } }) => {
+const useEditEdgeForm = ({
+  edgeId,
+  onSubmitted,
+  onCancel,
+}: {
+  edgeId?: string;
+  onSubmitted: () => void;
+  onCancel: () => void;
+}) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { portalTarget } = useContext(UIContext);
-
+  const { select } = useSelectionActions();
   const { createEdge, updateEdge } = useGraphDatasetActions();
   const { edgeData, edgeRenderingData, nodeRenderingData, fullGraph, edgeFields } = useGraphDataset();
-  const { select } = useSelectionActions();
-
-  const nodeSelectProps: Partial<StateManagerProps> = useMemo(
-    () => ({
-      classNames: { menuPortal: () => "over-modal" },
-      menuPortalTarget: portalTarget,
-      placeholder: t("edition.search_nodes"),
-      // reverse to show the last inserted node first see #152
-      options: reverse(map(nodeRenderingData, ({ label }, value) => ({ value, label: label || value }))),
-    }),
-    [nodeRenderingData, portalTarget, t],
-  );
+  const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
 
   const isNew = typeof edgeId === "undefined";
   const defaultValues = useMemo(() => {
@@ -67,34 +55,29 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
     return {
       id: edgeId,
       ...omit(edgeRenderingData[edgeId], "rawWeight"),
-      source: { value: source, label: nodeRenderingData[source].label || source },
-      target: { value: target, label: nodeRenderingData[target].label || target },
+      source,
+      target,
       attributes: edgeFields.map((nf) => ({
         key: nf.id,
         value: edgeData[edgeId][nf.id],
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, nodeRenderingData, edgeFields]);
+  }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, edgeFields]);
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    getValues,
     watch,
     formState: { errors },
   } = useForm<UpdatedEdgeState>({
     defaultValues,
   });
   const attributes = watch("attributes");
-
-  return (
-    <Modal
-      title={isNew ? t("edition.create_edges") : t("edition.update_edges")}
-      onClose={() => cancel()}
-      className="modal-lg"
-      onSubmit={handleSubmit((data) => {
+  const submit = useMemo(
+    () =>
+      handleSubmit((data) => {
         // generate id if not present
         const id: string = data.id || crypto.randomUUID();
 
@@ -126,14 +109,14 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         // Create new edge:
         if (isNew) {
           try {
-            createEdge(id, allAttributes, data.source.value, data.target.value);
+            createEdge(id, allAttributes, data.source, data.target);
             select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
               title: t("edition.create_edges"),
               message: t("edition.create_edges_success"),
             });
-            submit({});
+            onSubmitted();
           } catch (e) {
             notify({
               type: "error",
@@ -152,7 +135,7 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
               title: t("edition.update_edges"),
               message: t("edition.update_edges_success"),
             });
-            submit({});
+            onSubmitted();
           } catch (e) {
             notify({
               type: "error",
@@ -161,10 +144,15 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             });
           }
         }
-      })}
-    >
-      <div className="row g-3">
-        <div className="col-md-6">
+      }),
+    [createEdge, edgeData, handleSubmit, isNew, notify, onSubmitted, select, setValue, t, updateEdge],
+  );
+
+  return {
+    submit,
+    main: (
+      <section className="form-inputs">
+        <div>
           <label htmlFor="updateEdge-id" className="form-label">
             {t("graph.model.edges-data.id")}
           </label>
@@ -184,24 +172,15 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             </div>
           )}
         </div>
-        <div className="col-md-6">
+        <div>
           <label htmlFor="updateEdge-label" className="form-label">
             {t("graph.model.edges-data.label")}
           </label>
-          <div className="d-flex flex-row">
-            <input type="text" id="updateEdge-label" className="form-control" {...register("label")} />
-            <button
-              type="button"
-              className="gl-btn gl-btn-outline flex-shrink-0 ms-2"
-              onClick={() => setValue("label", undefined)}
-            >
-              <FaTimes />
-            </button>
-          </div>
+          <input type="text" id="updateEdge-label" className="form-control" {...register("label")} />
         </div>
 
         {/* Extremities */}
-        <div className="col-md-6">
+        <div>
           <label htmlFor="updateEdge-source" className="form-label">
             {t("graph.model.edges-data.source")}
           </label>
@@ -210,22 +189,23 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             name="source"
             rules={{
               required: true,
-              validate: ({ value }) => !!nodeRenderingData[value],
+              validate: (value) => !!nodeRenderingData[value],
             }}
-            render={({ field: { onChange, ...field } }) => (
-              <Select
-                {...field}
-                {...nodeSelectProps}
-                className={cx(errors.source && "form-control react-select is-invalid")}
-                isDisabled={!isNew}
-                onChange={(newValue) => onChange(newValue as NodeOption)}
-                id="updateEdge-source"
+            render={({ field: { onChange, value } }) => (
+              <GraphSearch
+                onChange={(option) => {
+                  if (option === null || "id" in option) {
+                    onChange(option?.id);
+                  }
+                }}
+                value={typeof value === "string" ? { type: "nodes", id: value } : null}
+                type="nodes"
               />
             )}
           />
           {errors.source && <div className="invalid-feedback">{t(`error.form.${errors.source.type}`)}</div>}
         </div>
-        <div className="col-md-6">
+        <div>
           <label htmlFor="updateEdge-target" className="form-label">
             {t("graph.model.edges-data.target")}
           </label>
@@ -234,16 +214,17 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
             name="target"
             rules={{
               required: true,
-              validate: ({ value }) => !!nodeRenderingData[value],
+              validate: (value) => !!nodeRenderingData[value],
             }}
-            render={({ field: { onChange, ...field } }) => (
-              <Select
-                {...field}
-                {...nodeSelectProps}
-                className={cx(errors.target && "form-control react-select is-invalid")}
-                isDisabled={!isNew}
-                onChange={(newValue) => onChange(newValue as NodeOption)}
-                id="updateEdge-target"
+            render={({ field: { onChange, value } }) => (
+              <GraphSearch
+                onChange={(option) => {
+                  if (option === null || "id" in option) {
+                    onChange(option?.id);
+                  }
+                }}
+                value={typeof value === "string" ? { type: "nodes", id: value } : null}
+                type="nodes"
               />
             )}
           />
@@ -251,40 +232,38 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
         </div>
 
         {/* Rendering attributes */}
-        <div className="col-md-6 d-flex flex-row align-items-center">
-          <label htmlFor="updateEdge-weight" className="form-label mb-0 flex-shrink-0">
+        <div>
+          <label htmlFor="updateEdge-weight" className="form-label">
             {t("graph.model.edges-data.weight")}
           </label>
           <input
             type="number"
             id="updateEdge-weight"
-            className="form-control flex-grow-1 ms-2"
+            className="form-control"
             min={0}
             step="any"
             {...register("weight", { min: 0 })}
           />
-          <button
-            type="button"
-            className="gl-btn gl-btn-outline flex-shrink-0 ms-2"
-            onClick={() => setValue("weight", undefined)}
-          >
-            <FaTimes />
-          </button>
         </div>
 
         {/* Other attributes */}
-        <div>{t("graph.model.edges-data.attributes")}</div>
         {attributes.map((field, i) => (
-          <div key={i} className="col-12 d-flex flex-row">
-            <div className="flex-grow-1 me-2">
-              <input
-                type="text"
-                className="form-control"
-                placeholder={t("graph.model.edges-data.attribute-name")}
-                {...register(`attributes.${i}.key`, {
-                  required: "true",
-                  validate: (value, formValues) => !formValues.attributes.some((v, j) => j !== i && value === v.key),
-                })}
+          <div key={i}>
+            <div key={i}>
+              <label htmlFor={`edge-${edgeId}-field-${i}`} className="form-label">
+                <FieldModelIcon type={edgeFieldsIndex[field.key].type} /> {field.key}
+              </label>
+              <Controller
+                name={`attributes.${i}.value`}
+                control={control}
+                render={(props) => (
+                  <EditItemAttribute
+                    id={`edge-${edgeId}-field-${i}`}
+                    field={edgeFieldsIndex[field.key]}
+                    value={props.field.value}
+                    onChange={(v) => props.field.onChange(v)}
+                  />
+                )}
               />
               {(errors.attributes || [])[i]?.key && (
                 <div className="invalid-feedback">
@@ -298,56 +277,69 @@ const UpdateEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, 
                 </div>
               )}
             </div>
-            <div className="flex-grow-1 me-2">
-              {/* MODEL EDITION IS MISSING ONLY SCALAR EDITION... */}
-              <input
-                //TODO: date, keywords...
-                type={field.type === "number" ? "number" : "text"}
-                className="form-control"
-                placeholder={t("graph.model.edges-data.attribute-value")}
-                {...register(`attributes.${i}.value`)}
-              />
-              {(errors.attributes || [])[i]?.value && (
-                <div className="invalid-feedback">{t(`error.form.${(errors.attributes || [])[i]?.value?.type}`)}</div>
-              )}
-            </div>
-            <button
-              type="button"
-              className="gl-btn btn-danger flex-shrink-0"
-              title={t("edition.delete_edges_attributes", { name: field.key })}
-              onClick={() =>
-                setValue(
-                  "attributes",
-                  getValues("attributes").filter((_, j) => j !== i),
-                )
-              }
-            >
-              <TrashIcon />
-            </button>
           </div>
         ))}
-        <div className="col-12">
-          <button
-            type="button"
-            className="gl-btn gl-btn-outline"
-            onClick={() => setValue("attributes", getValues("attributes").concat({ key: "", value: "", type: "text" }))}
-          >
-            <AiOutlinePlusCircle className="me-2" /> {t("graph.model.edges-data.new-attribute")}
-          </button>
-        </div>
-      </div>
-
-      <div className="gl-gap-2 d-flex">
-        <button type="button" className="gl-btn gl-btn-outline" onClick={() => cancel()}>
+      </section>
+    ),
+    footer: (
+      <section className="form-buttons">
+        <button type="button" className="gl-btn gl-btn-outline" onClick={() => onCancel()}>
           {t("common.cancel")}
         </button>
 
         <button type="submit" className="gl-btn gl-btn-fill">
           {isNew ? t("edition.create_edges") : t("edition.update_edges")}
         </button>
-      </div>
+      </section>
+    ),
+  };
+};
+
+export const EditEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, arguments: { edgeId } }) => {
+  const { t } = useTranslation();
+  const isNew = typeof edgeId === "undefined";
+  const {
+    main,
+    footer,
+    submit: submitForm,
+  } = useEditEdgeForm({
+    edgeId,
+    onSubmitted: () => submit({}),
+    onCancel: () => cancel(),
+  });
+
+  return (
+    <Modal
+      title={isNew ? t("edition.create_edges") : t("edition.update_edges")}
+      onClose={() => cancel()}
+      className="modal-lg edit-edge"
+      onSubmit={submitForm}
+    >
+      {main}
+      {footer}
     </Modal>
   );
 };
 
-export default UpdateEdgeModal;
+export const EditEdgeForm: FC<{
+  edgeId?: string;
+  onSubmitted: () => void;
+  onCancel: () => void;
+}> = ({ edgeId, onSubmitted, onCancel }) => {
+  const {
+    main,
+    footer,
+    submit: submitForm,
+  } = useEditEdgeForm({
+    edgeId,
+    onSubmitted,
+    onCancel,
+  });
+
+  return (
+    <form className="edit-edge" onSubmit={submitForm}>
+      {main}
+      {footer}
+    </form>
+  );
+};
