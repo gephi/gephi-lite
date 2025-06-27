@@ -42,7 +42,7 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
   return (
     <div className={cx("graph-summary d-flex flex-column gl-gap-sm", className)}>
       <div className="graph-title gl-px-sm">{title}</div>
-      <div className="gl-px-sm gl-gap-y-sm d-flex flex-column">
+      <div className="gl-px-sm gl-gap-x-sm d-flex flex-column">
         <div className="d-flex flex-row flex-wrap gl-gap-x-sm gl-gap-y-md" style={{ lineHeight: 1.2 }}>
           <GraphStat className="" type="nodes" current={filteredGraph.order} total={fullGraph.order} />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />

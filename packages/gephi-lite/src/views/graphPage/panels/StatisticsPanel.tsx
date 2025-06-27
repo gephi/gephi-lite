@@ -284,7 +284,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
                     <div className={cx(metricConfig.parameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
                       <button
                         type="button"
-                        className="btn btn-dark mx-auto d-block m-3"
+                        className="gl-btn gl-btn-fill mx-auto d-block m-3"
                         onClick={() => {
                           openModal({
                             component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
@@ -320,7 +320,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
 
       <hr className="m-0" />
 
-      <div className="z-over-loader panel-block d-flex flex-row align-items-center">
+      <div className="z-over-loader panel-block d-flex flex-row align-items-center  gl-py-md gl-gap-sm">
         {success && (
           <MessageTooltip
             openOnMount={2000}
@@ -331,10 +331,10 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
           />
         )}
         <div className="flex-grow-1" />
-        <button type="reset" className="btn btn-outline-secondary ms-2" onClick={() => resetParameters()}>
+        <button type="reset" className="gl-btn gl-btn-outline" onClick={() => resetParameters()}>
           {t("common.reset")}
         </button>
-        <button type="submit" className="btn btn-primary ms-2">
+        <button type="submit" className="gl-btn gl-btn-fill">
           {t("statistics.compute", { count: Object.keys(metricConfig.attributeNames).length })}
         </button>
       </div>

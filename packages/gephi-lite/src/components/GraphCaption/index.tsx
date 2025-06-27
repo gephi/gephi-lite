@@ -185,7 +185,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
         <div title={enabled ? undefined : t("graph.caption.disabled").toString()}>
           <button
             title={`${t(collapsed ? "common.expand" : "common.collapse")} `}
-            className="btn btn-ico btn-dark btn-sm"
+            className="gl-btn gl-btn-icon gl-btn-fill"
             disabled={!enabled}
             onClick={() => {
               setCollapsed(!collapsed);

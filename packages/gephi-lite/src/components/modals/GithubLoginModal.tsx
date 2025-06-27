@@ -55,7 +55,7 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
             <div className="input-group mb-3">
               <input type="text" readOnly={true} className="form-control text-center" value={code} />
               <button
-                className="btn btn-secondary"
+                className="gl-btn gl-btn-outline"
                 type="button"
                 onClick={() => {
                   copy(code);
@@ -68,10 +68,10 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
           </div>
         )}
       </>
-      <>
+      <div className="gl-gap-sm d-flex">
         {!loading && url && code && (
           <button
-            className="btn btn-primary"
+            className="gl-btn gl-btn-fill"
             type="button"
             disabled={hasBeenClick && waiting}
             onClick={() => {
@@ -87,7 +87,7 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
             )}
           </button>
         )}
-      </>
+      </div>
     </Modal>
   );
 };

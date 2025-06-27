@@ -241,7 +241,7 @@ export const LayoutForm: FC<{
 
       <hr className="m-0" />
 
-      <div className="z-over-loader panel-block d-flex flex-row gap-1 flex-wrap align-items-center justify-content-end">
+      <div className="z-over-loader panel-block d-flex flex-row flex-wrap align-items-center justify-content-end gl-py-md gl-gap-sm">
         {success && (
           <MessageTooltip
             openOnMount={2000}
@@ -257,7 +257,7 @@ export const LayoutForm: FC<{
           <button
             key={id}
             type="reset"
-            className="btn text-nowrap mt-1 btn-secondary"
+            className="gl-btn gl-btn-outline"
             title={description ? t(`layouts.${layout.id}.buttons.${id}.description`) : undefined}
             onClick={() => {
               const graph = getFilteredDataGraph(dataset, sigmaGraph);
@@ -268,15 +268,10 @@ export const LayoutForm: FC<{
             {t(`layouts.${layout.id}.buttons.${id}.title`)}
           </button>
         ))}
-        <button
-          type="reset"
-          className="btn text-nowrap mt-1 btn-secondary"
-          onClick={() => setParameters()}
-          disabled={isRunning}
-        >
+        <button type="reset" className="gl-btn gl-btn-outline" onClick={() => setParameters()} disabled={isRunning}>
           {t("common.reset")}
         </button>
-        <button type="submit" className="btn text-nowrap mt-1 btn-primary">
+        <button type="submit" className="gl-btn gl-btn-fill">
           {layout.type === "sync" && <>{t("common.apply")}</>}
           {layout.type === "worker" && (
             <>

@@ -157,14 +157,14 @@ export const OpenCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   return (
     <Modal title={t("graph.open.local.title").toString()}>
       <OpenCloudFileForm id={"remoteFileForm"} onStatusChange={(s) => setStatus(s)} />
-      <>
-        <button title={t("common.cancel").toString()} className="btn btn-outline-dark" onClick={() => cancel()}>
+      <div className="gl-gap-sm d-flex">
+        <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}
         </button>
-        <button className="btn btn-primary" form="localFileForm" disabled={status.type === "loading"}>
+        <button className="gl-btn gl-btn-fill" form="localFileForm" disabled={status.type === "loading"}>
           {t("common.open").toString()}
         </button>
-      </>
+      </div>
     </Modal>
   );
 };

@@ -76,7 +76,7 @@ const FilterInStack: FC<{
         )}
         <div className="w-100 d-flex justify-content-center align-items-center">
           <button
-            className="btn btn-outline-dark border-0"
+            className="gl-btn"
             onClick={(e) => {
               e.stopPropagation();
               if (active) deletePastFilter(filterIndex);
