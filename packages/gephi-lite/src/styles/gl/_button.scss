@@ -1,6 +1,7 @@
 @use "sass:color";
 
-.gl-btn {
+.gl-btn,
+:not(.btn-check)+.gl-btn {
   @extend .btn;
   @extend .gl-px-sm;
   @extend .gl-py-xs;
@@ -22,6 +23,7 @@
   }
 
   &:active,
+  &:first-child:active,
   &.gl-btn-pressed {
     background-color: $gl-sys-color-component-bg;
     border-color: $gl-sys-color-component-bg;
