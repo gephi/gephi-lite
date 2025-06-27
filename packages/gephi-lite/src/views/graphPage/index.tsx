@@ -5,7 +5,7 @@ import { GraphGraphAppearance, GraphItemAppearance } from "../../components/Grap
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
-import { type MenuItem, NavMenu } from "../../components/NavMenu";
+import { type MenuItem, SideMenu } from "../../components/SideMenu";
 import {
   AppearanceIcon,
   AppearanceIconFill,
@@ -87,7 +87,7 @@ export const GraphPage: FC = () => {
         <div className="panel-content gl-gap-lg d-flex flex-column">
           <GraphSummary />
           <GraphSearchSelection />
-          <NavMenu
+          <SideMenu
             menu={MENU}
             selected={selectedTool?.id}
             onSelectedChange={(item) =>
