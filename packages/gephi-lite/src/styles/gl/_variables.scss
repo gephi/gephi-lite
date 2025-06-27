@@ -3,7 +3,7 @@
 //---- Color
 //Neutral Palette
 $gl-ref-color-neutral-00: #ffffff;
-$gl-ref-color-neutral-05: #fcfcfc;
+$gl-ref-color-neutral-05: #fafafa;
 $gl-ref-color-neutral-10: #f7f7f7;
 //$gl-ref-color-neutral-20: #f1f1f1;
 $gl-ref-color-neutral-30: #eaeaea;
@@ -54,8 +54,7 @@ $gl-sys-color-onBg-muted: $gl-ref-color-neutral-70;
 //Component
 $gl-sys-color-component-bg: $gl-ref-color-neutral-80;
 $gl-sys-color-component-border: $gl-ref-color-neutral-80;
-$gl-sys-color-onComponentBg: $gl-ref-color-neutral-30;
-
+$gl-sys-color-onComponentBg: $gl-ref-color-neutral-05;
 
 //----Opacity
 $gl-sys-opacity-state-layer-hover: $gl-opacity-8;
