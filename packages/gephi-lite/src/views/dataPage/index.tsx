@@ -16,6 +16,8 @@ import {
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
+import { EditEdgeForm } from "../../components/data/EditEdge";
+import { EditNodeForm } from "../../components/data/EditNode";
 import { FieldModelForm } from "../../components/forms/FieldModelForm";
 import { useDataTable, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { doesItemMatch } from "../../utils/search";
@@ -24,7 +26,9 @@ import { Layout } from "../layout";
 import { TopBar } from "./TopBar";
 import { DataTable } from "./dataTable/DataTable";
 
-const MENU: MenuItem<{ panel?: ComponentType<{ close: () => void }> }>[] = [
+type Panel = ComponentType<{ close: () => void }>;
+
+const MENU: MenuItem<{ panel?: Panel }>[] = [
   {
     id: "data-creation",
     i18nKey: "edition.data_creation",
@@ -33,12 +37,12 @@ const MENU: MenuItem<{ panel?: ComponentType<{ close: () => void }> }>[] = [
       {
         id: "data-creation-node",
         i18nKey: "edition.create_nodes",
-        panel: () => <>TODO</>,
+        panel: ({ close }) => <EditNodeForm onCancel={close} onSubmitted={close} />,
       },
       {
         id: "data-creation-edge",
         i18nKey: "edition.create_edges",
-        panel: () => <>TODO</>,
+        panel: ({ close }) => <EditEdgeForm onCancel={close} onSubmitted={close} />,
       },
       {
         id: "data-creation-node-field",
@@ -118,9 +122,7 @@ export const DataPage: FC = () => {
     return { matchingItems, otherItems };
   }, [type, graph, nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields, search]);
 
-  const [selectedTool, setSelectedTool] = useState<
-    undefined | { id: string; panel: ComponentType<{ close: () => void }> }
-  >(undefined);
+  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
 
   return (
     <Layout id="data-page" className="panels-layout">

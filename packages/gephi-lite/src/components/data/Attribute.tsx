@@ -72,18 +72,20 @@ export const AttributeEditors: {
     value?: FieldModelAbstraction[K]["expectedOutput"];
     onChange: (value?: FieldModelAbstraction[K]["expectedOutput"]) => void;
     field: FieldModel<ItemType, false, K>;
+    autoFocus?: boolean;
+    id?: string;
   }>;
 } = {
-  text: ({ value, onChange }) => {
+  text: ({ value, onChange, id, autoFocus }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
-      if (ref.current) ref.current.focus();
-    }, []);
+      if (ref.current && autoFocus) ref.current.focus();
+    }, [autoFocus]);
 
     return (
       <input
+        id={id}
         ref={ref}
-        autoFocus
         className="form-control"
         type="string"
         value={value ?? ""}
@@ -91,16 +93,16 @@ export const AttributeEditors: {
       />
     );
   },
-  number: ({ value, onChange }) => {
+  number: ({ value, onChange, id, autoFocus }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
-      if (ref.current) ref.current.focus();
-    }, []);
+      if (ref.current && autoFocus) ref.current.focus();
+    }, [autoFocus]);
 
     return (
       <input
+        id={id}
         ref={ref}
-        autoFocus
         className="form-control"
         type="number"
         value={value ?? ""}
@@ -108,9 +110,9 @@ export const AttributeEditors: {
       />
     );
   },
-  category: ({ value, onChange, field }) => {
+  category: ({ value, onChange, field, id, autoFocus }) => {
     const values = useDataCollection(field);
-    const options = useMemo(() => Array.from(values).map(optionize), [values]);
+    const options = useMemo(() => Array.from(values).sort().map(optionize), [values]);
     const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
       const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
       return (
@@ -130,7 +132,8 @@ export const AttributeEditors: {
 
     return (
       <CreatableSelect<BaseOption>
-        autoFocus
+        id={id}
+        autoFocus={autoFocus}
         menuPosition="absolute"
         value={!isNil(value) ? optionize(value) : undefined}
         onChange={(newValue) => onChange(newValue?.value)}
@@ -142,9 +145,9 @@ export const AttributeEditors: {
       />
     );
   },
-  keywords: ({ value, onChange, field }) => {
+  keywords: ({ value, onChange, field, id, autoFocus }) => {
     const values = useDataCollection(field);
-    const options = useMemo(() => Array.from(values).map(optionize), [values]);
+    const options = useMemo(() => Array.from(values).sort().map(optionize), [values]);
     const OptionComponent = useCallback(
       (props: OptionProps<BaseOption, true>) => {
         const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;
@@ -171,7 +174,8 @@ export const AttributeEditors: {
     return (
       <CreatableSelect<BaseOption, true>
         isMulti
-        autoFocus
+        id={id}
+        autoFocus={autoFocus}
         menuPosition="absolute"
         value={value?.map(optionize)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
@@ -183,19 +187,27 @@ export const AttributeEditors: {
       />
     );
   },
-  date: ({ value, onChange }) => (
+  date: ({ value, onChange, id, autoFocus }) => {
+    const ref = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      if (ref.current && autoFocus) ref.current.focus();
+    }, [autoFocus]);
+
     //TODO: use an more advanced date time input which allow partial date input to respect requested format
-    <input
-      autoFocus
-      className="form-control"
-      type="datetime-local"
-      value={value?.toFormat("yyyy-MM-dd'T'HH:mm") ?? ""}
-      onChange={(e) => {
-        const date = e.target.value ? DateTime.fromFormat(e.target.value, "yyyy-MM-dd'T'HH:mm") : undefined;
-        onChange(date?.isValid ? date : undefined);
-      }}
-    />
-  ),
+    return (
+      <input
+        id={id}
+        ref={ref}
+        className="form-control"
+        type="datetime-local"
+        value={value?.toFormat("yyyy-MM-dd'T'HH:mm") ?? ""}
+        onChange={(e) => {
+          const date = e.target.value ? DateTime.fromFormat(e.target.value, "yyyy-MM-dd'T'HH:mm") : undefined;
+          onChange(date?.isValid ? date : undefined);
+        }}
+      />
+    );
+  },
 };
 export const EditText = AttributeEditors.text;
 export const EditNumber = AttributeEditors.number;
@@ -203,22 +215,28 @@ export const EditCategory = AttributeEditors.category;
 export const EditKeywords = AttributeEditors.keywords;
 export const EditDate = AttributeEditors.date;
 
-export const EditItemAttribute: FC<{ field: FieldModel; value: Scalar; onChange: (value: Scalar) => void }> = ({
-  field,
-  value,
-  onChange,
-}) => {
+export const EditItemAttribute: FC<{
+  field: FieldModel;
+  value: Scalar;
+  onChange: (value: Scalar) => void;
+  id?: string;
+  autoFocus?: boolean;
+}> = ({ field, value, onChange, id, autoFocus }) => {
   const EditComponent = AttributeEditors[field.type] as FC<{
-    value?: FieldModelAbstraction[FieldModelType]["expectedOutput"];
-    onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
     field: FieldModel;
+    onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
+    value?: FieldModelAbstraction[FieldModelType]["expectedOutput"];
+    id?: string;
+    autoFocus?: boolean;
   }>;
 
   return (
     <EditComponent
+      id={id}
+      field={field}
+      autoFocus={autoFocus}
       value={castScalarToModelValue(value, field)}
       onChange={(value) => onChange(serializeModelValueToScalar(value, field))}
-      field={field}
     />
   );
 };
