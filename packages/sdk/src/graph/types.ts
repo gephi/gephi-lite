@@ -85,15 +85,21 @@ export type FieldModelType = keyof FieldModelAbstraction;
 type FieldModelTypeSpecGeneric<K extends FieldModelType = FieldModelType> = {
   type: K;
 } & FieldModelAbstraction[K]["options"];
-export type FieldModelTypeSpec = {
-  [K in FieldModelType]: FieldModelTypeSpecGeneric<K>;
-}[keyof FieldModelAbstraction];
 
-export type FieldModel<T extends ItemType = ItemType, Dynamic extends boolean = false> = {
+export type FieldModelTypeSpecCollection = {
+  [K in FieldModelType]: FieldModelTypeSpecGeneric<K>;
+};
+export type FieldModelTypeSpec = FieldModelTypeSpecCollection[keyof FieldModelAbstraction];
+
+export type FieldModel<
+  T extends ItemType = ItemType,
+  Dynamic extends boolean = false,
+  K extends FieldModelType = FieldModelType,
+> = {
   id: string;
   itemType: T;
   dynamic?: Dynamic;
-} & FieldModelTypeSpec;
+} & FieldModelTypeSpecCollection[K];
 
 export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {
   stats: {
