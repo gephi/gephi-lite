@@ -40,7 +40,6 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
 
   useEffect(() => {
-    console.log(status);
     // Closing the modal in case of success
     if (status.type === "success") cancel();
   }, [status, cancel]);
