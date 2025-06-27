@@ -4,17 +4,16 @@ import { DateTime } from "luxon";
 import { FC, createElement } from "react";
 import { useTranslation } from "react-i18next";
 import ReactLinkify from "react-linkify";
-import CreatableSelect from "react-select/creatable";
 
 import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
-import { Option, optionize } from "../../utils/select";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
+import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
 /**
  * Render values:
  * **************
  */
-export const RenderValue: {
+export const AttributeRenderers: {
   [K in keyof FieldModelAbstraction]: FC<
     {
       value?: FieldModelAbstraction[K]["expectedOutput"];
@@ -40,14 +39,14 @@ export const RenderValue: {
     ) : null,
   date: ({ value, format }) => (!isNil(value) ? value.toFormat(format) : null),
 };
-export const RenderText = RenderValue.text;
-export const RenderNumber = RenderValue.number;
-export const RenderCategory = RenderValue.category;
-export const RenderKeywords = RenderValue.keywords;
-export const RenderDate = RenderValue.date;
+export const RenderText = AttributeRenderers.text;
+export const RenderNumber = AttributeRenderers.number;
+export const RenderCategory = AttributeRenderers.category;
+export const RenderKeywords = AttributeRenderers.keywords;
+export const RenderDate = AttributeRenderers.date;
 
 export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar }> = ({ field, value }) =>
-  createElement(RenderValue[field.type] as FC<{ value?: ModelValueType }>, {
+  createElement(AttributeRenderers[field.type] as FC<{ value?: ModelValueType }>, {
     ...field,
     value: castScalarToModelValue(value, field),
   });
@@ -56,7 +55,7 @@ export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar 
  * Edit values:
  * ************
  */
-export const EditValue: {
+export const AttributeEditors: {
   [K in keyof FieldModelAbstraction]: FC<
     {
       value?: FieldModelAbstraction[K]["expectedOutput"];
@@ -65,15 +64,25 @@ export const EditValue: {
   >;
 } = {
   text: ({ value, onChange }) => (
-    <input type="string" value={value || ""} onChange={(e) => onChange(e.target.value || undefined)} />
+    <input
+      className="form-control"
+      type="string"
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value || undefined)}
+    />
   ),
   number: ({ value, onChange }) => (
-    <input type="number" value={value || ""} onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)} />
+    <input
+      className="form-control"
+      type="number"
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
+    />
   ),
   category: ({ value, onChange }) => {
-    console.log({ value });
     return (
-      <CreatableSelect<Option>
+      <CreatableSelect<BaseOption>
+        menuPosition="absolute"
         value={!isNil(value) ? optionize(value) : undefined}
         onChange={(newValue) => onChange(newValue?.value)}
       />
@@ -81,7 +90,8 @@ export const EditValue: {
   },
   keywords: ({ value, onChange }) => {
     return (
-      <CreatableSelect<Option, true>
+      <CreatableSelect<BaseOption, true>
+        menuPosition="absolute"
         isMulti
         value={value?.map(optionize)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
@@ -90,6 +100,7 @@ export const EditValue: {
   },
   date: ({ value, onChange }) => (
     <input
+      className="form-control"
       type="datetime-local"
       value={value?.toFormat("yyyy-MM-dd'T'HH:mm") ?? ""}
       onChange={(e) => {
@@ -99,18 +110,18 @@ export const EditValue: {
     />
   ),
 };
-export const EditText = EditValue.text;
-export const EditNumber = EditValue.number;
-export const EditCategory = EditValue.category;
-export const EditKeywords = EditValue.keywords;
-export const EditDate = EditValue.date;
+export const EditText = AttributeEditors.text;
+export const EditNumber = AttributeEditors.number;
+export const EditCategory = AttributeEditors.category;
+export const EditKeywords = AttributeEditors.keywords;
+export const EditDate = AttributeEditors.date;
 
 export const EditItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar; onChange: (value: Scalar) => void }> = ({
   field,
   value,
   onChange,
 }) => {
-  const EditComponent = EditValue[field.type] as FC<{
+  const EditComponent = AttributeEditors[field.type] as FC<{
     value?: ModelValueType;
     onChange: (value?: ModelValueType) => void;
   }>;
