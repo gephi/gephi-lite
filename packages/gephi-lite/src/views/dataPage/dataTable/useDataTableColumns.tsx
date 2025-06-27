@@ -5,10 +5,11 @@ import { useTranslation } from "react-i18next";
 import { PiDotsThreeVertical } from "react-icons/pi";
 
 import Dropdown from "../../../components/Dropdown";
-import { FieldModelIcon } from "../../../components/common-icons";
+import { AttributeLabel } from "../../../components/data/Attribute";
 import { EdgeComponentById } from "../../../components/data/Edge";
 import { NodeComponentById } from "../../../components/data/Node";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
+import { EditColumnModal } from "../../../components/modals/edition/EditColumnModal";
 import {
   useDataTable,
   useDataTableActions,
@@ -149,9 +150,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         accessorFn: ({ data }: ItemRow) => data[field.id],
         header: ({ header }) => (
           <>
-            <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
-              <FieldModelIcon type={field.type} /> {field.id}
-            </span>
+            <AttributeLabel field={field} className="column-title" onClick={header.column.getToggleSortingHandler()} />
 
             <Arrow
               arrow={header.column.getIsSorted() || null}
@@ -168,7 +167,9 @@ export const useDataTableColumns = (itemIDs: string[]) => {
               options={[
                 {
                   label: t("datatable.modify_column"),
-                  onClick: () => console.log("TODO"),
+                  onClick: () => {
+                    openModal({ component: EditColumnModal, arguments: { fieldModel: field } });
+                  },
                 },
                 {
                   type: "divider",
@@ -189,11 +190,19 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                 },
                 {
                   label: t("datatable.insert_left"),
-                  onClick: () => console.log("TODO"),
+                  onClick: () =>
+                    openModal({
+                      component: EditColumnModal,
+                      arguments: { insertAt: { pos: "before", id: field.id }, itemType: type },
+                    }),
                 },
                 {
                   label: t("datatable.insert_right"),
-                  onClick: () => console.log("TODO"),
+                  onClick: () =>
+                    openModal({
+                      component: EditColumnModal,
+                      arguments: { insertAt: { pos: "after", id: field.id }, itemType: type },
+                    }),
                 },
                 {
                   type: "divider",

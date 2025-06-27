@@ -98,6 +98,7 @@ export type FieldModel<
 > = {
   id: string;
   itemType: T;
+  label?: string;
   dynamic?: Dynamic;
 } & FieldModelTypeSpecCollection[K];
 
