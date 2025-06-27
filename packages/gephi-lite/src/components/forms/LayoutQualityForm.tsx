@@ -1,17 +1,16 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useLayoutActions } from "../../core/context/dataContexts";
-import { layoutStateAtom } from "../../core/layouts";
+import { useLayoutActions, useLayoutState } from "../../core/context/dataContexts";
 
 export const LayoutQualityForm: FC = () => {
   const { t } = useTranslation();
-  const { quality } = layoutStateAtom.get();
+  const { quality } = useLayoutState();
   const { setQuality } = useLayoutActions();
 
   return (
-    <div className="panel-block">
-      {t("layouts.quality.title")}
+    <div className="panel-wrapper">
+      <h3 className="fs-5">{t("layouts.quality.title")}</h3>
       <p className="text-muted small d-none d-md-block">
         {t("layouts.quality.description")}{" "}
         <a href="https://jgaa.info/index.php/jgaa/article/view/paper626" target="_blank" rel="noreferrer">
