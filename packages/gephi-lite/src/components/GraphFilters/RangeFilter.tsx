@@ -76,8 +76,8 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
       const { unit, ranges } = findRanges(minValue, maxValue);
       const step = unit < 1 || unit >= 10 ? unit / 10 : 1;
       const rangeValues = ranges.map((range) => {
-        // we use max range - step as slider exclude upper bound
-        const rangeValues = values.filter((v) => inRangeIncluded(v, range[0], range[1] - step));
+        // we don't use the generic  inRangeIncluded method as slider exclude upper bound
+        const rangeValues = values.filter((v) => (!range[0] || range[0] <= v) && (!range[1] || v < range[1]));
         return {
           min: range[0],
           max: range[1],
