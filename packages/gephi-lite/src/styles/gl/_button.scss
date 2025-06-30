@@ -1,5 +1,5 @@
 .gl-btn,
-:not(.btn-check)+.gl-btn {
+:not(.btn-check) + .gl-btn {
   @extend .btn;
   @extend .gl-px-2;
   @extend .gl-py-1;
@@ -48,7 +48,6 @@
     &.gl-btn-fill-focused {
       color: var(--gl-component-color);
       background-color: color-mix(in hsl, var(--gl-component-bg), var(--gl-component-color) 12%);
-      border-color: var(--gl-component-border);
       box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
     }
 
@@ -66,16 +65,16 @@
   }
 
   &.gl-btn-outline {
-    border: 2px solid var(--gl-component-border);
+    border: 2px solid var(--gl-component-border-color);
 
     &:active,
     &.gl-btn-outline-pressed {
       background-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 24%);
-      border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-component-border) 84%);
+      border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-component-border-color) 84%);
     }
 
     &:disabled {
-      border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-component-border) 50%);
+      border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-component-border-color-color) 50%);
     }
   }
 }
