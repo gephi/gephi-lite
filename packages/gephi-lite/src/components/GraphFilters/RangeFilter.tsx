@@ -11,10 +11,16 @@ import { inRangeIncluded } from "../../core/filters/utils";
 import { parentFilteredGraphAtom } from "../../core/graph";
 import {
   computeAllDynamicAttributes,
-  getFieldValue,
   mergeStaticDynamicData,
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
+import {
+  castScalarToQuantifiableValue,
+  getFieldValue,
+  getFieldValueFromQuantification,
+  serializeModelValueToScalar,
+} from "../../core/graph/fieldModel";
+import { EditItemAttribute } from "../data/Attribute";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { findRanges, shortenNumber } from "./utils";
 
@@ -165,45 +171,80 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         {...RANGE_STYLE}
       />
 
-      <div className="d-flex">
+      <div className="d-flex flex-wrap">
         <div className="d-flex align-items-center mt-1">
-          <input
-            className="form-control form-control-sm"
-            id="min"
-            type="number"
-            disabled={rangeMetric.min === rangeMetric.max}
-            min={rangeMetric?.min}
-            max={filter.max || rangeMetric.max}
-            step={rangeMetric?.step}
-            value={filter.min || ""}
-            placeholder={"" + rangeMetric?.min}
-            onChange={(e) => {
-              const newMin = +e.target.value;
-              replaceCurrentFilter({ ...filter, min: newMin });
-            }}
-          />
+          {filter.field.type === "number" ? (
+            // We don't use generic EditItem Attribute to keep step, min, max, disabled parameters
+            // TODO: add all input props in generic component ?
+            <input
+              className="form-control form-control-sm"
+              id="min"
+              type="number"
+              disabled={rangeMetric.min === rangeMetric.max}
+              min={rangeMetric?.min}
+              max={filter.max || rangeMetric.max}
+              step={rangeMetric?.step}
+              value={filter.min || ""}
+              placeholder={"" + rangeMetric?.min}
+              onChange={(e) => {
+                const newMin = +e.target.value;
+                replaceCurrentFilter({ ...filter, min: newMin });
+              }}
+            />
+          ) : (
+            // TODO: add all input props in generic component ? We miss min/max and disabled here
+            <EditItemAttribute
+              field={filter.field}
+              value={serializeModelValueToScalar(
+                getFieldValueFromQuantification(filter.min, filter.field),
+                filter.field,
+              )}
+              onChange={(scalar) => {
+                const value = castScalarToQuantifiableValue(scalar, filter.field);
+                replaceCurrentFilter({ ...filter, min: isNumber(value) ? value : undefined });
+              }}
+            />
+          )}
+
           <label className="form-check-label small ms-1" htmlFor="min">
             {t("common.min")}
           </label>
         </div>
         <div className="d-flex align-items-center mt-1 ms-1">
-          <input
-            className="form-control form-control-sm "
-            id="max"
-            type="number"
-            disabled={rangeMetric.min === rangeMetric.max}
-            min={filter.min}
-            // max is shifted - step as slider exclude upper bound
-            max={rangeMetric?.max - rangeMetric.step}
-            step={rangeMetric?.step}
-            // max is shifted - step as slider exclude upper bound
-            placeholder={"" + (rangeMetric?.max - rangeMetric.step)}
-            value={filter.max || ""}
-            onChange={(e) => {
-              const newMax = +e.target.value;
-              replaceCurrentFilter({ ...filter, max: newMax });
-            }}
-          />
+          {filter.field.type === "number" ? (
+            // We don't use generic EditItem Attribute to keep step, min, max, disabled parameters
+            // TODO: add all input props in generic component ?
+            <input
+              className="form-control form-control-sm "
+              id="max"
+              type="number"
+              disabled={rangeMetric.min === rangeMetric.max}
+              min={filter.min}
+              // max is shifted - step as slider exclude upper bound
+              max={rangeMetric?.max - rangeMetric.step}
+              step={rangeMetric?.step}
+              // max is shifted - step as slider exclude upper bound
+              placeholder={"" + (rangeMetric?.max - rangeMetric.step)}
+              value={filter.max || ""}
+              onChange={(e) => {
+                const newMax = +e.target.value;
+                replaceCurrentFilter({ ...filter, max: newMax });
+              }}
+            />
+          ) : (
+            <EditItemAttribute
+              field={filter.field}
+              value={serializeModelValueToScalar(
+                getFieldValueFromQuantification(filter.max, filter.field),
+                filter.field,
+              )}
+              onChange={(scalar) => {
+                const value = castScalarToQuantifiableValue(scalar, filter.field);
+                replaceCurrentFilter({ ...filter, max: isNumber(value) ? value : undefined });
+              }}
+            />
+          )}
+
           <label className="form-check-label small ms-1" htmlFor="max">
             {t("common.max")}
           </label>

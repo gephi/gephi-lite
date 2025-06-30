@@ -7,11 +7,12 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity, isNumber } from "lodash";
+import { forEach, identity } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { getFieldValue, mergeStaticDynamicData } from "../graph/dynamicAttributes";
+import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
+import { getFieldValueForQuantification } from "../graph/fieldModel";
 import {
   DatalessGraph,
   DynamicItemData,
@@ -86,8 +87,8 @@ export function makeGetNumberAttr<
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = getFieldValue(data, numberAttrDef.field);
-        const transformedValue = transformValue(isNumber(value) ? value : undefined);
+        const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
+        const transformedValue = transformValue(valueAsNumber);
         if (typeof transformedValue === "number") {
           min = Math.min(min, transformedValue);
           max = Math.max(max, transformedValue);
@@ -96,8 +97,8 @@ export function makeGetNumberAttr<
       const delta = max - min || 1;
       const ratio = (numberAttrDef.maxSize - numberAttrDef.minSize) / delta;
       getNumberValue = (data: StaticDynamicItemData) => {
-        const value = getFieldValue(data, numberAttrDef.field);
-        const transformedValue = transformValue(isNumber(value) ? value : undefined);
+        const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
+        const transformedValue = transformValue(valueAsNumber);
 
         if (
           typeof transformedValue === "number" &&
@@ -114,20 +115,20 @@ export function makeGetNumberAttr<
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = getFieldValue(data, numberAttrDef.field);
-        if (typeof value === "number") {
-          min = Math.min(min, value);
-          max = Math.max(max, value);
+        const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
+        if (typeof valueAsNumber === "number") {
+          min = Math.min(min, valueAsNumber);
+          max = Math.max(max, valueAsNumber);
         }
       });
       const [minIndex, maxIndex] = numberAttrDef.reversed ? [10, 1] : [1, 10];
       const delta = max - min || 1;
       const ratio = (maxIndex - minIndex) / delta;
       getNumberValue = (data: StaticDynamicItemData) => {
-        const value = getFieldValue(data, numberAttrDef.field);
+        const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
 
-        if (typeof value === "number" && !isNaN(value) && Math.abs(value) !== Infinity) {
-          return (value - min) * ratio + minIndex;
+        if (typeof valueAsNumber === "number" && !isNaN(valueAsNumber) && Math.abs(valueAsNumber) !== Infinity) {
+          return (valueAsNumber - min) * ratio + minIndex;
         }
 
         return 0;
@@ -161,9 +162,9 @@ export function makeGetColor<
   switch (colorsDef.type) {
     case "partition":
       getColor = (data: StaticDynamicItemData) => {
-        const value = getFieldValue(data, colorsDef.field);
-        return typeof value === "string" && value in colorsDef.colorPalette
-          ? colorsDef.colorPalette[value]
+        const valueAsNumber = getFieldValueForQuantification(data, colorsDef.field);
+        return typeof valueAsNumber === "string" && valueAsNumber in colorsDef.colorPalette
+          ? colorsDef.colorPalette[valueAsNumber]
           : colorsDef.missingColor;
       };
       break;
@@ -171,10 +172,10 @@ export function makeGetColor<
       let min = Infinity,
         max = -Infinity;
       forEach(itemsValues, (data) => {
-        const value = getFieldValue(data, colorsDef.field);
-        if (typeof value === "number") {
-          min = Math.min(min, value);
-          max = Math.max(max, value);
+        const valueAsNumber = getFieldValueForQuantification(data, colorsDef.field);
+        if (typeof valueAsNumber === "number") {
+          min = Math.min(min, valueAsNumber);
+          max = Math.max(max, valueAsNumber);
         }
       });
       const delta = max - min || 1;
@@ -182,9 +183,9 @@ export function makeGetColor<
         .scale(colorsDef.colorScalePoints.map((point) => point.color))
         .domain(colorsDef.colorScalePoints.map((csp) => csp.scalePoint));
       getColor = (data: StaticDynamicItemData) => {
-        const value = getFieldValue(data, colorsDef.field);
-        if (typeof value === "number") {
-          return colorScale((value - min) / delta).hex();
+        const valueAsNumber = getFieldValueForQuantification(data, colorsDef.field);
+        if (typeof valueAsNumber === "number") {
+          return colorScale((valueAsNumber - min) / delta).hex();
         }
         return colorsDef.missingColor;
       };
@@ -224,10 +225,10 @@ export function makeGetColor<
     let min = Infinity,
       max = -Infinity;
     forEach(itemsValues, (data) => {
-      const value = getFieldValue(data, shadingDef.field);
-      if (typeof value === "number") {
-        min = Math.min(min, value);
-        max = Math.max(max, value);
+      const valueAsNumber = getFieldValueForQuantification(data, shadingDef.field);
+      if (typeof valueAsNumber === "number") {
+        min = Math.min(min, valueAsNumber);
+        max = Math.max(max, valueAsNumber);
       }
     });
     const factor = shadingDef.factor / (max - min || 1);
@@ -235,11 +236,13 @@ export function makeGetColor<
     const rawGetColor = getColor;
     getColor = (data: StaticDynamicItemData, edgeId?: string) => {
       const color = rawGetColor(data, edgeId);
-      const value = getFieldValue(data, shadingDef.field);
+      const valueAsNumber = getFieldValueForQuantification(data, shadingDef.field);
 
-      if (typeof value === "number") {
+      if (typeof valueAsNumber === "number") {
         return chroma
-          .scale([color, shadingDef.targetColor])(value === max ? shadingDef.factor : (value - min) * factor)
+          .scale([color, shadingDef.targetColor])(
+            valueAsNumber === max ? shadingDef.factor : (valueAsNumber - min) * factor,
+          )
           .hex();
       }
 

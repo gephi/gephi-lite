@@ -96,7 +96,7 @@ export const FilterCreator: FC = () => {
         });
       //TODO: allow filter on text attribute with a new search filter
       const unsupportedFieldFilters = allFields
-        .filter((field): field is FieldModel => field.type !== "text")
+        .filter((field): field is FieldModel => field.type === "text")
         .map((field): FilterOption => {
           const Icon = FieldModelIcons[field.type];
           return {
@@ -109,6 +109,7 @@ export const FilterCreator: FC = () => {
             ),
             type: "terms",
             field,
+            disabled: true,
           };
         });
 

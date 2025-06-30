@@ -1,10 +1,14 @@
-import { FilteredGraph, ModelValueType, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
+import { FilteredGraph, Scalar, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 import { isNumber } from "lodash";
 import { DateTime } from "luxon";
 
-import { computeAllDynamicAttributes } from "../graph/dynamicAttributes";
-import { castScalarToModelValue } from "../graph/fieldModel";
+import {
+  computeAllDynamicAttributes,
+  getScalarFromStaticDynamicData,
+  mergeStaticDynamicData,
+} from "../graph/dynamicAttributes";
+import { castScalarToModelValue, castScalarToQuantifiableValue } from "../graph/fieldModel";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { FilterType, RangeFilterType, TermsFilterType, TopologicalFilterDefinition } from "./types";
@@ -15,28 +19,29 @@ export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "
  * Actual filtering helpers:
  */
 export function filterValue(
-  value: ModelValueType,
-  filter: Omit<RangeFilterType, "field" | "itemType"> | Omit<TermsFilterType, "field" | "itemType">,
+  scalar: Scalar,
+  filter: Omit<RangeFilterType, "itemType"> | Omit<TermsFilterType, "itemType">,
 ): boolean {
   // missingValues
-  if (value === undefined) {
+  if (scalar === undefined || scalar === null) {
     return !!filter.keepMissingValues;
   }
 
   switch (filter.type) {
     case "range": {
+      const valueAsNumber = castScalarToQuantifiableValue(scalar, filter.field);
       return (
-        (typeof value === "number" &&
+        (typeof valueAsNumber === "number" &&
           inRangeIncluded(
-            value,
+            valueAsNumber,
             typeof filter.min === "number" ? filter.min : -Infinity,
             typeof filter.max === "number" ? filter.max : Infinity,
           )) ||
-        //TODO: filter on date
-        (typeof value !== "number" && !!filter.keepMissingValues)
+        (typeof valueAsNumber !== "number" && !!filter.keepMissingValues)
       );
     }
     case "terms": {
+      const value = castScalarToModelValue(scalar, filter.field);
       if (filter.terms === undefined) return true;
       else {
         if (value instanceof DateTime || isNumber(value)) {
@@ -84,12 +89,10 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
       );
     } else {
       const dynamicNodeData = filter.field.dynamic ? computeAllDynamicAttributes("nodes", graph) : {};
+      const staticDynamicNodeData = mergeStaticDynamicData(nodeData, dynamicNodeData);
       nodes = graph.filterNodes((nodeID) => {
-        const value = castScalarToModelValue(
-          filter.field.dynamic ? dynamicNodeData[nodeID][filter.field.id] : nodeData[nodeID][filter.field.id],
-          filter.field,
-        );
-        return filterValue(value, filter);
+        const scalar = getScalarFromStaticDynamicData(staticDynamicNodeData[nodeID], filter.field);
+        return filterValue(scalar, filter);
       });
     }
     return subgraph(graph, nodes) as G;
@@ -105,12 +108,10 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
       );
     } else {
       const dynamicEdgeData = filter.field.dynamic ? computeAllDynamicAttributes("edges", graph) : {};
+      const staticDynamicEdgeData = mergeStaticDynamicData(edgeData, dynamicEdgeData);
       edges = graph.filterEdges((edgeID) => {
-        const value = castScalarToModelValue(
-          filter.field.dynamic ? dynamicEdgeData[edgeID][filter.field.id] : edgeData[edgeID][filter.field.id],
-          filter.field,
-        );
-        return filterValue(value, filter);
+        const scalar = getScalarFromStaticDynamicData(staticDynamicEdgeData[edgeID], filter.field);
+        return filterValue(scalar, filter);
       });
     }
     const res = graph.emptyCopy() as G;
