@@ -218,7 +218,7 @@ const useEditNodeForm = ({
                 <EditItemAttribute
                   id={`node-${nodeId}-field-${i}`}
                   field={nodeFieldsIndex[field.key]}
-                  value={props.field.value}
+                  scalar={props.field.value}
                   onChange={(v) => props.field.onChange(v)}
                 />
               )}

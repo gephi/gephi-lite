@@ -219,11 +219,11 @@ export const EditDate = AttributeEditors.date;
 
 export const EditItemAttribute: FC<{
   field: FieldModel;
-  value: Scalar;
+  scalar: Scalar;
   onChange: (value: Scalar) => void;
   id?: string;
   autoFocus?: boolean;
-}> = ({ field, value, onChange, id, autoFocus }) => {
+}> = ({ field, scalar, onChange, id, autoFocus }) => {
   const EditComponent = AttributeEditors[field.type] as FC<{
     field: FieldModel;
     onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
@@ -237,8 +237,8 @@ export const EditItemAttribute: FC<{
       id={id}
       field={field}
       autoFocus={autoFocus}
-      value={castScalarToModelValue(value, field)}
-      onChange={(value) => onChange(serializeModelValueToScalar(value, field))}
+      value={castScalarToModelValue(scalar, field)}
+      onChange={(value) => onChange(serializeModelValueToScalar(value, field, scalar))}
     />
   );
 };

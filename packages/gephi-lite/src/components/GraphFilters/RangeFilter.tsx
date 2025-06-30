@@ -195,9 +195,10 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             // TODO: add all input props in generic component ? We miss min/max and disabled here
             <EditItemAttribute
               field={filter.field}
-              value={serializeModelValueToScalar(
+              scalar={serializeModelValueToScalar(
                 getFieldValueFromQuantification(filter.min, filter.field),
                 filter.field,
+                undefined,
               )}
               onChange={(scalar) => {
                 const value = castScalarToQuantifiableValue(scalar, filter.field);
@@ -234,9 +235,10 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
           ) : (
             <EditItemAttribute
               field={filter.field}
-              value={serializeModelValueToScalar(
+              scalar={serializeModelValueToScalar(
                 getFieldValueFromQuantification(filter.max, filter.field),
                 filter.field,
+                undefined,
               )}
               onChange={(scalar) => {
                 const value = castScalarToQuantifiableValue(scalar, filter.field);
