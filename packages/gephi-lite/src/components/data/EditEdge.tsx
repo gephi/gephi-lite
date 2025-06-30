@@ -260,7 +260,7 @@ const useEditEdgeForm = ({
                   <EditItemAttribute
                     id={`edge-${edgeId}-field-${i}`}
                     field={edgeFieldsIndex[field.key]}
-                    value={props.field.value}
+                    scalar={props.field.value}
                     onChange={(v) => props.field.onChange(v)}
                   />
                 )}
