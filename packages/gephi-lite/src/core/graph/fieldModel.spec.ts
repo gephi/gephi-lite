@@ -2,13 +2,7 @@ import { shuffle } from "lodash";
 import { DateTime } from "luxon";
 import { describe, expect, it } from "vitest";
 
-import {
-  CastValueError,
-  castScalarToModelValue,
-  guessSeparator,
-  inferFieldType,
-  serializeModelValueToScalar,
-} from "./fieldModel";
+import { castScalarToModelValue, guessSeparator, inferFieldType, serializeModelValueToScalar } from "./fieldModel";
 
 describe("Field Model", () => {
   describe("#inferFieldType", () => {
@@ -183,29 +177,37 @@ describe("Field Model", () => {
 
   describe("#serializeModelValueToScalar", () => {
     it("should properly serialize integer", () => {
-      expect(serializeModelValueToScalar(12, { type: "number" })).toEqual(12);
-      expect(serializeModelValueToScalar(1.3, { type: "number" })).toEqual(1.3);
+      expect(serializeModelValueToScalar(12, { type: "number" }, undefined)).toEqual(12);
+      expect(serializeModelValueToScalar(1.3, { type: "number" }, undefined)).toEqual(1.3);
     });
     it("should properly serialize category/text", () => {
-      expect(serializeModelValueToScalar("tag", { type: "category" })).toEqual("tag");
-      expect(serializeModelValueToScalar("tag", { type: "text" })).toEqual("tag");
+      expect(serializeModelValueToScalar("tag", { type: "category" }, undefined)).toEqual("tag");
+      expect(serializeModelValueToScalar("tag", { type: "text" }, undefined)).toEqual("tag");
     });
     it("should properly serialize keywords", () => {
-      expect(serializeModelValueToScalar(["tag1", "tag2", "tag1"], { type: "keywords", separator: ";" })).toEqual(
-        "tag1;tag2;tag1",
-      );
+      expect(
+        serializeModelValueToScalar(["tag1", "tag2", "tag1"], { type: "keywords", separator: ";" }, undefined),
+      ).toEqual("tag1;tag2;tag1");
     });
     it("should properly serialize date", () => {
       expect(
-        serializeModelValueToScalar(DateTime.fromISO("2025-12-08") as DateTime<true>, {
-          type: "date",
-          format: "yyyy/dd/MM",
-        }),
+        serializeModelValueToScalar(
+          DateTime.fromISO("2025-12-08") as DateTime<true>,
+          {
+            type: "date",
+            format: "yyyy/dd/MM",
+          },
+          undefined,
+        ),
       ).toEqual("2025/08/12");
     });
     it("should properly throw when scalar can not be generated", () => {
-      expect(() => serializeModelValueToScalar(undefined, { type: "category" })).toThrow(CastValueError);
-      expect(() => serializeModelValueToScalar(undefined, { type: "date", format: "yyyy" })).toThrow(CastValueError);
+      expect(serializeModelValueToScalar(undefined, { type: "number" }, "I am not a number")).toEqual(
+        "I am not a number",
+      );
+      expect(serializeModelValueToScalar(undefined, { type: "date", format: "yyyy" }, "I am not a date")).toEqual(
+        "I am not a date",
+      );
     });
   });
 });
