@@ -9,27 +9,51 @@
 
   &:hover,
   &.gl-btn-hovered {
-    background-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 12%);
-    border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 12%);
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+    );
+    border-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+    );
   }
 
   &:focus-visible,
   &.gl-btn-focused {
-    background-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 12%);
-    border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 12%);
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+    );
+    border-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+    );
     box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
   }
 
   &:active,
   &:first-child:active,
   &.gl-btn-pressed {
-    background-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 24%);
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+    );
     border-color: transparent;
   }
 
   &:disabled {
     color: rgba(var(--gl-body-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
-    background-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 16%);
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
+    );
     opacity: unset;
   }
 
@@ -41,25 +65,41 @@
     &:hover,
     &.gl-btn-fill-hovered {
       color: var(--gl-component-color);
-      background-color: color-mix(in hsl, var(--gl-component-bg), var(--gl-component-color) 12%);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-hover-color-mix
+      );
     }
 
     &:focus-visible,
     &.gl-btn-fill-focused {
       color: var(--gl-component-color);
-      background-color: color-mix(in hsl, var(--gl-component-bg), var(--gl-component-color) 12%);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-focus-color-mix
+      );
       box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
     }
 
     &:active,
     &.gl-btn-fill-pressed {
       color: var(--gl-component-color);
-      background-color: color-mix(in hsl, var(--gl-component-bg), var(--gl-component-color) 24%);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-active-color-mix
+      );
     }
 
     &:disabled {
       color: rgba(var(--gl-component-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
-      background-color: color-mix(in hsl, var(--gl-component-bg), var(--gl-component-color) 16%);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-disabled-color-mix
+      );
       opacity: unset;
     }
   }
@@ -69,12 +109,25 @@
 
     &:active,
     &.gl-btn-outline-pressed {
-      background-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-body-color) 24%);
-      border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-component-border-color) 84%);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+      );
+      border-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-component-border-color) $gl-sys-proportion-component-border-active-color-mix
+      );
     }
 
     &:disabled {
-      border-color: color-mix(in hsl, var(--gl-container-highest-bg), var(--gl-component-border-color-color) 50%);
+      color: rgba(var(--gl-component-color), $gl-sys-opacity-onComponentBg-disabled);
+      border-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-component-border-color) $gl-sys-opacity-onComponentBg-disabled
+      );
     }
   }
 }
