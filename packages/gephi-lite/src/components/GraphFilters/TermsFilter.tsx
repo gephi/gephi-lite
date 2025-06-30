@@ -8,10 +8,10 @@ import { TermsFilterType } from "../../core/filters/types";
 import { parentFilteredGraphAtom } from "../../core/graph";
 import {
   computeAllDynamicAttributes,
-  getFieldValue,
   mergeStaticDynamicData,
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
+import { getFieldValue } from "../../core/graph/fieldModel";
 import { Select } from "../forms/Select";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 

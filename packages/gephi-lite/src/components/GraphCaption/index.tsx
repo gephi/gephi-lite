@@ -1,6 +1,7 @@
 import { FieldModel, ItemType, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, mapValues } from "lodash";
+import { DateTime } from "luxon";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AiFillQuestionCircle } from "react-icons/ai";
@@ -14,6 +15,13 @@ import {
   useLayoutState,
 } from "../../core/context/dataContexts";
 import { mergeStaticDynamicData, staticDynamicAttributeKey } from "../../core/graph/dynamicAttributes";
+import {
+  getFieldValue,
+  getFieldValueForQuantification,
+  getFieldValueFromQuantification,
+} from "../../core/graph/fieldModel";
+import { shortenNumber } from "../GraphFilters/utils";
+import { AttributeRenderers } from "../data/Attribute";
 import { ItemsColorCaption } from "./ItemColorCaption";
 import ItemSizeCaption from "./ItemSizeCaption";
 import { LayoutQualityCaption } from "./LayoutQualityCaption";
@@ -25,7 +33,10 @@ export interface GraphCaptionProps {
 export interface RangeExtends {
   field: FieldModel<ItemType, boolean>;
   min: number;
+  minValue: StaticDynamicItemData;
   max: number;
+  maxItemData: StaticDynamicItemData;
+  getLabel: (valueAsNumber: number, extendSize?: number) => string;
   missing?: boolean;
 }
 export type PartitionExtends = {
@@ -42,22 +53,25 @@ const getAttributeRanges = (
 ) => {
   return itemIds.reduce(
     (acc, id) => {
-      const getFieldValue = (field: FieldModel<ItemType, boolean>) =>
-        field.dynamic ? dynamicItemData[id].dynamic[field.id] : dynamicItemData[id].static[field.id];
       // rankings
       const rankings = mapValues(acc.ranking, (rangeExtend) => {
-        const fieldValue = getFieldValue(rangeExtend.field);
-        if (fieldValue && (typeof fieldValue === "number" || !isNaN(+fieldValue)))
+        const valueAsNumber = getFieldValueForQuantification(dynamicItemData[id], rangeExtend.field);
+
+        if (valueAsNumber) {
+          const isMin = valueAsNumber < rangeExtend.min;
+          const isMax = valueAsNumber > rangeExtend.max;
           return {
             ...rangeExtend,
-            min: Math.min(rangeExtend.min, +fieldValue),
-            max: Math.max(rangeExtend.max, +fieldValue),
+            min: isMin ? valueAsNumber : rangeExtend.min,
+            minItemData: isMin ? dynamicItemData[id] : rangeExtend.minValue,
+            max: isMax ? valueAsNumber : rangeExtend.max,
+            maxItemData: isMax ? dynamicItemData[id] : rangeExtend.maxItemData,
           };
-        else return { ...rangeExtend, missing: true };
+        } else return { ...rangeExtend, missing: true };
       });
       // partitions
       const partitions = mapValues(acc.partition, (partition) => {
-        const fieldValue = getFieldValue(partition.field);
+        const fieldValue = getFieldValue(dynamicItemData[id], partition.field);
         if (fieldValue !== null && fieldValue !== undefined)
           return {
             ...partition,
@@ -76,7 +90,25 @@ const getAttributeRanges = (
         rankingFields.map((f) => [
           // TODO this key could theoritically collide with existing but chances are odd
           staticDynamicAttributeKey(f),
-          { field: f, min: Infinity, max: -Infinity } as RangeExtends,
+          {
+            field: f,
+            min: Infinity,
+            minValue: { static: { [f.id]: Infinity }, dynamic: {} },
+            max: -Infinity,
+            maxItemData: { static: { [f.id]: -Infinity }, dynamic: {} },
+            getLabel: (valueAsNumber: number, extendSize?: number) => {
+              const value = getFieldValueFromQuantification(valueAsNumber, f);
+              switch (f.type) {
+                case "number":
+                  // we don't use AttributeRenderers to prefer a shorten version. Should we centralize?
+                  return shortenNumber(valueAsNumber, extendSize);
+                case "date":
+                  return value instanceof DateTime ? AttributeRenderers.date({ value, format: f.format }) : "?";
+                default:
+                  return "?";
+              }
+            },
+          } as RangeExtends,
         ]),
       ),
       partition: fromPairs(

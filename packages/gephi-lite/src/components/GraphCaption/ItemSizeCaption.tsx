@@ -5,7 +5,6 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { Size } from "../../core/appearance/types";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
-import { shortenNumber } from "../GraphFilters/utils";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { GraphCaptionProps, RangeExtends } from "./index";
 
@@ -36,21 +35,9 @@ const ItemSizeCaption: FC<
 
     setItemSizeState({
       minValue: extend.min,
-      minSize:
-        sigma.scaleSize(
-          getItemSize({
-            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.id]: extend.min },
-            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.id]: extend.min } : {},
-          }),
-        ) * (itemType === "nodes" ? 2 : 1),
+      minSize: sigma.scaleSize(getItemSize(extend.minValue)) * (itemType === "nodes" ? 2 : 1),
       maxValue: extend.max,
-      maxSize:
-        sigma.scaleSize(
-          getItemSize({
-            static: itemsSize.field.dynamic ? {} : { [itemsSize.field.id]: extend.max },
-            dynamic: itemsSize.field.dynamic ? { [itemsSize.field.id]: extend.max } : {},
-          }),
-        ) * (itemType === "nodes" ? 2 : 1),
+      maxSize: sigma.scaleSize(getItemSize(extend.maxItemData)) * (itemType === "nodes" ? 2 : 1),
     });
   }, [getItemSize, sigma, itemsSize.field, extend, itemType]);
 
@@ -91,7 +78,7 @@ const ItemSizeCaption: FC<
                 />
               </div>
               <div className="caption text-center">
-                {shortenNumber(
+                {extend?.getLabel(
                   itemSizeState?.minValue,
                   itemSizeState?.maxValue && itemSizeState?.minValue
                     ? itemSizeState?.maxValue - itemSizeState?.minValue
@@ -110,7 +97,7 @@ const ItemSizeCaption: FC<
                 />
               </div>
               <div className="caption text-center">
-                {shortenNumber(
+                {extend?.getLabel(
                   itemSizeState?.maxValue,
                   itemSizeState?.maxValue && itemSizeState?.minValue
                     ? itemSizeState?.maxValue - itemSizeState?.minValue

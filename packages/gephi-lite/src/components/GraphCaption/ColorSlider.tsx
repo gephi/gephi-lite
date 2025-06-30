@@ -3,7 +3,6 @@ import { FC, HTMLProps, useCallback } from "react";
 import ReactSlider from "react-slider";
 
 import { ColorScalePointType } from "../../core/appearance/types";
-import { shortenNumber } from "../GraphFilters/utils";
 import { RangeExtends } from "./index";
 
 export const ColorSlider: FC<{
@@ -12,10 +11,11 @@ export const ColorSlider: FC<{
 }> = ({ colorScalePoints, extend }) => {
   const formatValueFromScalePoint = useCallback(
     (value: number) =>
-      shortenNumber(
-        value === 0 ? extend.min : value === 1 ? extend.max : value * (extend.max - extend.min) + extend.min,
-        extend.max - extend.min,
-      ),
+      value === 0
+        ? extend.getLabel(extend.min, extend.max - extend.min)
+        : value === 1
+          ? extend.getLabel(extend.max, extend.max - extend.min)
+          : extend.getLabel(value * (extend.max - extend.min) + extend.min, extend.max - extend.min),
     [extend],
   );
 

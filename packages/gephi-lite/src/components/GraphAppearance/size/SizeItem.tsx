@@ -51,7 +51,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       },
       ...allFields.flatMap((field) => {
         const options: SizeOption[] = [];
-        if (field.type === "number") {
+        if (field.type === "number" || field.type === "date") {
           const Icon = FieldModelIcons[field.type];
           options.push({
             value: `ranking::${staticDynamicAttributeLabel(field)}`,
