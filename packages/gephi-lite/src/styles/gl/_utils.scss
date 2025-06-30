@@ -140,10 +140,23 @@
 
 // Text
 // -----------------------------------------
+//common line height of Gephi Lite, use this class for texts of a few words, short informations, components..
+.gl-text-ui {
+    font-size: $gl-sys-size-font-md;
+    line-height: 1.1 !important;
+}
+//use this class for texts, paragraphs spreading on more than one line
 .gl-text-section {
-  line-height: 1.4 !important;
+    font-size: $gl-sys-size-font-md;
+    line-height: 1.4 !important;
 }
 
-.gl-text-ui {
-  line-height: 1.1 !important;
+.gl-heading-3 {
+    font-size: $gl-sys-size-font-md;
+    font-weight: 700;
+    line-height: 1.2 !important;
+}
+
+.gl-text-body {
+    font-size: 16px;
 }
