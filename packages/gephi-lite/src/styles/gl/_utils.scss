@@ -134,7 +134,7 @@
 // Border
 // -----------------------------------------
 .gl-border {
-  border: 1px solid $gl-sys-color-border;
+  border: 1px solid var(--gl-container-border-color);
 }
 
 
