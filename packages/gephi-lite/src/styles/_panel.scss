@@ -1,4 +1,4 @@
-$panel-width: $gl-ref-dimension-linear-3200;
+$panel-width: $gl-sys-size-container-lg;
 
 .panels-layout {
   position: relative;
@@ -15,7 +15,6 @@ $panel-width: $gl-ref-dimension-linear-3200;
     flex-shrink: 1;
     position: relative;
   }
-
 
   .panel {
     @extend .gl-container-highest-bg;
@@ -49,8 +48,6 @@ $panel-width: $gl-ref-dimension-linear-3200;
       &.panel-left {
         border-left: 0;
       }
-
     }
   }
-
 }
