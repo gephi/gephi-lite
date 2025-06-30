@@ -17,11 +17,12 @@ $gl-ref-color-neutral-85: #252525;
 $gl-ref-color-neutral-95: #1d1d1d;
 
 //---- Opacity
-$gl-opacity-0: 0;
-$gl-opacity-8: 0.08;
-$gl-opacity-10: 0.1;
-$gl-opacity-50: 0.5;
-$gl-opacity-75: 0.75;
+$gl-ref-opacity-0: 0;
+$gl-ref-opacity-8: 0.08;
+$gl-ref-opacity-10: 0.1;
+$gl-ref-opacity-50: 0.5;
+$gl-ref-opacity-75: 0.75;
+$gl-ref-opacity-80: 80%;
 
 // Dimension
 $gl-ref-dimension-base: 0.5rem;
@@ -67,10 +68,21 @@ $gl-sys-color-dark-component-bg: $gl-ref-color-neutral-30;
 $gl-sys-color-dark-component-border: $gl-ref-color-neutral-30;
 $gl-sys-color-dark-onComponentBg: $gl-ref-color-neutral-80;
 
+//----Proportion
+$gl-ref-proportion-12: 12%;
+$gl-ref-proportion-16: 16%;
+$gl-ref-proportion-24: 24%;
+$gl-ref-proportion-48: 48%;
+
+//----Color Mix Proportion
+$gl-sys-proportion-component-hover-color-mix: $gl-ref-proportion-12;
+$gl-sys-proportion-component-focus-color-mix: $gl-ref-proportion-12;
+$gl-sys-proportion-component-active-color-mix: $gl-ref-proportion-24;
+$gl-sys-proportion-component-disabled-color-mix: $gl-ref-proportion-16;
+$gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-48;
+
 //----Opacity
-$gl-sys-opacity-state-layer-hover: $gl-opacity-8;
-$gl-sys-opacity-state-layer-disabled: $gl-opacity-10;
-$gl-sys-opacity-onComponentBg-disabled: $gl-opacity-75;
+$gl-sys-opacity-onComponentBg-disabled: $gl-ref-opacity-80;
 
 //----Size
 
