@@ -96,64 +96,80 @@ $gl-radius: (
 
 :root {
   // HEX
-  --gl-body-color: #{$gl-sys-color-onBg};
+  // Body
   --gl-body-bg: #{$gl-sys-color-bg};
-  --gl-muted-color: #{$gl-sys-color-onBg-muted};
-  --gl-muted-bg: #{$gl-sys-color-onComponentBg};
+  --gl-body-color: #{$gl-sys-color-onBg};
+  --gl-body-muted-color: #{$gl-sys-color-onBg-muted};
   --gl-border-color: #{$gl-sys-color-border};
-  --gl-container-color: #{$gl-sys-color-onBg};
+  // Containers
   --gl-container-bg: #{$gl-sys-color-bg};
   --gl-container-high-bg: #{$gl-sys-color-container-bg-high};
   --gl-container-highest-bg: #{$gl-sys-color-container-bg-highest};
+  // only one type of text, muted text and border color to use in containers because of the sufficient contrast with the background color
+  --gl-container-color: #{$gl-sys-color-onBg};
+  --gl-container-muted-color: #{$gl-sys-color-onBg-muted};
   --gl-container-border-color: #{$gl-sys-color-onBg};
-  --gl-component-color: #{$gl-sys-color-onComponentBg};
+  // Components
   --gl-component-bg: #{$gl-sys-color-component-bg};
-  --gl-component-border: #{$gl-sys-color-component-border};
+  --gl-component-color: #{$gl-sys-color-onComponentBg};
+  --gl-component-border-color: #{$gl-sys-color-component-border};
+
   // RGB
-  --gl-body-color-rgb: #{hexToRGBString($gl-sys-color-onBg)};
+  // Body
   --gl-body-bg-rgb: #{hexToRGBString($gl-sys-color-bg)};
-  --gl-muted-color-rgb: #{hexToRGBString($gl-sys-color-onBg-muted)};
-  --gl-muted-bg-rgb: #{hexToRGBString($gl-sys-color-onComponentBg)};
+  --gl-body-color-rgb: #{hexToRGBString($gl-sys-color-onBg)};
+  --gl-body-muted-color-rgb: #{hexToRGBString($gl-sys-color-onBg-muted)};
   --gl-border-color-rgb: #{hexToRGBString($gl-sys-color-border)};
-  --gl-container-color-rgb: #{hexToRGBString($gl-sys-color-onBg)};
+  // Containers
   --gl-container-bg-rgb: #{hexToRGBString($gl-sys-color-bg)};
   --gl-container-high-bg-rgb: #{hexToRGBString($gl-sys-color-container-bg-high)};
   --gl-container-highest-bg-rgb: #{hexToRGBString($gl-sys-color-container-bg-highest)};
+  // only one type of text, muted text and border color to use in containers because of the sufficient contrast with the background color
+  --gl-container-color-rgb: #{hexToRGBString($gl-sys-color-onBg)};
+  --gl-container-muted-color-rgb: #{hexToRGBString($gl-sys-color-onBg-muted)};
   --gl-container-border-color-rgb: #{hexToRGBString($gl-sys-color-onBg)};
-  --gl-component-color-rgb: #{hexToRGBString($gl-sys-color-onComponentBg)};
+  // Components
   --gl-component-bg-rgb: #{hexToRGBString($gl-sys-color-component-bg)};
-  --gl-component-border-rgb: #{hexToRGBString($gl-sys-color-component-border)};
+  --gl-component-color-rgb: #{hexToRGBString($gl-sys-color-onComponentBg)};
+  --gl-component-border-color-rgb: #{hexToRGBString($gl-sys-color-component-border)};
 }
-
 
 :root[data-bs-theme="dark"] {
   // HEX
-  --gl-body-color: #{$gl-ref-color-neutral-30};
+  // Body
   --gl-body-bg: #{$gl-ref-color-neutral-95};
-  --gl-muted-color: #{$gl-sys-color-onBg-muted};
-  --gl-muted-bg: #{$gl-sys-color-onComponentBg};
+  --gl-body-color: #{$gl-ref-color-neutral-30};
+  --gl-body-muted-color: #{$gl-sys-color-onBg-muted};
   --gl-border-color: #{$gl-ref-color-neutral-60};
-  --gl-container-color: #{$gl-ref-color-neutral-30};
+  // Containers
   --gl-container-bg: #{$gl-ref-color-neutral-95};
   --gl-container-high-bg: #{$gl-ref-color-neutral-80};
   --gl-container-highest-bg: #{$gl-ref-color-neutral-85};
+  // only one type of text, muted text and border color to use in containers because of the sufficient contrast with the background color
+  --gl-container-color: #{$gl-ref-color-neutral-30};
+  --gl-container-muted-color: #{$gl-sys-color-onBg-muted};
   --gl-container-border-color: #{$gl-ref-color-neutral-60};
+  // Components
   --gl-component-color: #{$gl-ref-color-neutral-80};
   --gl-component-bg: #{$gl-ref-color-neutral-30};
-  --gl-component-border: #{$gl-ref-color-neutral-30};
+  --gl-component-border-color: #{$gl-ref-color-neutral-30};
 
   // RGB
-  --gl-body-color-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
+  // Body
   --gl-body-bg-rgb: #{hexToRGBString($gl-ref-color-neutral-95)};
-  --gl-muted-color-rgb: #{hexToRGBString($gl-sys-color-onBg-muted)};
-  --gl-muted-bg-rgb: #{hexToRGBString($gl-sys-color-onComponentBg)};
+  --gl-body-color-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
+  --gl-body-muted-color-rgb: #{hexToRGBString($gl-sys-color-onBg-muted)};
   --gl-border-color-rgb: #{hexToRGBString($gl-ref-color-neutral-60)};
-  --gl-container-color-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
+  // Containers
   --gl-container-bg-rgb: #{hexToRGBString($gl-ref-color-neutral-95)};
-  --gl-container-high-bg-rgb:#{hexToRGBString($gl-ref-color-neutral-80)};
-  --gl-container-highest-bg-rgb:#{hexToRGBString($gl-ref-color-neutral-85)};
-  --gl-container-border-color-rgb:#{hexToRGBString($gl-ref-color-neutral-60)};
+  --gl-container-high-bg-rgb: #{hexToRGBString($gl-ref-color-neutral-80)};
+  --gl-container-highest-bg-rgb: #{hexToRGBString($gl-ref-color-neutral-85)};
+  // only one type of text, muted text and border color to use in containers because of the sufficient contrast with the background color
+  --gl-container-color-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
+  --gl-container-muted-color-rgb: #{hexToRGBString($gl-sys-color-onBg-muted)};
+  --gl-container-border-color-rgb: #{hexToRGBString($gl-ref-color-neutral-60)};
+  // Components
   --gl-component-color-rgb: #{hexToRGBString($gl-ref-color-neutral-80)};
   --gl-component-bg-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
-  --gl-component-border-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
+  --gl-component-border-color-rgb: #{hexToRGBString($gl-ref-color-neutral-30)};
 }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 html {
   body {
@@ -17,7 +17,7 @@ html {
       header {
         z-index: 200;
 
-        &>.row {
+        & > .row {
           height: 40px;
         }
       }
@@ -41,7 +41,7 @@ html {
         color: var(--gl-container-color);
 
         .text-muted {
-          color: var(--gl-muted-color);
+          color: var(--gl-container-muted-color);
         }
       }
 
@@ -54,12 +54,6 @@ html {
         @extend .gl-container-bg;
         background-color: var(--gl-container-highest-bg);
       }
-
-      .gl-container-muted-bg {
-        @extend .gl-container-bg;
-        background-color: var(--gl-muted-bg);
-      }
-
     }
   }
 }
