@@ -188,21 +188,26 @@ export function getFieldValueForQuantification<F extends FieldModelType = FieldM
 
 export class CastValueError extends Error {}
 
-export function serializeModelValueToScalar(value: ModelValueType, fieldModel: FieldModelTypeSpec): Scalar {
+export function serializeModelValueToScalar(
+  value: ModelValueType,
+  fieldModel: FieldModelTypeSpec,
+  originalScalar: Scalar,
+): Scalar {
   switch (fieldModel.type) {
     case "number":
-      if (typeof value !== "number") throw new CastValueError("Wrong number value");
+      if (typeof value !== "number") return originalScalar;
+      // TODO: once we port the new fieldmodel into GEXF or other serialization decide to keep throw mechanism or fallback to original scalar.
+      //throw new CastValueError("Wrong number value")};
       return value;
     case "category":
     case "text":
-      if (typeof value !== "string") throw new CastValueError(`Wrong ${fieldModel.type} value`);
+      if (typeof value !== "string") return originalScalar; // throw new CastValueError(`Wrong ${fieldModel.type} value`);
       return value;
     case "keywords":
-      if (!Array.isArray(value) || value.some((v) => typeof v !== "string"))
-        throw new CastValueError("Wrong keywords value");
+      if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) return originalScalar; //throw new CastValueError("Wrong keywords value");
       return value.join(fieldModel.separator);
     case "date":
-      if (!(value instanceof DateTime)) throw new CastValueError("Wrong Date value");
+      if (!(value instanceof DateTime)) return originalScalar; //throw new CastValueError("Wrong Date value");
       return value.toFormat(fieldModel.format);
   }
 }
