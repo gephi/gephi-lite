@@ -1,10 +1,13 @@
 import {
+  FieldModel,
   FieldModelAbstraction,
   FieldModelType,
   FieldModelTypeSpec,
   FieldModelTypeSpecCollection,
+  ItemType,
   ModelValueType,
   Scalar,
+  StaticDynamicItemData,
   toDate,
   toNumber,
   toString,
@@ -13,6 +16,8 @@ import {
 import guessFormat from "@gristlabs/moment-guess";
 import { isNumber, sortBy, take, toPairs, uniq } from "lodash";
 import { DateTime } from "luxon";
+
+import { getScalarFromStaticDynamicData } from "./dynamicAttributes";
 
 /**
  * This function takes an array of string values, and tries various separators
@@ -129,6 +134,56 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
     default:
       throw new Error(`Unknown field type ${fieldModel.type}`);
   }
+}
+
+export function castScalarToQuantifiableValue<F extends FieldModelType = FieldModelType>(
+  scalar: Scalar,
+  field: FieldModel<ItemType, boolean, F>,
+): number | undefined {
+  const value = castScalarToModelValue<F>(scalar, field);
+  switch (field.type) {
+    case "number":
+      return value as number;
+    case "date":
+      return value !== undefined && value instanceof DateTime ? value.toMillis() : undefined;
+    case "text":
+    case "category":
+    case "keywords":
+      return undefined;
+  }
+}
+
+export function getFieldValue<F extends FieldModelType = FieldModelType>(
+  data: StaticDynamicItemData,
+  field: FieldModel<ItemType, boolean, F>,
+) {
+  return castScalarToModelValue<F>(getScalarFromStaticDynamicData(data, field), field);
+}
+
+export const getFieldValueFromQuantification = (
+  valueAsNumber: number | undefined,
+  field: FieldModel<ItemType, boolean>,
+): ModelValueType => {
+  switch (field.type) {
+    case "number":
+      return valueAsNumber as number;
+    case "date": {
+      const date = valueAsNumber !== undefined ? DateTime.fromMillis(valueAsNumber) : undefined;
+      return date && date.isValid ? date : undefined;
+    }
+    case "text":
+    case "category":
+    case "keywords":
+      return undefined;
+  }
+};
+
+export function getFieldValueForQuantification<F extends FieldModelType = FieldModelType>(
+  data: StaticDynamicItemData,
+  field: FieldModel<ItemType, boolean, F>,
+): number | undefined {
+  const scalar = getScalarFromStaticDynamicData(data, field);
+  return castScalarToQuantifiableValue(scalar, field);
 }
 
 export class CastValueError extends Error {}

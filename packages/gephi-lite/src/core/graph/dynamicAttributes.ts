@@ -8,7 +8,6 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import { fromPairs, mapValues } from "lodash";
 
-import { castScalarToModelValue } from "./fieldModel";
 import { DatalessGraph } from "./types";
 
 /**
@@ -57,6 +56,9 @@ export const staticDynamicAttributeKey = (field: FieldModel<ItemType, boolean>) 
 export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>) =>
   `${field.id} ${field.dynamic ? " (dynamic)" : ""}`;
 
-export const getFieldValue = (data: StaticDynamicItemData, field: FieldModel<ItemType, boolean>) => {
-  return castScalarToModelValue(field.dynamic ? data.dynamic[field.id] : data.static[field.id], field);
-};
+export function getScalarFromStaticDynamicData(
+  data: StaticDynamicItemData,
+  field: Pick<FieldModel<ItemType, boolean>, "id" | "dynamic">,
+): Scalar {
+  return field.dynamic ? data.dynamic[field.id] : data.static[field.id];
+}
