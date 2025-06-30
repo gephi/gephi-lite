@@ -16,7 +16,7 @@ import {
 } from "../../core/graph/dynamicAttributes";
 import {
   castScalarToQuantifiableValue,
-  getFieldValue,
+  getFieldValueForQuantification,
   getFieldValueFromQuantification,
   serializeModelValueToScalar,
 } from "../../core/graph/fieldModel";
@@ -66,7 +66,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
     );
 
     const values = flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
-      const v = getFieldValue(itemData[itemId], filter.field);
+      const v = getFieldValueForQuantification(itemData[itemId], filter.field);
       if (v && (typeof v === "number" || !isNaN(+v))) return [v];
       return [];
     }) as number[];
