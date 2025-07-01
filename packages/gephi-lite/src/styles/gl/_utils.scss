@@ -140,23 +140,34 @@
 
 // Text
 // -----------------------------------------
-//common line height of Gephi Lite, use this class for texts of a few words, short informations, components..
+//UI style is the default text style of Gephi Lite. It is an utilitarian styles to use for short, interface-level content such as labels, buttons, inputs, navigation items, and component text.
 .gl-text-ui {
-    font-size: $gl-sys-size-font-md;
-    line-height: 1.1 !important;
+    font-size: $gl-sys-font-size-text-ui;
+    line-height: $gl-sys-font-line-height-ui !important;
 }
-//use this class for texts, paragraphs spreading on more than one line
+//Section style is used for longer passages of text in Gephi Lite. For example, consider using it for paragraphs or text spreading on more than one line.
 .gl-text-section {
-    font-size: $gl-sys-size-font-md;
-    line-height: 1.4 !important;
+    font-size: $gl-sys-font-size-text-body;
+    line-height: $gl-sys-font-line-height-section !important;
+}
+//Smallest heading style, to be used for medium-emphasis text that remains relatively short. For example, consider using it to divide lists or secondary regions of pannels.
+.gl-heading-1 {
+  font-size: $gl-sys-font-size-heading-small;
+  font-weight: 700;
+  line-height: $gl-sys-font-line-height-heading !important;
 }
 
-.gl-heading-3 {
-    font-size: $gl-sys-size-font-md;
-    font-weight: 700;
-    line-height: 1.2 !important;
+.gl-heading-2{
+  //Medium heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a pannel or a modale.
+  font-size: $gl-sys-font-size-heading-medium;
+  font-weight: 700;
+  line-height: $gl-sys-font-line-height-heading !important;
 }
 
-.gl-text-body {
-    font-size: 16px;
+.gl-heading-3{
+  //Highest heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a text section about Gephi Lite creators' developer skills. 
+  font-size: $gl-sys-font-size-heading-large;
+  font-weight: 700;
+  line-height: $gl-sys-font-line-height-heading !important;
 }
+
