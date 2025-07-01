@@ -1,6 +1,6 @@
-//-------- Reference tokens
+//-------- Reference variables
 
-//---- Color
+// Color
 //Neutral Palette
 $gl-ref-color-neutral-00: #ffffff;
 $gl-ref-color-neutral-05: #fafafa;
@@ -16,7 +16,7 @@ $gl-ref-color-neutral-80: #292929;
 $gl-ref-color-neutral-85: #252525;
 $gl-ref-color-neutral-95: #1d1d1d;
 
-//---- Opacity
+// Opacity
 $gl-ref-opacity-0: 0;
 $gl-ref-opacity-8: 0.08;
 $gl-ref-opacity-10: 0.1;
@@ -44,6 +44,20 @@ $gl-ref-radius-4: 0.25rem;
 $gl-ref-radius-8: 0.5rem;
 $gl-ref-radius-full: 99rem;
 
+// Proportion
+$gl-ref-proportion-12: 12%;
+$gl-ref-proportion-16: 16%;
+$gl-ref-proportion-24: 24%;
+$gl-ref-proportion-48: 48%;
+
+// Decimal
+
+$gl-ref-decimal-101: 1.1;
+$gl-ref-decimal-102: 1.2;
+$gl-ref-decimal-104: 1.4;
+
+//-------- System variables
+
 // Background
 $gl-sys-color-bg: $gl-ref-color-neutral-10;
 $gl-sys-color-bg-high: $gl-ref-color-neutral-05;
@@ -68,12 +82,6 @@ $gl-sys-color-dark-component-bg: $gl-ref-color-neutral-30;
 $gl-sys-color-dark-component-border: $gl-ref-color-neutral-30;
 $gl-sys-color-dark-onComponentBg: $gl-ref-color-neutral-80;
 
-//----Proportion
-$gl-ref-proportion-12: 12%;
-$gl-ref-proportion-16: 16%;
-$gl-ref-proportion-24: 24%;
-$gl-ref-proportion-48: 48%;
-
 //----Color Mix Proportion
 $gl-sys-proportion-component-hover-color-mix: $gl-ref-proportion-12;
 $gl-sys-proportion-component-focus-color-mix: $gl-ref-proportion-12;
@@ -85,18 +93,12 @@ $gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-48;
 $gl-sys-opacity-onComponentBg-disabled: $gl-ref-opacity-80;
 
 //----Size
-
 //Icon
-$gl-sys-size-icon-sm: $gl-ref-dimension-linear-200;
-$gl-sys-size-icon-md: $gl-ref-dimension-linear-225;
-$gl-sys-size-icon-lg: $gl-ref-dimension-linear-300;
-$gl-sys-size-icon-xl: $gl-ref-dimension-linear-800;
-
-//Font Size
-$gl-sys-size-font-md: $gl-ref-dimension-linear-200;
-
+$gl-sys-size-icon-small: $gl-ref-dimension-linear-200;
+$gl-sys-size-icon-medium: $gl-ref-dimension-linear-225;
+$gl-sys-size-icon-large: $gl-ref-dimension-linear-300;
 //Container
-$gl-sys-size-container-lg: $gl-ref-dimension-linear-3200;
+$gl-sys-size-container-large: $gl-ref-dimension-linear-3200;
 
 //----Space
 $gl-spacers: (
@@ -115,6 +117,20 @@ $gl-radius: (
   2: $gl-ref-radius-8,
   3: $gl-ref-radius-full,
 );
+
+//---- Font
+
+// Font sizes
+$gl-sys-font-size-text-ui: $gl-ref-dimension-linear-200; // 16px
+$gl-sys-font-size-text-body: $gl-ref-dimension-linear-200; // 16px
+$gl-sys-font-size-heading-small: $gl-ref-dimension-linear-200; // 16px
+$gl-sys-font-size-heading-medium: $gl-ref-dimension-linear-225; // 18px
+$gl-sys-font-size-heading-large: $gl-ref-dimension-linear-300; // 24px
+
+// Line Height
+$gl-sys-font-line-height-ui: $gl-ref-decimal-101; // 1.1
+$gl-sys-font-line-height-section: $gl-ref-decimal-104; // 1.4
+$gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
 
 @function hexToRGBString($hexColor) {
   @return "#{red($hexColor)},#{green($hexColor)},#{blue($hexColor)}";
