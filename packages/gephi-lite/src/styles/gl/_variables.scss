@@ -32,6 +32,7 @@ $gl-ref-dimension-linear-100: $gl-ref-dimension-base;
 $gl-ref-dimension-linear-150: calc($gl-ref-dimension-base * 1.5);
 $gl-ref-dimension-linear-200: calc($gl-ref-dimension-base * 2);
 $gl-ref-dimension-linear-225: calc($gl-ref-dimension-base * 2.25);
+$gl-ref-dimension-linear-250: calc($gl-ref-dimension-base * 2.5);
 $gl-ref-dimension-linear-300: calc($gl-ref-dimension-base * 3);
 $gl-ref-dimension-linear-400: calc($gl-ref-dimension-base * 4);
 $gl-ref-dimension-linear-600: calc($gl-ref-dimension-base * 6);
@@ -97,6 +98,7 @@ $gl-sys-opacity-onComponentBg-disabled: $gl-ref-opacity-80;
 $gl-sys-size-icon-small: $gl-ref-dimension-linear-200;
 $gl-sys-size-icon-medium: $gl-ref-dimension-linear-225;
 $gl-sys-size-icon-large: $gl-ref-dimension-linear-300;
+
 //Container
 $gl-sys-size-container-large: $gl-ref-dimension-linear-3200;
 
@@ -124,7 +126,7 @@ $gl-radius: (
 $gl-sys-font-size-text-ui: $gl-ref-dimension-linear-200; // 16px
 $gl-sys-font-size-text-body: $gl-ref-dimension-linear-200; // 16px
 $gl-sys-font-size-heading-small: $gl-ref-dimension-linear-200; // 16px
-$gl-sys-font-size-heading-medium: $gl-ref-dimension-linear-225; // 18px
+$gl-sys-font-size-heading-medium: $gl-ref-dimension-linear-250; // 20px
 $gl-sys-font-size-heading-large: $gl-ref-dimension-linear-300; // 24px
 
 // Line Height
