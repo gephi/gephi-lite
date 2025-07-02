@@ -56,7 +56,7 @@ export const ThemeSwicther: FC<unknown> = () => {
 
   return (
     <Dropdown options={themeOptions}>
-      <button className="gl-btn dropdown-toggle">
+      <button className="gl-btn gl-btn-icon dropdown-toggle">
         {theme === "auto" && <AutoThemeSelectedIcon />}
         {theme === "light" && <LightThemeSelectedIcon />}
         {theme === "dark" && <DarkThemeSelectedIcon />}
