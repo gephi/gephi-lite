@@ -160,14 +160,25 @@
 .gl-heading-2{
   //Medium heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a pannel or a modale.
   font-size: $gl-sys-font-size-heading-medium;
-  font-weight: 700;
+  font-weight: 500;
   line-height: $gl-sys-font-line-height-heading !important;
 }
 
 .gl-heading-3{
   //Highest heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a text section about Gephi Lite creators' developer skills. 
   font-size: $gl-sys-font-size-heading-large;
-  font-weight: 700;
+  font-weight: 500;
   line-height: $gl-sys-font-line-height-heading !important;
 }
 
+.gl-text-muted {
+  color: var(--gl-container-muted-color);
+}
+
+
+// Text
+// -----------------------------------------
+.gl-icon-size-1{
+  width: $gl-sys-size-icon-medium;
+  height: $gl-sys-size-icon-medium;
+}

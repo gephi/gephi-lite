@@ -44,7 +44,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     <Modal
       title={
         <>
-          <GephiLogo className="me-1" style={{ height: "1em", width: "1em" }} />
+          <GephiLogo className="me-2 gl-icon-size-1" />
           {t("welcome.title")}
           <span className="flex-grow-1" />
           <span className="me-1" style={{ marginTop: "-0.1em" }}>
@@ -60,7 +60,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     >
       <div className="row mb-3 position-relative">
         <div className="col-12 col-sm-6">
-          <h3 className="fs-6  gl-px-2">{t("welcome.open_recent")}</h3>
+          <h3 className=" gl-px-2 gl-heading-1">{t("welcome.open_recent")}</h3>
           {!!recentFiles.length && (
             <ul className="list-unstyled">
               {recentFiles
@@ -85,14 +85,14 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 ))}
             </ul>
           )}
-          {!recentFiles.length && <p className="text-muted">{t("welcome.no_recent")}</p>}
+          {!recentFiles.length && <p className="gl-text-muted">{t("welcome.no_recent")}</p>}
         </div>
         <div className="col-12 col-sm-6">
-          <h3 className="fs-6 gl-px-2">{t("welcome.open_graph")}</h3>
+          <h3 className="gl-px-2 gl-heading-1">{t("welcome.open_graph")}</h3>
           <ul className="list-unstyled">
             <li className="mb-1">
               <button
-                className="gl-btn gl-btn-fill"
+                className="gl-btn"
                 title={t(`graph.open.local.title`).toString()}
                 onClick={() => {
                   openModal({ component: OpenLocalFileModal, arguments: {} });
@@ -128,7 +128,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             </li>
           </ul>
           <br />
-          <h3 className="fs-6 gl-px-2">{t("welcome.samples")}</h3>
+          <h3 className="gl-px-2 gl-heading-1">{t("welcome.samples")}</h3>
           <ul className="list-unstyled">
             {SAMPLES.map((sample) => (
               <li className="mb-1" key={sample}>
@@ -156,8 +156,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
         </div>
         {fileStateType === "loading" && <Loader />}
       </div>
-      <div className="d-flex align-items-center w-100  gl-px-2">
-        <div className="text-muted small flex-grow-1 flex-shrink-1">
+      <div className="d-flex align-items-top w-100  gl-px-2">
+        <div className="gl-text-section gl-text-muted flex-grow-1 flex-shrink-1">
           <div>
             {t("welcome.disclaimer-1")}{" "}
             <a rel="noreferrer" target="_blank" href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md">

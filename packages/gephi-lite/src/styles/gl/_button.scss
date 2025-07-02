@@ -7,6 +7,23 @@
   @extend .gl-rounded-2;
   border: 2px solid transparent;
 
+  &.gl-btn-icon {
+    @extend .gl-px-1;
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    width: fit-content;
+    > * {
+      @extend .gl-icon-size-1;
+      display: block;
+    }
+    svg,
+    img,
+    i {
+      vertical-align: middle;
+    }
+  }
+
   &:hover,
   &.gl-btn-hovered {
     background-color: color-mix(
