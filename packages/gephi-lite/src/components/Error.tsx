@@ -1,10 +1,11 @@
 import cx from "classnames";
 import { FC } from "react";
 import { FallbackProps } from "react-error-boundary";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { TbFaceIdError } from "react-icons/tb";
 
-import { GitHubIcon, RetryIcon } from "./common-icons";
+import { resetStates } from "../core/context/dataContexts";
+import { GitHubIcon, RetryIcon, TrashIcon } from "./common-icons";
 
 function errorToGithubLink(error: unknown): string {
   let body = `
@@ -14,8 +15,8 @@ Please provide a description of what you were doing while the error occurs`;
 
   if (error instanceof Error) {
     body = `${body}
-    
-## Stack trace 
+
+## Stack trace
 
 \`\`\`
 ${error.message}
@@ -38,12 +39,23 @@ export const ErrorComponent: FC<FallbackProps> = ({ error, resetErrorBoundary })
           </h1>
           <h2 className="text-danger my-3">{error.message || t("error.unknown")}</h2>
 
-          <p className="mt-3">{t("error.message")}</p>
+          <p className="mt-3">
+            <Trans i18nKey="error.message" />
+          </p>
 
           <div className="d-flex justify-content-center gl-gap-2">
             <a className="gl-btn gl-btn-outline" rel="noreferrer" target="_blank" href={errorToGithubLink(error)}>
               <GitHubIcon /> {t("error.report")}
             </a>
+            <button
+              className="gl-btn gl-btn-outline"
+              onClick={() => {
+                resetStates(true);
+                resetErrorBoundary();
+              }}
+            >
+              <TrashIcon /> {t("error.reset")}
+            </button>
             <button className="gl-btn gl-btn-fill" onClick={() => resetErrorBoundary()}>
               <RetryIcon /> {t("error.retry")}
             </button>
