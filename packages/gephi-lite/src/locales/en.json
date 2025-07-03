@@ -56,20 +56,20 @@
   "selection": {
     "nodes_zero": "No selected node",
     "nodes_one": "One selected node",
-    "nodes": "{{count}} selected nodes",
+    "nodes": "{{count, number}} selected nodes",
     "edges_zero": "No selected edge",
     "edges_one": "One selected edge",
-    "edges": "{{count}} selected edges",
+    "edges": "{{count, number}} selected edges",
     "visible_nodes_zero": "No visible selected node",
     "visible_nodes_one": "One visible selected node",
-    "visible_nodes": "{{count}} visible selected nodes",
+    "visible_nodes": "{{count, number}} visible selected nodes",
     "visible_edges_zero": "No visible selected edge",
     "visible_edges_one": "One visible selected edge",
-    "visible_edges": "{{count}} visible selected edges",
+    "visible_edges": "{{count, number}} visible selected edges",
     "hidden_nodes_one": "One hidden selected node",
-    "hidden_nodes": "{{count}} hidden selected nodes",
+    "hidden_nodes": "{{count, number}} hidden selected nodes",
     "hidden_edges_one": "One hidden selected edge",
-    "hidden_edges": "{{count}} hidden selected edges",
+    "hidden_edges": "{{count, number}} hidden selected edges",
     "select_all": "Select all",
     "unselect_all": "Unselect all",
     "unselect_all_hidden_nodes": "Unselect all hidden edges",
@@ -192,14 +192,14 @@
     "delete_this_edges": "Delete this edge",
     "delete_nodes_zero": "Delete nodes",
     "delete_nodes_one": "Delete one node",
-    "delete_nodes": "Delete {{count}} nodes",
+    "delete_nodes": "Delete {{count, number}} nodes",
     "delete_edges_zero": "Delete edges",
     "delete_edges_one": "Delete one edge",
-    "delete_edges": "Delete {{count}} edges",
+    "delete_edges": "Delete {{count, number}} edges",
     "confirm_delete_nodes_one": "Are you sure you want to delete this one node?",
-    "confirm_delete_nodes": "Are you sure you want to delete {{count}} nodes?",
+    "confirm_delete_nodes": "Are you sure you want to delete {{count, number}} nodes?",
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
-    "confirm_delete_edges": "Are you sure you want to delete {{count}} edges?",
+    "confirm_delete_edges": "Are you sure you want to delete {{count, number}} edges?",
     "search_nodes": "Search on node labels..."
   },
   "graph": {
@@ -708,21 +708,21 @@
       "placeholder": "Search nodes, edges",
       "no_result": "No results",
       "help": "Type something to search",
-      "other_result": "... and {{count}} other results",
-      "select_all_nodes": "Add {{count}} nodes in the selection",
-      "select_all_edges": "Add {{count}} edges in the selection"
+      "other_result": "... and {{count, number}} other results",
+      "select_all_nodes": "Add {{count, number}} nodes in the selection",
+      "select_all_edges": "Add {{count, number}} edges in the selection"
     },
     "nodes": {
       "placeholder": "Search a node ...",
       "no_result": "No node found",
       "help": "Type something to find a node",
-      "other_result": "... and {{count}} other nodes"
+      "other_result": "... and {{count, number}} other nodes"
     },
     "edges": {
       "placeholder": "Search an edge...",
       "no_result": "No edge found",
       "help": "Type something to find an edge",
-      "other_result": "... and {{count}} other edges"
+      "other_result": "... and {{count, number}} other edges"
     }
   },
   "settings": {

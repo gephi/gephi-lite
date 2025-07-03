@@ -365,10 +365,10 @@
     "create_edges": "Új él létrehozása",
     "search_nodes": "Keresés a csomópontcímkék között...",
     "confirm_delete_nodes_one": "Biztosan törli ezt az egy csomópontot?",
-    "confirm_delete_edges": "Biztosan törölni szeretne {{count}} élt?",
-    "confirm_delete_nodes": "Biztosan törölni szeretne {{count}} csomópontot?",
-    "delete_edges": "{{count}} él törlése",
-    "delete_nodes": "Töröljön {{count}} csomópontot",
+    "confirm_delete_edges": "Biztosan törölni szeretne {{count, number}} élt?",
+    "confirm_delete_nodes": "Biztosan törölni szeretne {{count, number}} csomópontot?",
+    "delete_edges": "{{count, number}} él törlése",
+    "delete_nodes": "Töröljön {{count, number}} csomópontot",
     "confirm_delete_edges_one": "Biztosan törli ezt az egy élt?"
   },
   "auth": {
@@ -460,12 +460,12 @@
     "empty_edges": "Ennek az élnek nincs attribútuma",
     "nodes_zero": "Nincs kiválasztott csomópont",
     "unselect_all_hidden_edges": "Törölje az összes rejtett él kijelölését",
-    "visible_edges": "{{count}} látható kijelölt él",
-    "edges": "{{count}} kiválasztott él",
-    "visible_nodes": "{{count}} látható kiválasztott csomópont",
-    "nodes": "{{count}} kiválasztott csomópont",
-    "hidden_edges": "{{count}} rejtett kijelölt él",
-    "hidden_nodes": "{{count}} rejtett kiválasztott csomópont"
+    "visible_edges": "{{count, number}} látható kijelölt él",
+    "edges": "{{count, number}} kiválasztott él",
+    "visible_nodes": "{{count, number}} látható kiválasztott csomópont",
+    "nodes": "{{count, number}} kiválasztott csomópont",
+    "hidden_edges": "{{count, number}} rejtett kijelölt él",
+    "hidden_nodes": "{{count, number}} rejtett kiválasztott csomópont"
   },
   "error": {
     "not_found": {
@@ -502,7 +502,7 @@
   "search": {
     "nodes": {
       "help": "Írjon be valamit a csomópont kereséséhez",
-      "other_result": "... és {{count}} másik csomópont",
+      "other_result": "... és {{count, number}} másik csomópont",
       "placeholder": "Csomópont keresése...",
       "no_result": "Nem található csomópont"
     },
@@ -510,14 +510,14 @@
       "help": "Írjon be valamit, hogy megtalálja az élt",
       "placeholder": "Keress egy élt...",
       "no_result": "Nem található él",
-      "other_result": "... és {{count}} másik él"
+      "other_result": "... és {{count, number}} másik él"
     },
     "graph": {
       "no_result": "Nincs eredmény",
-      "select_all_nodes": "Adjon hozzá {{count}} csomópontot a kijelöléshez",
+      "select_all_nodes": "Adjon hozzá {{count, number}} csomópontot a kijelöléshez",
       "help": "Írjon be valamit a kereséshez",
-      "other_result": "... és további {{count}} találat",
-      "select_all_edges": "Adjon hozzá {{count}} élt a kijelöléshez",
+      "other_result": "... és további {{count, number}} találat",
+      "select_all_edges": "Adjon hozzá {{count, number}} élt a kijelöléshez",
       "placeholder": "Csomópontok, élek keresése..."
     }
   },
