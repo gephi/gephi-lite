@@ -29,6 +29,18 @@ html {
         padding: 0;
       }
 
+      h1 {
+        @extend .gl-heading-1;
+      }
+
+      h2 {
+        @extend .gl-heading-2;
+      }
+
+      h3 {
+        @extend .gl-heading-3;
+      }
+
       p,
       blockquote {
         @extend .gl-text-section;

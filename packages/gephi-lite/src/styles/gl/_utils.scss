@@ -151,7 +151,7 @@
     line-height: $gl-sys-font-line-height-section !important;
 }
 //Smallest heading style, to be used for medium-emphasis text that remains relatively short. For example, consider using it to divide lists or secondary regions of pannels.
-.gl-heading-1 {
+.gl-heading-3 {
   font-size: $gl-sys-font-size-heading-small;
   font-weight: 700;
   line-height: $gl-sys-font-line-height-heading !important;
@@ -164,7 +164,7 @@
   line-height: $gl-sys-font-line-height-heading !important;
 }
 
-.gl-heading-3{
+.gl-heading-1{
   //Highest heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a text section about Gephi Lite creators' developer skills. 
   font-size: $gl-sys-font-size-heading-large;
   font-weight: 500;
