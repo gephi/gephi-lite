@@ -18,8 +18,9 @@
   "error": {
     "title": "Error",
     "unknown": "An unknown error has occurred.",
-    "message": "Sorry, we are working to make gephi-lite better, but bugs still happened... It will help us if you can open an issue on github with a description of what you were doing.",
+    "message": "Sorry, we are working to make gephi-lite better, but bugs still happened...<br />It will help us if you can open an issue on github with a description of what you were doing.",
     "retry": "Retry",
+    "reset": "Reset everything",
     "report": "Report error",
     "not_found": {
       "title": "Page Not Found",
