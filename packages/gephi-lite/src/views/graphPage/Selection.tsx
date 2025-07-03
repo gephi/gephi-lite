@@ -98,7 +98,7 @@ function SelectedItem<
   }, [initiallyExpanded]);
 
   return (
-    <li className={`selected-${type}-item mt-2`}>
+    <li className={`selected-${type}-item`}>
       <h4 className="fs-6 d-flex flex-row align-items-center mb-0">
         <div className="flex-grow-1 flex-shrink-1 text-ellipsis" title={item.label}>
           {content}
@@ -203,7 +203,7 @@ export const Selection: FC<{ className?: string }> = ({ className }) => {
 
   return (
     <div className={cx(className)}>
-      <ul className="list-unstyled  gl-m-0">
+      <ul className="list-unstyled gl-m-0 gl-gap-1">
         <InfiniteScroll
           pageSize={50}
           data={visible}

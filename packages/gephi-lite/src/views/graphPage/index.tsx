@@ -153,7 +153,7 @@ export const GraphPage: FC = () => {
 
       {/* Right panel */}
       <div className={cx("panel panel-expandable ", items.size > 0 && "deployed")}>
-        <div className="panel-body">{items.size > 0 && <Selection className="gl-p-3" />}</div>
+        <div className="panel-body">{items.size > 0 && <Selection />}</div>
       </div>
     </Layout>
   );
