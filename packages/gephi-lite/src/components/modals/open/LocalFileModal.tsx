@@ -5,7 +5,7 @@ import { useFile, useFileActions } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
-import { DropInput } from "../..//DropInput";
+import { DropInput } from "../../DropInput";
 import { Loader } from "../../Loader";
 import { Modal } from "../../modals";
 
