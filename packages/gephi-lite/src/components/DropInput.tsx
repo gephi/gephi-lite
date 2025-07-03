@@ -2,7 +2,7 @@ import cx from "classnames";
 import React, { FC } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
-import { FaTimes } from "react-icons/fa";
+import { PiX } from "react-icons/pi";
 
 interface DropInputProperties {
   value: File | null;
@@ -31,14 +31,14 @@ export const DropInput: FC<DropInputProperties> = ({ value, onChange, accept, he
       {value && (
         <button
           type="button"
-          className={cx("btn btn-outline-dark", !value && "hidden")}
+          className={cx("gl-btn gl-btn-outline", !value && "hidden")}
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
             onChange(null);
           }}
         >
-          <FaTimes /> {t("common.clear").toString()}
+          <PiX /> {t("common.clear").toString()}
         </button>
       )}
     </div>
