@@ -122,5 +122,9 @@ export const FieldModelIcons: Record<FieldModelType, IconType> = {
 };
 export const FieldModelIcon: FC<IconBaseProps & { type: FieldModelType }> = ({ type, ...props }) => {
   const Icon = FieldModelIcons[type];
+  if (!Icon) {
+    console.error(`Field model type "${type}" is not recognized.`);
+    return null;
+  }
   return <Icon {...props} />;
 };
