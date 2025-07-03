@@ -32,7 +32,7 @@ const LocalSwitcher: FC = () => {
   );
 
   return (
-    <Dropdown options={localeOptions}>
+    <Dropdown options={localeOptions} side="right">
       <button className="gl-btn dropdown-toggle">{locale}</button>
     </Dropdown>
   );

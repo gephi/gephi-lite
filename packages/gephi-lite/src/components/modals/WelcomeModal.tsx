@@ -10,7 +10,7 @@ import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
 import { Loader } from "../Loader";
 import LocalSwitcher from "../LocalSwitcher";
-import { ThemeSwicther } from "../ThemeSwitcher";
+import { ThemeSwitcher } from "../ThemeSwitcher";
 import { GitHubIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { OpenCloudFileModal } from "./open/CloudFileModal";
@@ -48,7 +48,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           {t("welcome.title")}
           <span className="flex-grow-1" />
           <span className="me-1" style={{ marginTop: "-0.1em" }}>
-            <ThemeSwicther />
+            <ThemeSwitcher />
           </span>
           <span className="me-1" style={{ marginTop: "-0.1em" }}>
             <LocalSwitcher />

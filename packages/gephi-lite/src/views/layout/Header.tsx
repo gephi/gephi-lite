@@ -1,14 +1,15 @@
 import cx from "classnames";
 import FileSaver from "file-saver";
+import { capitalize } from "lodash";
 import { type FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
 import LocalSwitcher from "../../components/LocalSwitcher";
-import { ThemeSwicther } from "../../components/ThemeSwitcher";
-import { DataLaboratoryIcon, DataLaboratoryIconFill, GraphIcon, GraphIconFill } from "../../components/common-icons";
+import { ThemeSwitcher } from "../../components/ThemeSwitcher";
+import { DataIcon, DataIconFill, GraphIcon, GraphIconFill } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
@@ -24,6 +25,7 @@ import { useConnectedUser } from "../../core/user";
 
 export const Header: FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [user, setUser] = useConnectedUser();
   const { openModal } = useModal();
@@ -32,24 +34,6 @@ export const Header: FC = () => {
   const { saveFile } = useCloudProvider();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile } = useFile();
-
-  const navMenuList = useMemo(
-    () => [
-      {
-        label: t("pages.graph"),
-        path: "/",
-        icon: { normal: GraphIcon, fill: GraphIconFill },
-        isCurrent: location.pathname === "/",
-      },
-      {
-        label: t("pages.data_laboratory"),
-        path: "/data",
-        icon: { normal: DataLaboratoryIcon, fill: DataLaboratoryIconFill },
-        isCurrent: location.pathname === "/data",
-      },
-    ],
-    [location.pathname, t],
-  );
 
   const workspaceMenuList = useMemo(
     () =>
@@ -177,22 +161,27 @@ export const Header: FC = () => {
             <button className="gl-btn dropdown-toggle">Workspace</button>
           </Dropdown>
         </div>
-        <div className="col-4  d-flex justify-content-center align-items-center">
-          {navMenuList.map((navItem) => (
-            <Link
-              key={JSON.stringify(navItem)}
-              to={navItem.path}
-              className={cx("gl-btn mx-1", navItem.isCurrent ? "gl-btn-fill" : "")}
+        <div className="col-4 d-flex justify-content-center align-items-center gl-gap-1">
+          <Link to="/" className={cx("gl-btn", location.pathname === "/" ? "gl-btn-fill" : "")}>
+            {location.pathname === "/" ? <GraphIcon /> : <GraphIconFill />} {t("pages.graph")}
+          </Link>
+          <Dropdown
+            options={["nodes", "edges"].map((type) => ({
+              label: capitalize(t(`graph.model.${type}`)),
+              onClick: () => navigate(`/data/${type}`),
+            }))}
+          >
+            <button
+              className={cx("gl-btn dropdown-toggle", location.pathname.startsWith("/data") ? "gl-btn-fill" : "")}
             >
-              {navItem.isCurrent ? <navItem.icon.fill /> : <navItem.icon.normal />}
-              {navItem.label}
-            </Link>
-          ))}
+              {location.pathname.startsWith("/data") ? <DataIcon /> : <DataIconFill />} {t("pages.data")}
+            </button>
+          </Dropdown>
         </div>
         <div className="col-4 d-flex justify-content-end align-items-center">
-          <ThemeSwicther />
+          <ThemeSwitcher />
           <LocalSwitcher />
-          <Dropdown options={logoMenuList}>
+          <Dropdown options={logoMenuList} side="right">
             <button className="gl-btn dropdown-toggle">
               <GephiLogo height={"1em"} width={"1em"} />
             </button>

@@ -13,7 +13,7 @@ import {
   LightThemeSelectedIcon,
 } from "./common-icons";
 
-export const ThemeSwicther: FC<unknown> = () => {
+export const ThemeSwitcher: FC<unknown> = () => {
   const { theme } = usePreferences();
   const { changeTheme } = usePreferencesActions();
   const { t } = useTranslation();
@@ -55,7 +55,7 @@ export const ThemeSwicther: FC<unknown> = () => {
   );
 
   return (
-    <Dropdown options={themeOptions}>
+    <Dropdown options={themeOptions} side="right">
       <button className="gl-btn gl-btn-icon dropdown-toggle">
         {theme === "auto" && <AutoThemeSelectedIcon />}
         {theme === "light" && <LightThemeSelectedIcon />}

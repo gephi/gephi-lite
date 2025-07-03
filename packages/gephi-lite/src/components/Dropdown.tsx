@@ -10,15 +10,20 @@ type OptionCommon = {
   disabled?: boolean;
 };
 
+type DropdownSide = "left" | "right";
 type OptionLink = OptionCommon & { url: string };
 type OptionAction = OptionCommon & { onClick: () => void | Promise<void> };
 type OptionText = Omit<OptionCommon, "type"> & { type: "text" };
 type OptionDivider = { type: "divider" };
 export type Option = OptionLink | OptionAction | OptionText | OptionDivider;
 
-const Dropdown: FC<{ children: ReactNode; options: Option[] }> = ({ children: target, options }) => {
+const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide }> = ({
+  children: target,
+  options,
+  side = "left",
+}) => {
   return (
-    <Tooltip hoverable closeOnClickContent>
+    <Tooltip hoverable closeOnClickContent attachment={`top ${side}`} targetAttachment={`bottom ${side}`}>
       {target}
       <div className="dropdown-menu show over-modal position-relative">
         {options.map((option, i) => (
