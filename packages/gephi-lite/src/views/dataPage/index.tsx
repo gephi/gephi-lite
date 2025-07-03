@@ -22,6 +22,7 @@ import { EditEdgeForm } from "../../components/data/EditEdge";
 import { EditNodeForm } from "../../components/data/EditNode";
 import { FieldModelForm } from "../../components/forms/FieldModelForm";
 import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { doesItemMatch } from "../../utils/search";
 import { StatisticsPanel } from "../graphPage/panels/StatisticsPanel";
 import { Layout } from "../layout";
@@ -68,7 +69,24 @@ const MENU: MenuItem<{ panel?: Panel }>[] = [
     id: "statistics",
     i18nKey: "statistics.title",
     icon: { normal: StatisticsIcon, fill: StatisticsIconFill },
-    panel: StatisticsPanel,
+    children: [
+      { type: "nodes", metrics: NODE_METRICS },
+      { type: "edges", metrics: EDGE_METRICS },
+      { type: "mixed", metrics: MIXED_METRICS },
+    ].flatMap(({ type, metrics }) => [
+      {
+        id: type,
+        type: "text",
+        i18nKey: `graph.model.${type}`,
+        className: "gl-heading-3",
+        capitalize: true,
+      },
+      ...metrics.map((metric) => ({
+        id: metric.id,
+        i18nKey: `statistics.${type}.${metric.id}.title`,
+        panel: () => <StatisticsPanel metric={metric} />,
+      })),
+    ]),
   },
 ];
 
