@@ -23,6 +23,7 @@ $panel-width: $gl-sys-size-container-large;
     flex-direction: column;
     z-index: 140;
     overflow: hidden;
+    flex-shrink: 0;
 
     .panel-body {
       @extend .gl-p-3;
