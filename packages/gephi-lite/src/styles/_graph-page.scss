@@ -1,6 +1,6 @@
 #graph-page {
   // default background color which can be customized by user
-  background-color: var(--bs-body-bg);
+  background-color: var(--gl-body-bg);
 
   .stage {
     position: absolute;
@@ -56,4 +56,8 @@
   .panel {
     z-index: 140;
   }
+}
+
+:root {
+  --sigma-background-color: transparent;
 }
