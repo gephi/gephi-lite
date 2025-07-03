@@ -21,11 +21,12 @@ import {
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
+import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Layout } from "../layout";
 import { GraphRendering } from "./GraphRendering";
 import { Selection } from "./Selection";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
-import { LayoutsPanel } from "./panels/layouts/LayoutPanel";
+import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
 const MENU: MenuItem<{ panel?: ComponentType }>[] = [
   {
@@ -36,7 +37,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       ...LAYOUTS.map((layout) => ({
         id: `layout-${layout.id}`,
         i18nKey: `layouts.${layout.id}.title`,
-        panel: () => <LayoutsPanel layout={layout} />,
+        panel: () => <LayoutPanel layout={layout} />,
       })),
       { id: "layout-quality", i18nKey: "layouts.quality.title", panel: () => <LayoutQualityForm /> },
     ],
@@ -78,7 +79,24 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
     id: "statistics",
     i18nKey: "statistics.title",
     icon: { normal: StatisticsIcon, fill: StatisticsIconFill },
-    panel: StatisticsPanel,
+    children: [
+      { type: "nodes", metrics: NODE_METRICS },
+      { type: "edges", metrics: EDGE_METRICS },
+      { type: "mixed", metrics: MIXED_METRICS },
+    ].flatMap(({ type, metrics }) => [
+      {
+        id: type,
+        type: "text",
+        i18nKey: `graph.model.${type}`,
+        className: "gl-heading-3",
+        capitalize: true,
+      },
+      ...metrics.map((metric) => ({
+        id: metric.id,
+        i18nKey: `statistics.${type}.${metric.id}.title`,
+        panel: () => <StatisticsPanel metric={metric} />,
+      })),
+    ]),
   },
 ];
 

@@ -1,39 +1,25 @@
 import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
-import { capitalize, cloneDeep, flatMap, isNil, keyBy, map, mapValues } from "lodash";
+import { cloneDeep, flatMap, isNil, keyBy, map, mapValues } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
-import { GroupBase } from "react-select";
 
-import { InformationTooltip } from "../../../components/InformationTooltip";
 import MessageTooltip from "../../../components/MessageTooltip";
-import { CodeEditorIcon, StatisticsIcon } from "../../../components/common-icons";
-import { Select } from "../../../components/forms/Select";
+import { CodeEditorIcon } from "../../../components/common-icons";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../../components/forms/TypedInputs";
 import { FunctionEditorModal } from "../../../components/modals/FunctionEditorModal";
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
 import { computeMetric } from "../../../core/metrics";
-import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../../core/metrics/collections";
 import { Metric, MetricScriptParameter } from "../../../core/metrics/types";
 import { useModal } from "../../../core/modals";
 import { useNotifications } from "../../../core/notifications";
 import { sessionAtom } from "../../../core/session";
 import { ItemType } from "../../../core/types";
 
-type MetricOption = {
-  // id/name of the metric
-  value: string;
-  // label displayed in the UI for the metric
-  label: string;
-  // metric's value
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metric: Metric<any>;
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ metric }) => {
+export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ metric }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { openModal } = useModal();
@@ -342,65 +328,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose: () => void }> = ({ m
   );
 };
 
-export const StatisticsPanel: FC = () => {
-  const { t } = useTranslation();
-
-  const options: GroupBase<MetricOption>[] = useMemo(
-    () => [
-      {
-        label: capitalize(t("graph.model.nodes")),
-        options: NODE_METRICS.map((metric) => ({
-          value: metric.id,
-          label: t(`statistics.nodes.${metric.id}.title`),
-          metric,
-        })),
-      },
-      {
-        label: capitalize(t("graph.model.edges")),
-        options: EDGE_METRICS.map((metric) => ({
-          value: metric.id,
-          label: t(`statistics.edges.${metric.id}.title`),
-          metric,
-        })),
-      },
-      {
-        label: capitalize(t("graph.model.mixed")),
-        options: MIXED_METRICS.map((metric) => ({
-          value: metric.id,
-          label: t(`statistics.mixed.${metric.id}.title`),
-          metric,
-        })),
-      },
-    ],
-    [t],
-  );
-  const [option, setOption] = useState<MetricOption | null>(null);
-
-  return (
-    <>
-      <div className="panel-block">
-        <h2 className="fs-4 d-flex align-items-center gap-1">
-          <StatisticsIcon className="me-1" /> {t("statistics.title")}{" "}
-          <InformationTooltip>
-            <p className="text-muted small m-0">{t("statistics.description")}</p>
-          </InformationTooltip>
-        </h2>
-        <p className="text-muted small d-none d-md-block">{t("statistics.description")}</p>
-
-        <Select<MetricOption>
-          options={options}
-          value={option}
-          onChange={setOption}
-          placeholder={t("statistics.placeholder")}
-        />
-      </div>
-
-      {option?.metric && (
-        <>
-          <hr className="m-0" />
-          <MetricForm key={option.metric.id} metric={option.metric} onClose={() => setOption(null)} />
-        </>
-      )}
-    </>
-  );
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const StatisticsPanel: FC<{ metric: Metric<any> }> = ({ metric }) => {
+  return <MetricForm metric={metric} />;
 };

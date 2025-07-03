@@ -23,6 +23,14 @@ i18n
       lookupQuerystring: "lang",
       convertDetectedLanguage: (lng) => (lng in LOCALES ? lng : DEFAULT_LOCALE),
     },
+    interpolation: {
+      format: (value, format) => {
+        if (format === "uppercase") return value.toUpperCase();
+        if (format === "lowercase") return value.toLowerCase();
+        if (format === "capitalize") return capitalize(value);
+        return value;
+      },
+    },
   })
   .then(() => {
     i18next.services.formatter?.add("lowercase", (value, _lng, _options) => {
