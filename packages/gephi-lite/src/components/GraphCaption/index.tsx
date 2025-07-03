@@ -212,9 +212,9 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
     : undefined;
 
   return (
-    <div className={cx("graph-caption", collapsed ? "collapsed" : "border")}>
+    <div className={cx("graph-caption", collapsed || !enabled ? "collapsed" : "border")}>
       <div className="d-flex flex-column justify-content-end align-items-start align-self-end">
-        <div title={enabled ? undefined : t("graph.caption.disabled").toString()}>
+        <div title={enabled ? undefined : t("graph.caption.disabled")}>
           <button
             title={`${t(collapsed ? "common.expand" : "common.collapse")} `}
             className="gl-btn gl-btn-icon gl-btn-fill"

@@ -3,6 +3,10 @@
     background-color: rgba(var(--gl-container-highest-bg-rgb), 0.9);
   }
 
+  &.collapsed {
+    border: 1px solid transparent;
+  }
+
   display: flex;
   align-items: center;
 
@@ -21,7 +25,7 @@
       font-size: 0.8rem;
     }
 
-    >* {
+    > * {
       margin-right: 1rem;
 
       :last-child {
@@ -79,7 +83,7 @@
         justify-content: flex-start;
         padding-left: 0.4em;
 
-        >* {
+        > * {
           flex-shrink: 0;
           flex-grow: 0;
           display: flex;
@@ -110,7 +114,7 @@
       align-items: flex-end;
       justify-content: center;
 
-      >* {
+      > * {
         height: $graph-caption-items-height;
         margin-right: 1rem;
 
