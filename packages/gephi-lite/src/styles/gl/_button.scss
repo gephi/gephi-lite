@@ -1,11 +1,16 @@
-.gl-btn,
-:not(.btn-check) + .gl-btn {
-  @extend .btn;
+// Extending this class makes element appear with the same padding than buttons (for alignment purpose):
+.gl-btnlike {
   @extend .gl-px-2;
   @extend .gl-py-1;
   @extend .gl-text-ui;
-  @extend .gl-rounded-2;
   border: 2px solid transparent;
+}
+
+.gl-btn,
+:not(.btn-check) + .gl-btn {
+  @extend .btn;
+  @extend .gl-rounded-2;
+  @extend .gl-btnlike;
 
   &.gl-btn-icon {
     @extend .gl-px-1;

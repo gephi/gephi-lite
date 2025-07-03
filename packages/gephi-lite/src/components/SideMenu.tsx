@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { capitalize } from "lodash";
 import { type FC, ReactNode, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IconType } from "react-icons";
@@ -11,6 +12,7 @@ type MenuCommon<T> = {
   | { label: ReactNode }
   | {
       i18nKey: string;
+      capitalize?: boolean;
       icon?: {
         normal: IconType;
         fill: IconType;
@@ -18,8 +20,11 @@ type MenuCommon<T> = {
     }
 ) &
   T;
-type MenuSection<T> = MenuCommon<T> & { children: MenuCommon<T>[] };
-export type MenuItem<T = unknown> = MenuCommon<T> | MenuSection<T>;
+type MenuButton<T> = MenuCommon<T> & { type?: "button" };
+type MenuText<T> = MenuCommon<T> & { type: "text"; className?: string };
+type MenuSimpleItem<T> = MenuButton<T> | MenuText<T>;
+type MenuSection<T> = MenuSimpleItem<T> & { children: MenuSimpleItem<T>[] };
+export type MenuItem<T = unknown> = MenuSimpleItem<T> | MenuSection<T>;
 
 const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpened }) => {
   const { t } = useTranslation();
@@ -30,7 +35,7 @@ const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpe
       ) : (
         <>
           {item.icon && <span className="side-menu-icon">{isOpened ? <item.icon.fill /> : <item.icon.normal />}</span>}
-          <span className="side-menu-item">{t(item.i18nKey)}</span>
+          <span className="side-menu-item">{item.capitalize ? capitalize(t(item.i18nKey)) : t(item.i18nKey)}</span>
         </>
       )}
       {isOpened !== undefined && <span>{isOpened ? <CaretDownIcon /> : <CaretRightIcon />}</span>}
@@ -82,12 +87,18 @@ export function SideMenu<T = unknown>({
             <ul>
               {item.children.map((item) => (
                 <li key={item.id}>
-                  <button
-                    className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
-                    onClick={() => onSelectedChange(item)}
-                  >
-                    <ItemMenuInner item={item} />
-                  </button>
+                  {item.type === "text" ? (
+                    <span className={cx("gl-btnlike", item.className)}>
+                      <ItemMenuInner item={item} />
+                    </span>
+                  ) : (
+                    <button
+                      className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
+                      onClick={() => onSelectedChange(item)}
+                    >
+                      <ItemMenuInner item={item} />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
