@@ -5,15 +5,16 @@
 $gl-ref-color-neutral-00: #ffffff;
 $gl-ref-color-neutral-05: #fafafa;
 $gl-ref-color-neutral-10: #f7f7f7;
-//$gl-ref-color-neutral-20: #f1f1f1;
-$gl-ref-color-neutral-30: #eaeaea;
+$gl-ref-color-neutral-20: #eeeeee;
+$gl-ref-color-neutral-30: #e7e7e7;
 //$gl-ref-color-neutral-40: #e3e3e3;
 //$gl-ref-color-neutral-50: #d4d4d4;
-$gl-ref-color-neutral-60: #a9a9a9;
-$gl-ref-color-neutral-70: #696969;
-//$gl-ref-color-neutral-75: #353535;
+$gl-ref-color-neutral-50: #a9a9a9;
+$gl-ref-color-neutral-60: #696969;
+$gl-ref-color-neutral-65: #4c4c4c;
+$gl-ref-color-neutral-75: #333333;
 $gl-ref-color-neutral-80: #292929;
-$gl-ref-color-neutral-85: #252525;
+$gl-ref-color-neutral-85: #212121;
 $gl-ref-color-neutral-95: #1d1d1d;
 
 // Opacity
@@ -46,10 +47,12 @@ $gl-ref-radius-8: 0.5rem;
 $gl-ref-radius-full: 99rem;
 
 // Proportion
+$gl-ref-proportion-4: 4%;
+$gl-ref-proportion-8: 8%;
 $gl-ref-proportion-12: 12%;
 $gl-ref-proportion-16: 16%;
 $gl-ref-proportion-24: 24%;
-$gl-ref-proportion-48: 48%;
+$gl-ref-proportion-64: 64%;
 
 // Decimal
 
@@ -63,16 +66,18 @@ $gl-ref-decimal-104: 1.4;
 $gl-sys-color-bg: $gl-ref-color-neutral-10;
 $gl-sys-color-bg-high: $gl-ref-color-neutral-05;
 $gl-sys-color-bg-highest: $gl-ref-color-neutral-00;
+$gl-sys-color-bg-low: $gl-ref-color-neutral-20;
 $gl-sys-color-border: $gl-ref-color-neutral-30;
 $gl-sys-color-onBg: $gl-ref-color-neutral-80;
-$gl-sys-color-onBg-muted: $gl-ref-color-neutral-70;
+$gl-sys-color-onBg-muted: $gl-ref-color-neutral-60;
 
 $gl-sys-color-dark-bg: $gl-ref-color-neutral-95;
 $gl-sys-color-dark-bg-high: $gl-ref-color-neutral-85;
-$gl-sys-color-dark-bg-highest: $gl-ref-color-neutral-80;
-$gl-sys-color-dark-border: $gl-ref-color-neutral-70;
+$gl-sys-color-dark-bg-higher: $gl-ref-color-neutral-80;
+$gl-sys-color-dark-bg-highest: $gl-ref-color-neutral-75;
+$gl-sys-color-dark-border: $gl-ref-color-neutral-65;
 $gl-sys-color-dark-onBg: $gl-ref-color-neutral-05;
-$gl-sys-color-dark-onBg-muted: $gl-ref-color-neutral-60;
+$gl-sys-color-dark-onBg-muted: $gl-ref-color-neutral-50;
 
 //Component
 $gl-sys-color-component-bg: $gl-ref-color-neutral-80;
@@ -84,11 +89,15 @@ $gl-sys-color-dark-component-border: $gl-ref-color-neutral-30;
 $gl-sys-color-dark-onComponentBg: $gl-ref-color-neutral-80;
 
 //----Color Mix Proportion
+//----Components
 $gl-sys-proportion-component-hover-color-mix: $gl-ref-proportion-12;
 $gl-sys-proportion-component-focus-color-mix: $gl-ref-proportion-12;
 $gl-sys-proportion-component-active-color-mix: $gl-ref-proportion-24;
 $gl-sys-proportion-component-disabled-color-mix: $gl-ref-proportion-16;
-$gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-48;
+$gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-64;
+
+//----Cells
+$gl-sys-proportion-cell-hover-color-mix: $gl-ref-proportion-4;
 
 //----Opacity
 $gl-sys-opacity-onComponentBg-disabled: $gl-ref-opacity-80;
@@ -157,6 +166,8 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-component-bg: #{$gl-sys-color-component-bg};
   --gl-component-color: #{$gl-sys-color-onComponentBg};
   --gl-component-border-color: #{$gl-sys-color-component-border};
+  // Table
+  --gl-columns-header-non-editable-bg: #{$gl-sys-color-bg-low};
 
   // RGB
   // Body
@@ -176,6 +187,8 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-component-bg-rgb: #{hexToRGBString($gl-sys-color-component-bg)};
   --gl-component-color-rgb: #{hexToRGBString($gl-sys-color-onComponentBg)};
   --gl-component-border-color-rgb: #{hexToRGBString($gl-sys-color-component-border)};
+  // Table
+  --gl-columns-header-non-editable-bg-rgb: #{hexToRGBString($gl-sys-color-bg-low)};
 }
 
 :root[data-bs-theme="dark"] {
@@ -187,7 +200,7 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-body-border-color: #{$gl-sys-color-dark-border};
   // Containers
   --gl-container-bg: #{$gl-sys-color-dark-bg};
-  --gl-container-high-bg: #{$gl-sys-color-dark-bg-high};
+  --gl-container-high-bg: #{$gl-sys-color-dark-bg-higher};
   --gl-container-highest-bg: #{$gl-sys-color-dark-bg-highest};
   // only one type of text, muted text and border color to use in containers because of the sufficient contrast with the background color
   --gl-container-color: #{$gl-sys-color-dark-onBg};
@@ -197,6 +210,8 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-component-bg: #{$gl-sys-color-dark-component-bg};
   --gl-component-color: #{$gl-sys-color-dark-onComponentBg};
   --gl-component-border-color: #{$gl-sys-color-dark-component-border};
+  //Table
+  --gl-columns-header-non-editable-bg: #{$gl-sys-color-dark-bg-high};
 
   // RGB
   // Body
@@ -206,8 +221,9 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-body-border-color-rgb: #{hexToRGBString($gl-sys-color-dark-border)};
   // Containers
   --gl-container-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg)};
-  --gl-container-high-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-high)};
+  --gl-container-high-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-higher)};
   --gl-container-highest-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-highest)};
+  --gl-container-low-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-high)};
   // only one type of text, muted text and border color to use in containers because of the sufficient contrast with the background color
   --gl-container-color-rgb: #{hexToRGBString($gl-sys-color-dark-onBg)};
   --gl-container-muted-color-rgb: #{hexToRGBString($gl-sys-color-dark-onBg-muted)};
@@ -216,4 +232,6 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-component-bg-rgb: #{hexToRGBString($gl-sys-color-dark-component-bg)};
   --gl-component-color-rgb: #{hexToRGBString($gl-sys-color-dark-onComponentBg)};
   --gl-component-border-color-rgb: #{hexToRGBString($gl-sys-color-dark-component-border)};
+  // Table
+  --gl-columns-header-non-editable-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-high)};
 }

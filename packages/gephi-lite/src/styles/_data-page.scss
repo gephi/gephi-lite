@@ -10,6 +10,8 @@
     .table-top-bar {
       flex-grow: 0;
       flex-shrink: 0;
+      background-color: var(--gl-container-highest-bg);
+      border: solid 1px var(--gl-container-border-color);
     }
 
     .data-table-container {

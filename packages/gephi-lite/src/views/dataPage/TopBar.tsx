@@ -59,7 +59,7 @@ export const TopBar: FC = () => {
   const selectionActionDisabled = selectionType !== type || !items.size;
 
   return (
-    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2 gap-1">
+    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2 gap-1 gl-px-3 gl-py-1">
       <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-baseline gap-1">
         <Trans i18nKey={`selection.${type}`} count={items.size} />
         <button className="btn" disabled={true /*selectionActionDisabled*/} onClick={() => console.log("TODO")}>
