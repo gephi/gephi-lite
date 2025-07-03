@@ -163,7 +163,7 @@ export const Header: FC = () => {
         </div>
         <div className="col-4 d-flex justify-content-center align-items-center gl-gap-1">
           <Link to="/" className={cx("gl-btn", location.pathname === "/" ? "gl-btn-fill" : "")}>
-            {location.pathname === "/" ? <GraphIcon /> : <GraphIconFill />} {t("pages.graph")}
+            {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
           <Dropdown
             options={["nodes", "edges"].map((type) => ({
@@ -174,7 +174,7 @@ export const Header: FC = () => {
             <button
               className={cx("gl-btn dropdown-toggle", location.pathname.startsWith("/data") ? "gl-btn-fill" : "")}
             >
-              {location.pathname.startsWith("/data") ? <DataIcon /> : <DataIconFill />} {t("pages.data")}
+              {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
             </button>
           </Dropdown>
         </div>
