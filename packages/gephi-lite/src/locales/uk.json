@@ -19,10 +19,10 @@
     "selection": {
         "nodes_one": "Один вибраний вузол",
         "focus_edges": "Вибрати тільки це ребро",
-        "edges": "{{count}} вибраних ребер",
+        "edges": "{{count, number}} вибраних ребер",
         "edges_zero": "Нема вибраних ребер",
         "select_all": "Вибрати все",
-        "nodes": "{{count}} вибраних вузлів",
+        "nodes": "{{count, number}} вибраних вузлів",
         "focus_nodes": "Вибрати тільки цей вузол",
         "edges_one": "Одне вибране ребро",
         "nodes_zero": "Немає вибраних вузлів"
