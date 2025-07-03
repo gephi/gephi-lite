@@ -1,15 +1,18 @@
 @use "sass:map";
 
-$table-bg: $gray-200;
-$table-editable-columns-cell-bg: $white;
-$table-editable-columns-cell-hover-bg: $gray-100;
-$table-editable-columns-header-bg: $gray-200;
-$table-non-editable-columns-cell-bg: $gray-100;
-$table-non-editable-columns-header-bg: $gray-300;
+$table-bg: var(--gl-body-bg);
+$table-editable-columns-cell-bg: var(--gl-container-highest-bg);
+$table-editable-columns-cell-hover-bg: color-mix(
+  in hsl,
+  var(--gl-container-highest-bg),
+  var(--gl-body-color) $gl-sys-proportion-cell-hover-color-mix
+);
+$table-editable-columns-header-bg: var(--gl-container-high-bg);
+$table-non-editable-columns-cell-bg: var(--gl-container-highest-bg);
 
 .data-table {
   background: $table-bg;
-  border: $table-border-color;
+  border: solid 1px var(--gl-container-border-color);
   display: grid;
   grid-template-rows: auto 1fr;
   max-width: 100%;
@@ -28,7 +31,6 @@ $table-non-editable-columns-header-bg: $gray-300;
     position: sticky;
     z-index: 2;
     top: 0;
-
     tr {
       display: flex;
       width: fit-content;
@@ -40,7 +42,7 @@ $table-non-editable-columns-header-bg: $gray-300;
 
         background: $table-editable-columns-header-bg;
         &.protected {
-          background: $table-non-editable-columns-header-bg;
+          background: var(--gl-columns-header-non-editable-bg-rgb);
         }
 
         & > div.content-wrapper {
