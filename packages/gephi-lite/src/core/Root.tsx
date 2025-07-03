@@ -34,10 +34,11 @@ export const Root: FC = () => {
             <AtomsContextsRoot>
               <Initialize>
                 <Routes>
-                <Route path="/design-system" element={<DesignSystemPage />} />
+                  <Route path="/design-system" element={<DesignSystemPage />} />
                   <Route path="/design-system/:page" element={<DesignSystemPage />} />
                   <Route path="/" element={<GraphPage />} />
-                  <Route path="/data" element={<DataPage />} />
+                  <Route path="/data/nodes" element={<DataPage type="nodes" />} />
+                  <Route path="/data/edges" element={<DataPage type="edges" />} />
 
                   {/* Error pages: */}
                   <Route path="*" element={<NotFoundPage />} />

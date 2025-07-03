@@ -1,3 +1,4 @@
+import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { type ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -20,7 +21,7 @@ import {
 import { EditEdgeForm } from "../../components/data/EditEdge";
 import { EditNodeForm } from "../../components/data/EditNode";
 import { FieldModelForm } from "../../components/forms/FieldModelForm";
-import { useDataTable, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { doesItemMatch } from "../../utils/search";
 import { StatisticsPanel } from "../graphPage/panels/StatisticsPanel";
 import { Layout } from "../layout";
@@ -95,9 +96,10 @@ const Panel: FC<{ collapsed?: boolean; children: [ReactNode, ReactNode] }> = ({
   );
 };
 
-export const DataPage: FC = () => {
+export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   const { t } = useTranslation();
   const { type, search } = useDataTable();
+  const { setType } = useDataTableActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields } = useGraphDataset();
   const graph = useFilteredGraph();
   const { matchingItems, otherItems } = useMemo(() => {
@@ -124,6 +126,10 @@ export const DataPage: FC = () => {
   }, [type, graph, nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields, search]);
 
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
+
+  useEffect(() => {
+    setType(inputType);
+  }, [inputType, setType]);
 
   return (
     <Layout id="data-page" className="panels-layout">
