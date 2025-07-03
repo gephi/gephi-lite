@@ -6,7 +6,7 @@ import { Metric } from "../types";
 export const louvainMetric: Metric<{ nodes: ["modularityClass"] }> = {
   id: "louvain",
   description: true,
-  outputs: { nodes: { modularityClass: { type: "number" } } },
+  outputs: { nodes: { modularityClass: { type: "category" } } },
   parameters: [
     {
       id: "getEdgeWeight",
