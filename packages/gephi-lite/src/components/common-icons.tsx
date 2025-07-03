@@ -60,8 +60,8 @@ import { ItemType } from "../core/types";
 
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
-export const DataLaboratoryIcon = PiTable;
-export const DataLaboratoryIconFill = PiTableFill;
+export const DataIcon = PiTable;
+export const DataIconFill = PiTableFill;
 export const DataCreationIcon = PiPlusCircle;
 export const DataCreationIconFill = PiPlusCircleFill;
 export const CaretDownIcon = PiCaretDown;

@@ -1,3 +1,4 @@
+import { ItemType } from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { ColumnSizingInfoState, SortingState, Updater } from "@tanstack/react-table";
 import { ColumnSizingState } from "@tanstack/table-core";
@@ -9,6 +10,12 @@ import { getEmptyDataTableState } from "./utils";
  * Producers:
  * **********
  */
+export const setType: Producer<DataTableState, [ItemType]> = (type) => {
+  return (state) => ({
+    ...state,
+    type,
+  });
+};
 export const updateQuery: Producer<DataTableState, [{ query?: string }]> = ({ query }) => {
   return (state) => ({
     ...state,
@@ -68,6 +75,7 @@ export const toggleSort: Producer<DataTableState, [string]> = (column) => {
 export const dataTableAtom = atom<DataTableState>(getEmptyDataTableState());
 
 export const dataTableActions = {
+  setType: producerToAction(setType, dataTableAtom),
   updateQuery: producerToAction(updateQuery, dataTableAtom),
   updateColumnSizing: producerToAction(updateColumnSizing, dataTableAtom),
   updateColumnSizingInfo: producerToAction(updateColumnSizingInfo, dataTableAtom),
