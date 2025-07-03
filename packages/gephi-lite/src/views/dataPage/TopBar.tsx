@@ -1,7 +1,6 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
-import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { PiMagnifyingGlass, PiX } from "react-icons/pi";
 
 import ConfirmModal from "../../components/modals/ConfirmModal";
@@ -60,9 +59,9 @@ export const TopBar: FC = () => {
   const selectionActionDisabled = selectionType !== type || !items.size;
 
   return (
-    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2">
-      <section>{capitalize(t(`graph.model.${type}`))}</section>
-      <section className="flex-grow-1 d-flex flex-row align-items-baseline justify-content-center gap-1">
+    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2 gap-1">
+      <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-baseline gap-1">
+        <Trans i18nKey={`selection.${type}`} count={items.size} />
         <button className="btn" disabled={true /*selectionActionDisabled*/} onClick={() => console.log("TODO")}>
           {t(`edition.edit_selected_${type}`)}
         </button>
