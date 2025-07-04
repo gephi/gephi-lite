@@ -172,36 +172,36 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
       }}
       noValidate
     >
-      <div className="panel-block-grow">
-        <h3 className="fs-5">{t(`${prefix}.title`)}</h3>
-        {metric.description && <p className="text-muted small">{t(`${prefix}.description`)}</p>}
+      <h2>{t(`${prefix}.title`)}</h2>
+      {metric.description && <p className="gl-text-muted">{t(`${prefix}.description`)}</p>}
 
-        <div className="my-3">
-          {flatMap(metric.outputs, (outputs, itemType: ItemType) =>
-            map(outputs, (_type, value) => (
-              <StringInput
-                key={`${itemType}-${value}`}
-                required
-                id={`statistics-${itemType}-${metric.id}-params-${value}`}
-                label={t(`${prefix}.attributes.${value}`)}
-                value={metricConfig.attributeNames[value]}
-                onChange={(v) => onChange("attributeNames", value, v)}
-                warning={
-                  !!fieldsIndex[itemType][metricConfig.attributeNames[value]]
-                    ? t(`statistics.${itemType}_attribute_already_exists`, {
-                        field: metricConfig.attributeNames[value],
-                      })
-                    : undefined
-                }
-              />
-            )),
-          )}
-        </div>
+      <div className="panel-block">
+        {flatMap(metric.outputs, (outputs, itemType: ItemType) =>
+          map(outputs, (_type, value) => (
+            <StringInput
+              key={`${itemType}-${value}`}
+              required
+              id={`statistics-${itemType}-${metric.id}-params-${value}`}
+              label={t(`${prefix}.attributes.${value}`)}
+              value={metricConfig.attributeNames[value]}
+              onChange={(v) => onChange("attributeNames", value, v)}
+              warning={
+                !!fieldsIndex[itemType][metricConfig.attributeNames[value]]
+                  ? t(`statistics.${itemType}_attribute_already_exists`, {
+                      field: metricConfig.attributeNames[value],
+                    })
+                  : undefined
+              }
+            />
+          )),
+        )}
+      </div>
 
+      <div className="panel-block">
         {metric.parameters.map((param) => {
           const id = `statistics-${itemTypesName}-${metric.id}-params-${param.id}`;
           return (
-            <div className="my-1" key={id}>
+            <div className="panel-block" key={id}>
               {param.type === "number" && (
                 <NumberInput
                   id={id}
@@ -300,13 +300,11 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
             </div>
           );
         })}
-
-        {metric.additionalControl && <metric.additionalControl {...metricConfig} submitCount={submitCount} />}
       </div>
 
-      <hr className="m-0" />
+      {metric.additionalControl && <metric.additionalControl {...metricConfig} submitCount={submitCount} />}
 
-      <div className="z-over-loader panel-block d-flex flex-row align-items-center  gl-py-3 gl-gap-2">
+      <div className="panel-footer">
         {success && (
           <MessageTooltip
             openOnMount={2000}
@@ -317,7 +315,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
           />
         )}
         <div className="flex-grow-1" />
-        <button type="reset" className="gl-btn gl-btn-outline" onClick={() => resetParameters()}>
+        <button type="reset" className="gl-btn" onClick={() => resetParameters()}>
           {t("common.reset")}
         </button>
         <button type="submit" className="gl-btn gl-btn-fill">

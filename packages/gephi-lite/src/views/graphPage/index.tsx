@@ -25,6 +25,7 @@ import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/co
 import { Layout } from "../layout";
 import { GraphRendering } from "./GraphRendering";
 import { Selection } from "./Selection";
+import { LabelsPanel } from "./panels/LabelsPanel";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
 import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
@@ -60,7 +61,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       {
         id: "appearance-labels",
         i18nKey: "appearance.menu.labels",
-        panel: () => <div>TODO</div>,
+        panel: () => <LabelsPanel />,
       },
       {
         id: "appearance-background",

@@ -13,7 +13,7 @@ export const ColorFixedEditor: FC<{
   const { t } = useTranslation();
 
   return (
-    <div className="d-flex align-items-center mt-1">
+    <div className="d-flex align-items-center">
       <ColorPicker color={color.value} onChange={(v) => setColor({ ...color, value: v })} />
       <label className="form-check-label small ms-1">
         {t("appearance.color.color_all_items", { items: t(`graph.model.${itemType}`) })}

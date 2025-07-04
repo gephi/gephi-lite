@@ -151,139 +151,148 @@ const useEditEdgeForm = ({
   return {
     submit,
     main: (
-      <section className="form-inputs">
-        <div>
-          <label htmlFor="updateEdge-id" className="form-label">
-            {t("graph.model.edges-data.id")}
-          </label>
-          <input
-            type="text"
-            id="updateEdge-id"
-            className={cx("form-control", errors.id && "is-invalid")}
-            disabled={!isNew}
-            {...register("id", {
-              required: !isNew,
-              validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
-            })}
-          />
-          {errors.id && (
-            <div className="invalid-feedback">
-              {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="updateEdge-label" className="form-label">
-            {t("graph.model.edges-data.label")}
-          </label>
-          <input type="text" id="updateEdge-label" className="form-control" {...register("label")} />
+      <>
+        <h2>{isNew ? t("edition.create_edges") : t("edition.update_edges")}</h2>
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateEdge-id" className="form-label">
+              {t("graph.model.edges-data.id")}
+            </label>
+            <input
+              type="text"
+              id="updateEdge-id"
+              className={cx("form-control", errors.id && "is-invalid")}
+              disabled={!isNew}
+              {...register("id", {
+                required: !isNew,
+                validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
+              })}
+            />
+            {errors.id && (
+              <div className="invalid-feedback">
+                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+              </div>
+            )}
+          </div>
+          <div>
+            <label htmlFor="updateEdge-label" className="form-label">
+              {t("graph.model.edges-data.label")}
+            </label>
+            <input type="text" id="updateEdge-label" className="form-control" {...register("label")} />
+          </div>
         </div>
 
         {/* Extremities */}
-        <div>
-          <label htmlFor="updateEdge-source" className="form-label">
-            {t("graph.model.edges-data.source")}
-          </label>
-          <Controller
-            control={control}
-            name="source"
-            rules={{
-              required: true,
-              validate: (value) => !!nodeRenderingData[value],
-            }}
-            render={({ field: { onChange, value } }) => (
-              <GraphSearch
-                onChange={(option) => {
-                  if (option === null || "id" in option) {
-                    onChange(option?.id);
-                  }
-                }}
-                value={typeof value === "string" ? { type: "nodes", id: value } : null}
-                type="nodes"
-              />
-            )}
-          />
-          {errors.source && <div className="invalid-feedback">{t(`error.form.${errors.source.type}`)}</div>}
-        </div>
-        <div>
-          <label htmlFor="updateEdge-target" className="form-label">
-            {t("graph.model.edges-data.target")}
-          </label>
-          <Controller
-            control={control}
-            name="target"
-            rules={{
-              required: true,
-              validate: (value) => !!nodeRenderingData[value],
-            }}
-            render={({ field: { onChange, value } }) => (
-              <GraphSearch
-                onChange={(option) => {
-                  if (option === null || "id" in option) {
-                    onChange(option?.id);
-                  }
-                }}
-                value={typeof value === "string" ? { type: "nodes", id: value } : null}
-                type="nodes"
-              />
-            )}
-          />
-          {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateEdge-source" className="form-label">
+              {t("graph.model.edges-data.source")}
+            </label>
+            <Controller
+              control={control}
+              name="source"
+              rules={{
+                required: true,
+                validate: (value) => !!nodeRenderingData[value],
+              }}
+              render={({ field: { onChange, value } }) => (
+                <GraphSearch
+                  onChange={(option) => {
+                    if (option === null || "id" in option) {
+                      onChange(option?.id);
+                    }
+                  }}
+                  value={typeof value === "string" ? { type: "nodes", id: value } : null}
+                  type="nodes"
+                />
+              )}
+            />
+            {errors.source && <div className="invalid-feedback">{t(`error.form.${errors.source.type}`)}</div>}
+          </div>
+          <div>
+            <label htmlFor="updateEdge-target" className="form-label">
+              {t("graph.model.edges-data.target")}
+            </label>
+            <Controller
+              control={control}
+              name="target"
+              rules={{
+                required: true,
+                validate: (value) => !!nodeRenderingData[value],
+              }}
+              render={({ field: { onChange, value } }) => (
+                <GraphSearch
+                  onChange={(option) => {
+                    if (option === null || "id" in option) {
+                      onChange(option?.id);
+                    }
+                  }}
+                  value={typeof value === "string" ? { type: "nodes", id: value } : null}
+                  type="nodes"
+                />
+              )}
+            />
+            {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
+          </div>
         </div>
 
         {/* Rendering attributes */}
-        <div>
-          <label htmlFor="updateEdge-weight" className="form-label">
-            {t("graph.model.edges-data.weight")}
-          </label>
-          <input
-            type="number"
-            id="updateEdge-weight"
-            className="form-control"
-            min={0}
-            step="any"
-            {...register("weight", { min: 0 })}
-          />
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateEdge-weight" className="form-label">
+              {t("graph.model.edges-data.weight")}
+            </label>
+            <input
+              type="number"
+              id="updateEdge-weight"
+              className="form-control"
+              min={0}
+              step="any"
+              {...register("weight", { min: 0 })}
+            />
+          </div>
         </div>
 
         {/* Other attributes */}
-        {attributes.map((field, i) => (
-          <div key={i}>
+        <div className="panel-block">
+          {attributes.map((field, i) => (
             <div key={i}>
-              <label htmlFor={`edge-${edgeId}-field-${i}`} className="form-label">
-                <FieldModelIcon type={edgeFieldsIndex[field.key].type} /> {field.key}
-              </label>
-              <Controller
-                name={`attributes.${i}.value`}
-                control={control}
-                render={(props) => (
-                  <EditItemAttribute
-                    id={`edge-${edgeId}-field-${i}`}
-                    field={edgeFieldsIndex[field.key]}
-                    scalar={props.field.value}
-                    onChange={(v) => props.field.onChange(v)}
-                  />
-                )}
-              />
-              {(errors.attributes || [])[i]?.key && (
-                <div className="invalid-feedback">
-                  {t(
-                    `error.form.${
-                      (errors.attributes || [])[i]?.key?.type === "validate"
-                        ? "unique"
-                        : (errors.attributes || [])[i]?.key?.type
-                    }`,
+              <div key={i}>
+                <label htmlFor={`edge-${edgeId}-field-${i}`} className="form-label">
+                  <FieldModelIcon type={edgeFieldsIndex[field.key].type} /> {field.key}
+                </label>
+                <Controller
+                  name={`attributes.${i}.value`}
+                  control={control}
+                  render={(props) => (
+                    <EditItemAttribute
+                      id={`edge-${edgeId}-field-${i}`}
+                      field={edgeFieldsIndex[field.key]}
+                      scalar={props.field.value}
+                      onChange={(v) => props.field.onChange(v)}
+                    />
                   )}
-                </div>
-              )}
+                />
+                {(errors.attributes || [])[i]?.key && (
+                  <div className="invalid-feedback">
+                    {t(
+                      `error.form.${
+                        (errors.attributes || [])[i]?.key?.type === "validate"
+                          ? "unique"
+                          : (errors.attributes || [])[i]?.key?.type
+                      }`,
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </section>
+          ))}
+        </div>
+      </>
     ),
     footer: (
-      <section className="form-buttons">
-        <button type="button" className="gl-btn gl-btn-outline" onClick={() => onCancel()}>
+      <section className="panel-footer">
+        <button type="button" className="gl-btn" onClick={() => onCancel()}>
           {t("common.cancel")}
         </button>
 
@@ -337,7 +346,7 @@ export const EditEdgeForm: FC<{
   });
 
   return (
-    <form className="edit-edge" onSubmit={submitForm}>
+    <form className="panel-wrapper" onSubmit={submitForm}>
       {main}
       {footer}
     </form>

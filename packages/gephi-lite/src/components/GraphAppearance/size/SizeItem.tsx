@@ -80,7 +80,7 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <div className="panel-block">
-      <h3 className="fs-5">{t("appearance.size.title")}</h3>
+      <h3>{t("appearance.size.title")}</h3>
       <label htmlFor={`${itemType}-sizeMode`}>{t("appearance.size.set_size_from")}</label>
       <Select<SizeOption>
         id={`${itemType}-sizeMode`}

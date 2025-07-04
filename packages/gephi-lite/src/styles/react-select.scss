@@ -14,17 +14,12 @@ div.react-select__control {
 
   // this code is a copy of the bootstrap form-control for the ":focus"
   &.react-select__control--is-focused {
-    color: $input-focus-color;
-    background-color: $input-focus-bg;
-    border-color: $input-focus-border-color;
-    outline: 0;
-
-    @if $enable-shadows {
-      @include box-shadow($input-box-shadow, $input-focus-box-shadow);
-    } @else {
-      // Avoid using mixin so we can pass custom focus shadow properly
-      box-shadow: $input-focus-box-shadow;
-    }
+    border-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+    );
+    box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
   }
 
   // add placeholder color
@@ -96,18 +91,29 @@ div.react-select__control {
     }
 
     .react-select__option--is-focused {
-      color: var(--bs-white) !important;
-      background-color: var(--bs-primary) !important;
-      border-radius: var(--bs-border-radius);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+      );
     }
 
     .react-select__option--is-selected {
       color: var(--bs-body-bg) !important;
-      border-radius: var(--bs-border-radius);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+      );
     }
 
     .react-select__multi-value__remove {
       color: var(--bs-body-bg) !important;
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+      );
     }
   }
 }
