@@ -71,12 +71,14 @@
 
   &:disabled {
     color: rgba(var(--gl-body-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
-    background-color: color-mix(
-      in hsl,
-      var(--gl-container-highest-bg),
-      var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
-    );
     opacity: unset;
+
+    // The disabled text button style doesn't have a background color because with it, disabled text buttons were visualy more significant than enabled ones
+    //background-color: color-mix(
+    //in hsl,
+    //var(--gl-container-highest-bg),
+    //var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
+    //);
   }
 
   &.gl-btn-fill {
@@ -144,11 +146,15 @@
     }
 
     &:disabled {
-      color: rgba(var(--gl-component-color), $gl-sys-opacity-onComponentBg-disabled);
       border-color: color-mix(
         in hsl,
         var(--gl-container-highest-bg),
         var(--gl-component-border-color) $gl-sys-opacity-onComponentBg-disabled
+      );
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
       );
     }
   }
