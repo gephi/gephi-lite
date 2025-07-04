@@ -1,21 +1,23 @@
 import { FieldModel, Scalar, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
-import cx from "classnames";
 import { groupBy, toPairs } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
+import { PiChecks } from "react-icons/pi";
+import { useNavigate } from "react-router";
 
-import ConfirmModal from "../../components//modals/ConfirmModal";
 import Dropdown from "../../components/Dropdown";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
-import { CaretDownIcon, CaretUpIcon, ThreeDotsVerticalIcon } from "../../components/common-icons";
+import { CaretDownIcon, CaretUpIcon, ThreeDotsVerticalIcon, TrashIcon } from "../../components/common-icons";
 import { RenderItemAttribute, RenderText } from "../../components/data/Attribute";
 import { EdgeComponent } from "../../components/data/Edge";
 import { EditEdgeModal } from "../../components/data/EditEdge";
 import { EditNodeModal } from "../../components/data/EditNode";
 import { NodeComponent } from "../../components/data/Node";
+import ConfirmModal from "../../components/modals/ConfirmModal";
 import { getItemAttributes } from "../../core/appearance/utils";
 import {
+  useDataTableActions,
   useDynamicItemData,
   useFilteredGraph,
   useGraphDataset,
@@ -184,11 +186,17 @@ function SelectedItem<
   );
 }
 
-export const Selection: FC<{ className?: string }> = ({ className }) => {
+export const Selection: FC = () => {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { openModal } = useModal();
   const { type, items } = useSelection();
-  const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
-  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
+  const { select } = useSelectionActions();
+  const { showSelection } = useDataTableActions();
+  const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
+  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
+  const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
 
   const mergedStaticDynamicItemData = useMemo(() => {
     return mergeStaticDynamicData(
@@ -202,48 +210,97 @@ export const Selection: FC<{ className?: string }> = ({ className }) => {
   const { visible = [], hidden = [] } = groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
 
   return (
-    <div className={cx(className)}>
-      <ul className="list-unstyled gl-m-0 gl-gap-1">
-        <InfiniteScroll
-          pageSize={50}
-          data={visible}
-          scrollableTarget={"selection"}
-          renderItem={(item) => (
-            <SelectedItem
-              id={item}
-              key={item}
-              type={type}
-              selectionSize={items.size}
-              data={mergedStaticDynamicItemData[item]}
-              //TODO: add dynamic
-              renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
-            />
-          )}
-        />
-      </ul>
+    <>
+      {/* Selection main list */}
+      <section className="selection">
+        <ul className="list-unstyled gl-m-0 gl-gap-1">
+          <InfiniteScroll
+            pageSize={50}
+            data={visible}
+            scrollableTarget={"selection"}
+            renderItem={(item) => (
+              <SelectedItem
+                id={item}
+                key={item}
+                type={type}
+                selectionSize={items.size}
+                data={mergedStaticDynamicItemData[item]}
+                //TODO: add dynamic
+                renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
+              />
+            )}
+          />
+        </ul>
 
-      {!!hidden.length && (
-        <>
-          <hr />
-          <ul className="list-unstyled">
-            <InfiniteScroll
-              scrollableTarget={"selection"}
-              pageSize={50}
-              data={hidden}
-              renderItem={(item) => (
-                <SelectedItem
-                  id={item}
-                  key={item}
-                  type={type}
-                  selectionSize={items.size}
-                  data={mergedStaticDynamicItemData[item]}
-                  renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
-                />
-              )}
-            />
-          </ul>
-        </>
-      )}
-    </div>
+        {/* Selection hidden list (should actually never be visible) */}
+        {!!hidden.length && (
+          <>
+            <hr />
+            <ul className="list-unstyled">
+              <InfiniteScroll
+                scrollableTarget={"selection"}
+                pageSize={50}
+                data={hidden}
+                renderItem={(item) => (
+                  <SelectedItem
+                    id={item}
+                    key={item}
+                    type={type}
+                    selectionSize={items.size}
+                    data={mergedStaticDynamicItemData[item]}
+                    renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
+                  />
+                )}
+              />
+            </ul>
+          </>
+        )}
+      </section>
+
+      {/* Selection actions */}
+      <section className="selection-actions">
+        <button
+          className="gl-btn gl-btn-icon gl-btn-fill"
+          onClick={() => {
+            showSelection(type);
+            navigate(`/data/${type}`);
+          }}
+        >
+          {t("selection.open_in_data")}
+        </button>
+        <button
+          className="gl-btn gl-btn-icon gl-btn-outline"
+          onClick={() =>
+            select({
+              type,
+              replace: true,
+              items: new Set(type === "nodes" ? filteredGraph.nodes() : filteredGraph.edges()),
+            })
+          }
+          title={t("selection.select_all")}
+        >
+          <PiChecks />
+        </button>
+        <button
+          className="gl-btn gl-btn-icon gl-btn-outline"
+          onClick={() =>
+            openModal({
+              component: ConfirmModal,
+              arguments: {
+                title: t(`edition.delete_selected_${type}`),
+                message: t(`edition.confirm_delete_${type}`, { count: items.size }),
+                successMsg: t(`edition.delete_${type}_success`, { count: items.size }),
+              },
+              afterSubmit: () => {
+                deleteItems(type, Array.from(items));
+              },
+            })
+          }
+          title={t(`edition.delete_selected_${type}`)}
+        >
+          <TrashIcon />
+        </button>
+      </section>
+    </>
   );
 };
