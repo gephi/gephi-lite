@@ -267,10 +267,14 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
                         <div className="filler-fade-out position-absolute bottom-0"></div>
                       </>
                     )}
-                    <div className={cx(metricConfig.parameters[param.id] ? "bottom-0 position-absolute w-100" : "")}>
+                    <div
+                      className={cx(
+                        metricConfig.parameters[param.id] ? "bottom-0 top-0 position-absolute w-100 h-100" : "",
+                      )}
+                    >
                       <button
                         type="button"
-                        className="gl-btn gl-btn-fill mx-auto d-block m-3"
+                        className="gl-btn gl-btn-outline  gl-container-highest-bg mx-auto d-block m-3"
                         onClick={() => {
                           openModal({
                             component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
