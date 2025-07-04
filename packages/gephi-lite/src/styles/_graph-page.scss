@@ -56,6 +56,31 @@
   .panel {
     z-index: 140;
   }
+
+  .panel-selection {
+    .panel-body {
+      @extend .gl-p-0;
+      @extend .gl-gap-0;
+      height: 100%;
+    }
+
+    .selection {
+      @extend .gl-p-3;
+
+      padding-top: $gl-spacers-4;
+      flex-grow: 1;
+      flex-shrink: 1;
+      overflow-y: auto;
+    }
+
+    .selection-actions {
+      @extend .gl-p-3;
+      @extend .gl-gap-2;
+
+      display: flex;
+      border-top: solid 1px var(--gl-container-border-color);
+    }
+  }
 }
 
 :root {
