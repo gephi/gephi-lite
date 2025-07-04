@@ -7,9 +7,9 @@ import { PiDotsThreeVertical } from "react-icons/pi";
 import Dropdown from "../../../components/Dropdown";
 import { AttributeLabel } from "../../../components/data/Attribute";
 import { EdgeComponentById } from "../../../components/data/Edge";
+import { EditFieldModelModal } from "../../../components/data/EditFieldModel";
 import { NodeComponentById } from "../../../components/data/Node";
 import ConfirmModal from "../../../components/modals/ConfirmModal";
-import { EditColumnModal } from "../../../components/modals/edition/EditColumnModal";
 import {
   useDataTable,
   useDataTableActions,
@@ -168,7 +168,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                 {
                   label: t("datatable.modify_column"),
                   onClick: () => {
-                    openModal({ component: EditColumnModal, arguments: { fieldModel: field } });
+                    openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
                   },
                 },
                 {
@@ -192,16 +192,16 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                   label: t("datatable.insert_left"),
                   onClick: () =>
                     openModal({
-                      component: EditColumnModal,
-                      arguments: { insertAt: { pos: "before", id: field.id }, itemType: type },
+                      component: EditFieldModelModal,
+                      arguments: { insertAt: { pos: "before", id: field.id }, type },
                     }),
                 },
                 {
                   label: t("datatable.insert_right"),
                   onClick: () =>
                     openModal({
-                      component: EditColumnModal,
-                      arguments: { insertAt: { pos: "after", id: field.id }, itemType: type },
+                      component: EditFieldModelModal,
+                      arguments: { insertAt: { pos: "after", id: field.id }, type },
                     }),
                 },
                 {

@@ -19,8 +19,8 @@ import {
   StatisticsIconFill,
 } from "../../components/common-icons";
 import { EditEdgeForm } from "../../components/data/EditEdge";
+import { EditFieldModelForm } from "../../components/data/EditFieldModel";
 import { EditNodeForm } from "../../components/data/EditNode";
-import { FieldModelForm } from "../../components/forms/FieldModelForm";
 import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { doesItemMatch } from "../../utils/search";
@@ -50,12 +50,12 @@ const MENU: MenuItem<{ panel?: Panel }>[] = [
       {
         id: "data-creation-node-field",
         i18nKey: "edition.create_nodes_field",
-        panel: ({ close }) => <FieldModelForm itemType="nodes" onCancel={close} onSuccess={close} />,
+        panel: ({ close }) => <EditFieldModelForm type="nodes" onCancel={close} onSubmitted={close} />,
       },
       {
         id: "data-creation-edge-field",
         i18nKey: "edition.create_edges_field",
-        panel: ({ close }) => <FieldModelForm itemType="edges" onCancel={close} />,
+        panel: ({ close }) => <EditFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
       },
     ],
   },
