@@ -1,6 +1,5 @@
 // CSS for react-select looks like a select in bootstrap
 div.react-select__control {
-
   // apply the bootstrap form-control class
   @extend .form-control;
   display: flex;
@@ -13,7 +12,6 @@ div.react-select__control {
 
   @extend .gl-px-2;
 
-
   // this code is a copy of the bootstrap form-control for the ":focus"
   &.react-select__control--is-focused {
     color: $input-focus-color;
@@ -23,9 +21,7 @@ div.react-select__control {
 
     @if $enable-shadows {
       @include box-shadow($input-box-shadow, $input-focus-box-shadow);
-    }
-
-    @else {
+    } @else {
       // Avoid using mixin so we can pass custom focus shadow properly
       box-shadow: $input-focus-box-shadow;
     }
@@ -35,7 +31,7 @@ div.react-select__control {
   .react-select__placeholder,
   .react-select__indicator {
     @extend .gl-mx-0;
-    color: var(--bs-secondary-color)
+    color: var(--bs-secondary-color);
   }
 
   // for cursor to be at the beginning of the input
@@ -70,6 +66,7 @@ div.react-select__control {
 .react-select__menu-portal {
   // if you use a select in a modal, it must be over
   @extend .over-modal;
+  z-index: $zindex-toast !important;
 
   .react-select__menu {
     background-color: transparent;
@@ -90,6 +87,7 @@ div.react-select__control {
       @extend .gl-py-2;
       width: auto;
       flex-grow: 1;
+      flex-shrink: 0;
     }
 
     .react-select__option--is-selected .text-muted,
@@ -115,7 +113,7 @@ div.react-select__control {
 }
 
 // This is for the small variant of react-select
-// for bootstrap 
+// for bootstrap
 div.form-control-sm {
   padding: 0;
 
