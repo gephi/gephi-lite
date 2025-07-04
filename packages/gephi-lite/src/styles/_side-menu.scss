@@ -11,7 +11,6 @@ ul.side-menu ul {
     flex-direction: column;
     @extend .gl-gap-1;
   }
-
 }
 
 ul.side-menu {
@@ -32,6 +31,29 @@ ul.side-menu {
 
     li {
       margin-left: calc(1.125rem + $gl-ref-dimension-linear-050);
+
+      $side-menu-bar-circle-size: 4px;
+
+      &:first-child:before {
+        position: absolute;
+        content: "";
+        width: $side-menu-bar-circle-size;
+        height: $side-menu-bar-circle-size;
+        border-radius: 100%;
+        background-color: var(--gl-body-color);
+        left: calc(1rem - $side-menu-bar-circle-size/2 + 1px);
+      }
+
+      &:last-child:after {
+        position: absolute;
+        content: "";
+        width: $side-menu-bar-circle-size;
+        height: $side-menu-bar-circle-size;
+        border-radius: 100%;
+        background-color: var(--gl-body-color);
+        left: calc(1rem - $side-menu-bar-circle-size/2 + 1px);
+        bottom: 0;
+      }
     }
   }
 
