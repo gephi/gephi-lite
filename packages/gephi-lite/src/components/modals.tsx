@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useModal } from "../core/modals";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { CloseIcon } from "./common-icons";
 
 interface Props {
   title?: ReactNode;
@@ -52,11 +53,13 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
           <button
             type="button"
             title={t("common.close").toString()}
-            className="btn-close"
+            className="gl-btn gl-btn-icon"
             aria-label="Close"
             onClick={() => onClose && onClose()}
             disabled={!onClose}
-          ></button>
+          >
+            <CloseIcon />
+          </button>
         </div>
       )}
       {body && (
