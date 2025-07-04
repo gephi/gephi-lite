@@ -1,32 +1,39 @@
 import { FieldModel, FieldModelType, ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { DateTime } from "luxon";
-import { FC, useCallback } from "react";
+import { FC, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
-import { BaseOption, Select } from "./Select";
+import { ModalProps } from "../../core/modals/types";
+import { useNotifications } from "../../core/notifications";
+import { BaseOption, Select } from "../forms/Select";
+import { Modal } from "../modals";
 
-export type FieldModelFormProps = { onCancel?: () => void; onSuccess?: () => void } & (
-  | {
-      fieldModel: FieldModel<ItemType, false>;
-      insertAt?: undefined;
-      itemType?: undefined;
-    }
-  | { fieldModel?: undefined; insertAt?: { pos: "before" | "after"; id: string }; itemType: ItemType }
+export type EditFieldModelFormProps = {
+  onSubmitted: () => void;
+  onCancel: () => void;
+  type: ItemType;
+} & (
+  | { fieldModelId: string; insertAt?: undefined }
+  | { fieldModelId?: undefined; insertAt?: { id: string; pos: "before" | "after" } }
 );
 
-export const FieldModelFormOnly: FC<FieldModelFormProps> = ({ onSuccess, onCancel, ...props }) => {
+export const useEditFieldModelForm = ({
+  onSubmitted,
+  onCancel,
+  type,
+  fieldModelId,
+  insertAt,
+}: EditFieldModelFormProps) => {
   const { t } = useTranslation();
-
+  const { notify } = useNotifications();
   const { nodeFields, edgeFields } = useGraphDataset();
   const { createFieldModel, setFieldModel } = useGraphDatasetActions();
 
-  const fields =
-    (props.fieldModel && props.fieldModel.itemType === "nodes") || props.itemType === "nodes" ? nodeFields : edgeFields;
-
-  const isNew = props.fieldModel === undefined;
+  const fields = type === "nodes" ? nodeFields : edgeFields;
+  const isNew = !fieldModelId;
 
   const {
     register,
@@ -36,34 +43,62 @@ export const FieldModelFormOnly: FC<FieldModelFormProps> = ({ onSuccess, onCance
     // resetField,
     formState: { errors },
   } = useForm<FieldModel<ItemType, false>>({
-    defaultValues: props.fieldModel || { type: "text", dynamic: false, itemType: props.itemType },
+    defaultValues: fieldModelId
+      ? fields.find((f) => f.id === fieldModelId)
+      : { type: "text", dynamic: false, itemType: type },
   });
 
   const fieldModel = watch();
-  const onSubmit = useCallback(
-    (newFieldModel: FieldModel) => {
-      console.log("submit", newFieldModel);
-      if (isNew) {
-        const atIndex =
-          props.insertAt !== undefined
-            ? fields.findIndex((f) => f.id === props.insertAt?.id) + (props.insertAt.pos === "before" ? -1 : 1)
+  const submit = useMemo(
+    () =>
+      handleSubmit((newFieldModel: FieldModel) => {
+        if (!fieldModelId) {
+          const atIndex = insertAt
+            ? fields.findIndex((f) => f.id === insertAt.id) + (insertAt.pos === "before" ? -1 : 1)
             : undefined;
-        createFieldModel(newFieldModel, atIndex);
-      } else {
-        // when editing id input is disabled and thus id is not added in newFieldModel by react-form
-        setFieldModel({ ...newFieldModel, id: props.fieldModel?.id });
-      }
-      if (onSuccess) onSuccess();
-    },
-    [props.insertAt, createFieldModel, setFieldModel, isNew, fields, onSuccess, props.fieldModel?.id],
+          try {
+            createFieldModel(newFieldModel, atIndex);
+            notify({
+              type: "success",
+              title: t(`edition.create_${type}_field`),
+              message: t(`edition.create_${type}_field_success`),
+            });
+          } catch (e) {
+            notify({
+              type: "error",
+              title: t(`edition.create_${type}_field`),
+              message: (e as Error).message || t("error.unknown"),
+            });
+          }
+        } else {
+          try {
+            // when editing id input is disabled and thus id is not added in newFieldModel by react-form
+            setFieldModel({ ...newFieldModel, id: fieldModelId });
+            notify({
+              type: "success",
+              title: t(`edition.update_${type}_field`),
+              message: t(`edition.update_${type}_field_success`),
+            });
+          } catch (e) {
+            notify({
+              type: "error",
+              title: t(`edition.update_${type}_field`),
+              message: (e as Error).message || t("error.unknown"),
+            });
+          }
+        }
+        if (onSubmitted) onSubmitted();
+      }),
+    [handleSubmit, fieldModelId, onSubmitted, insertAt, fields, createFieldModel, notify, t, type, setFieldModel],
   );
 
   const idCollisionLabel = errors.id ? fields.find((f) => f.id === fieldModel.id)?.label : undefined;
-  console.log(errors, idCollisionLabel);
-  return (
-    <form key="field-model-form" id="field-model-form" onSubmit={handleSubmit(onSubmit)}>
-      <div className="modal-body">
-        <div className="gl-my-md">
+
+  return {
+    submit,
+    main: (
+      <section className="form-inputs">
+        <div>
           <label htmlFor="column-id" className="form-label">
             {t("graph.model.field.id")}
           </label>
@@ -93,13 +128,13 @@ export const FieldModelFormOnly: FC<FieldModelFormProps> = ({ onSuccess, onCance
             </div>
           )}
         </div>
-        <div className="gl-my-md">
+        <div>
           <label htmlFor="column-label" className="form-label">
             {t("graph.model.field.label")}
           </label>
           <input type="text" id="column-label" className={cx("form-control")} {...register("label")} />
         </div>
-        <div className="gl-my-md">
+        <div>
           <label htmlFor="column-type" className="form-label">
             {t("graph.model.field.type")}
           </label>
@@ -124,7 +159,7 @@ export const FieldModelFormOnly: FC<FieldModelFormProps> = ({ onSuccess, onCance
         </div>
         {/* Date format */}
 
-        <div className="gl-my-md">
+        <div>
           <label htmlFor="column-date-format" className="form-label">
             {t("graph.model.field.date-format")}
           </label>
@@ -146,7 +181,7 @@ export const FieldModelFormOnly: FC<FieldModelFormProps> = ({ onSuccess, onCance
 
         {/* Keywords separator */}
 
-        <div className="gl-my-md">
+        <div>
           <label htmlFor="column-separator" className="form-label">
             {t("graph.model.field.separator")}
           </label>
@@ -164,39 +199,64 @@ export const FieldModelFormOnly: FC<FieldModelFormProps> = ({ onSuccess, onCance
             </div>
           )}
         </div>
-      </div>
-    </form>
-  );
+      </section>
+    ),
+    footer: (
+      <section className="form-buttons">
+        <button
+          type="button"
+          className="gl-btn gl-btn-outline"
+          onClick={() => {
+            if (onCancel) onCancel();
+          }}
+        >
+          {t("common.cancel")}
+        </button>
+
+        <button type="submit" className="gl-btn gl-btn-fill">
+          {isNew ? t("datatable.create_column") : t("datatable.modify_column")}
+        </button>
+      </section>
+    ),
+  };
 };
 
-export const FieldModelFormSubmit: FC<{ onCancel?: () => void; creation?: boolean }> = ({ onCancel, creation }) => {
+export const EditFieldModelModal: FC<ModalProps<Omit<EditFieldModelFormProps, "onSubmitted" | "onCancel">>> = ({
+  cancel,
+  submit,
+  arguments: props,
+}) => {
   const { t } = useTranslation();
-  return (
-    <div key="field_model-submit" className="d-flex gl-gap-md">
-      <button
-        type="button"
-        className="gl-btn gl-btn-outline"
-        onClick={() => {
-          if (onCancel) onCancel();
-        }}
-      >
-        {t("common.cancel")}
-      </button>
+  const {
+    main,
+    footer,
+    submit: submitForm,
+  } = useEditFieldModelForm({
+    onSubmitted: () => submit({}),
+    onCancel: () => cancel(),
+    ...props,
+  } as EditFieldModelFormProps);
 
-      <button className="gl-btn gl-btn-fill" form="field-model-form">
-        {creation ? t("datatable.create_column") : t("datatable.modify_column")}
-      </button>
-    </div>
+  return (
+    <Modal
+      title={t(`edition.${!props.fieldModelId ? "create_" : "update_"}${props.type}_field`)}
+      onClose={() => cancel()}
+      className="modal-lg edit-attribute"
+      onSubmit={submitForm}
+    >
+      {main}
+      {footer}
+    </Modal>
   );
 };
 
-export const FieldModelForm: FC<FieldModelFormProps> = (props) => {
+export const EditFieldModelForm: FC<EditFieldModelFormProps> = (props) => {
+  const { main, footer, submit: submitForm } = useEditFieldModelForm(props);
+
   return (
-    <>
-      <FieldModelFormOnly {...props} />
-      <div className="gl-my-md">
-        <FieldModelFormSubmit onCancel={props.onCancel} creation={props.fieldModel === undefined} />
-      </div>
-    </>
+    <form className="edit-attribute" onSubmit={submitForm}>
+      {main}
+      {footer}
+    </form>
   );
 };
