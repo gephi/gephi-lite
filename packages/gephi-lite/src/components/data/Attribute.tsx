@@ -116,9 +116,15 @@ export const AttributeEditors: {
     const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
       const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
       return (
-        <Option {...props}>
-          <RenderCategory value={props.data.value} />
-        </Option>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Option {...props}>
+            <RenderCategory value={props.data.value} />
+          </Option>
+        </div>
       );
     }, []);
     const SingleValueComponent = useCallback((props: SingleValueProps<BaseOption, false>) => {

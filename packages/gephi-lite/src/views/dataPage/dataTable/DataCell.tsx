@@ -71,11 +71,16 @@ export const EditDataCell: FC<{
         >
           <form
             ref={elementWrapper}
-            className="bg-light z-"
+            className="bg-light"
             onSubmit={(e) => {
               e.preventDefault();
               update(id, { [field.id]: value }, { merge: true });
               close();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                close();
+              }
             }}
           >
             <EditItemAttribute autoFocus field={field} scalar={value} onChange={(value) => setValue(value)} />
