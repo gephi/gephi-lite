@@ -19,7 +19,7 @@ import {
   StatisticsIconFill,
 } from "../../components/common-icons";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
-import { useSelection } from "../../core/context/dataContexts";
+import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Layout } from "../layout";
@@ -104,6 +104,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
 export const GraphPage: FC = () => {
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
   const { items } = useSelection();
+  const { reset } = useSelectionActions();
   const { t } = useTranslation();
 
   return (
@@ -153,8 +154,13 @@ export const GraphPage: FC = () => {
       </div>
 
       {/* Right panel */}
-      <div className={cx("panel panel-expandable ", items.size > 0 && "deployed")}>
-        <div className="panel-body">{items.size > 0 && <Selection />}</div>
+      <div className={cx("panel panel-expandable panel-selection", items.size > 0 && "deployed")}>
+        <div className="panel-body">
+          <button type="button" className="gl-btn-close gl-btn" aria-label={t("commons.close")} onClick={() => reset()}>
+            <CloseIcon />
+          </button>
+          {items.size > 0 && <Selection />}
+        </div>
       </div>
     </Layout>
   );

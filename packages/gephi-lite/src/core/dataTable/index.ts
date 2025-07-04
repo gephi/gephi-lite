@@ -3,6 +3,7 @@ import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { ColumnSizingInfoState, SortingState, Updater } from "@tanstack/react-table";
 import { ColumnSizingState } from "@tanstack/table-core";
 
+import { SPECIFIC_COLUMNS } from "../../views/dataPage/dataTable/consts";
 import { DataTableState } from "./types";
 import { getEmptyDataTableState } from "./utils";
 
@@ -67,6 +68,22 @@ export const toggleSort: Producer<DataTableState, [string]> = (column) => {
     };
   };
 };
+export const showSelection: Producer<DataTableState, [ItemType]> = (type) => {
+  return (state) => ({
+    ...state,
+    type,
+    search: "",
+    dataTableState: {
+      ...state.dataTableState,
+      sorting: [
+        {
+          id: SPECIFIC_COLUMNS.selected,
+          desc: true,
+        },
+      ],
+    },
+  });
+};
 
 /**
  * Public API:
@@ -81,4 +98,5 @@ export const dataTableActions = {
   updateColumnSizingInfo: producerToAction(updateColumnSizingInfo, dataTableAtom),
   setSort: producerToAction(setSort, dataTableAtom),
   toggleSort: producerToAction(toggleSort, dataTableAtom),
+  showSelection: producerToAction(showSelection, dataTableAtom),
 } as const;

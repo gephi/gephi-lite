@@ -112,13 +112,19 @@ $gl-sys-size-icon-large: $gl-ref-dimension-linear-300;
 $gl-sys-size-container-large: $gl-ref-dimension-linear-3200;
 
 //----Space
+$gl-spacers-0: $gl-ref-dimension-linear-0;
+$gl-spacers-1: $gl-ref-dimension-linear-050;
+$gl-spacers-2: $gl-ref-dimension-linear-100;
+$gl-spacers-3: $gl-ref-dimension-linear-200;
+$gl-spacers-4: $gl-ref-dimension-linear-400;
+$gl-spacers-5: $gl-ref-dimension-linear-800;
 $gl-spacers: (
-  0: $gl-ref-dimension-linear-0,
-  1: $gl-ref-dimension-linear-050,
-  2: $gl-ref-dimension-linear-100,
-  3: $gl-ref-dimension-linear-200,
-  4: $gl-ref-dimension-linear-400,
-  5: $gl-ref-dimension-linear-800,
+  0: $gl-spacers-0,
+  1: $gl-spacers-1,
+  2: $gl-spacers-2,
+  3: $gl-spacers-3,
+  4: $gl-spacers-4,
+  5: $gl-spacers-5,
 );
 
 //---- Radius
