@@ -84,7 +84,6 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         </>
       )}
       <SliderInput
-        className="mb-3"
         value={labelSizeDef.zoomCorrelation}
         min={0}
         max={1}
@@ -98,7 +97,6 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         label={t("appearance.labels.adapts_to_zoom")}
       />
       <SliderInput
-        className="mb-3"
         value={labelSizeDef.density}
         min={0.1}
         max={10}

@@ -127,14 +127,11 @@ const VisualizeAmbiguityForm: FC<{
   }, [appearance, attributeNames, dataset.edgeData]);
 
   return (
-    <>
-      <hr />
-
-      <h6 className="m-0 d-flex align-items-center">{}</h6>
-      <p className="text-muted small">{t("statistics.mixed.louvainEdgeAmbiguity.preview_description")}</p>
+    <div className="panel-block">
+      <p className="gl-text-muted">{t("statistics.mixed.louvainEdgeAmbiguity.preview_description")}</p>
       <button
         type="button"
-        className="btn btn-dark w-100"
+        className="gl-btn gl-btn-outline w-100"
         onClick={() =>
           openInNewTab({
             dataset,
@@ -147,7 +144,7 @@ const VisualizeAmbiguityForm: FC<{
         {t("statistics.mixed.louvainEdgeAmbiguity.preview")}
         <div className="small">{t("statistics.mixed.louvainEdgeAmbiguity.preview_subtitle")}</div>
       </button>
-    </>
+    </div>
   );
 };
 

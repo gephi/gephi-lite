@@ -27,8 +27,8 @@ export const NumberInput: FC<
     Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">
 > = ({ id, label, description, value, onChange, className, defaultValue, ...attrs }) => {
   return (
-    <div className="mt-1">
-      <label htmlFor={id} className="form-check-label small">
+    <>
+      <label htmlFor={id} className="form-check-label">
         {label}
       </label>
       <input
@@ -39,8 +39,8 @@ export const NumberInput: FC<
         value={typeof value === "number" ? value : defaultValue || ""}
         onChange={(e) => onChange(isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber)}
       />
-      {description && <p className="form-text small text-muted">{description}</p>}
-    </div>
+      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
+    </>
   );
 };
 
@@ -48,13 +48,12 @@ export const SliderInput: FC<
   {
     value: number | null;
     onChange: (v: number) => void;
-    className?: string;
     min: number;
     max: number;
     step: number;
     marks?: Record<string | number, React.ReactNode | MarkObj>;
   } & Omit<BaseTypedInputProps, "id">
-> = ({ label, description, value, onChange, min, max, marks, step, className }) => {
+> = ({ label, description, value, onChange, min, max, marks, step }) => {
   const validMin = useMemo(() => Math.min(min, max), [min, max]);
   const validMax = useMemo(() => Math.max(min, max), [min, max]);
   const validValue = useMemo(() => {
@@ -63,8 +62,8 @@ export const SliderInput: FC<
   }, [value, validMin, validMax]);
 
   return (
-    <div className={cx("mt-1 px-2", className)}>
-      <label className="form-check-label small">{label}</label>
+    <>
+      <label className="form-check-label">{label}</label>
       <div className="pb-3">
         <Slider
           value={validValue}
@@ -87,8 +86,8 @@ export const SliderInput: FC<
           {...SLIDER_STYLE}
         />
       </div>
-      {description && <p className="form-text small text-muted">{description}</p>}
-    </div>
+      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
+    </>
   );
 };
 
@@ -97,8 +96,8 @@ export const StringInput: FC<
     Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">
 > = ({ id, label, description, value, onChange, className, warning, ...attrs }) => {
   return (
-    <div className="mt-1">
-      <label htmlFor={id} className="form-check-label small">
+    <>
+      <label htmlFor={id} className="form-check-label">
         {label}
       </label>
       <div className="position-relative">
@@ -119,8 +118,8 @@ export const StringInput: FC<
           />
         )}
       </div>
-      {description && <p className="form-text small text-muted">{description}</p>}
-    </div>
+      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
+    </>
   );
 };
 
@@ -130,7 +129,7 @@ export const BooleanInput: FC<
 > = ({ id, label, description, value, onChange, className, ...attrs }) => {
   return (
     <>
-      <div className="form-check mt-1">
+      <div className="form-check">
         <input
           {...attrs}
           type="checkbox"
@@ -139,11 +138,11 @@ export const BooleanInput: FC<
           defaultChecked={!!value}
           onChange={(e) => onChange(e.target.checked)}
         />
-        <label htmlFor={id} className="form-check-label small ms-1">
+        <label htmlFor={id} className="form-check-label ms-1">
           {label}
         </label>
       </div>
-      {description && <p className="form-text small text-muted">{description}</p>}
+      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };
@@ -167,21 +166,19 @@ export const EnumInput: FC<
 
   return (
     <>
-      <div className="mt-1">
-        <label htmlFor={id} className="form-check-label small">
-          {label}
-        </label>
-        <Select<EnumOption>
-          isDisabled={disabled}
-          isClearable={!required}
-          className={cx("form-control-sm", className)}
-          placeholder={placeholder}
-          value={option || null}
-          options={options}
-          onChange={(o) => onChange(o?.value || null)}
-        />
-      </div>
-      {description && <p className="form-text small text-muted">{description}</p>}
+      <label htmlFor={id} className="form-check-label ">
+        {label}
+      </label>
+      <Select<EnumOption>
+        isDisabled={disabled}
+        isClearable={!required}
+        className={cx("form-control-sm", className)}
+        placeholder={placeholder}
+        value={option || null}
+        options={options}
+        onChange={(o) => onChange(o?.value || null)}
+      />
+      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };

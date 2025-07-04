@@ -5,8 +5,6 @@ import { useAppearance, useAppearanceActions } from "../../core/context/dataCont
 import { ItemType } from "../../core/types";
 import ColorPicker from "../ColorPicker";
 import { ColorItem } from "./color/ColorItem";
-import { LabelEllipsis } from "./label/LabelEllipsis";
-import { LabelSizeItem } from "./label/LabelSizeItem";
 import { StringAttrItem } from "./label/StringAttrItem";
 import { SizeItem } from "./size/SizeItem";
 import { EdgesZIndexItem } from "./zIndex/EdgesZIndexItem";
@@ -18,6 +16,8 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
 
   return (
     <>
+      <h2>{t(`appearance.menu.${itemType}`)}</h2>
+
       {itemType === "edges" && (
         <div className="panel-block">
           <div className="form-check">
@@ -37,11 +37,14 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
 
       <ColorItem itemType={itemType} />
       <SizeItem itemType={itemType} />
-      <StringAttrItem itemType={itemType} itemKey="labels" />
-      <LabelSizeItem itemType={itemType} />
-      <LabelEllipsis itemType={itemType} />
 
-      {itemType === "nodes" && <StringAttrItem itemType={itemType} itemKey="images" />}
+      {itemType === "nodes" && (
+        <div className="panel-block">
+          <h3>{t(`appearance.images.title`)}</h3>
+          <StringAttrItem itemType={itemType} itemKey="images" />
+        </div>
+      )}
+
       {itemType === "edges" && <EdgesZIndexItem />}
     </>
   );
@@ -53,26 +56,30 @@ export const GraphGraphAppearance: FC<unknown> = () => {
   const { setBackgroundColorAppearance, setLayoutGridColorAppearance } = useAppearanceActions();
 
   return (
-    <div className="panel-block">
-      <div className="d-flex align-items-center">
-        <label className="me-3 flex-grow-1">{t("appearance.graph.background_color")}</label>
-        <ColorPicker
-          className="w-auto h-100"
-          color={backgroundColor}
-          clearable
-          onChange={(v) => setBackgroundColorAppearance(v)}
-        />
-      </div>
+    <>
+      <h2>{t("appearance.menu.background")}</h2>
 
-      <div className="d-flex align-items-center">
-        <label className="me-3 flex-grow-1">{t("appearance.graph.layout_grid_color")}</label>
-        <ColorPicker
-          className="w-auto h-100"
-          color={layoutGridColor}
-          clearable
-          onChange={(v) => setLayoutGridColorAppearance(v)}
-        />
+      <div className="panel-block">
+        <div className="d-flex align-items-center">
+          <label className="me-3 flex-grow-1">{t("appearance.graph.background_color")}</label>
+          <ColorPicker
+            className="w-auto h-100"
+            color={backgroundColor}
+            clearable
+            onChange={(v) => setBackgroundColorAppearance(v)}
+          />
+        </div>
+
+        <div className="d-flex align-items-center">
+          <label className="me-3 flex-grow-1">{t("appearance.graph.layout_grid_color")}</label>
+          <ColorPicker
+            className="w-auto h-100"
+            color={layoutGridColor}
+            clearable
+            onChange={(v) => setLayoutGridColorAppearance(v)}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };

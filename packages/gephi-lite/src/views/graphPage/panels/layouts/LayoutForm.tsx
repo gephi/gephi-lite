@@ -132,15 +132,15 @@ export const LayoutForm: FC<{
       }}
       noValidate
     >
-      <div className="panel-block-grow">
-        <h3 className="fs-5">{t(`layouts.${layout.id}.title`)}</h3>
-        {layout.description && <p className="text-muted small">{t(`layouts.${layout.id}.description`)}</p>}
+      <h2>{t(`layouts.${layout.id}.title`)}</h2>
+      {layout.description && <p className="gl-text-muted">{t(`layouts.${layout.id}.description`)}</p>}
 
+      <div className="panel-block">
         {layout.parameters.map((param) => {
           const value = layoutParameters[param.id];
-          const id = `layouts-${layout.id}-params-${param.id})}`;
+          const id = `layouts-${layout.id}-params-${param.id}`;
           return (
-            <div className="my-1" key={id}>
+            <div className="panel-block" key={id}>
               {param.type === "number" && (
                 <NumberInput
                   id={id}
@@ -195,7 +195,7 @@ export const LayoutForm: FC<{
                   <>
                     {value && (
                       <>
-                        <div className="code-thumb mt-1" style={{ height: "auto", maxHeight: "auto" }}>
+                        <div className="code-thumb" style={{ height: "auto", maxHeight: "auto" }}>
                           <Highlight className="javascript">
                             {(value as LayoutScriptParameter["defaultValue"]).toString()}
                           </Highlight>
@@ -206,7 +206,7 @@ export const LayoutForm: FC<{
                     <div className={cx(value ? "bottom-0 position-absolute w-100" : "")}>
                       <button
                         type="button"
-                        className="btn btn-dark mx-auto d-block m-3"
+                        className="gl-btn gl-btn-fill mx-auto d-block m-3"
                         onClick={() =>
                           openModal({
                             component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
@@ -239,9 +239,7 @@ export const LayoutForm: FC<{
         {isRunning && <LoaderFill />}
       </div>
 
-      <hr className="gl-my-3" />
-
-      <div className="z-over-loader panel-block d-flex flex-row flex-wrap align-items-center justify-content-end gl-gap-2">
+      <div className="panel-footer">
         {success && (
           <MessageTooltip
             openOnMount={2000}
@@ -251,13 +249,12 @@ export const LayoutForm: FC<{
             iconClassName="fs-4"
           />
         )}
-        <div className="flex-grow-1" />
 
         {layout.buttons?.map(({ id, description, getSettings }) => (
           <button
             key={id}
             type="reset"
-            className="gl-btn gl-btn-outline"
+            className="gl-btn"
             title={description ? t(`layouts.${layout.id}.buttons.${id}.description`) : undefined}
             onClick={() => {
               const graph = getFilteredDataGraph(dataset, sigmaGraph);
@@ -268,7 +265,7 @@ export const LayoutForm: FC<{
             {t(`layouts.${layout.id}.buttons.${id}.title`)}
           </button>
         ))}
-        <button type="reset" className="gl-btn gl-btn-outline" onClick={() => setParameters()} disabled={isRunning}>
+        <button type="reset" className="gl-btn" onClick={() => setParameters()} disabled={isRunning}>
           {t("common.reset")}
         </button>
         <button type="submit" className="gl-btn gl-btn-fill">
