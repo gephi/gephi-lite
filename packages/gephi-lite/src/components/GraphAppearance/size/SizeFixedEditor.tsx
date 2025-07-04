@@ -13,7 +13,7 @@ export const SizeFixedEditor: FC<{
   const id = `${itemType}-fixedSizeInput`;
 
   return (
-    <div className="d-flex align-items-center mt-1">
+    <div className="d-flex align-items-center">
       <input
         className="form-control form-control-sm w-5"
         type="number"
@@ -22,7 +22,7 @@ export const SizeFixedEditor: FC<{
         onChange={(v) => setSize({ ...size, value: +v.target.value })}
         id={id}
       />
-      <label className="form-check-label small ms-1" htmlFor={id}>
+      <label className="form-check-label ms-1" htmlFor={id}>
         {t("appearance.size.size_all_items", { items: t(`graph.model.${itemType}`) })}
       </label>
     </div>

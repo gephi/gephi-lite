@@ -17,7 +17,7 @@ export const SizeRankingEditor: FC<{
 
   return (
     <>
-      <div className="d-flex align-items-center mt-1">
+      <div className="d-flex align-items-center">
         <input
           className="form-control form-control-sm w-5"
           type="number"
@@ -27,11 +27,11 @@ export const SizeRankingEditor: FC<{
           onChange={(v) => setSize({ ...size, minSize: +v.target.value })}
           id={minId}
         />
-        <label className="form-check-label small ms-1" htmlFor={minId}>
+        <label className="form-check-label ms-1" htmlFor={minId}>
           {t("common.min")}
         </label>
       </div>
-      <div className="d-flex align-items-center mt-1">
+      <div className="d-flex align-items-center">
         <input
           className="form-control form-control-sm w-5"
           type="number"
@@ -40,11 +40,11 @@ export const SizeRankingEditor: FC<{
           onChange={(v) => setSize({ ...size, maxSize: +v.target.value })}
           id={maxId}
         />
-        <label className="form-check-label small ms-1" htmlFor={maxId}>
+        <label className="form-check-label ms-1" htmlFor={maxId}>
           {t("common.max")}
         </label>
       </div>
-      <div className="d-flex align-items-center mt-1 pt-2">
+      <div className="d-flex align-items-center pt-2">
         <input
           className="form-control form-control-sm w-5"
           type="number"
@@ -53,7 +53,7 @@ export const SizeRankingEditor: FC<{
           onChange={(v) => setSize({ ...size, missingSize: +v.target.value })}
           id={defaultId}
         />
-        <label className="form-check-label small ms-1" htmlFor={defaultId}>
+        <label className="form-check-label ms-1" htmlFor={defaultId}>
           {t("appearance.size.default_value", { items: t(`graph.model.${itemType}`) })}
         </label>
       </div>

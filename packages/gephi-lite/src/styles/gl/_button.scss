@@ -155,6 +155,7 @@
 }
 
 .gl-btn-close {
+  @extend .gl-btn-icon;
   position: absolute;
   top: 0;
   right: 0;

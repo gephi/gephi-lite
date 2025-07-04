@@ -1,0 +1,40 @@
+// fixing issues with checkbox
+.form-check {
+  min-height: auto !important;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  .form-check-input {
+    margin-top: 0 !important;
+    margin-right: 0.25rem;
+
+    &:checked {
+      background-color: var(--gl-component-bg);
+      border-color: var(--gl-component-bg);
+    }
+
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+      );
+      box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
+    }
+  }
+}
+
+.form-control {
+  &:active,
+  &:focus,
+  &:focus-visible {
+    border-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+    );
+    box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
+  }
+}

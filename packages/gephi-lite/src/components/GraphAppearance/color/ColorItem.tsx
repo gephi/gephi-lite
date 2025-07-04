@@ -131,67 +131,71 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <div className="panel-block">
-      <h3 className="fs-5">{t("appearance.color.title")}</h3>
-      <label htmlFor={`${itemType}-colorMode`}>{t("appearance.color.set_color_from")}</label>
-      <Select<ColorOption>
-        id={`${itemType}-colorMode`}
-        options={options}
-        value={selectedOption}
-        isOptionDisabled={(option) => option.type === "unsupported"}
-        onChange={(option) => {
-          if (isEqual(selectedOption, option)) return;
+      <h3>{t("appearance.color.title")}</h3>
 
-          if (!option || option.value === "fixed") {
-            if (color.type !== "fixed") {
-              setColorAppearance(itemType, {
-                type: "fixed",
-                value: baseValue,
-              });
-            }
-          } else if (!option.field) {
-            setColorAppearance(itemType, {
-              type: option.type, // this is here to trick TS for nodes
-            } as Color);
-          } else {
-            if (option.type === "ranking") {
-              setColorAppearance(itemType, {
-                type: "ranking",
-                field: option.field,
-                colorScalePoints: [
-                  { scalePoint: 0, color: "#fc8d59" },
-                  { scalePoint: 0.5, color: "#ffffbf" },
-                  { scalePoint: 1, color: "#91bfdb" },
-                ],
-                missingColor: baseValue,
-              });
-            } else {
-              const field = option.field;
-              let values: string[] = [];
+      <div className="panel-block">
+        <label htmlFor={`${itemType}-colorMode`}>{t("appearance.color.set_color_from")}</label>
+        <Select<ColorOption>
+          id={`${itemType}-colorMode`}
+          options={options}
+          value={selectedOption}
+          isOptionDisabled={(option) => option.type === "unsupported"}
+          onChange={(option) => {
+            if (isEqual(selectedOption, option)) return;
 
-              if (field.dynamic) {
-                const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
-                values = uniqFieldValuesAsStrings(itemsData, field.id);
-              } else {
-                const itemsData = itemType === "nodes" ? nodeData : edgeData;
-                values = uniqFieldValuesAsStrings(itemsData, field.id);
+            if (!option || option.value === "fixed") {
+              if (color.type !== "fixed") {
+                setColorAppearance(itemType, {
+                  type: "fixed",
+                  value: baseValue,
+                });
               }
-
+            } else if (!option.field) {
               setColorAppearance(itemType, {
-                type: "partition",
-                field,
-                colorPalette: getPalette(values),
-                missingColor: baseValue,
-              });
-            }
-          }
-        }}
-      />
+                type: option.type, // this is here to trick TS for nodes
+              } as Color);
+            } else {
+              if (option.type === "ranking") {
+                setColorAppearance(itemType, {
+                  type: "ranking",
+                  field: option.field,
+                  colorScalePoints: [
+                    { scalePoint: 0, color: "#fc8d59" },
+                    { scalePoint: 0.5, color: "#ffffbf" },
+                    { scalePoint: 1, color: "#91bfdb" },
+                  ],
+                  missingColor: baseValue,
+                });
+              } else {
+                const field = option.field;
+                let values: string[] = [];
 
-      {(color.type === "data" || color.type === "source" || color.type === "target") && (
-        <p className="form-text small text-muted">
-          {t(`appearance.color.${color.type}_description`, { items: t(`graph.model.${itemType}`) })}
-        </p>
-      )}
+                if (field.dynamic) {
+                  const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
+                  values = uniqFieldValuesAsStrings(itemsData, field.id);
+                } else {
+                  const itemsData = itemType === "nodes" ? nodeData : edgeData;
+                  values = uniqFieldValuesAsStrings(itemsData, field.id);
+                }
+
+                setColorAppearance(itemType, {
+                  type: "partition",
+                  field,
+                  colorPalette: getPalette(values),
+                  missingColor: baseValue,
+                });
+              }
+            }
+          }}
+        />
+
+        {(color.type === "data" || color.type === "source" || color.type === "target") && (
+          <p className="form-text text-muted">
+            {t(`appearance.color.${color.type}_description`, { items: t(`graph.model.${itemType}`) })}
+          </p>
+        )}
+      </div>
+
       {color.type === "fixed" && (
         <ColorFixedEditor
           itemType={itemType}
@@ -216,30 +220,32 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
       {/* Colors shading */}
       {(colorShading || defaultShadingField) && (
-        <div className="form-check mt-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={!!colorShading}
-            onChange={(e) => {
-              if (!defaultShadingField) return;
-              setShadingColorAppearance(
-                itemType,
-                e.target.checked
-                  ? {
-                      type: "shading",
-                      targetColor: DEFAULT_SHADING_COLOR,
-                      field: defaultShadingField,
-                      factor: 0.5,
-                    }
-                  : undefined,
-              );
-            }}
-            id={`${itemType}-enableColorShading`}
-          />
-          <label className="form-check-label" htmlFor={`${itemType}-enableColorShading`}>
-            {t("appearance.color.enable_color_shading", { items: t(`graph.model.${itemType}`) })}
-          </label>
+        <div className="panel-block">
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={!!colorShading}
+              onChange={(e) => {
+                if (!defaultShadingField) return;
+                setShadingColorAppearance(
+                  itemType,
+                  e.target.checked
+                    ? {
+                        type: "shading",
+                        targetColor: DEFAULT_SHADING_COLOR,
+                        field: defaultShadingField,
+                        factor: 0.5,
+                      }
+                    : undefined,
+                );
+              }}
+              id={`${itemType}-enableColorShading`}
+            />
+            <label className="form-check-label" htmlFor={`${itemType}-enableColorShading`}>
+              {t("appearance.color.enable_color_shading", { items: t(`graph.model.${itemType}`) })}
+            </label>
+          </div>
         </div>
       )}
       {colorShading && (

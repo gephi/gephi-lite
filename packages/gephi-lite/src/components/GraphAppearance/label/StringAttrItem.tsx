@@ -64,7 +64,6 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
 
   return (
     <div className="panel-block">
-      <h3 className="fs-5">{t(`appearance.${itemKey}.title`)}</h3>
       <label htmlFor={`${itemType}-${itemKey}sMode`}>{t(`appearance.${itemKey}.set_labels_from`)}</label>
       <Select<LabelOption | null>
         id={`${itemType}-labelsMode`}
@@ -105,7 +104,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
         </p>
       )}
       {currentDef.type === "field" && (
-        <div className="d-flex align-items-center mt-1">
+        <div className="d-flex align-items-center">
           <input
             className="form-control form-control-sm w-8"
             type="string"
@@ -113,13 +112,13 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
             onChange={(v) => setValue({ ...currentDef, missingValue: v.target.value || null })}
             id={`${itemType}-missingStringAttrValue`}
           />
-          <label className="form-check-label small ms-1" htmlFor={`${itemType}-missingStringAttrValue`}>
+          <label className="form-check-label ms-1" htmlFor={`${itemType}-missingStringAttrValue`}>
             {t(`appearance.${itemKey}.default_value`, { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>
       )}
       {currentDef.type === "fixed" && (
-        <div className="d-flex align-items-center mt-1">
+        <div className="">
           <input
             className="form-control form-control-sm w-8"
             type="string"
@@ -127,7 +126,7 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
             onChange={(v) => setValue({ ...currentDef, value: v.target.value })}
             id={`${itemType}-fixedStringAttrValue`}
           />
-          <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedStringAttrValue`}>
+          <label className="form-check-label ms-1" htmlFor={`${itemType}-fixedStringAttrValue`}>
             {t(`appearance.${itemKey}.fixed_label`, { items: t(`graph.model.${itemType}`) })}
           </label>
         </div>

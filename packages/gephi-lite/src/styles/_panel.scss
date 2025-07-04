@@ -32,6 +32,38 @@ $panel-width: $gl-sys-size-container-large;
       flex-direction: column;
       width: $panel-width;
       overflow: auto;
+
+      .panel-wrapper {
+        @extend .gl-p-0;
+        @extend .gl-gap-4;
+        display: flex;
+        flex-direction: column;
+        width: $panel-width;
+        width: auto;
+      }
+
+      h2,
+      h3 {
+        @extend .gl-m-0;
+        text-transform: capitalize;
+      }
+
+      h2 + p {
+        @extend.gl-m-0;
+      }
+
+      .panel-block,
+      .panel-footer {
+        @extend .gl-gap-2;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-footer {
+        @extend .sticky-bottom;
+        bottom: -1rem;
+        background-color: var(--gl-container-highest-bg);
+      }
     }
   }
 

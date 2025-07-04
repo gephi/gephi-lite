@@ -143,104 +143,110 @@ const useEditNodeForm = ({
   return {
     submit,
     main: (
-      <section className="form-inputs">
-        <div>
-          <label htmlFor="updateNode-id" className="form-label">
-            {t("graph.model.nodes-data.id")}
-          </label>
-          <input
-            type="text"
-            id="updateNode-id"
-            className={cx("form-control", errors.id && "is-invalid")}
-            disabled={!isNew}
-            {...register("id", {
-              required: !isNew,
-              validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
-            })}
-          />
-          {errors.id && (
-            <div className="invalid-feedback">
-              {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-            </div>
-          )}
-        </div>
+      <>
+        <h2>{isNew ? t("edition.create_nodes") : t("edition.update_nodes")}</h2>
 
-        {/* Rendering attributes */}
-        <div>
-          <label htmlFor="updateNode-label" className="form-label">
-            {t("graph.model.nodes-data.label")}
-          </label>
-          <input
-            type="text"
-            id="updateNode-label"
-            className={cx("form-control", errors.label && "is-invalid")}
-            min={0}
-            {...register("label")}
-          />
-        </div>
-        <div>
-          <label htmlFor="updateNode-x" className="form-label">
-            {t("graph.model.nodes-data.x")}
-          </label>
-          <input
-            type="number"
-            id="updateNode-x"
-            className={cx("form-control", errors.x && "is-invalid")}
-            step="any"
-            {...register("x")}
-          />
-        </div>
-        <div>
-          <label htmlFor="updateNode-y" className="form-label">
-            {t("graph.model.nodes-data.y")}
-          </label>
-          <input
-            type="number"
-            id="updateNode-y"
-            className={cx("form-control", errors.y && "is-invalid")}
-            step="any"
-            {...register("y")}
-          />
-        </div>
-
-        <hr />
-
-        {/* Other attributes */}
-        {attributes.map((field, i) => (
-          <div key={i}>
-            <label htmlFor={`node-${nodeId}-field-${i}`} className="form-label">
-              <FieldModelIcon type={nodeFieldsIndex[field.key].type} /> {field.key}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateNode-id" className="form-label">
+              {t("graph.model.nodes-data.id")}
             </label>
-            <Controller
-              name={`attributes.${i}.value`}
-              control={control}
-              render={(props) => (
-                <EditItemAttribute
-                  id={`node-${nodeId}-field-${i}`}
-                  field={nodeFieldsIndex[field.key]}
-                  scalar={props.field.value}
-                  onChange={(v) => props.field.onChange(v)}
-                />
-              )}
+            <input
+              type="text"
+              id="updateNode-id"
+              className={cx("form-control", errors.id && "is-invalid")}
+              disabled={!isNew}
+              {...register("id", {
+                required: !isNew,
+                validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
+              })}
             />
-            {(errors.attributes || [])[i]?.key && (
+            {errors.id && (
               <div className="invalid-feedback">
-                {t(
-                  `error.form.${
-                    (errors.attributes || [])[i]?.key?.type === "validate"
-                      ? "unique"
-                      : (errors.attributes || [])[i]?.key?.type
-                  }`,
-                )}
+                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
               </div>
             )}
           </div>
-        ))}
-      </section>
+        </div>
+
+        {/* Rendering attributes */}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateNode-label" className="form-label">
+              {t("graph.model.nodes-data.label")}
+            </label>
+            <input
+              type="text"
+              id="updateNode-label"
+              className={cx("form-control", errors.label && "is-invalid")}
+              min={0}
+              {...register("label")}
+            />
+          </div>
+          <div>
+            <label htmlFor="updateNode-x" className="form-label">
+              {t("graph.model.nodes-data.x")}
+            </label>
+            <input
+              type="number"
+              id="updateNode-x"
+              className={cx("form-control", errors.x && "is-invalid")}
+              step="any"
+              {...register("x")}
+            />
+          </div>
+          <div>
+            <label htmlFor="updateNode-y" className="form-label">
+              {t("graph.model.nodes-data.y")}
+            </label>
+            <input
+              type="number"
+              id="updateNode-y"
+              className={cx("form-control", errors.y && "is-invalid")}
+              step="any"
+              {...register("y")}
+            />
+          </div>
+        </div>
+
+        {/* Other attributes */}
+        <div className="panel-block">
+          {attributes.map((field, i) => (
+            <div key={i}>
+              <label htmlFor={`node-${nodeId}-field-${i}`} className="form-label">
+                <FieldModelIcon type={nodeFieldsIndex[field.key].type} /> {field.key}
+              </label>
+              <Controller
+                name={`attributes.${i}.value`}
+                control={control}
+                render={(props) => (
+                  <EditItemAttribute
+                    id={`node-${nodeId}-field-${i}`}
+                    field={nodeFieldsIndex[field.key]}
+                    scalar={props.field.value}
+                    onChange={(v) => props.field.onChange(v)}
+                  />
+                )}
+              />
+              {(errors.attributes || [])[i]?.key && (
+                <div className="invalid-feedback">
+                  {t(
+                    `error.form.${
+                      (errors.attributes || [])[i]?.key?.type === "validate"
+                        ? "unique"
+                        : (errors.attributes || [])[i]?.key?.type
+                    }`,
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </>
     ),
     footer: (
-      <section className="form-buttons">
-        <button type="button" className="gl-btn gl-btn-outline" onClick={() => onCancel()}>
+      <section className="panel-footer">
+        <button type="button" className="gl-btn" onClick={() => onCancel()}>
           {t("common.cancel")}
         </button>
 
@@ -294,7 +300,7 @@ export const EditNodeForm: FC<{
   });
 
   return (
-    <form className="edit-node" onSubmit={submitForm}>
+    <form className="panel-wrapper" onSubmit={submitForm}>
       {main}
       {footer}
     </form>

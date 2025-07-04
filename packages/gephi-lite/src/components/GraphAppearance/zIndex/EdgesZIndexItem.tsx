@@ -47,8 +47,9 @@ export const EdgesZIndexItem: FC = () => {
 
   return (
     <div className="panel-block">
-      <h3 className="fs-5">{t(`appearance.zIndex.title`)}</h3>
-      <p className="text-muted">{t(`appearance.zIndex.description`, { items: t("graph.model.edges") })}</p>
+      <h3>{t(`appearance.zIndex.title`)}</h3>
+      <p>{t(`appearance.zIndex.description`, { items: t("graph.model.edges") })}</p>
+
       <label htmlFor={`${itemType}-zIndexMode`}>{t(`appearance.zIndex.set_values_from`)}</label>
       <Select<LabelOption | null>
         id={`${itemType}-zIndexMode`}
