@@ -5,7 +5,7 @@ import { type FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useFilteredGraph, useFilters, useGraphDataset, usePreferences } from "../core/context/dataContexts";
-import { FiltersIcon, FiltersIconFill } from "./common-icons";
+import { FiltersIconFill } from "./common-icons";
 
 const GraphStat: FC<{ className?: string; type: ItemType; current: number; total: number }> = ({
   className,
