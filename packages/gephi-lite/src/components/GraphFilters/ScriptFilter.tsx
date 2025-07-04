@@ -63,9 +63,9 @@ export const ScriptFilter: FC<{
         )}
 
         {editMode && (
-          <div className={cx(filter.script && "bottom-0 position-absolute w-100")}>
+          <div className={cx(filter.script && "bottom-0 top-0 position-absolute w-100 h-100")}>
             <button
-              className="gl-btn gl-btn-fill mx-auto d-block m-1"
+              className="gl-btn gl-btn-outline  gl-container-highest-bg mx-auto d-block m-3"
               title={t("common.open_code_editor").toString()}
               onClick={() => {
                 openModal({
