@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { usePreferences } from "../../core/context/dataContexts";
 import { ModalProps } from "../../core/modals/types";
 import { getAppliedTheme } from "../../core/preferences/utils";
-import { CodeEditorIcon } from "../common-icons";
 import { Modal } from "../modals";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
@@ -43,17 +42,7 @@ export function FunctionEditorModal<T>(props: ModalProps<FunctionEditorModalProp
     [checkFunction, submit],
   );
   return (
-    <Modal
-      className="modal-xl"
-      title={
-        <>
-          <CodeEditorIcon className="me-1" />
-          {title}
-        </>
-      }
-      onClose={() => cancel()}
-      onSubmit={() => save(true, code)}
-    >
+    <Modal className="modal-xl" title={title} onClose={() => cancel()} onSubmit={() => save(true, code)}>
       <>
         {error && <p className="text-danger text-center">{error}</p>}
         <Editor

@@ -228,6 +228,9 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-table-column-cell-non-editable-bg: #{$gl-sys-color-dark-bg-highest};
   --gl-table-column-header-editable-bg: #{$gl-sys-color-dark-bg-higher};
   --gl-table-column-header-non-editable-bg: #{$gl-sys-color-dark-bg-high};
+  // TODO: tooltip
+  --gl-tooltip-color: #{$gl-ref-color-neutral-10};
+  --gl-tooltip-bg: #{$gl-ref-color-neutral-95};
 
   // RGB
   // Body
