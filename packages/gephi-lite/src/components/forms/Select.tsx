@@ -1,6 +1,5 @@
 import { isNil } from "lodash";
 import { KeyboardEvent, LegacyRef, ReactNode, useContext, useState } from "react";
-import { PiCaretDown } from "react-icons/pi";
 import ReactSelect, { Props, type SelectInstance } from "react-select";
 import AsyncReactSelect, { AsyncProps } from "react-select/async";
 import AsyncCreatableReactSelect, { AsyncCreatableProps } from "react-select/async-creatable";
@@ -8,6 +7,7 @@ import CreatableReactSelect, { CreatableProps } from "react-select/creatable";
 import { GroupBase } from "react-select/dist/declarations/src/types";
 
 import { UIContext } from "../../core/context/uiContext";
+import { CaretDownIcon } from "../common-icons";
 
 const useDefaultSelectProps = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,7 +17,7 @@ const useDefaultSelectProps = () => {
     menuPosition: "fixed" as Props["menuPosition"],
     components: {
       IndicatorSeparator: null,
-      DropdownIndicator: () => <PiCaretDown />,
+      DropdownIndicator: () => <CaretDownIcon />,
     },
     onMenuOpen: () => setIsMenuOpen(true),
     onMenuClose: () => setIsMenuOpen(false),
