@@ -9,7 +9,7 @@ export const LayoutQualityForm: FC = () => {
   const { setQuality } = useLayoutActions();
 
   return (
-    <div className="panel-wrapper">
+    <div className="panel-body">
       <h2>{t("layouts.quality.title")}</h2>
 
       <p className="gl-text-muted">
