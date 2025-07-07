@@ -44,7 +44,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     <Modal
       title={
         <>
-          <GephiLogo className="me-2 gl-icon-size-1" />
+          <GephiLogo className="me-2 gl-icon-size-heading" />
           {t("welcome.title")}
           <span className="flex-grow-1" />
           <span className="me-1" style={{ marginTop: "-0.1em" }}>

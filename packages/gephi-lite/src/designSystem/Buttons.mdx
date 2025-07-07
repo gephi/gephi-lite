@@ -1,4 +1,6 @@
 import { PiGraph } from "react-icons/pi";
+import { PiPolygon } from "react-icons/pi";
+import { PiPolygonFill } from "react-icons/pi";
 
 ## Buttons
 
@@ -8,25 +10,24 @@ import { PiGraph } from "react-icons/pi";
 - One size : medium
 - Keep labels concise and use sentence case
 
-### Types
+### Specs
 
-{<div>
+#### Types
 
-<button className="gl-btn">
-  <PiGraph className="" /> Label
-</button>
+{<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
-<button className="">
-  <PiGraph className="" /> Unselected
-</button>
+<button className="gl-btn gl-btn-fill">Default</button>
 
-<button className="">
-  <PiGraph className="" /> Selected
-</button>
+<div className="d-flex gl-gap-x-3">
+  <button className="gl-btn">Unselected</button>
+  <button className="gl-btn gl-btn-fill">Selected</button>
+</div>
 
 </div>}
 
-#### Three styles :
+##### Styles :
+
+###### Default Buttons :
 
 {<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -46,11 +47,29 @@ import { PiGraph } from "react-icons/pi";
 2. Outlined buttons : `gl-btn gl-btn-outlined`
 3. Text buttons : `gl-btn`
 
-### States
+###### Toggle Buttons :
 
-#### Filled
+{<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
-{<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
+<div className="d-flex gl-gap-x-3">
+  <button className="gl-btn">Unselected</button>
+  <button className="gl-btn gl-btn-fill">Selected</button>
+</div>
+
+<div className="d-flex gl-gap-x-3">
+  <button className="gl-btn gl-btn-outline">Unselected</button>
+  <button className="gl-btn gl-btn-fill">Selected</button>
+</div>
+
+</div>}
+
+#### States
+
+##### Default
+
+###### Filled
+
+{<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
 <button className="gl-btn gl-btn-fill">Enabled</button>
 
@@ -63,11 +82,12 @@ import { PiGraph } from "react-icons/pi";
 <button className="gl-btn gl-btn-fill gl-btn-fill-focused">Focused</button>
 
 <button className="gl-btn gl-btn-fill gl-btn-fill-pressed">Pressed</button>
+
 </div>}
 
-#### Outlined
+###### Outlined
 
-{<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
+{<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
 <button className="gl-btn gl-btn-outline">Enabled</button>
 
@@ -82,7 +102,7 @@ import { PiGraph } from "react-icons/pi";
 <button className="gl-btn gl-btn-outline gl-btn-outline-pressed">Pressed</button>
 </div>}
 
-#### Text
+###### Text
 
 {<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -99,10 +119,92 @@ import { PiGraph } from "react-icons/pi";
 <button className="gl-btn gl-btn-pressed">Pressed</button>
 </div>}
 
-### Size
+##### Toggle
 
-Only one size of button for the moment
+###### Text
 
-### Colors
+{
+
+<div className='w-auto d-flex flex-column gl-container-highest-bg gl-gap-4 p-5'>
+  <div className='w-auto d-flex justify-content-evenly align-items-center'>
+    <span className="gl-font-mono">1</span>
+
+    <button className="gl-btn"><PiPolygon className="gl-icon-size-text"/>Enabled</button>
+
+    <button className="gl-btn" disabled><PiPolygon className="gl-icon-size-text"/>Disabled</button>
+
+    <button className="gl-btn gl-btn-hovered"><PiPolygon className="gl-icon-size-text"/>Hovered</button>
+
+    <button className="gl-btn gl-btn-focused"><PiPolygon className="gl-icon-size-text"/>Focused</button>
+
+    <button className="gl-btn gl-btn-pressed"><PiPolygon className="gl-icon-size-text"/>Pressed</button>
+
+  </div>
+  <div className='w-auto d-flex justify-content-evenly align-items-center'>
+    <span className="gl-font-mono">2</span>
+
+    <button className="gl-btn gl-btn-fill"><PiPolygonFill className="gl-icon-size-text"/>Enabled</button>
+
+    <button className="gl-btn gl-btn-fill" disabled><PiPolygonFill className="gl-icon-size-text"/>Disabled</button>
+
+    <button className="gl-btn gl-btn-fill gl-btn-fill-hovered"><PiPolygonFill className="gl-icon-size-text"/>Hovered</button>
+
+    <button className="gl-btn gl-btn-fill gl-btn-fill-focused"><PiPolygonFill className="gl-icon-size-text"/>Focused</button>
+
+    <button className="gl-btn gl-btn-fill gl-btn-fill-pressed"><PiPolygonFill className="gl-icon-size-text"/>Pressed</button>
+
+  </div>
+</div>
+}
+
+1. Unselected
+2. Selected
+
+###### Outlined
+
+{
+
+<div className='w-auto d-flex flex-column gl-container-highest-bg gl-gap-4 p-5'>
+  <div className='w-auto d-flex justify-content-evenly align-items-center'>
+    <span className="gl-font-mono">1</span>
+
+    <button className="gl-btn gl-btn-outline"><PiPolygon className="gl-icon-size-text"/>Enabled</button>
+
+    <button className="gl-btn gl-btn-outline" disabled><PiPolygon className="gl-icon-size-text"/>Disabled</button>
+
+    <button className="gl-btn gl-btn-outline gl-btn-outline-hovered"><PiPolygon className="gl-icon-size-text"/>Hovered</button>
+
+    <button className="gl-btn gl-btn-outline gl-btn-outline-focused"><PiPolygon className="gl-icon-size-text"/>Focused</button>
+
+    <button className="gl-btn gl-btn-outline gl-btn-outline-pressed"><PiPolygon className="gl-icon-size-text"/>Pressed</button>
+
+  </div>
+  <div className='w-auto d-flex justify-content-evenly align-items-center'>
+    <span className="gl-font-mono">2</span>
+    <button className="gl-btn gl-btn-fill"><PiPolygonFill className="gl-icon-size-text"/>Enabled</button>
+
+    <button className="gl-btn gl-btn-fill" disabled><PiPolygonFill className="gl-icon-size-text"/>Disabled</button>
+
+    <button className="gl-btn gl-btn-fill gl-btn-fill-hovered"><PiPolygonFill className="gl-icon-size-text"/>Hovered</button>
+
+    <button className="gl-btn gl-btn-fill gl-btn-fill-focused"><PiPolygonFill className="gl-icon-size-text"/>Focused</button>
+
+    <button className="gl-btn gl-btn-fill gl-btn-fill-pressed"><PiPolygonFill className="gl-icon-size-text"/>Pressed</button>
+
+  </div>
+</div>
+}
+1. Unselected
+2. Selected
+
+#### Size
+
+There is only one size of button for the moment, which can be refered as 'medium'.
+
+#### Colors
 
 No color
+
+### Guidelines
+
+Too many buttons on a screen can disrupt the visual hierarchy. Consider placing additional actions in a navigation rail, set of chips, text links, or icon buttons.

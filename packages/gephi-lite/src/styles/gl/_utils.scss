@@ -92,7 +92,7 @@
 @mixin gap-x-modifier {
   @each $name, $space in $gl-spacers {
     &-#{$name} {
-      row-gap: $space;
+      column-gap: $space;
     }
   }
 }
@@ -100,7 +100,7 @@
 @mixin gap-y-modifier {
   @each $name, $space in $gl-spacers {
     &-#{$name} {
-      column-gap: $space;
+      row-gap: $space;
     }
   }
 }
@@ -140,6 +140,10 @@
 
 // Text
 // -----------------------------------------
+// The font DM Mono allows letters to have the same width. It should be used as an exception to enhance understanding informations spread on multiple lines. For exemple, for numbers in the table of the Data Vue. 
+.gl-font-mono{
+  font-family: "DM Mono", monospace;
+}
 //UI style is the default text style of Gephi Lite. It is an utilitarian styles to use for short, interface-level content such as labels, buttons, inputs, navigation items, and component text.
 .gl-text-ui {
     font-size: $gl-sys-font-size-text-ui;
@@ -156,21 +160,18 @@
   font-weight: 700;
   line-height: $gl-sys-font-line-height-heading !important;
 }
-
 .gl-heading-2{
   //Medium heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a pannel or a modale.
   font-size: $gl-sys-font-size-heading-medium;
   font-weight: 500;
   line-height: $gl-sys-font-line-height-heading !important;
 }
-
 .gl-heading-1{
   //Highest heading style, to be used for high-emphasis text that remains relatively short. For example, consider using it as title of a text section about Gephi Lite creators' developer skills. 
   font-size: $gl-sys-font-size-heading-large;
   font-weight: 500;
   line-height: $gl-sys-font-line-height-heading !important;
 }
-
 .gl-text-muted {
   color: var(--gl-container-muted-color);
 }
@@ -178,7 +179,12 @@
 
 // Icons
 // -----------------------------------------
-.gl-icon-size-1{
+.gl-icon-size-text{
   width: $gl-sys-size-icon-medium;
   height: $gl-sys-size-icon-medium;
+}
+
+.gl-icon-size-heading{
+  width: $gl-sys-size-icon-large;
+  height: $gl-sys-size-icon-large;
 }
