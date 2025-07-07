@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
-import { FieldModelIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
 
@@ -143,7 +143,7 @@ const useEditNodeForm = ({
   return {
     submit,
     main: (
-      <>
+      <div className="panel-body">
         <h2>{isNew ? t("edition.create_nodes") : t("edition.update_nodes")}</h2>
 
         <div className="panel-block">
@@ -242,18 +242,20 @@ const useEditNodeForm = ({
             </div>
           ))}
         </div>
-      </>
+      </div>
     ),
     footer: (
-      <section className="panel-footer">
-        <button type="button" className="gl-btn" onClick={() => onCancel()}>
-          {t("common.cancel")}
-        </button>
+      <div className="panel-footer">
+        <div className="gl-actions">
+          <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+            <CancelIcon />
+          </button>
 
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
-        </button>
-      </section>
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
+          </button>
+        </div>
+      </div>
     ),
   };
 };

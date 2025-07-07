@@ -1,18 +1,13 @@
 import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { FC, useCallback, useState } from "react";
-import {
-  BsFillCheckCircleFill,
-  BsFillExclamationOctagonFill,
-  BsFillExclamationTriangleFill,
-  BsFillInfoCircleFill,
-} from "react-icons/bs";
 
 import { config } from "../config";
 import { notificationsStateAtom } from "../core/notifications";
 import { NotificationType } from "../core/notifications/types";
 import { useTimeout } from "../hooks/useTimeout";
 import { dateToFromAgo } from "../utils/date";
+import { STATUS_ICONS } from "./common-icons";
 
 export const Notifications: FC = () => {
   const [{ notifications }, setNotificationsState] = useAtom(notificationsStateAtom);
@@ -42,18 +37,12 @@ const CLASSES_TOAST = {
   error: "",
 };
 
-const ICONS_TOAST = {
-  success: <BsFillCheckCircleFill className="text-success" />,
-  info: <BsFillInfoCircleFill className="text-info" />,
-  warning: <BsFillExclamationTriangleFill className="text-warning" />,
-  error: <BsFillExclamationOctagonFill className="text-danger" />,
-};
-
 const Notification: FC<{
   notification: NotificationType;
   onClose?: () => void;
 }> = ({ notification, onClose }) => {
   const [show, setShow] = useState<boolean>(true);
+  const IconComponent = STATUS_ICONS[notification.type];
 
   const close = useCallback(() => {
     setShow(false);
@@ -69,7 +58,7 @@ const Notification: FC<{
       onMouseLeave={reschedule}
     >
       <div className="toast-header">
-        {ICONS_TOAST[notification.type]}
+        <IconComponent className={cx(`text-${notification.type}`)} />
         <strong className="ms-2 me-auto">{notification.title || notification.type}</strong>
         {notification.createdAt && <small>{dateToFromAgo(notification.createdAt)}</small>}
 

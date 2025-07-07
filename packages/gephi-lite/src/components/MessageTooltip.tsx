@@ -1,17 +1,11 @@
 import cx from "classnames";
 import React, { FC, ReactNode, useEffect, useRef, useState } from "react";
 import { IconType } from "react-icons";
-import { AiFillWarning, AiOutlineCheckCircle, AiOutlineInfoCircle } from "react-icons/ai";
 
 import Tooltip, { TooltipAPI } from "./Tooltip";
+import { STATUS_ICONS } from "./common-icons";
 
-const DEFAULT_ICONS = {
-  success: AiOutlineCheckCircle,
-  info: AiOutlineInfoCircle,
-  warning: AiFillWarning,
-  error: AiFillWarning,
-} as const;
-type MessageType = keyof typeof DEFAULT_ICONS;
+type MessageType = keyof typeof STATUS_ICONS;
 
 const MessageTooltip: FC<{
   message: ReactNode;
@@ -20,7 +14,7 @@ const MessageTooltip: FC<{
   openOnMount?: number;
   className?: string;
   iconClassName?: string;
-}> = ({ message, type = "info", icon: IconComponent = DEFAULT_ICONS[type], openOnMount, className, iconClassName }) => {
+}> = ({ message, type = "info", icon: IconComponent = STATUS_ICONS[type], openOnMount, className, iconClassName }) => {
   const tooltipRef = useRef<TooltipAPI>(null);
   const [timeout, setTimeout] = useState<null | number>(null);
 

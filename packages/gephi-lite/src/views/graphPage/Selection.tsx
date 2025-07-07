@@ -212,7 +212,7 @@ export const Selection: FC = () => {
   return (
     <>
       {/* Selection main list */}
-      <section className="selection">
+      <div className="panel-body">
         <ul className="list-unstyled gl-m-0 gl-gap-1">
           <InfiniteScroll
             pageSize={50}
@@ -255,52 +255,54 @@ export const Selection: FC = () => {
             </ul>
           </>
         )}
-      </section>
+      </div>
 
       {/* Selection actions */}
-      <section className="selection-actions">
-        <button
-          className="gl-btn gl-btn-icon gl-btn-fill"
-          onClick={() => {
-            showSelection(type);
-            navigate(`/data/${type}`);
-          }}
-        >
-          {t("selection.open_in_data")}
-        </button>
-        <button
-          className="gl-btn gl-btn-icon gl-btn-outline"
-          onClick={() =>
-            select({
-              type,
-              replace: true,
-              items: new Set(type === "nodes" ? filteredGraph.nodes() : filteredGraph.edges()),
-            })
-          }
-          title={t("selection.select_all")}
-        >
-          <PiChecks />
-        </button>
-        <button
-          className="gl-btn gl-btn-icon gl-btn-outline"
-          onClick={() =>
-            openModal({
-              component: ConfirmModal,
-              arguments: {
-                title: t(`edition.delete_selected_${type}`),
-                message: t(`edition.confirm_delete_${type}`, { count: items.size }),
-                successMsg: t(`edition.delete_${type}_success`, { count: items.size }),
-              },
-              afterSubmit: () => {
-                deleteItems(type, Array.from(items));
-              },
-            })
-          }
-          title={t(`edition.delete_selected_${type}`)}
-        >
-          <TrashIcon />
-        </button>
-      </section>
+      <div className="panel-footer">
+        <div className="gl-actions right">
+          <button
+            className="gl-btn gl-btn-icon gl-btn-fill"
+            onClick={() => {
+              showSelection(type);
+              navigate(`/data/${type}`);
+            }}
+          >
+            {t("selection.open_in_data")}
+          </button>
+          <button
+            className="gl-btn gl-btn-icon gl-btn-outline"
+            onClick={() =>
+              select({
+                type,
+                replace: true,
+                items: new Set(type === "nodes" ? filteredGraph.nodes() : filteredGraph.edges()),
+              })
+            }
+            title={t("selection.select_all")}
+          >
+            <PiChecks />
+          </button>
+          <button
+            className="gl-btn gl-btn-icon gl-btn-outline"
+            onClick={() =>
+              openModal({
+                component: ConfirmModal,
+                arguments: {
+                  title: t(`edition.delete_selected_${type}`),
+                  message: t(`edition.confirm_delete_${type}`, { count: items.size }),
+                  successMsg: t(`edition.delete_${type}_success`, { count: items.size }),
+                },
+                afterSubmit: () => {
+                  deleteItems(type, Array.from(items));
+                },
+              })
+            }
+            title={t(`edition.delete_selected_${type}`)}
+          >
+            <TrashIcon />
+          </button>
+        </div>
+      </div>
     </>
   );
 };

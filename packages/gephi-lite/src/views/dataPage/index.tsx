@@ -176,7 +176,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
       {/* Extended left panel */}
       <div className={cx("panel panel-expandable", selectedTool && "deployed")}>
         {selectedTool && (
-          <div className="panel-body">
+          <>
             <button
               type="button"
               className="gl-btn-close gl-btn"
@@ -186,7 +186,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
               <CloseIcon />
             </button>
             <selectedTool.panel close={() => setSelectedTool(undefined)} />
-          </div>
+          </>
         )}
       </div>
 

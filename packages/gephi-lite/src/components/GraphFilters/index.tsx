@@ -111,31 +111,33 @@ const GraphFilters: FC = () => {
   const { fullGraph } = useGraphDataset();
 
   return (
-    <div className="panel-block-grow">
-      <div
-        className={cx(
-          "filter-item d-flex align-items-center",
-          filters.past.length !== 0 && "cursor-pointer",
-          filters.past.length === 0 && "edited",
-        )}
-        onClick={() => {
-          if (filters.past.length !== 0) closeAllPastFilters();
-        }}
-      >
-        <div>
-          <div className="fs-5">{t("filters.full_graph")}</div>
-          <div className="small text-muted">
-            {fullGraph.order.toLocaleString(locale)} {t("graph.model.nodes", { count: fullGraph.order })},{" "}
-            {fullGraph.size.toLocaleString(locale)} {t("graph.model.edges", { count: fullGraph.size })}
+    <div className="panel-body">
+      <div className="panel-block">
+        <div
+          className={cx(
+            "filter-item d-flex align-items-center",
+            filters.past.length !== 0 && "cursor-pointer",
+            filters.past.length === 0 && "edited",
+          )}
+          onClick={() => {
+            if (filters.past.length !== 0) closeAllPastFilters();
+          }}
+        >
+          <div>
+            <div className="fs-5">{t("filters.full_graph")}</div>
+            <div className="small text-muted">
+              {fullGraph.order.toLocaleString(locale)} {t("graph.model.nodes", { count: fullGraph.order })},{" "}
+              {fullGraph.size.toLocaleString(locale)} {t("graph.model.edges", { count: fullGraph.size })}
+            </div>
           </div>
         </div>
+
+        <FiltersStack filters={filters.past} active />
+
+        <FilterCreator />
+
+        <FiltersStack filters={filters.future} />
       </div>
-
-      <FiltersStack filters={filters.past} active />
-
-      <FilterCreator />
-
-      <FiltersStack filters={filters.future} />
     </div>
   );
 };
