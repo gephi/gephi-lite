@@ -44,6 +44,8 @@ import {
   PiMoonStarsFill,
   PiPalette,
   PiPaletteFill,
+  PiPencilSimpleLine,
+  PiPencilSimpleLineFill,
   PiPlusCircle,
   PiPlusCircleFill,
   PiPolygon,
@@ -58,40 +60,55 @@ import {
 
 import { ItemType } from "../core/types";
 
-export const GraphIcon = PiGraph;
-export const GraphIconFill = PiGraphFill;
-export const DataIcon = PiTable;
-export const DataIconFill = PiTableFill;
-export const DataCreationIcon = PiPlusCircle;
-export const DataCreationIconFill = PiPlusCircleFill;
-export const CaretDownIcon = PiCaretDown;
-export const CaretUpIcon = PiCaretUp;
-export const CaretLeftIcon = PiCaretLeft;
-export const CaretRightIcon = PiCaretRight;
 export const AppearanceIcon = PiPalette;
 export const AppearanceIconFill = PiPaletteFill;
+export const AutoThemeIcon = PiCircleHalf;
+export const AutoThemeSelectedIcon = PiCircleHalfFill;
+export const CaretDownIcon = PiCaretDown;
+export const CaretLeftIcon = PiCaretLeft;
+export const CaretRightIcon = PiCaretRight;
+export const CaretUpIcon = PiCaretUp;
+export const CheckedIcon = PiCheck;
+export const CloseIcon = PiX;
+export const DarkThemeIcon = PiMoonStars;
+export const DarkThemeSelectedIcon = PiMoonStarsFill;
+export const DataCreationIcon = PiPlusCircle;
+export const DataCreationIconFill = PiPlusCircleFill;
+export const DataIcon = PiTable;
+export const DataIconFill = PiTableFill;
+export const ExternalLinkIcon = PiArrowSquareOut;
+export const EditIcon = PiPencilSimpleLine;
+export const EditIconFill = PiPencilSimpleLineFill;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
-export const StatisticsIcon = PiChartBar;
-export const StatisticsIconFill = PiChartBarFill;
+export const FullScreenIcon = PiArrowsOut;
+export const GraphIcon = PiGraph;
+export const GraphIconFill = PiGraphFill;
 export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
-export const ExternalLinkIcon = PiArrowSquareOut;
+export const LightThemeIcon = PiSun;
+export const LightThemeSelectedIcon = PiSunFill;
 export const LocateIcon = PiGpsFix;
-export const ZoomInIcon = PiMagnifyingGlassPlus;
-export const ZoomOutIcon = PiMagnifyingGlassMinus;
-export const FullScreenIcon = PiArrowsOut;
+export const SearchIcon = PiMagnifyingGlass;
+export const SettingsIcon = PiGear;
+export const StatisticsIcon = PiChartBar;
+export const StatisticsIconFill = PiChartBarFill;
 export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
 export const TrashIcon = PiTrash;
+export const ZoomInIcon = PiMagnifyingGlassPlus;
+export const ZoomOutIcon = PiMagnifyingGlassMinus;
 
+// Need to be replace by PI icons
 export const FileIcon = ImFilesEmpty;
 export const GitHubIcon = BsGithub;
 export const SingInIcon = MdLogin;
 export const SignOutIcon = MdLogout;
 export const ContextIcon = GrOverview;
 export const RetryIcon = MdOutlineRefresh;
-export const SettingsIcon = PiGear;
 export const DangerIcon = BsExclamationTriangle;
+export const CodeEditorIcon = BsCodeSlash;
+export const SaveIcon = MdOutlineSaveAlt;
+export const RunIcon = BsFillPlayFill;
 
 export const NodeIcon = BsCircle;
 export const EdgeIcon = BsSlashLg;
@@ -99,19 +116,6 @@ export const ItemIcons: Record<ItemType, IconType> = {
   nodes: NodeIcon,
   edges: EdgeIcon,
 };
-
-export const CodeEditorIcon = BsCodeSlash;
-export const SaveIcon = MdOutlineSaveAlt;
-export const RunIcon = BsFillPlayFill;
-export const CloseIcon = PiX;
-export const CheckedIcon = PiCheck;
-export const SearchIcon = PiMagnifyingGlass;
-export const DarkThemeIcon = PiMoonStars;
-export const DarkThemeSelectedIcon = PiMoonStarsFill;
-export const LightThemeIcon = PiSun;
-export const LightThemeSelectedIcon = PiSunFill;
-export const AutoThemeIcon = PiCircleHalf;
-export const AutoThemeSelectedIcon = PiCircleHalfFill;
 
 export const FieldModelIcons: Record<FieldModelType, IconType> = {
   text: BsBodyText,

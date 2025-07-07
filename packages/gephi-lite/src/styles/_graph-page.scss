@@ -83,6 +83,23 @@
   }
 }
 
+#graph-title-edition {
+  z-index: 141;
+  top: -0.625rem !important;
+
+  > div {
+    textarea {
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+      );
+      max-width: calc(100% - 4px);
+      height: 5rem;
+    }
+  }
+}
+
 :root {
   --sigma-background-color: transparent;
 }
