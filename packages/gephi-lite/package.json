@@ -42,6 +42,7 @@
     "@ouestware/hooks": "^0.0.1-alpha.6",
     "@react-sigma/core": "^5.0.2",
     "@sigma/node-image": "^3.0.0",
+    "@sigma/utils": "^3.0.0",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.10",
     "bootstrap": "^5.3.3",

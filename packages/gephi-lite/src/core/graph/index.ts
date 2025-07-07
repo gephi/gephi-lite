@@ -3,17 +3,18 @@ import {
   AppearanceState,
   FilteredGraph,
   FiltersState,
+  Scalar,
   getEmptyAppearanceState,
 } from "@gephi/gephi-lite-sdk";
 import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
-import EventEmitter from "events";
 import { Attributes } from "graphology-types";
-import { clamp, forEach, isNil, isString, keys, last, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, keys, last, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
+import { EVENTS, emitter } from "../context/eventsContext";
 import { filtersAtom } from "../filters";
 import { buildTopologicalFiltersDefinitions } from "../filters/topological";
 import { FilterType } from "../filters/types";
@@ -279,8 +280,34 @@ const updateEdge: Producer<GraphDataset, [string, Attributes, { merge?: boolean 
     };
   };
 };
+const updateItems: Producer<GraphDataset, [ItemType, Set<string>, string, Scalar]> = (
+  type,
+  itemIds,
+  fieldId,
+  value,
+) => {
+  return (state) => {
+    const fields = keyBy(type === "nodes" ? state.nodeFields : state.edgeFields, "id");
+    if (!fields[fieldId]) throw new Error(`The field ${fieldId} does not exist for ${type} in the current dataset.`);
 
-const resetGraph: MultiProducer<[FiltersState, AppearanceState, SelectionState, GraphDataset], []> = () => {
+    const dataKey = type === "nodes" ? "nodeData" : "edgeData";
+    const data = state[dataKey];
+    const updatedItems = Array.from(itemIds).reduce((acc, itemId) => {
+      if (!data[itemId]) throw new Error(`The ${type} collection does not have any item with "${itemId}" id.`);
+      return { ...acc, [itemId]: { ...data[itemId], [fieldId]: value } };
+    }, {});
+
+    return {
+      ...state,
+      [dataKey]: {
+        ...data,
+        ...updatedItems,
+      },
+    };
+  };
+};
+
+const resetGraph: MultiProducer<[FiltersState, AppearanceState, SelectionState, GraphDataset]> = () => {
   return [
     () => getEmptyFiltersState(),
     () => getEmptyAppearanceState(),
@@ -344,7 +371,7 @@ export const sigmaGraphAtom = derivedAtom(
     if (graph) {
       graph.clear();
       graph.import(newGraph);
-      (graph as EventEmitter).emit("graphImported");
+      emitter.emit(EVENTS.graphImported);
 
       return graph;
     }
@@ -371,6 +398,7 @@ export const graphDatasetActions = {
   createEdge: producerToAction(createEdge, graphDatasetAtom),
   updateNode: producerToAction(updateNode, graphDatasetAtom),
   updateEdge: producerToAction(updateEdge, graphDatasetAtom),
+  updateItems: producerToAction(updateItems, graphDatasetAtom),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
   deleteItems: multiProducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
 

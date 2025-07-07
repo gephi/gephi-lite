@@ -86,7 +86,7 @@ const useEditEdgeForm = ({
           if (edgeData[id])
             notify({
               type: "error",
-              title: t("edition.update_nodes"),
+              title: t("edition.update_edges"),
               message: t("error.unknown"),
             });
           return;
