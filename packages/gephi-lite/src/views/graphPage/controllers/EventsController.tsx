@@ -1,5 +1,5 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
-import EventEmitter from "events";
+import { fitViewportToNodes } from "@sigma/utils";
 import { mapValues, pick } from "lodash";
 import { FC, useEffect, useRef } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
@@ -10,6 +10,7 @@ import {
   useSelectionActions,
   useSigmaActions,
 } from "../../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { GephiLiteSigma } from "../../../core/graph/types";
 import { LayoutMapping } from "../../../core/layouts/types";
 
@@ -18,6 +19,7 @@ const DRAG_EVENTS_TOLERANCE = 3;
 export const EventsController: FC = () => {
   const sigma: GephiLiteSigma = useSigma();
   const registerEvents = useRegisterEvents();
+  const { emitter: globalEmitter } = useEventsContext();
 
   const selection = useSelection();
   const { setNodePositions } = useGraphDatasetActions();
@@ -34,6 +36,9 @@ export const EventsController: FC = () => {
   >({ type: "idle" });
   const dragEventsCountRef = useRef(0);
 
+  /**
+   * Handle interaction events:
+   */
   useEffect(() => {
     registerEvents({
       enterEdge({ edge }) {
@@ -145,7 +150,8 @@ export const EventsController: FC = () => {
             graph.setNodeAttribute(node, "x", initialPosition.x + delta.x);
             graph.setNodeAttribute(node, "y", initialPosition.y + delta.y);
           }
-          (graph as EventEmitter).emit("nodesDragged");
+          globalEmitter.emit(EVENTS.nodesDragged);
+
           // Prevent sigma to move camera:
           e.preventSigmaDefault();
           e.original.preventDefault();
@@ -164,6 +170,7 @@ export const EventsController: FC = () => {
     sigma,
     toggle,
     setNodePositions,
+    globalEmitter,
   ]);
 
   // DOM events not handled by sigma:
@@ -181,6 +188,26 @@ export const EventsController: FC = () => {
       container.removeEventListener("mouseleave", leaveHandle);
     };
   }, [resetHoveredEdge, resetHoveredNode, sigma]);
+
+  // Custom Gephi Lite events:
+  useEffect(() => {
+    // Handle focus events:
+    const focusNodesHandle = async ({ nodes }: { nodes: Set<string> }) => {
+      await fitViewportToNodes(sigma, Array.from(nodes), {
+        animate: true,
+      });
+    };
+
+    globalEmitter.on(EVENTS.focusNodes, focusNodesHandle);
+    return () => {
+      globalEmitter.off(EVENTS.focusNodes, focusNodesHandle);
+    };
+  }, [globalEmitter, sigma]);
+
+  // Broadcast "sigmaMounted" event on mount:
+  useEffect(() => {
+    globalEmitter.emit(EVENTS.sigmaMounted);
+  }, [globalEmitter]);
 
   return null;
 };

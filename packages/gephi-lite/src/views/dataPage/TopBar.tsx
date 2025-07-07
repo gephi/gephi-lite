@@ -2,14 +2,20 @@ import { ItemType } from "@gephi/gephi-lite-sdk";
 import { FC, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { PiMagnifyingGlass, PiX } from "react-icons/pi";
+import { useNavigate } from "react-router";
 
+import { EditIcon, TrashIcon } from "../../components/common-icons";
+import { EditItemModal } from "../../components/data/EditItem";
+import { EditMultipleItemsModal } from "../../components/data/EditMultipleItems";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import {
   useDataTable,
   useDataTableActions,
+  useGraphDataset,
   useGraphDatasetActions,
   useSelection,
 } from "../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { useModal } from "../../core/modals";
 
 const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) => void }> = ({
@@ -50,45 +56,89 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
 };
 
 export const TopBar: FC = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { type, search } = useDataTable();
+  const { emitter } = useEventsContext();
   const { updateQuery } = useDataTableActions();
+  const { fullGraph } = useGraphDataset();
   const { deleteItems } = useGraphDatasetActions();
   const { type: selectionType, items } = useSelection();
   const selectionActionDisabled = selectionType !== type || !items.size;
 
   return (
     <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2 gap-1 gl-px-3 gl-py-1">
-      <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-baseline gap-1">
-        <Trans i18nKey={`selection.${type}`} count={items.size} />
-        <button className="btn" disabled={true /*selectionActionDisabled*/} onClick={() => console.log("TODO")}>
-          {t(`edition.edit_selected_${type}`)}
-        </button>
-        {type === "nodes" && (
-          <button className="btn" disabled={true /*selectionActionDisabled*/} onClick={() => console.log("TODO")}>
-            {t(`edition.merge_selected_nodes`)}
-          </button>
+      <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-middle gap-1">
+        <span className="gl-btnlike">
+          <Trans i18nKey={`selection.${type}`} count={selectionType === type ? items.size : 0} />
+        </span>
+        {selectionType === type && items.size > 0 && (
+          <>
+            <button
+              className="gl-btn gl-btn-icon gl-btn-fill"
+              disabled={selectionActionDisabled}
+              onClick={() => {
+                navigate(`/`);
+                emitter.once(EVENTS.sigmaMounted, () => {
+                  console.log("SIGMA MOUNTED");
+                  emitter.emit(EVENTS.focusNodes, {
+                    nodes:
+                      type === "nodes"
+                        ? items
+                        : new Set(Array.from(items).flatMap((edgeId) => fullGraph.extremities(edgeId))),
+                  });
+                });
+              }}
+            >
+              {t("selection.open_in_graph")}
+            </button>
+            <button
+              className="gl-btn gl-btn-icon gl-btn-outline"
+              title={t(`edition.edit_selected_${type}`, { count: items.size })}
+              disabled={selectionActionDisabled}
+              onClick={() =>
+                items.size === 1
+                  ? openModal({
+                      component: EditItemModal,
+                      arguments: {
+                        type,
+                        itemId: Array.from(items)[0],
+                      },
+                    })
+                  : openModal({
+                      component: EditMultipleItemsModal,
+                      arguments: {
+                        type,
+                        items,
+                      },
+                    })
+              }
+            >
+              <EditIcon />
+            </button>
+            <button
+              className="gl-btn gl-btn-icon gl-btn-outline"
+              title={t(`edition.delete_selected_${type}`, { count: items.size })}
+              disabled={selectionActionDisabled}
+              onClick={() =>
+                openModal({
+                  component: ConfirmModal,
+                  arguments: {
+                    title: t(`edition.delete_selected_${type}`),
+                    message: t(`edition.confirm_delete_${type}`, { count: items.size }),
+                    successMsg: t(`edition.delete_${type}_success`, { count: items.size }),
+                  },
+                  afterSubmit: () => {
+                    deleteItems(type, Array.from(items));
+                  },
+                })
+              }
+            >
+              <TrashIcon />
+            </button>
+          </>
         )}
-        <button
-          className="btn"
-          disabled={selectionActionDisabled}
-          onClick={() =>
-            openModal({
-              component: ConfirmModal,
-              arguments: {
-                title: t(`edition.delete_selected_${type}`),
-                message: t(`edition.confirm_delete_${type}`, { count: items.size }),
-                successMsg: t(`edition.delete_${type}_success`, { count: items.size }),
-              },
-              afterSubmit: () => {
-                deleteItems(type, Array.from(items));
-              },
-            })
-          }
-        >
-          {t(`edition.delete_selected_${type}`)}
-        </button>
       </section>
       <section>
         <SearchForm type={type} input={search} onChange={(query) => updateQuery({ query })} />

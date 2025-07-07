@@ -113,6 +113,7 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
  * If full si specified, then we reset all data store in session.
  */
 export const resetStates: Action<[boolean]> = (full = false) => {
+  dataTableActions.reset();
   filtersActions.resetFilters();
   selectionActions.reset();
   appearanceActions.resetState();
@@ -161,3 +162,4 @@ export const useUserActions = makeUseActions(userActions);
 export const useResetStates = () => {
   return resetStates;
 };
+

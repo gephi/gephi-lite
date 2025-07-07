@@ -1,9 +1,9 @@
 import { Producer, asyncAction, atom, derivedAtom, producerToAction } from "@ouestware/atoms";
-import EventEmitter from "events";
 import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
-import seedrandom from "seedrandom";
+import seedRandom from "seedrandom";
 
+import { EVENTS, emitter } from "../context/eventsContext";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { resetCamera } from "../sigma";
@@ -91,11 +91,11 @@ export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
   return (state) => ({ ...state, quality });
 };
 
-const _computeLayoutQualityMetric: Producer<LayoutState, []> = () => {
+const _computeLayoutQualityMetric: Producer<LayoutState> = () => {
   const sigmaGraph = sigmaGraphAtom.get();
   try {
     const metric = connectedCloseness(sigmaGraph, {
-      rng: seedrandom("gephi-lite"),
+      rng: seedRandom("gephi-lite"),
     });
     return (state) => ({ ...state, quality: { ...state.quality, metric } });
   } catch (_e: unknown) {
@@ -124,18 +124,18 @@ gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
   const sigmaGraph = sigmaGraphAtom.get();
   // this event is triggered when a sync layout has been applied
   // this is a custom event
-  (sigmaGraph as EventEmitter).on("graphImported", fn);
+  emitter.on(EVENTS.graphImported, fn);
 
   // this event is triggered by user manually changing node positions by dragging node
   // this is a custom event
-  (sigmaGraph as EventEmitter).on("nodesDragged", fn);
+  emitter.on(EVENTS.nodesDragged, fn);
 
   // this event is triggered by async layout
   sigmaGraph.on("eachNodeAttributesUpdated", fn);
 
   return () => {
-    (sigmaGraph as EventEmitter).off("graphImported", fn);
-    (sigmaGraph as EventEmitter).off("nodesDragged", fn);
+    emitter.off(EVENTS.graphImported, fn);
+    emitter.off(EVENTS.nodesDragged, fn);
     sigmaGraph.off("eachNodeAttributesUpdated", fn);
   };
 });

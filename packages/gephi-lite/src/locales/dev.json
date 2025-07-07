@@ -88,7 +88,8 @@
     "node_no_label": "(Empty label)",
     "edge_no_label": "(Empty label)",
     "locate_on_graph": "Locate on the graph",
-    "open_in_data": "Open in Data"
+    "open_in_data": "Show in Data",
+    "open_in_graph": "Show in Graph"
   },
   "appearance": {
     "title": "Appearance",
@@ -247,6 +248,10 @@
     "update_edges": "Edit existing edge",
     "update_nodes_success": "The node has successfully been updated.",
     "update_edges_success": "The edge has successfully been updated.",
+    "update_multiple_nodes": "Edit existing nodes",
+    "update_multiple_edges": "Edit existing edges",
+    "update_multiple_nodes_success": "The {{count, number}} nodes have successfully been updated.",
+    "update_multiple_edges_success": "The {{count, number}} edges have successfully been updated.",
     "update_nodes_field": "Edit nodes attribute",
     "update_edges_field": "Edit edges attribute",
     "update_nodes_field_success": "The node attribute has successfully been updated.",
@@ -267,9 +272,13 @@
     "delete_nodes_success": "The {{count, number}} nodes have successfully been deleted.",
     "delete_edges_success_one": "The edge has successfully been deleted.",
     "delete_edges_success": "The {{count, number}} edges have successfully been deleted.",
+    "delete_selected_nodes_one": "Delete selected node",
     "delete_selected_nodes": "Delete selected nodes",
+    "delete_selected_edges_one": "Delete selected edge",
     "delete_selected_edges": "Delete selected edges",
+    "edit_selected_nodes_one": "Edit selected node",
     "edit_selected_nodes": "Edit selected nodes",
+    "edit_selected_edges_one": "Edit selected edge",
     "edit_selected_edges": "Edit selected edges",
     "merge_selected_nodes": "Merge selected nodes",
     "search_nodes": "Search on node labels...",
@@ -277,7 +286,11 @@
     "delete_nodes_attributes": "Delete the '{{name}}' node attribute",
     "delete_edges_attributes": "Delete the '{{name}}' edge attribute",
     "confirm_delete_attributes": "This deletion will remove {{nbValues}} values from the graph. Are you sure you want to delete the attribute {{name}}?",
-    "delete_attributes_success": "The '{{name}}' attribute has been deleted."
+    "delete_attributes_success": "The '{{name}}' attribute has been deleted.",
+    "multi": {
+      "select_attribute": "Select the attribute to edit for the selection",
+      "select_value": "Select a value to apply for the selection"
+    }
   },
   "graph": {
     "title": "Graph",

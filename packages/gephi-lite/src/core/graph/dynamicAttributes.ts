@@ -54,7 +54,7 @@ export const staticDynamicAttributeKey = (field: FieldModel<ItemType, boolean>) 
   `${field.dynamic ? "dynamic" : "static"}.${field.id}`;
 
 export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>) =>
-  `${field.id} ${field.dynamic ? " (dynamic)" : ""}`;
+  `${field.label || field.id} ${field.dynamic ? " (dynamic)" : ""}`;
 
 export function getScalarFromStaticDynamicData(
   data: StaticDynamicItemData,

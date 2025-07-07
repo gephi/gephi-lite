@@ -11,6 +11,9 @@ import { getEmptyDataTableState } from "./utils";
  * Producers:
  * **********
  */
+export const reset: Producer<DataTableState, []> = () => {
+  return () => getEmptyDataTableState();
+};
 export const setType: Producer<DataTableState, [ItemType]> = (type) => {
   return (state) => ({
     ...state,
@@ -92,6 +95,7 @@ export const showSelection: Producer<DataTableState, [ItemType]> = (type) => {
 export const dataTableAtom = atom<DataTableState>(getEmptyDataTableState());
 
 export const dataTableActions = {
+  reset: producerToAction(reset, dataTableAtom),
   setType: producerToAction(setType, dataTableAtom),
   updateQuery: producerToAction(updateQuery, dataTableAtom),
   updateColumnSizing: producerToAction(updateColumnSizing, dataTableAtom),
