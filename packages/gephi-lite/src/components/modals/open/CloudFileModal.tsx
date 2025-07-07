@@ -6,7 +6,6 @@ import { FaExternalLinkAlt, FaLock, FaSync } from "react-icons/fa";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
-import { useModal } from "../../../core/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
@@ -14,7 +13,7 @@ import { displayDateTime } from "../../../utils/date";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
 import { Modal } from "../../modals";
-import { GithubLoginModal } from "../GithubLoginModal";
+import { PleaseSignIn } from "../../user/PleaseSignIn";
 
 const PAGINATION_SIZE = 10;
 
@@ -22,19 +21,6 @@ interface OpenCloudFileFormProps {
   id?: string;
   onStatusChange: (status: AsyncStatus) => void;
 }
-
-const PleaseSignIn: FC = () => {
-  const { t } = useTranslation();
-  const { openModal } = useModal();
-  return (
-    <div className="text-center">
-      <p>{t("graph.open.github.must-be-signed")}</p>
-      <button onClick={() => openModal({ component: GithubLoginModal, arguments: {} })} className="gl-btn gl-btn-fill">
-        {t("workspace.menu.github_signin")}
-      </button>
-    </div>
-  );
-};
 
 export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChange }) => {
   const [user] = useConnectedUser();
@@ -124,7 +110,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                       <td>
                         {file.filename}
                         <a
-                          className="lin-primary m-2"
+                          className="link-primary m-2"
                           href={file.webUrl}
                           title={t("graph.open.github.file-open-external", {
                             filename: file.filename,
