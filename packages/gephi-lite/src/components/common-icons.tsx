@@ -61,6 +61,7 @@ import {
   PiTable,
   PiTableFill,
   PiTrash,
+  PiUser,
   PiWarning,
   PiWarningOctagon,
   PiX,
@@ -103,16 +104,17 @@ export const LayoutsIconFill = PiPolygonFill;
 export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
 export const LocateIcon = PiGpsFix;
-export const SearchIcon = PiMagnifyingGlass;
 export const ResetIcon = PiArrowCounterClockwise;
 export const SettingsIcon = PiGear;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
 export const RetryIcon = PiArrowClockwise;
+export const SearchIcon = PiMagnifyingGlass;
 export const StatisticsIcon = PiChartBar;
 export const StatisticsIconFill = PiChartBarFill;
 export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
 export const TrashIcon = PiTrash;
+export const UserIcon = PiUser;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
