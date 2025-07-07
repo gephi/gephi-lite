@@ -113,6 +113,10 @@ const GraphTitleEditable: FC<{ title?: string; save: (title?: string) => void }>
                   submit();
                 }}
                 onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    submit();
+                  }
                   if (e.key === "Escape") {
                     cancel();
                   }
