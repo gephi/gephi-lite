@@ -6,6 +6,7 @@ import { FaExternalLinkAlt, FaLock, FaSync } from "react-icons/fa";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
+import { useModal } from "../../../core/modals";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
@@ -13,6 +14,7 @@ import { displayDateTime } from "../../../utils/date";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
 import { Modal } from "../../modals";
+import { GithubLoginModal } from "../GithubLoginModal";
 
 const PAGINATION_SIZE = 10;
 
@@ -20,6 +22,19 @@ interface OpenCloudFileFormProps {
   id?: string;
   onStatusChange: (status: AsyncStatus) => void;
 }
+
+const PleaseSignIn: FC = () => {
+  const { t } = useTranslation();
+  const { openModal } = useModal();
+  return (
+    <div className="text-center">
+      <p>{t("graph.open.github.must-be-signed")}</p>
+      <button onClick={() => openModal({ component: GithubLoginModal, arguments: {} })} className="gl-btn gl-btn-fill">
+        {t("workspace.menu.github_signin")}
+      </button>
+    </div>
+  );
+};
 
 export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChange }) => {
   const [user] = useConnectedUser();
@@ -39,11 +54,13 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
    *  => load files
    */
   useEffect(() => {
-    getFiles(page * PAGINATION_SIZE, PAGINATION_SIZE).then((result) => {
-      setFiles((files) => (page > 0 ? [...files, ...result] : result));
-      setHasMore(result.length === PAGINATION_SIZE);
-    });
-  }, [getFiles, page]);
+    if (user) {
+      getFiles(page * PAGINATION_SIZE, PAGINATION_SIZE).then((result) => {
+        setFiles((files) => (page > 0 ? [...files, ...result] : result));
+        setHasMore(result.length === PAGINATION_SIZE);
+      });
+    }
+  }, [getFiles, page, user]);
 
   const onSubmit = useCallback(
     async (selected: Omit<CloudFile, "format"> | null) => {
@@ -71,83 +88,90 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
   );
 
   return (
-    <form
-      id={id}
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(selected);
-      }}
-    >
-      {error && <p className="text-center text-danger">{t("graph.open.github.error")}</p>}
+    <>
+      {user ? (
+        <form
+          id={id}
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit(selected);
+          }}
+        >
+          {error && <p className="text-center text-danger">{t("graph.open.github.error")}</p>}
 
-      {files.length > 0 && (
-        <>
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">{t("common.filename").toString()}</th>
-                <th scope="col">{t("common.updated").toString()}</th>
-                <th scope="col">{t("common.size").toString()}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {files.map((file) => (
-                <tr
-                  key={file.id}
-                  title={file.description}
-                  className={cx("cursor-pointer", selected && selected.id === file.id && "table-active")}
-                  onClick={() => {
-                    setSelected(selected && selected.id === file.id ? null : file);
-                  }}
-                >
-                  <td>{!file.isPublic && <FaLock />}</td>
-                  <td>
-                    {file.filename}
-                    <a
-                      className="lin-primary m-2"
-                      href={file.webUrl}
-                      title={t("graph.open.github.file-open-external", {
-                        filename: file.filename,
-                        provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
-                      }).toString()}
-                      target="_blank"
-                      rel="noreferrer"
+          {files.length > 0 && (
+            <>
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">{t("common.filename").toString()}</th>
+                    <th scope="col">{t("common.updated").toString()}</th>
+                    <th scope="col">{t("common.size").toString()}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {files.map((file) => (
+                    <tr
+                      key={file.id}
+                      title={file.description}
+                      className={cx("cursor-pointer", selected && selected.id === file.id && "table-active")}
+                      onClick={() => {
+                        setSelected(selected && selected.id === file.id ? null : file);
+                      }}
                     >
-                      <FaExternalLinkAlt size="0.7em" />
-                    </a>
-                  </td>
-                  <td>{displayDateTime(file.updatedAt)}</td>
-                  <td>{`${byteSize(file.size)}`}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {hasMore && (
-            <div className="d-flex justify-content-center">
-              <button title="Load next page" className="gl-btn gl-btn-outline" onClick={() => setPage(page + 1)}>
-                <FaSync className="me-1" />
-                {t("common.load-more").toString()}
-              </button>
-            </div>
+                      <td>{!file.isPublic && <FaLock />}</td>
+                      <td>
+                        {file.filename}
+                        <a
+                          className="lin-primary m-2"
+                          href={file.webUrl}
+                          title={t("graph.open.github.file-open-external", {
+                            filename: file.filename,
+                            provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+                          }).toString()}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <FaExternalLinkAlt size="0.7em" />
+                        </a>
+                      </td>
+                      <td>{displayDateTime(file.updatedAt)}</td>
+                      <td>{`${byteSize(file.size)}`}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {hasMore && (
+                <div className="d-flex justify-content-center">
+                  <button title="Load next page" className="gl-btn gl-btn-outline" onClick={() => setPage(page + 1)}>
+                    <FaSync className="me-1" />
+                    {t("common.load-more").toString()}
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </>
+          {!loading && files.length === 0 && (
+            <p className="text-info">
+              {t("graph.open.github.no-data", {
+                provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+              }).toString()}
+            </p>
+          )}
+          {loading && <Loader />}
+        </form>
+      ) : (
+        <PleaseSignIn />
       )}
-      {!loading && files.length === 0 && (
-        <p className="text-info">
-          {t("graph.open.github.no-data", {
-            provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
-          }).toString()}
-        </p>
-      )}
-      {loading && <Loader />}
-    </form>
+    </>
   );
 };
 
 export const OpenCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
+  const [user] = useConnectedUser();
 
   useEffect(() => {
     // closing the modal on success
@@ -156,7 +180,7 @@ export const OpenCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
   return (
     <Modal title={t("graph.open.local.title").toString()}>
-      <OpenCloudFileForm id={"remoteFileForm"} onStatusChange={(s) => setStatus(s)} />
+      <>{user ? <OpenCloudFileForm id={"remoteFileForm"} onStatusChange={(s) => setStatus(s)} /> : <PleaseSignIn />}</>
       <div className="gl-gap-2 d-flex">
         <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}
