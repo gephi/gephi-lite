@@ -14,10 +14,8 @@ import {
   BsGithub,
   BsSlashLg,
 } from "react-icons/bs";
-import { GrOverview } from "react-icons/gr";
-import { ImFilesEmpty } from "react-icons/im";
 import { IconBaseProps } from "react-icons/lib/iconBase";
-import { MdLogin, MdLogout, MdOutlineRefresh, MdOutlineSaveAlt } from "react-icons/md";
+import { MdOutlineRefresh } from "react-icons/md";
 import {
   PiArrowSquareOut,
   PiArrowsOut,
@@ -99,15 +97,10 @@ export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
 
 // Need to be replace by PI icons
-export const FileIcon = ImFilesEmpty;
 export const GitHubIcon = BsGithub;
-export const SingInIcon = MdLogin;
-export const SignOutIcon = MdLogout;
-export const ContextIcon = GrOverview;
 export const RetryIcon = MdOutlineRefresh;
 export const DangerIcon = BsExclamationTriangle;
 export const CodeEditorIcon = BsCodeSlash;
-export const SaveIcon = MdOutlineSaveAlt;
 export const RunIcon = BsFillPlayFill;
 
 export const NodeIcon = BsCircle;
