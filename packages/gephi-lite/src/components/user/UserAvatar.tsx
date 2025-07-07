@@ -1,9 +1,9 @@
 import cx from "classnames";
 import { CSSProperties, FC } from "react";
 import { useTranslation } from "react-i18next";
-import { FaUser } from "react-icons/fa";
 
 import { useConnectedUser } from "../../core/user";
+import { UserIcon } from "../common-icons";
 
 export const UserAvatar: FC<{ className?: string; style?: CSSProperties }> = ({ className, style }) => {
   const [user] = useConnectedUser();
@@ -21,7 +21,7 @@ export const UserAvatar: FC<{ className?: string; style?: CSSProperties }> = ({ 
           )}
         </>
       ) : (
-        <FaUser className="default" />
+        <UserIcon className="default" />
       )}
     </div>
   );

@@ -1,10 +1,9 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
 import { FC, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { PiMagnifyingGlass, PiX } from "react-icons/pi";
 import { useNavigate } from "react-router";
 
-import { EditIcon, TrashIcon } from "../../components/common-icons";
+import { CloseIcon, EditIcon, SearchIcon, TrashIcon } from "../../components/common-icons";
 import { EditItemModal } from "../../components/data/EditItem";
 import { EditMultipleItemsModal } from "../../components/data/EditMultipleItems";
 import ConfirmModal from "../../components/modals/ConfirmModal";
@@ -46,10 +45,10 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
         onChange={(e) => setSearch(e.target.value)}
       />
       <button className="btn btn-outline-dark" type="button" onClick={() => onChange("")} disabled={!input}>
-        <PiX />
+        <CloseIcon />
       </button>
       <button className="btn btn-outline-dark" type="submit">
-        <PiMagnifyingGlass />
+        <SearchIcon />
       </button>
     </form>
   );
