@@ -405,10 +405,9 @@
       }
     },
     "save": {
-      "title": "Save graph",
-      "name": "Save",
+      "title": "Save as...",
       "github": {
-        "title": "Save on GitHub as...",
+        "title": "On Github",
         "field": {
           "filename": "Filename",
           "description": "Description",
@@ -418,12 +417,10 @@
         "error": "An error occurred while saving your graph. Please check your connectivity or try later."
       },
       "local": {
-        "title": "Save graph locally",
+        "title": "Locally",
+        "description": "Click below to download the file",
         "success": "Graph has been saved locally",
         "error": "Failed to save the graph locally"
-      },
-      "save": {
-        "title": "Save"
       }
     },
     "export": {
@@ -847,6 +844,7 @@
     "copy": "Copy",
     "created": "Created",
     "delete": "Delete",
+    "download": "Download",
     "edit": "Edit",
     "expand": "Expand",
     "filename": "Filename",
@@ -940,7 +938,7 @@
       "open": "Open...",
       "new": "Create a new workspace",
       "duplicate": "Duplicate in a new tab",
-      "save_as": "Save as",
+      "save_as": "Save as...",
       "save": "Save",
       "export_image": "Export image",
       "export_graph_file": "Export graph file",

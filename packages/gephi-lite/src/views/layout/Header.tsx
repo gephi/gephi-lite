@@ -13,8 +13,9 @@ import { DataIcon, DataIconFill, GraphIcon, GraphIconFill } from "../../componen
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
+import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
 import { OpenModal } from "../../components/modals/open/OpenModal";
-import { ExportPNGModal } from "../../components/modals/save/ExportPNGModal";
+import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import { useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
@@ -87,7 +88,7 @@ export const Header: FC = () => {
           : []),
         {
           label: t("workspace.menu.save_as"),
-          onClick: () => openModal({ component: WelcomeModal, arguments: {} }),
+          onClick: () => openModal({ component: SaveAsModal, arguments: {} }),
         },
         { type: "divider" },
         {
