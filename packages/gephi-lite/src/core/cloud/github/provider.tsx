@@ -1,8 +1,8 @@
 import { notEmpty } from "@gephi/gephi-lite-sdk";
 import { Octokit } from "@octokit/core";
 import { isNil } from "lodash";
-import { FaGithub } from "react-icons/fa";
 
+import { GitHubIcon } from "../../../components/common-icons";
 import { checkFilenameExtension } from "../../../utils/check";
 import { getFilename } from "../../file/utils";
 import { CloudFile, CloudProvider } from "../types";
@@ -19,7 +19,7 @@ export type GistFile =
   | null;
 export class GithubProvider implements CloudProvider {
   type = "github";
-  icon = (<FaGithub />);
+  icon = (<GitHubIcon />);
   octokit: Octokit;
   token: string;
 

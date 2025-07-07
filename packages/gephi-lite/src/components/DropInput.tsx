@@ -2,7 +2,8 @@ import cx from "classnames";
 import React, { FC } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
-import { PiX } from "react-icons/pi";
+
+import { CloseIcon } from "./common-icons";
 
 interface DropInputProperties {
   value: File | null;
@@ -38,7 +39,7 @@ export const DropInput: FC<DropInputProperties> = ({ value, onChange, accept, he
             onChange(null);
           }}
         >
-          <PiX /> {t("common.clear").toString()}
+          <CloseIcon /> {t("common.clear").toString()}
         </button>
       )}
     </div>

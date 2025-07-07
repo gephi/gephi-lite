@@ -2,9 +2,9 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { size } from "lodash";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { PiDotsThreeVertical } from "react-icons/pi";
 
 import Dropdown from "../../../components/Dropdown";
+import { ThreeDotsVerticalIcon } from "../../../components/common-icons";
 import { AttributeLabel } from "../../../components/data/Attribute";
 import { EdgeComponentById } from "../../../components/data/Edge";
 import { EditFieldModelModal } from "../../../components/data/EditFieldModel";
@@ -253,7 +253,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
               ]}
             >
               <button className="btn p-0">
-                <PiDotsThreeVertical />
+                <ThreeDotsVerticalIcon />
               </button>
             </Dropdown>
           </>
