@@ -26,7 +26,8 @@ html {
           height: fit-content;
           width: fit-content;
           > * {
-            @extend .gl-icon-size-text;
+            width: $gl-sys-size-icon-large;
+            height: $gl-sys-size-icon-large;
             display: block;
           }
           svg,

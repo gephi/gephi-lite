@@ -1,6 +1,7 @@
 import { PiGraph } from "react-icons/pi";
 import { PiPolygon } from "react-icons/pi";
 import { PiPolygonFill } from "react-icons/pi";
+import { PiX } from "react-icons/pi";
 
 ## Buttons
 
@@ -206,5 +207,81 @@ There is only one size of button for the moment, which can be refered as 'medium
 No color
 
 ### Guidelines
+
+Buttons styles create hierarchy between actions, ranging from filled to text.
+
+{
+
+<div className="w-auto d-flex gl-gap-4 gl-text-section">
+  <div className="w-33 d-flex flex-column">
+    <div className="d-flex flex-column gl-gap-4 justify-content-start p-5 gl-container-highest-bg">
+      <div className='d-flex gl-gap-2'> 
+        <button className="gl-btn gl-btn-fill">Guess settings</button>
+        <button className="gl-btn gl-btn-outline">Reset</button>
+        <button className="gl-btn gl-btn-fill">
+          <PiPolygon className="" /> Start
+        </button>
+      </div>
+      <div className='gl-border'> </div>
+      <div className="d-flex flex-column gl-gap-3">
+        <div className='d-flex gl-gap-2'>
+        <button className="gl-btn gl-btn-fill">Guess settings</button>
+        <button className="gl-btn gl-btn-outline">Reset</button>
+      </div>
+        <div>
+          <button className="gl-btn gl-btn-fill w-fit">
+            <PiPolygon className=""/> Start
+          </button>
+        </div>
+    </div>
+    </div>
+
+    <div className="gl-p-3">
+      <h6 className="gl-heading-3">
+        <PiX className="me-1" />
+        Do
+      </h6>
+      <p>
+        Don’t use more than one filled buttons in the same group, pannel or modale. Consider presenting low-priority actions in sub-menus or as icon buttons.
+      </p>
+    </div>
+
+  </div>
+  <div className="w-33 d-flex flex-column">
+    <div className="d-flex flex-column gl-gap-4 justify-content-start p-5 gl-container-highest-bg">
+      <div className='d-flex gl-gap-2'> 
+        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiPolygon className="" /></button>
+        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiPolygon className="" /></button>
+        <button className="gl-btn gl-btn-fill">
+          <PiPolygon className="" /> Start
+        </button>
+      </div>
+      <div className='gl-border'> </div>
+      <div className="d-flex flex-column gl-gap-3">
+        <div className='d-flex gl-gap-2'>
+        <button className="gl-btn gl-btn-outline ">Guess settings</button>
+        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiPolygon className="" /></button>
+      </div>
+        <div>
+          <button className="gl-btn gl-btn-fill w-fit">
+            <PiPolygon className=""/> Start
+          </button>
+        </div>
+    </div>
+    </div>
+
+    <div className="gl-p-3">
+      <h6 className="gl-heading-3">
+        <PiX className="me-1" />
+        Do
+      </h6>
+      <p>
+        Chose the main action of your pannel and highlight it with the fill style. Then, depending of the complexity and number of actions, chose what works the best between icon buttons, the outline style or sub menus.<span className='gl-text-muted'> In case of emergency : dropdown.</span>
+      </p>
+    </div>
+
+  </div>
+</div>
+}
 
 Too many buttons on a screen can disrupt the visual hierarchy. Consider placing additional actions in a navigation rail, set of chips, text links, or icon buttons.
