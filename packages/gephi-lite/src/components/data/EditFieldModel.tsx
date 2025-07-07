@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
+import { CancelIcon } from "../common-icons";
 import { BaseOption, Select } from "../forms/Select";
 import { Modal } from "../modals";
 
@@ -97,7 +98,7 @@ export const useEditFieldModelForm = ({
   return {
     submit,
     main: (
-      <>
+      <div className="panel-body">
         <h2>{t(`edition.${!fieldModelId ? "create_" : "update_"}${type}_field`)}</h2>
 
         <div className="panel-block">
@@ -206,24 +207,20 @@ export const useEditFieldModelForm = ({
             </div>
           )}
         </div>
-      </>
+      </div>
     ),
     footer: (
-      <section className="panel-footer">
-        <button
-          type="button"
-          className="gl-btn"
-          onClick={() => {
-            if (onCancel) onCancel();
-          }}
-        >
-          {t("common.cancel")}
-        </button>
+      <div className="panel-footer">
+        <div className="gl-actions">
+          <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+            <CancelIcon />
+          </button>
 
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("datatable.create_column") : t("datatable.modify_column")}
-        </button>
-      </section>
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {isNew ? t("datatable.create_column") : t("datatable.modify_column")}
+          </button>
+        </div>
+      </div>
     ),
   };
 };

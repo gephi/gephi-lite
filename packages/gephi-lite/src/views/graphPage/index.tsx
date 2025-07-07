@@ -134,7 +134,7 @@ export const GraphPage: FC = () => {
       {/* Extended left panel */}
       <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
         {selectedTool && (
-          <div className="panel-body">
+          <>
             <button
               type="button"
               className="gl-btn-close gl-btn"
@@ -144,7 +144,7 @@ export const GraphPage: FC = () => {
               <CloseIcon />
             </button>
             <selectedTool.panel />
-          </div>
+          </>
         )}
       </div>
 
@@ -155,12 +155,10 @@ export const GraphPage: FC = () => {
 
       {/* Right panel */}
       <div className={cx("panel panel-expandable panel-selection", items.size > 0 && "deployed")}>
-        <div className="panel-body">
-          <button type="button" className="gl-btn-close gl-btn" aria-label={t("commons.close")} onClick={() => reset()}>
-            <CloseIcon />
-          </button>
-          {items.size > 0 && <Selection />}
-        </div>
+        <button type="button" className="gl-btn-close gl-btn" aria-label={t("commons.close")} onClick={() => reset()}>
+          <CloseIcon />
+        </button>
+        {items.size > 0 && <Selection />}
       </div>
     </Layout>
   );

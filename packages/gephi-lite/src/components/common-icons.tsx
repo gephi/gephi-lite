@@ -7,16 +7,13 @@ import {
   BsBodyText,
   BsCalendar3,
   BsCircle,
-  BsCodeSlash,
-  BsExclamationTriangle,
-  BsFillPlayFill,
   BsFillTagsFill,
-  BsGithub,
   BsSlashLg,
 } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib/iconBase";
-import { MdOutlineRefresh } from "react-icons/md";
 import {
+  PiArrowClockwise,
+  PiArrowCounterClockwise,
   PiArrowSquareOut,
   PiArrowsOut,
   PiCaretDown,
@@ -26,15 +23,20 @@ import {
   PiChartBar,
   PiChartBarFill,
   PiCheck,
+  PiCheckCircle,
   PiCircleHalf,
   PiCircleHalfFill,
+  PiCode,
   PiDotsThreeVertical,
   PiFunnel,
   PiFunnelFill,
   PiGear,
+  PiGithubLogo,
   PiGpsFix,
   PiGraph,
   PiGraphFill,
+  PiInfo,
+  PiMagicWand,
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
@@ -44,15 +46,21 @@ import {
   PiPaletteFill,
   PiPencilSimpleLine,
   PiPencilSimpleLineFill,
+  PiPlay,
+  PiPlayFill,
   PiPlusCircle,
   PiPlusCircleFill,
   PiPolygon,
   PiPolygonFill,
+  PiStop,
+  PiStopFill,
   PiSun,
   PiSunFill,
   PiTable,
   PiTableFill,
   PiTrash,
+  PiWarning,
+  PiWarningOctagon,
   PiX,
 } from "react-icons/pi";
 
@@ -62,12 +70,14 @@ export const AppearanceIcon = PiPalette;
 export const AppearanceIconFill = PiPaletteFill;
 export const AutoThemeIcon = PiCircleHalf;
 export const AutoThemeSelectedIcon = PiCircleHalfFill;
+export const CancelIcon = PiX;
 export const CaretDownIcon = PiCaretDown;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
 export const CaretUpIcon = PiCaretUp;
 export const CheckedIcon = PiCheck;
 export const CloseIcon = PiX;
+export const CodeEditorIcon = PiCode;
 export const DarkThemeIcon = PiMoonStars;
 export const DarkThemeSelectedIcon = PiMoonStarsFill;
 export const DataCreationIcon = PiPlusCircle;
@@ -82,27 +92,29 @@ export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiArrowsOut;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
+export const GitHubIcon = PiGithubLogo;
+export const GuessSettingsIcon = PiMagicWand;
 export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
 export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
 export const LocateIcon = PiGpsFix;
 export const SearchIcon = PiMagnifyingGlass;
+export const ResetIcon = PiArrowCounterClockwise;
 export const SettingsIcon = PiGear;
+export const PlayIcon = PiPlay;
+export const PlayIconFill = PiPlayFill;
+export const RetryIcon = PiArrowClockwise;
 export const StatisticsIcon = PiChartBar;
 export const StatisticsIconFill = PiChartBarFill;
 export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
 export const TrashIcon = PiTrash;
+export const StopIcon = PiStop;
+export const StopIconFill = PiStopFill;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
 
 // Need to be replace by PI icons
-export const GitHubIcon = BsGithub;
-export const RetryIcon = MdOutlineRefresh;
-export const DangerIcon = BsExclamationTriangle;
-export const CodeEditorIcon = BsCodeSlash;
-export const RunIcon = BsFillPlayFill;
-
 export const NodeIcon = BsCircle;
 export const EdgeIcon = BsSlashLg;
 export const ItemIcons: Record<ItemType, IconType> = {
@@ -125,3 +137,10 @@ export const FieldModelIcon: FC<IconBaseProps & { type: FieldModelType }> = ({ t
   }
   return <Icon {...props} />;
 };
+
+export const STATUS_ICONS = {
+  success: PiCheckCircle,
+  info: PiInfo,
+  warning: PiWarning,
+  error: PiWarningOctagon,
+} as const;

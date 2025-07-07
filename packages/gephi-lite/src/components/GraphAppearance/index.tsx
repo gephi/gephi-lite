@@ -15,7 +15,7 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
   const { setShowEdges } = useAppearanceActions();
 
   return (
-    <>
+    <div className="panel-body">
       <h2>{t(`appearance.menu.${itemType}`)}</h2>
 
       {itemType === "edges" && (
@@ -46,7 +46,7 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
       )}
 
       {itemType === "edges" && <EdgesZIndexItem />}
-    </>
+    </div>
   );
 };
 
@@ -56,7 +56,7 @@ export const GraphGraphAppearance: FC<unknown> = () => {
   const { setBackgroundColorAppearance, setLayoutGridColorAppearance } = useAppearanceActions();
 
   return (
-    <>
+    <div className="panel-body">
       <h2>{t("appearance.menu.background")}</h2>
 
       <div className="panel-block">
@@ -80,6 +80,6 @@ export const GraphGraphAppearance: FC<unknown> = () => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };

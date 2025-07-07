@@ -11,7 +11,7 @@ import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { Scalar } from "../../core/types";
 import { GraphSearch } from "../GraphSearch";
-import { FieldModelIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
 
@@ -151,7 +151,7 @@ const useEditEdgeForm = ({
   return {
     submit,
     main: (
-      <>
+      <div className="panel-body">
         <h2>{isNew ? t("edition.create_edges") : t("edition.update_edges")}</h2>
         <div className="panel-block">
           <div>
@@ -288,18 +288,20 @@ const useEditEdgeForm = ({
             </div>
           ))}
         </div>
-      </>
+      </div>
     ),
     footer: (
-      <section className="panel-footer">
-        <button type="button" className="gl-btn" onClick={() => onCancel()}>
-          {t("common.cancel")}
-        </button>
+      <div className="panel-footer">
+        <div className="gl-actions">
+          <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+            <CancelIcon />
+          </button>
 
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("edition.create_edges") : t("edition.update_edges")}
-        </button>
-      </section>
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {isNew ? t("edition.create_edges") : t("edition.update_edges")}
+          </button>
+        </div>
+      </div>
     ),
   };
 };

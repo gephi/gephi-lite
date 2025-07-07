@@ -131,7 +131,7 @@ const VisualizeAmbiguityForm: FC<{
       <p className="gl-text-muted">{t("statistics.mixed.louvainEdgeAmbiguity.preview_description")}</p>
       <button
         type="button"
-        className="gl-btn gl-btn-outline w-100"
+        className="gl-btn gl-btn-outline w-100 flex-column"
         onClick={() =>
           openInNewTab({
             dataset,

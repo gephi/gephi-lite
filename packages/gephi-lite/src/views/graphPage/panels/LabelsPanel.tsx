@@ -20,11 +20,11 @@ const LabelItemSettings: FC<{ itemType: ItemType }> = ({ itemType }) => {
 export const LabelsPanel: FC = () => {
   const { t } = useTranslation();
   return (
-    <>
+    <div className="panel-body">
       <h2>{t("appearance.menu.labels")}</h2>
 
       <LabelItemSettings itemType="nodes" />
       <LabelItemSettings itemType="edges" />
-    </>
+    </div>
   );
 };
