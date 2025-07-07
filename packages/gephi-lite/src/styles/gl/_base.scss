@@ -74,6 +74,22 @@ html {
           justify-content: start;
         }
       }
+
+      .gl-tooltip {
+        color: var(--gl-tooltip-color);
+        background-color: var(--gl-tooltip-bg);
+      }
+
+      .gl-alert-success,
+      .gl-alert-info,
+      .gl-alert-warning,
+      .gl-alert-error {
+        background-color: color-mix(
+          in hsl,
+          var(--gl-container-highest-bg),
+          var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+        );
+      }
     }
   }
 }

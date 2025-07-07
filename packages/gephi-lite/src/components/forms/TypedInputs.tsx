@@ -28,9 +28,12 @@ export const NumberInput: FC<
 > = ({ id, label, description, value, onChange, className, defaultValue, ...attrs }) => {
   return (
     <>
-      <label htmlFor={id} className="form-check-label">
-        {label}
-      </label>
+      <div className="d-flex gl-gap-1 align-items-center">
+        <label htmlFor={id} className="form-check-label">
+          {label}
+        </label>
+        {description && <MessageTooltip message={description} />}
+      </div>
       <input
         {...attrs}
         type="number"
@@ -39,13 +42,13 @@ export const NumberInput: FC<
         value={typeof value === "number" ? value : defaultValue || ""}
         onChange={(e) => onChange(isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber)}
       />
-      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };
 
 export const SliderInput: FC<
   {
+    id?: string;
     value: number | null;
     onChange: (v: number) => void;
     min: number;
@@ -53,7 +56,7 @@ export const SliderInput: FC<
     step: number;
     marks?: Record<string | number, React.ReactNode | MarkObj>;
   } & Omit<BaseTypedInputProps, "id">
-> = ({ label, description, value, onChange, min, max, marks, step }) => {
+> = ({ id, label, description, value, onChange, min, max, marks, step }) => {
   const validMin = useMemo(() => Math.min(min, max), [min, max]);
   const validMax = useMemo(() => Math.max(min, max), [min, max]);
   const validValue = useMemo(() => {
@@ -63,9 +66,15 @@ export const SliderInput: FC<
 
   return (
     <>
-      <label className="form-check-label">{label}</label>
+      <div className="d-flex gl-gap-1 align-items-center">
+        <label htmlFor={id} className="form-check-label">
+          {label}
+        </label>
+        {description && <MessageTooltip message={description} />}
+      </div>
       <div className="pb-3">
         <Slider
+          id={id}
           value={validValue}
           min={validMin}
           max={validMax}
@@ -86,7 +95,6 @@ export const SliderInput: FC<
           {...SLIDER_STYLE}
         />
       </div>
-      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };
@@ -97,9 +105,12 @@ export const StringInput: FC<
 > = ({ id, label, description, value, onChange, className, warning, ...attrs }) => {
   return (
     <>
-      <label htmlFor={id} className="form-check-label">
-        {label}
-      </label>
+      <div className="d-flex gl-gap-1 align-items-center">
+        <label htmlFor={id} className="form-check-label">
+          {label}
+        </label>
+        {description && <MessageTooltip message={description} />}
+      </div>
       <div className="position-relative">
         <input
           {...attrs}
@@ -118,7 +129,6 @@ export const StringInput: FC<
           />
         )}
       </div>
-      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };
@@ -138,11 +148,13 @@ export const BooleanInput: FC<
           defaultChecked={!!value}
           onChange={(e) => onChange(e.target.checked)}
         />
-        <label htmlFor={id} className="form-check-label ms-1">
-          {label}
-        </label>
+        <div className="d-flex gl-gap-1 align-items-center">
+          <label htmlFor={id} className="form-check-label">
+            {label}
+          </label>
+          {description && <MessageTooltip message={description} />}
+        </div>
       </div>
-      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };
@@ -166,9 +178,12 @@ export const EnumInput: FC<
 
   return (
     <>
-      <label htmlFor={id} className="form-check-label ">
-        {label}
-      </label>
+      <div className="d-flex gl-gap-1 align-items-center">
+        <label htmlFor={id} className="form-check-label">
+          {label}
+        </label>
+        {description && <MessageTooltip message={description} />}
+      </div>
       <Select<EnumOption>
         isDisabled={disabled}
         isClearable={!required}
@@ -178,7 +193,6 @@ export const EnumInput: FC<
         options={options}
         onChange={(o) => onChange(o?.value || null)}
       />
-      {description && <p className="form-text gl-text-muted gl-m-0">{description}</p>}
     </>
   );
 };

@@ -26,6 +26,7 @@ import {
   PiCheckCircle,
   PiCircleHalf,
   PiCircleHalfFill,
+  PiClipboard,
   PiCode,
   PiDotsThreeVertical,
   PiFunnel,
@@ -76,6 +77,7 @@ export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
 export const CaretUpIcon = PiCaretUp;
 export const CheckedIcon = PiCheck;
+export const ClipboardIcon = PiClipboard;
 export const CloseIcon = PiX;
 export const CodeEditorIcon = PiCode;
 export const DarkThemeIcon = PiMoonStars;

@@ -36,9 +36,9 @@ export const SaveLocally: FC<SaveCLocallyProps> = ({ id, onStatusChange }) => {
   }, [current?.filename, onStatusChange, exportAsGephiLite, notify, t]);
 
   return (
-    <div id={id} className="text-center">
+    <div id={id} className="d-flex flex-column  justify-content-center align-items-center">
       <p>{t("graph.save.local.description")}</p>
-      <button className="gl-btn gl-btn-fill" onClick={download}>
+      <button className="gl-btn gl-btn-fill " onClick={download}>
         {t("common.download")}
       </button>
     </div>

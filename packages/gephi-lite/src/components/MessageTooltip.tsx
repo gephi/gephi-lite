@@ -36,7 +36,13 @@ const MessageTooltip: FC<{
   }, []);
 
   return (
-    <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
+    <Tooltip
+      ref={tooltipRef}
+      hoverable
+      attachment="bottom middle"
+      targetAttachment="top middle"
+      targetClassName={className}
+    >
       <button
         type="button"
         className="gl-btn gt-btn-icon p-0 text"
@@ -44,7 +50,7 @@ const MessageTooltip: FC<{
           if (timeout) window.clearTimeout(timeout);
         }}
       >
-        <IconComponent className={cx(`text-${type}`, iconClassName)} />
+        <IconComponent className={cx(iconClassName)} />
       </button>
       <div
         className="tooltip show bs-tooltip-top p-0 mx-2"
@@ -53,7 +59,7 @@ const MessageTooltip: FC<{
           if (timeout) window.clearTimeout(timeout);
         }}
       >
-        <div className={cx("tooltip-inner", `bg-${type} text-bg-${type}`)}>{message}</div>
+        <div className={cx("tooltip-inner", `gl-tooltip`)}>{message}</div>
       </div>
     </Tooltip>
   );

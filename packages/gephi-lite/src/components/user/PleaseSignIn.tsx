@@ -8,7 +8,7 @@ export const PleaseSignIn: FC = () => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   return (
-    <div className="text-center">
+    <div className="d-flex flex-column  justify-content-center align-items-center">
       <p>{t("graph.open.github.must-be-signed")}</p>
       <button onClick={() => openModal({ component: GithubLoginModal, arguments: {} })} className="gl-btn gl-btn-fill">
         {t("workspace.menu.github_signin")}

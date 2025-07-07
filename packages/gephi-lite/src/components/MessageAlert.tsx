@@ -30,7 +30,7 @@ const MessageAlert: FC<{
     <>
       {open ? (
         <div
-          className={cx("alert gl-m-0", `alert-${type} position-relative`, className)}
+          className={cx("alert gl-m-0", `gl-alert-${type} position-relative`, className)}
           role="alert"
           onMouseEnter={() => {
             if (timeout) window.clearTimeout(timeout);

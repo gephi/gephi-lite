@@ -1,12 +1,12 @@
 import copy from "copy-to-clipboard";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsClipboard, BsGithub } from "react-icons/bs";
 
 import { useGithubAuth } from "../../core/cloud/github/useGithubAuth";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { Loader, Spinner } from "../Loader";
+import { ClipboardIcon } from "../common-icons";
 import { Modal } from "../modals";
 
 export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
@@ -29,15 +29,7 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
   }, [user, submit]);
 
   return (
-    <Modal
-      title={
-        <>
-          <BsGithub className="me-1" />
-          {t("cloud.github.auth.title")}
-        </>
-      }
-      onClose={() => cancel()}
-    >
+    <Modal title={t("cloud.github.auth.title")} onClose={() => cancel()}>
       <>
         {/* Display the error*/}
         {error && <p className="text-danger">{error}</p>}
@@ -62,7 +54,7 @@ export const GithubLoginModal: FC<ModalProps<unknown>> = ({ cancel, submit }) =>
                   notify({ type: "success", message: t("cloud.github.auth.copy_success").toString() });
                 }}
               >
-                <BsClipboard className="me-1" /> {t("common.copy")}
+                <ClipboardIcon className="me-1" /> {t("common.copy")}
               </button>
             </div>
           </div>
