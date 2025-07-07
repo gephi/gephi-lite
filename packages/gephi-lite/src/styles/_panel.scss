@@ -33,7 +33,8 @@ $panel-width: $gl-sys-size-container-large;
     .panel-body {
       @extend .gl-p-3;
       @extend .gl-gap-4;
-      padding-top: 2em;
+      margin-top: 2em;
+      padding-top: 0;
     }
 
     .panel-body,
