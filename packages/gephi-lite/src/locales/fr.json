@@ -16,7 +16,7 @@
   "error": {
     "title": "Erreur",
     "unknown": "Une erreur inconnue s'est produite.",
-    "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur github en cliquant sur le bouton ci-dessous.",
+    "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur GitHub en cliquant sur le bouton ci-dessous.",
     "report": "Signaler l'erreur",
     "retry": "Ré-essayer",
     "not_found": {
@@ -343,9 +343,9 @@
         "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier votre connexion et vous assurer que le fichier est valide."
       },
       "github": {
-        "title": "Ouvrir un fichier depuis Github",
-        "no-data": "Vous n'avez aucun fichier GEXF, GRAPHML ou JSON au format Graphology d'enregistré sur Github",
-        "file-open-external": "Ouvrir {{filename}} sur Github",
+        "title": "Ouvrir un fichier depuis GitHub",
+        "no-data": "Vous n'avez aucun fichier GEXF, GRAPHML ou JSON au format Graphology d'enregistré sur GitHub",
+        "file-open-external": "Ouvrir {{filename}} sur GitHub",
         "select-file": "Sélectionner un fichier",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement."
@@ -360,7 +360,7 @@
       "title": "Enregistrer le graphe",
       "name": "Enregistrer",
       "github": {
-        "title": "Enregistrer dans Github sous...",
+        "title": "Enregistrer dans GitHub sous...",
         "field": {
           "filename": "Nom du fichier",
           "description": "Description",

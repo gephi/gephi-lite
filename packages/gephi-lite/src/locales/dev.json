@@ -13,12 +13,12 @@
     "title": "Gephi Lite",
     "info": "More info on Gephi Lite",
     "open_welcome_modal": "Open welcome modal",
-    "github_link": "Gephi Lite on github"
+    "github_link": "Gephi Lite on GitHub"
   },
   "error": {
     "title": "Error",
     "unknown": "An unknown error has occurred.",
-    "message": "Sorry, we are working to make gephi-lite better, but bugs still happened...<br />It will help us if you can open an issue on github with a description of what you were doing.",
+    "message": "Sorry, we are working to make gephi-lite better, but bugs still happened...<br />It will help us if you can open an issue on GitHub with a description of what you were doing.",
     "retry": "Retry",
     "reset": "Reset everything",
     "report": "Report error",
@@ -390,10 +390,10 @@
         "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid."
       },
       "github": {
-        "must-be-signed": "This feature requires to be connected on github",
-        "title": "Open a file from Github",
-        "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on Github",
-        "file-open-external": "Open {{filename}} on Github",
+        "must-be-signed": "This feature requires to be connected on GitHub",
+        "title": "Open a file from GitHub",
+        "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on GitHub",
+        "file-open-external": "Open {{filename}} on GitHub",
         "select-file": "Select a file",
         "success": "File {{filename}} has been successfully loaded",
         "error": "A technical error occurred. Please check your connectivity or try later."
@@ -408,7 +408,7 @@
       "title": "Save graph",
       "name": "Save",
       "github": {
-        "title": "Save on Github as...",
+        "title": "Save on GitHub as...",
         "field": {
           "filename": "Filename",
           "description": "Description",
@@ -878,16 +878,16 @@
       "title": "GitHub",
       "auth": {
         "title": "GitHub authentification",
-        "asking_for_device_code": "Asking github for device code",
+        "asking_for_device_code": "Asking GitHub for device code",
         "copy_code": "Copy the code below, and click on \"Open GitHub\" button. It will opened a new tab, on which GitHub will ask you the code",
         "copy_success": "Code saved in clipboard",
         "waiting_validation": "Waiting validation"
       },
       "disconnect": {
-        "title": "Disconnect from github?",
-        "message": "Are you sure you want to disconnect gephi-lite from github?",
+        "title": "Disconnect from GitHub?",
+        "message": "Are you sure you want to disconnect gephi-lite from GitHub?",
         "action": "Disconnect",
-        "success": "You have been disconnected fom github"
+        "success": "You have been disconnected fom GitHub"
       }
     }
   },
@@ -944,8 +944,8 @@
       "save": "Save",
       "export_image": "Export image",
       "export_graph_file": "Export graph file",
-      "github_signin": "Link to Github",
-      "github_signout": "Disconnect from github"
+      "github_signin": "Link to GitHub",
+      "github_signout": "Disconnect from GitHub"
     }
   }
 }
