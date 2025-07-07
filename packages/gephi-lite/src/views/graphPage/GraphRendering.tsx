@@ -3,12 +3,16 @@ import { createNodeImageProgram } from "@sigma/node-image";
 import cx from "classnames";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AiOutlineFullscreen, AiOutlineFullscreenExit } from "react-icons/ai";
-import { BsZoomIn, BsZoomOut } from "react-icons/bs";
-import { FaRegDotCircle } from "react-icons/fa";
 import { Settings } from "sigma/settings";
 
 import GraphCaption from "../../components/GraphCaption";
+import {
+  ExitFullScreenIcon,
+  FullScreenIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+  ZoomResetIcon,
+} from "../../components/common-icons";
 import {
   useAppearance,
   useLayoutState,
@@ -65,21 +69,21 @@ const InteractionsController: FC = () => {
         onClick={() => sigma.getCamera().animatedZoom(zoomOptions)}
         title={t("graph.control.zoomIn").toString()}
       >
-        <BsZoomIn />
+        <ZoomInIcon />
       </button>
       <button
         className={btnClassName}
         onClick={() => sigma.getCamera().animatedUnzoom(zoomOptions)}
         title={t("graph.control.zoomOut").toString()}
       >
-        <BsZoomOut />
+        <ZoomOutIcon />
       </button>
       <button
         className={btnClassName}
         onClick={() => resetCamera({ forceRefresh: true, source: "sigma" })}
         title={t("graph.control.zoomReset").toString()}
       >
-        <FaRegDotCircle />
+        <ZoomResetIcon />
       </button>
       <button
         className={btnClassName}
@@ -88,7 +92,7 @@ const InteractionsController: FC = () => {
           isFullScreen ? t("graph.control.fullscreenExit").toString() : t("graph.control.fullscreenEnter").toString()
         }
       >
-        {isFullScreen ? <AiOutlineFullscreenExit /> : <AiOutlineFullscreen />}
+        {isFullScreen ? <ExitFullScreenIcon /> : <FullScreenIcon />}
       </button>
     </div>
   );

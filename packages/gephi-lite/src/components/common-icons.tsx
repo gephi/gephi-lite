@@ -15,6 +15,7 @@ import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowSquareOut,
+  PiArrowsIn,
   PiArrowsOut,
   PiCaretDown,
   PiCaretLeft,
@@ -89,6 +90,7 @@ export const DataIconFill = PiTableFill;
 export const ExternalLinkIcon = PiArrowSquareOut;
 export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
+export const ExitFullScreenIcon = PiArrowsIn;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiArrowsOut;
@@ -115,6 +117,7 @@ export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
+export const ZoomResetIcon = PiArrowCounterClockwise;
 
 // Need to be replace by PI icons
 export const NodeIcon = BsCircle;
