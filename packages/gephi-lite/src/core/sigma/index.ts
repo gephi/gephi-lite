@@ -80,6 +80,13 @@ export const resetHighlightedNodes: Producer<SigmaState, []> = () => {
   });
 };
 
+export const setCursor: Producer<SigmaState, [SigmaState["customCursor"]]> = (cursor) => {
+  return (state) => ({
+    ...state,
+    customCursor: cursor,
+  });
+};
+
 /**
  * Public API:
  * ***********
@@ -164,6 +171,7 @@ export const sigmaActions = {
   resetHoveredEdge: producerToAction(resetHoveredEdge, sigmaStateAtom),
   setHighlightedNodes: producerToAction(setHighlightedNodes, sigmaStateAtom),
   resetHighlightedNodes: producerToAction(resetHighlightedNodes, sigmaStateAtom),
+  setCursor: producerToAction(setCursor, sigmaStateAtom),
 } as const;
 
 const ANIMATION_DURATION = 500;

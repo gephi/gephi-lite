@@ -115,7 +115,7 @@ export const AtomsContextsRoot: FC<{ children?: ReactNode }> = ({ children }) =>
 export const resetStates: Action<[boolean]> = (full = false) => {
   dataTableActions.reset();
   filtersActions.resetFilters();
-  selectionActions.reset();
+  selectionActions.emptySelection();
   appearanceActions.resetState();
   sigmaActions.resetState();
   searchActions.reset();

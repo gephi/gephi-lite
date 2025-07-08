@@ -104,7 +104,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
 export const GraphPage: FC = () => {
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
   const { items } = useSelection();
-  const { reset } = useSelectionActions();
+  const { emptySelection } = useSelectionActions();
   const { t } = useTranslation();
 
   return (
@@ -155,7 +155,7 @@ export const GraphPage: FC = () => {
 
       {/* Right panel */}
       <div className={cx("panel panel-expandable panel-selection", items.size > 0 && "deployed")}>
-        <button type="button" className="gl-btn-close gl-btn" aria-label={t("commons.close")} onClick={() => reset()}>
+        <button type="button" className="gl-btn-close gl-btn" aria-label={t("commons.close")} onClick={() => emptySelection()}>
           <CloseIcon />
         </button>
         {items.size > 0 && <Selection />}

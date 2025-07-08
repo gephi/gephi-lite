@@ -2,7 +2,7 @@ import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { without } from "lodash";
 
 import { ItemType } from "../types";
-import { SelectionState } from "./types";
+import { GraphSelectionMode, SelectionState } from "./types";
 import { getEmptySelectionState } from "./utils";
 
 /**
@@ -43,6 +43,14 @@ export const toggle: Producer<SelectionState, [{ type: ItemType; item: string }]
   });
 };
 
+export const setMode: Producer<SelectionState, [GraphSelectionMode]> = (mode) => {
+  return (state) => ({ ...state, graphSelectionMode: mode });
+};
+
+export const emptySelection: Producer<SelectionState, []> = () => {
+  return (state) => ({ ...state, items: new Set() });
+};
+
 export const reset: Producer<SelectionState, []> = () => {
   return () => getEmptySelectionState();
 };
@@ -57,5 +65,7 @@ export const selectionActions = {
   select: producerToAction(select, selectionAtom),
   unselect: producerToAction(unselect, selectionAtom),
   toggle: producerToAction(toggle, selectionAtom),
+  setMode: producerToAction(setMode, selectionAtom),
+  emptySelection: producerToAction(emptySelection, selectionAtom),
   reset: producerToAction(reset, selectionAtom),
 } as const;

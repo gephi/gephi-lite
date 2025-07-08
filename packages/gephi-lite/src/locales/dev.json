@@ -89,7 +89,10 @@
     "edge_no_label": "(Empty label)",
     "locate_on_graph": "Locate on the graph",
     "open_in_data": "Show in Data",
-    "open_in_graph": "Show in Graph"
+    "open_in_graph": "Show in Graph",
+    "cursor": "Simple selection",
+    "marquee": "Rectangle selection",
+    "lasso": "Lasso selection"
   },
   "appearance": {
     "title": "Appearance",

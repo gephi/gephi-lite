@@ -9,6 +9,7 @@ import GraphCaption from "../../components/GraphCaption";
 import {
   ExitFullScreenIcon,
   FullScreenIcon,
+  GraphSelectionModeIcon,
   ZoomInIcon,
   ZoomOutIcon,
   ZoomResetIcon,
@@ -16,16 +17,19 @@ import {
 import {
   useAppearance,
   useLayoutState,
+  useSelection,
+  useSelectionActions,
   useSigmaAtom,
   useSigmaGraph,
   useSigmaState,
 } from "../../core/context/dataContexts";
+import { GRAPH_SELECTION_MODES } from "../../core/selection/types";
 import { resetCamera } from "../../core/sigma";
 import NodeProgramBorder from "../../utils/bordered-node-program";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { EventsController } from "./controllers/EventsController";
 import { GridController } from "./controllers/GridController";
-import { MarqueeController } from "./controllers/MarqueeController";
+import { SelectionController } from "./controllers/SelectionController";
 import { SettingsController } from "./controllers/SettingsController";
 
 function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
@@ -56,41 +60,54 @@ function useFullScreen(): { toggle: () => void; isFullScreen: boolean } {
 
 const InteractionsController: FC = () => {
   const { t } = useTranslation();
+  const { setMode } = useSelectionActions();
+  const { graphSelectionMode } = useSelection();
   const { isFullScreen, toggle } = useFullScreen();
   const sigma = useSigmaAtom();
 
-  const btnClassName = "gl-btn gl-btn-icon gl-btn-fill";
+  const btnClassName = "gl-btn gl-btn-icon gl-btn-outline bg-white";
   const zoomOptions = { duration: 200, factor: 1.5 };
 
   return (
     <div className="position-absolute d-flex flex-column sigma-controls gl-gap-1" style={{ right: 10, bottom: 10 }}>
+      {GRAPH_SELECTION_MODES.map((mode) => (
+        <button
+          key={mode}
+          className={cx("gl-btn gl-btn-icon", mode === graphSelectionMode ? "gl-btn-fill" : "gl-btn-outline bg-white")}
+          onClick={() => setMode(mode)}
+          title={t(`selection.${mode}`)}
+        >
+          <GraphSelectionModeIcon mode={mode} fill={mode === graphSelectionMode} />
+        </button>
+      ))}
+
+      <br className="mb-2" />
+
       <button
         className={btnClassName}
         onClick={() => sigma.getCamera().animatedZoom(zoomOptions)}
-        title={t("graph.control.zoomIn").toString()}
+        title={t("graph.control.zoomIn")}
       >
         <ZoomInIcon />
       </button>
       <button
         className={btnClassName}
         onClick={() => sigma.getCamera().animatedUnzoom(zoomOptions)}
-        title={t("graph.control.zoomOut").toString()}
+        title={t("graph.control.zoomOut")}
       >
         <ZoomOutIcon />
       </button>
       <button
         className={btnClassName}
         onClick={() => resetCamera({ forceRefresh: true, source: "sigma" })}
-        title={t("graph.control.zoomReset").toString()}
+        title={t("graph.control.zoomReset")}
       >
         <ZoomResetIcon />
       </button>
       <button
         className={btnClassName}
         onClick={() => toggle()}
-        title={
-          isFullScreen ? t("graph.control.fullscreenExit").toString() : t("graph.control.fullscreenEnter").toString()
-        }
+        title={isFullScreen ? t("graph.control.fullscreenExit") : t("graph.control.fullscreenEnter")}
       >
         {isFullScreen ? <ExitFullScreenIcon /> : <FullScreenIcon />}
       </button>
@@ -110,7 +127,7 @@ export const GraphRendering: FC = () => {
   const { backgroundColor, layoutGridColor } = useAppearance();
   const sigmaGraph = useSigmaGraph();
   const { quality } = useLayoutState();
-  const { hoveredNode, hoveredEdge } = useSigmaState();
+  const { hoveredNode, hoveredEdge, customCursor } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
   const setReady = useCallback(() => {
     setIsReady(true);
@@ -148,7 +165,10 @@ export const GraphRendering: FC = () => {
   return (
     <>
       <SigmaContainer
-        className={cx(!isReady && "visually-hidden", (hoveredNode || hoveredEdge) && "cursor-pointer")}
+        className={cx(
+          !isReady && "visually-hidden",
+          customCursor ? `cursor-${customCursor}` : (hoveredNode || hoveredEdge) && "cursor-pointer",
+        )}
         style={{ backgroundColor }}
         graph={sigmaGraph}
         settings={sigmaSettings}
@@ -164,7 +184,7 @@ export const GraphRendering: FC = () => {
               color={layoutGridColor}
             />
           )}
-          <MarqueeController />
+          <SelectionController />
         </div>
         <InteractionsController />
         <GraphCaptionLayer />
