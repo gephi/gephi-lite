@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
-import { CloseIcon, EditIcon, SearchIcon, TrashIcon } from "../../components/common-icons";
+import { CloseIcon, EditIcon, SearchIcon, TrashIcon, UnselectAllIcon } from "../../components/common-icons";
 import { EditItemModal } from "../../components/data/EditItem";
 import { EditMultipleItemsModal } from "../../components/data/EditMultipleItems";
 import ConfirmModal from "../../components/modals/ConfirmModal";
@@ -13,6 +13,7 @@ import {
   useGraphDataset,
   useGraphDatasetActions,
   useSelection,
+  useSelectionActions,
 } from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { useModal } from "../../core/modals";
@@ -62,6 +63,7 @@ export const TopBar: FC = () => {
   const { emitter } = useEventsContext();
   const { updateQuery } = useDataTableActions();
   const { fullGraph } = useGraphDataset();
+  const { emptySelection } = useSelectionActions();
   const { deleteItems } = useGraphDatasetActions();
   const { type: selectionType, items } = useSelection();
   const selectionActionDisabled = selectionType !== type || !items.size;
@@ -135,6 +137,14 @@ export const TopBar: FC = () => {
               }
             >
               <TrashIcon />
+            </button>
+            <button
+              className="gl-btn gl-btn-icon gl-btn-outline"
+              title={t(`selection.unselect_all`)}
+              disabled={selectionActionDisabled}
+              onClick={() => emptySelection()}
+            >
+              <UnselectAllIcon />
             </button>
           </>
         )}

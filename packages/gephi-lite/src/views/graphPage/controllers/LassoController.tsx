@@ -5,40 +5,106 @@ import { Coordinates } from "sigma/types";
 
 import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
 
-const MarqueeDisplay: FC<{ firstCorner: Coordinates; lastCorner: Coordinates }> = ({ firstCorner, lastCorner }) => {
-  const x = Math.min(firstCorner.x, lastCorner.x);
-  const y = Math.min(firstCorner.y, lastCorner.y);
-  const width = Math.abs(firstCorner.x - lastCorner.x);
-  const height = Math.abs(firstCorner.y - lastCorner.y);
+/**
+ * This helper uses the Ray casting algorithm:
+ * https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm
+ */
+const isPointInPolygon = (point: Coordinates, polygon: Coordinates[]): boolean => {
+  let inside = false;
+  const { x, y } = point;
 
+  for (let i = 0; i < polygon.length; i++) {
+    const current = polygon[i];
+    const next = polygon[(i + 1) % polygon.length];
+
+    const edgeCrossesRay = current.y > y !== next.y > y;
+
+    if (edgeCrossesRay) {
+      const intersectionX = ((next.x - current.x) * (y - current.y)) / (next.y - current.y) + current.x;
+      if (x < intersectionX) {
+        inside = !inside;
+      }
+    }
+  }
+
+  return inside;
+};
+
+const distancePointToLineSegment = (point: Coordinates, lineStart: Coordinates, lineEnd: Coordinates): number => {
+  const { x: px, y: py } = point;
+  const { x: x1, y: y1 } = lineStart;
+  const { x: x2, y: y2 } = lineEnd;
+
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+
+  // If line segment has zero length, return distance to point
+  if (dx === 0 && dy === 0) return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
+
+  // Calculate parameter t for closest point on line segment
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
+
+  // Calculate closest point on line segment
+  const closestX = x1 + t * dx;
+  const closestY = y1 + t * dy;
+
+  // Return distance from point to closest point
+  return Math.sqrt((px - closestX) ** 2 + (py - closestY) ** 2);
+};
+
+const doCollide = (center: Coordinates, radius: number, polygon: Coordinates[]): boolean => {
+  if (polygon.length < 3) return false; // Need at least 3 points for a polygon
+
+  // Check if circle center is inside polygon
+  if (isPointInPolygon(center, polygon)) return true;
+
+  // Check if circle intersects any edge of the polygon
+  for (let i = 0; i < polygon.length; i++) {
+    const current = polygon[i];
+    const next = polygon[(i + 1) % polygon.length];
+
+    const distanceToEdge = distancePointToLineSegment(center, current, next);
+
+    if (distanceToEdge <= radius) return true;
+  }
+
+  return false;
+};
+
+const LassoDisplay: FC<{ points: Coordinates[] }> = ({ points }) => {
   return (
     <div style={{ position: "absolute", inset: 0 }}>
       <svg width="100%" height="100%">
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={height}
+        <path
+          d={points.map(({ x, y }, i) => `${i === 0 ? "M" : "L"}${x} ${y}`).join(" ")}
           stroke="grey"
           fill="transparent"
           strokeWidth={2}
           strokeDasharray={6}
         />
+        {points.length > 1 && (
+          <path
+            d={`M ${points.at(0)!.x} ${points.at(0)!.y} L ${points.at(-1)!.x} ${points.at(-1)!.y}`}
+            stroke="grey"
+            fill="transparent"
+            strokeWidth={1}
+            strokeDasharray={6}
+          />
+        )}
       </svg>
     </div>
   );
 };
 
-export const MarqueeController: FC = () => {
+export const LassoController: FC = () => {
   const sigma = useSigma();
   const registerEvents = useRegisterEvents();
   const selectionRef = useRef<
     | { type: "idle"; spaceKeyDown: boolean }
     | {
-        type: "marquee";
+        type: "lasso";
         ctrlKeyDown: boolean;
-        startCorner: Coordinates;
-        mouseCorner: Coordinates;
+        points: Coordinates[];
         capturedNodes: string[];
       }
   >({ type: "idle", spaceKeyDown: false });
@@ -55,21 +121,14 @@ export const MarqueeController: FC = () => {
   useEffect(() => {
     registerEvents({
       mousemovebody: (e) => {
-        if (selectionRef.current.type === "marquee") {
+        if (selectionRef.current.type === "lasso") {
           const mousePosition = pick(e, "x", "y") as Coordinates;
 
           const graph = sigma.getGraph();
-          const start = sigma.viewportToGraph(selectionRef.current.startCorner);
-          const end = sigma.viewportToGraph(mousePosition);
-
-          const minX = Math.min(start.x, end.x);
-          const minY = Math.min(start.y, end.y);
-          const maxX = Math.max(start.x, end.x);
-          const maxY = Math.max(start.y, end.y);
-
+          const polygon = selectionRef.current.points.map(({ x, y }) => sigma.viewportToGraph({ x, y }));
           const capturedNodes = graph.filterNodes((node, { x, y }) => {
             const size = sigma.getNodeDisplayData(node)!.size as number;
-            return !(x + size < minX || x - size > maxX || y + size < minY || y - size > maxY);
+            return doCollide({ x, y }, size, polygon);
           });
 
           setEmphasizedNodes(
@@ -81,7 +140,7 @@ export const MarqueeController: FC = () => {
           );
           selectionRef.current = {
             ...selectionRef.current,
-            mouseCorner: mousePosition,
+            points: selectionRef.current.points.concat(mousePosition),
             capturedNodes,
           };
         }
@@ -94,9 +153,8 @@ export const MarqueeController: FC = () => {
             const mousePosition: Coordinates = pick(e.event, "x", "y");
 
             selectionRef.current = {
-              type: "marquee",
-              startCorner: mousePosition,
-              mouseCorner: mousePosition,
+              type: "lasso",
+              points: [mousePosition],
               ctrlKeyDown: e.event.original.ctrlKey,
               capturedNodes: [],
             };
@@ -126,8 +184,10 @@ export const MarqueeController: FC = () => {
           setCursor(undefined);
         }
       } else {
-        selectionRef.current = { ...selectionRef.current, ctrlKeyDown: false };
-        setEmphasizedNodes(new Set(selectionRef.current.capturedNodes));
+        if (e.key === "Control") {
+          selectionRef.current = { ...selectionRef.current, ctrlKeyDown: false };
+          setEmphasizedNodes(new Set(selectionRef.current.capturedNodes));
+        }
       }
     };
     const mouseUpHandler = () => {
@@ -153,7 +213,5 @@ export const MarqueeController: FC = () => {
     };
   }, [registerEvents, sigma, selection, cleanup, setEmphasizedNodes, select, setCursor]);
 
-  return selectionRef.current.type === "marquee" ? (
-    <MarqueeDisplay firstCorner={selectionRef.current.startCorner} lastCorner={selectionRef.current.mouseCorner} />
-  ) : null;
+  return selectionRef.current.type === "lasso" ? <LassoDisplay points={selectionRef.current.points} /> : null;
 };

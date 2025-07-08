@@ -15,8 +15,6 @@ import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowSquareOut,
-  PiArrowsIn,
-  PiArrowsOut,
   PiCaretDown,
   PiCaretLeft,
   PiCaretRight,
@@ -29,6 +27,10 @@ import {
   PiCircleHalfFill,
   PiClipboard,
   PiCode,
+  PiCornersIn,
+  PiCornersOut,
+  PiCursor,
+  PiCursorFill,
   PiDotsThreeVertical,
   PiFunnel,
   PiFunnelFill,
@@ -38,6 +40,8 @@ import {
   PiGraph,
   PiGraphFill,
   PiInfo,
+  PiLasso,
+  PiLassoFill,
   PiMagicWand,
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
@@ -54,6 +58,9 @@ import {
   PiPlusCircleFill,
   PiPolygon,
   PiPolygonFill,
+  PiSelection,
+  PiSelectionFill,
+  PiSpinner,
   PiStop,
   PiStopFill,
   PiSun,
@@ -67,6 +74,7 @@ import {
   PiX,
 } from "react-icons/pi";
 
+import { GraphSelectionMode } from "../core/selection/types";
 import { ItemType } from "../core/types";
 
 export const AppearanceIcon = PiPalette;
@@ -91,10 +99,10 @@ export const DataIconFill = PiTableFill;
 export const ExternalLinkIcon = PiArrowSquareOut;
 export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
-export const ExitFullScreenIcon = PiArrowsIn;
+export const ExitFullScreenIcon = PiCornersIn;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
-export const FullScreenIcon = PiArrowsOut;
+export const FullScreenIcon = PiCornersOut;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
 export const GitHubIcon = PiGithubLogo;
@@ -103,7 +111,6 @@ export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
 export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
-export const LocateIcon = PiGpsFix;
 export const ResetIcon = PiArrowCounterClockwise;
 export const SettingsIcon = PiGear;
 export const PlayIcon = PiPlay;
@@ -114,12 +121,34 @@ export const StatisticsIcon = PiChartBar;
 export const StatisticsIconFill = PiChartBarFill;
 export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
 export const TrashIcon = PiTrash;
+export const UnselectAllIcon = PiSpinner;
 export const UserIcon = PiUser;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
-export const ZoomResetIcon = PiArrowCounterClockwise;
+export const ZoomResetIcon = PiGpsFix;
+
+export const MouseIcon = PiCursor;
+export const MouseIconFill = PiCursorFill;
+export const MarqueeIcon = PiSelection;
+export const MarqueeIconFill = PiSelectionFill;
+export const LassoIcon = PiLasso;
+export const LassoIconFill = PiLassoFill;
+
+export const GraphSelectionModeIcons: Record<GraphSelectionMode, { normal: IconType; fill: IconType }> = {
+  cursor: { normal: MouseIcon, fill: MouseIconFill },
+  marquee: { normal: MarqueeIcon, fill: MarqueeIconFill },
+  lasso: { normal: LassoIcon, fill: LassoIconFill },
+};
+export const GraphSelectionModeIcon: FC<{ mode: GraphSelectionMode; fill?: boolean; className?: string }> = ({
+  mode,
+  fill,
+  className,
+}) => {
+  const Icon = GraphSelectionModeIcons[mode][fill ? "fill" : "normal"];
+  return <Icon className={className} />;
+};
 
 // Need to be replace by PI icons
 export const NodeIcon = BsCircle;

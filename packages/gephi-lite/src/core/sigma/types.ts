@@ -4,4 +4,5 @@ export interface SigmaState {
   emphasizedEdges: Set<string> | null;
   hoveredNode: string | null;
   hoveredEdge: string | null;
+  customCursor?: "grab" | "grabbing";
 }

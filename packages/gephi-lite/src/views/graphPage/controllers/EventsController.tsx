@@ -23,7 +23,7 @@ export const EventsController: FC = () => {
 
   const selection = useSelection();
   const { setNodePositions } = useGraphDatasetActions();
-  const { select, toggle, reset } = useSelectionActions();
+  const { select, toggle, emptySelection } = useSelectionActions();
   const { setHoveredNode, resetHoveredNode, setHoveredEdge, resetHoveredEdge } = useSigmaActions();
 
   const dragStateRef = useRef<
@@ -66,7 +66,7 @@ export const EventsController: FC = () => {
             item: node,
           });
         } else if (selection.type === "nodes" && selection.items.has(node) && selection.items.size === 1) {
-          reset();
+          emptySelection();
         } else {
           select({ type: "nodes", items: new Set([node]), replace: true });
         }
@@ -78,7 +78,7 @@ export const EventsController: FC = () => {
             item: edge,
           });
         } else if (selection.type === "edges" && selection.items.has(edge) && selection.items.size === 1) {
-          reset();
+          emptySelection();
         } else {
           select({ type: "edges", items: new Set([edge]), replace: true });
         }
@@ -110,7 +110,7 @@ export const EventsController: FC = () => {
         // Reset the selection when clicking on the stage
         // except when ctrl is pressed to add node in selection
         // with the marquee selector
-        if (!e.event.original.ctrlKey) reset();
+        if (!e.event.original.ctrlKey) emptySelection();
       },
       mouseup: () => {
         const dragState = dragStateRef.current;
@@ -160,7 +160,7 @@ export const EventsController: FC = () => {
     });
   }, [
     registerEvents,
-    reset,
+    emptySelection,
     resetHoveredEdge,
     resetHoveredNode,
     select,
