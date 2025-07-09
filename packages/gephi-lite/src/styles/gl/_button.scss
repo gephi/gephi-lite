@@ -1,179 +1,173 @@
-html {
-  body {
-    #root {
-      // Extending this class makes element appear with the same padding than buttons (for alignment purpose):
-      .gl-btnlike {
-        @extend .gl-px-2;
-        @extend .gl-py-1;
-        @extend .gl-text-ui;
-        border: 2px solid transparent;
-      }
+// Extending this class makes element appear with the same padding than buttons (for alignment purpose):
+.gl-btnlike {
+  @extend .gl-px-2;
+  @extend .gl-py-1;
+  @extend .gl-text-ui;
+  border: 2px solid transparent;
+}
 
-      .gl-btn,
-      :not(.btn-check) + .gl-btn {
-        @extend .btn;
-        @extend .gl-rounded-2;
-        @extend .gl-btnlike;
-        @extend .gl-gap-x-1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+.gl-btn,
+:not(.btn-check) + .gl-btn {
+  @extend .btn;
+  @extend .gl-rounded-2;
+  @extend .gl-btnlike;
+  @extend .gl-gap-x-1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-        &.gl-btn-icon {
-          @extend .gl-px-1;
-          display: flex;
-          align-items: center;
-          height: fit-content;
-          width: fit-content;
-          > * {
-            width: $gl-sys-size-icon-large;
-            height: $gl-sys-size-icon-large;
-            display: block;
-          }
-          svg,
-          img,
-          i {
-            vertical-align: middle;
-          }
-        }
-
-        &:hover,
-        &.gl-btn-hovered {
-          background-color: color-mix(
-            in hsl,
-            var(--gl-container-highest-bg),
-            var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
-          );
-          border-color: color-mix(
-            in hsl,
-            var(--gl-container-highest-bg),
-            var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
-          );
-        }
-
-        &:focus-visible,
-        &.gl-btn-focused {
-          background-color: color-mix(
-            in hsl,
-            var(--gl-container-highest-bg),
-            var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
-          );
-          border-color: color-mix(
-            in hsl,
-            var(--gl-container-highest-bg),
-            var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
-          );
-          box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
-        }
-
-        &:active,
-        &:first-child:active,
-        &.gl-btn-pressed {
-          background-color: color-mix(
-            in hsl,
-            var(--gl-container-highest-bg),
-            var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
-          );
-          border-color: transparent;
-        }
-
-        &:disabled {
-          color: rgba(var(--gl-body-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
-          opacity: unset;
-
-          // The disabled text button style doesn't have a background color because with it, disabled text buttons were visualy more significant than enabled ones
-          //background-color: color-mix(
-          //in hsl,
-          //var(--gl-container-highest-bg),
-          //var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
-          //);
-        }
-
-        &.gl-btn-fill {
-          background-color: var(--gl-component-bg);
-          color: var(--gl-component-color);
-          border-color: transparent;
-
-          &:hover,
-          &.gl-btn-fill-hovered {
-            color: var(--gl-component-color);
-            background-color: color-mix(
-              in hsl,
-              var(--gl-component-bg),
-              var(--gl-component-color) $gl-sys-proportion-component-hover-color-mix
-            );
-          }
-
-          &:focus-visible,
-          &.gl-btn-fill-focused {
-            color: var(--gl-component-color);
-            background-color: color-mix(
-              in hsl,
-              var(--gl-component-bg),
-              var(--gl-component-color) $gl-sys-proportion-component-focus-color-mix
-            );
-            box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
-          }
-
-          &:active,
-          &.gl-btn-fill-pressed {
-            color: var(--gl-component-color);
-            background-color: color-mix(
-              in hsl,
-              var(--gl-component-bg),
-              var(--gl-component-color) $gl-sys-proportion-component-active-color-mix
-            );
-          }
-
-          &:disabled {
-            color: rgba(var(--gl-component-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
-            background-color: color-mix(
-              in hsl,
-              var(--gl-component-bg),
-              var(--gl-component-color) $gl-sys-proportion-component-disabled-color-mix
-            );
-            opacity: unset;
-          }
-        }
-
-        &.gl-btn-outline {
-          border: 2px solid var(--gl-component-border-color);
-
-          &:active,
-          &.gl-btn-outline-pressed {
-            background-color: color-mix(
-              in hsl,
-              var(--gl-container-highest-bg),
-              var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
-            );
-            border-color: color-mix(
-              in hsl,
-              var(--gl-container-highest-bg),
-              var(--gl-component-border-color) $gl-sys-proportion-component-border-active-color-mix
-            );
-          }
-
-          &:disabled {
-            border-color: color-mix(
-              in hsl,
-              var(--gl-container-highest-bg),
-              var(--gl-component-border-color) $gl-sys-opacity-onComponentBg-disabled
-            );
-            background-color: color-mix(
-              in hsl,
-              var(--gl-container-highest-bg),
-              var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
-            );
-          }
-        }
-      }
-
-      .gl-btn-close {
-        @extend .gl-btn-icon;
-        position: absolute;
-        top: 0;
-        right: 0;
-      }
+  &.gl-btn-icon {
+    @extend .gl-px-1;
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    width: fit-content;
+    > * {
+      width: $gl-sys-size-icon-large;
+      height: $gl-sys-size-icon-large;
+      display: block;
+    }
+    svg,
+    img,
+    i {
+      vertical-align: middle;
     }
   }
+
+  &:hover,
+  &.gl-btn-hovered {
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+    );
+    border-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+    );
+  }
+
+  &:focus-visible,
+  &.gl-btn-focused {
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+    );
+    border-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+    );
+    box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
+  }
+
+  &:active,
+  &:first-child:active,
+  &.gl-btn-pressed {
+    background-color: color-mix(
+      in hsl,
+      var(--gl-container-highest-bg),
+      var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+    );
+    border-color: transparent;
+  }
+
+  &:disabled {
+    color: rgba(var(--gl-body-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
+    opacity: unset;
+
+    // The disabled text button style doesn't have a background color because with it, disabled text buttons were visualy more significant than enabled ones
+    //background-color: color-mix(
+    //in hsl,
+    //var(--gl-container-highest-bg),
+    //var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
+    //);
+  }
+
+  &.gl-btn-fill {
+    background-color: var(--gl-component-bg);
+    color: var(--gl-component-color);
+    border-color: transparent;
+
+    &:hover,
+    &.gl-btn-fill-hovered {
+      color: var(--gl-component-color);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-hover-color-mix
+      );
+    }
+
+    &:focus-visible,
+    &.gl-btn-fill-focused {
+      color: var(--gl-component-color);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-focus-color-mix
+      );
+      box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
+    }
+
+    &:active,
+    &.gl-btn-fill-pressed {
+      color: var(--gl-component-color);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-active-color-mix
+      );
+    }
+
+    &:disabled {
+      color: rgba(var(--gl-component-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-component-bg),
+        var(--gl-component-color) $gl-sys-proportion-component-disabled-color-mix
+      );
+      opacity: unset;
+    }
+  }
+
+  &.gl-btn-outline {
+    border: 2px solid var(--gl-component-border-color);
+
+    &:active,
+    &.gl-btn-outline-pressed {
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+      );
+      border-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-component-border-color) $gl-sys-proportion-component-border-active-color-mix
+      );
+    }
+
+    &:disabled {
+      border-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-component-border-color) $gl-sys-opacity-onComponentBg-disabled
+      );
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-disabled-color-mix
+      );
+    }
+  }
+}
+
+.gl-btn-close {
+  @extend .gl-btn-icon;
+  position: absolute;
+  top: 0;
+  right: 0;
 }

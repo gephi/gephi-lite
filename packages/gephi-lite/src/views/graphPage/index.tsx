@@ -119,7 +119,7 @@ export const GraphPage: FC = () => {
             selected={selectedTool?.id}
             onSelectedChange={(item) =>
               setSelectedTool(
-                item.panel
+                item.panel && item.id !== selectedTool?.id
                   ? {
                       id: item.id,
                       panel: item.panel,
@@ -155,7 +155,12 @@ export const GraphPage: FC = () => {
 
       {/* Right panel */}
       <div className={cx("panel panel-expandable panel-selection", items.size > 0 && "deployed")}>
-        <button type="button" className="gl-btn-close gl-btn" aria-label={t("commons.close")} onClick={() => emptySelection()}>
+        <button
+          type="button"
+          className="gl-btn-close gl-btn"
+          aria-label={t("commons.close")}
+          onClick={() => emptySelection()}
+        >
           <CloseIcon />
         </button>
         {items.size > 0 && <Selection />}

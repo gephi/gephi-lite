@@ -1,5 +1,6 @@
 ul.side-menu,
-ul.side-menu ul {
+ul.nested-side-menu,
+ul.floating-side-menu {
   @extend .gl-m-0;
   @extend .gl-p-0;
   display: flex;
@@ -15,48 +16,68 @@ ul.side-menu ul {
 
 ul.side-menu {
   @extend .gl-gap-3;
+}
 
-  ul {
-    @extend .gl-gap-1;
-    position: relative;
+ul.nested-side-menu {
+  @extend .gl-gap-1;
+  position: relative;
 
-    &:before {
-      position: absolute;
-      content: "";
-      border: 1px solid var(--gl-body-color);
-      top: 0;
-      bottom: 0;
-      left: 1rem;
-    }
-
-    li {
-      margin-left: calc(1.125rem + $gl-ref-dimension-linear-050);
-
-      $side-menu-bar-circle-size: 4px;
-
-      &:first-child:before {
-        position: absolute;
-        content: "";
-        width: $side-menu-bar-circle-size;
-        height: $side-menu-bar-circle-size;
-        border-radius: 100%;
-        background-color: var(--gl-body-color);
-        left: calc(1rem - $side-menu-bar-circle-size/2 + 1px);
-      }
-
-      &:last-child:after {
-        position: absolute;
-        content: "";
-        width: $side-menu-bar-circle-size;
-        height: $side-menu-bar-circle-size;
-        border-radius: 100%;
-        background-color: var(--gl-body-color);
-        left: calc(1rem - $side-menu-bar-circle-size/2 + 1px);
-        bottom: 0;
-      }
-    }
+  &:before {
+    position: absolute;
+    content: "";
+    border: 1px solid var(--gl-body-color);
+    top: 0;
+    bottom: 0;
+    left: 1rem;
   }
 
+  li {
+    margin-left: calc(1.125rem + $gl-ref-dimension-linear-050);
+
+    $side-menu-bar-circle-size: 4px;
+
+    &:first-child:before {
+      position: absolute;
+      content: "";
+      width: $side-menu-bar-circle-size;
+      height: $side-menu-bar-circle-size;
+      border-radius: 100%;
+      background-color: var(--gl-body-color);
+      left: calc(1rem - $side-menu-bar-circle-size/2 + 1px);
+    }
+
+    &:last-child:after {
+      position: absolute;
+      content: "";
+      width: $side-menu-bar-circle-size;
+      height: $side-menu-bar-circle-size;
+      border-radius: 100%;
+      background-color: var(--gl-body-color);
+      left: calc(1rem - $side-menu-bar-circle-size/2 + 1px);
+      bottom: 0;
+    }
+  }
+}
+
+.floating-side-menu-wrapper {
+  padding-left: $gl-spacers-3;
+}
+
+ul.floating-side-menu {
+  @extend .gl-container-highest-bg;
+  @extend .gl-border;
+
+  margin-left: $gl-spacers-1;
+
+  // The negative margin-top is here to compensate the p-2,
+  // for alignment purpose:
+  margin-top: -$gl-spacers-2;
+  @extend .gl-p-2;
+}
+
+ul.side-menu,
+ul.nested-side-menu,
+ul.floating-side-menu {
   li {
     .side-menu-icon {
       display: flex;
