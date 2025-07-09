@@ -1,95 +1,93 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap");
 
-html {
-  body {
-    @extend .gl-text-ui;
-    font-family: "DM Sans", sans-serif;
-    background-color: var(--gl-body-bg);
-    color: var(--gl-body-color);
+body {
+  @extend .gl-text-ui;
+  font-family: "DM Sans", sans-serif;
+  background-color: var(--gl-body-bg);
+  color: var(--gl-body-color);
+}
 
-    #root {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-      header {
-        z-index: 200;
+  header {
+    z-index: 200;
 
-        & > .row {
-          height: 40px;
-        }
-      }
-
-      main {
-        top: -1px;
-        flex-shrink: 1;
-        flex-grow: 1;
-        overflow: hidden;
-        display: flex;
-        padding: 0;
-      }
-
-      h1 {
-        @extend .gl-heading-1;
-      }
-
-      h2 {
-        @extend .gl-heading-2;
-      }
-
-      h3 {
-        @extend .gl-heading-3;
-      }
-
-      p,
-      blockquote {
-        @extend .gl-text-section;
-      }
-
-      .gl-container-bg {
-        background-color: var(--gl-container-bg);
-        color: var(--gl-container-color);
-      }
-
-      .gl-container-high-bg {
-        @extend .gl-container-bg;
-        background-color: var(--gl-container-high-bg);
-      }
-
-      .gl-container-highest-bg {
-        @extend .gl-container-bg;
-        background-color: var(--gl-container-highest-bg);
-      }
-
-      .gl-actions {
-        @extend .gl-gap-2;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        width: 100%;
-        justify-content: end;
-
-        &.right {
-          justify-content: start;
-        }
-      }
-
-      .gl-tooltip {
-        color: var(--gl-tooltip-color);
-        background-color: var(--gl-tooltip-bg);
-      }
-
-      .gl-alert-success,
-      .gl-alert-info,
-      .gl-alert-warning,
-      .gl-alert-error {
-        background-color: color-mix(
-          in hsl,
-          var(--gl-container-highest-bg),
-          var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
-        );
-      }
+    & > .row {
+      height: 40px;
     }
   }
+
+  main {
+    top: -1px;
+    flex-shrink: 1;
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    padding: 0;
+  }
+}
+
+h1 {
+  @extend .gl-heading-1;
+}
+
+h2 {
+  @extend .gl-heading-2;
+}
+
+h3 {
+  @extend .gl-heading-3;
+}
+
+p,
+blockquote {
+  @extend .gl-text-section;
+}
+
+.gl-container-bg {
+  background-color: var(--gl-container-bg);
+  color: var(--gl-container-color);
+}
+
+.gl-container-high-bg {
+  @extend .gl-container-bg;
+  background-color: var(--gl-container-high-bg);
+}
+
+.gl-container-highest-bg {
+  @extend .gl-container-bg;
+  background-color: var(--gl-container-highest-bg);
+}
+
+.gl-actions {
+  @extend .gl-gap-2;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  justify-content: end;
+
+  &.right {
+    justify-content: start;
+  }
+}
+
+.gl-tooltip {
+  color: var(--gl-tooltip-color);
+  background-color: var(--gl-tooltip-bg);
+}
+
+.gl-alert-success,
+.gl-alert-info,
+.gl-alert-warning,
+.gl-alert-error {
+  background-color: color-mix(
+    in hsl,
+    var(--gl-container-highest-bg),
+    var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+  );
 }
