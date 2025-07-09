@@ -4,6 +4,7 @@ import React, { FC, useCallback, useEffect, useRef } from "react";
 import { Coordinates } from "sigma/types";
 
 import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
+import { bindUpHandler } from "../../../utils/events";
 
 /**
  * This helper uses the Ray casting algorithm:
@@ -120,9 +121,9 @@ export const LassoController: FC = () => {
 
   useEffect(() => {
     registerEvents({
-      mousemovebody: (e) => {
+      moveBody: (e) => {
         if (selectionRef.current.type === "lasso") {
-          const mousePosition = pick(e, "x", "y") as Coordinates;
+          const mousePosition = pick(e.event, "x", "y") as Coordinates;
 
           const graph = sigma.getGraph();
           const polygon = selectionRef.current.points.map(({ x, y }) => sigma.viewportToGraph({ x, y }));
@@ -190,7 +191,7 @@ export const LassoController: FC = () => {
         }
       }
     };
-    const mouseUpHandler = () => {
+    const upHandler = () => {
       if (selectionRef.current.type === "idle") {
         setCursor(selectionRef.current.spaceKeyDown ? "grab" : undefined);
       } else {
@@ -205,11 +206,11 @@ export const LassoController: FC = () => {
 
     window.addEventListener("keydown", keyDownHandler);
     window.addEventListener("keyup", keyUpHandler);
-    window.addEventListener("mouseup", mouseUpHandler);
+    const unbind = bindUpHandler(upHandler);
     return () => {
       window.removeEventListener("keydown", keyDownHandler);
       window.removeEventListener("keyup", keyUpHandler);
-      window.removeEventListener("mouseup", mouseUpHandler);
+      unbind();
     };
   }, [registerEvents, sigma, selection, cleanup, setEmphasizedNodes, select, setCursor]);
 
