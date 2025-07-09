@@ -25,14 +25,14 @@ const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide
   return (
     <Tooltip hoverable closeOnClickContent attachment={`top ${side}`} targetAttachment={`bottom ${side}`}>
       {target}
-      <div className="dropdown-menu show over-modal position-relative">
+      <div className="dropdown-menu show over-modal position-relative gl-menu">
         {options.map((option, i) => (
           <Fragment key={i}>
-            {option.type === "divider" && <div className="dropdown-divider" />}
+            {option.type === "divider" && <div className="dropdown-divider gl-menu-divider" />}
             {option.type === "text" && <div className="dropdown-item-text">{option.label}</div>}
             {"url" in option && (
               <a
-                className={cx("dropdown-item", option.disabled && "disabled")}
+                className={cx("dropdown-item gl-menu-item ", option.disabled && "disabled")}
                 href={option.url}
                 title={option.title}
                 target="_blank"
@@ -43,7 +43,7 @@ const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide
             )}
             {"onClick" in option && (
               <button
-                className={cx("dropdown-item", option.disabled && "disabled")}
+                className={cx("dropdown-item gl-menu-item ", option.disabled && "disabled")}
                 title={option.title}
                 disabled={option.disabled}
                 onClick={option.onClick}

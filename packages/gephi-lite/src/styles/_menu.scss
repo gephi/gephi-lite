@@ -1,0 +1,71 @@
+.gl-menu {
+  @extend .gl-container-highest-bg;
+  @extend .gl-border;
+  @extend .gl-rounded-2;
+  @extend .gl-py-2;
+  @extend .gl-shadow-high;
+  .gl-menu-divider {
+    height: 0;
+    @extend .gl-my-3;
+    overflow: hidden;
+    border-top: 1px solid var(--gl-container-border-color);
+    opacity: 1; // Bootstrap said : Revisit in v6 to de-dupe styles that conflict with <hr> element
+  }
+  .gl-menu-item {
+    @extend .gl-text-ui;
+    @extend .gl-px-3;
+    @extend .gl-py-1;
+    display: block;
+    width: 100%; // For `<button>`s
+    padding: var(--#{$prefix}dropdown-item-padding-y) var(--#{$prefix}dropdown-item-padding-x);
+    clear: both;
+    text-align: inherit; // For `<button>`s
+    text-decoration: if($link-decoration == none, null, none);
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+    background-color: transparent; // For `<button>`s
+    border: 0px solid transparent; // For `<button>`s
+    @extend .gl-rounded-0;
+
+    &:hover {
+      text-decoration: if($link-hover-decoration == underline, none, null);
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
+      );
+    }
+
+    &:focus-visible {
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+      );
+      border-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-focus-color-mix
+      );
+      box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
+      outline: none;
+    }
+
+    &:active,
+    &:first-child:active {
+      color: var(--gl-body-color);
+      text-decoration: none;
+      background-color: color-mix(
+        in hsl,
+        var(--gl-container-highest-bg),
+        var(--gl-body-color) $gl-sys-proportion-component-active-color-mix
+      );
+      box-shadow: none;
+    }
+
+    &:disabled {
+      color: rgba(var(--gl-body-color-rgb), $gl-sys-opacity-onComponentBg-disabled);
+      opacity: unset;
+      pointer-events: none;
+    }
+  }
+}
