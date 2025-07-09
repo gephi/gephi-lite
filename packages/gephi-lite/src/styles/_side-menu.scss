@@ -64,8 +64,7 @@ ul.nested-side-menu {
 }
 
 ul.floating-side-menu {
-  @extend .gl-container-highest-bg;
-  @extend .gl-border;
+  @extend .gl-menu;
 
   margin-left: $gl-spacers-1;
 

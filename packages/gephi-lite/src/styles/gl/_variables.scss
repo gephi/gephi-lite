@@ -16,14 +16,7 @@ $gl-ref-color-neutral-75: #333333;
 $gl-ref-color-neutral-80: #292929;
 $gl-ref-color-neutral-85: #212121;
 $gl-ref-color-neutral-95: #1d1d1d;
-
-// Opacity
-$gl-ref-opacity-0: 0;
-$gl-ref-opacity-8: 0.08;
-$gl-ref-opacity-10: 0.1;
-$gl-ref-opacity-50: 0.5;
-$gl-ref-opacity-75: 0.75;
-$gl-ref-opacity-80: 80%;
+$gl-ref-color-neutral-100: #000000;
 
 // Dimension
 $gl-ref-dimension-base: 0.5rem;
@@ -53,6 +46,7 @@ $gl-ref-proportion-12: 12%;
 $gl-ref-proportion-16: 16%;
 $gl-ref-proportion-24: 24%;
 $gl-ref-proportion-64: 64%;
+$gl-ref-proportion-80: 80%;
 
 // Decimal
 
@@ -70,6 +64,7 @@ $gl-sys-color-bg-low: $gl-ref-color-neutral-20;
 $gl-sys-color-border: $gl-ref-color-neutral-30;
 $gl-sys-color-onBg: $gl-ref-color-neutral-80;
 $gl-sys-color-onBg-muted: $gl-ref-color-neutral-60;
+$gl-sys-color-shadow-high: $gl-ref-color-neutral-80;
 
 $gl-sys-color-dark-bg: $gl-ref-color-neutral-95;
 $gl-sys-color-dark-bg-high: $gl-ref-color-neutral-85;
@@ -78,6 +73,7 @@ $gl-sys-color-dark-bg-highest: $gl-ref-color-neutral-75;
 $gl-sys-color-dark-border: $gl-ref-color-neutral-65;
 $gl-sys-color-dark-onBg: $gl-ref-color-neutral-05;
 $gl-sys-color-dark-onBg-muted: $gl-ref-color-neutral-50;
+$gl-sys-color-dark-shadow-high: $gl-ref-color-neutral-100;
 
 //Component
 $gl-sys-color-component-bg: $gl-ref-color-neutral-80;
@@ -100,7 +96,8 @@ $gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-64;
 $gl-sys-proportion-cell-hover-color-mix: $gl-ref-proportion-4;
 
 //----Opacity
-$gl-sys-opacity-onComponentBg-disabled: $gl-ref-opacity-80;
+$gl-sys-opacity-onComponentBg-disabled: $gl-ref-proportion-80;
+$gl-sys-opacity-shadow-high: $gl-ref-proportion-16;
 
 //----Size
 //Icon
@@ -178,6 +175,8 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-table-column-cell-non-editable-bg: #{$gl-sys-color-bg-highest};
   --gl-table-column-header-editable-bg: #{$gl-sys-color-bg-high};
   --gl-table-column-header-non-editable-bg: #{$gl-sys-color-bg-low};
+  //Shadows
+  --gl-overlay-high-shadow: #{$gl-sys-color-shadow-high};
 
   // RGB
   // Body
@@ -202,6 +201,8 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-table-column-cell-non-editable-bg-rgb: #{hexToRGBString($gl-sys-color-bg-highest)};
   --gl-table-column-header-editable-bg-rgb: #{hexToRGBString($gl-sys-color-bg-high)};
   --gl-table-column-header-non-editable-bg-rgb: #{hexToRGBString($gl-sys-color-bg-low)};
+  //Shadows
+  --gl-overlay-high-shadow-rgb: #{hexToRGBString($gl-sys-color-shadow-high)};
 }
 
 :root[data-bs-theme="dark"] {
@@ -228,6 +229,8 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-table-column-cell-non-editable-bg: #{$gl-sys-color-dark-bg-highest};
   --gl-table-column-header-editable-bg: #{$gl-sys-color-dark-bg-higher};
   --gl-table-column-header-non-editable-bg: #{$gl-sys-color-dark-bg-high};
+  //Shadows
+  --gl-overlay-high-shadow: #{$gl-sys-color-dark-shadow-high};
   // TODO: tooltip
   --gl-tooltip-color: #{$gl-ref-color-neutral-10};
   --gl-tooltip-bg: #{$gl-ref-color-neutral-95};
@@ -256,4 +259,6 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-table-column-cell-non-editable-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-highest)};
   --gl-table-column-header-editable-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-higher)};
   --gl-table-column-header-non-editable-bg-rgb: #{hexToRGBString($gl-sys-color-dark-bg-high)};
+  //Shadows
+  --gl-overlay-high-shadow-rgb: #{hexToRGBString($gl-sys-color-dark-shadow-high)};
 }
