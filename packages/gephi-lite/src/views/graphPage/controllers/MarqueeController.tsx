@@ -4,6 +4,7 @@ import React, { FC, useCallback, useEffect, useRef } from "react";
 import { Coordinates } from "sigma/types";
 
 import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
+import { bindUpHandler } from "../../../utils/events";
 
 const MarqueeDisplay: FC<{ firstCorner: Coordinates; lastCorner: Coordinates }> = ({ firstCorner, lastCorner }) => {
   const x = Math.min(firstCorner.x, lastCorner.x);
@@ -54,9 +55,9 @@ export const MarqueeController: FC = () => {
 
   useEffect(() => {
     registerEvents({
-      mousemovebody: (e) => {
+      moveBody: (e) => {
         if (selectionRef.current.type === "marquee") {
-          const mousePosition = pick(e, "x", "y") as Coordinates;
+          const mousePosition = pick(e.event, "x", "y") as Coordinates;
 
           const graph = sigma.getGraph();
           const start = sigma.viewportToGraph(selectionRef.current.startCorner);
@@ -130,7 +131,7 @@ export const MarqueeController: FC = () => {
         setEmphasizedNodes(new Set(selectionRef.current.capturedNodes));
       }
     };
-    const mouseUpHandler = () => {
+    const upHandler = () => {
       if (selectionRef.current.type === "idle") {
         setCursor(selectionRef.current.spaceKeyDown ? "grab" : undefined);
       } else {
@@ -145,11 +146,11 @@ export const MarqueeController: FC = () => {
 
     window.addEventListener("keydown", keyDownHandler);
     window.addEventListener("keyup", keyUpHandler);
-    window.addEventListener("mouseup", mouseUpHandler);
+    const unbind = bindUpHandler(upHandler);
     return () => {
       window.removeEventListener("keydown", keyDownHandler);
       window.removeEventListener("keyup", keyUpHandler);
-      window.removeEventListener("mouseup", mouseUpHandler);
+      unbind();
     };
   }, [registerEvents, sigma, selection, cleanup, setEmphasizedNodes, select, setCursor]);
 
