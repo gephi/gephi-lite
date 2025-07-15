@@ -1,0 +1,43 @@
+// the ds in the class stand for design system
+.gl-ds-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 4rem var(--bs-gutter-x, 0.75rem);
+  margin: 0px auto;
+}
+
+@media (min-width: 992px) {
+  .gl-ds-container {
+    width: 960px;
+    max-width: 960px;
+  }
+  p {
+    max-width: 44rem; //640px (text) + 64px (gap);
+  }
+}
+
+.gl-ds-container h1 {
+  font-size: 3rem;
+  margin: 0px;
+  margin-top: 3rem;
+}
+.gl-ds-container h2 {
+  font-size: 2.5rem;
+  margin: 0px;
+  margin-top: 3rem;
+}
+.gl-ds-container h3 {
+  font-weight: 500;
+  font-size: 2rem;
+  margin: 0px;
+  margin-top: 1.5rem;
+}
+.gl-ds-container h4 {
+  font-size: 1.5rem;
+  margin: 0px;
+  margin-top: 1rem;
+}
+.gl-ds-container h5 {
+  font-size: 1.25rem;
+  margin: 0px;
+}

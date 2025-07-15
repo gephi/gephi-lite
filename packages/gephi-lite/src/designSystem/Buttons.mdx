@@ -1,9 +1,15 @@
-import { PiGraph } from "react-icons/pi";
-import { PiPolygon } from "react-icons/pi";
-import { PiPolygonFill } from "react-icons/pi";
-import { PiX } from "react-icons/pi";
+import {
+  PiArrowCounterClockwise,
+  PiCheck,
+  PiGraph,
+  PiMagicWand,
+  PiPlay,
+  PiPolygon,
+  PiPolygonFill,
+  PiX,
+} from "react-icons/pi";
 
-## Buttons
+## In short
 
 - Two types: default and toggle
 - Can contain an optional leading icon
@@ -11,9 +17,9 @@ import { PiX } from "react-icons/pi";
 - One size : medium
 - Keep labels concise and use sentence case
 
-### Specs
+## Specs
 
-#### Types
+### Types
 
 {<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -26,9 +32,9 @@ import { PiX } from "react-icons/pi";
 
 </div>}
 
-##### Styles :
+### Styles
 
-###### Default Buttons :
+#### Default Buttons
 
 {<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -48,7 +54,7 @@ import { PiX } from "react-icons/pi";
 2. Outlined buttons : `gl-btn gl-btn-outlined`
 3. Text buttons : `gl-btn`
 
-###### Toggle Buttons :
+#### Toggle Buttons
 
 {<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -64,11 +70,11 @@ import { PiX } from "react-icons/pi";
 
 </div>}
 
-#### States
+### States
 
-##### Default
+#### Default
 
-###### Filled
+##### Filled
 
 {<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -86,7 +92,7 @@ import { PiX } from "react-icons/pi";
 
 </div>}
 
-###### Outlined
+##### Outlined
 
 {<div className='w-auto d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -103,7 +109,7 @@ import { PiX } from "react-icons/pi";
 <button className="gl-btn gl-btn-outline gl-btn-outline-pressed">Pressed</button>
 </div>}
 
-###### Text
+##### Text
 
 {<div className='w-auto d-flex d-flex justify-content-evenly p-5 gl-container-highest-bg'>
 
@@ -120,9 +126,9 @@ import { PiX } from "react-icons/pi";
 <button className="gl-btn gl-btn-pressed">Pressed</button>
 </div>}
 
-##### Toggle
+#### Toggle
 
-###### Text
+##### Text
 
 {
 
@@ -161,7 +167,7 @@ import { PiX } from "react-icons/pi";
 1. Unselected
 2. Selected
 
-###### Outlined
+##### Outlined
 
 {
 
@@ -198,28 +204,29 @@ import { PiX } from "react-icons/pi";
 1. Unselected
 2. Selected
 
-#### Size
+### Size
 
 There is only one size of button for the moment, which can be refered as 'medium'.
 
-#### Colors
+### Colors
 
 No color
 
-### Guidelines
+## Guidelines
+
+### Styles
 
 Buttons styles create hierarchy between actions, ranging from filled to text.
-
 {
 
 <div className="w-auto d-flex gl-gap-4 gl-text-section">
-  <div className="w-33 d-flex flex-column">
+  <div className="w-50 d-flex flex-column">
     <div className="d-flex flex-column gl-gap-4 justify-content-start p-5 gl-container-highest-bg">
       <div className='d-flex gl-gap-2'> 
         <button className="gl-btn gl-btn-fill">Guess settings</button>
         <button className="gl-btn gl-btn-outline">Reset</button>
         <button className="gl-btn gl-btn-fill">
-          <PiPolygon className="" /> Start
+          <PiPlay className="" /> Start
         </button>
       </div>
       <div className='gl-border'> </div>
@@ -229,17 +236,17 @@ Buttons styles create hierarchy between actions, ranging from filled to text.
         <button className="gl-btn gl-btn-outline">Reset</button>
       </div>
         <div>
-          <button className="gl-btn gl-btn-fill w-fit">
-            <PiPolygon className=""/> Start
+          <button className="gl-btn gl-btn-fill ">
+            <PiPlay className=""/> Start
           </button>
-        </div>
+      </div>
     </div>
     </div>
 
-    <div className="gl-p-3">
+    <div className="pt-3">
       <h6 className="gl-heading-3">
-        <PiX className="me-1" />
-        Do
+        <PiX className="me-1 gl-icon-size-text" />
+        Don't
       </h6>
       <p>
         Don’t use more than one filled buttons in the same group, pannel or modale. Consider presenting low-priority actions in sub-menus or as icon buttons.
@@ -247,32 +254,32 @@ Buttons styles create hierarchy between actions, ranging from filled to text.
     </div>
 
   </div>
-  <div className="w-33 d-flex flex-column">
+  <div className="w-50 d-flex flex-column">
     <div className="d-flex flex-column gl-gap-4 justify-content-start p-5 gl-container-highest-bg">
       <div className='d-flex gl-gap-2'> 
-        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiPolygon className="" /></button>
-        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiPolygon className="" /></button>
+        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiMagicWand className="" /></button>
+        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiArrowCounterClockwise className="" /></button>
         <button className="gl-btn gl-btn-fill">
-          <PiPolygon className="" /> Start
+          <PiPlay className="" /> Start
         </button>
       </div>
       <div className='gl-border'> </div>
       <div className="d-flex flex-column gl-gap-3">
         <div className='d-flex gl-gap-2'>
         <button className="gl-btn gl-btn-outline ">Guess settings</button>
-        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiPolygon className="" /></button>
+        <button className="gl-btn gl-btn-outline gl-btn-icon"><PiArrowCounterClockwise className="" /></button>
       </div>
         <div>
-          <button className="gl-btn gl-btn-fill w-fit">
-            <PiPolygon className=""/> Start
+          <button className="gl-btn gl-btn-fill ">
+            <PiPlay className=""/> Start
           </button>
         </div>
     </div>
     </div>
 
-    <div className="gl-p-3">
+    <div className="pt-3">
       <h6 className="gl-heading-3">
-        <PiX className="me-1" />
+        <PiCheck className="me-1 gl-icon-size-text" />
         Do
       </h6>
       <p>
@@ -284,4 +291,86 @@ Buttons styles create hierarchy between actions, ranging from filled to text.
 </div>
 }
 
-Too many buttons on a screen can disrupt the visual hierarchy. Consider placing additional actions in a navigation rail, set of chips, text links, or icon buttons.
+### Styles hierarchy
+
+While it always depends on the context, text buttons should be used commonly, and filled or outlined buttons should be used sparingly.
+{
+
+<div className="w-auto d-flex gl-gap-4 gl-text-section">
+  <div className="w-33 d-flex flex-column">
+    <div className="d-flex flex-column gl-gap-4 justify-content-start p-5 gl-container-highest-bg">
+      <div className="d-flex flex-column gl-gap-1">
+        <h6 className="gl-heading-3 ms-2">Open graph file</h6>
+        <button className="gl-btn gl-btn-fill">Open a local file</button>
+        <button className="gl-btn">Open an url</button>
+        <button className="gl-btn gl-btn-outline">Open on Github</button>
+      </div>
+    </div>
+    <div className="pt-3">
+      <h6 className="gl-heading-3">
+        <PiX className="me-1 gl-icon-size-text" />
+        Don't
+      </h6>
+      <p>
+        Text buttons don't work well when they are place next to other button style. In this context, their transparent
+        padding can feel awkward.
+      </p>
+    </div>
+  </div>
+  <div className="w-33 d-flex flex-column">
+    <div className="d-flex justify-content-start p-5 gl-container-highest-bg">
+      <div className="d-flex flex-column gl-gap-1">
+        <h6 className="gl-heading-3 ms-2">Open graph file</h6>
+        <button className="gl-btn">Open a local file</button>
+        <button className="gl-btn">Open an url</button>
+        <button className="gl-btn">Open on Github</button>
+      </div>
+    </div>
+    <div className="pt-3">
+      <h6 className="gl-heading-3">
+        <PiCheck className="me-1 gl-icon-size-text" />
+        Do
+      </h6>
+      <p>
+        In a group of buttons, using text style creates visual breathing room. This white space makes information more accessible and can sometimes help draw more attention. 
+      </p>
+    </div>
+  </div>
+
+  <div className="w-33 d-flex flex-column">
+    <div className="d-flex justify-content-start p-5 gl-container-highest-bg">
+      <div className="d-flex flex-column gl-gap-1">
+        <h6 className="gl-heading-3 ms-2">Open graph file</h6>
+        <button className="gl-btn gl-btn-fill">Open a local file</button>
+        <button className="gl-btn gl-btn-outline">Open an url</button>
+        <button className="gl-btn gl-btn-outline">Open on Github</button>
+      </div>
+    </div>
+    <div className="pt-3">
+      <h6 className="gl-heading-3">
+        <PiX className="me-1 gl-icon-size-text" />
+        Shouldn't
+      </h6>
+      <p>
+        Here, hierarchy between the actions is shown. However, it clutters the interface. Balance what is most important between suggesting actions and letting the users understand the options. They can make their decision by themself after reading, note that the order of the list still creates hierarchy.
+      </p>
+    </div>
+  </div>
+</div>
+}
+### Label Text
+{<p>Label text should be very brief, ideally 1–3 words. Use sentence case, which only capitalizes the first word and proper nouns. This allows the text to distinguish proper nouns, for example: Open in Gephi and Create node. Don’t truncate or wrap label text. It should always be fully visible on a single line.</p>
+}
+### Text Alignement
+When they are placed in a column, titles and text should be aligned on the buttons' label start.
+{
+<div className="w- auto d-flex flex-column gl-gap-4 justify-content-start p-5 gl-container-highest-bg align-items-center">
+  <div className="d-flex flex-column gl-gap-1">
+    <h6 className="gl-heading-3 ms-2">Title</h6>
+    <button className="gl-btn gl-btn-fill">Button</button>
+    <button className="gl-btn gl-btn-outline">Button</button>
+    <button className="gl-btn">Button</button>
+    <p className="m-0 ms-2">Text section</p>
+  </div>
+</div>
+}
