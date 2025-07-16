@@ -37,7 +37,12 @@ export interface LayoutAttributeParameter extends BaseLayoutParameter {
   restriction?: FieldModelType[];
 }
 
-type LayoutScriptFunction = (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
+export type LayoutScriptFunction = (
+  id: string,
+  attributes: ItemData,
+  index: number,
+  graph: Graph,
+) => { x: number; y: number };
 export interface LayoutScriptParameter extends BaseLayoutParameter {
   type: "script";
   defaultValue: LayoutScriptFunction;

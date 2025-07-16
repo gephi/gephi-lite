@@ -1,19 +1,15 @@
 import { useAtom } from "@ouestware/atoms";
-import cx from "classnames";
 import { cloneDeep, flatMap, isNil, keyBy, map, mapValues } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 
 import MessageAlert from "../../../components/MessageAlert";
-import { CodeEditorIcon, ResetIcon } from "../../../components/common-icons";
+import { ResetIcon } from "../../../components/common-icons";
 import { BooleanInput, EnumInput, NumberInput, StringInput } from "../../../components/forms/TypedInputs";
-import { FunctionEditorModal } from "../../../components/modals/FunctionEditorModal";
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../../core/context/dataContexts";
 import { FieldModel } from "../../../core/graph/types";
 import { computeMetric } from "../../../core/metrics";
-import { Metric, MetricScriptParameter } from "../../../core/metrics/types";
-import { useModal } from "../../../core/modals";
+import { Metric } from "../../../core/metrics/types";
 import { useNotifications } from "../../../core/notifications";
 import { sessionAtom } from "../../../core/session";
 import { ItemType } from "../../../core/types";
@@ -22,7 +18,6 @@ import { ItemType } from "../../../core/types";
 export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ metric }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { openModal } = useModal();
   const filteredGraph = useFilteredGraph();
   const dataset = useGraphDataset();
   const { nodeFields, edgeFields } = dataset;
@@ -125,7 +120,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
     setSubmitCount((v) => v + 1);
     try {
       // compute the metric on the graph. This method mutates the state directly for performance reasons
-      const { fieldModels } = computeMetric(
+      const { fields } = computeMetric(
         metric,
         metricConfig.parameters,
         metricConfig.attributeNames,
@@ -133,8 +128,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
         dataset,
       );
       // TODO handle report
-      // update fieldModel
-      fieldModels.forEach(setFieldModel);
+      fields.forEach(({ model, values }) => setFieldModel(model, values));
       setSuccessMessage(
         t("statistics.success", {
           items: itemTypesName,
@@ -254,53 +248,6 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
                         label: field.id,
                       }))}
                   />
-                )}
-                {param.type === "script" && (
-                  <div className="position-relative">
-                    <>
-                      {metricConfig.parameters[param.id] && (
-                        <>
-                          <div className="code-thumb mt-1">
-                            <Highlight className="javascript">
-                              {(metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"]).toString()}
-                            </Highlight>
-                          </div>
-                          <div className="filler-fade-out position-absolute bottom-0"></div>
-                        </>
-                      )}
-                      <div
-                        className={cx(
-                          metricConfig.parameters[param.id] ? "bottom-0 top-0 position-absolute w-100 h-100" : "",
-                        )}
-                      >
-                        <button
-                          type="button"
-                          className="gl-btn gl-btn-outline  gl-container-highest-bg mx-auto d-block m-3"
-                          onClick={() => {
-                            openModal({
-                              component: FunctionEditorModal<MetricScriptParameter["defaultValue"]>,
-                              arguments: {
-                                title: "Custom metric",
-                                withSaveAndRun: true,
-                                functionJsDoc: param.functionJsDoc,
-                                defaultFunction: param.defaultValue,
-                                value: metricConfig.parameters[param.id] as MetricScriptParameter["defaultValue"],
-                                checkFunction: param.functionCheck,
-                              },
-                              beforeSubmit: ({ run, script }) => {
-                                onChange("parameters", param.id, script);
-                                if (run) setTimeout(submit, 0);
-                              },
-                            });
-                          }}
-                          title={t("common.open_code_editor").toString()}
-                        >
-                          <CodeEditorIcon className="me-1" />
-                          {t("common.open_code_editor")}
-                        </button>
-                      </div>
-                    </>
-                  </div>
                 )}
               </div>
             );

@@ -18,6 +18,7 @@ import {
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
+import { CreateScriptedFieldModelForm } from "../../components/data/CreateScriptedFieldModel";
 import { EditEdgeForm } from "../../components/data/EditEdge";
 import { EditFieldModelForm } from "../../components/data/EditFieldModel";
 import { EditNodeForm } from "../../components/data/EditNode";
@@ -56,6 +57,16 @@ const MENU: MenuItem<{ panel?: Panel }>[] = [
         id: "data-creation-edge-field",
         i18nKey: "edition.create_edges_field",
         panel: ({ close }) => <EditFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-node-scripted-field",
+        i18nKey: "edition.create_nodes_scripted_field",
+        panel: ({ close }) => <CreateScriptedFieldModelForm type="nodes" onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-edge-scripted-field",
+        i18nKey: "edition.create_edges_scripted_field",
+        panel: ({ close }) => <CreateScriptedFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
       },
     ],
   },
@@ -161,7 +172,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
             selected={selectedTool?.id}
             onSelectedChange={(item) =>
               setSelectedTool(
-                item.panel
+                item.panel && item.id !== selectedTool?.id
                   ? {
                       id: item.id,
                       panel: item.panel,
@@ -180,7 +191,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
             <button
               type="button"
               className="gl-btn-close gl-btn"
-              aria-label={t("commons.close")}
+              aria-label={t("common.close")}
               onClick={() => setSelectedTool(undefined)}
             >
               <CloseIcon />

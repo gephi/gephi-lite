@@ -1,3 +1,5 @@
+import { Scalar } from "@gephi/gephi-lite-sdk";
+
 import { inferFieldType } from "../graph/fieldModel";
 import { DatalessGraph, FieldModel, GraphDataset } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
@@ -21,18 +23,16 @@ export function computeMetric(
   attributeNames: Record<string, string>,
   filteredGraph: DatalessGraph,
   dataset: GraphDataset,
-): { fieldModels: FieldModel[]; report: MetricReport } {
+): { fields: { model: FieldModel; values: Record<string, Scalar> }[]; report: MetricReport } {
   // get the full filtered graph
   const graph = dataGraphToFullGraph(dataset, filteredGraph);
 
   const scores = metric.fn(params, graph);
   const report = {}; // TODO
-  const updatedFieldModels: FieldModel[] = [];
+  const fields: { model: FieldModel; values: Record<string, Scalar> }[] = [];
   for (const key in metric.outputs) {
     const itemType = key as ItemType;
     const itemsCount = itemType === "nodes" ? dataset.fullGraph.order : dataset.fullGraph.size;
-    const dataKey = itemType === "nodes" ? "nodeData" : "edgeData";
-    const data = dataset[dataKey];
 
     for (const score in scores[itemType]) {
       const values = scores[itemType][score];
@@ -40,25 +40,23 @@ export function computeMetric(
 
       if (!attributeName) throw new Error("missing_attribute_name");
 
-      // Update item values:
-      for (const itemId in values) {
-        data[itemId][attributeName] = values[itemId];
-      }
-
       // Update field model:
       let fieldModelType = metric.outputs[itemType][score];
       if (fieldModelType === undefined) fieldModelType = inferFieldType(Object.values(values), itemsCount);
 
-      updatedFieldModels.push({
-        itemType,
-        id: attributeName,
-        ...fieldModelType,
+      fields.push({
+        values,
+        model: {
+          itemType,
+          id: attributeName,
+          ...fieldModelType,
+        },
       });
     }
   }
 
   return {
     report,
-    fieldModels: updatedFieldModels,
+    fields,
   };
 }

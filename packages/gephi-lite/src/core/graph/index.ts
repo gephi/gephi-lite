@@ -3,6 +3,7 @@ import {
   AppearanceState,
   FilteredGraph,
   FiltersState,
+  ItemData,
   Scalar,
   getEmptyAppearanceState,
 } from "@gephi/gephi-lite-sdk";
@@ -56,18 +57,26 @@ const editGraphMeta: Producer<GraphDataset, [Partial<GraphDataset["metadata"]>]>
     metadata: { ...state.metadata, ...metadata },
   });
 };
-const setFieldModel: Producer<GraphDataset, [FieldModel]> = (fieldModel) => {
-  const key = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
+const setFieldModel: Producer<GraphDataset, [FieldModel, Record<string, Scalar>?]> = (fieldModel, itemValues) => {
+  const fieldsKey = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
+  const dataKey = fieldModel.itemType === "nodes" ? "nodeData" : "edgeData";
   return (state) => {
-    const prevState = state[key];
-    // todo: remove typescript issue solved here by forcing type
-    const update = !!(prevState as { id: string }[]).find((f) => f.id === fieldModel.id);
-    return {
+    const prevFieldsKey = state[fieldsKey];
+    const shouldUpdateFields = !!prevFieldsKey.find((f) => f.id === fieldModel.id);
+    const newState = {
       ...state,
-      [key]: update
-        ? prevState.map((field) => (field.id === fieldModel.id ? fieldModel : field))
-        : [...prevState, fieldModel],
+      [fieldsKey]: shouldUpdateFields
+        ? prevFieldsKey.map((field) => (field.id === fieldModel.id ? fieldModel : field))
+        : [...prevFieldsKey, fieldModel],
     };
+
+    if (itemValues)
+      newState[dataKey] = mapValues(newState[dataKey], (data, itemId) => ({
+        ...data,
+        [fieldModel.id]: itemValues[itemId] || data[fieldModel.id],
+      }));
+
+    return newState;
   };
 };
 const moveFieldModel: Producer<GraphDataset, [ItemType, string, number]> = (
@@ -93,17 +102,27 @@ const moveFieldModel: Producer<GraphDataset, [ItemType, string, number]> = (
     };
   };
 };
-const createFieldModel: Producer<GraphDataset, [FieldModel, number?]> = (fieldModel, index?: number) => {
+const createFieldModel: Producer<GraphDataset, [FieldModel, { index?: number; values?: ItemData }?]> = (
+  fieldModel,
+  { index, values } = {},
+) => {
   return (state) => {
-    const key = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
-    const newFields: FieldModel[] = state[key].slice(0);
+    const dataKey = fieldModel.itemType === "nodes" ? "nodeData" : "edgeData";
+    const fieldsKey = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
+    const newFields: FieldModel[] = state[fieldsKey].slice(0);
     const newIndex = index !== undefined ? clamp(index, 0, newFields.length) : newFields.length;
 
     // Insert it at the wanted position:
     newFields.splice(newIndex, 0, fieldModel);
     return {
       ...state,
-      [key]: newFields,
+      [fieldsKey]: newFields,
+      [dataKey]: values
+        ? mapValues(state[dataKey], (data, itemId) => ({
+            ...data,
+            [fieldModel.id]: values[itemId] || data[fieldModel.id],
+          }))
+        : state[dataKey],
     };
   };
 };

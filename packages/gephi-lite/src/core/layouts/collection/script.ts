@@ -2,16 +2,17 @@ import { ItemData } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import { isNil, isObject } from "lodash";
 
+import { codeToFunction } from "../../../utils/functions";
 import { graphDatasetAtom } from "../../graph";
 import { dataGraphToFullGraph } from "../../graph/utils";
-import { LayoutMapping, SyncLayout } from "../types";
+import { LayoutMapping, LayoutScriptFunction, SyncLayout } from "../types";
 
 // definition of a custom layout function
-const nodeCoordinatesCustomFn = new Function(`return (
-function nodeCoordinates(id, attributes, index, graph) {
+const nodeCoordinatesCustomFn =
+  codeToFunction<LayoutScriptFunction>(`function nodeCoordinates(id, attributes, index, graph) {
   // / Your code goes here
   return { x: Math.random() * 1000, y: Math.random() * 1000 };
-} )`)();
+}`);
 
 export const ScriptLayout = {
   id: "script",

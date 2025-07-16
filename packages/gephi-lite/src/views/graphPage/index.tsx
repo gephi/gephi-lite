@@ -138,7 +138,7 @@ export const GraphPage: FC = () => {
             <button
               type="button"
               className="gl-btn-close gl-btn"
-              aria-label={t("commons.close")}
+              aria-label={t("common.close")}
               onClick={() => setSelectedTool(undefined)}
             >
               <CloseIcon />
@@ -158,7 +158,7 @@ export const GraphPage: FC = () => {
         <button
           type="button"
           className="gl-btn-close gl-btn"
-          aria-label={t("commons.close")}
+          aria-label={t("common.close")}
           onClick={() => emptySelection()}
         >
           <CloseIcon />
