@@ -562,6 +562,7 @@
         "description": "This algorithm helps exploring ambiguity in Louvain community detection. It runs the Louvain algorithm N times, and analyzes how consistent Louvain is along multiple runs, looking on each edge if its extremities are in the same cluster or not..",
         "attributes": {
           "coMembershipScore": "Edge co-membership attribute name (i.e. the percentage of times Louvain set the same community for both of its extremities)",
+          "bridgeNessEdgeScore": "Edge bridge-ness attribute name (i.e. 1 - the co-membership score)",
           "ambiguityScore": "Edge ambiguity score name (the inverse of the consensus of all the Louvain runs, 0 when all Louvain runs agree, and 1 when they disagree the most)",
           "meanAmbiguityScore": "Node average linked edges ambiguity score attribute name",
           "sourceCommunityId": "Edge source modularity classes (for coloring purpose in the preview only)"

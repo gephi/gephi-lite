@@ -45,6 +45,7 @@ function computeLouvainEdgeScores(
   }
 
   const coMembershipEdgeScores = mapValues(edgeScores, (v) => v / runs);
+  const bridgeNessEdgeScores = mapValues(coMembershipEdgeScores, (v) => 1 - v);
   const ambiguityEdgeScores = mapValues(coMembershipEdgeScores, (v) => v * (1 - v) * 4);
   const nodes = graph.nodes();
   const meanAmbiguityNodeScores = zipObject(
@@ -54,6 +55,7 @@ function computeLouvainEdgeScores(
 
   return {
     coMembershipEdgeScores,
+    bridgeNessEdgeScores,
     ambiguityEdgeScores,
     meanAmbiguityNodeScores,
   };
@@ -93,25 +95,31 @@ const VisualizeAmbiguityForm: FC<{
         maxSize: 15,
         missingSize: 2,
       },
+      nodesLabel: {
+        type: "none",
+      },
       edgesColor: {
         type: "partition",
         field: { field: attributeNames["sourceCommunityId"] },
-        colorPalette: getPalette(values),
+        colorPalette: { ...getPalette(values), bridge: "#000000" },
         missingColor: DEFAULT_NODE_COLOR,
       },
       edgesShadingColor: {
         type: "shading",
         field: { field: attributeNames["ambiguityScore"] },
-        factor: 0.8,
+        factor: 1,
         targetColor: "#ffffff",
       },
       edgesSize: {
-        type: "fixed",
-        value: 3,
+        type: "ranking",
+        field: { field: attributeNames["ambiguityScore"] },
+        minSize: 1,
+        maxSize: 5,
+        missingSize: 2,
       },
       edgesZIndex: {
         type: "field",
-        field: { field: attributeNames["coMembershipScore"] },
+        field: { field: attributeNames["ambiguityScore"] },
         reversed: false,
       },
       backgroundColor: "#666666",
@@ -145,7 +153,7 @@ const VisualizeAmbiguityForm: FC<{
 };
 
 export const louvainEdgeAmbiguity: Metric<{
-  edges: ["coMembershipScore", "ambiguityScore", "sourceCommunityId"];
+  edges: ["coMembershipScore", "bridgeNessEdgeScore", "ambiguityScore", "sourceCommunityId"];
   nodes: ["meanAmbiguityScore"];
 }> = {
   id: "louvainEdgeAmbiguity",
@@ -155,6 +163,7 @@ export const louvainEdgeAmbiguity: Metric<{
       coMembershipScore: quantitativeOnly,
       ambiguityScore: quantitativeOnly,
       sourceCommunityId: qualitativeOnly,
+      bridgeNessEdgeScore: quantitativeOnly,
     },
     nodes: { meanAmbiguityScore: quantitativeOnly },
   },
@@ -179,32 +188,29 @@ export const louvainEdgeAmbiguity: Metric<{
   fn(
     parameters: {
       runs: number;
-      scoreType: "coMembership" | "ambiguity";
       getEdgeWeight?: string;
-      fastLocalMoves: boolean;
-      randomWalk: boolean;
       resolution: number;
     },
     graph: FullGraph,
   ) {
-    const { coMembershipEdgeScores, ambiguityEdgeScores, meanAmbiguityNodeScores } = computeLouvainEdgeScores(
-      graph,
-      parameters,
-    );
+    const { coMembershipEdgeScores, bridgeNessEdgeScores, ambiguityEdgeScores, meanAmbiguityNodeScores } =
+      computeLouvainEdgeScores(graph, parameters);
 
     // Run Louvain once more, with the same setup, to get some community classes (for coloring, basically):
     const communities = louvain(graph, {
       resolution: parameters.resolution,
       getEdgeWeight: parameters.getEdgeWeight || null,
     });
-    const edgeCommunities: Record<string, number> = {};
+    const edgeCommunities: Record<string, string> = {};
     graph.forEachEdge((edge, _, source) => {
-      edgeCommunities[edge] = communities[source];
+      const coMembership = coMembershipEdgeScores[edge];
+      edgeCommunities[edge] = coMembership > 0.5 ? communities[source] + "" : "bridge";
     });
 
     return {
       edges: {
         coMembershipScore: coMembershipEdgeScores,
+        bridgeNessEdgeScore: bridgeNessEdgeScores,
         ambiguityScore: ambiguityEdgeScores,
         sourceCommunityId: edgeCommunities,
       },

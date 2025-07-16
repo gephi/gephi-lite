@@ -559,6 +559,7 @@
         "description": "Cet algorithme permet d'explorer l'ambiguïté dans la détection des communautés avec la méthode de Louvain. Il exécute l'algorithme de Louvain N fois, puis analyse comment les résultats varient au cours de multiples exécutions, en vérifiant pour chaque lien si ses extrémités appartiennent ou non à la même communauté.",
         "attributes": {
           "coMembershipScore": "Attribut de co-appartenance des liens (c’est-à-dire le pourcentage de fois où Louvain a assigné la même communauté aux deux extrémités d’un lien)",
+          "bridgeNessEdgeScore": "Attribut de pontage des liens (c’est-à-dire 1 - le score de co-appartenance)",
           "ambiguityScore": "Attribut du score d'ambiguïté des liens (l'inverse du consensus de toutes les exécutions de Louvain, donc 0 si la décision est toujours la même, et 1 si elle varie 50% du temps)",
           "meanAmbiguityScore": "Moyenne des scores d'ambiguïté des liens adjacents",
           "sourceCommunityId": "Classe de modularité des sources des liens (uniquement utilisé pour )"
