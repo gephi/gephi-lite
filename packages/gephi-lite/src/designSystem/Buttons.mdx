@@ -31,6 +31,9 @@ import {
 </div>
 
 </div>}
+1. Default buttons: `gl-btn gl-btn-fill`
+2. Unselected toggle buttons: `gl-btn`
+3. Selected tpggme buttons: `gl-btn gl-btn-fill`
 
 ### Styles
 
@@ -50,9 +53,9 @@ import {
   <PiGraph className="" /> Text
 </button>
 </div>}
-1. Filled buttons `gl-btn gl-btn-fill`
-2. Outlined buttons : `gl-btn gl-btn-outlined`
-3. Text buttons : `gl-btn`
+1. Filled buttons: `gl-btn gl-btn-fill`
+2. Outlined buttons: `gl-btn gl-btn-outline`
+3. Text buttons: `gl-btn`
 
 #### Toggle Buttons
 
@@ -69,6 +72,10 @@ import {
 </div>
 
 </div>}
+1. Unselected **text** toggle buttons: `gl-btn`
+2. Selected **text** toggle buttons: `gl-btn gl-btn-fill`
+3. Unselected **outlined** toggle buttons: `gl-bt gl-btn-outline`
+4. Selected **outlined** toggle buttons: `gl-btn gl-btn-fill`
 
 ### States
 
@@ -127,6 +134,8 @@ import {
 </div>}
 
 #### Toggle
+
+Note that the leading icon should always be field when the toggle button is selected / active.
 
 ##### Text
 
@@ -210,7 +219,43 @@ There is only one size of button for the moment, which can be refered as 'medium
 
 ### Colors
 
-No color
+#### Bases
+
+Buttons are components and then use mostly components color variables.
+
+#### Background color
+
+- Text and outlined buttons backgrounds are transparent.
+- Filled buttons background is in `--gl-component-bg`.
+
+#### Borders
+
+The borders of the outlined buttons are in `--gl-component-border`.
+
+#### Text color
+
+Because text and outlined buttons backgrounds are transparent, their labels and icons are considered to be on the buttons container bakcground/surface. Therefore the text and icon color of these buttons is `--gl-container-color`.
+On the other side, because filled buttons background is in `--gl-component-bg`, their labels and icons are considered to be on the buttons itself, and then are in `--gl-component-color`.
+
+#### State colors
+
+Buttons states are mostly\* conveyed through their background colors. This background color is created by mixing the orignal background color of one button and the same color as its content with a fixed opacity.
+
+To do so we're using the color-mix css function.
+For exemple :
+
+`background-color: color-mix(in hsl, var(--gl-component-bg), var(--gl-component-color) $gl-sys-proportion-component-active-color-mix);`
+
+The opacity of each states are defined as gl variables:
+
+- `$gl-sys-proportion-component-hover-color-mix: $gl-ref-proportion-12; //12%`
+- `$gl-sys-proportion-component-focus-color-mix: $gl-ref-proportion-12; //12%`
+- `$gl-sys-proportion-component-active-color-mix: $gl-ref-proportion-24; //24%`
+- `$gl-sys-proportion-component-disabled-color-mix: $gl-ref-proportion-16; //16%`
+
+If other opacities are required, you can choose them from multiples of 4, and especially of 8. In this case, it will be essential to base your decisions on the contrast between the different states.
+
+\*The disabled state is conveyed by a change in the content color in addition to the background change. For text buttons the disabled state is only defined by the content color change.
 
 ## Guidelines
 

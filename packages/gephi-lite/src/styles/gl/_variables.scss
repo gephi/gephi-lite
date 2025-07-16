@@ -86,11 +86,11 @@ $gl-sys-color-dark-onComponentBg: $gl-ref-color-neutral-80;
 
 //----Color Mix Proportion
 //----Components
-$gl-sys-proportion-component-hover-color-mix: $gl-ref-proportion-12;
-$gl-sys-proportion-component-focus-color-mix: $gl-ref-proportion-12;
-$gl-sys-proportion-component-active-color-mix: $gl-ref-proportion-24;
-$gl-sys-proportion-component-disabled-color-mix: $gl-ref-proportion-16;
-$gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-64;
+$gl-sys-proportion-component-hover-color-mix: $gl-ref-proportion-12; //12%
+$gl-sys-proportion-component-focus-color-mix: $gl-ref-proportion-12; //12%
+$gl-sys-proportion-component-active-color-mix: $gl-ref-proportion-24; //24%
+$gl-sys-proportion-component-disabled-color-mix: $gl-ref-proportion-16; //16%
+$gl-sys-proportion-component-border-active-color-mix: $gl-ref-proportion-64; //64%
 
 //----Cells
 $gl-sys-proportion-cell-hover-color-mix: $gl-ref-proportion-4;
