@@ -45,7 +45,7 @@ function computeLouvainEdgeScores(
   }
 
   const coMembershipEdgeScores = mapValues(edgeScores, (v) => v / runs);
-  const ambiguityEdgeScores = mapValues(edgeScores, (v) => v * (1 - v) * 4);
+  const ambiguityEdgeScores = mapValues(coMembershipEdgeScores, (v) => v * (1 - v) * 4);
   const nodes = graph.nodes();
   const meanAmbiguityNodeScores = zipObject(
     nodes,
