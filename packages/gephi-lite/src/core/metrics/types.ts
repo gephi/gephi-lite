@@ -1,7 +1,7 @@
 import { FieldModelType, FieldModelTypeSpec } from "@gephi/gephi-lite-sdk";
 import { ComponentType } from "react";
 
-import { FullGraph, ItemData } from "../graph/types";
+import { FullGraph } from "../graph/types";
 import { ItemType, Scalar } from "../types";
 
 interface BaseMetricParameter {
@@ -37,20 +37,11 @@ export interface MetricAttributeParameter extends BaseMetricParameter {
   restriction?: FieldModelType[];
 }
 
-export type MetricScriptFunction = (id: string, attributes: ItemData, index: number, graph: FullGraph) => Scalar;
-export interface MetricScriptParameter extends BaseMetricParameter {
-  type: "script";
-  defaultValue: MetricScriptFunction;
-  functionJsDoc: string;
-  functionCheck: (fn?: MetricScriptFunction) => void;
-}
-
 export type MetricParameter =
   | MetricBooleanParameter
   | MetricNumberParameter
   | MetricEnumParameter
-  | MetricAttributeParameter
-  | MetricScriptParameter;
+  | MetricAttributeParameter;
 
 export interface Metric<Outputs extends Partial<Record<ItemType, string[]>>> {
   id: string;

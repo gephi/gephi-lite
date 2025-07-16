@@ -11,20 +11,18 @@ import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
 import { CodeEditorIcon } from "../common-icons";
-import { FunctionEditorModal } from "../modals/FunctionEditorModal";
+import { FunctionEditorModal } from "../modals/FunctionEditor";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
-const nodeFilterCustomFn = new Function(`return (
-function nodeFilter(id, attributes, graph) {
+const nodeFilterCustomFn = `function nodeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
-})`)();
+}`;
 
-const edgeFilterCustomFn = new Function(`return (
-function edgeFilter(id, attributes, graph) {
+const edgeFilterCustomFn = `function edgeFilter(id, attributes, graph) {
   // Your code goes here
   return true;
-})`)();
+}`;
 
 const SCRIPT_JS_DOC = `/**
  * Filtering function.
@@ -69,12 +67,13 @@ export const ScriptFilter: FC<{
               title={t("common.open_code_editor").toString()}
               onClick={() => {
                 openModal({
-                  component: FunctionEditorModal<ScriptFilterType["script"]>,
+                  component: FunctionEditorModal<NonNullable<ScriptFilterType["script"]>>,
                   arguments: {
                     title: "Custom filter",
                     functionJsDoc: SCRIPT_JS_DOC,
-                    defaultFunction: filter.itemType === "nodes" ? nodeFilterCustomFn : edgeFilterCustomFn,
-                    value: filter.script,
+                    initialFunctionCode:
+                      filter.script?.toString() ??
+                      (filter.itemType === "nodes" ? nodeFilterCustomFn : edgeFilterCustomFn),
                     checkFunction: (fn) => {
                       if (!fn) throw new Error("Function is not defined");
                       // Check/test the function
@@ -97,8 +96,8 @@ export const ScriptFilter: FC<{
                       if (!isBoolean(result)) throw new Error("Function must returned a boolean");
                     },
                   },
-                  beforeSubmit: ({ script }) => {
-                    replaceCurrentFilter({ ...filter, script });
+                  beforeSubmit: ({ fn }) => {
+                    replaceCurrentFilter({ ...filter, script: fn });
                   },
                 });
               }}

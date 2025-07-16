@@ -1,3 +1,4 @@
+import { FieldModel } from "@gephi/gephi-lite-sdk";
 import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { isNil } from "lodash";
@@ -15,9 +16,8 @@ import {
   StopIconFill,
 } from "../../../../components/common-icons";
 import { BooleanInput, EnumInput, NumberInput } from "../../../../components/forms/TypedInputs";
-import { FunctionEditorModal } from "../../../../components/modals/FunctionEditorModal";
+import { FunctionEditorModal } from "../../../../components/modals/FunctionEditor";
 import { useGraphDataset, useSigmaGraph } from "../../../../core/context/dataContexts";
-import { FieldModel } from "../../../../core/graph/types";
 import { getFilteredDataGraph } from "../../../../core/graph/utils";
 import { Layout, LayoutScriptParameter } from "../../../../core/layouts/types";
 import { useModal } from "../../../../core/modals";
@@ -75,7 +75,7 @@ export const LayoutForm: FC<{
   /**
    * OnChange function for parameters
    */
-  const onChangeParameters = useCallback(
+  const changeParameter = useCallback(
     (key: string, value: unknown) => {
       setSession((prev) => ({
         ...prev,
@@ -119,14 +119,18 @@ export const LayoutForm: FC<{
     if (isRunning) onStop();
     else {
       try {
-        onStart(layoutParameters);
+        // Read the latest layout parameters from the atom directly,
+        // to ensure having up-to-date data:
+        const latestSession = sessionAtom.get();
+        const latestLayoutParameters = latestSession.layoutsParameters[layout.id] || {};
+        onStart(latestLayoutParameters);
         if (layout.type === "sync")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
       } catch (e) {
         console.error(e);
       }
     }
-  }, [isRunning, layout.id, layout.type, layoutParameters, onStart, onStop, setSuccessMessage, t]);
+  }, [isRunning, layout.id, layout.type, onStart, onStop, setSuccessMessage, t]);
 
   return (
     <form
@@ -156,7 +160,7 @@ export const LayoutForm: FC<{
                     }
                     value={value as number}
                     disabled={isRunning}
-                    onChange={(v) => onChangeParameters(param.id, v)}
+                    onChange={(v) => changeParameter(param.id, v)}
                     required={param.required || false}
                     min={param.min}
                     max={param.max}
@@ -172,7 +176,7 @@ export const LayoutForm: FC<{
                     }
                     value={!!value as boolean}
                     disabled={isRunning}
-                    onChange={(v) => onChangeParameters(param.id, v)}
+                    onChange={(v) => changeParameter(param.id, v)}
                     required={param.required || false}
                   />
                 )}
@@ -187,7 +191,7 @@ export const LayoutForm: FC<{
                     placeholder={t("common.none")}
                     value={value as string}
                     disabled={isRunning}
-                    onChange={(v) => onChangeParameters(param.id, v)}
+                    onChange={(v) => changeParameter(param.id, v)}
                     options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
                       .filter((field) => (param.restriction ? param.restriction.includes(field.type) : true))
                       .map((field) => ({
@@ -220,13 +224,12 @@ export const LayoutForm: FC<{
                                 title: "Custom layout",
                                 withSaveAndRun: true,
                                 functionJsDoc: param.functionJsDoc,
-                                defaultFunction: param.defaultValue,
-                                value: value as LayoutScriptParameter["defaultValue"],
+                                initialFunctionCode: value?.toString() ?? param.defaultValue.toString(),
                                 checkFunction: param.functionCheck,
                               },
-                              beforeSubmit: ({ run, script }) => {
-                                onChangeParameters(param.id, script);
-                                if (run) setTimeout(submit, 0);
+                              beforeSubmit: ({ run, fn }) => {
+                                changeParameter(param.id, fn);
+                                if (run) submit();
                               },
                             })
                           }

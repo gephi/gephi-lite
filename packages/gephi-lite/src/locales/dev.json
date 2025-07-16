@@ -245,6 +245,10 @@
     "create_edges_field": "Create edges attribute",
     "create_nodes_field_success": "The node attribute has successfully been created.",
     "create_edges_field_success": "The edge attribute has successfully been created.",
+    "create_nodes_scripted_field": "Create nodes scripted attribute",
+    "create_edges_scripted_field": "Create edges scripted attribute",
+    "create_nodes_scripted_field_success": "The scripted node attribute has successfully been created.",
+    "create_edges_scripted_field_success": "The scripted edge attribute has successfully been created.",
     "update_this_nodes": "Edit this node",
     "update_this_edges": "Edit this edge",
     "update_nodes": "Edit existing node",
@@ -293,7 +297,14 @@
     "multi": {
       "select_attribute": "Select the attribute to edit for the selection",
       "select_value": "Select a value to apply for the selection"
-    }
+    },
+    "code_editor": "Code editor",
+    "all_nodes": "All nodes",
+    "filtered_nodes": "Filtered nodes only",
+    "selected_nodes": "Selected nodes only",
+    "all_edges": "All edges",
+    "filtered_edges": "Filtered edges only",
+    "selected_edges": "Selected edges only"
   },
   "graph": {
     "title": "Graph",
@@ -370,9 +381,9 @@
         "allMissing": "No values in the graph"
       },
       "field": {
-        "id": "identifier",
-        "label": "label",
-        "type": "type",
+        "id": "Identifier",
+        "label": "Label",
+        "type": "Type",
         "date-format": "Date format",
         "separator": "Keywords separator",
         "will_be_serialized_as": "{{type}} will be serialized as"
@@ -598,13 +609,6 @@
             "title": "Tolerance"
           }
         }
-      },
-      "nodescript": {
-        "title": "Custom node metric",
-        "description": "Define a function that compute a metric for a node.",
-        "attributes": {
-          "custom": "Attribute name on which to store the metric"
-        }
       }
     },
     "edges": {
@@ -623,13 +627,6 @@
         "title": "Simmelian strength",
         "attributes": {
           "simmelianStrength": "Simmelian strength attribute name"
-        }
-      },
-      "edgescript": {
-        "title": "Custom edge metric",
-        "description": "Define a function that compute a metric for an edge.",
-        "attributes": {
-          "custom": "Attribute name on which to store the metric"
         }
       }
     },

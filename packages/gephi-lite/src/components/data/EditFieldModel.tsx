@@ -58,7 +58,7 @@ export const useEditFieldModelForm = ({
             ? fields.findIndex((f) => f.id === insertAt.id) + (insertAt.pos === "before" ? -1 : 1)
             : undefined;
           try {
-            createFieldModel(newFieldModel, atIndex);
+            createFieldModel(newFieldModel, { index: atIndex });
             notify({
               type: "success",
               title: t(`edition.create_${type}_field`),
