@@ -1,9 +1,8 @@
 import cx from "classnames";
 import FileSaver from "file-saver";
-import { capitalize } from "lodash";
 import { type FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
@@ -18,7 +17,7 @@ import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { useDataTable, useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
@@ -26,11 +25,11 @@ import { useConnectedUser } from "../../core/user";
 
 export const Header: FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [user, setUser] = useConnectedUser();
   const { openModal } = useModal();
   const { notify } = useNotifications();
+  const { type: dataTableItemType } = useDataTable();
   const { resetGraph } = useGraphDatasetActions();
   const { saveFile } = useCloudProvider();
   const { exportAsGexf } = useFileActions();
@@ -163,21 +162,15 @@ export const Header: FC = () => {
           </Dropdown>
         </div>
         <div className="col-4 d-flex justify-content-center align-items-center gl-gap-1">
-          <Link to="/" className={cx("gl-btn", location.pathname === "/" ? "gl-btn-fill" : "")}>
+          <Link to="/" className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
             {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
-          <Dropdown
-            options={["nodes", "edges"].map((type) => ({
-              label: capitalize(t(`graph.model.${type}`)),
-              onClick: () => navigate(`/data/${type}`),
-            }))}
+          <Link
+            to={`/data/${dataTableItemType}`}
+            className={cx("gl-btn", location.pathname.startsWith("/data") && "gl-btn-fill")}
           >
-            <button
-              className={cx("gl-btn dropdown-toggle", location.pathname.startsWith("/data") ? "gl-btn-fill" : "")}
-            >
-              {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
-            </button>
-          </Dropdown>
+            {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
+          </Link>
         </div>
         <div className="col-4 d-flex justify-content-end align-items-center">
           <ThemeSwitcher />
