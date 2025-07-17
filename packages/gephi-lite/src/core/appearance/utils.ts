@@ -12,7 +12,7 @@ import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/render
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
 import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
-import { getFieldValueForQuantification } from "../graph/fieldModel";
+import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
   DatalessGraph,
   DynamicItemData,
@@ -162,10 +162,8 @@ export function makeGetColor<
   switch (colorsDef.type) {
     case "partition":
       getColor = (data: StaticDynamicItemData) => {
-        const valueAsNumber = getFieldValueForQuantification(data, colorsDef.field);
-        return typeof valueAsNumber === "string" && valueAsNumber in colorsDef.colorPalette
-          ? colorsDef.colorPalette[valueAsNumber]
-          : colorsDef.missingColor;
+        const valueAsString = getFieldValue(data, colorsDef.field) + "";
+        return valueAsString in colorsDef.colorPalette ? colorsDef.colorPalette[valueAsString] : colorsDef.missingColor;
       };
       break;
     case "ranking": {
