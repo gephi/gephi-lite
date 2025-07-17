@@ -29,6 +29,7 @@ import {
   PiCode,
   PiCornersIn,
   PiCornersOut,
+  PiCrosshair,
   PiCursor,
   PiCursorFill,
   PiDotsThreeVertical,
@@ -36,7 +37,7 @@ import {
   PiFunnelFill,
   PiGear,
   PiGithubLogo,
-  PiGpsFix,
+  PiGps,
   PiGraph,
   PiGraphFill,
   PiInfo,
@@ -98,6 +99,7 @@ export const DataIcon = PiTable;
 export const DataIconFill = PiTableFill;
 export const ExternalLinkIcon = PiArrowSquareOut;
 export const EditIcon = PiPencilSimpleLine;
+export const OpenInGraphIcon = PiCrosshair;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const FiltersIcon = PiFunnel;
@@ -127,7 +129,7 @@ export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
-export const ZoomResetIcon = PiGpsFix;
+export const ZoomResetIcon = PiGps;
 
 export const MouseIcon = PiCursor;
 export const MouseIconFill = PiCursorFill;

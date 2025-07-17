@@ -1,9 +1,18 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
+import cx from "classnames";
+import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
-import { CloseIcon, EditIcon, SearchIcon, TrashIcon, UnselectAllIcon } from "../../components/common-icons";
+import {
+  CloseIcon,
+  EditIcon,
+  OpenInGraphIcon,
+  SearchIcon,
+  TrashIcon,
+  UnselectAllIcon,
+} from "../../components/common-icons";
 import { EditItemModal } from "../../components/data/EditItem";
 import { EditMultipleItemsModal } from "../../components/data/EditMultipleItems";
 import ConfirmModal from "../../components/modals/ConfirmModal";
@@ -69,16 +78,28 @@ export const TopBar: FC = () => {
   const selectionActionDisabled = selectionType !== type || !items.size;
 
   return (
-    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline p-2 gap-1 gl-px-3 gl-py-1">
-      <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-middle gap-1">
+    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline gap-1">
+      <section className="d-flex justify-content-center align-items-center gl-gap-1 p-2 border-end">
+        {["nodes", "edges"].map((itemType) => (
+          <button
+            key={itemType}
+            className={cx("gl-btn", type === itemType && "gl-btn-fill")}
+            onClick={() => navigate(`/data/${itemType}`)}
+          >
+            {capitalize(t(`graph.model.${itemType}`))}
+          </button>
+        ))}
+      </section>
+      <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-middle p-2 gap-1">
         <span className="gl-btnlike">
           <Trans i18nKey={`selection.${type}`} count={selectionType === type ? items.size : 0} />
         </span>
         {selectionType === type && items.size > 0 && (
           <>
             <button
-              className="gl-btn gl-btn-icon gl-btn-fill"
+              className="gl-btn gl-btn-icon gl-btn-outline"
               disabled={selectionActionDisabled}
+              title={t("selection.open_in_graph")}
               onClick={() => {
                 navigate(`/`);
                 emitter.once(EVENTS.sigmaMounted, () => {
@@ -92,7 +113,7 @@ export const TopBar: FC = () => {
                 });
               }}
             >
-              {t("selection.open_in_graph")}
+              <OpenInGraphIcon />
             </button>
             <button
               className="gl-btn gl-btn-icon gl-btn-outline"
