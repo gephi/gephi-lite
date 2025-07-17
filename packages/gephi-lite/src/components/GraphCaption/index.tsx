@@ -4,8 +4,6 @@ import { fromPairs, mapValues } from "lodash";
 import { DateTime } from "luxon";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AiFillQuestionCircle } from "react-icons/ai";
-import { BiCollapseAlt } from "react-icons/bi";
 
 import {
   useAppearance,
@@ -21,6 +19,7 @@ import {
   getFieldValueFromQuantification,
 } from "../../core/graph/fieldModel";
 import { shortenNumber } from "../GraphFilters/utils";
+import { CaptionClose, CaptionOpen } from "../common-icons";
 import { AttributeRenderers } from "../data/Attribute";
 import { ItemsColorCaption } from "./ItemColorCaption";
 import ItemSizeCaption from "./ItemSizeCaption";
@@ -223,7 +222,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
               setCollapsed(!collapsed);
             }}
           >
-            {collapsed || !enabled ? <AiFillQuestionCircle size="1rem" /> : <BiCollapseAlt size="1rem" />}
+            {collapsed || !enabled ? <CaptionOpen /> : <CaptionClose />}
           </button>
         </div>
       </div>

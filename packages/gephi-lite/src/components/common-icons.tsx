@@ -15,6 +15,7 @@ import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowSquareOut,
+  PiArrowsInSimple,
   PiCaretDown,
   PiCaretLeft,
   PiCaretRight,
@@ -59,6 +60,7 @@ import {
   PiPlusCircleFill,
   PiPolygon,
   PiPolygonFill,
+  PiQuestion,
   PiSelection,
   PiSelectionFill,
   PiSpinner,
@@ -83,6 +85,8 @@ export const AppearanceIconFill = PiPaletteFill;
 export const AutoThemeIcon = PiCircleHalf;
 export const AutoThemeSelectedIcon = PiCircleHalfFill;
 export const CancelIcon = PiX;
+export const CaptionOpen = PiQuestion;
+export const CaptionClose = PiArrowsInSimple;
 export const CaretDownIcon = PiCaretDown;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
