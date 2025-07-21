@@ -181,7 +181,7 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
     <div className={cx("graph-summary d-flex flex-column gl-gap-2", className)}>
       <GraphTitleEditable title={metadata.title} save={saveTitle} />
       <div className="gl-px-2 gl-gap-x-2 d-flex flex-column position-relative">
-        <div className="d-flex flex-row flex-wrap gl-gap-x-2 gl-gap-y-3" style={{ lineHeight: 1.2 }}>
+        <div className="d-flex flex-row flex-wrap gl-gap-x-3 gl-gap-y-3" style={{ lineHeight: 1.2 }}>
           <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
         </div>
