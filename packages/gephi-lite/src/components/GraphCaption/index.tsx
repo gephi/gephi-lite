@@ -2,7 +2,7 @@ import { FieldModel, ItemType, StaticDynamicItemData } from "@gephi/gephi-lite-s
 import cx from "classnames";
 import { fromPairs, mapValues } from "lodash";
 import { DateTime } from "luxon";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -18,6 +18,7 @@ import {
   getFieldValueForQuantification,
   getFieldValueFromQuantification,
 } from "../../core/graph/fieldModel";
+import { useMobile } from "../../hooks/useMobile";
 import { shortenNumber } from "../GraphFilters/utils";
 import { CaptionClose, CaptionOpen } from "../common-icons";
 import { AttributeRenderers } from "../data/Attribute";
@@ -123,20 +124,18 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
   const { nodeData, edgeData } = useGraphDataset();
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const { t } = useTranslation();
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const isMobile = useMobile();
+  const [collapsed, setCollapsed] = useState<boolean>(isMobile);
   const { quality } = useLayoutState();
-  const [enabled, setEnabled] = useState<boolean>(true);
-
-  useEffect(() => {
-    const enable =
+  const enabled = useMemo(
+    () =>
       ["ranking", "partition"].includes(appearance.nodesColor.type) ||
       ["ranking", "partition", "source", "target"].includes(appearance.edgesColor.type) ||
       appearance.edgesSize.type === "ranking" ||
       appearance.nodesSize.type === "ranking" ||
-      quality.enabled;
-
-    setEnabled(enable);
-  }, [appearance, quality.enabled]);
+      quality.enabled,
+    [appearance, quality.enabled],
+  );
 
   // min-max values for ranking caption items
   const vizAttributesExtends = useMemo(() => {

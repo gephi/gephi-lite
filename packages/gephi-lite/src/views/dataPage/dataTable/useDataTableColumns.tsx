@@ -18,6 +18,7 @@ import {
   useSelectionActions,
 } from "../../../core/context/dataContexts";
 import { useModal } from "../../../core/modals";
+import { useMobile } from "../../../hooks/useMobile";
 import { DataCell } from "./DataCell";
 import { Arrow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
 
@@ -26,6 +27,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
   const { type } = useDataTable();
   const { openModal } = useModal();
   const { nodeFields, edgeFields, nodeData, edgeData } = useGraphDataset();
+  const isMobile = useMobile();
 
   const { setSort } = useDataTableActions();
   const { toggle, select, unselect } = useSelectionActions();
@@ -71,7 +73,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         id: SPECIFIC_COLUMNS.selected,
         size: 60,
         enableResizing: false,
-        enablePinning: true,
+        enablePinning: !isMobile,
         meta: {
           protected: true,
         },
@@ -123,7 +125,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       columnHelper.display({
         id: SPECIFIC_COLUMNS.preview,
         header: () => <span className="column-title">{t("datatable.protected_columns.preview")}</span>,
-        enablePinning: true,
+        enablePinning: !isMobile,
         meta: {
           protected: true,
         },
@@ -275,6 +277,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       edgeData,
       fields,
       getReadOnlyColumn,
+      isMobile,
       itemIDs,
       moveFieldModel,
       nodeData,
@@ -292,7 +295,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
     columns,
     columnPinningState: {
       columnPinning: {
-        left: [SPECIFIC_COLUMNS.selected, SPECIFIC_COLUMNS.preview],
+        left: isMobile ? [] : [SPECIFIC_COLUMNS.selected, SPECIFIC_COLUMNS.preview],
       },
     },
   };

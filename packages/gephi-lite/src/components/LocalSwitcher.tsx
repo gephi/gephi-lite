@@ -1,7 +1,9 @@
+import cx from "classnames";
 import { toPairs } from "lodash";
 import { FC, useMemo } from "react";
 
 import { usePreferences, usePreferencesActions } from "../core/context/dataContexts";
+import { useMobile } from "../hooks/useMobile";
 import { LOCALES } from "../locales/LOCALES";
 import Dropdown from "./Dropdown";
 import { CheckedIcon } from "./common-icons";
@@ -16,6 +18,7 @@ const AVAILABLE_LOCALES = toPairs(LOCALES)
 const LocalSwitcher: FC = () => {
   const { locale } = usePreferences();
   const { changeLocale } = usePreferencesActions();
+  const isMobile = useMobile();
 
   const localeOptions = useMemo(
     () =>
@@ -33,7 +36,7 @@ const LocalSwitcher: FC = () => {
 
   return (
     <Dropdown options={localeOptions} side="right">
-      <button className="gl-btn dropdown-toggle w-100">{locale}</button>
+      <button className={cx("gl-btn w-100", !isMobile && "dropdown-toggle")}>{locale}</button>
     </Dropdown>
   );
 };

@@ -3,7 +3,7 @@ import FileSaver from "file-saver";
 import { type FC, PropsWithChildren, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
-import { PiCaretUp, PiList } from "react-icons/pi";
+import { PiList, PiX } from "react-icons/pi";
 import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
@@ -161,6 +161,31 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <header className="gl-container-high-bg container-fluid border-bottom">
+      <AnimateHeight height={expanded ? "auto" : 0} className="position-relative d-sm-none" duration={400}>
+        <div className="d-flex flex-column align-items-stretch">
+          <section className="d-flex flex-row">
+            <div className="flex-grow-1">
+              <Dropdown options={workspaceMenuList}>
+                <button className="gl-btn">Workspace</button>
+              </Dropdown>
+            </div>
+            <ThemeSwitcher />
+            <LocalSwitcher />
+            {logoMenuList.map(({ label, icon, onClick, url }, i) =>
+              url ? (
+                <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
+                  {icon}
+                </a>
+              ) : (
+                <button key={i} className="gl-btn" onClick={onClick} title={label}>
+                  {icon}
+                </button>
+              ),
+            )}
+          </section>
+        </div>
+      </AnimateHeight>
+
       <section className="row gx-0">
         <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center">
           {/* Tablet and desktop display: */}
@@ -194,32 +219,10 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           </div>
           {/* Mobile display: */}
           <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
-            {expanded ? <PiCaretUp /> : <PiList />}
+            {expanded ? <PiX /> : <PiList />}
           </button>
         </section>
       </section>
-      <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
-        <div className="d-flex flex-column align-items-stretch">
-          <section className="d-flex flex-row justify-content-between">
-            <Dropdown options={workspaceMenuList}>
-              <button className="gl-btn dropdown-toggle">Workspace</button>
-            </Dropdown>
-            <ThemeSwitcher />
-            <LocalSwitcher />
-            {logoMenuList.map(({ label, icon, onClick, url }, i) =>
-              url ? (
-                <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
-                  {icon}
-                </a>
-              ) : (
-                <button key={i} className="gl-btn" onClick={onClick} title={label}>
-                  {icon}
-                </button>
-              ),
-            )}
-          </section>
-        </div>
-      </AnimateHeight>
     </header>
   );
 };

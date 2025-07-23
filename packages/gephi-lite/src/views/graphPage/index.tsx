@@ -27,6 +27,7 @@ import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
+import { useMobile } from "../../hooks/useMobile";
 import { Layout } from "../layout";
 import { Header } from "../layout/Header";
 import { GraphRendering } from "./GraphRendering";
@@ -112,9 +113,24 @@ export const GraphPage: FC = () => {
   const { items } = useSelection();
   const { emptySelection } = useSelectionActions();
   const { t } = useTranslation();
+  const isMobile = useMobile();
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
+
+  const selectionPanel = (
+    <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
+      <button
+        type="button"
+        className="gl-btn-close gl-btn d-none d-sm-block"
+        aria-label={t("common.close")}
+        onClick={() => emptySelection()}
+      >
+        <CloseIcon />
+      </button>
+      {items.size > 0 && <Selection />}
+    </div>
+  );
 
   useEffect(() => {
     setExpanded(false);
@@ -182,6 +198,8 @@ export const GraphPage: FC = () => {
           )}
         </div>
 
+        {isMobile && selectionPanel}
+
         {/* Graph viz */}
         <div className="filler">
           <GraphRendering />
@@ -197,18 +215,7 @@ export const GraphPage: FC = () => {
           />
         </div>
 
-        {/* Right panel */}
-        <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
-          <button
-            type="button"
-            className="gl-btn-close gl-btn d-none d-sm-block"
-            aria-label={t("common.close")}
-            onClick={() => emptySelection()}
-          >
-            <CloseIcon />
-          </button>
-          {items.size > 0 && <Selection />}
-        </div>
+        {!isMobile && selectionPanel}
       </Layout>
     </>
   );

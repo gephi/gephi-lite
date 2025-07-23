@@ -19,12 +19,6 @@ body {
     & > .row {
       height: 40px;
     }
-
-    // Mobile display:
-    padding: 0 $gl-spacers-2;
-    @include media-breakpoint-up(sm) {
-      padding: 0 $gl-spacers-3;
-    }
   }
 
   main {
@@ -33,6 +27,22 @@ body {
     overflow: hidden;
     display: flex;
     padding: 0;
+  }
+
+  // Mobile display:
+  @include media-breakpoint-down(sm) {
+    flex-direction: column-reverse;
+
+    header {
+      padding: 0 $gl-spacers-2;
+      border-top: 1px solid var(--gl-container-border-color);
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    header {
+      padding: 0 $gl-spacers-3;
+    }
   }
 }
 

@@ -99,17 +99,18 @@ $panel-width: $gl-sys-size-container-large;
 
 // Mobile display:
 @include media-breakpoint-down(sm) {
-  $panel-height: 75%;
+  $menu-panel-height: 75%;
+  $selection-panel-height: 50%;
 
   .panels-layout {
-    flex-direction: column;
+    flex-direction: column-reverse;
 
     .panel {
       width: 100vw;
       transition: 0.3s height;
 
-      height: $panel-height;
-      border-bottom: 1px solid var(--gl-container-border-color) !important;
+      height: $menu-panel-height;
+      border-top: 1px solid var(--gl-container-border-color) !important;
 
       .panel-body,
       .panel-wrapper {
@@ -132,13 +133,16 @@ $panel-width: $gl-sys-size-container-large;
     .panel-expandable {
       &.deployed {
         width: 100vw;
-        height: $panel-height;
+        height: $menu-panel-height;
       }
       &:not(.deployed) {
         width: 100vw;
         height: 0;
         border: 0 !important;
       }
+    }
+    .panel-expandable.panel-selection.deployed {
+      height: $selection-panel-height;
     }
 
     .panel-left,
