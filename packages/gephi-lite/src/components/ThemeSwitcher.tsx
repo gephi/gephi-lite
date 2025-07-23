@@ -1,7 +1,9 @@
+import cx from "classnames";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePreferences, usePreferencesActions } from "../core/context/dataContexts";
+import { useMobile } from "../hooks/useMobile";
 import Dropdown from "./Dropdown";
 import {
   AutoThemeIcon,
@@ -17,6 +19,7 @@ export const ThemeSwitcher: FC<unknown> = () => {
   const { theme } = usePreferences();
   const { changeTheme } = usePreferencesActions();
   const { t } = useTranslation();
+  const isMobile = useMobile();
 
   const themeOptions = useMemo(
     () => [
@@ -56,7 +59,7 @@ export const ThemeSwitcher: FC<unknown> = () => {
 
   return (
     <Dropdown options={themeOptions} side="right">
-      <button className="gl-btn dropdown-toggle w-100">
+      <button className={cx("gl-btn w-100", !isMobile && "dropdown-toggle")}>
         {theme === "auto" && <AutoThemeSelectedIcon />}
         {theme === "light" && <LightThemeSelectedIcon />}
         {theme === "dark" && <DarkThemeSelectedIcon />}
