@@ -1,10 +1,16 @@
 import { Property } from "csstype";
-import React, { PropsWithChildren, forwardRef, useEffect, useState } from "react";
+import React, { HTMLAttributes, PropsWithChildren, forwardRef, useEffect, useState } from "react";
 
 const Transition = forwardRef<
   HTMLDivElement,
-  PropsWithChildren<{ show: unknown; mountTransition?: Property.Animation; unmountTransition?: Property.Animation }>
->(({ children, show, mountTransition, unmountTransition }, ref) => {
+  PropsWithChildren<
+    {
+      show: unknown;
+      mountTransition?: Property.Animation;
+      unmountTransition?: Property.Animation;
+    } & HTMLAttributes<HTMLDivElement>
+  >
+>(({ children, show, mountTransition, unmountTransition, ...props }, ref) => {
   const [shouldRender, setRender] = useState(show);
 
   useEffect(() => {
@@ -15,7 +21,8 @@ const Transition = forwardRef<
   return show || shouldRender ? (
     <div
       ref={ref}
-      style={{ animation: show ? mountTransition : unmountTransition }}
+      {...props}
+      style={{ ...(props.style || {}), animation: show ? mountTransition : unmountTransition }}
       onAnimationEnd={() => {
         if (!show) setRender(false);
       }}

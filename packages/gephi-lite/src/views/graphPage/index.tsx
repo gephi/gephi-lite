@@ -1,13 +1,14 @@
 import cx from "classnames";
 import { type ComponentType, FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PiCaretLeft, PiSidebar, PiX } from "react-icons/pi";
+import { PiX } from "react-icons/pi";
 
 import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
 import { type MenuItem, SideMenu } from "../../components/SideMenu";
+import Transition from "../../components/Transition";
 import {
   AppearanceIcon,
   AppearanceIconFill,
@@ -16,6 +17,9 @@ import {
   FiltersIconFill,
   LayoutsIcon,
   LayoutsIconFill,
+  MenuCollapseIcon,
+  MenuExpandIcon,
+  MenuPreviousIcon,
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
@@ -126,13 +130,21 @@ export const GraphPage: FC = () => {
               items.size ? emptySelection() : selectedTool ? setSelectedTool(undefined) : setExpanded((v) => !v)
             }
           >
-            {items.size ? <PiX /> : expanded ? <PiCaretLeft /> : <PiSidebar />}
+            {items.size ? (
+              <PiX />
+            ) : selectedTool ? (
+              <MenuPreviousIcon />
+            ) : expanded ? (
+              <MenuCollapseIcon />
+            ) : (
+              <MenuExpandIcon />
+            )}
           </button>
         </div>
       </Header>
       <Layout id="graph-page" className="panels-layout">
         {/* Menu panel on left*/}
-        <div className={cx("panel panel-left panel-main", !expanded && "panel-collapsed")}>
+        <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
             <GraphSummary />
             <GraphSearchSelection />
@@ -173,6 +185,16 @@ export const GraphPage: FC = () => {
         {/* Graph viz */}
         <div className="filler">
           <GraphRendering />
+          <Transition
+            show={expanded}
+            className="overlay"
+            mountTransition="fade-in 0.2s forwards"
+            unmountTransition="fade-out 0.2s forwards"
+            onClick={() => {
+              setSelectedTool(undefined);
+              setExpanded(false);
+            }}
+          />
         </div>
 
         {/* Right panel */}

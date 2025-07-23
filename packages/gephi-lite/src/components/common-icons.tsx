@@ -41,6 +41,7 @@ import {
   PiGps,
   PiGraph,
   PiGraphFill,
+  PiHouseLine,
   PiInfo,
   PiLasso,
   PiLassoFill,
@@ -85,8 +86,8 @@ export const AppearanceIconFill = PiPaletteFill;
 export const AutoThemeIcon = PiCircleHalf;
 export const AutoThemeSelectedIcon = PiCircleHalfFill;
 export const CancelIcon = PiX;
-export const CaptionOpen = PiQuestion;
 export const CaptionClose = PiArrowsInSimple;
+export const CaptionOpen = PiQuestion;
 export const CaretDownIcon = PiCaretDown;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
@@ -101,46 +102,49 @@ export const DataCreationIcon = PiPlusCircle;
 export const DataCreationIconFill = PiPlusCircleFill;
 export const DataIcon = PiTable;
 export const DataIconFill = PiTableFill;
-export const ExternalLinkIcon = PiArrowSquareOut;
 export const EditIcon = PiPencilSimpleLine;
-export const OpenInGraphIcon = PiCrosshair;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
+export const ExternalLinkIcon = PiArrowSquareOut;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiCornersOut;
+export const GitHubIcon = PiGithubLogo;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
-export const GitHubIcon = PiGithubLogo;
 export const GuessSettingsIcon = PiMagicWand;
+export const HomeIcon = PiHouseLine;
+export const LassoIcon = PiLasso;
+export const LassoIconFill = PiLassoFill;
 export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
 export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
-export const ResetIcon = PiArrowCounterClockwise;
-export const SettingsIcon = PiGear;
+export const MarqueeIcon = PiSelection;
+export const MarqueeIconFill = PiSelectionFill;
+export const MenuCollapseIcon = PiCaretUp;
+export const MenuExpandIcon = PiCaretDown;
+export const MenuPreviousIcon = PiCaretLeft;
+export const MouseIcon = PiCursor;
+export const MouseIconFill = PiCursorFill;
+export const OpenInGraphIcon = PiCrosshair;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
+export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
 export const SearchIcon = PiMagnifyingGlass;
+export const SettingsIcon = PiGear;
 export const StatisticsIcon = PiChartBar;
 export const StatisticsIconFill = PiChartBarFill;
+export const StopIcon = PiStop;
+export const StopIconFill = PiStopFill;
 export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
 export const TrashIcon = PiTrash;
 export const UnselectAllIcon = PiSpinner;
 export const UserIcon = PiUser;
-export const StopIcon = PiStop;
-export const StopIconFill = PiStopFill;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
 export const ZoomResetIcon = PiGps;
-
-export const MouseIcon = PiCursor;
-export const MouseIconFill = PiCursorFill;
-export const MarqueeIcon = PiSelection;
-export const MarqueeIconFill = PiSelectionFill;
-export const LassoIcon = PiLasso;
-export const LassoIconFill = PiLassoFill;
 
 export const GraphSelectionModeIcons: Record<GraphSelectionMode, { normal: IconType; fill: IconType }> = {
   cursor: { normal: MouseIcon, fill: MouseIconFill },
