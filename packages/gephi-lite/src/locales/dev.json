@@ -869,7 +869,8 @@
     "show_more": "Show more",
     "show_less": "Show less",
     "submit": "Submit",
-    "updated": "Updated"
+    "updated": "Updated",
+    "colon": ":"
   },
   "cloud": {
     "github": {
