@@ -76,6 +76,7 @@ export const TopBar: FC = () => {
   const { deleteItems } = useGraphDatasetActions();
   const { type: selectionType, items } = useSelection();
   const selectionActionDisabled = selectionType !== type || !items.size;
+  const matchingTypeSelectedCount = selectionType === type ? items.size : 0;
 
   return (
     <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline gap-1">
@@ -92,12 +93,13 @@ export const TopBar: FC = () => {
       </section>
       <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-middle p-2 gap-1">
         <span className="gl-btnlike">
-          <Trans i18nKey={`selection.${type}`} count={selectionType === type ? items.size : 0} />
+          <Trans i18nKey={`selection.${type}`} count={matchingTypeSelectedCount} />
+          {matchingTypeSelectedCount > 0 && t("common.colon")}
         </span>
         {selectionType === type && items.size > 0 && (
           <>
             <button
-              className="gl-btn gl-btn-icon gl-btn-outline"
+              className="gl-btn gl-btn-icon"
               disabled={selectionActionDisabled}
               title={t("selection.open_in_graph")}
               onClick={() => {
@@ -116,7 +118,7 @@ export const TopBar: FC = () => {
               <OpenInGraphIcon />
             </button>
             <button
-              className="gl-btn gl-btn-icon gl-btn-outline"
+              className="gl-btn gl-btn-icon"
               title={t(`edition.edit_selected_${type}`, { count: items.size })}
               disabled={selectionActionDisabled}
               onClick={() =>
@@ -140,7 +142,7 @@ export const TopBar: FC = () => {
               <EditIcon />
             </button>
             <button
-              className="gl-btn gl-btn-icon gl-btn-outline"
+              className="gl-btn gl-btn-icon"
               title={t(`edition.delete_selected_${type}`, { count: items.size })}
               disabled={selectionActionDisabled}
               onClick={() =>
@@ -160,7 +162,7 @@ export const TopBar: FC = () => {
               <TrashIcon />
             </button>
             <button
-              className="gl-btn gl-btn-icon gl-btn-outline"
+              className="gl-btn gl-btn-icon"
               title={t(`selection.unselect_all`)}
               disabled={selectionActionDisabled}
               onClick={() => emptySelection()}
