@@ -110,7 +110,7 @@ export const GraphPage: FC = () => {
   return (
     <Layout id="graph-page" className="panels-layout">
       {/* Menu panel on left*/}
-      <div className="panel">
+      <div className="panel panel-left">
         <div className="panel-body">
           <GraphSummary />
           <GraphSearchSelection />
@@ -154,7 +154,7 @@ export const GraphPage: FC = () => {
       </div>
 
       {/* Right panel */}
-      <div className={cx("panel panel-expandable panel-selection", items.size > 0 && "deployed")}>
+      <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
         <button
           type="button"
           className="gl-btn-close gl-btn"

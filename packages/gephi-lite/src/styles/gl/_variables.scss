@@ -7,7 +7,7 @@ $gl-ref-color-neutral-05: #fafafa;
 $gl-ref-color-neutral-10: #f7f7f7;
 $gl-ref-color-neutral-20: #eeeeee;
 $gl-ref-color-neutral-30: #e7e7e7;
-//$gl-ref-color-neutral-40: #e3e3e3;
+$gl-ref-color-neutral-40: #d0d0d0;
 //$gl-ref-color-neutral-50: #d4d4d4;
 $gl-ref-color-neutral-50: #a9a9a9;
 $gl-ref-color-neutral-60: #696969;
@@ -60,8 +60,9 @@ $gl-ref-decimal-104: 1.4;
 $gl-sys-color-bg: $gl-ref-color-neutral-10;
 $gl-sys-color-bg-high: $gl-ref-color-neutral-05;
 $gl-sys-color-bg-highest: $gl-ref-color-neutral-00;
-$gl-sys-color-bg-low: $gl-ref-color-neutral-20;
+$gl-sys-color-bg-low: $gl-ref-color-neutral-10;
 $gl-sys-color-border: $gl-ref-color-neutral-30;
+$gl-sys-color-border-low: $gl-ref-color-neutral-40;
 $gl-sys-color-onBg: $gl-ref-color-neutral-80;
 $gl-sys-color-onBg-muted: $gl-ref-color-neutral-60;
 $gl-sys-color-shadow-high: $gl-ref-color-neutral-80;
@@ -171,6 +172,7 @@ $gl-sys-font-line-height-heading: $gl-ref-decimal-102; // 1.2
   --gl-component-color: #{$gl-sys-color-onComponentBg};
   --gl-component-border-color: #{$gl-sys-color-component-border};
   // Table
+  --gl-table-border-color: #{$gl-sys-color-border-low};
   --gl-table-column-cell-editable-bg: #{$gl-sys-color-bg-highest};
   --gl-table-column-cell-non-editable-bg: #{$gl-sys-color-bg-highest};
   --gl-table-column-header-editable-bg: #{$gl-sys-color-bg-high};
