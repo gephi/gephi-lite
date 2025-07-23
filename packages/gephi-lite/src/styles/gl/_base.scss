@@ -9,7 +9,7 @@ body {
 }
 
 #root {
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
 
@@ -18,6 +18,12 @@ body {
 
     & > .row {
       height: 40px;
+    }
+
+    // Mobile display:
+    padding: 0 $gl-spacers-2;
+    @include media-breakpoint-up(sm) {
+      padding: 0 $gl-spacers-3;
     }
   }
 
@@ -66,13 +72,8 @@ blockquote {
   @extend .gl-gap-2;
   display: flex;
   flex-direction: row;
-  justify-content: center;
   width: 100%;
   justify-content: end;
-
-  &.right {
-    justify-content: start;
-  }
 }
 
 .gl-tooltip {

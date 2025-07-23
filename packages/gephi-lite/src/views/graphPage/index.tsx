@@ -1,6 +1,7 @@
 import cx from "classnames";
-import { type ComponentType, FC, useState } from "react";
+import { type ComponentType, FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PiCaretLeft, PiSidebar, PiX } from "react-icons/pi";
 
 import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
@@ -23,6 +24,7 @@ import { useSelection, useSelectionActions } from "../../core/context/dataContex
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { Layout } from "../layout";
+import { Header } from "../layout/Header";
 import { GraphRendering } from "./GraphRendering";
 import { Selection } from "./Selection";
 import { LabelsPanel } from "./panels/LabelsPanel";
@@ -107,64 +109,85 @@ export const GraphPage: FC = () => {
   const { emptySelection } = useSelectionActions();
   const { t } = useTranslation();
 
+  // Mobile display:
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    setExpanded(false);
+  }, [items]);
+
   return (
-    <Layout id="graph-page" className="panels-layout">
-      {/* Menu panel on left*/}
-      <div className="panel panel-left">
-        <div className="panel-body">
-          <GraphSummary />
-          <GraphSearchSelection />
-          <SideMenu
-            menu={MENU}
-            selected={selectedTool?.id}
-            onSelectedChange={(item) =>
-              setSelectedTool(
-                item.panel && item.id !== selectedTool?.id
-                  ? {
-                      id: item.id,
-                      panel: item.panel,
-                    }
-                  : undefined,
-              )
+    <>
+      <Header>
+        <div className="d-sm-none">
+          <button
+            className="gl-btn gl-btn-icon"
+            onClick={() =>
+              items.size ? emptySelection() : selectedTool ? setSelectedTool(undefined) : setExpanded((v) => !v)
             }
-          />
+          >
+            {items.size ? <PiX /> : expanded ? <PiCaretLeft /> : <PiSidebar />}
+          </button>
         </div>
-      </div>
+      </Header>
+      <Layout id="graph-page" className="panels-layout">
+        {/* Menu panel on left*/}
+        <div className={cx("panel panel-left panel-main", !expanded && "panel-collapsed")}>
+          <div className="panel-body">
+            <GraphSummary />
+            <GraphSearchSelection />
+            <SideMenu
+              menu={MENU}
+              selected={selectedTool?.id}
+              onSelectedChange={(item) =>
+                setSelectedTool(
+                  item.panel && item.id !== selectedTool?.id
+                    ? {
+                        id: item.id,
+                        panel: item.panel,
+                      }
+                    : undefined,
+                )
+              }
+            />
+          </div>
+        </div>
 
-      {/* Extended left panel */}
-      <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
-        {selectedTool && (
-          <>
-            <button
-              type="button"
-              className="gl-btn-close gl-btn"
-              aria-label={t("common.close")}
-              onClick={() => setSelectedTool(undefined)}
-            >
-              <CloseIcon />
-            </button>
-            <selectedTool.panel />
-          </>
-        )}
-      </div>
+        {/* Extended left panel */}
+        <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
+          {selectedTool && (
+            <>
+              <button
+                type="button"
+                className="gl-btn-close gl-btn d-none d-sm-block"
+                aria-label={t("common.close")}
+                onClick={() => setSelectedTool(undefined)}
+              >
+                <CloseIcon />
+              </button>
+              <selectedTool.panel />
+            </>
+          )}
+        </div>
 
-      {/* Graph viz */}
-      <div className="filler">
-        <GraphRendering />
-      </div>
+        {/* Graph viz */}
+        <div className="filler">
+          <GraphRendering />
+        </div>
 
-      {/* Right panel */}
-      <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
-        <button
-          type="button"
-          className="gl-btn-close gl-btn"
-          aria-label={t("common.close")}
-          onClick={() => emptySelection()}
-        >
-          <CloseIcon />
-        </button>
-        {items.size > 0 && <Selection />}
-      </div>
-    </Layout>
+        {/* Right panel */}
+        <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
+          <button
+            type="button"
+            className="gl-btn-close gl-btn d-none d-sm-block"
+            aria-label={t("common.close")}
+            onClick={() => emptySelection()}
+          >
+            <CloseIcon />
+          </button>
+          {items.size > 0 && <Selection />}
+        </div>
+      </Layout>
+    </>
   );
 };

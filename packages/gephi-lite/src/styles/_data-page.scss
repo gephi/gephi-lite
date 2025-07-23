@@ -25,3 +25,17 @@
     }
   }
 }
+
+// Mobile display:
+@include media-breakpoint-down(sm) {
+  #data-page .tables-container .menu-bar {
+    flex-direction: column;
+    padding: $gl-spacers-2;
+    gap: $gl-spacers-2;
+
+    & > * {
+      padding: 0 !important;
+      border: none !important;
+    }
+  }
+}

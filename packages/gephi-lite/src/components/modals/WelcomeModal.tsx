@@ -47,10 +47,10 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           <GephiLogo className="me-2 gl-icon-size-heading" />
           {t("welcome.title")}
           <span className="flex-grow-1" />
-          <span className="me-1" style={{ marginTop: "-0.1em" }}>
+          <span className="me-1 d-none d-sm-inline" style={{ marginTop: "-0.1em" }}>
             <ThemeSwitcher />
           </span>
-          <span className="me-1" style={{ marginTop: "-0.1em" }}>
+          <span className="me-1 d-none d-sm-inline" style={{ marginTop: "-0.1em" }}>
             <LocalSwitcher />
           </span>
         </>

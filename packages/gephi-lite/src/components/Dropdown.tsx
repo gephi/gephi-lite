@@ -17,13 +17,20 @@ type OptionText = Omit<OptionCommon, "type"> & { type: "text" };
 type OptionDivider = { type: "divider" };
 export type Option = OptionLink | OptionAction | OptionText | OptionDivider;
 
-const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide }> = ({
+const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide; className?: string }> = ({
   children: target,
   options,
+  className,
   side = "left",
 }) => {
   return (
-    <Tooltip hoverable closeOnClickContent attachment={`top ${side}`} targetAttachment={`bottom ${side}`}>
+    <Tooltip
+      hoverable
+      closeOnClickContent
+      attachment={`top ${side}`}
+      targetAttachment={`bottom ${side}`}
+      targetClassName={className}
+    >
       {target}
       <div className="dropdown-menu show over-modal position-relative gl-menu">
         {options.map((option, i) => (
