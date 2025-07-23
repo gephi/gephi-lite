@@ -41,7 +41,7 @@ export const getCommonPinningStyles = (column: Column<ItemRow>, isInHead?: boole
   const isLastLeftPinnedColumn = isPinned === "left" && column.getIsLastColumn("left");
 
   return {
-    borderRightWidth: isLastLeftPinnedColumn ? 2 : undefined,
+    borderRightWidth: isLastLeftPinnedColumn ? 1 : undefined,
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
     opacity: isPinned ? 0.95 : 1,

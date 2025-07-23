@@ -11,7 +11,12 @@
       flex-grow: 0;
       flex-shrink: 0;
       background-color: var(--gl-container-highest-bg);
-      border: solid 1px var(--gl-container-border-color);
+      border: solid 0 var(--gl-container-border-color);
+      border-bottom-width: 1px;
+
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
     }
 
     .data-table-container {

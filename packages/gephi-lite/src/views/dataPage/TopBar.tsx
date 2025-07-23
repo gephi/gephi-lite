@@ -79,7 +79,7 @@ export const TopBar: FC = () => {
   const matchingTypeSelectedCount = selectionType === type ? items.size : 0;
 
   return (
-    <div className="menu-bar flex-shrink-0 d-flex flex-row align-items-baseline gap-1">
+    <div className="menu-bar">
       <section className="d-flex justify-content-center align-items-center gl-gap-1 p-2 border-end">
         {["nodes", "edges"].map((itemType) => (
           <button
@@ -172,7 +172,7 @@ export const TopBar: FC = () => {
           </>
         )}
       </section>
-      <section>
+      <section className="d-flex align-items-center px-2">
         <SearchForm type={type} input={search} onChange={(query) => updateQuery({ query })} />
       </section>
     </div>

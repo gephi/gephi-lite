@@ -101,9 +101,10 @@ const MENU: MenuItem<{ panel?: Panel }>[] = [
   },
 ];
 
-const Panel: FC<{ collapsed?: boolean; children: [ReactNode, ReactNode] }> = ({
+const Panel: FC<{ collapsed?: boolean; borderBottom?: boolean; children: [ReactNode, ReactNode] }> = ({
   collapsed = false,
   children: [label, content],
+  borderBottom,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
@@ -119,8 +120,15 @@ const Panel: FC<{ collapsed?: boolean; children: [ReactNode, ReactNode] }> = ({
           {isCollapsed ? <PiCaretRight /> : <PiCaretDown />}
         </button>
       </div>
-      <div className={cx("flex-grow-1 flex-shrink-1 position-relative", isCollapsed && "d-none")}>{content}</div>
-      <div className="border border-bottom" />
+      <div
+        className={cx(
+          "flex-grow-1 flex-shrink-1 position-relative",
+          isCollapsed && "d-none",
+          borderBottom && "border-bottom",
+        )}
+      >
+        {content}
+      </div>
     </>
   );
 };
@@ -163,7 +171,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   return (
     <Layout id="data-page" className="panels-layout">
       {/* Menu panel on left*/}
-      <div className="panel">
+      <div className="panel panel-left">
         <div className="panel-body">
           <GraphSummary />
           <GraphSearchSelection />
@@ -185,7 +193,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
       </div>
 
       {/* Extended left panel */}
-      <div className={cx("panel panel-expandable", selectedTool && "deployed")}>
+      <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
         {selectedTool && (
           <>
             <button
@@ -208,7 +216,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
             <TopBar />
             {search ? (
               <>
-                <Panel>
+                <Panel borderBottom>
                   <Trans i18nKey={`datatable.${type}_matching`} count={matchingItems.length} />
                   <DataTable itemIDs={matchingItems} />
                 </Panel>

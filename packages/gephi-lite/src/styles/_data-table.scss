@@ -8,7 +8,6 @@ $table-editable-columns-cell-hover-bg: color-mix(
 
 .data-table {
   background: var(--gl-body-bg);
-  border: solid 1px var(--gl-container-border-color);
   display: grid;
   grid-template-rows: auto 1fr;
   max-width: 100%;
@@ -23,18 +22,29 @@ $table-editable-columns-cell-hover-bg: color-mix(
     }
   }
 
+  thead,
+  tbody {
+    border-color: var(--gl-table-border-color);
+  }
+
   thead {
     position: sticky;
     z-index: 2;
     top: 0;
+
     tr {
       display: flex;
       width: fit-content;
+      border-width: 0;
+      border-bottom-width: var(--bs-border-width);
 
       th {
         display: flex;
         font-weight: $font-weight-base;
         position: relative;
+
+        border-width: 0;
+        border-right-width: var(--bs-border-width);
 
         background: var(--gl-table-column-header-editable-bg);
         &.protected {
@@ -103,9 +113,15 @@ $table-editable-columns-cell-hover-bg: color-mix(
     tr {
       display: flex;
       position: absolute;
+      min-height: 2em;
+      border-width: 0;
+      border-bottom-width: var(--bs-border-width);
 
       td {
         display: flex;
+        line-height: 1.4em;
+        border-width: 0;
+        border-right-width: var(--bs-border-width);
 
         padding: map.get($spacers, 1) map.get($spacers, 2);
 
