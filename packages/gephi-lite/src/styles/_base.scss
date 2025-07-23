@@ -79,35 +79,7 @@
     opacity: 0.7;
   }
 }
-/**
- * Vendors:
- */
-.edge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-grow: 0;
-  flex-shrink: 0;
-  width: 1em;
 
-  .edge-body {
-    flex-grow: 1;
-    flex-shrink: 1;
-    min-height: 0.6em;
-  }
-  .edge-arrow {
-    width: 0;
-    height: 0;
-    border-left: 0.3em solid transparent;
-    border-left-width: 0.3em;
-    border-right: 0.3em solid transparent;
-    border-right-width: 0.3em;
-    border-top: 0.6em solid red;
-    flex-shrink: 0;
-    border-left-width: 0.3em;
-    border-right-width: 0.3em;
-  }
-}
 
 .btn {
   --bs-btn-padding-y: 0.25rem;
