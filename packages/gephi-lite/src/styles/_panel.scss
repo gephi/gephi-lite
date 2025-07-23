@@ -23,28 +23,27 @@ $panel-width: $gl-sys-size-container-large;
     z-index: 140;
     overflow: hidden;
     flex-shrink: 0;
+    width: $panel-width;
 
     .panel-wrapper {
       @extend .gl-p-0;
-      @extend .gl-gap-4;
     }
 
     .panel-body {
       @extend .gl-p-3;
       @extend .gl-gap-4;
-      margin-top: 2em;
-      padding-top: 0;
+      padding-top: 2em;
     }
 
     .panel-body,
     .panel-wrapper {
       display: flex;
       flex-direction: column;
-      width: $panel-width;
       height: 100%;
       overflow: auto;
       flex-grow: 1;
       flex-shrink: 1;
+      width: $panel-width;
 
       h2,
       h3 {
@@ -84,7 +83,6 @@ $panel-width: $gl-sys-size-container-large;
   }
 
   .panel-expandable {
-    width: 0;
     overflow-x: hidden;
     transition: 0.3s width;
     position: relative;
@@ -93,7 +91,42 @@ $panel-width: $gl-sys-size-container-large;
       width: $panel-width;
     }
     &:not(.deployed) {
+      width: 0;
       border: none;
+    }
+  }
+}
+
+// Mobile display:
+@include media-breakpoint-down(sm) {
+  .panels-layout {
+    .panel {
+      width: 100vw;
+      transition: 0.3s width;
+
+      position: absolute;
+      left: 0;
+      height: 100%;
+
+      .panel-body,
+      .panel-wrapper {
+        width: 100vw;
+      }
+
+      &.panel-collapsed {
+        width: 0;
+      }
+
+      .panel-body {
+        padding: $gl-spacers-3;
+      }
+      &.panel-main .panel-body {
+        padding: $gl-spacers-2;
+      }
+    }
+
+    .panel-expandable.deployed {
+      width: 100vw;
     }
   }
 }

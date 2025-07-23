@@ -80,7 +80,7 @@ export const TopBar: FC = () => {
 
   return (
     <div className="menu-bar">
-      <section className="d-flex justify-content-center align-items-center gl-gap-1 p-2 border-end">
+      <section className="d-flex align-items-center gl-gap-1 p-2 border-end">
         {["nodes", "edges"].map((itemType) => (
           <button
             key={itemType}
@@ -105,7 +105,6 @@ export const TopBar: FC = () => {
               onClick={() => {
                 navigate(`/`);
                 emitter.once(EVENTS.sigmaMounted, () => {
-                  console.log("SIGMA MOUNTED");
                   emitter.emit(EVENTS.focusNodes, {
                     nodes:
                       type === "nodes"

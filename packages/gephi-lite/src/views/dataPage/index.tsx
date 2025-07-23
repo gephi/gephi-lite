@@ -2,7 +2,7 @@ import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { type ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { PiCaretDown, PiCaretRight } from "react-icons/pi";
+import { PiCaretDown, PiCaretLeft, PiCaretRight, PiSidebar } from "react-icons/pi";
 import { ScrollSync } from "react-scroll-sync";
 
 import GraphFilters from "../../components/GraphFilters";
@@ -22,11 +22,18 @@ import { CreateScriptedFieldModelForm } from "../../components/data/CreateScript
 import { EditEdgeForm } from "../../components/data/EditEdge";
 import { EditFieldModelForm } from "../../components/data/EditFieldModel";
 import { EditNodeForm } from "../../components/data/EditNode";
-import { useDataTable, useDataTableActions, useFilteredGraph, useGraphDataset } from "../../core/context/dataContexts";
+import {
+  useDataTable,
+  useDataTableActions,
+  useFilteredGraph,
+  useGraphDataset,
+  useSelection,
+} from "../../core/context/dataContexts";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { doesItemMatch } from "../../utils/search";
 import { StatisticsPanel } from "../graphPage/panels/StatisticsPanel";
 import { Layout } from "../layout";
+import { Header } from "../layout/Header";
 import { TopBar } from "./TopBar";
 import { DataTable } from "./dataTable/DataTable";
 
@@ -135,6 +142,7 @@ const Panel: FC<{ collapsed?: boolean; borderBottom?: boolean; children: [ReactN
 
 export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   const { t } = useTranslation();
+  const { items } = useSelection();
   const { type, search } = useDataTable();
   const { setType } = useDataTableActions();
   const { nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields } = useGraphDataset();
@@ -164,75 +172,94 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
 
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
 
+  // Mobile display:
+  const [expanded, setExpanded] = useState(false);
+
   useEffect(() => {
     setType(inputType);
   }, [inputType, setType]);
 
+  useEffect(() => {
+    setExpanded(false);
+  }, [items]);
+
   return (
-    <Layout id="data-page" className="panels-layout">
-      {/* Menu panel on left*/}
-      <div className="panel panel-left">
-        <div className="panel-body">
-          <GraphSummary />
-          <GraphSearchSelection />
-          <SideMenu
-            menu={MENU}
-            selected={selectedTool?.id}
-            onSelectedChange={(item) =>
-              setSelectedTool(
-                item.panel && item.id !== selectedTool?.id
-                  ? {
-                      id: item.id,
-                      panel: item.panel,
-                    }
-                  : undefined,
-              )
-            }
-          />
+    <>
+      <Header>
+        <div className="d-sm-none">
+          <button
+            className="gl-btn gl-btn-icon"
+            onClick={() => (selectedTool ? setSelectedTool(undefined) : setExpanded((v) => !v))}
+          >
+            {expanded ? <PiCaretLeft /> : <PiSidebar />}
+          </button>
         </div>
-      </div>
-
-      {/* Extended left panel */}
-      <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
-        {selectedTool && (
-          <>
-            <button
-              type="button"
-              className="gl-btn-close gl-btn"
-              aria-label={t("common.close")}
-              onClick={() => setSelectedTool(undefined)}
-            >
-              <CloseIcon />
-            </button>
-            <selectedTool.panel close={() => setSelectedTool(undefined)} />
-          </>
-        )}
-      </div>
-
-      {/* Data tables */}
-      <div className="filler">
-        <ScrollSync enabled horizontal vertical={false}>
-          <div className="tables-container">
-            <TopBar />
-            {search ? (
-              <>
-                <Panel borderBottom>
-                  <Trans i18nKey={`datatable.${type}_matching`} count={matchingItems.length} />
-                  <DataTable itemIDs={matchingItems} />
-                </Panel>
-                <Panel collapsed>
-                  <Trans i18nKey={`datatable.${type}_not_matching`} count={otherItems.length} />
-                  <DataTable itemIDs={otherItems} />
-                </Panel>
-              </>
-            ) : (
-              <section className="flex-grow-1 position-relative">
-                <DataTable itemIDs={matchingItems} />
-              </section>
-            )}
+      </Header>
+      <Layout id="data-page" className="panels-layout">
+        {/* Menu panel on left*/}
+        <div className={cx("panel panel-left panel-main", !expanded && "panel-collapsed")}>
+          <div className="panel-body">
+            <GraphSummary />
+            <GraphSearchSelection />
+            <SideMenu
+              menu={MENU}
+              selected={selectedTool?.id}
+              onSelectedChange={(item) =>
+                setSelectedTool(
+                  item.panel && item.id !== selectedTool?.id
+                    ? {
+                        id: item.id,
+                        panel: item.panel,
+                      }
+                    : undefined,
+                )
+              }
+            />
           </div>
-        </ScrollSync>
-      </div>
-    </Layout>
+        </div>
+
+        {/* Extended left panel */}
+        <div className={cx("panel panel-left panel-expandable", selectedTool && "deployed")}>
+          {selectedTool && (
+            <>
+              <button
+                type="button"
+                className="gl-btn-close gl-btn d-none d-sm-block"
+                aria-label={t("common.close")}
+                onClick={() => setSelectedTool(undefined)}
+              >
+                <CloseIcon />
+              </button>
+              <selectedTool.panel close={() => setSelectedTool(undefined)} />
+            </>
+          )}
+        </div>
+
+        {/* Data tables */}
+        <div className="filler">
+          <ScrollSync enabled horizontal vertical={false}>
+            <div className="tables-container">
+              <TopBar />
+              {search ? (
+                <>
+                  <Panel borderBottom>
+                    <Trans i18nKey={`datatable.${type}_matching`} count={matchingItems.length} />
+                    <DataTable itemIDs={matchingItems} />
+                  </Panel>
+                  <Panel collapsed>
+                    <Trans i18nKey={`datatable.${type}_not_matching`} count={otherItems.length} />
+                    <DataTable itemIDs={otherItems} />
+                  </Panel>
+                </>
+              ) : (
+                <section className="flex-grow-1 position-relative">
+                  <DataTable itemIDs={matchingItems} />
+                </section>
+              )}
+            </div>
+          </ScrollSync>
+        </div>
+      </Layout>
+    </>
   );
 };

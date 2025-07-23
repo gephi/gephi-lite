@@ -259,7 +259,7 @@ export const Selection: FC = () => {
 
       {/* Selection actions */}
       <div className="panel-footer">
-        <div className="gl-actions right">
+        <div className="gl-actions flex-row-reverse flex-sm-row justify-content-sm-start">
           <button
             className="gl-btn gl-btn-icon gl-btn-fill"
             onClick={() => {

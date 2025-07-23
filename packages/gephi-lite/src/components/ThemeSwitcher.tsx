@@ -56,7 +56,7 @@ export const ThemeSwitcher: FC<unknown> = () => {
 
   return (
     <Dropdown options={themeOptions} side="right">
-      <button className="gl-btn gl-btn-icon dropdown-toggle">
+      <button className="gl-btn dropdown-toggle w-100">
         {theme === "auto" && <AutoThemeSelectedIcon />}
         {theme === "light" && <LightThemeSelectedIcon />}
         {theme === "dark" && <DarkThemeSelectedIcon />}

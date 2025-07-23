@@ -1,7 +1,9 @@
 import cx from "classnames";
 import FileSaver from "file-saver";
-import { type FC, useMemo } from "react";
+import { type FC, PropsWithChildren, useMemo, useState } from "react";
+import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
+import { PiList, PiX } from "react-icons/pi";
 import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
@@ -23,7 +25,7 @@ import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
 
-export const Header: FC = () => {
+export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const { t } = useTranslation();
   const [user, setUser] = useConnectedUser();
@@ -34,6 +36,9 @@ export const Header: FC = () => {
   const { saveFile } = useCloudProvider();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile } = useFile();
+
+  // For mobile burger menu:
+  const [expanded, setExpanded] = useState(false);
 
   const workspaceMenuList = useMemo(
     () =>
@@ -154,14 +159,17 @@ export const Header: FC = () => {
   );
 
   return (
-    <header className="gl-container-high-bg container-fluid border-bottom gl-px-3">
-      <div className="row gx-0">
-        <div className="col-4 d-flex justify-content-start align-items-center">
-          <Dropdown options={workspaceMenuList}>
+    <header className="gl-container-high-bg container-fluid border-bottom">
+      <section className="row gx-0">
+        <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center">
+          {/* Tablet and desktop display: */}
+          <Dropdown options={workspaceMenuList} className="d-none d-sm-block">
             <button className="gl-btn dropdown-toggle">Workspace</button>
           </Dropdown>
+          {/* Mobile display: */}
+          {children}
         </div>
-        <div className="col-4 d-flex justify-content-center align-items-center gl-gap-1">
+        <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
           <Link to="/" className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
             {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
@@ -172,16 +180,45 @@ export const Header: FC = () => {
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
         </div>
-        <div className="col-4 d-flex justify-content-end align-items-center">
-          <ThemeSwitcher />
-          <LocalSwitcher />
-          <Dropdown options={logoMenuList} side="right">
-            <button className="gl-btn dropdown-toggle">
-              <GephiLogo height={"1em"} width={"1em"} />
-            </button>
-          </Dropdown>
+        <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
+          {/* Tablet and desktop display: */}
+          <div className="d-none d-sm-flex">
+            <ThemeSwitcher />
+            <LocalSwitcher />
+            <Dropdown options={logoMenuList} side="right">
+              <button className="gl-btn dropdown-toggle">
+                <GephiLogo height="1em" width="1em" />
+              </button>
+            </Dropdown>
+          </div>
+          {/* Mobile display: */}
+          <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
+            {expanded ? <PiX /> : <PiList />}
+          </button>
+        </section>
+      </section>
+      <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
+        <div className="d-flex flex-column align-items-stretch">
+          <section className="d-flex flex-row justify-content-between">
+            <Dropdown options={workspaceMenuList}>
+              <button className="gl-btn dropdown-toggle">Workspace</button>
+            </Dropdown>
+            <ThemeSwitcher />
+            <LocalSwitcher />
+          </section>
+          {logoMenuList.map(({ label, onClick, url }, i) =>
+            url ? (
+              <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer">
+                {label}
+              </a>
+            ) : (
+              <button key={i} className="gl-btn" onClick={onClick}>
+                {label}
+              </button>
+            ),
+          )}
         </div>
-      </div>
+      </AnimateHeight>
     </header>
   );
 };
