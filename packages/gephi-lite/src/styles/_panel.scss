@@ -99,14 +99,17 @@ $panel-width: $gl-sys-size-container-large;
 
 // Mobile display:
 @include media-breakpoint-down(sm) {
+  $panel-height: 75%;
+
   .panels-layout {
+    flex-direction: column;
+
     .panel {
       width: 100vw;
-      transition: 0.3s width;
+      transition: 0.3s height;
 
-      position: absolute;
-      left: 0;
-      height: 100%;
+      height: $panel-height;
+      border-bottom: 1px solid var(--gl-container-border-color) !important;
 
       .panel-body,
       .panel-wrapper {
@@ -114,7 +117,8 @@ $panel-width: $gl-sys-size-container-large;
       }
 
       &.panel-collapsed {
-        width: 0;
+        height: 0;
+        border: 0 !important;
       }
 
       .panel-body {
@@ -125,8 +129,28 @@ $panel-width: $gl-sys-size-container-large;
       }
     }
 
-    .panel-expandable.deployed {
-      width: 100vw;
+    .panel-expandable {
+      &.deployed {
+        width: 100vw;
+        height: $panel-height;
+      }
+      &:not(.deployed) {
+        width: 100vw;
+        height: 0;
+        border: 0 !important;
+      }
+    }
+
+    .panel-left,
+    .panel-right {
+      border: 0;
+    }
+
+    .filler .overlay {
+      position: absolute;
+      inset: 0;
+      background-color: transparentize($gl-sys-color-component-bg, 0.9);
+      z-index: 10;
     }
   }
 }

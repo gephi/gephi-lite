@@ -3,14 +3,14 @@ import FileSaver from "file-saver";
 import { type FC, PropsWithChildren, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
-import { PiList, PiX } from "react-icons/pi";
+import { PiCaretUp, PiList } from "react-icons/pi";
 import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
 import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
-import { DataIcon, DataIconFill, GraphIcon, GraphIconFill } from "../../components/common-icons";
+import { DataIcon, DataIconFill, GitHubIcon, GraphIcon, GraphIconFill, HomeIcon } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
@@ -147,13 +147,14 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     () => [
       {
         label: t("gephi-lite.open_welcome_modal"),
+        icon: <HomeIcon />,
         onClick: () =>
           openModal({
             component: WelcomeModal,
             arguments: {},
           }),
       },
-      { label: t("gephi-lite.github_link"), url: "https://github.com/gephi/gephi-lite" },
+      { label: t("gephi-lite.github_link"), icon: <GitHubIcon />, url: "https://github.com/gephi/gephi-lite" },
     ],
     [t, openModal],
   );
@@ -193,7 +194,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           </div>
           {/* Mobile display: */}
           <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
-            {expanded ? <PiX /> : <PiList />}
+            {expanded ? <PiCaretUp /> : <PiList />}
           </button>
         </section>
       </section>
@@ -205,18 +206,18 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             </Dropdown>
             <ThemeSwitcher />
             <LocalSwitcher />
+            {logoMenuList.map(({ label, icon, onClick, url }, i) =>
+              url ? (
+                <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
+                  {icon}
+                </a>
+              ) : (
+                <button key={i} className="gl-btn" onClick={onClick} title={label}>
+                  {icon}
+                </button>
+              ),
+            )}
           </section>
-          {logoMenuList.map(({ label, onClick, url }, i) =>
-            url ? (
-              <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer">
-                {label}
-              </a>
-            ) : (
-              <button key={i} className="gl-btn" onClick={onClick}>
-                {label}
-              </button>
-            ),
-          )}
         </div>
       </AnimateHeight>
     </header>

@@ -2,19 +2,23 @@ import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { type ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { PiCaretDown, PiCaretLeft, PiCaretRight, PiSidebar } from "react-icons/pi";
+import { PiCaretDown, PiCaretRight } from "react-icons/pi";
 import { ScrollSync } from "react-scroll-sync";
 
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
 import { type MenuItem, SideMenu } from "../../components/SideMenu";
+import Transition from "../../components/Transition";
 import {
   CloseIcon,
   DataCreationIcon,
   DataCreationIconFill,
   FiltersIcon,
   FiltersIconFill,
+  MenuCollapseIcon,
+  MenuExpandIcon,
+  MenuPreviousIcon,
   StatisticsIcon,
   StatisticsIconFill,
 } from "../../components/common-icons";
@@ -191,13 +195,13 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
             className="gl-btn gl-btn-icon"
             onClick={() => (selectedTool ? setSelectedTool(undefined) : setExpanded((v) => !v))}
           >
-            {expanded ? <PiCaretLeft /> : <PiSidebar />}
+            {selectedTool ? <MenuPreviousIcon /> : expanded ? <MenuCollapseIcon /> : <MenuExpandIcon />}
           </button>
         </div>
       </Header>
       <Layout id="data-page" className="panels-layout">
         {/* Menu panel on left*/}
-        <div className={cx("panel panel-left panel-main", !expanded && "panel-collapsed")}>
+        <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
             <GraphSummary />
             <GraphSearchSelection />
@@ -258,6 +262,16 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
               )}
             </div>
           </ScrollSync>
+          <Transition
+            show={expanded}
+            className="overlay"
+            mountTransition="fade-in 0.2s forwards"
+            unmountTransition="fade-out 0.2s forwards"
+            onClick={() => {
+              setSelectedTool(undefined);
+              setExpanded(false);
+            }}
+          />
         </div>
       </Layout>
     </>
