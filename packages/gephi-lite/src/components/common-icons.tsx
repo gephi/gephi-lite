@@ -9,6 +9,7 @@ import {
   BsCircle,
   BsFillTagsFill,
   BsSlashLg,
+  BsTags,
 } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib/iconBase";
 import {
@@ -16,6 +17,10 @@ import {
   PiArrowCounterClockwise,
   PiArrowSquareOut,
   PiArrowsInSimple,
+  PiBinary,
+  PiBinaryBold,
+  PiBinaryFill,
+  PiCalendarDots,
   PiCaretDown,
   PiCaretLeft,
   PiCaretRight,
@@ -26,6 +31,7 @@ import {
   PiCheckCircle,
   PiCircleHalf,
   PiCircleHalfFill,
+  PiCirclesFour,
   PiClipboard,
   PiCode,
   PiCornersIn,
@@ -44,6 +50,7 @@ import {
   PiHouseLine,
   PiInfo,
   PiLasso,
+  PiLassoBold,
   PiLassoFill,
   PiMagicWand,
   PiMagnifyingGlass,
@@ -63,6 +70,7 @@ import {
   PiPolygonFill,
   PiQuestion,
   PiSelection,
+  PiSelectionBold,
   PiSelectionFill,
   PiSpinner,
   PiStop,
@@ -71,6 +79,7 @@ import {
   PiSunFill,
   PiTable,
   PiTableFill,
+  PiTextT,
   PiTrash,
   PiUser,
   PiWarning,
@@ -115,13 +124,13 @@ export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
 export const HomeIcon = PiHouseLine;
 export const LassoIcon = PiLasso;
-export const LassoIconFill = PiLassoFill;
+export const LassoIconFill = PiLassoBold;
 export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
 export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
 export const MarqueeIcon = PiSelection;
-export const MarqueeIconFill = PiSelectionFill;
+export const MarqueeIconFill = PiSelectionBold;
 export const MenuCollapseIcon = PiCaretDown;
 export const MenuExpandIcon = PiCaretUp;
 export const MenuPreviousIcon = PiCaretLeft;
@@ -134,8 +143,8 @@ export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
 export const SearchIcon = PiMagnifyingGlass;
 export const SettingsIcon = PiGear;
-export const StatisticsIcon = PiChartBar;
-export const StatisticsIconFill = PiChartBarFill;
+export const StatisticsIcon = PiBinary;
+export const StatisticsIconFill = PiBinaryBold;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
 export const ThreeDotsVerticalIcon = PiDotsThreeVertical;
@@ -169,11 +178,12 @@ export const ItemIcons: Record<ItemType, IconType> = {
 };
 
 export const FieldModelIcons: Record<FieldModelType, IconType> = {
-  text: BsBodyText,
-  number: Bs123,
-  category: BsAlphabetUppercase,
-  keywords: BsFillTagsFill,
-  date: BsCalendar3,
+  text: PiTextT,
+  number: PiChartBar,
+  category: PiCirclesFour,
+  //Still in Bs consciously, the style difference isn't to contrasted
+  keywords: BsTags,
+  date: PiCalendarDots,
 };
 export const FieldModelIcon: FC<IconBaseProps & { type: FieldModelType }> = ({ type, ...props }) => {
   const Icon = FieldModelIcons[type];
