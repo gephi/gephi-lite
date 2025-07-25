@@ -10,7 +10,7 @@ export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boole
   const { t } = useTranslation();
   return (
     <div className="d-flex align-items-center mw-100">
-      <span className={cx(hidden ? "circle" : "disc", "me-1 flex-shrink-0 ")} style={{ backgroundColor: color }} />
+      <span className={cx(hidden ? "circle" : "disc gl-border", "me-1 flex-shrink-0 ")} style={{ backgroundColor: color }} />
       <span className={cx(hidden && "text-muted", !label && "fst-italic", "flex-shrink-1 text-truncate")}>
         {label || t("selection.node_no_label")}
       </span>
