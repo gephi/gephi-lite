@@ -42,7 +42,7 @@ export const AttributeRenderers: {
   category: ({ value }) => (!isNil(value) ? <span className="badge rounded-pill text-bg-dark">{value}</span> : null),
   keywords: ({ value }) =>
     value?.length ? (
-      <span className="d-inline-flex gap-1">
+      <span className="d-inline-flex gl-gap-1">
         {value.map((keyword, i) => (
           <span key={i} className="badge rounded-pill text-bg-dark">
             {keyword}
@@ -53,7 +53,7 @@ export const AttributeRenderers: {
   date: ({ value, format }) => (!isNil(value) ? value.toFormat(format) : null),
   color: ({ value }) =>
     !isNil(value) ? (
-      <span className="d-inline-flex align-items-center gap-1">
+      <span className="d-inline-flex align-items-center gl-gap-1">
         <span className="square border border-black border-2" style={{ background: value }} /> {value}
       </span>
     ) : null,

@@ -46,7 +46,7 @@ export const ScriptFilter: FC<{
 
   return (
     <div className="w-100">
-      <div className="fs-5">
+      <div className="gl-heading-3">
         {t("filters.script")} ({t(`graph.model.${filter.itemType}`)})
       </div>
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}

@@ -10,7 +10,7 @@ export const FilteredGraphSummary: FC<{ filterIndex: number }> = ({ filterIndex 
   const relatedGraph = filteredGraphs[filterIndex]?.graph;
 
   return (
-    <div className="small text-muted">
+    <div>
       {relatedGraph.order} {t("graph.model.nodes", { count: relatedGraph.order })}, {relatedGraph.size}{" "}
       {t("graph.model.edges", { count: relatedGraph.size })}
     </div>

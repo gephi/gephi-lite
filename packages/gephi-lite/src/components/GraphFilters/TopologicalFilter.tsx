@@ -97,12 +97,8 @@ export const TopologicalFilter: FC<{
 
   return filterDefinition ? (
     <>
-      <div className="fs-5">{filterDefinition.label}</div>
-      {!editMode && (
-        <div className="flex-grow-1">
-          <span className="fs-6">{filterDefinition.summary(filter.parameters)}</span>{" "}
-        </div>
-      )}
+      <div className="gl-heading-3">{filterDefinition.label}</div>
+      {!editMode && <div>{filterDefinition.summary(filter.parameters)}</div>}
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}
       {editMode && <TopologicalFilterEditor filter={filter} filterDefinition={filterDefinition} />}
     </>
