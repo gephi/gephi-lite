@@ -1,6 +1,6 @@
 import { FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { PiCheck } from "react-icons/pi";
 import TetherComponent from "react-tether";
 
 import { EditItemAttribute, RenderItemAttribute } from "../../../components/data/Attribute";
@@ -24,7 +24,6 @@ export const EditDataCell: FC<{
   value: Scalar;
   close: () => void;
 }> = ({ type, id, field, close, value: initialValue }) => {
-  const { t } = useTranslation();
   const [value, setValue] = useState<Scalar>(initialValue);
   const { updateNode, updateEdge } = useGraphDatasetActions();
   const update = type === "nodes" ? updateNode : updateEdge;
@@ -55,7 +54,7 @@ export const EditDataCell: FC<{
     <TetherComponent
       attachment="top left"
       targetAttachment="top left"
-      className="data-cell-edition"
+      className={`data-cell-edition data-cell-edition-${field.type}`}
       constraints={[{ to: "scrollParent", attachment: "together", pin: true }]}
       renderTarget={(ref) => (
         <div ref={ref}>
@@ -71,7 +70,6 @@ export const EditDataCell: FC<{
         >
           <form
             ref={elementWrapper}
-            className="bg-light"
             onSubmit={(e) => {
               e.preventDefault();
               update(id, { [field.id]: value }, { merge: true });
@@ -84,9 +82,9 @@ export const EditDataCell: FC<{
             }}
           >
             <EditItemAttribute autoFocus inTooltip field={field} scalar={value} onChange={(value) => setValue(value)} />
-            <div className="text-end">
-              <button className="btn btn-small">{t("datatable.save_cell")}</button>
-            </div>
+            <button className="gl-btn gl-btn-fill gl-btn-icon">
+              <PiCheck />
+            </button>
           </form>
         </div>
       )}
