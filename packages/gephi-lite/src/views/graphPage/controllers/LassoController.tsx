@@ -1,7 +1,7 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 import { pick } from "lodash";
 import React, { FC, useCallback, useEffect, useRef } from "react";
-import { Coordinates } from "sigma/types";
+import { Coordinates, SigmaEventPayload } from "sigma/types";
 
 import { useSelection, useSelectionActions, useSigmaActions } from "../../../core/context/dataContexts";
 import { bindUpHandler } from "../../../utils/events";
@@ -120,6 +120,23 @@ export const LassoController: FC = () => {
   }, [sigma, setEmphasizedNodes]);
 
   useEffect(() => {
+    const downHandler = (e: SigmaEventPayload) => {
+      if (selectionRef.current.type === "idle") {
+        if (selectionRef.current.spaceKeyDown) {
+          setCursor("grabbing");
+        } else {
+          const mousePosition: Coordinates = pick(e.event, "x", "y");
+
+          selectionRef.current = {
+            type: "lasso",
+            points: [mousePosition],
+            ctrlKeyDown: e.event.original.ctrlKey,
+            capturedNodes: [],
+          };
+          sigma.getCamera().disable();
+        }
+      }
+    };
     registerEvents({
       moveBody: (e) => {
         if (selectionRef.current.type === "lasso") {
@@ -146,23 +163,8 @@ export const LassoController: FC = () => {
           };
         }
       },
-      downStage: (e) => {
-        if (selectionRef.current.type === "idle") {
-          if (selectionRef.current.spaceKeyDown) {
-            setCursor("grabbing");
-          } else {
-            const mousePosition: Coordinates = pick(e.event, "x", "y");
-
-            selectionRef.current = {
-              type: "lasso",
-              points: [mousePosition],
-              ctrlKeyDown: e.event.original.ctrlKey,
-              capturedNodes: [],
-            };
-            sigma.getCamera().disable();
-          }
-        }
-      },
+      downStage: downHandler,
+      downEdge: downHandler,
     });
 
     const keyDownHandler = (e: KeyboardEvent) => {
