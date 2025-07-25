@@ -112,7 +112,10 @@ function ExpandableItem<T = unknown>({
           <button
             ref={ref}
             className="gl-btn w-100 text-start"
-            onClick={() => setIsExpanded((v) => !v)}
+            onClick={() => {
+              setIsExpanded((v) => !v);
+              setShowTooltip(false);
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
