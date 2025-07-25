@@ -1,7 +1,7 @@
-import { getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
+import { NodeCoordinates, getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, uniq, values } from "lodash";
+import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, sortBy, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
 import { inferFieldType } from "./fieldModel";
@@ -24,33 +24,24 @@ export function getRandomNodeCoordinate(): number {
   return Math.random() * 100;
 }
 
-export function cleanNode(_node: string, attributes: Attributes): { data: ItemData; renderingData: NodeRenderingData } {
+export function cleanNode(_node: string, attributes: Attributes): { data: ItemData; position: NodeCoordinates } {
   const x = toNumber(attributes.x);
   const y = toNumber(attributes.y);
 
-  const renderingData: NodeRenderingData = {
-    label: typeof attributes.label === "string" ? attributes.label : undefined,
-    color: typeof attributes.color === "string" ? attributes.color : undefined,
-    size: toNumber(attributes.size),
+  const position: NodeCoordinates = {
     x: typeof x === "number" ? x : getRandomNodeCoordinate(),
     y: typeof y === "number" ? y : getRandomNodeCoordinate(),
   };
 
-  const data: ItemData = mapValues(omit(attributes, "label", "color", "size", "x", "y"), (v) => toScalar(v));
+  const data: ItemData = mapValues(omit(attributes, "x", "y"), (v) => toScalar(v));
 
-  return { data, renderingData };
+  return { data, position };
 }
 
-export function cleanEdge(_edge: string, attributes: Attributes): { data: ItemData; renderingData: EdgeRenderingData } {
-  const renderingData: EdgeRenderingData = {
-    label: typeof attributes.label === "string" ? attributes.label : undefined,
-    color: typeof attributes.color === "string" ? attributes.color : undefined,
-    weight: toNumber(attributes.weight),
-  };
+export function cleanEdge(_edge: string, attributes: Attributes): { data: ItemData } {
+  const data: ItemData = mapValues(attributes, (v) => toScalar(v));
 
-  const data: ItemData = mapValues(omit(attributes, "label", "color", "weight"), (v) => toScalar(v));
-
-  return { data, renderingData };
+  return { data };
 }
 
 /**
@@ -69,7 +60,7 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
 
   const nodeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachNode((node, attributes) => {
-    const { data, renderingData } = cleanNode(node, attributes);
+    const { data, position } = cleanNode(node, attributes);
 
     for (const key in data) {
       nodeAttributeValues[key] = nodeAttributeValues[key] || [];
@@ -77,13 +68,13 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
     }
 
     dataset.fullGraph.addNode(node, {});
-    dataset.nodeRenderingData[node] = renderingData;
+    dataset.layout[node] = position;
     dataset.nodeData[node] = data;
   });
 
   const edgeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachEdge((edge, attributes, source, target) => {
-    const { data, renderingData } = cleanEdge(edge, attributes);
+    const { data } = cleanEdge(edge, attributes);
 
     for (const key in data) {
       edgeAttributeValues[key] = edgeAttributeValues[key] || [];
@@ -91,7 +82,6 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
     }
 
     dataset.fullGraph.addEdgeWithKey(edge, source, target, {});
-    dataset.edgeRenderingData[edge] = renderingData;
     dataset.edgeData[edge] = data;
   });
 
@@ -100,7 +90,7 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
     dataset.nodeFields.push({
       id: key,
       itemType: "nodes",
-      ...inferFieldType(values, graph.order),
+      ...inferFieldType(key, values, graph.order),
     });
   });
 
@@ -108,9 +98,18 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
     dataset.edgeFields.push({
       id: key,
       itemType: "edges",
-      ...inferFieldType(values, graph.size),
+      ...inferFieldType(key, values, graph.size),
     });
   });
+
+  const labelsOrder = ["label", "size", "weight", "color"];
+  const getFieldScore = (field: FieldModel) => {
+    const cleanedName = field.id.trim().toLowerCase();
+    const index = labelsOrder.indexOf(cleanedName);
+    return index >= 0 ? index : Infinity;
+  };
+  dataset.nodeFields = sortBy(dataset.nodeFields, getFieldScore) as typeof dataset.nodeFields;
+  dataset.edgeFields = sortBy(dataset.edgeFields, getFieldScore) as typeof dataset.edgeFields;
 
   return dataset;
 }
@@ -120,7 +119,7 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
  * and returns a FullGraph:
  */
 export function dataGraphToFullGraph(
-  { fullGraph, nodeRenderingData, edgeRenderingData, nodeData, edgeData, metadata }: GraphDataset,
+  { fullGraph, layout, nodeData, edgeData, metadata }: GraphDataset,
   graph: DatalessGraph = fullGraph,
 ) {
   const res: FullGraph = new MultiGraph<
@@ -133,11 +132,11 @@ export function dataGraphToFullGraph(
   res.replaceAttributes(omit(metadata, ["type"]));
 
   // nodes
-  graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...nodeRenderingData[node] }));
+  graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...layout[node] }));
 
   // edges
   graph.forEachEdge((edge, _, source, target) =>
-    res.addEdgeWithKey(edge, source, target, { ...edgeData[edge], ...edgeRenderingData[edge] }),
+    res.addEdgeWithKey(edge, source, target, { ...edgeData[edge], ...layout[edge] }),
   );
 
   return res;
@@ -147,15 +146,10 @@ export function dataGraphToFullGraph(
  * This function takes a graph dataset (and optionally a DatalessGraph as input)
  * and returns a SigmaGraph:
  */
-export function dataGraphToSigmaGraph(
-  { fullGraph, nodeRenderingData, edgeRenderingData }: GraphDataset,
-  graph: DatalessGraph = fullGraph,
-) {
+export function dataGraphToSigmaGraph({ fullGraph, layout }: GraphDataset, graph: DatalessGraph = fullGraph) {
   const res: SigmaGraph = new MultiGraph<NodeRenderingData, EdgeRenderingData>();
-  graph.forEachNode((node) => res.addNode(node, { ...nodeRenderingData[node] }));
-  graph.forEachEdge((edge, _, source, target) =>
-    res.addEdgeWithKey(edge, source, target, { ...edgeRenderingData[edge] }),
-  );
+  graph.forEachNode((node) => res.addNode(node, { ...layout[node] }));
+  graph.forEachEdge((edge, _, source, target) => res.addEdgeWithKey(edge, source, target, {}));
   return res;
 }
 

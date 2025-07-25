@@ -7,31 +7,31 @@ import { castScalarToModelValue, guessSeparator, inferFieldType, serializeModelV
 describe("Field Model", () => {
   describe("#inferFieldType", () => {
     it("should properly handle a list of differing numbers", () => {
-      expect(inferFieldType([123, -123, 456, 789, Infinity], 5)).toEqual({
+      expect(inferFieldType("foobar", [123, -123, 456, 789, Infinity], 5)).toEqual({
         type: "number",
       });
     });
 
     it("should properly handle a list of differing strings", () => {
-      expect(inferFieldType(["Alexis", "Benoit", "Paul", "Guillaume", "Mathieu"], 5)).toEqual({
+      expect(inferFieldType("foobar", ["Alexis", "Benoit", "Paul", "Guillaume", "Mathieu"], 5)).toEqual({
         type: "text",
       });
     });
 
     it("should properly handle a list of repeating strings", () => {
-      expect(inferFieldType(["Nantes", "Nantes", "Nantes", "Paris", "Paris"], 5)).toEqual({
+      expect(inferFieldType("foobar", ["Nantes", "Nantes", "Nantes", "Paris", "Paris"], 5)).toEqual({
         type: "category",
       });
     });
 
     it("should properly handle a list of repeating strings", () => {
-      expect(inferFieldType(["true", "true", "true", "false", "false"], 5)).toEqual({
+      expect(inferFieldType("foobar", ["true", "true", "true", "false", "false"], 5)).toEqual({
         type: "category",
       });
     });
 
     it("should properly handle a list of repeating numbers", () => {
-      expect(inferFieldType([44, 44, 44, 75, 75], 5)).toEqual({
+      expect(inferFieldType("foobar", [44, 44, 44, 75, 75], 5)).toEqual({
         type: "number",
       });
     });
@@ -39,32 +39,36 @@ describe("Field Model", () => {
     // categories as numbers
     it("should properly handle a list of repeating numbers from 1 in series", () => {
       const numbersFromSeriesRepeating = shuffle([1, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 7]);
-      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+      expect(inferFieldType("foobar", numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
         type: "category",
       });
     });
     it("should properly handle a list of repeating numbers from 0 in series", () => {
       const numbersFromSeriesRepeating = shuffle([0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 7]);
-      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+      expect(inferFieldType("foobar", numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
         type: "category",
       });
     });
     it("should properly handle a list of repeating numbers in almost series", () => {
       const numbersFromSeriesRepeating = shuffle([0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 7, 10]);
-      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+      expect(inferFieldType("foobar", numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
         type: "number",
       });
     });
     it("should properly handle a list of repeating numbers in almost series", () => {
       const numbersFromSeriesRepeating = shuffle([2, 2, 3, 4, 5, 5, 5, 6, 6, 7, 10]);
-      expect(inferFieldType(numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
+      expect(inferFieldType("foobar", numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
         type: "number",
       });
     });
 
     it("should properly detect separators", () => {
       expect(
-        inferFieldType(["TypeScript", "Neo4J,TypeScript", "Python,TypeScript", "TypeScript,Python", "TypeScript"], 5),
+        inferFieldType(
+          "foobar",
+          ["TypeScript", "Neo4J,TypeScript", "Python,TypeScript", "TypeScript,Python", "TypeScript"],
+          5,
+        ),
       ).toEqual({
         type: "keywords",
         separator: ",",
@@ -73,7 +77,11 @@ describe("Field Model", () => {
 
     it("should properly detect date and format", () => {
       expect(
-        inferFieldType(["2025-06", "2023", "2012-06-03", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
+        inferFieldType(
+          "foobar",
+          ["2025-06", "2023", "2012-06-03", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"],
+          6,
+        ),
       ).toEqual({
         type: "date",
         format: "yyyy-MM-dd",
@@ -82,26 +90,30 @@ describe("Field Model", () => {
 
     it("should properly detect date and format", () => {
       expect(
-        inferFieldType(["2025", "2023", "2012", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
+        inferFieldType("foobar", ["2025", "2023", "2012", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
       ).toEqual({
         type: "date",
         format: "yyyy",
       });
     });
     it("should properly detect date and format", () => {
-      expect(inferFieldType(["2025-06-24T15:30:21.907Z"], 1)).toEqual({
+      expect(inferFieldType("foobar", ["2025-06-24T15:30:21.907Z"], 1)).toEqual({
         type: "date",
         format: "yyyy-MM-ddTHH:mm:ss.SSS[Z]",
       });
     });
     it("should properly detect date and format", () => {
-      expect(inferFieldType(["2025/05/06", "2023/05/08", "2012/12/31", "2012/12/01", "2021/11/03"], 5)).toEqual({
+      expect(
+        inferFieldType("foobar", ["2025/05/06", "2023/05/08", "2012/12/31", "2012/12/01", "2021/11/03"], 5),
+      ).toEqual({
         type: "date",
         format: "yyyy/MM/dd",
       });
     });
     it("should properly detect wrong date and format", () => {
-      expect(inferFieldType(["2025/05/06", "2023/05/08", "2012/12/32", "2012/12/01", "2021/11/03"], 5)).toEqual({
+      expect(
+        inferFieldType("foobar", ["2025/05/06", "2023/05/08", "2012/12/32", "2012/12/01", "2021/11/03"], 5),
+      ).toEqual({
         type: "text",
       });
     });

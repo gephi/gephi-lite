@@ -26,16 +26,20 @@ export interface EdgeRenderingData extends Attributes {
   rawWeight?: number;
 }
 
-export interface NodeRenderingData extends Attributes {
-  label?: string | null;
-  color?: string;
-  size?: number;
+export interface NodeCoordinates {
   x: number;
   y: number;
-  rawSize?: number;
-  image?: string | null;
-  fixed?: boolean;
 }
+
+export type NodeRenderingData = Attributes &
+  NodeCoordinates & {
+    label?: string | null;
+    color?: string;
+    size?: number;
+    rawSize?: number;
+    image?: string | null;
+    fixed?: boolean;
+  };
 
 export interface GraphMetadata {
   title?: string;
@@ -78,6 +82,10 @@ export type FieldModelAbstraction = {
     options: {
       format: string;
     };
+  };
+  color: {
+    expectedOutput: string;
+    options: {};
   };
 };
 export type FieldModelType = keyof FieldModelAbstraction;
@@ -135,13 +143,10 @@ export type FullGraph = MultiGraph<ItemData & NodeRenderingData, ItemData & Edge
  * as well as the models to know how to interpret all the attributes.
  */
 export interface GraphDataset {
-  // The mandatory rendering data is stored in typed indices:
-  nodeRenderingData: Record<string, NodeRenderingData>;
-  edgeRenderingData: Record<string, EdgeRenderingData>;
-
   // The rest of nodes and edges attributes are stored in separate indices:
-  nodeData: Record<string, ItemData>;
   edgeData: Record<string, ItemData>;
+  nodeData: Record<string, ItemData>;
+  layout: Record<string, NodeCoordinates>;
 
   // We store here the graph metadata (title, author, etc...):
   metadata: GraphMetadata;

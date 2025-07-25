@@ -24,6 +24,7 @@ import {
   useGraphDatasetActions,
   useSelection,
   useSelectionActions,
+  useSigmaGraph,
   useVisualGetters,
 } from "../../core/context/dataContexts";
 import {
@@ -196,7 +197,8 @@ export const Selection: FC = () => {
   const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
-  const { nodeData, edgeData, nodeRenderingData, edgeRenderingData } = useGraphDataset();
+  const { nodeData, edgeData } = useGraphDataset();
+  const sigmaGraph = useSigmaGraph();
 
   const mergedStaticDynamicItemData = useMemo(() => {
     return mergeStaticDynamicData(
@@ -226,7 +228,9 @@ export const Selection: FC = () => {
                 selectionSize={items.size}
                 data={mergedStaticDynamicItemData[item]}
                 //TODO: add dynamic
-                renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
+                renderingData={
+                  type === "nodes" ? sigmaGraph.getNodeAttributes(item) : sigmaGraph.getEdgeAttributes(item)
+                }
               />
             )}
           />
@@ -248,7 +252,9 @@ export const Selection: FC = () => {
                     type={type}
                     selectionSize={items.size}
                     data={mergedStaticDynamicItemData[item]}
-                    renderingData={type === "nodes" ? nodeRenderingData[item] : edgeRenderingData[item]}
+                    renderingData={
+                      type === "nodes" ? sigmaGraph.getNodeAttributes(item) : sigmaGraph.getEdgeAttributes(item)
+                    }
                   />
                 )}
               />

@@ -1,9 +1,8 @@
+import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE, Size } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
-import { FC, useMemo } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Size } from "../../../core/appearance/types";
-import { DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE } from "../../../core/appearance/utils";
 import {
   useAppearance,
   useAppearanceActions,
@@ -18,7 +17,12 @@ import { Select } from "../../forms/Select";
 import { SizeFixedEditor } from "./SizeFixedEditor";
 import { SizeRankingEditor } from "./SizeRankingEditor";
 
-type SizeOption = { value: string; label: string | JSX.Element; field?: FieldModel<ItemType, boolean>; type: string };
+type SizeOption = {
+  value: string;
+  label: string | ReactNode;
+  field?: FieldModel<ItemType, boolean>;
+  type: Size["type"];
+};
 
 export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -34,16 +38,6 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
     const allFields: FieldModel<ItemType, boolean>[] =
       itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
     return [
-      // TODO: replace type data once we switched technical attribute as normal ones
-      {
-        value: "data",
-        type: "data",
-        label: (
-          <>
-            {t("appearance.size.data")} <small className="text-muted">{t("appearance.no_caption")}</small>
-          </>
-        ),
-      },
       {
         value: "fixed",
         type: "fixed",
@@ -104,19 +98,18 @@ export const SizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
             setSizeAppearance(itemType, {
               type: "ranking",
               field: option.field,
-              minSize: baseValue / 2,
-              maxSize: baseValue * 2,
               missingSize: baseValue / 3,
+              ...(option.field.id === "size"
+                ? {}
+                : {
+                    minSize: baseValue / 2,
+                    maxSize: baseValue * 2,
+                  }),
             });
           }
         }}
       />
 
-      {size.type === "data" && (
-        <p className="form-text small text-muted">
-          {t("appearance.size.data_description", { items: t(`graph.model.${itemType}`) })}
-        </p>
-      )}
       {size.type === "fixed" && (
         <SizeFixedEditor itemType={itemType} size={size} setSize={(newSize) => setSizeAppearance(itemType, newSize)} />
       )}

@@ -189,6 +189,7 @@
       "data": "Input file",
       "fixed": "A constant size",
       "default_value": "Size for {{items}} with no valid value",
+      "interpolate": "Interpolate between custom min and max values",
       "size_all_items": "Size for all {{items}}",
       "data_description": "All {{items}} sizes are as they are in the input data file."
     }

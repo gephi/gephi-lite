@@ -32,6 +32,7 @@ import {
   useFilteredGraph,
   useGraphDataset,
   useSelection,
+  useSigmaGraph,
 } from "../../core/context/dataContexts";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { doesItemMatch } from "../../utils/search";
@@ -149,19 +150,21 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   const { items } = useSelection();
   const { type, search } = useDataTable();
   const { setType } = useDataTableActions();
-  const { nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields } = useGraphDataset();
+  const { nodeData, edgeData, nodeFields, edgeFields } = useGraphDataset();
   const graph = useFilteredGraph();
+  const sigmaGraph = useSigmaGraph();
   const { matchingItems, otherItems } = useMemo(() => {
     let matchingItems: string[] = [];
     const otherItems: string[] = [];
 
     const allIDs = type === "nodes" ? graph.nodes() : graph.edges();
     const data = type === "nodes" ? nodeData : edgeData;
-    const renderingData = type === "nodes" ? nodeRenderingData : edgeRenderingData;
     const fields = type === "nodes" ? nodeFields : edgeFields;
     if (search) {
       allIDs.forEach((id) => {
-        if (doesItemMatch(id, renderingData[id].label, data[id], fields, search)) {
+        const label =
+          type === "nodes" ? sigmaGraph.getNodeAttribute(id, "label") : sigmaGraph.getEdgeAttribute(id, "label");
+        if (doesItemMatch(id, label, data[id], fields, search)) {
           matchingItems.push(id);
         } else {
           otherItems.push(id);
@@ -172,7 +175,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
     }
 
     return { matchingItems, otherItems };
-  }, [type, graph, nodeData, edgeData, nodeRenderingData, edgeRenderingData, nodeFields, edgeFields, search]);
+  }, [type, graph, nodeData, edgeData, nodeFields, edgeFields, search, sigmaGraph]);
 
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
 

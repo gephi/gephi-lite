@@ -150,6 +150,7 @@ export const useEditFieldModelForm = ({
                 { value: "keywords", label: "keywords" },
                 { value: "date", label: "date" },
                 { value: "text", label: "text" },
+                { value: "color", label: "color" },
               ]}
               value={{ value: fieldModel.type, label: fieldModel.type }}
               onChange={(option) => {

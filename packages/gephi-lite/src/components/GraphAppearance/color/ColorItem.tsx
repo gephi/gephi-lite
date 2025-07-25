@@ -1,9 +1,8 @@
+import { Color, DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR, DEFAULT_SHADING_COLOR, EdgeColor } from "@gephi/gephi-lite-sdk";
 import { isEqual } from "lodash";
-import { FC, useMemo } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Color } from "../../../core/appearance/types";
-import { DEFAULT_EDGE_COLOR, DEFAULT_NODE_COLOR, DEFAULT_SHADING_COLOR } from "../../../core/appearance/utils";
 import {
   useAppearance,
   useAppearanceActions,
@@ -16,6 +15,7 @@ import { uniqFieldValuesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
 import { FieldModelIcons } from "../../common-icons";
 import { Select } from "../../forms/Select";
+import { ColorFieldEditor } from "./ColorFieldEditor";
 import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
@@ -24,9 +24,9 @@ import { getPalette } from "./utils";
 
 type ColorOption = {
   value: string;
-  label: string | JSX.Element;
+  label: string | ReactNode;
   field?: FieldModel<ItemType, boolean>;
-  type: "data" | "fixed" | "ranking" | "partition" | "unsupported" | "source" | "target";
+  type: EdgeColor["type"] | "unsupported";
 };
 
 export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
@@ -50,26 +50,16 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const options: ColorOption[] = useMemo(() => {
     const allFields: FieldModel<ItemType, boolean>[] =
       itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
-    const dataOption: ColorOption = {
-      value: "data",
-      type: "data",
-      label: (
-        <>
-          {t("appearance.color.data")} <small className="text-muted">{t("appearance.no_caption")}</small>
-        </>
-      ),
-    };
     const FixedOption: ColorOption = { value: "fixed", type: "fixed", label: t("appearance.color.fixed") };
     const edgeOptions: ColorOption[] = [
       { value: "source", type: "source", label: t("appearance.color.source") },
       { value: "target", type: "target", label: t("appearance.color.target") },
     ];
     return [
-      dataOption,
       FixedOption,
       ...(itemType === "edges" ? edgeOptions : []),
       ...allFields
-        .filter((f): f is FieldModel<ItemType, boolean> => ["date", "number", "category"].includes(f.type))
+        .filter((f): f is FieldModel<ItemType, boolean> => ["date", "number", "category", "color"].includes(f.type))
         .map((field): ColorOption => {
           const Icon = FieldModelIcons[field.type];
           switch (field.type) {
@@ -79,7 +69,6 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 value: `ranking::${staticDynamicAttributeKey(field)}`,
                 field,
                 type: "ranking",
-
                 label: (
                   <>
                     <Icon className="me-1" />
@@ -88,11 +77,23 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 ),
               };
             case "category":
-            default:
               return {
                 value: `partition::${staticDynamicAttributeKey(field)}`,
                 field: field,
                 type: "partition",
+                label: (
+                  <>
+                    <Icon className="me-1" />
+                    {staticDynamicAttributeLabel(field)}
+                  </>
+                ),
+              };
+            case "color":
+            default:
+              return {
+                value: `field::${staticDynamicAttributeKey(field)}`,
+                field: field,
+                type: "field",
                 label: (
                   <>
                     <Icon className="me-1" />
@@ -154,42 +155,48 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
               setColorAppearance(itemType, {
                 type: option.type, // this is here to trick TS for nodes
               } as Color);
-            } else {
-              if (option.type === "ranking") {
-                setColorAppearance(itemType, {
-                  type: "ranking",
-                  field: option.field,
-                  colorScalePoints: [
-                    { scalePoint: 0, color: "#fc8d59" },
-                    { scalePoint: 0.5, color: "#ffffbf" },
-                    { scalePoint: 1, color: "#91bfdb" },
-                  ],
-                  missingColor: baseValue,
-                });
+            } else if (option.type === "ranking") {
+              setColorAppearance(itemType, {
+                type: "ranking",
+                field: option.field,
+                colorScalePoints: [
+                  { scalePoint: 0, color: "#fc8d59" },
+                  { scalePoint: 0.5, color: "#ffffbf" },
+                  { scalePoint: 1, color: "#91bfdb" },
+                ],
+                missingColor: baseValue,
+              });
+            } else if (option.type === "partition") {
+              const field = option.field;
+              let values: string[];
+
+              if (field.dynamic) {
+                const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
+                values = uniqFieldValuesAsStrings(itemsData, field.id);
               } else {
-                const field = option.field;
-                let values: string[] = [];
-
-                if (field.dynamic) {
-                  const itemsData = itemType === "nodes" ? dynamicNodeData : dynamicEdgeData;
-                  values = uniqFieldValuesAsStrings(itemsData, field.id);
-                } else {
-                  const itemsData = itemType === "nodes" ? nodeData : edgeData;
-                  values = uniqFieldValuesAsStrings(itemsData, field.id);
-                }
-
-                setColorAppearance(itemType, {
-                  type: "partition",
-                  field,
-                  colorPalette: getPalette(values),
-                  missingColor: baseValue,
-                });
+                const itemsData = itemType === "nodes" ? nodeData : edgeData;
+                values = uniqFieldValuesAsStrings(itemsData, field.id);
               }
+
+              setColorAppearance(itemType, {
+                type: "partition",
+                field,
+                colorPalette: getPalette(values),
+                missingColor: baseValue,
+              });
+            } else {
+              const field = option.field;
+
+              setColorAppearance(itemType, {
+                type: "field",
+                field,
+                missingColor: baseValue,
+              });
             }
           }}
         />
 
-        {(color.type === "data" || color.type === "source" || color.type === "target") && (
+        {(color.type === "source" || color.type === "target") && (
           <p className="form-text text-muted">
             {t(`appearance.color.${color.type}_description`, { items: t(`graph.model.${itemType}`) })}
           </p>
@@ -212,6 +219,13 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       )}
       {color.type === "partition" && (
         <ColorPartitionEditor
+          itemType={itemType}
+          color={color}
+          setColor={(newColor) => setColorAppearance(itemType, newColor)}
+        />
+      )}
+      {color.type === "field" && (
+        <ColorFieldEditor
           itemType={itemType}
           color={color}
           setColor={(newColor) => setColorAppearance(itemType, newColor)}

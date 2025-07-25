@@ -1,6 +1,6 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, keyBy, omit, pick } from "lodash";
+import { fromPairs, keyBy, pick } from "lodash";
 import { FC, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -35,7 +35,7 @@ const useEditEdgeForm = ({
   const { notify } = useNotifications();
   const { select } = useSelectionActions();
   const { createEdge, updateEdge } = useGraphDatasetActions();
-  const { edgeData, edgeRenderingData, nodeRenderingData, fullGraph, edgeFields } = useGraphDataset();
+  const { edgeData, layout, fullGraph, edgeFields } = useGraphDataset();
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
 
   const isNew = typeof edgeId === "undefined";
@@ -54,7 +54,6 @@ const useEditEdgeForm = ({
     const target = fullGraph.target(edgeId);
     return {
       id: edgeId,
-      ...omit(edgeRenderingData[edgeId], "rawWeight"),
       source,
       target,
       attributes: edgeFields.map((nf) => ({
@@ -63,7 +62,7 @@ const useEditEdgeForm = ({
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [edgeData, edgeId, edgeRenderingData, fullGraph, isNew, edgeFields]);
+  }, [edgeData, edgeId, fullGraph, isNew, edgeFields]);
   const {
     register,
     handleSubmit,
@@ -193,7 +192,7 @@ const useEditEdgeForm = ({
               name="source"
               rules={{
                 required: true,
-                validate: (value) => !!nodeRenderingData[value],
+                validate: (value) => value in layout,
               }}
               render={({ field: { onChange, value } }) => (
                 <GraphSearch
@@ -218,7 +217,7 @@ const useEditEdgeForm = ({
               name="target"
               rules={{
                 required: true,
-                validate: (value) => !!nodeRenderingData[value],
+                validate: (value) => value in layout,
               }}
               render={({ field: { onChange, value } }) => (
                 <GraphSearch

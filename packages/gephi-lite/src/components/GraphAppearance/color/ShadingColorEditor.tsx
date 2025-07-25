@@ -1,8 +1,7 @@
-import { FieldModel } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ShadingColor } from "@gephi/gephi-lite-sdk";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ShadingColor } from "../../../core/appearance/types";
 import { useGraphDataset } from "../../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { ItemType } from "../../../core/types";
@@ -48,12 +47,12 @@ export const ShadingColorEditor: FC<{
         onChange={(option) => option && setColor({ ...color, field: option.value })}
       />
 
-      <div className="d-flex align-items-center mt-1">
+      <div className="d-flex align-items-baseline mt-1">
         <ColorPicker color={color.targetColor} onChange={(v) => setColor({ ...color, targetColor: v })} />
         <label className="form-check-label small ms-1">{t("appearance.color.shading_color")}</label>
       </div>
 
-      <div className="d-flex align-items-center mt-1">
+      <div className="d-flex align-items-baseline mt-1">
         <input
           className="form-control form-control-sm w-5"
           type="number"

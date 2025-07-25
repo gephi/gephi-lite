@@ -1,8 +1,7 @@
-import { ItemType } from "@gephi/gephi-lite-sdk";
+import { ItemType, Size } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { FC, useCallback, useEffect, useState } from "react";
 
-import { Size } from "../../core/appearance/types";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { CaptionItemTitle } from "./CaptionItemTitle";
@@ -56,7 +55,7 @@ const ItemSizeCaption: FC<
     };
   }, [sigma, refreshState]);
 
-  if (itemsSize.field) {
+  if (itemsSize.field && typeof itemsSize.minSize === "number") {
     return (
       <div className="graph-caption-item">
         <CaptionItemTitle
@@ -109,7 +108,9 @@ const ItemSizeCaption: FC<
         )}
       </div>
     );
-  } else return null;
+  }
+
+  return null;
 };
 
 export default ItemSizeCaption;

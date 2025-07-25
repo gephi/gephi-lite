@@ -99,7 +99,7 @@ export function geFullDataGraph(): Graph {
   const dynamicNodeData = dynamicItemDataAtom.get();
   let fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
 
-  // apply current apperanc eon the graph
+  // apply current appearance on the graph
   const visualGetters = visualGettersAtom.get();
   applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
 
@@ -117,7 +117,7 @@ export function importGephiLiteFormat(data: GephiLiteFileFormat) {
   // Load the graph
   const { setGraphDataset } = graphDatasetActions;
   setGraphDataset(graphDataset);
-  // Load  appearance
+  // Load appearance
   const { setFullState } = appearanceActions;
   setFullState(appearance);
   // Load filters

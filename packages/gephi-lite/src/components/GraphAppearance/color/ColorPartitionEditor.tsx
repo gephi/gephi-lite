@@ -1,9 +1,9 @@
+import { PartitionColor } from "@gephi/gephi-lite-sdk";
 import { map } from "lodash";
 import { FC, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 
-import { PartitionColor } from "../../../core/appearance/types";
 import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
 
@@ -19,7 +19,7 @@ export const ColorPartitionEditor: FC<{
     <div className="mt-1">
       <AnimateHeight height={expanded ? "auto" : 200} className="position-relative" duration={400}>
         {map(color.colorPalette, (c, value) => (
-          <div key={value} className="d-inline-block w-50 d-inline-flex align-items-center flex-nowrap" title={value}>
+          <div key={value} className="d-inline-block w-50 d-inline-flex align-items-baseline flex-nowrap" title={value}>
             <ColorPicker
               color={c}
               onChange={(v) =>
@@ -36,7 +36,7 @@ export const ColorPartitionEditor: FC<{
           </div>
         ))}
 
-        <div className="d-flex align-items-center mt-1">
+        <div className="d-flex align-items-baseline mt-1">
           <ColorPicker color={color.missingColor} onChange={(v) => setColor({ ...color, missingColor: v })} />
           <label className="form-check-label small ms-1">
             {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}

@@ -5,6 +5,26 @@ import { hexToRgba, rgbaToHex } from "../utils/colors";
 import Tooltip, { TooltipAPI } from "./Tooltip";
 import { CheckedIcon, CloseIcon } from "./common-icons";
 
+export const InlineColorPicker: FC<{ color: string | undefined; onChange: (color: string | undefined) => void }> = ({
+  color,
+  onChange,
+}) => {
+  return (
+    <SketchPicker
+      color={color ? hexToRgba(color) : undefined}
+      onChange={(color) => onChange(rgbaToHex(color.rgb))}
+      styles={{
+        default: {
+          picker: {
+            boxShadow: "none",
+            padding: 0,
+          },
+        },
+      }}
+    />
+  );
+};
+
 const ColorPicker: FC<
   (
     | { color: string | undefined; onChange: (color: string | undefined) => void; clearable: true }
@@ -15,22 +35,11 @@ const ColorPicker: FC<
 
   return (
     <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
-      <button type="button" className="btn disc border border-secondary" style={{ background: color || "#ffffff" }}>
+      <button type="button" className="gl-btn square border border-black border-2" style={{ background: color || "#ffffff" }}>
         <span style={{ color: "transparent" }}>X</span>
       </button>
       <div className="custom-color-picker gl-border">
-        <SketchPicker
-          color={color ? hexToRgba(color) : undefined}
-          onChange={(color) => onChange(rgbaToHex(color.rgb))}
-          styles={{
-            default: {
-              picker: {
-                boxShadow: "none",
-                padding: 0,
-              },
-            },
-          }}
-        />
+        <InlineColorPicker onChange={onChange} color={color} />
         <div className="text-end gl-gap-1 d-flex justify-content-end">
           {clearable && (
             <button className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onChange(undefined)}>

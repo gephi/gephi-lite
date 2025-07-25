@@ -1,6 +1,6 @@
 import { FieldModelTypeSpec, NodeRenderingData, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, keyBy, omit, pick } from "lodash";
+import { fromPairs, keyBy, pick } from "lodash";
 import { FC, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -30,7 +30,7 @@ const useEditNodeForm = ({
   const { notify } = useNotifications();
   const { select } = useSelectionActions();
   const { createNode, updateNode } = useGraphDatasetActions();
-  const { nodeData, nodeRenderingData, nodeFields } = useGraphDataset();
+  const { nodeData, layout, nodeFields } = useGraphDataset();
   const nodeFieldsIndex = useMemo(() => keyBy(nodeFields, "id"), [nodeFields]);
 
   const isNew = typeof nodeId === "undefined";
@@ -48,14 +48,14 @@ const useEditNodeForm = ({
 
     return {
       id: nodeId,
-      ...omit(nodeRenderingData[nodeId], "rawSize"),
+      ...layout[nodeId],
       attributes: nodeFields.map((nf) => ({
         key: nf.id,
         value: nodeData[nodeId][nf.id],
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [isNew, nodeId, nodeRenderingData, nodeData, nodeFields]);
+  }, [isNew, nodeId, layout, nodeData, nodeFields]);
   const {
     register,
     handleSubmit,

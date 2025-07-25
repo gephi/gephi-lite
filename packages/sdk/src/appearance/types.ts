@@ -12,25 +12,31 @@ interface NoFieldValue<T extends string> extends AppearanceBaseElement {
 }
 
 // Sizes management:
-export type DataSize = NoFieldValue<"data">;
 export interface FixedSize extends NoFieldValue<"fixed"> {
   value: number;
 }
 
 export type TransformationMethod = { pow: number } | "log" | { spline: [[number, number], [number, number]] };
 
-export interface RankingSize extends AppearanceBaseElement {
+export type RankingSize = AppearanceBaseElement & {
   type: "ranking";
   field: FieldModel<ItemType, boolean>;
-  minSize: number;
-  maxSize: number;
-  transformationMethod?: TransformationMethod;
   missingSize: number;
-}
-export type Size = DataSize | RankingSize | FixedSize;
+} & (
+    | {
+        minSize: number;
+        maxSize: number;
+        transformationMethod?: TransformationMethod;
+      }
+    | {
+        minSize?: number;
+        maxSize?: number;
+        transformationMethod?: undefined;
+      }
+  );
+export type Size = RankingSize | FixedSize;
 
 // Colors management:
-export type DataColor = NoFieldValue<"data">;
 export type SourceNodeColor = NoFieldValue<"source">;
 export type TargetNodeColor = NoFieldValue<"target">;
 export interface FixedColor extends NoFieldValue<"fixed"> {
@@ -60,19 +66,23 @@ export interface ShadingColor extends AppearanceBaseElement {
   targetColor: string;
   missingColor?: string;
 }
-export type Color = DataColor | RankingColor | FixedColor | PartitionColor;
+export interface FieldColor extends AppearanceBaseElement {
+  type: "field";
+  field: FieldModel<ItemType, boolean>;
+  missingColor: string;
+}
+export type Color = RankingColor | FixedColor | PartitionColor | FieldColor;
 export type EdgeColor = Color | SourceNodeColor | TargetNodeColor;
 
 // Labels management:
 export type NoStringAttr = NoFieldValue<"none">;
-export type DataStringAttr = NoFieldValue<"data">;
 export type FixedStringAttr = NoFieldValue<"fixed"> & { value: string };
 export interface FieldStringAttr extends AppearanceBaseElement {
   type: "field";
   field: FieldModel<ItemType, boolean>;
   missingValue: string | null;
 }
-export type StringAttr = NoStringAttr | DataStringAttr | FixedStringAttr | FieldStringAttr;
+export type StringAttr = NoStringAttr | FixedStringAttr | FieldStringAttr;
 
 export type BaseLabelSize = { density: number; zoomCorrelation: number };
 export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: number };

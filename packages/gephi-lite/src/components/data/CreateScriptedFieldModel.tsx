@@ -142,7 +142,7 @@ export const useCreateScriptedFieldModelForm = ({
       const fieldModel: FieldModel = {
         id: newId,
         itemType: type,
-        ...inferFieldType(valuesArray, valuesArray.length),
+        ...inferFieldType(newId, valuesArray, valuesArray.length),
       };
       const index = insertAt
         ? fields.findIndex((f) => f.id === insertAt.id) + (insertAt.pos === "before" ? -1 : 1)

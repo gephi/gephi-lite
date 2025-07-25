@@ -15,7 +15,7 @@ import { resetCamera } from "../sigma";
  * ********
  */
 // TODO: this code has a lot in commons with core/file/index.ts/open
-// we should mutialize it
+// we should mutualize it
 const importGraph = asyncAction(async (data: SerializedGraph, title?: string) => {
   if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");
   fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));

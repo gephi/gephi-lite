@@ -60,7 +60,7 @@ export const GraphGraphAppearance: FC<unknown> = () => {
       <h2>{t("appearance.menu.background")}</h2>
 
       <div className="panel-block">
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-baseline">
           <label className="me-3 flex-grow-1">{t("appearance.graph.background_color")}</label>
           <ColorPicker
             className="w-auto h-100"
@@ -70,7 +70,7 @@ export const GraphGraphAppearance: FC<unknown> = () => {
           />
         </div>
 
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-baseline">
           <label className="me-3 flex-grow-1">{t("appearance.graph.layout_grid_color")}</label>
           <ColorPicker
             className="w-auto h-100"
