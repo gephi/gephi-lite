@@ -345,8 +345,8 @@
       "disabled": "Caption is available once appearance has been set."
     }
   },
-  "statistics": {
-    "title": "Statistics",
+  "metrics": {
+    "title": "Metrics",
     "compute_one": "Compute metric",
     "compute": "Compute metrics",
     "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",

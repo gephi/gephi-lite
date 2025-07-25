@@ -156,7 +156,7 @@
     "disclaimer-1": "Gephi Lite는 현재 진행 중인 작업입니다.",
     "samples": "예제"
   },
-  "statistics": {
+  "metrics": {
     "nodes": {
       "louvain": {
         "description": "이 알고리즘은 노드들을 조밀하게 연결된 그룹으로 분리하는 것을 목표로 합니다.",

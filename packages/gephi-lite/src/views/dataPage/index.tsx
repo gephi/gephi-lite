@@ -19,8 +19,8 @@ import {
   MenuCollapseIcon,
   MenuExpandIcon,
   MenuPreviousIcon,
-  StatisticsIcon,
-  StatisticsIconFill,
+  MetricsIcon,
+  MetricsIconFill,
 } from "../../components/common-icons";
 import { CreateScriptedFieldModelForm } from "../../components/data/CreateScriptedFieldModel";
 import { EditEdgeForm } from "../../components/data/EditEdge";
@@ -36,7 +36,7 @@ import {
 } from "../../core/context/dataContexts";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { doesItemMatch } from "../../utils/search";
-import { StatisticsPanel } from "../graphPage/panels/StatisticsPanel";
+import { MetricsPanel } from "../graphPage/panels/MetricsPanel";
 import { Layout } from "../layout";
 import { Header } from "../layout/Header";
 import { TopBar } from "./TopBar";
@@ -89,9 +89,9 @@ const MENU: MenuItem<{ panel?: Panel }>[] = [
     panel: () => <GraphFilters />,
   },
   {
-    id: "statistics",
-    i18nKey: "statistics.title",
-    icon: { normal: StatisticsIcon, fill: StatisticsIconFill },
+    id: "metrics",
+    i18nKey: "metrics.title",
+    icon: { normal: MetricsIcon, fill: MetricsIconFill },
     children: [
       { type: "nodes", metrics: NODE_METRICS },
       { type: "edges", metrics: EDGE_METRICS },
@@ -106,8 +106,8 @@ const MENU: MenuItem<{ panel?: Panel }>[] = [
       },
       ...metrics.map((metric) => ({
         id: metric.id,
-        i18nKey: `statistics.${type}.${metric.id}.title`,
-        panel: () => <StatisticsPanel metric={metric} />,
+        i18nKey: `metrics.${type}.${metric.id}.title`,
+        panel: () => <MetricsPanel metric={metric} />,
       })),
     ]),
   },

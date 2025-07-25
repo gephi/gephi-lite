@@ -128,7 +128,7 @@ const VisualizeAmbiguityForm: FC<{
 
   return (
     <div className="panel-block">
-      <p className="gl-text-muted">{t("statistics.mixed.louvainEdgeAmbiguity.preview_description")}</p>
+      <p className="gl-text-muted">{t("metrics.mixed.louvainEdgeAmbiguity.preview_description")}</p>
       <button
         type="button"
         className="gl-btn gl-btn-outline w-100 flex-column"
@@ -141,8 +141,8 @@ const VisualizeAmbiguityForm: FC<{
         }
         disabled={isDisabled}
       >
-        {t("statistics.mixed.louvainEdgeAmbiguity.preview")}
-        <div className="small">{t("statistics.mixed.louvainEdgeAmbiguity.preview_subtitle")}</div>
+        {t("metrics.mixed.louvainEdgeAmbiguity.preview")}
+        <div className="small">{t("metrics.mixed.louvainEdgeAmbiguity.preview_subtitle")}</div>
       </button>
     </div>
   );
