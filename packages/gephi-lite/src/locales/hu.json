@@ -200,7 +200,7 @@
     "title": "Szűrők",
     "range": "tartomány"
   },
-  "statistics": {
+  "metrics": {
     "edges": {
       "simmelianStrength": {
         "title": "Szimmeli erő",

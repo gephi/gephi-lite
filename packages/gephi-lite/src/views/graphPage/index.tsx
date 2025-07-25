@@ -20,8 +20,8 @@ import {
   MenuCollapseIcon,
   MenuExpandIcon,
   MenuPreviousIcon,
-  StatisticsIcon,
-  StatisticsIconFill,
+  MetricsIcon,
+  MetricsIconFill,
 } from "../../components/common-icons";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
@@ -33,7 +33,7 @@ import { Header } from "../layout/Header";
 import { GraphRendering } from "./GraphRendering";
 import { Selection } from "./Selection";
 import { LabelsPanel } from "./panels/LabelsPanel";
-import { StatisticsPanel } from "./panels/StatisticsPanel";
+import { MetricsPanel } from "./panels/MetricsPanel";
 import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
 const MENU: MenuItem<{ panel?: ComponentType }>[] = [
@@ -84,9 +84,9 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
     panel: () => <GraphFilters />,
   },
   {
-    id: "statistics",
-    i18nKey: "statistics.title",
-    icon: { normal: StatisticsIcon, fill: StatisticsIconFill },
+    id: "metrics",
+    i18nKey: "metrics.title",
+    icon: { normal: MetricsIcon, fill: MetricsIconFill },
     children: [
       { type: "nodes", metrics: NODE_METRICS },
       { type: "edges", metrics: EDGE_METRICS },
@@ -101,8 +101,8 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       },
       ...metrics.map((metric) => ({
         id: metric.id,
-        i18nKey: `statistics.${type}.${metric.id}.title`,
-        panel: () => <StatisticsPanel metric={metric} />,
+        i18nKey: `metrics.${type}.${metric.id}.title`,
+        panel: () => <MetricsPanel metric={metric} />,
       })),
     ]),
   },

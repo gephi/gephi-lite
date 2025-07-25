@@ -24,7 +24,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
   const { setFieldModel } = useGraphDatasetActions();
   const itemTypes = Object.keys(metric.outputs) as ItemType[];
   const itemTypesName = itemTypes.length === 0 ? "none" : itemTypes.length === 2 ? "mixed" : itemTypes[0];
-  const prefix = `statistics.${itemTypesName}.${metric.id}`;
+  const prefix = `metrics.${itemTypesName}.${metric.id}`;
   const fieldsIndex = {
     nodes: keyBy(nodeFields, "id"),
     edges: keyBy(edgeFields, "id"),
@@ -130,7 +130,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
       // TODO handle report
       fields.forEach(({ model, values }) => setFieldModel(model, values));
       setSuccessMessage(
-        t("statistics.success", {
+        t("metrics.success", {
           items: itemTypesName,
           metrics: Object.values(metricConfig.attributeNames).join(", "),
           count: Object.values(metricConfig.attributeNames).length,
@@ -141,7 +141,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
       notify({
         type: "error",
         message,
-        title: t("statistics.title"),
+        title: t("metrics.title"),
       });
     }
   }, [
@@ -176,13 +176,13 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
               <StringInput
                 key={`${itemType}-${value}`}
                 required
-                id={`statistics-${itemType}-${metric.id}-params-${value}`}
+                id={`metrics-${itemType}-${metric.id}-params-${value}`}
                 label={t(`${prefix}.attributes.${value}`)}
                 value={metricConfig.attributeNames[value]}
                 onChange={(v) => onChange("attributeNames", value, v)}
                 warning={
                   !!fieldsIndex[itemType][metricConfig.attributeNames[value]]
-                    ? t(`statistics.${itemType}_attribute_already_exists`, {
+                    ? t(`metrics.${itemType}_attribute_already_exists`, {
                         field: metricConfig.attributeNames[value],
                       })
                     : undefined
@@ -194,7 +194,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
 
         <div className="panel-block">
           {metric.parameters.map((param) => {
-            const id = `statistics-${itemTypesName}-${metric.id}-params-${param.id}`;
+            const id = `metrics-${itemTypesName}-${metric.id}-params-${param.id}`;
             return (
               <div className="panel-block" key={id}>
                 {param.type === "number" && (
@@ -270,7 +270,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
             <ResetIcon />
           </button>
           <button type="submit" className="gl-btn gl-btn-fill">
-            {t("statistics.compute", { count: Object.keys(metricConfig.attributeNames).length })}
+            {t("metrics.compute", { count: Object.keys(metricConfig.attributeNames).length })}
           </button>
         </div>
       </div>
@@ -279,6 +279,6 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const StatisticsPanel: FC<{ metric: Metric<any> }> = ({ metric }) => {
+export const MetricsPanel: FC<{ metric: Metric<any> }> = ({ metric }) => {
   return <MetricForm metric={metric} />;
 };

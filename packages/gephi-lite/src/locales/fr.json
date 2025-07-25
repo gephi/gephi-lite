@@ -404,8 +404,8 @@
       "disabled": "La légende est disponible une fois que l'apparence a été définie."
     }
   },
-  "statistics": {
-    "title": "Statistiques",
+  "metrics": {
+    "title": "Métriques",
     "compute_one": "Calculer une métrique",
     "compute": "Calculer les métriques",
     "success_one": "La métrique \"{{metrics}}\" a été ajoutée aux données pour {{items}}.",
