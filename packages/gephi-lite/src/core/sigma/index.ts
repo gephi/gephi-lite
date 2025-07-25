@@ -121,6 +121,7 @@ export const resetCamera = ({
   source?: "sigma" | "dataset";
 } = {}) => {
   const sigma = sigmaAtom.get();
+  const sigmaGraph = sigmaGraphAtom.get();
   sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
 
   if (source === "dataset") {
@@ -134,7 +135,8 @@ export const resetCamera = ({
     const nodes = filteredGraph.nodes();
     for (let i = 0, l = nodes.length; i < l; i++) {
       const node = nodes[i];
-      const { x, y, size = 1 } = dataset.nodeRenderingData[node];
+      const { x, y } = dataset.layout[node];
+      const size = (sigmaGraph.hasNode(node) && sigmaGraph.getNodeAttribute(node, "size")) || 0;
 
       minX = Math.min(minX, x - size);
       minY = Math.min(minY, y - size);

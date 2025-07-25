@@ -19,24 +19,28 @@ export function getEmptyAppearanceState(): AppearanceState {
       value: true,
     },
     nodesSize: {
-      type: "data",
+      type: "fixed",
+      value: DEFAULT_NODE_SIZE,
     },
     edgesSize: {
-      type: "data",
+      type: "fixed",
+      value: DEFAULT_EDGE_SIZE,
     },
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     layoutGridColor: DEFAULT_LAYOUT_GRID_COLOR,
     nodesColor: {
-      type: "data",
+      type: "fixed",
+      value: DEFAULT_NODE_COLOR,
     },
     edgesColor: {
-      type: "data",
+      type: "fixed",
+      value: DEFAULT_EDGE_COLOR,
     },
     nodesLabel: {
-      type: "data",
+      type: "none",
     },
     edgesLabel: {
-      type: "data",
+      type: "none",
     },
     nodesLabelSize: {
       type: "fixed",

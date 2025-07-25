@@ -1,9 +1,8 @@
+import { ColorScalePointType } from "@gephi/gephi-lite-sdk";
 import { FC, HTMLProps, useEffect, useRef, useState } from "react";
 import { SketchPicker } from "react-color";
 import { useTranslation } from "react-i18next";
 import TetherComponent from "react-tether";
-
-import { ColorScalePointType } from "../../../core/appearance/types";
 
 const ColorPickerTooltip: FC<{
   targetProps: HTMLProps<HTMLDivElement>;

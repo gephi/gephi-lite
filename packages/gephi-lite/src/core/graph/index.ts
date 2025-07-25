@@ -179,7 +179,7 @@ const duplicateFieldModel: Producer<GraphDataset, [FieldModel, string?, number?]
 const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = (positions) => {
   return (state) => ({
     ...state,
-    nodeRenderingData: mapValues(state.nodeRenderingData, (data, id) => ({
+    layout: mapValues(state.layout, (data, id) => ({
       ...data,
       ...(positions[id] || {}),
     })),
@@ -209,14 +209,13 @@ const deleteItems: MultiProducer<[SearchState, SelectionState, GraphDataset], [I
         return {
           ...state,
           nodeData: omit(state.nodeData, ids),
-          nodeRenderingData: omit(state.nodeRenderingData, ids),
+          layout: omit(state.layout, ids),
         };
       } else {
         ids.forEach((id) => state.fullGraph.dropEdge(id));
         return {
           ...state,
           edgeData: omit(state.edgeData, ids),
-          edgeRenderingData: omit(state.edgeRenderingData, ids),
         };
       }
     },
@@ -237,27 +236,26 @@ const deleteItemsAttribute: Producer<GraphDataset, [ItemType, string]> = (type, 
 };
 const createNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
   return (state) => {
-    const { data, renderingData } = cleanNode(node, attributes);
+    const { data, position } = cleanNode(node, attributes);
     state.fullGraph.addNode(node, {});
     const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
     return {
       ...state,
       nodeFields: newNodeFieldModel,
       nodeData: { ...state.nodeData, [node]: data },
-      nodeRenderingData: { ...state.nodeRenderingData, [node]: renderingData },
+      layout: { ...state.layout, [node]: position },
     };
   };
 };
 const createEdge: Producer<GraphDataset, [string, Attributes, string, string]> = (edge, attributes, source, target) => {
   return (state) => {
-    const { data, renderingData } = cleanEdge(edge, attributes);
+    const { data } = cleanEdge(edge, attributes);
     state.fullGraph.addEdgeWithKey(edge, source, target, {});
     const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
     return {
       ...state,
       edgeFields: newEdgeFieldModel,
       edgeData: { ...state.edgeData, [edge]: data },
-      edgeRenderingData: { ...state.edgeRenderingData, [edge]: renderingData },
     };
   };
 };
@@ -267,16 +265,13 @@ const updateNode: Producer<GraphDataset, [string, Attributes, { merge?: boolean 
   { merge } = {},
 ) => {
   return (state) => {
-    const { data, renderingData } = cleanNode(
-      node,
-      merge ? { ...state.nodeData[node], ...state.nodeRenderingData[node], ...attributes } : attributes,
-    );
+    const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
     const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
     return {
       ...state,
       nodeFields: newNodeFieldModel,
       nodeData: { ...state.nodeData, [node]: data },
-      nodeRenderingData: { ...state.nodeRenderingData, [node]: renderingData },
+      layout: { ...state.layout, [node]: position },
     };
   };
 };
@@ -286,16 +281,12 @@ const updateEdge: Producer<GraphDataset, [string, Attributes, { merge?: boolean 
   { merge } = {},
 ) => {
   return (state) => {
-    const { data, renderingData } = cleanEdge(
-      edge,
-      merge ? { ...state.edgeData[edge], ...state.edgeRenderingData[edge], ...attributes } : attributes,
-    );
+    const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
     const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
     return {
       ...state,
       edgeFields: newEdgeFieldModel,
       edgeData: { ...state.edgeData, [edge]: data },
-      edgeRenderingData: { ...state.edgeRenderingData, [edge]: renderingData },
     };
   };
 };
@@ -439,7 +430,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   );
 
   // When the fullGraph ref changes, reindex everything:
-  if (updatedKeys.has("fullGraph") || updatedKeys.has("nodeRenderingData") || updatedKeys.has("edgeRenderingData")) {
+  if (updatedKeys.has("fullGraph") || updatedKeys.has("layout")) {
     const filtersState = filtersAtom.get();
     const newCache = applyFilters(graphDataset, filtersState.past, [], topologicalFiltersAtom.get());
     filteredGraphsAtom.set(newCache);

@@ -1,10 +1,11 @@
 import { gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { Producer, asyncAction, atom, producerToAction } from "@ouestware/atoms";
 import { write } from "graphology-gexf";
-import { isEqual } from "lodash";
+import { isEmpty, isEqual } from "lodash";
 
 import { config } from "../../config";
-import { appearanceAtom } from "../appearance";
+import { appearanceActions, appearanceAtom } from "../appearance";
+import { inferAppearanceState } from "../appearance/utils";
 import { resetStates } from "../context/dataContexts";
 import { filtersAtom } from "../filters";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
@@ -72,8 +73,14 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       importGephiLiteFormat(data);
     } else {
       const { setGraphDataset } = graphDatasetActions;
+      const { mergeState } = appearanceActions;
       data.setAttribute("title", file.filename);
-      setGraphDataset(initializeGraphDataset(data));
+
+      const graphDataset = initializeGraphDataset(data);
+      setGraphDataset(graphDataset);
+
+      const appearanceState = inferAppearanceState(graphDataset);
+      if (!isEmpty(appearanceState)) mergeState(appearanceState);
     }
 
     // Add the new file in the history list

@@ -72,6 +72,16 @@
   width: 0.25em;
   transform: rotate(35deg);
 }
+.square {
+  @extend .gl-border;
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 3px;
+  padding: 0;
+  background-color: $gray-400;
+}
 
 .hoverable:hover {
   &:not(.disabled):not(disabled) {

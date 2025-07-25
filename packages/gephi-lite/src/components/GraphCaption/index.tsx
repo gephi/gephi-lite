@@ -131,8 +131,8 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
     () =>
       ["ranking", "partition"].includes(appearance.nodesColor.type) ||
       ["ranking", "partition", "source", "target"].includes(appearance.edgesColor.type) ||
-      appearance.edgesSize.type === "ranking" ||
-      appearance.nodesSize.type === "ranking" ||
+      (appearance.edgesSize.type === "ranking" && typeof appearance.edgesSize.minSize === "number") ||
+      (appearance.nodesSize.type === "ranking" && typeof appearance.nodesSize.minSize === "number") ||
       quality.enabled,
     [appearance, quality.enabled],
   );
@@ -228,7 +228,7 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
       {!collapsed && (
         <>
           <div className={cx("caption-items", !enabled && "d-none")}>
-            {appearance.nodesColor.field !== undefined && (
+            {appearance.nodesColor.field !== undefined && appearance.nodesColor.type !== "field" && (
               <ItemsColorCaption
                 itemType="nodes"
                 minimal={minimal}
@@ -247,22 +247,22 @@ const GraphCaption: FC<GraphCaptionProps> = ({ minimal }) => {
               itemsSize={appearance.nodesSize}
               extend={nodeSizeExtends && "min" in nodeSizeExtends ? nodeSizeExtends : undefined}
             />
-            {(appearance.edgesColor.field !== undefined ||
-              ["source", "target"].includes(appearance.edgesColor.type)) && (
-              <ItemsColorCaption
-                itemType="edges"
-                minimal={minimal}
-                itemsColor={appearance.edgesColor}
-                itemsShadingColor={appearance.edgesShadingColor}
-                extend={
-                  appearance.edgesColor.field
-                    ? vizAttributesExtends.edge[appearance.edgesColor.type][
-                        staticDynamicAttributeKey(appearance.edgesColor.field)
-                      ]
-                    : undefined
-                }
-              />
-            )}
+            {(appearance.edgesColor.field !== undefined || ["source", "target"].includes(appearance.edgesColor.type)) &&
+              appearance.edgesColor.type !== "field" && (
+                <ItemsColorCaption
+                  itemType="edges"
+                  minimal={minimal}
+                  itemsColor={appearance.edgesColor}
+                  itemsShadingColor={appearance.edgesShadingColor}
+                  extend={
+                    appearance.edgesColor.field
+                      ? vizAttributesExtends.edge[appearance.edgesColor.type][
+                          staticDynamicAttributeKey(appearance.edgesColor.field)
+                        ]
+                      : undefined
+                  }
+                />
+              )}
             <ItemSizeCaption
               minimal={minimal}
               itemType="edges"

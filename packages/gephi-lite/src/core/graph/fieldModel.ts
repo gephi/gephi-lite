@@ -17,6 +17,7 @@ import guessFormat from "@gristlabs/moment-guess";
 import { isNumber, sortBy, take, toPairs, uniq } from "lodash";
 import { DateTime } from "luxon";
 
+import { isValidColor } from "../../utils/colors";
 import { getScalarFromStaticDynamicData } from "./dynamicAttributes";
 
 /**
@@ -52,9 +53,16 @@ export function guessSeparator(values: string[]): string | null {
  * This function takes an unqualified field model and a list af values, and
  * guesses the field type
  */
-export function inferFieldType(values: Scalar[], itemsCount: number): FieldModelTypeSpec {
+export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: number): FieldModelTypeSpec {
+  const cleanedFieldName = fieldName.trim().toLowerCase();
+
+  // COLOR
+  if (values.every((v) => typeof v === "string" && isValidColor(v))) return { type: "color" };
+
   // NUMBER
   if (values.every((v) => isNumber(v))) {
+    if (new Set(["size", "weight", "degree"]).has(cleanedFieldName)) return { type: "number" };
+
     // Numbers non uniq & in series from 0 or 1 => category
     const uniqValues = sortBy(uniq(values));
     if (uniqValues.length < values.length) {
@@ -67,6 +75,7 @@ export function inferFieldType(values: Scalar[], itemsCount: number): FieldModel
 
     return { type: "number" };
   }
+
   // DATE
   const dateFormats: Record<string, number> = {};
   if (
@@ -107,6 +116,7 @@ export function inferFieldType(values: Scalar[], itemsCount: number): FieldModel
     if (separator) return { type: "keywords", separator };
     else return { type: "category" };
   }
+
   // TEXT
   return { type: "text" };
 }
@@ -120,6 +130,7 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
       return toNumber(scalar) as FieldModelAbstraction["number"]["expectedOutput"];
     case "category":
     case "text":
+    case "color":
       return toString(scalar) as FieldModelAbstraction["text"]["expectedOutput"];
     case "keywords":
       return toStringArray(
@@ -147,6 +158,7 @@ export function castScalarToQuantifiableValue<F extends FieldModelType = FieldMo
     case "date":
       return value !== undefined && value instanceof DateTime ? value.toMillis() : undefined;
     case "text":
+    case "color":
     case "category":
     case "keywords":
       return undefined;
@@ -172,6 +184,7 @@ export const getFieldValueFromQuantification = (
       return date && date.isValid ? date : undefined;
     }
     case "text":
+    case "color":
     case "category":
     case "keywords":
       return undefined;
@@ -197,17 +210,18 @@ export function serializeModelValueToScalar(
     case "number":
       if (typeof value !== "number") return originalScalar;
       // TODO: once we port the new fieldmodel into GEXF or other serialization decide to keep throw mechanism or fallback to original scalar.
-      //throw new CastValueError("Wrong number value")};
+      // throw new CastValueError("Wrong number value")};
       return value;
     case "category":
     case "text":
+    case "color":
       if (typeof value !== "string") return originalScalar; // throw new CastValueError(`Wrong ${fieldModel.type} value`);
       return value;
     case "keywords":
-      if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) return originalScalar; //throw new CastValueError("Wrong keywords value");
+      if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) return originalScalar; // throw new CastValueError("Wrong keywords value");
       return value.join(fieldModel.separator);
     case "date":
-      if (!(value instanceof DateTime)) return originalScalar; //throw new CastValueError("Wrong Date value");
+      if (!(value instanceof DateTime)) return originalScalar; // throw new CastValueError("Wrong Date value");
       return value.toFormat(fieldModel.format);
   }
 }

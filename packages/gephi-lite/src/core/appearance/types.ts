@@ -1,10 +1,8 @@
 export {
-  type DataSize,
   type FixedSize,
   type TransformationMethod,
   type RankingSize,
   type Size,
-  type DataColor,
   type SourceNodeColor,
   type TargetNodeColor,
   type FixedColor,
@@ -15,7 +13,6 @@ export {
   type Color,
   type EdgeColor,
   type NoStringAttr,
-  type DataStringAttr,
   type FixedStringAttr,
   type FieldStringAttr,
   type StringAttr,

@@ -19,6 +19,7 @@ import { GroupBase } from "react-select/dist/declarations/src/types";
 import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
 import { useDataCollection } from "../../hooks/useDataCollection";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
+import ColorPicker, { InlineColorPicker } from "../ColorPicker";
 import { FieldModelIcon } from "../common-icons";
 import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
@@ -41,7 +42,7 @@ export const AttributeRenderers: {
   category: ({ value }) => (!isNil(value) ? <span className="badge rounded-pill text-bg-dark">{value}</span> : null),
   keywords: ({ value }) =>
     value?.length ? (
-      <span className="gap-1">
+      <span className="d-inline-flex gap-1">
         {value.map((keyword, i) => (
           <span key={i} className="badge rounded-pill text-bg-dark">
             {keyword}
@@ -50,12 +51,19 @@ export const AttributeRenderers: {
       </span>
     ) : null,
   date: ({ value, format }) => (!isNil(value) ? value.toFormat(format) : null),
+  color: ({ value }) =>
+    !isNil(value) ? (
+      <span className="d-inline-flex align-items-center gap-1">
+        <span className="square border border-black border-2" style={{ background: value }} /> {value}
+      </span>
+    ) : null,
 };
 export const RenderText = AttributeRenderers.text;
 export const RenderNumber = AttributeRenderers.number;
 export const RenderCategory = AttributeRenderers.category;
 export const RenderKeywords = AttributeRenderers.keywords;
 export const RenderDate = AttributeRenderers.date;
+export const RenderColor = AttributeRenderers.color;
 
 export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar }> = ({ field, value }) =>
   createElement(AttributeRenderers[field.type] as FC<{ value?: ModelValueType }>, {
@@ -74,6 +82,7 @@ export const AttributeEditors: {
     field: FieldModel<ItemType, false, K>;
     autoFocus?: boolean;
     id?: string;
+    inTooltip?: boolean;
   }>;
 } = {
   text: ({ value, onChange, id, autoFocus }) => {
@@ -199,7 +208,7 @@ export const AttributeEditors: {
       if (ref.current && autoFocus) ref.current.focus();
     }, [autoFocus]);
 
-    //TODO: use an more advanced date time input which allow partial date input to respect requested format
+    // TODO: use an more advanced date time input which allow partial date input to respect requested format
     const inputType = field.format.includes("h") ? "datetime-local" : "date";
     const inputDateFormat = field.format.includes("h") ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd";
     return (
@@ -216,6 +225,13 @@ export const AttributeEditors: {
       />
     );
   },
+  color: ({ value, onChange, inTooltip }) => {
+    return inTooltip ? (
+      <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
+    ) : (
+      <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
+    );
+  },
 };
 export const EditText = AttributeEditors.text;
 export const EditNumber = AttributeEditors.number;
@@ -229,13 +245,15 @@ export const EditItemAttribute: FC<{
   onChange: (value: Scalar) => void;
   id?: string;
   autoFocus?: boolean;
-}> = ({ field, scalar, onChange, id, autoFocus }) => {
+  inTooltip?: boolean;
+}> = ({ field, scalar, onChange, id, autoFocus, inTooltip }) => {
   const EditComponent = AttributeEditors[field.type] as FC<{
     field: FieldModel;
     onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
     value?: FieldModelAbstraction[FieldModelType]["expectedOutput"];
     id?: string;
     autoFocus?: boolean;
+    inTooltip?: boolean;
   }>;
 
   return (
@@ -243,6 +261,7 @@ export const EditItemAttribute: FC<{
       id={id}
       field={field}
       autoFocus={autoFocus}
+      inTooltip={inTooltip}
       value={castScalarToModelValue(scalar, field)}
       onChange={(value) => onChange(serializeModelValueToScalar(value, field, scalar))}
     />

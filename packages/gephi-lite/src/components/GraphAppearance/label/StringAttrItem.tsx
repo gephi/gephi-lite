@@ -1,7 +1,7 @@
+import { StringAttr } from "@gephi/gephi-lite-sdk";
 import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { StringAttr } from "../../../core/appearance/types";
 import {
   useAppearance,
   useAppearanceActions,
@@ -14,7 +14,7 @@ import { ItemType } from "../../../core/types";
 import { Select } from "../../forms/Select";
 
 type LabelOption =
-  | { value: string; type: "none" | "data" | "fixed"; field?: undefined; label: string }
+  | { value: string; type: "none" | "fixed"; field?: undefined; label: string }
   | { value: string; type: "field"; field: FieldModel<ItemType, boolean>; label: string };
 
 export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
@@ -35,7 +35,6 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
       itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
     const fieldType = "field" as const;
     return [
-      { value: "data", type: "data", label: t(`appearance.${itemKey}.data`) },
       ...allFields.map((field) => {
         return {
           value: `field::${staticDynamicAttributeKey(field)}`,
@@ -93,11 +92,6 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
         }}
       />
 
-      {currentDef.type === "data" && (
-        <p className="form-text small text-muted">
-          {t(`appearance.${itemKey}.data_description`, { items: t(`graph.model.${itemType}`) })}
-        </p>
-      )}
       {currentDef.type === "none" && (
         <p className="form-text small text-muted">
           {t(`appearance.${itemKey}.none_description`, { items: t(`graph.model.${itemType}`) })}

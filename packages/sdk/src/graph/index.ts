@@ -7,10 +7,9 @@ export * from "./types";
 
 export function getEmptyGraphDataset(): GraphDataset {
   return {
-    nodeRenderingData: {},
-    edgeRenderingData: {},
     nodeData: {},
     edgeData: {},
+    layout: {},
     metadata: { type: "mixed" },
     nodeFields: [],
     edgeFields: [],

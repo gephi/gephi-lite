@@ -2,7 +2,7 @@ import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import MiniSearch from "minisearch";
 
-import { graphDatasetAtom } from "../graph";
+import { graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { ItemType } from "../types";
 import { SearchState } from "./types";
 import { edgeToDocument, getEmptySearchState, nodeToDocument } from "./utils";
@@ -13,6 +13,7 @@ import { edgeToDocument, getEmptySearchState, nodeToDocument } from "./utils";
  */
 export const indexAll: Producer<SearchState, []> = () => {
   const graphDataset = graphDatasetAtom.get();
+  const sigmaGraph = sigmaGraphAtom.get();
   const searchableModelFieldTypes: FieldModelType[] = ["category", "keywords", "text"];
   const index = new MiniSearch({
     idField: "itemId",
@@ -29,8 +30,8 @@ export const indexAll: Producer<SearchState, []> = () => {
         .toLowerCase(),
   });
 
-  index.addAll(Object.keys(graphDataset.nodeData).map((id) => nodeToDocument(graphDataset, id)));
-  index.addAll(Object.keys(graphDataset.edgeData).map((id) => edgeToDocument(graphDataset, id)));
+  index.addAll(Object.keys(graphDataset.nodeData).map((id) => nodeToDocument(graphDataset, sigmaGraph, id)));
+  index.addAll(Object.keys(graphDataset.edgeData).map((id) => edgeToDocument(graphDataset, sigmaGraph, id)));
 
   return () => ({
     index,
@@ -69,7 +70,8 @@ export const itemsRemove: Producer<SearchState, [ItemType, string[]]> = (type, i
 export const nodeIndex: Producer<SearchState, [string]> = (id) => {
   return (state) => {
     const graphDataset = graphDatasetAtom.get();
-    const data = nodeToDocument(graphDataset, id);
+    const sigmaGraph = sigmaGraphAtom.get();
+    const data = nodeToDocument(graphDataset, sigmaGraph, id);
     if (state.index.has(`nodes-${id}`)) {
       state.index.replace(data);
     } else {
@@ -82,7 +84,8 @@ export const nodeIndex: Producer<SearchState, [string]> = (id) => {
 export const edgeIndex: Producer<SearchState, [string]> = (id) => {
   return (state) => {
     const graphDataset = graphDatasetAtom.get();
-    const data = edgeToDocument(graphDataset, id);
+    const sigmaGraph = sigmaGraphAtom.get();
+    const data = edgeToDocument(graphDataset, sigmaGraph, id);
     if (state.index.has(`edges-${id}`)) {
       state.index.replace(data);
     } else {

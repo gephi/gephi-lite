@@ -1,13 +1,15 @@
 import {
   DEFAULT_EDGE_COLOR,
+  DEFAULT_EDGE_SIZE,
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
+  DEFAULT_NODE_SIZE,
   StaticDynamicItemData,
   toString,
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity } from "lodash";
+import { forEach, identity, keyBy } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
@@ -83,32 +85,42 @@ export function makeGetNumberAttr<
   let getNumberValue: NumberGetter | null = null;
   switch (numberAttrDef.type) {
     case "ranking": {
-      const transformValue = makeTransformValue(numberAttrDef.transformationMethod);
-      let min = Infinity,
-        max = -Infinity;
-      forEach(itemsValues, (data) => {
-        const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
-        const transformedValue = transformValue(valueAsNumber);
-        if (typeof transformedValue === "number") {
-          min = Math.min(min, transformedValue);
-          max = Math.max(max, transformedValue);
-        }
-      });
-      const delta = max - min || 1;
-      const ratio = (numberAttrDef.maxSize - numberAttrDef.minSize) / delta;
-      getNumberValue = (data: StaticDynamicItemData) => {
-        const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
-        const transformedValue = transformValue(valueAsNumber);
+      if (!("minSize" in numberAttrDef)) {
+        getNumberValue = (data: StaticDynamicItemData) => {
+          const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
+          return valueAsNumber ?? numberAttrDef.missingSize;
+        };
+      } else {
+        const minSize = numberAttrDef.minSize as number;
+        const maxSize = numberAttrDef.maxSize as number;
 
-        if (
-          typeof transformedValue === "number" &&
-          !isNaN(transformedValue) &&
-          Math.abs(transformedValue) !== Infinity
-        ) {
-          return (transformedValue - min) * ratio + numberAttrDef.minSize;
-        }
-        return numberAttrDef.missingSize;
-      };
+        const transformValue = makeTransformValue(numberAttrDef.transformationMethod);
+        let min = Infinity,
+          max = -Infinity;
+        forEach(itemsValues, (data) => {
+          const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
+          const transformedValue = transformValue(valueAsNumber);
+          if (typeof transformedValue === "number") {
+            min = Math.min(min, transformedValue);
+            max = Math.max(max, transformedValue);
+          }
+        });
+        const delta = max - min || 1;
+        const ratio = (maxSize - minSize) / delta;
+        getNumberValue = (data: StaticDynamicItemData) => {
+          const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
+          const transformedValue = transformValue(valueAsNumber);
+
+          if (
+            typeof transformedValue === "number" &&
+            !isNaN(transformedValue) &&
+            Math.abs(transformedValue) !== Infinity
+          ) {
+            return (transformedValue - min) * ratio + minSize;
+          }
+          return numberAttrDef.missingSize;
+        };
+      }
       break;
     }
     case "field": {
@@ -146,7 +158,7 @@ export function makeGetColor<
   T extends { itemType: "nodes"; displayData: NodeDisplayData } | { itemType: "edges"; displayData: EdgeDisplayData },
 >(
   itemType: T["itemType"],
-  { nodeData, edgeData, nodeRenderingData, fullGraph }: GraphDataset,
+  { nodeData, edgeData, fullGraph }: GraphDataset,
   { dynamicNodeData, dynamicEdgeData }: DynamicItemData,
   { nodesColor, edgesColor, nodesShadingColor, edgesShadingColor }: AppearanceState,
   getters?: VisualGetters,
@@ -160,6 +172,12 @@ export function makeGetColor<
 
   let getColor: ColorGetter | null = null;
   switch (colorsDef.type) {
+    case "field":
+      getColor = (data: StaticDynamicItemData) => {
+        const valueAsString = getFieldValue(data, colorsDef.field) + "";
+        return valueAsString || colorsDef.missingColor;
+      };
+      break;
     case "partition":
       getColor = (data: StaticDynamicItemData) => {
         const valueAsString = getFieldValue(data, colorsDef.field) + "";
@@ -205,14 +223,6 @@ export function makeGetColor<
       getColor = (_, edgeId?: string) => {
         const node = nodeForColor(edgeId);
         return node ? getNodeColor(nodesValues[node]) : DEFAULT_NODE_COLOR;
-      };
-    } else if (nodesColor.type === "data") {
-      // special case when node are colored by data have to reach nodeRenderingData instead of normal getNodeColor
-      getColor = (_, edgeId?: string) => {
-        const node = nodeForColor(edgeId);
-        return node && nodeRenderingData[node] && nodeRenderingData[node].color
-          ? nodeRenderingData[node].color || DEFAULT_NODE_COLOR
-          : DEFAULT_NODE_COLOR;
       };
     } else {
       getColor = () => DEFAULT_EDGE_COLOR;
@@ -409,16 +419,61 @@ export function getItemAttributes(
   graphDataset: GraphDataset,
   visualGetters: VisualGetters,
 ): { label: string | undefined; color: string; hidden?: boolean; directed?: boolean } {
-  const renderingData = type === "nodes" ? graphDataset.nodeRenderingData[id] : graphDataset.edgeRenderingData[id];
   const getLabel = type === "nodes" ? visualGetters.getNodeLabel : visualGetters.getEdgeLabel;
   const getColor = type === "nodes" ? visualGetters.getNodeColor : visualGetters.getEdgeColor;
   const defaultColor = type === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
   const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
 
   return {
-    label: (getLabel ? getLabel(itemData) : renderingData.label) || undefined,
-    color: getColor ? getColor(itemData, id) : renderingData.color || defaultColor,
+    label: (getLabel && getLabel(itemData)) || undefined,
+    color: (getColor && getColor(itemData, id)) || defaultColor,
     hidden,
     directed: graphDataset.metadata.type !== "undirected",
   };
+}
+
+export function inferAppearanceState(graphDataset: GraphDataset): Partial<AppearanceState> {
+  const appearanceState: Partial<AppearanceState> = {};
+
+  const nodeFieldsDict = keyBy(graphDataset.nodeFields, "id");
+  if (nodeFieldsDict["size"]?.type === "number")
+    appearanceState.nodesSize = {
+      type: "ranking",
+      field: nodeFieldsDict["size"],
+      missingSize: DEFAULT_NODE_SIZE,
+    };
+  if (nodeFieldsDict["label"]?.type === "text")
+    appearanceState.nodesLabel = {
+      type: "field",
+      field: nodeFieldsDict["label"],
+      missingValue: null,
+    };
+  if (nodeFieldsDict["color"]?.type === "color")
+    appearanceState.nodesColor = {
+      type: "field",
+      field: nodeFieldsDict["color"],
+      missingColor: DEFAULT_NODE_COLOR,
+    };
+
+  const edgeFieldsDict = keyBy(graphDataset.edgeFields, "id");
+  if (edgeFieldsDict["weight"]?.type === "number")
+    appearanceState.edgesSize = {
+      type: "ranking",
+      field: edgeFieldsDict["weight"],
+      missingSize: DEFAULT_EDGE_SIZE,
+    };
+  if (edgeFieldsDict["label"]?.type === "text")
+    appearanceState.edgesLabel = {
+      type: "field",
+      field: edgeFieldsDict["label"],
+      missingValue: null,
+    };
+  if (edgeFieldsDict["color"]?.type === "color")
+    appearanceState.edgesColor = {
+      type: "field",
+      field: edgeFieldsDict["color"],
+      missingColor: DEFAULT_EDGE_COLOR,
+    };
+
+  return appearanceState;
 }

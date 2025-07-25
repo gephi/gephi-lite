@@ -42,7 +42,8 @@ export function computeMetric(
 
       // Update field model:
       let fieldModelType = metric.outputs[itemType][score];
-      if (fieldModelType === undefined) fieldModelType = inferFieldType(Object.values(values), itemsCount);
+      if (fieldModelType === undefined)
+        fieldModelType = inferFieldType(attributeName, Object.values(values), itemsCount);
 
       fields.push({
         values,

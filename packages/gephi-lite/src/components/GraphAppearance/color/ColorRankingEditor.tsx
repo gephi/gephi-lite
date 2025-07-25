@@ -1,10 +1,10 @@
+import { RankingColor } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { last, sortBy } from "lodash";
 import { FC, HTMLProps, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactSlider from "react-slider";
 
-import { RankingColor } from "../../../core/appearance/types";
 import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
 import ColorPickerTooltip from "./ColorPickerTooltip";
@@ -130,7 +130,7 @@ export const ColorRankingEditor: FC<{
       />
 
       <div>
-        <div className="d-flex align-items-center mt-1">
+        <div className="d-flex align-items-baseline mt-1">
           <ColorPicker color={color.missingColor} onChange={(v) => setColor({ ...color, missingColor: v })} />
           <label className="form-check-label small ms-1">
             {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}

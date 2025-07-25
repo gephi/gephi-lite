@@ -1,16 +1,7 @@
 import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import { FC } from "react";
 import { IconType } from "react-icons";
-import {
-  Bs123,
-  BsAlphabetUppercase,
-  BsBodyText,
-  BsCalendar3,
-  BsCircle,
-  BsFillTagsFill,
-  BsSlashLg,
-  BsTags,
-} from "react-icons/bs";
+import { BsCircle, BsSlashLg, BsTags } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib/iconBase";
 import {
   PiArrowClockwise,
@@ -19,14 +10,12 @@ import {
   PiArrowsInSimple,
   PiBinary,
   PiBinaryBold,
-  PiBinaryFill,
   PiCalendarDots,
   PiCaretDown,
   PiCaretLeft,
   PiCaretRight,
   PiCaretUp,
   PiChartBar,
-  PiChartBarFill,
   PiCheck,
   PiCheckCircle,
   PiCircleHalf,
@@ -51,13 +40,13 @@ import {
   PiInfo,
   PiLasso,
   PiLassoBold,
-  PiLassoFill,
   PiMagicWand,
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
   PiMoonStars,
   PiMoonStarsFill,
+  PiPaintBrush,
   PiPalette,
   PiPaletteFill,
   PiPencilSimpleLine,
@@ -71,7 +60,6 @@ import {
   PiQuestion,
   PiSelection,
   PiSelectionBold,
-  PiSelectionFill,
   PiSpinner,
   PiStop,
   PiStopFill,
@@ -181,9 +169,10 @@ export const FieldModelIcons: Record<FieldModelType, IconType> = {
   text: PiTextT,
   number: PiChartBar,
   category: PiCirclesFour,
-  //Still in Bs consciously, the style difference isn't to contrasted
+  // Still in Bs consciously, the style difference isn't to contrasted
   keywords: BsTags,
   date: PiCalendarDots,
+  color: PiPaintBrush,
 };
 export const FieldModelIcon: FC<IconBaseProps & { type: FieldModelType }> = ({ type, ...props }) => {
   const Icon = FieldModelIcons[type];
