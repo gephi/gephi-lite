@@ -6,7 +6,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
-import { EdgeRenderingData } from "../../core/graph/types";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { Scalar } from "../../core/types";
@@ -15,7 +14,7 @@ import { CancelIcon, FieldModelIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
 
-interface UpdatedEdgeState extends Omit<EdgeRenderingData, "rawWeight"> {
+interface UpdatedEdgeState {
   id: string;
   source: string;
   target: string;
@@ -173,12 +172,6 @@ const useEditEdgeForm = ({
               </div>
             )}
           </div>
-          <div>
-            <label htmlFor="updateEdge-label" className="form-label">
-              {t("graph.model.edges-data.label")}
-            </label>
-            <input type="text" id="updateEdge-label" className="form-control" {...register("label")} />
-          </div>
         </div>
 
         {/* Extremities */}
@@ -232,23 +225,6 @@ const useEditEdgeForm = ({
               )}
             />
             {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
-          </div>
-        </div>
-
-        {/* Rendering attributes */}
-        <div className="panel-block">
-          <div>
-            <label htmlFor="updateEdge-weight" className="form-label">
-              {t("graph.model.edges-data.weight")}
-            </label>
-            <input
-              type="number"
-              id="updateEdge-weight"
-              className="form-control"
-              min={0}
-              step="any"
-              {...register("weight", { min: 0 })}
-            />
           </div>
         </div>
 

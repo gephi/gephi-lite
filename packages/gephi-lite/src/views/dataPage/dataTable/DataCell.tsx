@@ -83,7 +83,7 @@ export const EditDataCell: FC<{
               }
             }}
           >
-            <EditItemAttribute autoFocus field={field} scalar={value} onChange={(value) => setValue(value)} />
+            <EditItemAttribute autoFocus inTooltip field={field} scalar={value} onChange={(value) => setValue(value)} />
             <div className="text-end">
               <button className="btn btn-small">{t("datatable.save_cell")}</button>
             </div>

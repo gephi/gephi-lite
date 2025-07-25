@@ -1,4 +1,4 @@
-import { FieldModelTypeSpec, NodeRenderingData, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
+import { FieldModelTypeSpec, NodeCoordinates, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, keyBy, pick } from "lodash";
 import { FC, useMemo } from "react";
@@ -12,7 +12,7 @@ import { CancelIcon, FieldModelIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
 
-interface UpdatedNodeState extends Omit<NodeRenderingData, "rawSize"> {
+interface UpdatedNodeState extends NodeCoordinates {
   id?: string;
   attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
@@ -95,7 +95,7 @@ const useEditNodeForm = ({
                 return [key, valueAsNumber ? valueAsNumber : value];
               }),
           ),
-          ...pick(data, "label", "color", "size", "x", "y"),
+          ...pick(data, "x", "y"),
         };
 
         // Create new node:
@@ -171,18 +171,6 @@ const useEditNodeForm = ({
 
         {/* Rendering attributes */}
         <div className="panel-block">
-          <div>
-            <label htmlFor="updateNode-label" className="form-label">
-              {t("graph.model.nodes-data.label")}
-            </label>
-            <input
-              type="text"
-              id="updateNode-label"
-              className={cx("form-control", errors.label && "is-invalid")}
-              min={0}
-              {...register("label")}
-            />
-          </div>
           <div>
             <label htmlFor="updateNode-x" className="form-label">
               {t("graph.model.nodes-data.x")}
