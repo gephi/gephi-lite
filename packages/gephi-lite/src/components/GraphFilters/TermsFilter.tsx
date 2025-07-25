@@ -85,16 +85,12 @@ export const TermsFilter: FC<{
 
   return (
     <>
-      <div className="fs-5">
+      <div className="gl-heading-3">
         {staticDynamicAttributeLabel(filter.field)} ({t(`graph.model.${filter.itemType}`)})
       </div>
 
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}
-      {!editMode && (
-        <div>
-          <span className="fs-5">{filter.terms ? listFormatter.format(filter.terms) : t("common.all")}</span>
-        </div>
-      )}
+      {!editMode && <div>{filter.terms ? listFormatter.format(filter.terms) : t("common.all")}</div>}
       {editMode && <TermsFilterEditor filter={filter} />}
     </>
   );

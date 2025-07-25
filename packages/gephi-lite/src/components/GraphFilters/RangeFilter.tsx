@@ -1,11 +1,11 @@
 import { useReadAtom } from "@ouestware/atoms";
 import cx from "classnames";
-import { flatMap, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
+import { compact, flatMap, isNil, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
 import Slider, { SliderProps } from "rc-slider";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFiltersActions, useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
 import { parentFilteredGraphAtom } from "../../core/graph";
@@ -110,7 +110,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
     : {};
 
   return rangeMetric ? (
-    <form onSubmit={(e) => e.preventDefault()} className="w-100">
+    <form onSubmit={(e) => e.preventDefault()}>
       {rangeMetric.max !== rangeMetric.min ? (
         <ul className="list-unstyled range-filter">
           {(rangeMetric.ranges || []).map((range) => {
@@ -171,8 +171,8 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
         {...RANGE_STYLE}
       />
 
-      <div className="d-flex flex-wrap">
-        <div className="d-flex align-items-center mt-1">
+      <div className="d-flex flex-row justify-content-between gl-gap-1">
+        <div className="d-flex align-items-center flex-grow-1 gl-gap-1">
           {filter.field.type === "number" ? (
             // We don't use generic EditItem Attribute to keep step, min, max, disabled parameters
             // TODO: add all input props in generic component ?
@@ -207,11 +207,11 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             />
           )}
 
-          <label className="form-check-label small ms-1" htmlFor="min">
+          <label className="form-check-label small gl-gap-1" htmlFor="min">
             {t("common.min")}
           </label>
         </div>
-        <div className="d-flex align-items-center mt-1 ms-1">
+        <div className="d-flex align-items-center flex-grow-1 gl-gap-1">
           {filter.field.type === "number" ? (
             // We don't use generic EditItem Attribute to keep step, min, max, disabled parameters
             // TODO: add all input props in generic component ?
@@ -247,14 +247,14 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
             />
           )}
 
-          <label className="form-check-label small ms-1" htmlFor="max">
+          <label className="form-check-label small" htmlFor="max">
             {t("common.max")}
           </label>
         </div>
       </div>
-      <div>
+      <div className="d-flex gl-gap-1 align-items-center">
         <input
-          className="form-check-input me-2"
+          className="form-check-input"
           disabled={rangeMetric.min === rangeMetric.max}
           type="checkbox"
           id="keepMissingValues"
@@ -277,18 +277,24 @@ export const RangeFilter: FC<{
   active?: boolean;
   editMode?: boolean;
 }> = ({ filter, editMode, filterIndex, active }) => {
+  const { locale } = usePreferences();
   const { t } = useTranslation();
+  const sumupKey = useMemo(
+    () => compact([!isNil(filter.min) && "from", !isNil(filter.max) && "to"]).join("_"),
+    [filter.max, filter.min],
+  );
 
   return (
     <>
-      <div className="fs-5">
+      <div className="gl-heading-3">
         {staticDynamicAttributeLabel(filter.field)} ({t(`graph.model.${filter.itemType}`)})
       </div>
       {!editMode && (
-        <div className="flex-grow-1">
-          <span className="fs-6">
-            {filter.min ? `${filter.min}` : "∞"} - {filter.max ? `${filter.max}` : "∞"}
-          </span>{" "}
+        <div>
+          {t(
+            `filters.range.${sumupKey}`,
+            mapValues(filter, (n: number) => n.toLocaleString(locale)),
+          )}
         </div>
       )}
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}

@@ -4,6 +4,8 @@ import { IconType } from "react-icons";
 import { BsCircle, BsSlashLg, BsTags } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib/iconBase";
 import {
+  PiArrowBendDownRight,
+  PiArrowBendUpRight,
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowSquareOut,
@@ -44,6 +46,7 @@ import {
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
+  PiMinusCircle,
   PiMoonStars,
   PiMoonStarsFill,
   PiPaintBrush,
@@ -61,6 +64,8 @@ import {
   PiSelection,
   PiSelectionBold,
   PiSpinner,
+  PiStackMinus,
+  PiStackPlus,
   PiStop,
   PiStopFill,
   PiSun,
@@ -103,6 +108,11 @@ export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const ExternalLinkIcon = PiArrowSquareOut;
+export const FilterAddIcon = PiStackPlus;
+export const FilterDeleteIcon = PiStackMinus;
+export const FilterDeleteInactiveIcon = PiMinusCircle;
+export const FilterOpenFutureIcon = PiArrowBendDownRight;
+export const FilterOpenPastIcon = PiArrowBendUpRight;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiCornersOut;

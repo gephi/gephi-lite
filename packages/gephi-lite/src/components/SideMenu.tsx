@@ -28,7 +28,11 @@ type MenuSimpleItem<T> = MenuButton<T> | MenuText<T>;
 type MenuSection<T> = MenuSimpleItem<T> & { children: MenuSimpleItem<T>[] };
 export type MenuItem<T = unknown> = MenuSimpleItem<T> | MenuSection<T>;
 
-const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpened }) => {
+const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean; isSelected?: boolean }> = ({
+  item,
+  isOpened,
+  isSelected,
+}) => {
   const { t } = useTranslation();
   return (
     <div className="d-flex align-items-center w-100">
@@ -36,7 +40,9 @@ const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean }> = ({ item, isOpe
         <span className="side-menu-item">{item.label}</span>
       ) : (
         <>
-          {item.icon && <span className="side-menu-icon">{isOpened ? <item.icon.fill /> : <item.icon.normal />}</span>}
+          {item.icon && (
+            <span className="side-menu-icon">{isSelected ? <item.icon.fill /> : <item.icon.normal />}</span>
+          )}
           <span className="side-menu-item">{item.capitalize ? capitalize(t(item.i18nKey)) : t(item.i18nKey)}</span>
         </>
       )}
@@ -63,7 +69,7 @@ function SimpleItem<T = unknown>({
       className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
       onClick={() => onSelectedChange(item)}
     >
-      <ItemMenuInner item={item} />
+      <ItemMenuInner item={item} isSelected={selected === item.id} />
     </button>
   );
 }
@@ -119,7 +125,7 @@ function ExpandableItem<T = unknown>({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <ItemMenuInner item={item} isOpened={isExpanded} />
+            <ItemMenuInner item={item} isOpened={isExpanded} isSelected={isExpanded} />
           </button>
         )}
         renderElement={(ref) =>

@@ -1,11 +1,20 @@
 .filter-item {
   position: relative;
 
-  @extend .mt-2;
-  @extend .px-2;
-  @extend .py-2;
+  @extend .gl-py-4;
+  @extend .gl-gap-2;
   &.inactive {
-    @extend .text-muted;
+    @extend .gl-text-muted;
+    @extend .gl-py-3;
+    background-color: var(--gl-container-high-bg);
+  }
+
+  &.filter-creator {
+    @extend .gl-py-3;
+  }
+
+  &.edited {
+    padding-bottom: $gl-spacers-3;
   }
 
   .button-container {
@@ -19,19 +28,33 @@
     }
   }
 
-  &::after {
-    content: " ";
-    position: absolute;
-    inset: 0;
-    border: 1px solid $gray-500;
-    z-index: -1;
+  &:not(:first-child) {
+    border-top: 1px solid var(--gl-container-border-color);
   }
 
-  &:not(.inactive)::after {
-    border-color: $gray-600;
+  &:first-child {
+    padding-top: 0;
+    margin-top: 0;
   }
-  &.edited::after {
-    border-width: 2px;
+
+  .filter-arrow-container {
+    @extend .gl-text-muted;
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    transform: translate(0, -50%);
+
+    .filter-arrow {
+      background: var(--gl-container-highest-bg);
+      font-size: 1.125rem;
+      height: 1.125rem;
+      line-height: 1rem;
+      text-align: center;
+    }
+
+    .gl-btn {
+      transform: scaleX(-1);
+    }
   }
 }
 

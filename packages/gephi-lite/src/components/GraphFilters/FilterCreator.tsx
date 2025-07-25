@@ -1,7 +1,6 @@
 import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CgAddR } from "react-icons/cg";
 
 import {
   useDynamicItemData,
@@ -14,7 +13,7 @@ import { FilterType } from "../../core/filters/types";
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../core/graph/types";
 import { ItemType } from "../../core/types";
-import { FieldModelIcons } from "../common-icons";
+import { FieldModelIcons, FilterAddIcon } from "../common-icons";
 import { Select } from "../forms/Select";
 
 export interface FilterOption {
@@ -132,9 +131,9 @@ export const FilterCreator: FC = () => {
 
   if (!isOpened) {
     return (
-      <div className="filter-item d-flex align-items-center justify-content-center">
-        <button type="button" className="gl-btn" onClick={() => setIsOpened(true)}>
-          <CgAddR /> {t("filters.add_filter")}
+      <div className="filter-item filter-creator gl-px-3 d-flex justify-content-center">
+        <button type="button" className="gl-btn gl-btn-outline w-100" onClick={() => setIsOpened(true)}>
+          <FilterAddIcon /> {t("filters.add_filter")}
         </button>
       </div>
     );
@@ -150,11 +149,11 @@ export const FilterCreator: FC = () => {
           setFilterCreation(null);
         }
       }}
-      className="d-flex align-items-center filter-item"
+      className="d-flex align-items-center filter-item filter-creator gl-px-3"
     >
-      <div className="d-flex flex-column p-3 w-100">
-        <div>
-          {t("filters.filter")}{" "}
+      <div className="d-flex flex-column gl-gap-2 w-100">
+        <div className="d-flex flex-column gl-gap-1">
+          <div>{t("filters.filter")}</div>
           <Select
             onChange={(o) => setFilterApplicationType(o?.value as ItemType | "topological")}
             options={[
@@ -164,8 +163,8 @@ export const FilterCreator: FC = () => {
             ]}
           />
         </div>
-        <div className="mt-1">
-          {t("filters.using")}
+        <div className="d-flex flex-column gl-gap-1">
+          <div>{t("filters.using")}</div>
           {filterOptions.length > 0 && (
             <Select
               value={selectedFilterOption}
@@ -206,11 +205,11 @@ export const FilterCreator: FC = () => {
             />
           )}
         </div>
-        <div className="d-flex justify-content-end gl-py-3 gl-gap-2">
-          <button type="button" className="gl-btn gl-btn-outline" onClick={() => setIsOpened(false)}>
+        <div className="d-flex gl-gap-2">
+          <button type="button" className="gl-btn gl-btn-outline flex-grow-1" onClick={() => setIsOpened(false)}>
             {t("common.cancel")}
           </button>
-          <button type="submit" className="gl-btn gl-btn-fill" disabled={filterCreation === null}>
+          <button type="submit" className="gl-btn gl-btn-fill flex-grow-1" disabled={filterCreation === null}>
             {t("filters.create_filter")}
           </button>
         </div>

@@ -210,6 +210,11 @@
     "create_filter": "Create filter",
     "keepMissingValues": "Keep missing values",
     "inapplicable": "Filter disabled: only one value available",
+    "range": {
+      "from": "from {{min}}",
+      "to": "less than or equal {{max}}",
+      "from_to": "from {{min}} to {{max}}"
+    },
     "topology": {
       "largestConnectedComponent": {
         "label": "Connected component",
