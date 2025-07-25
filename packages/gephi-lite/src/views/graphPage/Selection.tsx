@@ -1,5 +1,5 @@
-import { FieldModel, Scalar, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
-import { groupBy, toPairs } from "lodash";
+import { DEFAULT_NODE_COLOR, FieldModel, NodeCoordinates, Scalar, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
+import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
@@ -32,12 +32,12 @@ import {
   mergeStaticDynamicData,
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
-import { EdgeRenderingData, NodeRenderingData } from "../../core/graph/types";
 import { useModal } from "../../core/modals";
 import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 
 function SelectedItem<
-  T extends { type: "nodes"; data: NodeRenderingData } | { type: "edges"; data: EdgeRenderingData },
+  // eslint-disable-next-line
+  T extends { type: "nodes"; data: NodeCoordinates } | { type: "edges"; data: {} },
 >({
   type,
   id,
@@ -56,8 +56,9 @@ function SelectedItem<
   const { t } = useTranslation();
   const { openModal } = useModal();
 
+  const sigmaGraph = useSigmaGraph();
   const graphDataset = useGraphDataset();
-  const { edgeFields, nodeFields, fullGraph } = graphDataset;
+  const { edgeFields, nodeFields } = graphDataset;
   const fields = useMemo(() => (type === "edges" ? edgeFields : nodeFields), [edgeFields, nodeFields, type]);
 
   const visualGetters = useVisualGetters();
@@ -75,10 +76,14 @@ function SelectedItem<
       })),
       ...dynamicAttributes[type].map(({ field }) => ({
         label: staticDynamicAttributeLabel(field),
-        field,
+        field: field as FieldModel,
         value: data.dynamic[field.id],
       })),
-      ...toPairs(renderingData).map(([field, value]) => ({ label: field, value })),
+      ...toPairs(renderingData).map(([key, value]) => ({
+        label: key,
+        value,
+        field: { type: "number", id: key, itemType: type } as FieldModel,
+      })),
     ],
     [data.dynamic, data.static, fields, id, renderingData, t, type],
   );
@@ -88,10 +93,17 @@ function SelectedItem<
   if (type === "nodes") {
     content = <NodeComponent label={item.label} color={item.color} hidden={item.hidden} />;
   } else {
-    const source = getItemAttributes("nodes", fullGraph.source(id), filteredGraph, data, graphDataset, visualGetters);
-    const target = getItemAttributes("nodes", fullGraph.target(id), filteredGraph, data, graphDataset, visualGetters);
+    const source = sigmaGraph.getNodeAttributes(sigmaGraph.source(id));
+    const target = sigmaGraph.getNodeAttributes(sigmaGraph.target(id));
 
-    content = <EdgeComponent {...item} source={source} target={target} className="mb-2" />;
+    content = (
+      <EdgeComponent
+        {...item}
+        source={{ ...source, label: source.label ?? null, color: source.color ?? DEFAULT_NODE_COLOR }}
+        target={{ ...target, label: target.label ?? null, color: target.color ?? DEFAULT_NODE_COLOR }}
+        className="mb-2"
+      />
+    );
   }
 
   useEffect(() => {
@@ -172,11 +184,15 @@ function SelectedItem<
           {attributes.map((attribute, i) => (
             <li key={i} className="overflow-hidden">
               <div className="gl-container-muted-bg text-break gl-border gl-px-2 gl-py-1">{attribute.label}</div>{" "}
-              <div className="mb-1 text-break gl-px-2">
-                {attribute.field ? (
-                  <RenderItemAttribute value={attribute.value} field={attribute.field} />
+              <div className="mb-1 text-break gl-px-2 gl-py-1">
+                {!isNil(attribute.value) ? (
+                  attribute.field ? (
+                    <RenderItemAttribute value={attribute.value} field={attribute.field} />
+                  ) : (
+                    <RenderText value={attribute.value + ""} />
+                  )
                 ) : (
-                  <RenderText value={attribute.value + ""} />
+                  <span className="fst-italic">{t("selection.no_value")}</span>
                 )}
               </div>
             </li>
@@ -197,8 +213,7 @@ export const Selection: FC = () => {
   const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
-  const { nodeData, edgeData } = useGraphDataset();
-  const sigmaGraph = useSigmaGraph();
+  const { nodeData, edgeData, layout } = useGraphDataset();
 
   const mergedStaticDynamicItemData = useMemo(() => {
     return mergeStaticDynamicData(
@@ -227,10 +242,7 @@ export const Selection: FC = () => {
                 type={type}
                 selectionSize={items.size}
                 data={mergedStaticDynamicItemData[item]}
-                //TODO: add dynamic
-                renderingData={
-                  type === "nodes" ? sigmaGraph.getNodeAttributes(item) : sigmaGraph.getEdgeAttributes(item)
-                }
+                renderingData={type === "nodes" ? layout[item] : {}}
               />
             )}
           />
@@ -252,9 +264,7 @@ export const Selection: FC = () => {
                     type={type}
                     selectionSize={items.size}
                     data={mergedStaticDynamicItemData[item]}
-                    renderingData={
-                      type === "nodes" ? sigmaGraph.getNodeAttributes(item) : sigmaGraph.getEdgeAttributes(item)
-                    }
+                    renderingData={type === "nodes" ? layout[item] : {}}
                   />
                 )}
               />

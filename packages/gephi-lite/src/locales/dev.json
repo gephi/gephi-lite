@@ -87,6 +87,7 @@
     "empty_edges": "This edge has no attribute",
     "node_no_label": "(Empty label)",
     "edge_no_label": "(Empty label)",
+    "no_value": "No value",
     "locate_on_graph": "Locate on the graph",
     "open_in_data": "Show in Data",
     "open_in_graph": "Show in Graph",
