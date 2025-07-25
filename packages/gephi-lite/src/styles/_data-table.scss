@@ -155,5 +155,32 @@ $table-editable-columns-cell-hover-bg: color-mix(
 }
 
 .data-cell-edition {
+  @extend .gl-shadow-high;
+  @extend .gl-rounded-2;
+  @extend .gl-border;
+  @extend .gl-p-2;
+
   z-index: $zindex-tooltip;
+  background: var(--gl-container-highest-bg);
+
+  &:not(.data-cell-edition-color) {
+    form {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: $gl-spacers-2;
+
+      & > *:first-child {
+        flex-grow: 1;
+      }
+    }
+  }
+  &.data-cell-edition-color {
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: end;
+      gap: $gl-spacers-2;
+    }
+  }
 }
