@@ -22,7 +22,7 @@ export const Notifications: FC = () => {
   );
 
   return (
-    <div className="toasts-container fixed-bottom" style={{ zIndex: 1056, left: "auto", maxWidth: "50%" }}>
+    <div className="toasts-container" style={{ zIndex: 1056, left: "auto", maxWidth: "50%" }}>
       {notifications.map((notification) => (
         <Notification key={notification.id} notification={notification} onClose={() => close(notification.id)} />
       ))}
@@ -53,14 +53,14 @@ const Notification: FC<{
 
   return (
     <div
-      className={cx("toast fade m-2", show ? "show" : "hide", CLASSES_TOAST[notification.type])}
+      className={cx("toast fade", show ? "show" : "hide", CLASSES_TOAST[notification.type])}
       onMouseEnter={cancel}
       onMouseLeave={reschedule}
     >
       <div className="toast-header">
         <IconComponent className={cx(`text-${notification.type}`)} />
         <strong className="ms-2 me-auto">{notification.title || notification.type}</strong>
-        {notification.createdAt && <small>{dateToFromAgo(notification.createdAt)}</small>}
+        {notification.createdAt && <small className="text-end">{dateToFromAgo(notification.createdAt)}</small>}
 
         <button type="button" className="btn-close" onClick={() => close()}></button>
       </div>
