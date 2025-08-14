@@ -1,0 +1,15 @@
+.toasts-container {
+  @extend .fixed-bottom;
+  padding: $gl-spacers-2;
+  left: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+
+  max-height: 100vh;
+  overflow-y: auto;
+
+  & > .toast:not(:first-child) {
+    margin-top: $gl-spacers-2;
+  }
+}
