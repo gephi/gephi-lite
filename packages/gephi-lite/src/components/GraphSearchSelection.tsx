@@ -34,7 +34,7 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
           });
         } else {
           const nodesResult = result.filter((r): r is OptionItem => r.type === "nodes").map((r) => r.id);
-          if (nodesResult.length > 0) {
+          if (nodesResult.length > 1) {
             result.push({
               type: "message",
               i18nCode: "nodes.select_all",
@@ -49,10 +49,10 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
           }
 
           const edgesResult = result.filter((r): r is OptionItem => r.type === "edges").map((r) => r.id);
-          if (edgesResult.length > 0) {
+          if (edgesResult.length > 1) {
             result.push({
               type: "message",
-              i18nCode: "select_all_edges",
+              i18nCode: "edges.select_all",
               i18nParams: { count: edgesResult.length },
               action: () => {
                 select({

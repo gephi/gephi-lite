@@ -18,9 +18,13 @@ export const indexAll: Producer<SearchState, []> = () => {
   const index = new MiniSearch({
     idField: "itemId",
     fields: [
-      "label",
-      ...graphDataset.nodeFields.filter((f) => searchableModelFieldTypes.includes(f.type)).map((f) => f.id),
-      ...graphDataset.edgeFields.filter((f) => searchableModelFieldTypes.includes(f.type)).map((f) => f.id),
+      "id",
+      ...graphDataset.nodeFields
+        .filter((f) => searchableModelFieldTypes.includes(f.type))
+        .map((f) => `prop_node_${f.id}`),
+      ...graphDataset.edgeFields
+        .filter((f) => searchableModelFieldTypes.includes(f.type))
+        .map((f) => `prop_edge_${f.id}`),
     ],
     storeFields: ["itemId", "id", "type"],
     processTerm: (term, _fieldName) =>
