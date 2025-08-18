@@ -911,14 +911,14 @@
       "no_result": "No node found",
       "help": "Type something to find a node",
       "other_result": "... and {{count, number}} other nodes",
-      "select_all": "Select all {{count, number}} nodes"
+      "select_all": "Select all {{count, number}} matching nodes"
     },
     "edges": {
       "placeholder": "Search an edge...",
       "no_result": "No edge found",
       "help": "Type something to find an edge",
       "other_result": "... and {{count, number}} other edges",
-      "select_all": "Select all {{count, number}} edges"
+      "select_all": "Select all {{count, number}} matching edges"
     }
   },
   "settings": {
