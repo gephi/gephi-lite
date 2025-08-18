@@ -2,11 +2,13 @@ import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { version } from "../../../package.json";
-import GephiLogo from "../../assets/gephi-logo.svg?react";
-import { useFile, useFileActions } from "../../core/context/dataContexts";
+import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
+import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
+import { useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
+import { getAppliedTheme } from "../../core/preferences/utils";
 import { useConnectedUser } from "../../core/user";
 import { Loader } from "../Loader";
 import LocalSwitcher from "../LocalSwitcher";
@@ -24,6 +26,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const [user] = useConnectedUser();
+  const { theme } = usePreferences();
   const {
     recentFiles,
     status: { type: fileStateType },
@@ -44,7 +47,11 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     <Modal
       title={
         <>
-          <GephiLogo className="me-2 gl-icon-size-heading" />
+          {getAppliedTheme(theme) === "light" ? (
+            <GephiLiteLogo className="me-2 gl-icon-size-heading" />
+          ) : (
+            <GephiLiteReversedLogo className="me-2 gl-icon-size-heading" />
+          )}
           {t("welcome.title")}
           <span className="flex-grow-1" />
           <span className="me-1 d-none d-sm-inline" style={{ marginTop: "-0.1em" }}>
