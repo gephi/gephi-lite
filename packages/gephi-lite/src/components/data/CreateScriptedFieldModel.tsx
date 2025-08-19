@@ -134,9 +134,16 @@ export const useCreateScriptedFieldModelForm = ({
       Object.freeze(graph);
 
       const values: Record<string, Scalar> = {};
-      (type === "nodes" ? graph.nodes() : graph.edges()).forEach((id, index) => {
-        values[id] = script(id, graph.getEdgeAttributes(id), index, graph);
-      });
+      if (type === "nodes") {
+        graph.nodes().forEach((id, index) => {
+          values[id] = script(id, graph.getNodeAttributes(id), index, graph);
+        });
+      } else {
+        graph.edges().forEach((id, index) => {
+          values[id] = script(id, graph.getEdgeAttributes(id), index, graph);
+        });
+      }
+
       const valuesArray = Object.values(values);
 
       const fieldModel: FieldModel = {
