@@ -87,7 +87,7 @@ const GraphTitleEditable: FC<{ title?: string; save: (title?: string) => void }>
   return (
     <div className="graph-title d-flex" style={{ alignItems: "baseline" }}>
       {mode === "read" ? (
-        <span className="flex-grow-1 gl-px-2 "> {title}</span>
+        <span className="flex-grow-1 gl-px-2 gl-text-wrap-anywhere"> {title}</span>
       ) : (
         <TetherComponent
           ref={setTether}
@@ -96,7 +96,7 @@ const GraphTitleEditable: FC<{ title?: string; save: (title?: string) => void }>
           id="graph-title-edition"
           constraints={[{ to: "scrollParent", attachment: "together", pin: true }]}
           renderTarget={(ref) => (
-            <span ref={ref} className="flex-grow-1 gl-px-2 ">
+            <span ref={ref} className="flex-grow-1 gl-px-2 gl-text-wrap-anywhere">
               {title}
             </span>
           )}
@@ -129,7 +129,8 @@ const GraphTitleEditable: FC<{ title?: string; save: (title?: string) => void }>
               >
                 <textarea
                   ref={setTextareaRef}
-                  className="form-control"
+                  className="form-control lh-1"
+                  style={{ paddingTop: "9px" }}
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                 />

@@ -193,3 +193,7 @@
 .gl-shadow-high{
   box-shadow: 0px 4px 8px 0px  rgba(var(--gl-overlay-high-shadow-rgb), $gl-sys-opacity-shadow-high) 
 }
+
+.gl-text-wrap-anywhere {
+  overflow-wrap: anywhere;
+}
