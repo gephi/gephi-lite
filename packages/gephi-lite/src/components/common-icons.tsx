@@ -56,6 +56,7 @@ import {
   PiPencilSimpleLineFill,
   PiPlay,
   PiPlayFill,
+  PiPlusBold,
   PiPlusCircle,
   PiPlusCircleFill,
   PiPolygon,
@@ -65,7 +66,6 @@ import {
   PiSelectionBold,
   PiSpinner,
   PiStackMinus,
-  PiStackPlus,
   PiStop,
   PiStopFill,
   PiSun,
@@ -108,7 +108,7 @@ export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const ExternalLinkIcon = PiArrowSquareOut;
-export const FilterAddIcon = PiStackPlus;
+export const FilterAddIcon = PiPlusBold;
 export const FilterDeleteIcon = PiStackMinus;
 export const FilterDeleteInactiveIcon = PiMinusCircle;
 export const FilterOpenFutureIcon = PiArrowBendDownRight;

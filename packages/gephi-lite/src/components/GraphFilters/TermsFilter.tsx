@@ -13,6 +13,7 @@ import {
 } from "../../core/graph/dynamicAttributes";
 import { getFieldValue } from "../../core/graph/fieldModel";
 import { Select } from "../forms/Select";
+import { FilterHeading } from "./FilterHeading";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
@@ -42,7 +43,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
   }, [filter, parentGraph, nodeData, edgeData]);
 
   return (
-    <div className="my-3 w-100">
+    <div className="w-100 filter-settings">
       <Select
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
         onChange={(options) => {
@@ -55,7 +56,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           value: term,
         }))}
       />
-      <div>
+      <div className="form-check">
         <input
           className="form-check-input me-2"
           type="checkbox"
@@ -65,7 +66,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
             replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
           }}
         />
-        <label className="from-check-label small" htmlFor="keepMissingValues">
+        <label className="from-check-label small text-wrap w-auto" htmlFor="keepMissingValues">
           {t("filters.keepMissingValues")}
         </label>
       </div>
@@ -85,12 +86,18 @@ export const TermsFilter: FC<{
 
   return (
     <>
-      <div className="gl-heading-3">
-        {staticDynamicAttributeLabel(filter.field)} ({t(`graph.model.${filter.itemType}`)})
-      </div>
+      <FilterHeading
+        label={`${staticDynamicAttributeLabel(filter.field)} (${t(`graph.model.${filter.itemType}`)})`}
+        active={active}
+        filterIndex={filterIndex}
+      />
 
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}
-      {!editMode && <div>{filter.terms ? listFormatter.format(filter.terms) : t("common.all")}</div>}
+      {!editMode && (
+        <div className="filter-settings-summary">
+          {filter.terms ? listFormatter.format(filter.terms) : t("common.all")}
+        </div>
+      )}
       {editMode && <TermsFilterEditor filter={filter} />}
     </>
   );

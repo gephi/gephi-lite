@@ -21,6 +21,7 @@ import {
   serializeModelValueToScalar,
 } from "../../core/graph/fieldModel";
 import { EditItemAttribute } from "../data/Attribute";
+import { FilterHeading } from "./FilterHeading";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { findRanges, shortenNumber } from "./utils";
 
@@ -110,7 +111,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
     : {};
 
   return rangeMetric ? (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()} className="filter-settings">
       {rangeMetric.max !== rangeMetric.min ? (
         <ul className="list-unstyled range-filter">
           {(rangeMetric.ranges || []).map((range) => {
@@ -286,11 +287,14 @@ export const RangeFilter: FC<{
 
   return (
     <>
-      <div className="gl-heading-3">
-        {staticDynamicAttributeLabel(filter.field)} ({t(`graph.model.${filter.itemType}`)})
-      </div>
+      <FilterHeading
+        label={`${staticDynamicAttributeLabel(filter.field)} (${t(`graph.model.${filter.itemType}`)})`}
+        active={active}
+        filterIndex={filterIndex}
+      />
+
       {!editMode && (
-        <div>
+        <div className="filter-settings-summary">
           {t(
             `filters.range.${sumupKey}`,
             mapValues(filter, (n: number) => n.toLocaleString(locale)),

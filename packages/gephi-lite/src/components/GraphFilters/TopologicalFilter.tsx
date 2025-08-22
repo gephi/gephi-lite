@@ -5,6 +5,7 @@ import { buildTopologicalFiltersDefinitions } from "../../core/filters/topologic
 import { FilterParameter, TopologicalFilterDefinition, TopologicalFilterType } from "../../core/filters/types";
 import { GraphSearch } from "../GraphSearch";
 import { EnumInput, NumberInput } from "../forms/TypedInputs";
+import { FilterHeading } from "./FilterHeading";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 export function TopologicalFilterEditor<ParametersType extends FilterParameter[]>({
@@ -18,7 +19,7 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
   const { parameters } = filter;
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()} className="filter-settings">
       <div className="d-flex flex-column">
         {filterDefinition.parameters
           .filter((p) => !p.hidden)
@@ -97,8 +98,8 @@ export const TopologicalFilter: FC<{
 
   return filterDefinition ? (
     <>
-      <div className="gl-heading-3">{filterDefinition.label}</div>
-      {!editMode && <div>{filterDefinition.summary(filter.parameters)}</div>}
+      <FilterHeading label={filterDefinition.label} active={active} filterIndex={filterIndex} />
+      {!editMode && <div className="filter-settings-summary">{filterDefinition.summary(filter.parameters)}</div>}
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}
       {editMode && <TopologicalFilterEditor filter={filter} filterDefinition={filterDefinition} />}
     </>

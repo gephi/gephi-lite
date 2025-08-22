@@ -1,12 +1,10 @@
-import cx from "classnames";
+import { default as classNames, default as cx } from "classnames";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsArrowDown } from "react-icons/bs";
-import { PiScissors } from "react-icons/pi";
 
 import { useFilters, useFiltersActions, useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
-import { FilterDeleteIcon, FilterDeleteInactiveIcon, FilterOpenFutureIcon } from "../common-icons";
+import { TrashIcon } from "../common-icons";
 import { FilterCreator } from "./FilterCreator";
 import { RangeFilter } from "./RangeFilter";
 import { ScriptFilter } from "./ScriptFilter";
@@ -19,8 +17,7 @@ const FilterInStack: FC<{
   filterIndex: number;
 }> = ({ filter, filterIndex, active }) => {
   const filters = useFilters();
-  const { openPastFilter, deleteFutureFilter, deletePastFilter, openFutureFilter, closeAllPastFilters } =
-    useFiltersActions();
+  const { deleteFutureFilter, deletePastFilter } = useFiltersActions();
   const { t } = useTranslation();
 
   const editMode = !!active && filterIndex === filters.past.length - 1;
@@ -31,8 +28,17 @@ const FilterInStack: FC<{
   useEffect(() => setInternalEditMode(editMode), [editMode]);
 
   return (
-    <div className={cx("filter-item d-flex flex-column", active ? "active" : "inactive", editMode && "edited")}>
+    <div
+      className={cx(
+        "filter-item d-flex flex-column",
+        active ? "active" : "inactive",
+        editMode && "edited",
+        !active && filterIndex === filters.future.length - 1 && "last-step",
+      )}
+    >
+      <div className="filter-separator" />
       <div className="d-flex flex-column gl-gap-1 w-100 gl-px-3">
+        <div className="filter-chain" />
         {filter.type === "range" && (
           <RangeFilter
             filter={filter}
@@ -67,7 +73,7 @@ const FilterInStack: FC<{
         )}
       </div>
 
-      <section className="gl-px-2 d-flex flex-row justify-content-between">
+      <section className="filter-footer gl-px-2 d-flex flex-row justify-content-center">
         <button
           className="gl-btn"
           onClick={(e) => {
@@ -77,37 +83,9 @@ const FilterInStack: FC<{
           }}
           title={t("common.remove").toString()}
         >
-          {active ? <FilterDeleteIcon /> : <FilterDeleteInactiveIcon />} {t("common.remove").toString()}
+          <TrashIcon /> {t("common.remove").toString()}
         </button>
-
-        {!editMode && !active && (
-          <button
-            className="gl-btn gl-btn-icon"
-            onClick={() => {
-              openFutureFilter(filterIndex);
-            }}
-          >
-            <FilterOpenFutureIcon />
-          </button>
-        )}
       </section>
-
-      {active && (
-        <div className="filter-arrow-container">
-          <span className="filter-arrow">
-            <BsArrowDown />
-          </span>
-          <button
-            className="gl-btn d-inline-flex gl-btn-icon"
-            onClick={() => {
-              if (filterIndex >= 1) openPastFilter(filterIndex - 1);
-              else closeAllPastFilters();
-            }}
-          >
-            <PiScissors />
-          </button>
-        </div>
-      )}
     </div>
   );
 };
@@ -128,12 +106,30 @@ const GraphFilters: FC = () => {
 
   const { t } = useTranslation();
   const { fullGraph } = useGraphDataset();
+  const { closeAllPastFilters } = useFiltersActions();
 
   return (
     <div className="panel-body px-0 pb-0">
       <div className="panel-block flex-grow-1 gap-0">
-        <div className={cx("filter-item d-flex flex-column w-100", filters.past.length === 0 && "edited")}>
-          <h2 className="gl-px-3">{t("filters.full_graph")}</h2>
+        <div className={cx("filter-item d-flex flex-column w-100 gl-px-3", filters.past.length === 0 && "edited")}>
+          <div className="filter-chain first-step" />
+          <h2 className="position-relative">
+            <button type="button" className="gl-btn" disabled={filters.past.length === 0} onClick={closeAllPastFilters}>
+              {/* {disabled ? (
+                        <PiCircleFill
+                          className={classNames("filter-chain-point", active ? "gl-container-highest-bg" : "gl-container-high-bg")}
+                        />
+                      ) : (
+                        <PiCircleBold className="filter-chain-point" />
+                      )} */}
+              {filters.past.length === 0 ? (
+                <div className="filter-chain-point current" />
+              ) : (
+                <div className={classNames("filter-chain-point")} />
+              )}
+              {t("filters.full_graph")}
+            </button>
+          </h2>
           <div className="gl-px-3">
             {fullGraph.order.toLocaleString(locale)} {t("graph.model.nodes", { count: fullGraph.order })},{" "}
             {fullGraph.size.toLocaleString(locale)} {t("graph.model.edges", { count: fullGraph.size })}
@@ -146,7 +142,7 @@ const GraphFilters: FC = () => {
 
         <FiltersStack filters={filters.future} />
 
-        {(filters.past.length > 0 || filters.future.length > 0) && (
+        {filters.past.length > 0 && filters.future.length > 0 && (
           <div className="flex-grow-1 gl-container-high-bg"></div>
         )}
       </div>

@@ -1,8 +1,27 @@
 .filter-item {
   position: relative;
 
+  h2 {
+    .gl-btn {
+      justify-content: start;
+      width: 100%;
+      border: none !important;
+      padding: 0 !important;
+      padding-left: 1.5rem !important;
+      @extend .gl-heading-2;
+      .filter-chain-point {
+        top: 4px;
+      }
+      &:disabled {
+        color: var(--gl-container-color);
+        border: none !important;
+      }
+    }
+  }
+
+  padding-bottom: 0 !important;
   @extend .gl-py-4;
-  @extend .gl-gap-2;
+  //@extend .gl-gap-2;
   &.inactive {
     @extend .gl-text-muted;
     @extend .gl-py-3;
@@ -28,9 +47,9 @@
     }
   }
 
-  &:not(:first-child) {
-    border-top: 1px solid var(--gl-container-border-color);
-  }
+  // &:not(:first-child) {
+  //   border-top: 1px solid var(--gl-container-border-color);
+  // }
 
   &:first-child {
     padding-top: 0;
@@ -55,6 +74,88 @@
     .gl-btn {
       transform: scaleX(-1);
     }
+  }
+  .filter-chain {
+    height: 100%;
+    // &.last-step {
+    //   height: 50%;
+    // }
+    position: absolute;
+    left: calc(1rem / 2 + $gl-spacers-3 - 2px);
+    top: 0;
+    &.first-step {
+      top: calc(1rem + 4px);
+    }
+    width: 1px;
+    z-index: 0;
+    border-right: 2px solid var(--gl-container-border-color);
+    box-sizing: content-box;
+  }
+
+  .filter-creator {
+    //margin-bottom: $gl-spacers-4;
+    width: 100%;
+    justify-content: start;
+    align-content: center;
+    z-index: 1;
+    .filter-chain-point {
+      //top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      span {
+        line-height: 1.5 !important;
+      }
+    }
+  }
+  // &.inactive.last-step {
+  //   .filter-chain {
+  //     height: calc($gl-spacers-4 / 2) !important;
+  //   }
+  // }
+  .filter-chain-point {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    padding: 0;
+    border: 2px solid var(--gl-container-color);
+    width: 1rem;
+    height: 1rem;
+    border-radius: 100%;
+    &.current {
+      background-color: var(--gl-container-color);
+      border: 2px solid var(--gl-container-color);
+    }
+  }
+  .filter-title {
+    position: relative;
+    z-index: 1;
+    .gl-btn {
+      @extend .gl-heading-3;
+      text-align: start;
+      width: auto !important;
+      padding: 0 !important;
+      &:disabled {
+        color: var(--gl-container-color);
+        border: none !important;
+      }
+    }
+  }
+  .filter-title > .gl-btn,
+  .filter-graph-summary,
+  .filter-settings-summary,
+  .filter-creator {
+    padding-left: 1.5rem !important;
+  }
+
+  .filter-settings {
+    background-color: var(--gl-container-highest-bg);
+    z-index: 1;
+  }
+
+  .filter-footer {
+    margin-left: 1.5rem;
+    border-bottom: 1px solid var(--gl-container-border-color);
   }
 }
 

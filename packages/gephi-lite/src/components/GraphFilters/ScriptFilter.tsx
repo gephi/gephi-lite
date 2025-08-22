@@ -12,6 +12,7 @@ import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
 import { CodeEditorIcon } from "../common-icons";
 import { FunctionEditorModal } from "../modals/FunctionEditor";
+import { FilterHeading } from "./FilterHeading";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const nodeFilterCustomFn = `function nodeFilter(id, attributes, graph) {
@@ -46,9 +47,12 @@ export const ScriptFilter: FC<{
 
   return (
     <div className="w-100">
-      <div className="gl-heading-3">
-        {t("filters.script")} ({t(`graph.model.${filter.itemType}`)})
-      </div>
+      <FilterHeading
+        label={`${t("filters.script")} (${t(`graph.model.${filter.itemType}`)})`}
+        active={active}
+        filterIndex={filterIndex}
+      />
+      <div className="gl-heading-3"></div>
       {active && <FilteredGraphSummary filterIndex={filterIndex} />}
       <div className="position-relative">
         {filter.script && (

@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { capitalize } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -131,10 +132,16 @@ export const FilterCreator: FC = () => {
 
   if (!isOpened) {
     return (
-      <div className="filter-item filter-creator gl-px-3 d-flex justify-content-center">
-        <button type="button" className="gl-btn gl-btn-outline w-100" onClick={() => setIsOpened(true)}>
-          <FilterAddIcon /> {t("filters.add_filter")}
-        </button>
+      <div className="filter-item">
+        <div className=" gl-px-3">
+          <button type="button" className="filter-creator gl-btn position-relative" onClick={() => setIsOpened(true)}>
+            <div className="filter-chain-point">
+              <FilterAddIcon />
+            </div>{" "}
+            {t("filters.add_filter")}
+          </button>
+        </div>
+        <div className={classNames("filter-chain", filters.future.length === 0 && "last-step")} />
       </div>
     );
   }
@@ -149,7 +156,7 @@ export const FilterCreator: FC = () => {
           setFilterCreation(null);
         }
       }}
-      className="d-flex align-items-center filter-item filter-creator gl-px-3"
+      className="d-flex align-items-center filter-item gl-px-3"
     >
       <div className="d-flex flex-column gl-gap-2 w-100">
         <div className="d-flex flex-column gl-gap-1">
