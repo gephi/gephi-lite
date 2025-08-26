@@ -42,6 +42,7 @@ $table-editable-columns-cell-hover-bg: color-mix(
         display: flex;
         font-weight: $font-weight-base;
         position: relative;
+        color: var(--gl-body-color);
 
         border-width: 0;
         border-right-width: var(--bs-border-width);

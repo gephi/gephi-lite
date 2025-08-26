@@ -101,3 +101,10 @@ blockquote {
     var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
   );
 }
+
+a:not(.gl-btn) {
+  color: var(--gl-body-color) !important;
+  &:hover {
+    color: rgba(var(--gl-body-color-rgb), 0.9) !important;
+  }
+}

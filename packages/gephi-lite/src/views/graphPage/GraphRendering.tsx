@@ -65,7 +65,7 @@ const InteractionsController: FC = () => {
   const { isFullScreen, toggle } = useFullScreen();
   const sigma = useSigmaAtom();
 
-  const btnClassName = "gl-btn gl-btn-icon gl-btn-outline bg-white";
+  const btnClassName = "gl-btn gl-btn-icon gl-btn-outline bg-body";
   const zoomOptions = { duration: 200, factor: 1.5 };
 
   return (
@@ -73,7 +73,7 @@ const InteractionsController: FC = () => {
       {GRAPH_SELECTION_MODES.map((mode) => (
         <button
           key={mode}
-          className={cx("gl-btn gl-btn-icon", mode === graphSelectionMode ? "gl-btn-fill" : "gl-btn-outline bg-white")}
+          className={cx("gl-btn gl-btn-icon", mode === graphSelectionMode ? "gl-btn-fill" : "gl-btn-outline bg-body")}
           onClick={() => setMode(mode)}
           title={t(`selection.${mode}`)}
         >
