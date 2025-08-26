@@ -1,19 +1,14 @@
-import { useReadAtom } from "@ouestware/atoms";
 import cx from "classnames";
-import { compact, flatMap, isNil, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
+import { flatMap, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
 import Slider, { SliderProps } from "rc-slider";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset, usePreferences } from "../../core/context/dataContexts";
+import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
-import { parentFilteredGraphAtom } from "../../core/graph";
-import {
-  computeAllDynamicAttributes,
-  mergeStaticDynamicData,
-  staticDynamicAttributeLabel,
-} from "../../core/graph/dynamicAttributes";
+import { useFilteredGraphAt } from "../../core/graph";
+import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import {
   castScalarToQuantifiableValue,
   getFieldValueForQuantification,
@@ -21,7 +16,6 @@ import {
   serializeModelValueToScalar,
 } from "../../core/graph/fieldModel";
 import { EditItemAttribute } from "../data/Attribute";
-import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { findRanges, shortenNumber } from "./utils";
 
 interface RangeValue {
@@ -46,20 +40,20 @@ const RANGE_STYLE = {
   trackStyle: [{ backgroundColor: "black" }, { backgroundColor: "black" }],
 };
 
-export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) => {
-  const parentGraph = useReadAtom(parentFilteredGraphAtom);
+export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> = ({ filter, filterIndex }) => {
+  const parentGraph = useFilteredGraphAt(filterIndex - 1);
 
   const { nodeData, edgeData } = useGraphDataset();
 
   const { t } = useTranslation();
-  const { replaceCurrentFilter } = useFiltersActions();
+  const { updateFilter } = useFiltersActions();
 
   const [rangeMetric, setRangeMetric] = useState<RangeMetric>();
 
   useEffect(() => {
     const itemData = mergeStaticDynamicData(
       filter.itemType === "nodes" ? nodeData : edgeData,
-      // dynamic field should be calculated from parentraph and not from the useDynamicItemData which provide data in the current graph
+      // dynamic field should be calculated from parent graph and not from the useDynamicItemData which provide data in the current graph
       filter.itemType === "nodes"
         ? computeAllDynamicAttributes("nodes", parentGraph)
         : computeAllDynamicAttributes("edges", parentGraph),
@@ -159,7 +153,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
           if (Array.isArray(value)) {
             const [minSelected, maxSelected] = value;
             // max is shifted - step as slider exclude upper bound
-            replaceCurrentFilter({
+            updateFilter(filterIndex, {
               ...filter,
               min: minSelected,
               max: maxSelected - rangeMetric.step,
@@ -188,7 +182,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
               placeholder={"" + rangeMetric?.min}
               onChange={(e) => {
                 const newMin = +e.target.value;
-                replaceCurrentFilter({ ...filter, min: newMin });
+                updateFilter(filterIndex, { ...filter, min: newMin });
               }}
             />
           ) : (
@@ -202,7 +196,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
               )}
               onChange={(scalar) => {
                 const value = castScalarToQuantifiableValue(scalar, filter.field);
-                replaceCurrentFilter({ ...filter, min: isNumber(value) ? value : undefined });
+                updateFilter(filterIndex, { ...filter, min: isNumber(value) ? value : undefined });
               }}
             />
           )}
@@ -229,7 +223,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
               value={filter.max || ""}
               onChange={(e) => {
                 const newMax = +e.target.value;
-                replaceCurrentFilter({ ...filter, max: newMax });
+                updateFilter(filterIndex, { ...filter, max: newMax });
               }}
             />
           ) : (
@@ -242,7 +236,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
               )}
               onChange={(scalar) => {
                 const value = castScalarToQuantifiableValue(scalar, filter.field);
-                replaceCurrentFilter({ ...filter, max: isNumber(value) ? value : undefined });
+                updateFilter(filterIndex, { ...filter, max: isNumber(value) ? value : undefined });
               }}
             />
           )}
@@ -260,7 +254,7 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
           id="keepMissingValues"
           checked={filter.keepMissingValues}
           onChange={(e) => {
-            replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
+            updateFilter(filterIndex, { ...filter, keepMissingValues: e.target.checked });
           }}
         />
         <label className="from-check-label small" htmlFor="keepMissingValues">
@@ -269,36 +263,4 @@ export const RangeFilterEditor: FC<{ filter: RangeFilterType }> = ({ filter }) =
       </div>
     </form>
   ) : null;
-};
-
-export const RangeFilter: FC<{
-  filter: RangeFilterType;
-  filterIndex: number;
-  active?: boolean;
-  editMode?: boolean;
-}> = ({ filter, editMode, filterIndex, active }) => {
-  const { locale } = usePreferences();
-  const { t } = useTranslation();
-  const sumupKey = useMemo(
-    () => compact([!isNil(filter.min) && "from", !isNil(filter.max) && "to"]).join("_"),
-    [filter.max, filter.min],
-  );
-
-  return (
-    <>
-      <div className="gl-heading-3">
-        {staticDynamicAttributeLabel(filter.field)} ({t(`graph.model.${filter.itemType}`)})
-      </div>
-      {!editMode && (
-        <div>
-          {t(
-            `filters.range.${sumupKey}`,
-            mapValues(filter, (n: number) => n.toLocaleString(locale)),
-          )}
-        </div>
-      )}
-      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
-      {editMode && <RangeFilterEditor filter={filter} />}
-    </>
-  );
 };

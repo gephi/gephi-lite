@@ -1,26 +1,20 @@
-import { useReadAtom } from "@ouestware/atoms";
 import { countBy, flatMap, identity, sortBy, toPairs } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
-import { parentFilteredGraphAtom } from "../../core/graph";
-import {
-  computeAllDynamicAttributes,
-  mergeStaticDynamicData,
-  staticDynamicAttributeLabel,
-} from "../../core/graph/dynamicAttributes";
+import { useFilteredGraphAt } from "../../core/graph";
+import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { getFieldValue } from "../../core/graph/fieldModel";
 import { Select } from "../forms/Select";
-import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
-const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
-  const parentGraph = useReadAtom(parentFilteredGraphAtom);
+export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> = ({ filter, filterIndex }) => {
+  const parentGraph = useFilteredGraphAt(filterIndex - 1);
   const { nodeData, edgeData } = useGraphDataset();
 
   const { t } = useTranslation();
-  const { replaceCurrentFilter } = useFiltersActions();
+  const { updateFilter } = useFiltersActions();
   const [dataTerms, setDataTerms] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -32,22 +26,22 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
         : computeAllDynamicAttributes("edges", parentGraph),
     );
     const terms = countBy(
-      flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
-        const v = getFieldValue(itemData[itemId], filter.field);
-        return v;
-      }).filter((v) => typeof v === "string"),
+      flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) =>
+        getFieldValue(itemData[itemId], filter.field),
+      ).filter((v) => typeof v === "string"),
       identity,
     );
     setDataTerms(terms);
   }, [filter, parentGraph, nodeData, edgeData]);
 
   return (
-    <div className="my-3 w-100">
+    <div className="w-100">
       <Select
+        autoFocus
         value={filter.terms ? Array.from(filter.terms).map((t) => ({ label: t, value: t })) : []}
         onChange={(options) => {
           const selectedValues = new Set(options.map((o) => o.value));
-          replaceCurrentFilter({ ...filter, terms: selectedValues.size > 0 ? selectedValues : undefined });
+          updateFilter(filterIndex, { ...filter, terms: selectedValues.size > 0 ? selectedValues : undefined });
         }}
         isMulti
         options={sortBy(toPairs(dataTerms), ([_term, nbOcc]) => -1 * nbOcc).map(([term, nbOcc]) => ({
@@ -62,7 +56,7 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
           id="keepMissingValues"
           checked={!!filter.keepMissingValues}
           onChange={(e) => {
-            replaceCurrentFilter({ ...filter, keepMissingValues: e.target.checked });
+            updateFilter(filterIndex, { ...filter, keepMissingValues: e.target.checked });
           }}
         />
         <label className="from-check-label small" htmlFor="keepMissingValues">
@@ -70,28 +64,5 @@ const TermsFilterEditor: FC<{ filter: TermsFilterType }> = ({ filter }) => {
         </label>
       </div>
     </div>
-  );
-};
-
-export const TermsFilter: FC<{
-  filter: TermsFilterType;
-  filterIndex: number;
-  active?: boolean;
-  editMode?: boolean;
-}> = ({ filter, editMode, filterIndex, active }) => {
-  const { t, i18n } = useTranslation();
-
-  const listFormatter = new Intl.ListFormat(i18n.language, { style: "long", type: "conjunction" });
-
-  return (
-    <>
-      <div className="gl-heading-3">
-        {staticDynamicAttributeLabel(filter.field)} ({t(`graph.model.${filter.itemType}`)})
-      </div>
-
-      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
-      {!editMode && <div>{filter.terms ? listFormatter.format(filter.terms) : t("common.all")}</div>}
-      {editMode && <TermsFilterEditor filter={filter} />}
-    </>
   );
 };

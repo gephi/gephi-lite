@@ -4,6 +4,7 @@ export interface BaseFilter {
   type: string;
   itemType: ItemType;
   field: FieldModel;
+  disabled?: boolean;
 }
 
 export type RangeFilterType = BaseFilter & {
@@ -38,6 +39,5 @@ export interface FilteredGraph {
 }
 
 export interface FiltersState {
-  past: FilterType[];
-  future: FilterType[];
+  filters: FilterType[];
 }

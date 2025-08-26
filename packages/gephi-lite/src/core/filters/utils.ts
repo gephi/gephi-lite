@@ -131,16 +131,22 @@ export function applyFilters(
   topologicalFiltersDefinitions: TopologicalFilterDefinition[],
 ): FilteredGraph[] {
   const steps: FilteredGraph[] = [];
+
   filters.reduce((graph, filter, i) => {
     const filterFingerprint = getFilterFingerprint(filter);
-    const cacheStep = cache[i];
-    let subgraph: DatalessGraph;
 
-    if (cacheStep?.filterFingerprint === filterFingerprint) {
-      subgraph = cacheStep.graph;
+    let subgraph: DatalessGraph;
+    if (!filter.disabled) {
+      const cacheStep = cache[i];
+
+      if (cacheStep?.filterFingerprint === filterFingerprint) {
+        subgraph = cacheStep.graph;
+      } else {
+        cache = [];
+        subgraph = filterGraph(graph, dataset, filter, topologicalFiltersDefinitions);
+      }
     } else {
-      cache = [];
-      subgraph = filterGraph(graph, dataset, filter, topologicalFiltersDefinitions);
+      subgraph = graph.copy();
     }
 
     steps.push({ filterFingerprint, graph: subgraph });

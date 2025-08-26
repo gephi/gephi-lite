@@ -1,4 +1,3 @@
-import { useReadAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { isBoolean } from "lodash";
 import { FC } from "react";
@@ -7,12 +6,11 @@ import { useTranslation } from "react-i18next";
 
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
-import { graphDatasetAtom, parentFilteredGraphAtom } from "../../core/graph";
+import { graphDatasetAtom, useFilteredGraphAt } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
 import { CodeEditorIcon } from "../common-icons";
 import { FunctionEditorModal } from "../modals/FunctionEditor";
-import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 const nodeFilterCustomFn = `function nodeFilter(id, attributes, graph) {
   // Your code goes here
@@ -36,20 +34,14 @@ const SCRIPT_JS_DOC = `/**
 export const ScriptFilter: FC<{
   filter: ScriptFilterType;
   filterIndex: number;
-  active?: boolean;
-  editMode?: boolean;
-}> = ({ filter, editMode, active, filterIndex }) => {
+}> = ({ filter, filterIndex }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
-  const { replaceCurrentFilter } = useFiltersActions();
-  const parentGraph = useReadAtom(parentFilteredGraphAtom);
+  const { updateFilter } = useFiltersActions();
+  const parentGraph = useFilteredGraphAt(filterIndex - 1);
 
   return (
     <div className="w-100">
-      <div className="gl-heading-3">
-        {t("filters.script")} ({t(`graph.model.${filter.itemType}`)})
-      </div>
-      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
       <div className="position-relative">
         {filter.script && (
           <>
@@ -60,52 +52,50 @@ export const ScriptFilter: FC<{
           </>
         )}
 
-        {editMode && (
-          <div className={cx(filter.script && "bottom-0 top-0 position-absolute w-100 h-100")}>
-            <button
-              className="gl-btn gl-btn-outline  gl-container-highest-bg mx-auto d-block m-3"
-              title={t("common.open_code_editor").toString()}
-              onClick={() => {
-                openModal({
-                  component: FunctionEditorModal<NonNullable<ScriptFilterType["script"]>>,
-                  arguments: {
-                    title: "Custom filter",
-                    functionJsDoc: SCRIPT_JS_DOC,
-                    initialFunctionCode:
-                      filter.script?.toString() ??
-                      (filter.itemType === "nodes" ? nodeFilterCustomFn : edgeFilterCustomFn),
-                    checkFunction: (fn) => {
-                      if (!fn) throw new Error("Function is not defined");
-                      // Check/test the function
-                      let id = null;
-                      let attributs = null;
-                      const graphDataset = graphDatasetAtom.get();
+        <div className={cx(filter.script && "bottom-0 top-0 position-absolute w-100 h-100")}>
+          <button
+            className="gl-btn gl-btn-outline  gl-container-highest-bg mx-auto d-block m-3"
+            title={t("common.open_code_editor").toString()}
+            onClick={() => {
+              openModal({
+                component: FunctionEditorModal<NonNullable<ScriptFilterType["script"]>>,
+                arguments: {
+                  title: "Custom filter",
+                  functionJsDoc: SCRIPT_JS_DOC,
+                  initialFunctionCode:
+                    filter.script?.toString() ??
+                    (filter.itemType === "nodes" ? nodeFilterCustomFn : edgeFilterCustomFn),
+                  checkFunction: (fn) => {
+                    if (!fn) throw new Error("Function is not defined");
+                    // Check/test the function
+                    let id = null;
+                    let attributs = null;
+                    const graphDataset = graphDatasetAtom.get();
 
-                      const graphGraph = dataGraphToFullGraph(graphDataset, parentGraph);
+                    const graphGraph = dataGraphToFullGraph(graphDataset, parentGraph);
 
-                      if (filter.itemType === "nodes" && parentGraph.order > 0) {
-                        id = parentGraph.nodes()[0];
-                        attributs = graphGraph.getNodeAttributes(id);
-                      }
-                      if (filter.itemType === "edges" && parentGraph.size > 0) {
-                        id = parentGraph.edges()[0];
-                        attributs = graphGraph.getEdgeAttributes(id);
-                      }
+                    if (filter.itemType === "nodes" && parentGraph.order > 0) {
+                      id = parentGraph.nodes()[0];
+                      attributs = graphGraph.getNodeAttributes(id);
+                    }
+                    if (filter.itemType === "edges" && parentGraph.size > 0) {
+                      id = parentGraph.edges()[0];
+                      attributs = graphGraph.getEdgeAttributes(id);
+                    }
 
-                      const result = fn(id ?? "0", attributs ?? {}, graphGraph);
-                      if (!isBoolean(result)) throw new Error("Function must returned a boolean");
-                    },
+                    const result = fn(id ?? "0", attributs ?? {}, graphGraph);
+                    if (!isBoolean(result)) throw new Error("Function must returned a boolean");
                   },
-                  beforeSubmit: ({ fn }) => {
-                    replaceCurrentFilter({ ...filter, script: fn });
-                  },
-                });
-              }}
-            >
-              <CodeEditorIcon className="me-1" /> {t("common.open_code_editor")}
-            </button>
-          </div>
-        )}
+                },
+                beforeSubmit: ({ fn }) => {
+                  updateFilter(filterIndex, { ...filter, script: fn });
+                },
+              });
+            }}
+          >
+            <CodeEditorIcon className="me-1" /> {t("common.open_code_editor")}
+          </button>
+        </div>
       </div>
     </div>
   );

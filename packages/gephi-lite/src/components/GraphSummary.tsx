@@ -12,7 +12,7 @@ import {
   useGraphDatasetActions,
   usePreferences,
 } from "../core/context/dataContexts";
-import { EditIcon, EditIconFill, FiltersIcon, FiltersIconFill } from "./common-icons";
+import { EditIcon, EditIconFill, FiltersIconFill } from "./common-icons";
 
 const GraphStat: FC<{ className?: string; type: ItemType; current: number; total: number }> = ({
   className,
@@ -161,15 +161,7 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
   const { setGraphMeta } = useGraphDatasetActions();
   const { metadata, fullGraph } = useGraphDataset();
 
-  const hasFilters = useMemo(
-    () => filterState.future.length + filterState.past.length,
-    [filterState.future, filterState.past],
-  );
-
-  const FiltersIco = useMemo(
-    () => (filterState.past.length === 0 && filterState.future.length > 0 ? FiltersIcon : FiltersIconFill),
-    [filterState.future, filterState.past],
-  );
+  const hasFilters = useMemo(() => !!filterState.filters.length, [filterState.filters]);
 
   const saveTitle = useCallback(
     (title: string) => {
@@ -188,7 +180,7 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
         </div>
         <span>{t(`graph.model.${metadata.type || "mixed"}_graph`)}</span>
 
-        {hasFilters > 0 && <FiltersIco style={{ left: "calc(100% - 1.5em)", top: 0, position: "absolute" }} />}
+        {hasFilters && <FiltersIconFill style={{ left: "calc(100% - 1.5em)", top: 0, position: "absolute" }} />}
       </div>
     </div>
   );
