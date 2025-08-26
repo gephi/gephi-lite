@@ -1,60 +1,52 @@
 .filter-item {
   position: relative;
+  @extend .gl-py-3;
 
-  @extend .gl-py-4;
-  @extend .gl-gap-2;
-  &.inactive {
+  border-top: 1px solid var(--gl-container-border-color);
+
+  &.disabled {
     @extend .gl-text-muted;
     @extend .gl-py-3;
     background-color: var(--gl-container-high-bg);
   }
 
-  &.filter-creator {
+
+  .filter-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    @extend .gl-gap-2;
+    @extend .gl-px-3;
     @extend .gl-py-3;
   }
 
-  &.edited {
-    padding-bottom: $gl-spacers-3;
+  .filter-buttons {
+    @extend .gl-px-2;
   }
+}
 
-  .button-container {
-    // we center buttons vertically on two lines of fs-5 text (filter title)
-    height: calc(var(--bs-body-line-height) * #{$h5-font-size} * 2);
-    margin: 0 0.5rem;
-    display: flex;
-    align-items: center;
-    .btn-icon {
-      padding: 0;
-    }
-  }
+.filter-graph {
+  @extend .gl-px-2;
+  @extend .gl-py-3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--gl-container-border-color);
+}
 
-  &:not(:first-child) {
-    border-top: 1px solid var(--gl-container-border-color);
-  }
+.filter-arrow-container {
+  @extend .gl-text-muted;
+  @extend .gl-px-3;
+  @extend .gl-my-4;
+  @extend .gl-gap-2;
 
-  &:first-child {
-    padding-top: 0;
-    margin-top: 0;
-  }
-
-  .filter-arrow-container {
-    @extend .gl-text-muted;
-    position: absolute;
-    left: 1rem;
-    top: 0;
-    transform: translate(0, -50%);
-
-    .filter-arrow {
-      background: var(--gl-container-highest-bg);
-      font-size: 1.125rem;
-      height: 1.125rem;
-      line-height: 1rem;
-      text-align: center;
-    }
-
-    .gl-btn {
-      transform: scaleX(-1);
-    }
+  .filter-arrow {
+    position: relative;
+    background: var(--gl-container-highest-bg);
+    font-size: 1.125rem;
+    height: 1.125rem;
+    line-height: 1rem;
+    text-align: center;
   }
 }
 
