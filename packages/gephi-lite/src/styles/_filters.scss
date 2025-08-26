@@ -1,20 +1,17 @@
 .filter-item {
   position: relative;
-
-  @extend .gl-py-4;
+  @extend .gl-py-3;
   @extend .gl-gap-2;
-  &.inactive {
+
+  //&:not(:last-child) {
+  //  border-bottom: 1px solid var(--gl-container-border-color);
+  //}
+  border-top: 1px solid var(--gl-container-border-color);
+
+  &.disabled {
     @extend .gl-text-muted;
     @extend .gl-py-3;
     background-color: var(--gl-container-high-bg);
-  }
-
-  &.filter-creator {
-    @extend .gl-py-3;
-  }
-
-  &.edited {
-    padding-bottom: $gl-spacers-3;
   }
 
   .button-container {
@@ -28,33 +25,46 @@
     }
   }
 
-  &:not(:first-child) {
-    border-top: 1px solid var(--gl-container-border-color);
-  }
-
   &:first-child {
     padding-top: 0;
     margin-top: 0;
   }
 
-  .filter-arrow-container {
-    @extend .gl-text-muted;
-    position: absolute;
-    left: 1rem;
-    top: 0;
-    transform: translate(0, -50%);
+  .filter-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    @extend .gl-gap-2;
+    @extend .gl-px-3;
+  }
 
-    .filter-arrow {
-      background: var(--gl-container-highest-bg);
-      font-size: 1.125rem;
-      height: 1.125rem;
-      line-height: 1rem;
-      text-align: center;
-    }
+  .filter-buttons {
+    @extend .gl-px-2;
+  }
+}
 
-    .gl-btn {
-      transform: scaleX(-1);
-    }
+.filter-graph {
+  @extend .gl-p-3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--gl-container-border-color);
+}
+
+.filter-arrow-container {
+  @extend .gl-text-muted;
+  @extend .gl-px-3;
+  @extend .gl-my-4;
+  @extend .gl-gap-2;
+
+  .filter-arrow {
+    position: relative;
+    background: var(--gl-container-highest-bg);
+    font-size: 1.125rem;
+    height: 1.125rem;
+    line-height: 1rem;
+    text-align: center;
   }
 }
 

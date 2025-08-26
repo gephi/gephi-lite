@@ -5,16 +5,17 @@ import { buildTopologicalFiltersDefinitions } from "../../core/filters/topologic
 import { FilterParameter, TopologicalFilterDefinition, TopologicalFilterType } from "../../core/filters/types";
 import { GraphSearch } from "../GraphSearch";
 import { EnumInput, NumberInput } from "../forms/TypedInputs";
-import { FilteredGraphSummary } from "./FilteredGraphSummary";
 
 export function TopologicalFilterEditor<ParametersType extends FilterParameter[]>({
   filterDefinition,
   filter,
+  filterIndex,
 }: {
   filterDefinition: TopologicalFilterDefinition<ParametersType>;
   filter: TopologicalFilterType;
+  filterIndex: number;
 }) {
-  const { replaceCurrentFilter } = useFiltersActions();
+  const { updateFilter } = useFiltersActions();
   const { parameters } = filter;
 
   return (
@@ -32,7 +33,7 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
                       className="form-control-sm"
                       onChange={(option) => {
                         if (option === null || "id" in option) {
-                          replaceCurrentFilter({
+                          updateFilter(filterIndex, {
                             ...filter,
                             parameters: parameters.map((v: unknown, j: number) =>
                               i === j ? option?.id || undefined : v,
@@ -52,7 +53,7 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
                     key={i}
                     value={parameters[i] as number}
                     onChange={(value) => {
-                      replaceCurrentFilter({
+                      updateFilter(filterIndex, {
                         ...filter,
                         parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
                       });
@@ -66,7 +67,7 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
                     key={i}
                     value={parameters[i] as string}
                     onChange={(value) => {
-                      replaceCurrentFilter({
+                      updateFilter(filterIndex, {
                         ...filter,
                         parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
                       });
@@ -83,9 +84,7 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
 export const TopologicalFilter: FC<{
   filter: TopologicalFilterType;
   filterIndex: number;
-  active?: boolean;
-  editMode?: boolean;
-}> = ({ filter, editMode, filterIndex, active }) => {
+}> = ({ filter, filterIndex }) => {
   const {
     metadata: { type: graphType },
   } = useGraphDataset();
@@ -96,11 +95,6 @@ export const TopologicalFilter: FC<{
   );
 
   return filterDefinition ? (
-    <>
-      <div className="gl-heading-3">{filterDefinition.label}</div>
-      {!editMode && <div>{filterDefinition.summary(filter.parameters)}</div>}
-      {active && <FilteredGraphSummary filterIndex={filterIndex} />}
-      {editMode && <TopologicalFilterEditor filter={filter} filterDefinition={filterDefinition} />}
-    </>
+    <TopologicalFilterEditor filter={filter} filterDefinition={filterDefinition} filterIndex={filterIndex} />
   ) : null;
 };

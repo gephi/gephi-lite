@@ -7,7 +7,15 @@ import {
   Scalar,
   getEmptyAppearanceState,
 } from "@gephi/gephi-lite-sdk";
-import { MultiProducer, Producer, atom, derivedAtom, multiProducerToAction, producerToAction } from "@ouestware/atoms";
+import {
+  MultiProducer,
+  Producer,
+  atom,
+  derivedAtom,
+  multiProducerToAction,
+  producerToAction,
+  useReadAtom,
+} from "@ouestware/atoms";
 import { Attributes } from "graphology-types";
 import { clamp, forEach, isNil, isString, keyBy, keys, last, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
@@ -15,6 +23,7 @@ import { Coordinates } from "sigma/types";
 import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
+import { useGraphDataset } from "../context/dataContexts";
 import { EVENTS, emitter } from "../context/eventsContext";
 import { filtersAtom } from "../filters";
 import { buildTopologicalFiltersDefinitions } from "../filters/topological";
@@ -339,6 +348,11 @@ export const filteredGraphAtom = derivedAtom(
   },
   { checkInput: false },
 );
+export const useFilteredGraphAt = (filterIndex: number) => {
+  const graphDataset = useGraphDataset();
+  const filteredGraphs = useReadAtom(filteredGraphsAtom);
+  return filteredGraphs[filterIndex - 2]?.graph || graphDataset.fullGraph;
+};
 export const dynamicItemDataAtom = derivedAtom(
   // filteredGraphsAtom is added in the dependencies because derived from derived are not triggered correctly. To be investigated later
   [filteredGraphAtom, filteredGraphsAtom],
@@ -351,13 +365,6 @@ export const dynamicItemDataAtom = derivedAtom(
       dynamicEdgeFields: dynamicAttributes.edges?.map((n) => n.field) || [],
     };
     return dynamicNodeData;
-  },
-  { checkInput: false },
-);
-export const parentFilteredGraphAtom = derivedAtom(
-  [graphDatasetAtom, filteredGraphsAtom],
-  (graphDataset, filteredGraphCache) => {
-    return filteredGraphCache[filteredGraphCache.length - 2]?.graph || graphDataset.fullGraph;
   },
   { checkInput: false },
 );
@@ -432,7 +439,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When the fullGraph ref changes, reindex everything:
   if (updatedKeys.has("fullGraph") || updatedKeys.has("layout")) {
     const filtersState = filtersAtom.get();
-    const newCache = applyFilters(graphDataset, filtersState.past, [], topologicalFiltersAtom.get());
+    const newCache = applyFilters(graphDataset, filtersState.filters, [], topologicalFiltersAtom.get());
     filteredGraphsAtom.set(newCache);
   }
 
@@ -453,8 +460,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
       // here we test only static field
       !("field" in f) || nodeFields.includes(f.field.id) || edgeFields.includes(f.field.id);
     filtersAtom.set({
-      past: filtersState.past.filter(filterFilters),
-      future: filtersState.future.filter(filterFilters),
+      filters: filtersState.filters.filter(filterFilters),
     });
     // appearance
     const appearanceState = appearanceAtom.get();
@@ -536,6 +542,6 @@ filtersAtom.bind((filtersState) => {
   const cache = filteredGraphsAtom.get();
   const dataset = graphDatasetAtom.get();
 
-  const newCache = applyFilters(dataset, filtersState.past, cache, topologicalFiltersAtom.get());
+  const newCache = applyFilters(dataset, filtersState.filters, cache, topologicalFiltersAtom.get());
   filteredGraphsAtom.set(newCache);
 });

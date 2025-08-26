@@ -1,11 +1,9 @@
 import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import { FC } from "react";
 import { IconType } from "react-icons";
-import { BsCircle, BsSlashLg, BsTags } from "react-icons/bs";
+import { BsTags } from "react-icons/bs";
 import { IconBaseProps } from "react-icons/lib/iconBase";
 import {
-  PiArrowBendDownRight,
-  PiArrowBendUpRight,
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowSquareOut,
@@ -20,9 +18,11 @@ import {
   PiChartBar,
   PiCheck,
   PiCheckCircle,
+  PiCheckSquare,
   PiCircleHalf,
   PiCircleHalfFill,
   PiCirclesFour,
+  PiCirclesThree,
   PiClipboard,
   PiCode,
   PiCornersIn,
@@ -42,11 +42,11 @@ import {
   PiInfo,
   PiLasso,
   PiLassoBold,
+  PiLineSegment,
   PiMagicWand,
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
-  PiMinusCircle,
   PiMoonStars,
   PiMoonStarsFill,
   PiPaintBrush,
@@ -64,8 +64,7 @@ import {
   PiSelection,
   PiSelectionBold,
   PiSpinner,
-  PiStackMinus,
-  PiStackPlus,
+  PiSquare,
   PiStop,
   PiStopFill,
   PiSun,
@@ -108,11 +107,10 @@ export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const ExternalLinkIcon = PiArrowSquareOut;
-export const FilterAddIcon = PiStackPlus;
-export const FilterDeleteIcon = PiStackMinus;
-export const FilterDeleteInactiveIcon = PiMinusCircle;
-export const FilterOpenFutureIcon = PiArrowBendDownRight;
-export const FilterOpenPastIcon = PiArrowBendUpRight;
+export const FilterAddIcon = PiPlusCircle;
+export const FilterDeleteIcon = PiTrash;
+export const FilterEnabledIcon = PiCheckSquare;
+export const FilterDisabledIcon = PiSquare;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiCornersOut;
@@ -168,11 +166,19 @@ export const GraphSelectionModeIcon: FC<{ mode: GraphSelectionMode; fill?: boole
 };
 
 // Need to be replace by PI icons
-export const NodeIcon = BsCircle;
-export const EdgeIcon = BsSlashLg;
+export const NodeIcon = PiCirclesThree;
+export const EdgeIcon = PiLineSegment;
 export const ItemIcons: Record<ItemType, IconType> = {
   nodes: NodeIcon,
   edges: EdgeIcon,
+};
+export const ItemTypeIcon: FC<IconBaseProps & { type: ItemType }> = ({ type, ...props }) => {
+  const Icon = ItemIcons[type];
+  if (!Icon) {
+    console.error(`Field model type "${type}" is not recognized.`);
+    return null;
+  }
+  return <Icon {...props} />;
 };
 
 export const FieldModelIcons: Record<FieldModelType, IconType> = {

@@ -4,7 +4,7 @@
   "private": true,
   "license": "gpl-3.0",
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "build": "vite build && npm run generate-json-schema",
     "serve": "vite preview",
     "test": "vitest run src",

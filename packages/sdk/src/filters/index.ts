@@ -8,8 +8,7 @@ export * from "./types";
  */
 export function getEmptyFiltersState(): FiltersState {
   return {
-    past: [],
-    future: [],
+    filters: [],
   };
 }
 

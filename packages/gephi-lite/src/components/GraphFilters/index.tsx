@@ -1,13 +1,21 @@
 import cx from "classnames";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { BsArrowDown } from "react-icons/bs";
-import { PiScissors } from "react-icons/pi";
 
-import { useFilters, useFiltersActions, useGraphDataset, usePreferences } from "../../core/context/dataContexts";
+import { useFilters, useFiltersActions } from "../../core/context/dataContexts";
 import { FilterType } from "../../core/filters/types";
-import { FilterDeleteIcon, FilterDeleteInactiveIcon, FilterOpenFutureIcon } from "../common-icons";
-import { FilterCreator } from "./FilterCreator";
+import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
+import { useModal } from "../../core/modals";
+import {
+  FilterAddIcon,
+  FilterDeleteIcon,
+  FilterDisabledIcon,
+  FilterEnabledIcon,
+  GraphIcon,
+  ItemTypeIcon,
+} from "../common-icons";
+import SelectFilterModal from "../modals/SelectFilterModal";
+import { FilteredGraphSummary } from "./FilteredGraphSummary";
 import { RangeFilter } from "./RangeFilter";
 import { ScriptFilter } from "./ScriptFilter";
 import { TermsFilter } from "./TermsFilter";
@@ -15,140 +23,97 @@ import { TopologicalFilter } from "./TopologicalFilter";
 
 const FilterInStack: FC<{
   filter: FilterType;
-  active?: boolean;
   filterIndex: number;
-}> = ({ filter, filterIndex, active }) => {
-  const filters = useFilters();
-  const { openPastFilter, deleteFutureFilter, deletePastFilter, openFutureFilter, closeAllPastFilters } =
-    useFiltersActions();
+}> = ({ filter, filterIndex }) => {
   const { t } = useTranslation();
+  const { deleteFilter, updateFilter } = useFiltersActions();
 
-  const editMode = !!active && filterIndex === filters.past.length - 1;
-  // internalEditMode is an internal state which is used to mimic edit/confirm state for the last filter
-  // indeed this filter is always active, but it's unnecessary to bring this weird status to the user
-  // thus the internalEditMode is used to toggle Edit/Confirmed state for the last filter without affecting others filters state
-  const [internalEditMode, setInternalEditMode] = useState<boolean>(editMode);
-  useEffect(() => setInternalEditMode(editMode), [editMode]);
-
-  return (
-    <div className={cx("filter-item d-flex flex-column", active ? "active" : "inactive", editMode && "edited")}>
-      <div className="d-flex flex-column gl-gap-1 w-100 gl-px-3">
-        {filter.type === "range" && (
-          <RangeFilter
-            filter={filter}
-            filterIndex={filterIndex}
-            editMode={editMode && internalEditMode}
-            active={active}
-          />
-        )}
-        {filter.type === "terms" && (
-          <TermsFilter
-            filter={filter}
-            filterIndex={filterIndex}
-            editMode={editMode && internalEditMode}
-            active={active}
-          />
-        )}
-        {filter.type === "script" && (
-          <ScriptFilter
-            filter={filter}
-            filterIndex={filterIndex}
-            editMode={editMode && internalEditMode}
-            active={active}
-          />
-        )}
-        {filter.type === "topological" && (
-          <TopologicalFilter
-            filter={filter}
-            filterIndex={filterIndex}
-            editMode={editMode && internalEditMode}
-            active={active}
-          />
-        )}
-      </div>
-
-      <section className="gl-px-2 d-flex flex-row justify-content-between">
-        <button
-          className="gl-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (active) deletePastFilter(filterIndex);
-            else deleteFutureFilter(filterIndex);
-          }}
-          title={t("common.remove").toString()}
-        >
-          {active ? <FilterDeleteIcon /> : <FilterDeleteInactiveIcon />} {t("common.remove").toString()}
-        </button>
-
-        {!editMode && !active && (
-          <button
-            className="gl-btn gl-btn-icon"
-            onClick={() => {
-              openFutureFilter(filterIndex);
-            }}
-          >
-            <FilterOpenFutureIcon />
-          </button>
-        )}
-      </section>
-
-      {active && (
-        <div className="filter-arrow-container">
-          <span className="filter-arrow">
-            <BsArrowDown />
-          </span>
-          <button
-            className="gl-btn d-inline-flex gl-btn-icon"
-            onClick={() => {
-              if (filterIndex >= 1) openPastFilter(filterIndex - 1);
-              else closeAllPastFilters();
-            }}
-          >
-            <PiScissors />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const FiltersStack: FC<{ filters: FilterType[]; active?: boolean }> = ({ filters, active }) => {
   return (
     <>
-      {filters.map((f, i) => {
-        return <FilterInStack key={i} filter={f} active={active} filterIndex={i} />;
-      })}
+      <div className={cx("filter-item d-flex flex-column", filter.disabled && "disabled")}>
+        <div className="filter-buttons">
+          <button
+            className="gl-btn gl-heading-3 fw-bold w-100 d-flex"
+            onClick={(e) => {
+              e.stopPropagation();
+              updateFilter(filterIndex, { ...filter, disabled: !filter.disabled });
+            }}
+          >
+            <span className="flex-grow-1 text-start text-truncate">
+              {filter.type === "topological" ? (
+                <GraphIcon className="me-2" />
+              ) : (
+                <ItemTypeIcon type={filter.itemType} className="me-2" />
+              )}
+              {(filter.type === "range" || filter.type === "terms") && staticDynamicAttributeLabel(filter.field)}
+              {filter.type === "topological" && t(`filters.topology.${filter.topologicalFilterId}.label`)}
+              {filter.type === "script" && t("filters.script")}
+            </span>
+
+            <span className="flex-shrink-0">{filter.disabled ? <FilterDisabledIcon /> : <FilterEnabledIcon />}</span>
+          </button>
+        </div>
+
+        <div className="filter-content">
+          {!filter.disabled && (
+            <>
+              {filter.type === "range" && <RangeFilter filter={filter} filterIndex={filterIndex} />}
+              {filter.type === "terms" && <TermsFilter filter={filter} filterIndex={filterIndex} />}
+              {filter.type === "script" && <ScriptFilter filter={filter} filterIndex={filterIndex} />}
+              {filter.type === "topological" && <TopologicalFilter filter={filter} filterIndex={filterIndex} />}
+            </>
+          )}
+        </div>
+
+        <div className="filter-buttons">
+          <button
+            className="gl-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteFilter(filterIndex);
+            }}
+          >
+            <FilterDeleteIcon /> Delete filter
+          </button>
+        </div>
+      </div>
+
+      {!filter.disabled && <FilteredGraphSummary filterIndex={filterIndex} />}
     </>
   );
 };
 
 const GraphFilters: FC = () => {
-  const { locale } = usePreferences();
+  const { openModal } = useModal();
   const filters = useFilters();
 
   const { t } = useTranslation();
-  const { fullGraph } = useGraphDataset();
 
   return (
-    <div className="panel-body px-0 pb-0">
+    <div className="panel-body px-0 pb-0 gap-0">
+      <h2 className="px-3 mb-4">Filters</h2>
+
       <div className="panel-block flex-grow-1 gap-0">
-        <div className={cx("filter-item d-flex flex-column w-100", filters.past.length === 0 && "edited")}>
-          <h2 className="gl-px-3">{t("filters.full_graph")}</h2>
-          <div className="gl-px-3">
-            {fullGraph.order.toLocaleString(locale)} {t("graph.model.nodes", { count: fullGraph.order })},{" "}
-            {fullGraph.size.toLocaleString(locale)} {t("graph.model.edges", { count: fullGraph.size })}
-          </div>
+        <FilteredGraphSummary />
+
+        {filters.filters.map((f, i) => (
+          <FilterInStack key={i} filter={f} filterIndex={i} />
+        ))}
+
+        <div className="filter-item filter-creator gl-px-3 d-flex justify-content-center">
+          <button
+            type="button"
+            className="gl-btn gl-btn-outline w-100"
+            onClick={() => {
+              openModal({
+                component: SelectFilterModal,
+                arguments: {},
+              });
+            }}
+          >
+            <FilterAddIcon /> {t("filters.add_filter")}
+          </button>
         </div>
-
-        <FiltersStack filters={filters.past} active />
-
-        <FilterCreator />
-
-        <FiltersStack filters={filters.future} />
-
-        {(filters.past.length > 0 || filters.future.length > 0) && (
-          <div className="flex-grow-1 gl-container-high-bg"></div>
-        )}
       </div>
     </div>
   );
