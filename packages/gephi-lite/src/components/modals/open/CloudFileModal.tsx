@@ -110,7 +110,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                       <td>
                         {file.filename}
                         <a
-                          className="link-primary m-2"
+                          className="m-2"
                           href={file.webUrl}
                           title={t("graph.open.github.file-open-external", {
                             filename: file.filename,
