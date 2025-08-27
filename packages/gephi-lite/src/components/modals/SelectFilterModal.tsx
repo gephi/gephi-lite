@@ -21,6 +21,7 @@ const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | n
   category: "terms",
   color: null,
   text: null,
+  url: null,
 };
 
 const SelectFilterModal: FC<

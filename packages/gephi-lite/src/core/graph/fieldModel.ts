@@ -56,6 +56,9 @@ export function guessSeparator(values: string[]): string | null {
 export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: number): FieldModelTypeSpec {
   const cleanedFieldName = fieldName.trim().toLowerCase();
 
+  // URLS
+  if (values.every((v) => typeof v === "string" && v.startsWith("http"))) return { type: "url" };
+
   // COLOR
   if (values.every((v) => typeof v === "string" && isValidColor(v))) return { type: "color" };
 
@@ -130,6 +133,7 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
       return toNumber(scalar) as FieldModelAbstraction["number"]["expectedOutput"];
     case "category":
     case "text":
+    case "url":
     case "color":
       return toString(scalar) as FieldModelAbstraction["text"]["expectedOutput"];
     case "keywords":
