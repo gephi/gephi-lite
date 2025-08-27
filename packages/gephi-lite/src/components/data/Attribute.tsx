@@ -82,10 +82,11 @@ export const AttributeEditors: {
     field: FieldModel<ItemType, false, K>;
     autoFocus?: boolean;
     id?: string;
+    placeholder?: string;
     inTooltip?: boolean;
   }>;
 } = {
-  text: ({ value, onChange, id, autoFocus }) => {
+  text: ({ value, onChange, id, autoFocus, placeholder }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
       if (ref.current && autoFocus) ref.current.focus();
@@ -98,11 +99,12 @@ export const AttributeEditors: {
         className="form-control"
         type="string"
         value={value ?? ""}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value || undefined)}
       />
     );
   },
-  number: ({ value, onChange, id, autoFocus }) => {
+  number: ({ value, onChange, id, autoFocus, placeholder }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
       if (ref.current && autoFocus) ref.current.focus();
@@ -115,11 +117,12 @@ export const AttributeEditors: {
         className="form-control"
         type="number"
         value={value ?? ""}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
       />
     );
   },
-  category: ({ value, onChange, field, id, autoFocus }) => {
+  category: ({ value, onChange, field, id, autoFocus, placeholder }) => {
     const values = useDataCollection(field);
     const options = useMemo(() => Array.from(values).sort().map(optionize), [values]);
     const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
@@ -150,6 +153,7 @@ export const AttributeEditors: {
         id={id}
         autoFocus={autoFocus}
         menuPosition="absolute"
+        placeholder={placeholder}
         value={!isNil(value) ? optionize(value) : undefined}
         onChange={(newValue) => onChange(newValue?.value)}
         options={options}
@@ -160,7 +164,7 @@ export const AttributeEditors: {
       />
     );
   },
-  keywords: ({ value, onChange, field, id, autoFocus }) => {
+  keywords: ({ value, onChange, field, id, autoFocus, placeholder }) => {
     const values = useDataCollection(field);
     const options = useMemo(() => Array.from(values).sort().map(optionize), [values]);
     const OptionComponent = useCallback(
@@ -192,6 +196,7 @@ export const AttributeEditors: {
         id={id}
         autoFocus={autoFocus}
         menuPosition="absolute"
+        placeholder={placeholder}
         value={value?.map(optionize)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
         options={options}
@@ -202,7 +207,7 @@ export const AttributeEditors: {
       />
     );
   },
-  date: ({ value, onChange, id, autoFocus, field }) => {
+  date: ({ value, onChange, id, autoFocus, field, placeholder }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
       if (ref.current && autoFocus) ref.current.focus();
@@ -218,6 +223,7 @@ export const AttributeEditors: {
         className="form-control"
         type={inputType}
         value={value?.toFormat(inputDateFormat) ?? ""}
+        placeholder={placeholder}
         onChange={(e) => {
           const date = e.target.value ? DateTime.fromFormat(e.target.value, inputDateFormat) : undefined;
           onChange(date?.isValid ? date : undefined);
@@ -246,13 +252,15 @@ export const EditItemAttribute: FC<{
   id?: string;
   autoFocus?: boolean;
   inTooltip?: boolean;
-}> = ({ field, scalar, onChange, id, autoFocus, inTooltip }) => {
+  placeholder?: string;
+}> = ({ field, scalar, onChange, id, autoFocus, inTooltip, placeholder }) => {
   const EditComponent = AttributeEditors[field.type] as FC<{
     field: FieldModel;
     onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
     value?: FieldModelAbstraction[FieldModelType]["expectedOutput"];
     id?: string;
     autoFocus?: boolean;
+    placeholder?: string;
     inTooltip?: boolean;
   }>;
 
@@ -262,6 +270,7 @@ export const EditItemAttribute: FC<{
       field={field}
       autoFocus={autoFocus}
       inTooltip={inTooltip}
+      placeholder={placeholder}
       value={castScalarToModelValue(scalar, field)}
       onChange={(value) => onChange(serializeModelValueToScalar(value, field, scalar))}
     />

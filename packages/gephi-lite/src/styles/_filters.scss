@@ -10,7 +10,6 @@
     background-color: var(--gl-container-high-bg);
   }
 
-
   .filter-content {
     display: flex;
     flex-direction: column;
@@ -50,7 +49,9 @@
   }
 }
 
-.range-filter {
+.range-filter-barchart {
+  @extend .list-unstyled;
+
   margin-top: 0.8rem;
   height: 80px;
 
@@ -109,5 +110,34 @@
   background-color: unset !important;
   .rc-slider-handle {
     background-color: $gray-400 !important;
+  }
+}
+.range-inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: $gl-spacers-1;
+  @extend .gl-gap-1;
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    @extend .gl-gap-2;
+
+    & > label {
+      min-width: 3rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+      @extend .small;
+      @extend .form-check-label;
+    }
+
+    & > input {
+      flex-grow: 1;
+      flex-shrink: 1;
+      @extend .form-control;
+      @extend .form-control-sm;
+    }
   }
 }

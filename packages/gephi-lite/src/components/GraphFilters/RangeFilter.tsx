@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { flatMap, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
+import { clamp, flatMap, isNumber, keyBy, last, mapValues, max, min, uniq } from "lodash";
 import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -104,90 +104,92 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
     : {};
 
   return rangeMetric ? (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()} className="range-filter">
       {rangeMetric.max !== rangeMetric.min ? (
-        <ul className="list-unstyled range-filter">
-          {(rangeMetric.ranges || []).map((range) => {
-            const globalCount = range.values.length;
-            const filteredCount = range.values.filter((v) => inRangeIncluded(v, filter.min, filter.max)).length;
-            const filteredHeight = (filteredCount / rangeMetric.maxCount) * 100;
-            const isLabelInside = filteredHeight > 90;
+        <>
+          <ul className="range-filter-barchart">
+            {(rangeMetric.ranges || []).map((range) => {
+              const globalCount = range.values.length;
+              const filteredCount = range.values.filter((v) => inRangeIncluded(v, filter.min, filter.max)).length;
+              const filteredHeight = (filteredCount / rangeMetric.maxCount) * 100;
+              const isLabelInside = filteredHeight > 90;
 
-            return (
-              <div className="bar" key={range.min}>
-                <div className="global" style={{ height: (globalCount / rangeMetric.maxCount) * 100 + "%" }} />
-                <div
-                  className="filtered"
-                  style={{
-                    height: filteredHeight + "%",
-                  }}
-                >
-                  {filteredCount !== 0 && (
-                    <span className={cx("label", isLabelInside ? "inside" : "outside")}>
-                      {shortenNumber(filteredCount, globalCount)}
-                    </span>
-                  )}
+              return (
+                <div className="bar" key={range.min}>
+                  <div className="global" style={{ height: (globalCount / rangeMetric.maxCount) * 100 + "%" }} />
+                  <div
+                    className="filtered"
+                    style={{
+                      height: filteredHeight + "%",
+                    }}
+                  >
+                    {filteredCount !== 0 && (
+                      <span className={cx("label", isLabelInside ? "inside" : "outside")}>
+                        {shortenNumber(filteredCount, globalCount)}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </ul>
+              );
+            })}
+          </ul>
+          <Slider
+            className="pb-3"
+            range
+            disabled={rangeMetric.min === rangeMetric.max}
+            value={[
+              filter.min ?? rangeMetric.min,
+              // max is shifted + step as slider exclude upper bound
+              (filter.max ?? rangeMetric.max) + rangeMetric.step,
+            ].map((n) => clamp(n, rangeMetric.min, rangeMetric.max + rangeMetric.step))}
+            {...rangeMetric}
+            marks={marks}
+            onChange={(value) => {
+              if (Array.isArray(value)) {
+                const [minSelected, maxSelected] = value;
+                const newMin = minSelected;
+                const newMax = maxSelected;
+
+                // max is shifted - step as slider exclude upper bound
+                updateFilter(filterIndex, {
+                  ...filter,
+                  min: newMin === rangeMetric.min ? undefined : newMin,
+                  max: newMax === rangeMetric.max ? undefined : newMax - rangeMetric.step,
+                });
+              }
+            }}
+            allowCross={false}
+            pushable={true}
+            {...RANGE_STYLE}
+          />
+        </>
       ) : (
-        <div className="badge bg-warning p-2 mb-2 mt-2">{t("filters.inapplicable")}</div>
+        <div className="alert gl-alert-info p-2 mb-2 mt-2 text-wrap">{t("filters.inapplicable")}</div>
       )}
 
-      <Slider
-        className="pb-3"
-        range
-        disabled={rangeMetric.min === rangeMetric.max}
-        value={
-          [
-            filter.min !== undefined ? filter.min : rangeMetric?.min,
-            // max is shifted + step as slider exclude upper bound
-            (filter.max !== undefined ? filter.max : rangeMetric?.max) + rangeMetric.step,
-          ].filter((n) => isNumber(n)) as number[]
-        }
-        {...rangeMetric}
-        marks={marks}
-        onChange={(value) => {
-          if (Array.isArray(value)) {
-            const [minSelected, maxSelected] = value;
-            // max is shifted - step as slider exclude upper bound
-            updateFilter(filterIndex, {
-              ...filter,
-              min: minSelected,
-              max: maxSelected - rangeMetric.step,
-            });
-          }
-        }}
-        allowCross={false}
-        pushable={true}
-        {...RANGE_STYLE}
-      />
-
-      <div className="d-flex flex-row justify-content-between gl-gap-1">
-        <div className="d-flex align-items-center flex-grow-1 gl-gap-1">
+      <div className="range-inputs">
+        <div>
+          <label htmlFor={`filter-${filterIndex}-min`}>{t("common.from")}</label>
           {filter.field.type === "number" ? (
             // We don't use generic EditItem Attribute to keep step, min, max, disabled parameters
             // TODO: add all input props in generic component ?
             <input
-              className="form-control form-control-sm"
-              id="min"
+              id={`filter-${filterIndex}-min`}
               type="number"
               disabled={rangeMetric.min === rangeMetric.max}
               min={rangeMetric?.min}
-              max={filter.max || rangeMetric.max}
+              max={filter.max ?? rangeMetric.max}
               step={rangeMetric?.step}
-              value={filter.min || ""}
+              value={filter.min ?? ""}
               placeholder={"" + rangeMetric?.min}
               onChange={(e) => {
-                const newMin = +e.target.value;
-                updateFilter(filterIndex, { ...filter, min: newMin });
+                updateFilter(filterIndex, { ...filter, min: e.target.value ? +e.target.value : undefined });
               }}
             />
           ) : (
             // TODO: add all input props in generic component ? We miss min/max and disabled here
             <EditItemAttribute
+              id={`filter-${filterIndex}-min`}
               field={filter.field}
               scalar={serializeModelValueToScalar(
                 getFieldValueFromQuantification(filter.min, filter.field),
@@ -200,34 +202,31 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
               }}
             />
           )}
-
-          <label className="form-check-label small gl-gap-1" htmlFor="min">
-            {t("common.min")}
-          </label>
         </div>
-        <div className="d-flex align-items-center flex-grow-1 gl-gap-1">
+
+        <div>
+          <label htmlFor={`filter-${filterIndex}-max`}>{t("common.to")}</label>
           {filter.field.type === "number" ? (
             // We don't use generic EditItem Attribute to keep step, min, max, disabled parameters
             // TODO: add all input props in generic component ?
             <input
-              className="form-control form-control-sm "
-              id="max"
+              id={`filter-${filterIndex}-max`}
               type="number"
               disabled={rangeMetric.min === rangeMetric.max}
-              min={filter.min}
+              min={filter.min ?? rangeMetric.min}
               // max is shifted - step as slider exclude upper bound
               max={rangeMetric?.max - rangeMetric.step}
               step={rangeMetric?.step}
               // max is shifted - step as slider exclude upper bound
               placeholder={"" + (rangeMetric?.max - rangeMetric.step)}
-              value={filter.max || ""}
+              value={filter.max ?? ""}
               onChange={(e) => {
-                const newMax = +e.target.value;
-                updateFilter(filterIndex, { ...filter, max: newMax });
+                updateFilter(filterIndex, { ...filter, max: e.target.value ? +e.target.value : undefined });
               }}
             />
           ) : (
             <EditItemAttribute
+              id={`filter-${filterIndex}-max`}
               field={filter.field}
               scalar={serializeModelValueToScalar(
                 getFieldValueFromQuantification(filter.max, filter.field),
@@ -240,10 +239,6 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
               }}
             />
           )}
-
-          <label className="form-check-label small" htmlFor="max">
-            {t("common.max")}
-          </label>
         </div>
       </div>
       <div className="form-check mt-1">
@@ -251,13 +246,13 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
           className="form-check-input"
           disabled={rangeMetric.min === rangeMetric.max}
           type="checkbox"
-          id="keepMissingValuesRange"
+          id={`filter-${filterIndex}-keepMissingValuesRange`}
           checked={filter.keepMissingValues}
           onChange={(e) => {
             updateFilter(filterIndex, { ...filter, keepMissingValues: e.target.checked });
           }}
         />
-        <label className="from-check-label small" htmlFor="keepMissingValuesRange">
+        <label className="from-check-label small" htmlFor={`filter-${filterIndex}-keepMissingValuesRange`}>
           {t("filters.keepMissingValues")}
         </label>
       </div>
