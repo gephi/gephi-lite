@@ -47,7 +47,7 @@ export const SizeRankingEditor: FC<{
           }}
           id={toggleExtremaId}
         />
-        <label className="form-check-label ms-1" htmlFor={toggleExtremaId}>
+        <label className="form-check-label" htmlFor={toggleExtremaId}>
           {t("appearance.size.interpolate")}
         </label>
       </div>

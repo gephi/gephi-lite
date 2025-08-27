@@ -246,18 +246,18 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
           </label>
         </div>
       </div>
-      <div className="d-flex gl-gap-1 align-items-center">
+      <div className="form-check mt-1">
         <input
           className="form-check-input"
           disabled={rangeMetric.min === rangeMetric.max}
           type="checkbox"
-          id="keepMissingValues"
+          id="keepMissingValuesRange"
           checked={filter.keepMissingValues}
           onChange={(e) => {
             updateFilter(filterIndex, { ...filter, keepMissingValues: e.target.checked });
           }}
         />
-        <label className="from-check-label small" htmlFor="keepMissingValues">
+        <label className="from-check-label small" htmlFor="keepMissingValuesRange">
           {t("filters.keepMissingValues")}
         </label>
       </div>
