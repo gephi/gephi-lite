@@ -41,7 +41,7 @@ export default defineConfig({
   },
   server: {
     open: false,
-    host: process.env.VITE_HOST || "localhost",
+    host: process.env.VITE_HOST || true,
     allowedHosts: process.env.VITE_ALLOWED_HOSTS?.split(","),
     proxy: {
       "^/_github/*": {
