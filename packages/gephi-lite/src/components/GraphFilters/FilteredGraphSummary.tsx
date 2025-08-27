@@ -15,7 +15,7 @@ export const FilteredGraphSummary: FC<{ filterIndex?: number }> = ({ filterIndex
   const { filters } = useFilters();
   const { locale } = usePreferences();
   const { disableFiltersFrom } = useFiltersActions();
-  const relatedGraph = useFilteredGraphAt(filterIndex || 0);
+  const relatedGraph = useFilteredGraphAt(filterIndex ?? -1);
   const nextFilterIndex = (filterIndex ?? -1) + 1;
   const isVisibleGraph = !filters.slice(nextFilterIndex).some((filter) => !filter.disabled);
 
@@ -23,9 +23,14 @@ export const FilteredGraphSummary: FC<{ filterIndex?: number }> = ({ filterIndex
     <section className="filter-graph">
       <div className="gl-px-2">
         {isNil(filterIndex) ? (
-          <div>{t("filters.full_graph")}</div>
+          <div>
+            {t("filters.full_graph")}
+            {isVisibleGraph && ` / ${t("filters.visible_graph")}`}
+          </div>
+        ) : isVisibleGraph ? (
+          <div>{t("filters.visible_graph")}</div>
         ) : (
-          isVisibleGraph && <div>{t("filters.visible_graph")}</div>
+          <div className="text-muted">{t("filters.intermediate_graph")}</div>
         )}
         <div>
           {relatedGraph.order.toLocaleString(locale)} {t("graph.model.nodes", { count: relatedGraph.order })},{" "}

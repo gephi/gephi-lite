@@ -539,7 +539,9 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 });
 
 filtersAtom.bind((filtersState) => {
-  const cache = filteredGraphsAtom.get();
+  // TODO: Restore cache management when disabling/enabling filters:
+  // const cache = filteredGraphsAtom.get();
+  const cache: FilteredGraph[] = [];
   const dataset = graphDatasetAtom.get();
 
   const newCache = applyFilters(dataset, filtersState.filters, cache, topologicalFiltersAtom.get());
