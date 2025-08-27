@@ -84,21 +84,23 @@ export const useDataTableColumns = (itemIDs: string[]) => {
               e.stopPropagation();
             }}
           >
-            <input
-              className="form-check-input m-0 p-0"
-              type="checkbox"
-              onChange={(e) =>
-                e.target.checked
-                  ? select({
-                      type,
-                      items: new Set(itemIDs),
-                    })
-                  : unselect({
-                      type,
-                      items: new Set(itemIDs),
-                    })
-              }
-            />
+            <div className="form-check">
+              <input
+                className="form-check-input "
+                type="checkbox"
+                onChange={(e) =>
+                  e.target.checked
+                    ? select({
+                        type,
+                        items: new Set(itemIDs),
+                      })
+                    : unselect({
+                        type,
+                        items: new Set(itemIDs),
+                      })
+                }
+              />
+            </div>
             <div>
               <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
                 <Arrow arrow={header.column.getIsSorted() || "both"} />
@@ -107,7 +109,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
           </div>
         ),
         cell: (props) => (
-          <div className="w-100">
+          <div className="w-100 form-check">
             <input
               className="form-check-input"
               type="checkbox"

@@ -49,17 +49,17 @@ export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> =
           value: term,
         }))}
       />
-      <div>
+      <div className="form-check mt-1">
         <input
-          className="form-check-input me-2"
+          className="form-check-input"
           type="checkbox"
-          id="keepMissingValues"
+          id="keepMissingValuesTerms"
           checked={!!filter.keepMissingValues}
           onChange={(e) => {
             updateFilter(filterIndex, { ...filter, keepMissingValues: e.target.checked });
           }}
         />
-        <label className="from-check-label small" htmlFor="keepMissingValues">
+        <label className="from-check-label small" htmlFor="keepMissingValuesTerms">
           {t("filters.keepMissingValues")}
         </label>
       </div>

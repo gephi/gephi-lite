@@ -14,7 +14,7 @@ export const LabelEllipsis: FC<{ itemType: ItemType }> = ({ itemType }) => {
 
   return (
     <div className="panel-block">
-      <div className="d-flex align-items-center">
+      <div className="form-check">
         <input
           id="label-ellipsis"
           className="form-check-input mt-0 me-2"
@@ -22,7 +22,9 @@ export const LabelEllipsis: FC<{ itemType: ItemType }> = ({ itemType }) => {
           checked={labelEllipsis.enabled}
           onChange={(e) => setLabelEllipsis({ ...labelEllipsis, enabled: e.target.checked })}
         />
-        <label htmlFor="label-ellipsis">{t("appearance.labels.ellipsis.enabled")}</label>
+        <label className="form-check-label" htmlFor="label-ellipsis">
+          {t("appearance.labels.ellipsis.enabled")}
+        </label>
       </div>
 
       {labelEllipsis.enabled && (
