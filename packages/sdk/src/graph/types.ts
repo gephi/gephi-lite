@@ -63,6 +63,10 @@ export type FieldModelAbstraction = {
     expectedOutput: string;
     options: {};
   };
+  url: {
+    expectedOutput: string;
+    options: {};
+  };
   number: {
     expectedOutput: number;
     options: {};

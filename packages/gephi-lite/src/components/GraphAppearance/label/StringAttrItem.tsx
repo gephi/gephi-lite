@@ -1,5 +1,6 @@
 import { StringAttr } from "@gephi/gephi-lite-sdk";
-import { FC, useCallback, useMemo } from "react";
+import { sortBy } from "lodash";
+import { FC, ReactNode, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -11,11 +12,12 @@ import {
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { ItemType } from "../../../core/types";
+import { FieldModelIcon } from "../../common-icons";
 import { Select } from "../../forms/Select";
 
 type LabelOption =
-  | { value: string; type: "none" | "fixed"; field?: undefined; label: string }
-  | { value: string; type: "field"; field: FieldModel<ItemType, boolean>; label: string };
+  | { value: string; type: "none" | "fixed"; field?: undefined; label: string | ReactNode }
+  | { value: string; type: "field"; field: FieldModel<ItemType, boolean>; label: string | ReactNode };
 
 export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "labels" }> = ({ itemType, itemKey }) => {
   const { t } = useTranslation();
@@ -30,23 +32,33 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
 
   const currentDef = itemKey === "images" ? nodesImage : itemType === "nodes" ? nodesLabel : edgesLabel;
 
-  const labelOptions: LabelOption[] = useMemo(() => {
-    const allFields: FieldModel<ItemType, boolean>[] =
-      itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields];
-    const fieldType = "field" as const;
-    return [
-      ...allFields.map((field) => {
-        return {
-          value: `field::${staticDynamicAttributeKey(field)}`,
-          type: fieldType,
-          field,
-          label: staticDynamicAttributeLabel(field),
-        };
-      }),
-      { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) },
+  const labelOptions: LabelOption[] = useMemo(
+    () => [
       { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) },
-    ];
-  }, [nodeFields, edgeFields, dynamicNodeFields, dynamicEdgeFields, itemKey, itemType, t]);
+      { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) },
+      ...sortBy(
+        itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields],
+        (field: FieldModel) => (field.type === "text" ? 0 : field.type === "url" ? 1 : 2),
+      ).flatMap((field: FieldModel) =>
+        itemKey !== "images" || field.type === "url"
+          ? [
+              {
+                value: `field::${staticDynamicAttributeKey(field)}`,
+                type: "field" as const,
+                field,
+                label: (
+                  <>
+                    <FieldModelIcon type={field.type} className="me-1" />
+                    {staticDynamicAttributeLabel(field)}
+                  </>
+                ),
+              },
+            ]
+          : [],
+      ),
+    ],
+    [nodeFields, edgeFields, dynamicNodeFields, dynamicEdgeFields, itemKey, itemType, t],
+  );
 
   const selectedLabelOption: LabelOption | null = useMemo(
     () =>
@@ -98,31 +110,31 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
         </p>
       )}
       {currentDef.type === "field" && (
-        <div className="d-flex align-items-center">
+        <div className="d-flex flex-column align-items-stretch gl-gap-1">
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-missingStringAttrValue`}>
+            {t(`appearance.${itemKey}.default_value`, { items: t(`graph.model.${itemType}`) })}
+          </label>
           <input
-            className="form-control form-control-sm w-8"
+            className="form-control form-control-sm"
             type="string"
             value={currentDef.missingValue || ""}
             onChange={(v) => setValue({ ...currentDef, missingValue: v.target.value || null })}
             id={`${itemType}-missingStringAttrValue`}
           />
-          <label className="form-check-label ms-1" htmlFor={`${itemType}-missingStringAttrValue`}>
-            {t(`appearance.${itemKey}.default_value`, { items: t(`graph.model.${itemType}`) })}
-          </label>
         </div>
       )}
       {currentDef.type === "fixed" && (
-        <div className="">
+        <div className="d-flex flex-column align-items-stretch gl-gap-1">
+          <label className="form-check-label small ms-1" htmlFor={`${itemType}-fixedStringAttrValue`}>
+            {t(`appearance.${itemKey}.fixed_label`, { items: t(`graph.model.${itemType}`) })}
+          </label>
           <input
-            className="form-control form-control-sm w-8"
+            className="form-control form-control-sm"
             type="string"
             value={currentDef.value}
             onChange={(v) => setValue({ ...currentDef, value: v.target.value })}
             id={`${itemType}-fixedStringAttrValue`}
           />
-          <label className="form-check-label ms-1" htmlFor={`${itemType}-fixedStringAttrValue`}>
-            {t(`appearance.${itemKey}.fixed_label`, { items: t(`graph.model.${itemType}`) })}
-          </label>
         </div>
       )}
     </div>

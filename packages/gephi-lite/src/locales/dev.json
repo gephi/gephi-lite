@@ -170,7 +170,7 @@
       "data": "Input data",
       "fixed": "A constant URL",
       "fixed_label": "Same image for every {{items}}",
-      "none": "No label",
+      "none": "No images",
       "default_value": "Image for {{items}} with no valid value",
       "data_description": "All {{items}} images are as they are in the input data file.",
       "none_description": "All {{items}} have no displayed image."

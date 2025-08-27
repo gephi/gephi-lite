@@ -43,6 +43,7 @@ import {
   PiLasso,
   PiLassoBold,
   PiLineSegment,
+  PiLink,
   PiMagicWand,
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
@@ -183,6 +184,7 @@ export const ItemTypeIcon: FC<IconBaseProps & { type: ItemType }> = ({ type, ...
 
 export const FieldModelIcons: Record<FieldModelType, IconType> = {
   text: PiTextT,
+  url: PiLink,
   number: PiChartBar,
   category: PiCirclesFour,
   // Still in Bs consciously, the style difference isn't to contrasted

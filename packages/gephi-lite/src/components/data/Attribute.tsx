@@ -34,7 +34,18 @@ export const AttributeRenderers: {
     } & FieldModelAbstraction[K]["options"]
   >;
 } = {
-  text: ({ value }) => (!isNil(value) ? <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify> : null),
+  text: ({ value }) =>
+    !isNil(value) ? (
+      <div title={value} className="text-truncate">
+        <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify>
+      </div>
+    ) : null,
+  url: ({ value }) =>
+    !isNil(value) ? (
+      <a href={value} target="_blank" rel="noreferrer" title={value}>
+        {value.replace(/^https?:\/\//, "")}
+      </a>
+    ) : null,
   number: ({ value }) => {
     const { i18n } = useTranslation();
     return !isNil(value) ? <>{value.toLocaleString(i18n.language)}</> : null;
@@ -75,6 +86,37 @@ export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar 
  * Edit values:
  * ************
  */
+const StringEditor = ({
+  value,
+  onChange,
+  id,
+  autoFocus,
+  placeholder,
+}: {
+  value?: string;
+  onChange: (value?: string) => void;
+  autoFocus?: boolean;
+  id?: string;
+  placeholder?: string;
+}) => {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current && autoFocus) ref.current.focus();
+  }, [autoFocus]);
+
+  return (
+    <input
+      id={id}
+      ref={ref}
+      className="form-control"
+      type="string"
+      value={value ?? ""}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value || undefined)}
+    />
+  );
+};
+
 export const AttributeEditors: {
   [K in FieldModelType]: FC<{
     value?: FieldModelAbstraction[K]["expectedOutput"];
@@ -86,24 +128,8 @@ export const AttributeEditors: {
     inTooltip?: boolean;
   }>;
 } = {
-  text: ({ value, onChange, id, autoFocus, placeholder }) => {
-    const ref = useRef<HTMLInputElement>(null);
-    useEffect(() => {
-      if (ref.current && autoFocus) ref.current.focus();
-    }, [autoFocus]);
-
-    return (
-      <input
-        id={id}
-        ref={ref}
-        className="form-control"
-        type="string"
-        value={value ?? ""}
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value || undefined)}
-      />
-    );
-  },
+  text: StringEditor,
+  url: StringEditor,
   number: ({ value, onChange, id, autoFocus, placeholder }) => {
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
