@@ -10,7 +10,7 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import { isNil } from "lodash";
 import { DateTime } from "luxon";
-import { FC, createElement, useCallback, useEffect, useMemo, useRef } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import ReactLinkify from "react-linkify";
 import { MultiValueProps, OptionProps, SingleValueProps, components } from "react-select";
@@ -145,7 +145,13 @@ export const AttributeEditors: {
   },
   category: ({ value, onChange, field, id, autoFocus, placeholder }) => {
     const values = useDataCollection(field);
-    const options = useMemo(() => Array.from(values).sort().map(optionize), [values]);
+    const options = useMemo(
+      () =>
+        Array.from(values)
+          .sort()
+          .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
+      [values],
+    );
     const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
       const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
       return (
@@ -187,7 +193,13 @@ export const AttributeEditors: {
   },
   keywords: ({ value, onChange, field, id, autoFocus, placeholder }) => {
     const values = useDataCollection(field);
-    const options = useMemo(() => Array.from(values).sort().map(optionize), [values]);
+    const options = useMemo(
+      () =>
+        Array.from(values)
+          .sort()
+          .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
+      [values],
+    );
     const OptionComponent = useCallback(
       (props: OptionProps<BaseOption, true>) => {
         const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;

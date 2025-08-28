@@ -1,4 +1,5 @@
 import { FieldModel } from "@gephi/gephi-lite-sdk";
+import { isNil } from "lodash";
 import { useMemo } from "react";
 
 import { useGraphDataset } from "../core/context/dataContexts";
@@ -14,14 +15,16 @@ export function useDataCollection(field: FieldModel) {
       case "category": {
         for (const itemId in data) {
           const category = castScalarToModelValue<"category">(data[itemId][field.id], field);
-          values.add(category);
+          if (!isNil(category)) values.add(category);
         }
         break;
       }
       case "keywords": {
         for (const itemId in data) {
           const keywords = castScalarToModelValue<"keywords">(data[itemId][field.id], field);
-          for (let i = 0; i < keywords.length; i++) values.add(keywords[i]);
+          for (let i = 0; i < keywords.length; i++) {
+            if (!isNil(keywords[i])) values.add(keywords[i]);
+          }
         }
         break;
       }
