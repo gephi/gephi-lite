@@ -1,7 +1,7 @@
 import { Row, Table, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
-import { FC, RefObject, useMemo, useRef } from "react";
+import { FC, RefObject, useEffect, useMemo, useRef } from "react";
 import { ScrollSyncPane } from "react-scroll-sync";
 
 import {
@@ -11,6 +11,7 @@ import {
   useGraphDataset,
   useSelection,
 } from "../../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { ItemRow, SPECIFIC_COLUMNS, getCommonPinningStyles } from "./consts";
 import { useDataTableColumns } from "./useDataTableColumns";
 
@@ -49,6 +50,8 @@ const TableBody: FC<{
   tableContainerRef: RefObject<HTMLDivElement>;
 }> = ({ table, tableContainerRef }) => {
   const { rows } = table.getRowModel();
+  const { emitter } = useEventsContext();
+  const { type } = useDataTable();
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
     overscan: 5,
@@ -60,6 +63,20 @@ const TableBody: FC<{
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
   });
+
+  useEffect(() => {
+    const event = type === "nodes" ? EVENTS.nodeCreated : EVENTS.edgeCreated;
+    const handler = ({ id }: { id: string }) => {
+      // Get the index in the sorted/filtered rows array
+      const sortedRows = table.getRowModel().rows;
+      const sortedIndex = sortedRows.findIndex((r) => r.id === id);
+      rowVirtualizer.scrollToIndex(sortedIndex, { behavior: "auto", align: "center" });
+    };
+    emitter.on(event, handler);
+    return () => {
+      emitter.off(event, handler);
+    };
+  }, [emitter, rowVirtualizer, table, type]);
 
   return (
     <tbody
@@ -121,6 +138,7 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
   const table = useReactTable({
     data: rows,
     columns,
+    getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     columnResizeMode: "onChange",

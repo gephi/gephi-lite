@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { Scalar } from "../../core/types";
@@ -32,6 +33,7 @@ const useEditEdgeForm = ({
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
+  const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createEdge, updateEdge } = useGraphDatasetActions();
   const { edgeData, layout, fullGraph, edgeFields } = useGraphDataset();
@@ -115,6 +117,8 @@ const useEditEdgeForm = ({
               message: t("edition.create_edges_success"),
             });
             onSubmitted();
+
+            requestAnimationFrame(() => emitter.emit(EVENTS.edgeCreated, { id }));
           } catch (e) {
             notify({
               type: "error",
@@ -143,7 +147,7 @@ const useEditEdgeForm = ({
           }
         }
       }),
-    [createEdge, edgeData, handleSubmit, isNew, notify, onSubmitted, select, setValue, t, updateEdge],
+    [createEdge, edgeData, emitter, handleSubmit, isNew, notify, onSubmitted, select, setValue, t, updateEdge],
   );
 
   return {

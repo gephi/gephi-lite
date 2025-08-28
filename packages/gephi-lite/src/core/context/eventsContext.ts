@@ -8,6 +8,8 @@ export const EVENTS = {
   // Custom Gephi Lite features:
   nodesDragged: "nodesDragged",
   focusNodes: "focusNodes",
+  nodeCreated: "nodeCreated",
+  edgeCreated: "edgeCreated",
 } as const;
 
 /**
