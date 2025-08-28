@@ -121,6 +121,7 @@ export const resetStates: Action<[boolean]> = (full = false) => {
   searchActions.reset();
   graphDatasetActions.resetGraph();
   fileActions.reset(full);
+  layoutActions.stopLayout();
 
   if (full) {
     userActions.reset();
@@ -162,4 +163,3 @@ export const useUserActions = makeUseActions(userActions);
 export const useResetStates = () => {
   return resetStates;
 };
-
