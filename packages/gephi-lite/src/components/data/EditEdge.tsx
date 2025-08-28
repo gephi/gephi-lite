@@ -154,7 +154,6 @@ const useEditEdgeForm = ({
     submit,
     main: (
       <div className="panel-body">
-        <h2>{isNew ? t("edition.create_edges") : t("edition.update_edges")}</h2>
         <div className="panel-block">
           <div>
             <label htmlFor="updateEdge-id" className="form-label">
@@ -316,6 +315,8 @@ export const EditEdgeForm: FC<{
   onSubmitted: () => void;
   onCancel: () => void;
 }> = ({ edgeId, onSubmitted, onCancel }) => {
+  const { t } = useTranslation();
+  const isNew = typeof edgeId === "undefined";
   const {
     main,
     footer,
@@ -328,6 +329,8 @@ export const EditEdgeForm: FC<{
 
   return (
     <form className="panel-wrapper" onSubmit={submitForm}>
+      <h2>{isNew ? t("edition.create_edges") : t("edition.update_edges")}</h2>
+
       {main}
       {footer}
     </form>

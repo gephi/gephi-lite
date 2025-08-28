@@ -148,8 +148,6 @@ const useEditNodeForm = ({
     submit,
     main: (
       <div className="panel-body">
-        <h2>{isNew ? t("edition.create_nodes") : t("edition.update_nodes")}</h2>
-
         <div className="panel-block">
           <div>
             <label htmlFor="updateNode-id" className="form-label">
@@ -283,6 +281,8 @@ export const EditNodeForm: FC<{
   onSubmitted: () => void;
   onCancel: () => void;
 }> = ({ nodeId, onSubmitted, onCancel }) => {
+  const { t } = useTranslation();
+  const isNew = typeof nodeId === "undefined";
   const {
     main,
     footer,
@@ -295,6 +295,8 @@ export const EditNodeForm: FC<{
 
   return (
     <form className="panel-wrapper" onSubmit={submitForm}>
+      <h2>{isNew ? t("edition.create_nodes") : t("edition.update_nodes")}</h2>
+
       {main}
       {footer}
     </form>
