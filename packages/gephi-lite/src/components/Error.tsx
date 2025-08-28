@@ -39,7 +39,7 @@ export const ErrorComponent: FC<FallbackProps> = ({ error, resetErrorBoundary })
           </h1>
           <h2 className="text-danger my-3">{error.message || t("error.unknown")}</h2>
 
-          <p className="mt-3">
+          <p className="mt-3 mw-100">
             <Trans i18nKey="error.message" />
           </p>
 
