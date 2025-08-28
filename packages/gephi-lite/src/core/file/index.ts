@@ -65,7 +65,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
 
   try {
     // Parse the file
-    const { data, format } = await parseFile(file);
+    const { data, metadata, format } = await parseFile(file);
 
     // Do the import
     resetStates(false);
@@ -76,7 +76,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       const { mergeState } = appearanceActions;
       data.setAttribute("title", file.filename);
 
-      const graphDataset = initializeGraphDataset(data);
+      const graphDataset = initializeGraphDataset(data, metadata);
       setGraphDataset(graphDataset);
 
       const appearanceState = inferAppearanceState(graphDataset);

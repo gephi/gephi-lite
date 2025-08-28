@@ -14,7 +14,7 @@ import {
   toStringArray,
 } from "@gephi/gephi-lite-sdk";
 import guessFormat from "@gristlabs/moment-guess";
-import { isNumber, sortBy, take, toPairs, uniq } from "lodash";
+import { countBy, isNumber, mean, size, sortBy, take, toPairs, uniq } from "lodash";
 import { DateTime } from "luxon";
 
 import { isValidColor } from "../../utils/colors";
@@ -38,14 +38,15 @@ export function guessSeparator(values: string[]): string | null {
   values.forEach((value) =>
     SEPARATORS.forEach((sep) => {
       const split = value.split(sep);
-      if (split.length > 1 && split.every((s) => !!s && !s.match(/(^ | $)/))) separatorsFrequencies[sep]++;
+      if (split.length > 1 && split.every((s) => !!s.trim())) separatorsFrequencies[sep]++;
     }),
   );
 
   const bestSeparator = sortBy(
-    SEPARATORS.filter((sep) => !!separatorsFrequencies[sep]),
+    SEPARATORS.filter((sep) => separatorsFrequencies[sep] >= values.length / 10),
     (sep) => -separatorsFrequencies[sep],
   )[0];
+
   return bestSeparator || null;
 }
 
@@ -85,6 +86,7 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
     values.every((v) => {
       try {
         const _dateFormat = guessFormat("" + v, "");
+
         // format guesser can return multiple choices, we just pick one
         const dateFormat = Array.isArray(_dateFormat) ? _dateFormat[0] : _dateFormat;
         const correctedDateFormat = dateFormat.replaceAll("Y", "y").replaceAll("D", "d");
@@ -100,24 +102,27 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
     return { type: "date", format };
   }
 
-  // KEYWORDS and CATEGORY
+  // KEYWORDS
   const separator = guessSeparator(
     take(
       values.map((v) => "" + v),
       100,
     ),
   );
-  const uniqValues = uniq(separator ? values.flatMap((v) => (v + "").split(separator)) : values);
-  const uniqValuesCount = uniqValues.length;
+  if (separator) {
+    const splitValuesCounts = countBy(values.flatMap((v) => (v + "").split(separator)));
+    const uniqSplitValuesCount = size(splitValuesCounts);
+    const averageValuesCount = mean(Object.values(splitValuesCounts));
 
-  if (
-    uniqValuesCount > 1 &&
-    uniqValuesCount < 50 &&
-    uniqValuesCount < Math.max(separator ? itemsCount : Math.pow(itemsCount, 0.75), 5)
-  ) {
-    // category and keywords
-    if (separator) return { type: "keywords", separator };
-    else return { type: "category" };
+    if (averageValuesCount > 2 && uniqSplitValuesCount > 1 && uniqSplitValuesCount < itemsCount) {
+      return { type: "keywords", separator };
+    }
+  }
+
+  // CATEGORIES
+  const uniqValuesCount = uniq(values).length;
+  if (uniqValuesCount > 1 && uniqValuesCount < Math.max(Math.pow(itemsCount, 0.75), 5)) {
+    return { type: "category" };
   }
 
   // TEXT
