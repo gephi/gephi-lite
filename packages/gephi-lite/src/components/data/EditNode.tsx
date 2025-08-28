@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { CancelIcon, FieldModelIcon } from "../common-icons";
@@ -28,6 +29,7 @@ const useEditNodeForm = ({
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
+  const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createNode, updateNode } = useGraphDatasetActions();
   const { nodeData, layout, nodeFields } = useGraphDataset();
@@ -109,6 +111,8 @@ const useEditNodeForm = ({
               message: t("edition.create_nodes_success"),
             });
             onSubmitted();
+
+            requestAnimationFrame(() => emitter.emit(EVENTS.nodeCreated, { id }));
           } catch (e) {
             notify({
               type: "error",
@@ -137,7 +141,7 @@ const useEditNodeForm = ({
           }
         }
       }),
-    [createNode, handleSubmit, isNew, nodeData, notify, onSubmitted, select, setValue, t, updateNode],
+    [createNode, emitter, handleSubmit, isNew, nodeData, notify, onSubmitted, select, setValue, t, updateNode],
   );
 
   return {
