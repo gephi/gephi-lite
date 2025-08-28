@@ -6,6 +6,7 @@ import { useFile, useFileActions } from "../../../core/context/dataContexts";
 import { getFilename } from "../../../core/file/utils";
 import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
+import { DownloadIcon } from "../../common-icons";
 
 interface SaveCLocallyProps {
   id?: string;
@@ -36,10 +37,13 @@ export const SaveLocally: FC<SaveCLocallyProps> = ({ id, onStatusChange }) => {
   }, [current?.filename, onStatusChange, exportAsGephiLite, notify, t]);
 
   return (
-    <div id={id} className="d-flex flex-column  justify-content-center align-items-center">
+    <div
+      id={id}
+      className="h-100 d-flex flex-column align-items-center justify-content-center justify-content-center align-items-center"
+    >
       <p>{t("graph.save.local.description")}</p>
-      <button className="gl-btn gl-btn-fill " onClick={download}>
-        {t("common.download")}
+      <button className="gl-btn gl-btn-outline " onClick={download}>
+        <DownloadIcon /> {t("common.download")}
       </button>
     </div>
   );

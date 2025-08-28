@@ -59,7 +59,7 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
           selected={selectedOpen?.id}
           onSelectedChange={(item) => setSelectedOpen(item)}
         />
-        <div className="selected-component-wrapper gl-p-3">
+        <div className="selected-component-wrapper">
           <selectedOpen.component id="openForm" onStatusChange={setStatus} />
         </div>
       </>

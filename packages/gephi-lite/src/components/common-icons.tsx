@@ -32,6 +32,7 @@ import {
   PiCursor,
   PiCursorFill,
   PiDotsThreeVerticalBold,
+  PiDownload,
   PiFunnel,
   PiFunnelFill,
   PiGear,
@@ -108,6 +109,7 @@ export const DataCreationIcon = PiPlusCircle;
 export const DataCreationIconFill = PiPlusCircleFill;
 export const DataIcon = PiTable;
 export const DataIconFill = PiTableFill;
+export const DownloadIcon = PiDownload;
 export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;

@@ -440,20 +440,20 @@
       }
     },
     "save": {
-      "title": "Save as...",
+      "title": "Save workspace as...",
       "github": {
-        "title": "On Github",
+        "title": "Save on GitHub",
         "field": {
           "filename": "Filename",
           "description": "Description",
-          "isPublic": "Create a public gist"
+          "isPublic": "Create a public Gist"
         },
         "success": "File '{{filename}}' has been successfully saved",
         "error": "An error occurred while saving your graph. Please check your connectivity or try later."
       },
       "local": {
-        "title": "Locally",
-        "description": "Click below to download the file",
+        "title": "Save locally",
+        "description": "Click below to download the workspace as a JSON file",
         "success": "Graph has been saved locally",
         "error": "Failed to save the graph locally"
       }

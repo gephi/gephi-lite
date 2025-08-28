@@ -40,31 +40,18 @@ export const SaveAsModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
   return (
     <Modal
-      className="modal-lg"
+      className="modal-lg modal-save-graph"
+      bodyClassName="p-0"
       title={<span className="gl-px-2">{t("graph.save.title").toString()}</span>}
       onClose={() => cancel()}
       doNotPreserveData
     >
-      <div className="d-flex align-items-stretch">
-        <div className="border-end pe-3 me-3">
-          <SideMenu
-            menu={SAVE_COLLECTION_MENU}
-            selected={selected?.id}
-            onSelectedChange={(item) => setSelected(item)}
-          />
-        </div>
-        <div className="flex-grow-1">
+      <>
+        <SideMenu menu={SAVE_COLLECTION_MENU} selected={selected?.id} onSelectedChange={(item) => setSelected(item)} />
+        <div className="selected-component-wrapper">
           <selected.component id="saveForm" onStatusChange={setStatus} />
         </div>
-      </div>
-      <div className="gl-gap-2 d-flex">
-        <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
-          {t("common.cancel").toString()}
-        </button>
-        <button form="saveForm" className="gl-btn gl-btn-fill" disabled={status.type === "loading"}>
-          {t("common.save").toString()}
-        </button>
-      </div>
+      </>
     </Modal>
   );
 };
