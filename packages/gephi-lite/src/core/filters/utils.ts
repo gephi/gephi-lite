@@ -1,6 +1,6 @@
 import { FilteredGraph, Scalar, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
-import { isNumber } from "lodash";
+import { isNil, isNumber } from "lodash";
 import { DateTime } from "luxon";
 
 import {
@@ -47,7 +47,7 @@ export function filterValue(
         if (value instanceof DateTime || isNumber(value)) {
           return !!filter.keepMissingValues;
         }
-        const strings = Array.isArray(value) ? value : [value];
+        const strings = Array.isArray(value) ? value : !isNil(value) ? [value] : [];
         return strings.some((string) => !filter.terms || filter.terms.has(string));
       }
     }
@@ -100,7 +100,7 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
 
   // Edges:
   else {
-    let edges: string[] = [];
+    let edges: string[];
     if (filter.type === "script") {
       const fullGraph = dataGraphToFullGraph(dataset, graph);
       edges = graph.filterEdges((edgeID) =>

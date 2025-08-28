@@ -21,7 +21,7 @@ export function useDataCollection(field: FieldModel) {
       }
       case "keywords": {
         for (const itemId in data) {
-          const keywords = castScalarToModelValue<"keywords">(data[itemId][field.id], field);
+          const keywords = castScalarToModelValue<"keywords">(data[itemId][field.id], field) || [];
           for (let i = 0; i < keywords.length; i++) {
             if (!isNil(keywords[i])) values.add(keywords[i]);
           }

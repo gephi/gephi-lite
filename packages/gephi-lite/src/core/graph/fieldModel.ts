@@ -132,25 +132,19 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
 export function castScalarToModelValue<T extends FieldModelType = FieldModelType>(
   scalar: Scalar,
   fieldModel: FieldModelTypeSpecCollection[T],
-): FieldModelAbstraction[T]["expectedOutput"] {
+): FieldModelAbstraction[T]["expectedOutput"] | undefined {
   switch (fieldModel.type) {
     case "number":
-      return toNumber(scalar) as FieldModelAbstraction["number"]["expectedOutput"];
+      return toNumber(scalar);
     case "category":
     case "text":
     case "url":
     case "color":
-      return toString(scalar) as FieldModelAbstraction["text"]["expectedOutput"];
+      return toString(scalar) || "";
     case "keywords":
-      return toStringArray(
-        scalar,
-        (fieldModel as FieldModelAbstraction["keywords"]["options"]).separator,
-      ) as FieldModelAbstraction["keywords"]["expectedOutput"];
+      return toStringArray(scalar, (fieldModel as FieldModelAbstraction["keywords"]["options"]).separator);
     case "date":
-      return toDate(
-        scalar,
-        (fieldModel as FieldModelAbstraction["date"]["options"]).format,
-      ) as FieldModelAbstraction["date"]["expectedOutput"];
+      return toDate(scalar, (fieldModel as FieldModelAbstraction["date"]["options"]).format);
     default:
       throw new Error(`Unknown field type ${fieldModel.type}`);
   }
