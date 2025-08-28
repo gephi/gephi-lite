@@ -10,6 +10,7 @@ export const EVENTS = {
   focusNodes: "focusNodes",
   nodeCreated: "nodeCreated",
   edgeCreated: "edgeCreated",
+  searchResultsSelected: "searchResultsSelected",
 } as const;
 
 /**
