@@ -70,6 +70,7 @@
     "is-url": "^1.2.4",
     "isomorphic-fetch": "^3.0.0",
     "iwanthue": "^2.0.0",
+    "linkify-it": "^5.0.0",
     "lodash": "^4.17.21",
     "minisearch": "^7.1.1",
     "rc-slider": "^11.1.8",
@@ -93,7 +94,8 @@
     "react-tether": "^3.0.3",
     "react-use-konami": "^1.1.0",
     "seedrandom": "^3.0.5",
-    "sigma": "^3.0.0"
+    "sigma": "^3.0.0",
+    "tlds": "^1.260.0"
   },
   "devDependencies": {
     "@mdx-js/rollup": "^3.1.0",
@@ -103,6 +105,7 @@
     "@types/color": "^4.2.0",
     "@types/file-saver": "^2.0.7",
     "@types/is-url": "^1.2.32",
+    "@types/linkify-it": "^5.0.0",
     "@types/lodash": "^4.17.15",
     "@types/moment-guess": "^1.2.2",
     "@types/node": "^22.12.0",
