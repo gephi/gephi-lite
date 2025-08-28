@@ -21,9 +21,21 @@
 }
 
 .edge-component {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+
   .edge-source,
   .edge-target {
     line-height: normal;
+    @extend .small;
+    @extend .text-ellipsis;
+  }
+
+  .edge-wrapper {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
   }
 
   .edge {
@@ -33,8 +45,9 @@
     flex-grow: 0;
     flex-shrink: 0;
     width: 1em;
-    height: 1.5em;
+    min-height: 1.5em;
     margin: -0.2em 0;
+    @extend .small;
 
     .edge-body {
       flex-grow: 1;
