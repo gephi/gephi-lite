@@ -76,6 +76,7 @@ import {
   PiTrash,
   PiUser,
   PiWarning,
+  PiWarningCircle,
   PiWarningOctagon,
   PiX,
 } from "react-icons/pi";
@@ -120,6 +121,7 @@ export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
 export const HomeIcon = PiHouseLine;
+export const InvalidDataIcon = PiWarningCircle;
 export const LassoIcon = PiLasso;
 export const LassoIconFill = PiLassoBold;
 export const LayoutsIcon = PiPolygon;
