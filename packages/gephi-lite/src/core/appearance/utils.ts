@@ -9,7 +9,7 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity, keyBy } from "lodash";
+import { forEach, identity, isNil, keyBy } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
@@ -174,8 +174,8 @@ export function makeGetColor<
   switch (colorsDef.type) {
     case "field":
       getColor = (data: StaticDynamicItemData) => {
-        const valueAsString = getFieldValue(data, colorsDef.field) + "";
-        return valueAsString || colorsDef.missingColor;
+        const castValue = getFieldValue(data, colorsDef.field) as string | undefined;
+        return !isNil(castValue) ? castValue : colorsDef.missingColor;
       };
       break;
     case "partition":
