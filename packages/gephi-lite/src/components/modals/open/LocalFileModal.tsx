@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PiFolderOpen } from "react-icons/pi";
 
 import { useFile, useFileActions } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
@@ -36,7 +37,7 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
         onStatusChange({ type: "success" });
         notify({
           type: "success",
-          message: t("graph.open.local.success", { filename: file.name }).toString(),
+          message: t("graph.open.local.success", { filename: file.name }),
         });
       } catch (e) {
         onStatusChange({ type: "error" });
@@ -54,20 +55,25 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
   return (
     <form
       id={id}
+      className="text-center h-100 d-flex align-items-center justify-content-center"
       onSubmit={(e) => {
         e.preventDefault();
         if (file) onSubmit(file);
       }}
     >
-      {importStateType === "error" && (
-        <p className="text-center text-danger">{t("graph.open.local.error").toString()}</p>
-      )}
+      {importStateType === "error" && <p className="text-center text-danger">{t("graph.open.local.error")}</p>}
       <DropInput
         value={file}
         onChange={(file) => setFile(file)}
-        helpText={t("graph.open.local.dragndrop_text").toString()}
+        helpText={t("graph.open.local.dragndrop_text")}
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
-      />
+      >
+        {!file && (
+          <button className="gl-btn gl-btn-outline mb-2">
+            <PiFolderOpen /> {t("graph.open.local.button_text")}
+          </button>
+        )}
+      </DropInput>
       {importStateType === "loading" && <Loader />}
     </form>
   );
@@ -83,14 +89,14 @@ export const OpenLocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   }, [status, cancel]);
 
   return (
-    <Modal title={t("graph.open.local.title").toString()}>
+    <Modal title={t("graph.open.local.title")}>
       <OpenLocalFileForm id={"localFileForm"} onStatusChange={(s) => setStatus(s)} />
       <div className="gl-gap-2 d-flex">
-        <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
-          {t("common.cancel").toString()}
+        <button title={t("common.cancel")} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
+          {t("common.cancel")}
         </button>
         <button className="gl-btn gl-btn-fill" form="localFileForm" disabled={status.type === "loading"}>
-          {t("common.open").toString()}
+          {t("common.open")}
         </button>
       </div>
     </Modal>

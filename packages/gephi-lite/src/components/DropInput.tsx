@@ -1,19 +1,17 @@
 import cx from "classnames";
-import React, { FC } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import { Accept, useDropzone } from "react-dropzone";
-import { useTranslation } from "react-i18next";
 
 import { CloseIcon } from "./common-icons";
 
-interface DropInputProperties {
-  value: File | null;
-  onChange: (file: File | null) => void;
-  helpText: string;
-  accept: Accept;
-}
-
-export const DropInput: FC<DropInputProperties> = ({ value, onChange, accept, helpText }) => {
-  const { t } = useTranslation();
+export const DropInput: FC<
+  PropsWithChildren<{
+    value: File | null;
+    onChange: (file: File | null) => void;
+    helpText: string;
+    accept: Accept;
+  }>
+> = ({ value, onChange, accept, helpText, children }) => {
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: accept,
@@ -27,21 +25,27 @@ export const DropInput: FC<DropInputProperties> = ({ value, onChange, accept, he
     <div {...getRootProps()} className="dropzone flex-column d-flex justify-content-center align-items-center">
       <input {...getInputProps()} />
 
-      <p>{value ? value.name : helpText}</p>
-
-      {value && (
-        <button
-          type="button"
-          className={cx("gl-btn gl-btn-outline", !value && "hidden")}
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onChange(null);
-          }}
-        >
-          <CloseIcon /> {t("common.clear").toString()}
-        </button>
-      )}
+      {children}
+      <p className="small d-flex align-items-center">
+        {value ? (
+          <>
+            <button
+              type="button"
+              className={cx("gl-btn gl-btn-outline d-inline-flex ms-2", !value && "hidden")}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onChange(null);
+              }}
+            >
+              {value.name}
+              <CloseIcon />
+            </button>
+          </>
+        ) : (
+          helpText
+        )}
+      </p>
     </div>
   );
 };
