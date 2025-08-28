@@ -18,6 +18,7 @@ import { GroupBase } from "react-select/dist/declarations/src/types";
 
 import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
 import { useDataCollection } from "../../hooks/useDataCollection";
+import { prettifyURL } from "../../utils/linkify";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import ColorPicker, { InlineColorPicker } from "../ColorPicker";
 import MessageTooltip from "../MessageTooltip";
@@ -55,7 +56,7 @@ export const AttributeRenderers: {
   url: ({ value }) =>
     !isNil(value) ? (
       <a href={value} target="_blank" rel="noreferrer" title={value}>
-        {value.replace(/^https?:\/\//, "")}
+        {prettifyURL(value)}
       </a>
     ) : null,
   number: ({ value }) => {

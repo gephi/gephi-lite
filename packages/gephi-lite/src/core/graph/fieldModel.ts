@@ -18,6 +18,7 @@ import { countBy, isNumber, mean, size, sortBy, take, toPairs, uniq } from "loda
 import { DateTime } from "luxon";
 
 import { isValidColor } from "../../utils/colors";
+import linkify, { normalizeURL } from "../../utils/linkify";
 import { getScalarFromStaticDynamicData } from "./dynamicAttributes";
 
 /**
@@ -65,7 +66,7 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
   const cleanedFieldName = fieldName.trim().toLowerCase();
 
   // URLS
-  if (getErrorRatio(values, (v) => typeof v === "string" && v.startsWith("http")) < 0.05) return { type: "url" };
+  if (getErrorRatio(values, (v) => typeof v === "string" && linkify.test(v)) < 0.05) return { type: "url" };
 
   // COLOR
   if (getErrorRatio(values, (v) => typeof v === "string" && isValidColor(v)) < 0.05) return { type: "color" };
@@ -143,9 +144,12 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
   switch (fieldModel.type) {
     case "number":
       return toNumber(scalar);
+    case "url": {
+      const str = toString(scalar) || "";
+      return normalizeURL(str);
+    }
     case "category":
     case "text":
-    case "url":
     case "color":
       return toString(scalar) || "";
     case "keywords":
@@ -226,6 +230,7 @@ export function serializeModelValueToScalar(
       return value;
     case "category":
     case "text":
+    case "url":
     case "color":
       if (typeof value !== "string") return originalScalar; // throw new CastValueError(`Wrong ${fieldModel.type} value`);
       return value;
