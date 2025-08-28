@@ -34,12 +34,7 @@ export const AttributeRenderers: {
     } & FieldModelAbstraction[K]["options"]
   >;
 } = {
-  text: ({ value }) =>
-    !isNil(value) ? (
-      <div title={value} className="text-truncate">
-        <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify>
-      </div>
-    ) : null,
+  text: ({ value }) => (!isNil(value) ? <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify> : null),
   url: ({ value }) =>
     !isNil(value) ? (
       <a href={value} target="_blank" rel="noreferrer" title={value}>

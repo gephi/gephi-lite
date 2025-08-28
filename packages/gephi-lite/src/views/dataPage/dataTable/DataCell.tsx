@@ -1,4 +1,5 @@
 import { FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
+import { isNil } from "lodash";
 import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
 import { PiCheck } from "react-icons/pi";
 import TetherComponent from "react-tether";
@@ -11,7 +12,7 @@ export const ReadDataCell = forwardRef<
   { value: Scalar; field: FieldModel; onClick?: MouseEventHandler }
 >(({ value, field, onClick }, ref) => {
   return (
-    <span ref={ref} className="data-cell" onClick={onClick}>
+    <span ref={ref} className="data-cell" title={!isNil(value) ? value + "" : undefined} onClick={onClick}>
       <RenderItemAttribute value={value} field={field} />
     </span>
   );
