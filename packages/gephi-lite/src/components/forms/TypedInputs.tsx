@@ -35,6 +35,7 @@ export const NumberInput: FC<
         {description && <MessageTooltip message={description} />}
       </div>
       <input
+        step="any"
         {...attrs}
         type="number"
         className={cx("form-control form-control-sm", className)}

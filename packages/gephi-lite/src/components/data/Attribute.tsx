@@ -158,6 +158,7 @@ export const AttributeEditors: {
         className="form-control"
         type="number"
         value={value ?? ""}
+        step="any"
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
       />
