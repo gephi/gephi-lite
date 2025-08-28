@@ -1,3 +1,4 @@
+import { keyBy } from "lodash";
 import { type ComponentType, type FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,7 +8,6 @@ import { type MenuItem, SideMenu } from "../../SideMenu";
 import { Modal } from "../../modals";
 import { OpenCloudFileForm } from "./CloudFileModal";
 import { OpenLocalFileForm } from "./LocalFileModal";
-import { OpenRemoteFileForm } from "./RemoteFileModal";
 
 type OpenCollectionMenuItem = MenuItem<{
   component: ComponentType<{
@@ -23,20 +23,21 @@ const OPEN_COLLECTION_MENU: OpenCollectionMenuItem[] = [
     component: OpenLocalFileForm,
   },
   {
-    id: "remote",
-    i18nKey: "graph.open.remote.title",
-    component: OpenRemoteFileForm,
-  },
-  {
     id: "github",
     i18nKey: "graph.open.github.title",
     component: OpenCloudFileForm,
   },
 ];
+const OPEN_COLLECTION_MENU_DICT = keyBy(OPEN_COLLECTION_MENU, "id");
 
-export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
+export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
+  cancel,
+  arguments: { initialOpenedTab },
+}) => {
   const { t } = useTranslation();
-  const [selectedOpen, setSelectedOpen] = useState<OpenCollectionMenuItem>(OPEN_COLLECTION_MENU[0]);
+  const [selectedOpen, setSelectedOpen] = useState<OpenCollectionMenuItem>(
+    () => OPEN_COLLECTION_MENU_DICT[initialOpenedTab || ""] || OPEN_COLLECTION_MENU[0],
+  );
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
 
   useEffect(() => {
@@ -46,23 +47,22 @@ export const OpenModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
   return (
     <Modal
-      className="modal-lg"
+      className="modal-xl modal-open-graph"
+      bodyClassName="p-0"
       title={<span className="gl-px-2">{t("workspace.menu.open").toString()}</span>}
       onClose={() => cancel()}
       doNotPreserveData
     >
-      <div className="d-flex align-items-stretch">
-        <div className="border-end pe-3 me-3">
-          <SideMenu
-            menu={OPEN_COLLECTION_MENU}
-            selected={selectedOpen?.id}
-            onSelectedChange={(item) => setSelectedOpen(item)}
-          />
-        </div>
-        <div className="flex-grow-1">
+      <>
+        <SideMenu
+          menu={OPEN_COLLECTION_MENU}
+          selected={selectedOpen?.id}
+          onSelectedChange={(item) => setSelectedOpen(item)}
+        />
+        <div className="selected-component-wrapper gl-p-3">
           <selectedOpen.component id="openForm" onStatusChange={setStatus} />
         </div>
-      </div>
+      </>
       <div className="gl-gap-2 d-flex">
         <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel").toString()}

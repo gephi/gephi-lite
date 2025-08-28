@@ -2,7 +2,6 @@ import byteSize from "byte-size";
 import cx from "classnames";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaExternalLinkAlt, FaLock, FaSync } from "react-icons/fa";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
@@ -12,10 +11,11 @@ import { useConnectedUser } from "../../../core/user";
 import { displayDateTime } from "../../../utils/date";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
+import { ExternalLinkIcon, LockIcon, SyncIcon } from "../../common-icons";
 import { Modal } from "../../modals";
 import { PleaseSignIn } from "../../user/PleaseSignIn";
 
-const PAGINATION_SIZE = 10;
+const PAGINATION_SIZE = 12;
 
 interface OpenCloudFileFormProps {
   id?: string;
@@ -106,7 +106,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                         setSelected(selected && selected.id === file.id ? null : file);
                       }}
                     >
-                      <td>{!file.isPublic && <FaLock />}</td>
+                      <td>{!file.isPublic && <LockIcon />}</td>
                       <td>
                         {file.filename}
                         <a
@@ -119,7 +119,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <FaExternalLinkAlt size="0.7em" />
+                          <ExternalLinkIcon />
                         </a>
                       </td>
                       <td>{displayDateTime(file.updatedAt)}</td>
@@ -131,7 +131,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
               {hasMore && (
                 <div className="d-flex justify-content-center">
                   <button title="Load next page" className="gl-btn gl-btn-outline" onClick={() => setPage(page + 1)}>
-                    <FaSync className="me-1" />
+                    <SyncIcon className="me-1" />
                     {t("common.load-more").toString()}
                   </button>
                 </div>

@@ -7,7 +7,9 @@
     "open_recent": "Open recent",
     "open_graph": "Open graph file",
     "no_recent": "No remote file has been opened in that browser yet.",
-    "samples": "Samples"
+    "samples": "Samples",
+    "website": "website",
+    "documentation": "documentation"
   },
   "gephi-lite": {
     "title": "Gephi Lite",
@@ -417,21 +419,16 @@
       "title": "Open a graph file",
       "local": {
         "title": "Open a local file",
-        "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML or Graphology JSON file",
+        "button_text": "Select a local file",
+        "dragndrop_text": "GEXF, GRAPHML or Graphology JSON are supported. You can also directly drop a file here.",
         "success": "File {{filename}} has been successfully loaded",
         "error": "An error occurred while opening the file. Please check that the file is a valid."
-      },
-      "remote": {
-        "title": "Open an url",
-        "url-field": "URL of a GEXF, GRAPHML or Graphology JSON file",
-        "success": "File {{filename}} has been successfully loaded",
-        "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid."
       },
       "github": {
         "must-be-signed": "This feature requires to be connected on GitHub",
         "title": "Open a file from GitHub",
         "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on GitHub",
-        "file-open-external": "Open {{filename}} on GitHub",
+        "file-open-external": "Open {{filename}} on Gist",
         "select-file": "Select a file",
         "success": "File {{filename}} has been successfully loaded",
         "error": "A technical error occurred. Please check your connectivity or try later."
@@ -971,7 +968,7 @@
       "save": "Save",
       "export_image": "Export image",
       "export_graph_file": "Export graph file",
-      "github_signin": "Link to GitHub",
+      "github_signin": "Sign-in to GitHub",
       "github_signout": "Disconnect from GitHub"
     }
   }

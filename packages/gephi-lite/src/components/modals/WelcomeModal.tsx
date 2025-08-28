@@ -9,15 +9,10 @@ import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { getAppliedTheme } from "../../core/preferences/utils";
-import { useConnectedUser } from "../../core/user";
 import { Loader } from "../Loader";
-import LocalSwitcher from "../LocalSwitcher";
-import { ThemeSwitcher } from "../ThemeSwitcher";
 import { GitHubIcon } from "../common-icons";
 import { Modal } from "../modals";
-import { OpenCloudFileModal } from "./open/CloudFileModal";
-import { OpenLocalFileModal } from "./open/LocalFileModal";
-import { OpenRemoteFileModal } from "./open/RemoteFileModal";
+import { OpenModal } from "./open/OpenModal";
 
 const SAMPLES = ["Les Miserables.gexf", "Java.gexf", "Power Grid.gexf"];
 
@@ -25,10 +20,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const { notify } = useNotifications();
-  const [user] = useConnectedUser();
   const { theme } = usePreferences();
   const {
-    recentFiles,
     status: { type: fileStateType },
   } = useFile();
   const { open } = useFileActions();
@@ -44,101 +37,69 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   }, [fileStateType, notify, t]);
 
   return (
-    <Modal
-      title={
-        <>
+    <Modal showHeader={false} onClose={fileStateType === "loading" ? undefined : () => cancel()} className="modal-lg">
+      <div className="row position-relative align-items-center mb-5 mt-4">
+        <div className="col-12 col-sm-6 d-flex flex-column align-items-center gl-gap-1 mb-5 mb-sm-0">
           {getAppliedTheme(theme) === "light" ? (
-            <GephiLiteLogo className="me-2 gl-icon-size-heading" />
+            <GephiLiteLogo className="mb-3 gl-px-2 w-33" />
           ) : (
-            <GephiLiteReversedLogo className="me-2 gl-icon-size-heading" />
+            <GephiLiteReversedLogo className="mb-3 gl-px-2 w-33" />
           )}
-          {t("welcome.title")}
-          <span className="flex-grow-1" />
-          <span className="me-1 d-none d-sm-inline" style={{ marginTop: "-0.1em" }}>
-            <ThemeSwitcher />
-          </span>
-          <span className="me-1 d-none d-sm-inline" style={{ marginTop: "-0.1em" }}>
-            <LocalSwitcher />
-          </span>
-        </>
-      }
-      onClose={fileStateType === "loading" ? undefined : () => cancel()}
-      className="modal-lg"
-    >
-      <div className="row mb-3 position-relative">
-        <div className="col-12 col-sm-6">
-          <h3 className=" gl-px-2 gl-heading-3">{t("welcome.open_recent")}</h3>
-          {!!recentFiles.length && (
-            <ul className="list-unstyled">
-              {recentFiles
-                .filter((f) => f.type === "remote")
-                .map((file, i) => (
-                  <li className="mb-1" key={i}>
-                    <button
-                      className="gl-btn"
-                      onClick={async () => {
-                        await open(file);
-                        notify({
-                          type: "success",
-                          message: t("graph.open.remote.success", { filename: file.filename }),
-                          title: t("gephi-lite.title"),
-                        });
-                        submit({});
-                      }}
-                    >
-                      {file.filename}
-                    </button>
-                  </li>
-                ))}
-            </ul>
-          )}
-          {!recentFiles.length && <p className="gl-text-muted">{t("welcome.no_recent")}</p>}
+          <h2 className="gl-px-2 gl-heading-2 text-center mb-0">{t("welcome.title")}</h2>
+          <div>
+            v{version} -{" "}
+            <a rel="noreferrer" target="_blank" href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md">
+              changelog
+            </a>
+          </div>
+          <div className="d-flex flex-wrap align-items-center gl-gap-2 justify-content-center mt-3">
+            <a rel="noreferrer" target="_blank" className="gl-btn gl-btn-outline" href="https://gephi.org/lite">
+              {t("welcome.website")}
+            </a>
+            <a rel="noreferrer" target="_blank" className="gl-btn gl-btn-outline" href="https://docs.gephi.org/lite">
+              {t("welcome.documentation")}
+            </a>
+            <a
+              rel="noreferrer"
+              target="_blank"
+              className="gl-btn gl-btn-icon gl-btn-outline"
+              href="https://github.com/gephi/gephi-lite"
+            >
+              <GitHubIcon />
+            </a>
+          </div>
         </div>
-        <div className="col-12 col-sm-6">
+        <div className="col-12 col-sm-6 px-5">
           <h3 className="gl-px-2 gl-heading-3">{t("welcome.open_graph")}</h3>
-          <ul className="list-unstyled">
+          <ul className="list-unstyled mb-0 d-flex flex-column">
             <li className="mb-1">
               <button
                 className="gl-btn"
                 title={t(`graph.open.local.title`).toString()}
                 onClick={() => {
-                  openModal({ component: OpenLocalFileModal, arguments: {} });
+                  openModal({ component: OpenModal, arguments: { initialOpenedTab: "local" } });
                 }}
               >
                 {t(`graph.open.local.title`).toString()}
               </button>
             </li>
-            {user && user.provider && (
-              <li className="mb-1">
-                <button
-                  className="gl-btn"
-                  title={t(`graph.open.github.title`).toString()}
-                  onClick={() => {
-                    openModal({ component: OpenCloudFileModal, arguments: {} });
-                  }}
-                >
-                  {t(`graph.open.github.title`).toString()}
-                </button>
-              </li>
-            )}
-
             <li className="mb-1">
               <button
                 className="gl-btn"
-                title={t(`graph.open.remote.title`).toString()}
+                title={t(`graph.open.github.title`).toString()}
                 onClick={() => {
-                  openModal({ component: OpenRemoteFileModal, arguments: {} });
+                  openModal({ component: OpenModal, arguments: { initialOpenedTab: "github" } });
                 }}
               >
-                {t(`graph.open.remote.title`).toString()}
+                {t(`graph.open.github.title`).toString()}
               </button>
             </li>
           </ul>
           <br />
           <h3 className="gl-px-2 gl-heading-3">{t("welcome.samples")}</h3>
-          <ul className="list-unstyled">
+          <ul className="list-unstyled mb-0 d-flex flex-column">
             {SAMPLES.map((sample) => (
-              <li className="mb-1" key={sample}>
+              <li key={sample}>
                 <button
                   className="gl-btn"
                   onClick={async () => {
@@ -162,25 +123,6 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           </ul>
         </div>
         {fileStateType === "loading" && <Loader />}
-      </div>
-      <div className="d-flex align-items-top w-100  gl-px-2">
-        <div className="gl-text-section gl-text-muted flex-grow-1 flex-shrink-1">
-          <div>
-            {t("welcome.disclaimer-1")}{" "}
-            <a rel="noreferrer" target="_blank" href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md">
-              v{version}
-            </a>
-          </div>
-          <div>{t("welcome.disclaimer-2")}</div>
-        </div>
-        <a
-          href="https://github.com/gephi/gephi-lite"
-          target="_blank"
-          rel="noreferrer"
-          className="flex-shrink-0 gl-btn gl-btn-icon"
-        >
-          <GitHubIcon />
-        </a>
       </div>
     </Modal>
   );

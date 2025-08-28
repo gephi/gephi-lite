@@ -64,6 +64,20 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
       )}
       {body && (
         <div id="modal-body" className={cx("modal-body", bodyClassName)}>
+          {!showHeader && (
+            <div className="text-end">
+              <button
+                type="button"
+                title={t("common.close").toString()}
+                className="gl-btn gl-btn-icon d-inline-flex"
+                aria-label="Close"
+                onClick={() => onClose && onClose()}
+                disabled={!onClose}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+          )}
           {body}
         </div>
       )}

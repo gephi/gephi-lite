@@ -7,6 +7,7 @@ import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowSquareOut,
+  PiArrowsClockwise,
   PiArrowsInSimple,
   PiBinary,
   PiBinaryBold,
@@ -44,6 +45,7 @@ import {
   PiLassoBold,
   PiLineSegment,
   PiLink,
+  PiLock,
   PiMagicWand,
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
@@ -64,6 +66,7 @@ import {
   PiQuestion,
   PiSelection,
   PiSelectionBold,
+  PiSignIn,
   PiSpinner,
   PiSquare,
   PiStop,
@@ -128,6 +131,8 @@ export const LayoutsIcon = PiPolygon;
 export const LayoutsIconFill = PiPolygonFill;
 export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
+export const LockIcon = PiLock;
+export const LoginIcon = PiSignIn;
 export const MarqueeIcon = PiSelection;
 export const MarqueeIconFill = PiSelectionBold;
 export const MenuCollapseIcon = PiCaretDown;
@@ -146,6 +151,7 @@ export const SearchIcon = PiMagnifyingGlass;
 export const SettingsIcon = PiGear;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
+export const SyncIcon = PiArrowsClockwise;
 export const ThreeDotsVerticalIcon = PiDotsThreeVerticalBold;
 export const TrashIcon = PiTrash;
 export const UnselectAllIcon = PiSpinner;

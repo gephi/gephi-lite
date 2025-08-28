@@ -1,0 +1,32 @@
+.modal-open-graph {
+  .selected-component-wrapper {
+    flex-grow: 1;
+    overflow: auto;
+    height: 60dvh;
+  }
+
+  .modal-body {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .side-menu {
+    @extend .border-end;
+    @extend .gl-p-3;
+  }
+
+  @include media-breakpoint-down(md) {
+    .selected-component-wrapper {
+      height: 70dvh;
+    }
+    .modal-body {
+      flex-direction: column;
+    }
+    .side-menu {
+      flex-direction: row;
+      justify-content: center;
+      border-right-width: 0;
+      border-bottom: $border-width solid $border-color;
+    }
+  }
+}
