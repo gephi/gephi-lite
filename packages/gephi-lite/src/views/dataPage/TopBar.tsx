@@ -92,7 +92,7 @@ export const TopBar: FC = () => {
         ))}
       </section>
       <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-middle p-2 gap-1">
-        <span className="gl-btnlike">
+        <span className="gl-btnlike selection-title">
           <Trans i18nKey={`selection.${type}`} count={matchingTypeSelectedCount} />
           {matchingTypeSelectedCount > 0 && t("common.colon")}
         </span>
