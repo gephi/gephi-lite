@@ -148,9 +148,12 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
       const str = toString(scalar) || "";
       return normalizeURL(str);
     }
+    case "color": {
+      const str = toString(scalar) || "";
+      return isValidColor(str) ? str : undefined;
+    }
     case "category":
     case "text":
-    case "color":
       return toString(scalar) || "";
     case "keywords":
       return toStringArray(scalar, (fieldModel as FieldModelAbstraction["keywords"]["options"]).separator);
