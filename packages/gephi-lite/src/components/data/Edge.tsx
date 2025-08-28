@@ -16,12 +16,12 @@ export const EdgeComponent: FC<{
   className?: string;
 }> = ({ label, color, source, target, hidden, directed, className }) => {
   return (
-    <div className={cx("d-flex flex-column mw-100 edge-component", className)}>
-      <div className="text-ellipsis small edge-source">
+    <div className={cx("edge-component", className)}>
+      <div className="edge-source">
         <NodeComponent {...source} />
       </div>
-      <div className="d-flex justify-content-start align-items-stretch">
-        <div className="edge flex-grow-0 small">
+      <div className="edge-wrapper">
+        <div className="edge">
           <span className={cx(hidden ? "dotted" : "dash", "edge-body")} style={{ borderColor: color }} />{" "}
           {directed && <span className="edge-arrow" style={{ borderTopColor: color }} />}
         </div>
@@ -31,7 +31,7 @@ export const EdgeComponent: FC<{
           </span>
         )}
       </div>
-      <div className="text-ellipsis small edge-target">
+      <div className="edge-target">
         <NodeComponent {...target} />
       </div>
     </div>
