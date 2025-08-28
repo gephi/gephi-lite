@@ -138,7 +138,7 @@ $table-editable-columns-cell-hover-bg: color-mix(
         &.editable {
           padding: 0;
 
-          .tether-target {
+          .tether-target:not(.message-tooltip) {
             width: 100%;
             padding: map.get($spacers, 1) 0;
             @extend .text-ellipsis;

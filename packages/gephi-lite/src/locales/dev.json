@@ -402,7 +402,7 @@
       "warnings": {
         "missing": "{{nbValues}} missing values",
         "wrong": "{{nbValues}} values are not quantitative",
-        "allMissing": "No values in the graph"
+        "invalid_data": "The value \"{{value}}\" cannot be interpreted as a \"{{type}}\" value."
       },
       "field": {
         "id": "Identifier",

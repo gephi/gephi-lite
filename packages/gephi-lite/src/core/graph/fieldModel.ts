@@ -215,6 +215,8 @@ export function serializeModelValueToScalar(
   fieldModel: FieldModelTypeSpec,
   originalScalar: Scalar,
 ): Scalar {
+  if (value === undefined) return undefined;
+
   switch (fieldModel.type) {
     case "number":
       if (typeof value !== "number") return originalScalar;

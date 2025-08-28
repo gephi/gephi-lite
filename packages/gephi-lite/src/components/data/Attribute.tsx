@@ -20,13 +20,30 @@ import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/
 import { useDataCollection } from "../../hooks/useDataCollection";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import ColorPicker, { InlineColorPicker } from "../ColorPicker";
-import { FieldModelIcon } from "../common-icons";
+import MessageTooltip from "../MessageTooltip";
+import { FieldModelIcon, InvalidDataIcon } from "../common-icons";
 import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
 /**
  * Render values:
  * **************
  */
+export const InvalidAttributeRenderer: FC<{ value: Scalar; expectedType: FieldModelType }> = ({
+  value,
+  expectedType,
+}) => {
+  const { t } = useTranslation("translation");
+  return (
+    <span className="invalid-value">
+      <span>{value}</span>{" "}
+      <MessageTooltip
+        className="message-tooltip"
+        message={t("graph.model.warnings.invalid_data", { value, type: expectedType })}
+        icon={InvalidDataIcon}
+      />
+    </span>
+  );
+};
 export const AttributeRenderers: {
   [K in keyof FieldModelAbstraction]: FC<
     {
@@ -71,11 +88,13 @@ export const RenderKeywords = AttributeRenderers.keywords;
 export const RenderDate = AttributeRenderers.date;
 export const RenderColor = AttributeRenderers.color;
 
-export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar }> = ({ field, value }) =>
-  createElement(AttributeRenderers[field.type] as FC<{ value?: ModelValueType }>, {
-    ...field,
-    value: castScalarToModelValue(value, field),
-  });
+export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar }> = ({ field, value }) => {
+  const castValue = castScalarToModelValue(value, field);
+  const AttributeRenderer = AttributeRenderers[field.type] as FC<{ value?: ModelValueType }>;
+
+  if (!isNil(value) && isNil(castValue)) return <InvalidAttributeRenderer value={value} expectedType={field.type} />;
+  return <AttributeRenderer {...field} value={castValue} />;
+};
 
 /**
  * Edit values:

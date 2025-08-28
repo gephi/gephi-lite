@@ -45,13 +45,33 @@
       width: 0;
       height: 0;
       border-left: 0.3em solid transparent;
-      border-left-width: 0.3em;
       border-right: 0.3em solid transparent;
-      border-right-width: 0.3em;
       border-top: 0.6em solid red;
       flex-shrink: 0;
-      border-left-width: 0.3em;
-      border-right-width: 0.3em;
+    }
+  }
+}
+
+.invalid-value {
+  @extend .text-muted;
+  @extend .gl-gap-1;
+  font-style: italic;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    @extend .text-truncate;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  .message-tooltip {
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    .gl-btn {
+      @extend .text-dark;
     }
   }
 }
