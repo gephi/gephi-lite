@@ -1,4 +1,4 @@
-import { gephiLiteParse } from "@gephi/gephi-lite-sdk";
+import { FieldModel, gephiLiteParse } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
@@ -51,10 +51,13 @@ async function getFileContent(file: FileTypeWithoutFormat): Promise<string> {
 /**
  * Parse the content of the given file and returns its data and its type.
  */
-export async function parseFile(
-  file: FileTypeWithoutFormat,
-): Promise<
-  { format: "gexf" | "graphml" | "graphology"; data: Graph } | { format: "gephi-lite"; data: GephiLiteFileFormat }
+export async function parseFile(file: FileTypeWithoutFormat): Promise<
+  | {
+      format: "gexf" | "graphml" | "graphology";
+      data: Graph;
+      metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
+    }
+  | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
 > {
   const content = await getFileContent(file);
   const extension = (file.filename.split(".").pop() || "").toLowerCase();
@@ -65,6 +68,27 @@ export async function parseFile(
       return {
         format: "gexf",
         data: gexf.parse(Graph, content, { allowUndeclaredAttributes: true, addMissingNodes: true }),
+        metadata: {
+          nodeFields: [
+            {
+              id: "label",
+              itemType: "nodes",
+              type: "text",
+            },
+            {
+              id: "z",
+              itemType: "nodes",
+              type: "number",
+            },
+          ],
+          edgeFields: [
+            {
+              id: "label",
+              itemType: "edges",
+              type: "text",
+            },
+          ],
+        },
       };
     case "graphml":
       return {

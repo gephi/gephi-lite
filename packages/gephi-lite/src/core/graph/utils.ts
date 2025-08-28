@@ -1,7 +1,7 @@
 import { NodeCoordinates, getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { flatMap, forEach, isNil, isNumber, keys, mapValues, omit, sortBy, uniq, values } from "lodash";
+import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, sortBy, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
 import { inferFieldType } from "./fieldModel";
@@ -21,7 +21,7 @@ import {
 export { datasetToString, getEmptyGraphDataset, parseDataset } from "@gephi/gephi-lite-sdk";
 
 export function getRandomNodeCoordinate(): number {
-  return Math.random() * 100;
+  return Math.random() * 1000;
 }
 
 export function cleanNode(_node: string, attributes: Attributes): { data: ItemData; position: NodeCoordinates } {
@@ -48,7 +48,10 @@ export function cleanEdge(_edge: string, attributes: Attributes): { data: ItemDa
  * This function takes any graphology instance (like returned by any graphology
  * importer basically), and returns a properly shaped graph dataset:
  */
-export function initializeGraphDataset(graph: Graph): GraphDataset {
+export function initializeGraphDataset(
+  graph: Graph,
+  { nodeFields, edgeFields }: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] } = {},
+): GraphDataset {
   const dataset = getEmptyGraphDataset();
 
   // setting graph meta data
@@ -86,20 +89,26 @@ export function initializeGraphDataset(graph: Graph): GraphDataset {
   });
 
   // Infer model:
-  forEach(nodeAttributeValues, (values, key) => {
-    dataset.nodeFields.push({
-      id: key,
-      itemType: "nodes",
-      ...inferFieldType(key, values, graph.order),
-    });
-  });
+  const nodeFieldsDict = keyBy(nodeFields, "id");
+  const edgeFieldsDict = keyBy(edgeFields, "id");
 
+  forEach(nodeAttributeValues, (values, key) => {
+    dataset.nodeFields.push(
+      nodeFieldsDict[key] || {
+        id: key,
+        itemType: "nodes",
+        ...inferFieldType(key, values, graph.order),
+      },
+    );
+  });
   forEach(edgeAttributeValues, (values, key) => {
-    dataset.edgeFields.push({
-      id: key,
-      itemType: "edges",
-      ...inferFieldType(key, values, graph.size),
-    });
+    dataset.edgeFields.push(
+      edgeFieldsDict[key] || {
+        id: key,
+        itemType: "edges",
+        ...inferFieldType(key, values, graph.size),
+      },
+    );
   });
 
   const labelsOrder = ["label", "size", "weight", "color"];
@@ -253,23 +262,3 @@ export function uniqFieldValuesAsStrings(items: Record<string, ItemData>, field:
     }),
   ) as string[];
 }
-
-// /**
-//  * Generate the original graph from the graphDataset.
-//  */
-// export function graphDatasetToGraphData(graphDataset: GraphDataset): DataGraph {
-//   const graph = graphDataset.fullGraph.copy();
-//   Object.entries(graphDataset.nodeData).map(([key, value]) => {
-//     graph.updateNodeAttributes(key, (attrs) => ({ ...attrs, ...value }));
-//   });
-//   Object.entries(graphDataset.edgeData).map(([key, value]) => {
-//     graph.updateEdgeAttributes(key, (attrs) => ({ ...attrs, ...value }));
-//   });
-//   Object.entries(graphDataset.nodeRenderingData).map(([key, value]) => {
-//     graph.updateNodeAttributes(key, (attrs) => ({ ...attrs, ...value }));
-//   });
-//   Object.entries(graphDataset.edgeRenderingData).map(([key, value]) => {
-//     graph.updateEdgeAttributes(key, (attrs) => ({ ...attrs, ...value }));
-//   });
-//   return graph;
-// }
