@@ -50,6 +50,13 @@ export function guessSeparator(values: string[]): string | null {
   return bestSeparator || null;
 }
 
+export function getErrorRatio<T>(values: T[], predicate: (v: T) => boolean): number {
+  const totalLength = values.length;
+  const onlyValidLength = values.filter(predicate).length;
+
+  return (totalLength - onlyValidLength) / totalLength;
+}
+
 /**
  * This function takes an unqualified field model and a list af values, and
  * guesses the field type
@@ -58,17 +65,17 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
   const cleanedFieldName = fieldName.trim().toLowerCase();
 
   // URLS
-  if (values.every((v) => typeof v === "string" && v.startsWith("http"))) return { type: "url" };
+  if (getErrorRatio(values, (v) => typeof v === "string" && v.startsWith("http")) < 0.05) return { type: "url" };
 
   // COLOR
-  if (values.every((v) => typeof v === "string" && isValidColor(v))) return { type: "color" };
+  if (getErrorRatio(values, (v) => typeof v === "string" && isValidColor(v)) < 0.05) return { type: "color" };
 
   // NUMBER
-  if (values.every((v) => isNumber(v))) {
+  if (getErrorRatio(values, (v) => isNumber(v)) < 0.01) {
     if (new Set(["size", "weight", "degree"]).has(cleanedFieldName)) return { type: "number" };
 
     // Numbers non uniq & in series from 0 or 1 => category
-    const uniqValues = sortBy(uniq(values));
+    const uniqValues = sortBy(uniq(values.filter((v) => isNumber(v))));
     if (uniqValues.length < values.length) {
       const isSeriesFrom0Or1 = uniqValues.every(
         (v, i) => (i === 0 && (v === 0 || v === 1)) || i === uniqValues.length - 1 || v === uniqValues[i + 1] - 1,
@@ -83,7 +90,7 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
   // DATE
   const dateFormats: Record<string, number> = {};
   if (
-    values.every((v) => {
+    getErrorRatio(values, (v) => {
       try {
         const _dateFormat = guessFormat("" + v, "");
 
@@ -96,7 +103,7 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
       } catch {
         return false;
       }
-    })
+    }) < 0.05
   ) {
     const [format] = sortBy(toPairs(dateFormats), ([, count]) => -1 * count)[0];
     return { type: "date", format };
