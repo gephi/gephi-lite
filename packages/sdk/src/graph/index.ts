@@ -10,7 +10,7 @@ export function getEmptyGraphDataset(): GraphDataset {
     nodeData: {},
     edgeData: {},
     layout: {},
-    metadata: { type: "mixed" },
+    metadata: { type: "mixed", title: "Untitled workspace" },
     nodeFields: [],
     edgeFields: [],
     fullGraph: new MultiGraph(),
