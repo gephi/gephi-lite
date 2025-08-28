@@ -12,7 +12,7 @@ import { getEmptyDataTableState } from "./utils";
  * **********
  */
 export const reset: Producer<DataTableState, []> = () => {
-  return () => getEmptyDataTableState();
+  return (state) => ({ ...getEmptyDataTableState(), type: state.type });
 };
 export const setType: Producer<DataTableState, [ItemType]> = (type) => {
   return (state) => ({
