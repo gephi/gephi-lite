@@ -1,11 +1,13 @@
 import { type FC, useCallback } from "react";
 
 import { useSelectionActions } from "../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../core/context/eventsContext";
 import { GraphSearch, type Option, type OptionItem } from "./GraphSearch";
 
 const RESULT_MAX_SIZE = 25;
 
 export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) => {
+  const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
 
   const onChange = useCallback(
@@ -15,10 +17,14 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
           if (option.action) option.action();
         } else {
           select({ type: option.type, items: new Set([option.id]) });
+
+          requestAnimationFrame(() =>
+            emitter.emit(EVENTS.searchResultsSelected, { type: option.type, ids: [option.id] }),
+          );
         }
       }
     },
-    [select],
+    [emitter, select],
   );
 
   const postProcessOptions = useCallback(
@@ -46,6 +52,10 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
                 });
               },
             });
+
+            requestAnimationFrame(() =>
+              emitter.emit(EVENTS.searchResultsSelected, { type: "nodes", ids: nodesResult }),
+            );
           }
 
           const edgesResult = result.filter((r): r is OptionItem => r.type === "edges").map((r) => r.id);
@@ -61,13 +71,17 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
                 });
               },
             });
+
+            requestAnimationFrame(() =>
+              emitter.emit(EVENTS.searchResultsSelected, { type: "edges", ids: edgesResult }),
+            );
           }
         }
       }
 
       return result;
     },
-    [select],
+    [emitter, select],
   );
 
   return <GraphSearch className={className} value={null} onChange={onChange} postProcessOptions={postProcessOptions} />;

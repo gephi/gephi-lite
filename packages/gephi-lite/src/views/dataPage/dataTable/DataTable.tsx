@@ -1,3 +1,4 @@
+import { ItemType } from "@gephi/gephi-lite-sdk";
 import { Row, Table, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
@@ -52,6 +53,7 @@ const TableBody: FC<{
   const { rows } = table.getRowModel();
   const { emitter } = useEventsContext();
   const { type } = useDataTable();
+  const { setSort } = useDataTableActions();
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
     overscan: 5,
@@ -65,18 +67,37 @@ const TableBody: FC<{
   });
 
   useEffect(() => {
-    const event = type === "nodes" ? EVENTS.nodeCreated : EVENTS.edgeCreated;
-    const handler = ({ id }: { id: string }) => {
-      // Get the index in the sorted/filtered rows array
+    const scrollToID = (id: string) => {
       const sortedRows = table.getRowModel().rows;
       const sortedIndex = sortedRows.findIndex((r) => r.id === id);
-      rowVirtualizer.scrollToIndex(sortedIndex, { behavior: "auto", align: "center" });
+      rowVirtualizer.scrollToIndex(sortedIndex, { align: "center" });
     };
-    emitter.on(event, handler);
+
+    // Handle scrolling to newly created nodes and edges:
+    const newItemEvent = type === "nodes" ? EVENTS.nodeCreated : EVENTS.edgeCreated;
+    const newItemHandler = ({ id }: { id: string }) => {
+      scrollToID(id);
+    };
+
+    // Handle scrolling to searched items:
+    const searchedItemsHandler = ({ type: eventItemType, ids }: { type: ItemType; ids: string[] }) => {
+      if (type !== eventItemType) return;
+
+      if (ids.length === 1) {
+        scrollToID(ids[0]);
+      } else {
+        setSort([{ id: SPECIFIC_COLUMNS.selected, desc: true }]);
+        rowVirtualizer.scrollToIndex(0);
+      }
+    };
+
+    emitter.on(newItemEvent, newItemHandler);
+    emitter.on(EVENTS.searchResultsSelected, searchedItemsHandler);
     return () => {
-      emitter.off(event, handler);
+      emitter.off(newItemEvent, newItemHandler);
+      emitter.off(EVENTS.searchResultsSelected, searchedItemsHandler);
     };
-  }, [emitter, rowVirtualizer, table, type]);
+  }, [emitter, rowVirtualizer, setSort, table, type]);
 
   return (
     <tbody
