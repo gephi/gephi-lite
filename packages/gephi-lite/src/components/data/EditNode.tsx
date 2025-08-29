@@ -147,7 +147,7 @@ const useEditNodeForm = ({
   return {
     submit,
     main: (
-      <div className="panel-body">
+      <>
         <div className="panel-block">
           <div>
             <label htmlFor="updateNode-id" className="form-label">
@@ -232,19 +232,17 @@ const useEditNodeForm = ({
             </div>
           ))}
         </div>
-      </div>
+      </>
     ),
     footer: (
-      <div className="panel-footer">
-        <div className="gl-actions">
-          <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
-            <CancelIcon />
-          </button>
+      <div className="gl-actions">
+        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+          <CancelIcon />
+        </button>
 
-          <button type="submit" className="gl-btn gl-btn-fill">
-            {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
-          </button>
-        </div>
+        <button type="submit" className="gl-btn gl-btn-fill">
+          {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
+        </button>
       </div>
     ),
   };
@@ -270,7 +268,8 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
       className="modal-lg edit-node"
       onSubmit={submitForm}
     >
-      {main}
+      <div className="d-flex flex-column gl-gap-3">{main}</div>
+
       {footer}
     </Modal>
   );
@@ -295,10 +294,12 @@ export const EditNodeForm: FC<{
 
   return (
     <form className="panel-wrapper" onSubmit={submitForm}>
-      <h2>{isNew ? t("edition.create_nodes") : t("edition.update_nodes")}</h2>
+      <div className="panel-body">
+        <h2>{isNew ? t("edition.create_nodes") : t("edition.update_nodes")}</h2>
+        {main}
+      </div>
 
-      {main}
-      {footer}
+      <div className="panel-footer">{footer}</div>
     </form>
   );
 };
