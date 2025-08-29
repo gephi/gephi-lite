@@ -1,7 +1,7 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { capitalize } from "lodash";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
@@ -75,8 +75,16 @@ export const TopBar: FC = () => {
   const { emptySelection } = useSelectionActions();
   const { deleteItems } = useGraphDatasetActions();
   const { type: selectionType, items } = useSelection();
-  const selectionActionDisabled = selectionType !== type || !items.size;
+  const { nodeFields, edgeFields } = useGraphDataset();
   const matchingTypeSelectedCount = selectionType === type ? items.size : 0;
+  const selectionActionDisabled = selectionType !== type || !items.size;
+
+  // If nodes/edges has no data, multi edition can't be done
+  const isMultiEditionPossible = useMemo(() => {
+    if (selectionType === "edges" && edgeFields.length === 0) return false;
+    if (selectionType === "nodes" && nodeFields.length === 0) return false;
+    return true;
+  }, [selectionType, nodeFields, edgeFields]);
 
   return (
     <div className="menu-bar">
@@ -116,30 +124,32 @@ export const TopBar: FC = () => {
             >
               <OpenInGraphIcon />
             </button>
-            <button
-              className="gl-btn gl-btn-icon"
-              title={t(`edition.edit_selected_${type}`, { count: items.size })}
-              disabled={selectionActionDisabled}
-              onClick={() =>
-                items.size === 1
-                  ? openModal({
-                      component: EditItemModal,
-                      arguments: {
-                        type,
-                        itemId: Array.from(items)[0],
-                      },
-                    })
-                  : openModal({
-                      component: EditMultipleItemsModal,
-                      arguments: {
-                        type,
-                        items,
-                      },
-                    })
-              }
-            >
-              <EditIcon />
-            </button>
+            {(items.size === 1 || isMultiEditionPossible) && (
+              <button
+                className="gl-btn gl-btn-icon"
+                title={t(`edition.edit_selected_${type}`, { count: items.size })}
+                disabled={selectionActionDisabled}
+                onClick={() =>
+                  items.size === 1
+                    ? openModal({
+                        component: EditItemModal,
+                        arguments: {
+                          type,
+                          itemId: Array.from(items)[0],
+                        },
+                      })
+                    : openModal({
+                        component: EditMultipleItemsModal,
+                        arguments: {
+                          type,
+                          items,
+                        },
+                      })
+                }
+              >
+                <EditIcon />
+              </button>
+            )}
             <button
               className="gl-btn gl-btn-icon"
               title={t(`edition.delete_selected_${type}`, { count: items.size })}
