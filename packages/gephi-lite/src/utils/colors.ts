@@ -20,7 +20,7 @@ export function rgbaToHex(value: RGBColor): string {
 export function isValidColor(value: string): boolean {
   return (
     !!HTML_COLORS[value] ||
-    !!value.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) ||
+    !!value.match(/^#(?:[0-9a-fA-F]{3,4}){1,2}$/) ||
     !!value.match(/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/) ||
     !!value.match(/^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*\d\)$/)
   );

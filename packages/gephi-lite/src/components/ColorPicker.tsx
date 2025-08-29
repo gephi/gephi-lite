@@ -12,7 +12,12 @@ export const InlineColorPicker: FC<{ color: string | undefined; onChange: (color
   return (
     <SketchPicker
       color={color ? hexToRgba(color) : undefined}
-      onChange={(color) => onChange(rgbaToHex(color.rgb))}
+      onChange={(color, e) => {
+        onChange(rgbaToHex(color.rgb));
+        // To avoid text selection while draggin
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+      }}
       styles={{
         default: {
           picker: {
@@ -35,7 +40,11 @@ const ColorPicker: FC<
 
   return (
     <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
-      <button type="button" className="gl-btn square border border-black border-2" style={{ background: color || "#ffffff" }}>
+      <button
+        type="button"
+        className="gl-btn square border border-black border-2"
+        style={{ background: color || "#ffffff" }}
+      >
         <span style={{ color: "transparent" }}>X</span>
       </button>
       <div className="custom-color-picker gl-border">
