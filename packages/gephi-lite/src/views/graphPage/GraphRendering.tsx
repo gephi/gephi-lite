@@ -150,6 +150,7 @@ export const GraphRendering: FC = () => {
       enableEdgeEvents: true,
       renderEdgeLabels: true,
       zIndex: true,
+      minEdgeThickness: 0.3,
       itemSizesReference: "positions",
       zoomToSizeRatioFunction: (x) => x,
       defaultNodeType: "image",
