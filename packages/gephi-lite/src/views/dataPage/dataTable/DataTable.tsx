@@ -1,8 +1,8 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
-import { Row, Table, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { Row, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
-import { FC, RefObject, useEffect, useMemo, useRef } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import { ScrollSyncPane } from "react-scroll-sync";
 
 import {
@@ -44,18 +44,67 @@ const TableBodyRow: FC<{
   );
 };
 
-const TableBody: FC<{
-  table: Table<ItemRow>;
-  tableContainerRef: RefObject<HTMLDivElement>;
-}> = ({ table, tableContainerRef }) => {
-  const { rows } = table.getRowModel();
+export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
   const { emitter } = useEventsContext();
-  const { type } = useDataTable();
-  const { setSort } = useDataTableActions();
+  const { nodeData, edgeData, fullGraph } = useGraphDataset();
+  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
+  const { type: selectionType, items } = useSelection();
+
+  const { type, dataTableState } = useDataTable();
+  const { updateColumnSizing, updateColumnSizingInfo, setSort } = useDataTableActions();
+  const { columns, columnPinningState } = useDataTableColumns(itemIDs);
+
+  const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
+  const dynamicData = useMemo(
+    () => (type === "nodes" ? dynamicNodeData : dynamicEdgeData),
+    [dynamicNodeData, dynamicEdgeData, type],
+  );
+  const dataRows = useMemo<ItemRow[]>(
+    () =>
+      itemIDs.map((id) =>
+        type === "nodes"
+          ? {
+              id,
+              selected: selectionType === type && items.has(id),
+              degree: dynamicData[id].degree as number,
+              data: data[id],
+            }
+          : {
+              id,
+              selected: selectionType === type && items.has(id),
+              sourceId: fullGraph.source(id),
+              targetId: fullGraph.target(id),
+              data: data[id],
+            },
+      ),
+    [itemIDs, type, selectionType, items, dynamicData, data, fullGraph],
+  );
+
+  const tableContainerRef = useRef<HTMLTableElement>(null);
+  const table = useReactTable({
+    data: dataRows,
+    columns,
+    getRowId: (row) => row.id,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    columnResizeMode: "onChange",
+    onSortingChange: setSort,
+    defaultColumn: {
+      minSize: 30,
+      enableResizing: true,
+    },
+    state: {
+      ...dataTableState,
+      ...columnPinningState,
+    },
+    onColumnSizingChange: updateColumnSizing,
+    onColumnSizingInfoChange: updateColumnSizingInfo,
+  });
+  const { rows: tableRows } = table.getRowModel();
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
     overscan: 5,
-    count: rows.length,
+    count: dataRows.length,
     estimateSize: () => 41,
     getScrollElement: () => tableContainerRef.current,
     measureElement:
@@ -96,80 +145,6 @@ const TableBody: FC<{
       emitter.off(EVENTS.searchResultsSelected, searchedItemsHandler);
     };
   }, [emitter, rowVirtualizer, setSort, table, type]);
-
-  return (
-    <tbody
-      style={{
-        height: `${rowVirtualizer.getTotalSize()}px`,
-      }}
-    >
-      {rowVirtualizer.getVirtualItems().map((virtualRow) => (
-        <TableBodyRow
-          key={rows[virtualRow.index].id}
-          row={rows[virtualRow.index] as Row<ItemRow>}
-          virtualRow={virtualRow}
-          rowVirtualizer={rowVirtualizer}
-        />
-      ))}
-    </tbody>
-  );
-};
-
-export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
-  const { nodeData, edgeData, fullGraph } = useGraphDataset();
-  const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
-  const { type: selectionType, items } = useSelection();
-
-  const { type, dataTableState } = useDataTable();
-  const { updateColumnSizing, updateColumnSizingInfo, setSort } = useDataTableActions();
-  const { columns, columnPinningState } = useDataTableColumns(itemIDs);
-
-  const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
-  const dynamicData = useMemo(
-    () => (type === "nodes" ? dynamicNodeData : dynamicEdgeData),
-    [dynamicNodeData, dynamicEdgeData, type],
-  );
-  const rows = useMemo<ItemRow[]>(
-    () =>
-      itemIDs.map((id) =>
-        type === "nodes"
-          ? {
-              id,
-              selected: selectionType === type && items.has(id),
-              degree: dynamicData[id].degree as number,
-              data: data[id],
-            }
-          : {
-              id,
-              selected: selectionType === type && items.has(id),
-              sourceId: fullGraph.source(id),
-              targetId: fullGraph.target(id),
-              data: data[id],
-            },
-      ),
-    [itemIDs, type, selectionType, items, dynamicData, data, fullGraph],
-  );
-
-  const tableContainerRef = useRef<HTMLTableElement>(null);
-  const table = useReactTable({
-    data: rows,
-    columns,
-    getRowId: (row) => row.id,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    columnResizeMode: "onChange",
-    onSortingChange: setSort,
-    defaultColumn: {
-      minSize: 30,
-      enableResizing: true,
-    },
-    state: {
-      ...dataTableState,
-      ...columnPinningState,
-    },
-    onColumnSizingChange: updateColumnSizing,
-    onColumnSizingInfoChange: updateColumnSizingInfo,
-  });
 
   return (
     <div className="position-absolute inset-0">
@@ -218,7 +193,20 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
               </tr>
             ))}
           </thead>
-          <TableBody table={table} tableContainerRef={tableContainerRef} />
+          <tbody
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+              <TableBodyRow
+                key={tableRows[virtualRow.index].id}
+                row={tableRows[virtualRow.index]}
+                virtualRow={virtualRow}
+                rowVirtualizer={rowVirtualizer}
+              />
+            ))}
+          </tbody>
         </table>
       </ScrollSyncPane>
     </div>
