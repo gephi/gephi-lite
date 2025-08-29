@@ -13,17 +13,23 @@ import { CodeEditorIcon } from "../common-icons";
 import { Modal } from "../modals";
 
 export interface FunctionEditorProps<T extends Function> {
+  editorName?: string;
   fullEditor?: boolean;
   functionJsDoc: string;
   initialFunctionCode: string;
   checkFunction: (fn: T) => void; // throw error for unvalid
+  onSubmit?: (fn: T) => void;
+  saveAndRunI18nKey?: string;
 }
 
 export function useFunctionEditor<T extends Function>({
+  editorName,
   fullEditor,
   checkFunction,
   functionJsDoc,
   initialFunctionCode,
+  onSubmit,
+  saveAndRunI18nKey,
 }: FunctionEditorProps<T>) {
   const { theme } = usePreferences();
   const { t } = useTranslation();
@@ -69,12 +75,16 @@ export function useFunctionEditor<T extends Function>({
                         component: FunctionEditorModal<T>,
                         arguments: {
                           title: t("edition.code_editor"),
+                          editorName,
                           functionJsDoc,
                           checkFunction,
                           initialFunctionCode: code,
+                          withSaveAndRun: !!onSubmit,
+                          saveAndRunI18nKey,
                         },
-                        beforeSubmit: ({ fn }) => {
+                        beforeSubmit: ({ fn, run }) => {
                           setCode(fn.toString());
+                          if (run && onSubmit) onSubmit(fn);
                         },
                       });
                     else console.error("Cannot open code editor, because of error", error);
@@ -147,7 +157,7 @@ export function FunctionEditorModal<T extends Function>(
 ) {
   const { t } = useTranslation();
   const { submit, cancel } = props;
-  const { title, withSaveAndRun } = props.arguments;
+  const { title, withSaveAndRun, saveAndRunI18nKey = "common.save-and-run" } = props.arguments;
   const { content, getFunction } = useFunctionEditor({ ...props.arguments, fullEditor: true });
 
   const save = useCallback(
@@ -161,30 +171,20 @@ export function FunctionEditorModal<T extends Function>(
   );
 
   return (
-    <Modal className="modal-xl" title={title} onClose={() => cancel()} onSubmit={() => save(true)}>
+    <Modal className="modal-xl" bodyClassName="p-0" title={title} onClose={() => cancel()} onSubmit={() => save(true)}>
       {content}
       <div className="gl-gap-2 d-flex">
-        <button
-          type="button"
-          title={t("common.cancel").toString()}
-          className="gl-btn gl-btn-outline"
-          onClick={() => cancel()}
-        >
+        <button type="button" title={t("common.cancel")} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}
         </button>
 
-        <button
-          type="button"
-          title={t("common.save").toString()}
-          className="gl-btn gl-btn-fill"
-          onClick={() => save(false)}
-        >
+        <button type="button" title={t("common.save")} className="gl-btn gl-btn-fill" onClick={() => save(false)}>
           {t("common.save")}
         </button>
 
         {withSaveAndRun && (
-          <button type="submit" title={t("common.save-and-run").toString()} className="gl-btn gl-btn-fill">
-            {t("common.save-and-run")}
+          <button type="submit" title={t(saveAndRunI18nKey)} className="gl-btn gl-btn-fill">
+            {t(saveAndRunI18nKey)}
           </button>
         )}
       </div>

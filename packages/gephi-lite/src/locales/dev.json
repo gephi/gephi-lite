@@ -516,6 +516,7 @@
     "sort_asc": "Sort A→Z (0→9)",
     "sort_desc": "Sort Z→A (9→0)",
     "create_column": "Create column",
+    "save_and_create_column": "Save and create column",
     "modify_column": "Modify column",
     "duplicate_column": "Duplicate column",
     "move_left": "Move to the left",

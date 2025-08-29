@@ -97,11 +97,6 @@ export const useCreateScriptedFieldModelForm = ({
     },
     [type],
   );
-  const { content: editorContent, getFunction } = useFunctionEditor<ScriptedFieldModelFunction>({
-    checkFunction,
-    functionJsDoc: BASE_JS[type].doc,
-    initialFunctionCode: BASE_JS[type].baseFn,
-  });
 
   const [newId, setNewId] = useState<string>("");
   // TODO: Add input for scope
@@ -109,86 +104,86 @@ export const useCreateScriptedFieldModelForm = ({
 
   const fields = type === "nodes" ? nodeFields : edgeFields;
   const existingField = useMemo(() => fields.find((f) => f.id === newId), [fields, newId]);
+  const isFormValid = useMemo(() => !!newId && !existingField, [existingField, newId]);
 
+  const onSubmit = useCallback(
+    (script: ScriptedFieldModelFunction) => {
+      try {
+        let graph: FullGraph;
+        switch (scope) {
+          // TODO:
+          // case "selected":
+          //   graph = dataGraphToFullGraph(dataset, dataset);
+          //   break;
+          case "filtered":
+            graph = dataGraphToFullGraph(dataset, filteredGraph);
+            break;
+          case "all":
+          default:
+            graph = dataGraphToFullGraph(dataset);
+            // graph = dataGraphToFullGraph(graphDatasetAtom.get());
+            break;
+        }
+
+        Object.freeze(graph);
+
+        const values: Record<string, Scalar> = {};
+        if (type === "nodes") {
+          graph.nodes().forEach((id, index) => {
+            values[id] = script(id, graph.getNodeAttributes(id), index, graph);
+          });
+        } else {
+          graph.edges().forEach((id, index) => {
+            values[id] = script(id, graph.getEdgeAttributes(id), index, graph);
+          });
+        }
+
+        const valuesArray = Object.values(values);
+
+        const fieldModel: FieldModel = {
+          id: newId,
+          itemType: type,
+          ...inferFieldType(newId, valuesArray, valuesArray.length),
+        };
+        const index = insertAt
+          ? fields.findIndex((f) => f.id === insertAt.id) + (insertAt.pos === "before" ? -1 : 1)
+          : undefined;
+        createFieldModel(fieldModel, { index, values });
+        notify({
+          type: "success",
+          title: t(`edition.create_${type}_scripted_field`),
+          message: t(`edition.create_${type}_scripted_field_success`),
+        });
+      } catch (e) {
+        notify({
+          type: "error",
+          title: t(`edition.create_${type}_scripted_field`),
+          message: (e as Error).message || t("error.unknown"),
+        });
+      }
+      if (onSubmitted) onSubmitted();
+    },
+    [createFieldModel, dataset, fields, filteredGraph, insertAt, newId, notify, onSubmitted, scope, t, type],
+  );
+  const { content: editorContent, getFunction } = useFunctionEditor<ScriptedFieldModelFunction>({
+    checkFunction,
+    functionJsDoc: BASE_JS[type].doc,
+    initialFunctionCode: BASE_JS[type].baseFn,
+    onSubmit: isFormValid ? onSubmit : undefined,
+    saveAndRunI18nKey: "datatable.save_and_create_column",
+  });
   const submit = useCallback(() => {
-    const script = getFunction();
-    if (!script) return;
-
-    try {
-      let graph: FullGraph;
-      switch (scope) {
-        // TODO:
-        // case "selected":
-        //   graph = dataGraphToFullGraph(dataset, dataset);
-        //   break;
-        case "filtered":
-          graph = dataGraphToFullGraph(dataset, filteredGraph);
-          break;
-        case "all":
-        default:
-          graph = dataGraphToFullGraph(dataset);
-          // graph = dataGraphToFullGraph(graphDatasetAtom.get());
-          break;
-      }
-
-      Object.freeze(graph);
-
-      const values: Record<string, Scalar> = {};
-      if (type === "nodes") {
-        graph.nodes().forEach((id, index) => {
-          values[id] = script(id, graph.getNodeAttributes(id), index, graph);
-        });
-      } else {
-        graph.edges().forEach((id, index) => {
-          values[id] = script(id, graph.getEdgeAttributes(id), index, graph);
-        });
-      }
-
-      const valuesArray = Object.values(values);
-
-      const fieldModel: FieldModel = {
-        id: newId,
-        itemType: type,
-        ...inferFieldType(newId, valuesArray, valuesArray.length),
-      };
-      const index = insertAt
-        ? fields.findIndex((f) => f.id === insertAt.id) + (insertAt.pos === "before" ? -1 : 1)
-        : undefined;
-      createFieldModel(fieldModel, { index, values });
-      notify({
-        type: "success",
-        title: t(`edition.create_${type}_scripted_field`),
-        message: t(`edition.create_${type}_scripted_field_success`),
-      });
-    } catch (e) {
-      notify({
-        type: "error",
-        title: t(`edition.create_${type}_scripted_field`),
-        message: (e as Error).message || t("error.unknown"),
-      });
-    }
-    if (onSubmitted) onSubmitted();
-  }, [
-    createFieldModel,
-    dataset,
-    fields,
-    filteredGraph,
-    getFunction,
-    insertAt,
-    newId,
-    notify,
-    onSubmitted,
-    scope,
-    t,
-    type,
-  ]);
+    const fn = getFunction();
+    if (fn && isFormValid) onSubmit(fn);
+  }, [getFunction, isFormValid, onSubmit]);
 
   return {
     submit,
     main: (
       <div className="panel-body">
         <h2>{t(`edition.create_${type}_scripted_field`)}</h2>
-        <div>
+
+        <div className="panel-block">
           <label htmlFor="column-id" className="form-label">
             {t("graph.model.field.id")}
           </label>
