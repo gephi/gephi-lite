@@ -287,7 +287,9 @@ export const AttributeEditors: {
   },
   color: ({ value, onChange, inTooltip }) => {
     return inTooltip ? (
-      <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
+      <div className="custom-color-picker">
+        <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
+      </div>
     ) : (
       <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
     );
