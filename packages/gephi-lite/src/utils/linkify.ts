@@ -26,6 +26,5 @@ export function normalizeURL(url: string): string | undefined {
 
 export function prettifyURL(url: string): string {
   const match = linkify.matchAtStart(url);
-  console.log({ url, match });
   return (match ? match.text : url).replace(/^https?:\/\//, "");
 }
