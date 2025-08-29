@@ -136,3 +136,9 @@
   mask-size: contain;
   flex-grow: 1;
 }
+
+.filler-fade-out {
+  height: 100px;
+  width: 100%;
+  background: linear-gradient(180deg, transparent, var(--gl-container-highest-bg));
+}

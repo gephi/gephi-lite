@@ -219,6 +219,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
       )}
       {color.type === "partition" && (
         <ColorPartitionEditor
+          key={color.field.id}
           itemType={itemType}
           color={color}
           setColor={(newColor) => setColorAppearance(itemType, newColor)}
