@@ -2,7 +2,12 @@ import cx from "classnames";
 import { FC, ReactNode, useMemo } from "react";
 
 import { getItemAttributes } from "../../core/appearance/utils";
-import { useDynamicItemData, useFilteredGraph, useGraphDataset, useVisualGetters } from "../../core/context/dataContexts";
+import {
+  useDynamicItemData,
+  useFilteredGraph,
+  useGraphDataset,
+  useVisualGetters,
+} from "../../core/context/dataContexts";
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { NodeComponent } from "./Node";
 
@@ -45,6 +50,8 @@ export const EdgeComponentById: FC<{ id: string }> = ({ id }) => {
   const filteredGraph = useFilteredGraph();
 
   const data = useMemo(() => {
+    if (!filteredGraph.hasEdge(id)) return null;
+
     const source = getItemAttributes(
       "nodes",
       graphDataset.fullGraph.source(id),
@@ -76,5 +83,14 @@ export const EdgeComponentById: FC<{ id: string }> = ({ id }) => {
     };
   }, [id, graphDataset, visualGetters, dynamicNodeData, dynamicEdgeData, filteredGraph]);
 
-  return <EdgeComponent {...data} />;
+  return data ? (
+    <EdgeComponent {...data} />
+  ) : (
+    <EdgeComponent
+      label={<span className="fst-italic">?</span>}
+      color="lightgrey"
+      source={{ label: <span className="fst-italic">?</span>, color: "lightgrey" }}
+      target={{ label: <span className="fst-italic">?</span>, color: "lightgrey" }}
+    />
+  );
 };
