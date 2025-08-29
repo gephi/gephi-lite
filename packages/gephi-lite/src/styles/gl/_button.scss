@@ -140,6 +140,7 @@
   }
 
   &.gl-btn-outline {
+    background-color: var(--gl-container-highest-bg);
     border: 2px solid var(--gl-component-border-color);
 
     &:active,
