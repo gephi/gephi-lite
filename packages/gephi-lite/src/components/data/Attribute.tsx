@@ -291,7 +291,9 @@ export const AttributeEditors: {
         <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
       </div>
     ) : (
-      <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
+      <div className="d-flex">
+        <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
+      </div>
     );
   },
 };
