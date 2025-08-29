@@ -214,11 +214,9 @@ describe("Field Model", () => {
       ).toEqual("2025/08/12");
     });
     it("should properly throw when scalar can not be generated", () => {
-      expect(serializeModelValueToScalar(undefined, { type: "number" }, "I am not a number")).toEqual(
-        "I am not a number",
-      );
+      expect(serializeModelValueToScalar(undefined, { type: "number" }, "I am not a number")).toEqual(undefined);
       expect(serializeModelValueToScalar(undefined, { type: "date", format: "yyyy" }, "I am not a date")).toEqual(
-        "I am not a date",
+        undefined,
       );
     });
   });
