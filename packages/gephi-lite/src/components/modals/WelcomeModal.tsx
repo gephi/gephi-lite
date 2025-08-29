@@ -39,7 +39,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   return (
     <Modal showHeader={false} onClose={fileStateType === "loading" ? undefined : () => cancel()} className="modal-lg">
       <div className="row position-relative align-items-center mb-5 mt-4">
-        <div className="col-12 col-sm-6 d-flex flex-column align-items-center gl-gap-1 mb-5 mb-sm-0">
+        <div className="col-12 col-sm-6 d-flex flex-column align-items-center gl-gap-1 mb-5 mb-sm-0 py-4">
           {getAppliedTheme(theme) === "light" ? (
             <GephiLiteLogo className="mb-3 gl-px-2 w-33" />
           ) : (
