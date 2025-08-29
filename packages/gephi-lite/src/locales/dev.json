@@ -15,7 +15,8 @@
     "title": "Gephi Lite",
     "info": "More info on Gephi Lite",
     "open_welcome_modal": "Open welcome modal",
-    "github_link": "Gephi Lite on GitHub"
+    "github_link": "Gephi Lite on GitHub",
+    "report_issue": "Report an issue"
   },
   "error": {
     "title": "Error",
