@@ -1,6 +1,6 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { capitalize } from "lodash";
+import { capitalize, groupBy } from "lodash";
 import { FC, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -19,6 +19,7 @@ import ConfirmModal from "../../components/modals/ConfirmModal";
 import {
   useDataTable,
   useDataTableActions,
+  useFilteredGraph,
   useGraphDataset,
   useGraphDatasetActions,
   useSelection,
@@ -72,6 +73,7 @@ export const TopBar: FC = () => {
   const { emitter } = useEventsContext();
   const { updateQuery } = useDataTableActions();
   const { fullGraph } = useGraphDataset();
+  const filteredGraph = useFilteredGraph();
   const { emptySelection } = useSelectionActions();
   const { deleteItems } = useGraphDatasetActions();
   const { type: selectionType, items } = useSelection();
@@ -85,6 +87,14 @@ export const TopBar: FC = () => {
     if (selectionType === "nodes" && nodeFields.length === 0) return false;
     return true;
   }, [selectionType, nodeFields, edgeFields]);
+
+  const { visible = [], hidden = [] } = useMemo(() => {
+    if (selectionType !== type) return {};
+
+    const isVisible =
+      type === "nodes" ? filteredGraph.hasNode.bind(filteredGraph) : filteredGraph.hasEdge.bind(filteredGraph);
+    return groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
+  }, [filteredGraph, items, selectionType, type]);
 
   return (
     <div className="menu-bar">
@@ -102,7 +112,15 @@ export const TopBar: FC = () => {
       <section className="flex-shrink-1 flex-grow-1 d-flex flex-row align-items-middle p-2 gap-1">
         <span className="gl-btnlike selection-title">
           <Trans i18nKey={`selection.${type}`} count={matchingTypeSelectedCount} />
-          {matchingTypeSelectedCount > 0 && t("common.colon")}
+          {!!hidden.length && (
+            <>
+              {" "}
+              (
+              <Trans i18nKey={`selection.visible`} count={visible.length} />,{" "}
+              <Trans i18nKey={`selection.hidden`} count={hidden.length} />)
+            </>
+          )}
+          {visible.length > 0 && t("common.colon")}
         </span>
         {selectionType === type && items.size > 0 && (
           <>
