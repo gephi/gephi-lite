@@ -54,10 +54,10 @@ const SearchForm: FC<{ type: ItemType; input: string; onChange: (input: string) 
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <button className="btn btn-outline-dark" type="button" onClick={() => onChange("")} disabled={!input}>
+      <button className="btn btn-outline-secondary" type="button" onClick={() => onChange("")} disabled={!input}>
         <CloseIcon />
       </button>
-      <button className="btn btn-outline-dark" type="submit">
+      <button className="btn btn-outline-secondary" type="submit">
         <SearchIcon />
       </button>
     </form>
