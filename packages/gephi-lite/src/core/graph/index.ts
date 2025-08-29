@@ -82,7 +82,7 @@ const setFieldModel: Producer<GraphDataset, [FieldModel, Record<string, Scalar>?
     if (itemValues)
       newState[dataKey] = mapValues(newState[dataKey], (data, itemId) => ({
         ...data,
-        [fieldModel.id]: itemValues[itemId] || data[fieldModel.id],
+        [fieldModel.id]: itemValues[itemId] ?? data[fieldModel.id],
       }));
 
     return newState;
