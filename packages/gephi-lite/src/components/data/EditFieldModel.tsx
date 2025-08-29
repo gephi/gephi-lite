@@ -98,129 +98,123 @@ export const useEditFieldModelForm = ({
   return {
     submit,
     main: (
-      <div className="panel-body">
-        <h2>{t(`edition.${!fieldModelId ? "create_" : "update_"}${type}_field`)}</h2>
+      <div className="panel-block">
+        <div>
+          <label htmlFor="column-id" className="form-label">
+            {t("graph.model.field.id")}
+          </label>
+          <input
+            type="text"
+            id="column-id"
+            className={cx("form-control", errors.id && "is-invalid")}
+            {...register("id", {
+              disabled: !isNew,
+              required: true,
+              validate: isNew
+                ? (val) => {
+                    return fields.find((f) => f.id === val) === undefined;
+                  }
+                : undefined,
+            })}
+          />
+          {errors.id && (
+            <div className="invalid-feedback">
+              {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+              {idCollisionLabel && (
+                <>
+                  <br />
+                  {t(`error.form.field_already_exists`, { id: fieldModel.id, label: idCollisionLabel })}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+        <div>
+          <label htmlFor="column-label" className="form-label">
+            {t("graph.model.field.label")}
+          </label>
+          <input type="text" id="column-label" className={cx("form-control")} {...register("label")} />
+        </div>
+        <div>
+          <label htmlFor="column-type" className="form-label">
+            {t("graph.model.field.type")}
+          </label>
+          <Select<BaseOption<FieldModelType>, false>
+            id="column-type"
+            options={[
+              { value: "number", label: "number" },
+              { value: "category", label: "category" },
+              { value: "keywords", label: "keywords" },
+              { value: "date", label: "date" },
+              { value: "text", label: "text" },
+              { value: "color", label: "color" },
+            ]}
+            value={{ value: fieldModel.type, label: fieldModel.type }}
+            onChange={(option) => {
+              setValue("type", option ? option.value : "text");
+              if (option?.value !== "keywords") setValue("separator", "");
+              if (option?.value !== "date") setValue("format", "");
+              // resetField("format",{keepError:false});
+              // resetField("separator");
+            }}
+          />
+        </div>
+        {/* Date format */}
 
-        <div className="panel-block">
+        {fieldModel.type === "date" && (
           <div>
-            <label htmlFor="column-id" className="form-label">
-              {t("graph.model.field.id")}
+            <label htmlFor="column-date-format" className="form-label">
+              {t("graph.model.field.date-format")}
             </label>
             <input
               type="text"
-              id="column-id"
-              className={cx("form-control", errors.id && "is-invalid")}
-              {...register("id", {
-                disabled: !isNew,
-                required: true,
-                validate: isNew
-                  ? (val) => {
-                      return fields.find((f) => f.id === val) === undefined;
-                    }
-                  : undefined,
-              })}
+              id="column-date-format"
+              className="form-control"
+              {...register("format", { required: fieldModel.type === "date" })}
+              disabled={fieldModel.type !== "date"}
             />
-            {errors.id && (
-              <div className="invalid-feedback">
-                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-                {idCollisionLabel && (
-                  <>
-                    <br />
-                    {t(`error.form.field_already_exists`, { id: fieldModel.id, label: idCollisionLabel })}
-                  </>
-                )}
+            {/* TODO: add documentation to format : https://moment.github.io/luxon/#/parsing?id=table-of-tokens */}
+            {"format" in fieldModel && fieldModel.format && (
+              <div className="text-muted gl-my-sm">
+                {t("graph.model.field.will_be_serialized_as", { type: "Dates" })}:{" "}
+                <code>{DateTime.now().toFormat(fieldModel.format)}</code>
               </div>
             )}
           </div>
+        )}
+
+        {/* Keywords separator */}
+        {fieldModel.type === "keywords" && (
           <div>
-            <label htmlFor="column-label" className="form-label">
-              {t("graph.model.field.label")}
+            <label htmlFor="column-separator" className="form-label">
+              {t("graph.model.field.separator")}
             </label>
-            <input type="text" id="column-label" className={cx("form-control")} {...register("label")} />
-          </div>
-          <div>
-            <label htmlFor="column-type" className="form-label">
-              {t("graph.model.field.type")}
-            </label>
-            <Select<BaseOption<FieldModelType>, false>
-              id="column-type"
-              options={[
-                { value: "number", label: "number" },
-                { value: "category", label: "category" },
-                { value: "keywords", label: "keywords" },
-                { value: "date", label: "date" },
-                { value: "text", label: "text" },
-                { value: "color", label: "color" },
-              ]}
-              value={{ value: fieldModel.type, label: fieldModel.type }}
-              onChange={(option) => {
-                setValue("type", option ? option.value : "text");
-                if (option?.value !== "keywords") setValue("separator", "");
-                if (option?.value !== "date") setValue("format", "");
-                // resetField("format",{keepError:false});
-                // resetField("separator");
-              }}
+            <input
+              type="text"
+              id="column-separator"
+              className={cx("form-control")}
+              {...register("separator", { required: fieldModel.type === "keywords" })}
+              disabled={fieldModel.type !== "keywords"}
             />
+            {"separator" in fieldModel && fieldModel.separator && (
+              <div className="text-muted gl-my-sm">
+                {t("graph.model.field.will_be_serialized_as", { type: "Keywords" })}:{" "}
+                <code>{["keyword 1", "keyword 2"].join(fieldModel.separator)}</code>
+              </div>
+            )}
           </div>
-          {/* Date format */}
-
-          {fieldModel.type === "date" && (
-            <div>
-              <label htmlFor="column-date-format" className="form-label">
-                {t("graph.model.field.date-format")}
-              </label>
-              <input
-                type="text"
-                id="column-date-format"
-                className="form-control"
-                {...register("format", { required: fieldModel.type === "date" })}
-                disabled={fieldModel.type !== "date"}
-              />
-              {/* TODO: add documentation to format : https://moment.github.io/luxon/#/parsing?id=table-of-tokens */}
-              {"format" in fieldModel && fieldModel.format && (
-                <div className="text-muted gl-my-sm">
-                  {t("graph.model.field.will_be_serialized_as", { type: "Dates" })}:{" "}
-                  <code>{DateTime.now().toFormat(fieldModel.format)}</code>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Keywords separator */}
-          {fieldModel.type === "keywords" && (
-            <div>
-              <label htmlFor="column-separator" className="form-label">
-                {t("graph.model.field.separator")}
-              </label>
-              <input
-                type="text"
-                id="column-separator"
-                className={cx("form-control")}
-                {...register("separator", { required: fieldModel.type === "keywords" })}
-                disabled={fieldModel.type !== "keywords"}
-              />
-              {"separator" in fieldModel && fieldModel.separator && (
-                <div className="text-muted gl-my-sm">
-                  {t("graph.model.field.will_be_serialized_as", { type: "Keywords" })}:{" "}
-                  <code>{["keyword 1", "keyword 2"].join(fieldModel.separator)}</code>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     ),
     footer: (
-      <div className="panel-footer">
-        <div className="gl-actions">
-          <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
-            <CancelIcon />
-          </button>
+      <div className="gl-actions">
+        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+          <CancelIcon />
+        </button>
 
-          <button type="submit" className="gl-btn gl-btn-fill">
-            {isNew ? t("datatable.create_column") : t("datatable.modify_column")}
-          </button>
-        </div>
+        <button type="submit" className="gl-btn gl-btn-fill">
+          {isNew ? t("datatable.create_column") : t("datatable.modify_column")}
+        </button>
       </div>
     ),
   };
@@ -249,19 +243,25 @@ export const EditFieldModelModal: FC<ModalProps<Omit<EditFieldModelFormProps, "o
       className="modal-lg edit-attribute"
       onSubmit={submitForm}
     >
-      {main}
+      <div className="d-flex flex-column gl-gap-3">{main}</div>
+
       {footer}
     </Modal>
   );
 };
 
 export const EditFieldModelForm: FC<EditFieldModelFormProps> = (props) => {
+  const { t } = useTranslation();
   const { main, footer, submit: submitForm } = useEditFieldModelForm(props);
 
   return (
     <form className="panel-wrapper" onSubmit={submitForm}>
-      {main}
-      {footer}
+      <div className="panel-body">
+        <h2>{t(`edition.${!props.fieldModelId ? "create_" : "update_"}${props.type}_field`)}</h2>
+        {main}
+      </div>
+
+      <div className="panel-footer">{footer}</div>
     </form>
   );
 };

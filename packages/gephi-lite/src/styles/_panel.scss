@@ -38,6 +38,7 @@ $panel-width: $gl-sys-size-container-large;
     }
     .panel-footer {
       @extend .gl-p-3;
+      border-top: 1px solid var(--gl-container-border-color);
     }
   }
 
@@ -97,7 +98,6 @@ $panel-width: $gl-sys-size-container-large;
   background-color: var(--gl-container-highest-bg);
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--gl-container-border-color);
 }
 
 .panel-block {
