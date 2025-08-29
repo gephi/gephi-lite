@@ -81,7 +81,6 @@ const Tooltip = forwardRef<
           ref={ref}
           onClick={(e) => {
             e.preventDefault();
-            e.stopPropagation();
             setShowTooltip("click");
           }}
           onMouseEnter={() => {

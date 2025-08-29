@@ -54,6 +54,8 @@ const ColorPickerTooltip: FC<{
             // prevent thumb creation on track click
             e.stopPropagation();
             e.preventDefault();
+            // adding a click on the body to close other already opened color pickers
+            document.body.click();
             // drag stops
             setIsDraggingThumb(false);
           }}
