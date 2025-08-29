@@ -30,18 +30,16 @@ const TableBodyRow: FC<{
         top: `${virtualRow.start}px`,
       }}
     >
-      {row.getVisibleCells().map((cell) => {
-        return (
-          <td
-            key={cell.id}
-            data-field={cell.column.id}
-            style={{ ...getCommonPinningStyles(cell.column) }}
-            className={cx(!(cell.column.id in SPECIFIC_COLUMNS) && "editable")}
-          >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </td>
-        );
-      })}
+      {row.getVisibleCells().map((cell) => (
+        <td
+          key={cell.id}
+          data-field={cell.column.id}
+          style={{ ...getCommonPinningStyles(cell.column) }}
+          className={cx(!(cell.column.id in SPECIFIC_COLUMNS) && "editable")}
+        >
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </td>
+      ))}
     </tr>
   );
 };
@@ -105,17 +103,14 @@ const TableBody: FC<{
         height: `${rowVirtualizer.getTotalSize()}px`,
       }}
     >
-      {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-        const row = rows[virtualRow.index] as Row<ItemRow>;
-        return (
-          <TableBodyRow
-            key={rows[virtualRow.index].id}
-            row={row}
-            virtualRow={virtualRow}
-            rowVirtualizer={rowVirtualizer}
-          />
-        );
-      })}
+      {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+        <TableBodyRow
+          key={rows[virtualRow.index].id}
+          row={rows[virtualRow.index] as Row<ItemRow>}
+          virtualRow={virtualRow}
+          rowVirtualizer={rowVirtualizer}
+        />
+      ))}
     </tbody>
   );
 };
