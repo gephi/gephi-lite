@@ -20,10 +20,27 @@ const Tooltip = forwardRef<
     >
   >
 >(({ children: [target, content], targetClassName, hoverable, closeOnClickContent, ...tether }, ref) => {
+  const [isHovered, setIsHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState<null | "click" | "hover">(null);
 
   const targetWrapper = useRef<HTMLDivElement>(null);
   const tooltipWrapper = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isHovered) {
+      if (!showTooltip) setShowTooltip("hover");
+      return;
+    }
+
+    if (showTooltip === "hover") {
+      const id = setTimeout(() => {
+        setShowTooltip(null);
+      }, 100);
+      return () => {
+        clearTimeout(id);
+      };
+    }
+  }, [isHovered, showTooltip]);
 
   useEffect(() => {
     const value = {
@@ -39,14 +56,6 @@ const Tooltip = forwardRef<
   useEffect(() => {
     if (!showTooltip) return;
 
-    const handleMove = (e: MouseEvent) => {
-      if (!tooltipWrapper.current || !targetWrapper.current) return;
-
-      const node = e.target as Node;
-      if (showTooltip === "hover" && !tooltipWrapper.current.contains(node) && !targetWrapper.current.contains(node)) {
-        setShowTooltip(null);
-      }
-    };
     const handleClickBody = (e: MouseEvent) => {
       if (!tooltipWrapper.current || !targetWrapper.current) return;
 
@@ -60,11 +69,9 @@ const Tooltip = forwardRef<
     };
 
     setTimeout(() => {
-      document.body.addEventListener("mousemove", handleMove);
       document.body.addEventListener("click", handleClickBody);
     }, 0);
     return () => {
-      document.body.removeEventListener("mousemove", handleMove);
       document.body.removeEventListener("click", handleClickBody);
     };
   }, [closeOnClickContent, showTooltip]);
@@ -83,9 +90,8 @@ const Tooltip = forwardRef<
             e.preventDefault();
             setShowTooltip("click");
           }}
-          onMouseEnter={() => {
-            if (!showTooltip && hoverable) setShowTooltip("hover");
-          }}
+          onMouseEnter={() => hoverable && setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className={targetClassName}
         >
           <div ref={targetWrapper}>{target}</div>
@@ -97,6 +103,8 @@ const Tooltip = forwardRef<
           show={showTooltip}
           mountTransition="fade-in 0.2s forwards"
           unmountTransition="fade-out 0.2s forwards"
+          onMouseEnter={() => hoverable && setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           <div ref={tooltipWrapper}>{content}</div>
         </Transition>
