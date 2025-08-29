@@ -337,8 +337,6 @@
         "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier que le fichier est  valide."
       },
       "remote": {
-        "title": "Ouvrir une URL",
-        "url-field": "URL d'un fichier GEXF, GRAPHML ou JSON au format Graphology",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier votre connexion et vous assurer que le fichier est valide."
       },
