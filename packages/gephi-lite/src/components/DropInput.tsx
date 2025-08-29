@@ -38,7 +38,7 @@ export const DropInput: FC<
                 onChange(null);
               }}
             >
-              {value.name}
+              <span className="text-truncate">{value.name}</span>
               <CloseIcon />
             </button>
           </>
