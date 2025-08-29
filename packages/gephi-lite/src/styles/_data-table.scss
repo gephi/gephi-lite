@@ -123,6 +123,7 @@ $table-editable-columns-cell-hover-bg: color-mix(
         line-height: 1.4em;
         border-width: 0;
         border-right-width: var(--bs-border-width);
+        margin-top: 1px;
 
         padding: map.get($spacers, 1) map.get($spacers, 2);
 
