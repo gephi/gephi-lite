@@ -43,12 +43,14 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
     [edgeFields, nodeFields, type],
   );
 
-  const [state, setState] = useState<{ field: FieldModel; value: Scalar }>({
-    field: fieldOptions[0].field,
+  const [state, setState] = useState<{ field: FieldModel | undefined; value: Scalar }>({
+    field: fieldOptions[0]?.field,
     value: "",
   });
 
   const submit = useCallback(() => {
+    if (!state.field?.id) return;
+
     try {
       updateItems(type, items, state.field.id, state.value);
       notify({
@@ -64,7 +66,7 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
         message: (e as Error).message || t("error.unknown"),
       });
     }
-  }, [items, notify, onSubmitted, state.field.id, state.value, t, type, updateItems]);
+  }, [items, notify, onSubmitted, state.field?.id, state.value, t, type, updateItems]);
 
   return {
     submit,
@@ -82,7 +84,7 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
               isClearable={false}
               id="multi-edit-attribute"
               options={fieldOptions}
-              value={fieldOptions.find((o) => o.value === state.field.id)}
+              value={fieldOptions.find((o) => o.value === state.field?.id)}
               onChange={(option) => {
                 setState({
                   field: option!.field,
@@ -91,22 +93,24 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
               }}
             />
           </div>
-          <div>
-            <label htmlFor="multi-edit-value" className="form-label">
-              {t("edition.multi.select_value")}
-            </label>
-            <EditItemAttribute
-              field={state.field}
-              scalar={state.value}
-              onChange={(value) => setState((state) => ({ ...state, value }))}
-              id="multi-edit-value"
-            />
-          </div>
+          {state.field && (
+            <div>
+              <label htmlFor="multi-edit-value" className="form-label">
+                {t("edition.multi.select_value")}
+              </label>
+              <EditItemAttribute
+                field={state.field}
+                scalar={state.value}
+                onChange={(value) => setState((state) => ({ ...state, value }))}
+                id="multi-edit-value"
+              />
+            </div>
+          )}
         </div>
       </>
     ),
     footer: (
-      <section className="panel-footer">
+      <>
         <button
           type="button"
           className="gl-btn"
@@ -120,7 +124,7 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
         <button type="submit" className="gl-btn gl-btn-fill">
           {t(`edition.update_multiple_${type}`)}
         </button>
-      </section>
+      </>
     ),
   };
 };
