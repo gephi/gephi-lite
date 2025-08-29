@@ -29,7 +29,7 @@ import { filtersAtom } from "../filters";
 import { buildTopologicalFiltersDefinitions } from "../filters/topological";
 import { FilterType } from "../filters/types";
 import { applyFilters, getEmptyFiltersState } from "../filters/utils";
-import { itemsRemove, searchActions, searchAtom } from "../search";
+import { edgeIndex, itemsIndex, itemsRemove, nodeIndex, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
 import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
@@ -195,9 +195,8 @@ const setNodePositions: Producer<GraphDataset, [Record<string, Coordinates>]> = 
   });
 };
 
-const deleteItems: MultiProducer<[SearchState, SelectionState, GraphDataset], [ItemType, string[]]> = (type, ids) => {
+const deleteItems: MultiProducer<[SelectionState, GraphDataset, SearchState], [ItemType, string[]]> = (type, ids) => {
   return [
-    itemsRemove(type, ids),
     (selection) => {
       if (selection.type === type) {
         const newItems = new Set(selection.items);
@@ -228,6 +227,7 @@ const deleteItems: MultiProducer<[SearchState, SelectionState, GraphDataset], [I
         };
       }
     },
+    itemsRemove(type, ids),
   ];
 };
 const deleteItemsAttribute: Producer<GraphDataset, [ItemType, string]> = (type, attributeId) => {
@@ -243,87 +243,112 @@ const deleteItemsAttribute: Producer<GraphDataset, [ItemType, string]> = (type, 
     };
   };
 };
-const createNode: Producer<GraphDataset, [string, Attributes]> = (node, attributes) => {
-  return (state) => {
-    const { data, position } = cleanNode(node, attributes);
-    state.fullGraph.addNode(node, {});
-    const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
-    return {
-      ...state,
-      nodeFields: newNodeFieldModel,
-      nodeData: { ...state.nodeData, [node]: data },
-      layout: { ...state.layout, [node]: position },
-    };
-  };
+const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes]> = (node, attributes) => {
+  return [
+    (state) => {
+      const { data, position } = cleanNode(node, attributes);
+      state.fullGraph.addNode(node, {});
+      const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
+      return {
+        ...state,
+        nodeFields: newNodeFieldModel,
+        nodeData: { ...state.nodeData, [node]: data },
+        layout: { ...state.layout, [node]: position },
+      };
+    },
+    nodeIndex(node),
+  ];
 };
-const createEdge: Producer<GraphDataset, [string, Attributes, string, string]> = (edge, attributes, source, target) => {
-  return (state) => {
-    const { data } = cleanEdge(edge, attributes);
-    state.fullGraph.addEdgeWithKey(edge, source, target, {});
-    const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
-    return {
-      ...state,
-      edgeFields: newEdgeFieldModel,
-      edgeData: { ...state.edgeData, [edge]: data },
-    };
-  };
+
+const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, string, string]> = (
+  edge,
+  attributes,
+  source,
+  target,
+) => {
+  return [
+    (state) => {
+      const { data } = cleanEdge(edge, attributes);
+      state.fullGraph.addEdgeWithKey(edge, source, target, {});
+      const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      // index the edge
+      searchActions.edgeIndex(edge);
+      return {
+        ...state,
+        edgeFields: newEdgeFieldModel,
+        edgeData: { ...state.edgeData, [edge]: data },
+      };
+    },
+    edgeIndex(edge),
+  ];
 };
-const updateNode: Producer<GraphDataset, [string, Attributes, { merge?: boolean }?]> = (
+const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes, { merge?: boolean }?]> = (
   node,
   attributes,
   { merge } = {},
 ) => {
-  return (state) => {
-    const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
-    const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
-    return {
-      ...state,
-      nodeFields: newNodeFieldModel,
-      nodeData: { ...state.nodeData, [node]: data },
-      layout: { ...state.layout, [node]: position },
-    };
-  };
+  return [
+    (state) => {
+      const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
+      const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
+      return {
+        ...state,
+        nodeFields: newNodeFieldModel,
+        nodeData: { ...state.nodeData, [node]: data },
+        layout: { ...state.layout, [node]: position },
+      };
+    },
+    nodeIndex(node),
+  ];
 };
-const updateEdge: Producer<GraphDataset, [string, Attributes, { merge?: boolean }?]> = (
+const updateEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, { merge?: boolean }?]> = (
   edge,
   attributes,
   { merge } = {},
 ) => {
-  return (state) => {
-    const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
-    const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
-    return {
-      ...state,
-      edgeFields: newEdgeFieldModel,
-      edgeData: { ...state.edgeData, [edge]: data },
-    };
-  };
+  return [
+    (state) => {
+      const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
+      const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      // index the edge
+      searchActions.edgeIndex(edge);
+      return {
+        ...state,
+        edgeFields: newEdgeFieldModel,
+        edgeData: { ...state.edgeData, [edge]: data },
+      };
+    },
+    edgeIndex(edge),
+  ];
 };
-const updateItems: Producer<GraphDataset, [ItemType, Set<string>, string, Scalar]> = (
+const updateItems: MultiProducer<[GraphDataset, SearchState], [ItemType, Set<string>, string, Scalar]> = (
   type,
   itemIds,
   fieldId,
   value,
 ) => {
-  return (state) => {
-    const fields = keyBy(type === "nodes" ? state.nodeFields : state.edgeFields, "id");
-    if (!fields[fieldId]) throw new Error(`The field ${fieldId} does not exist for ${type} in the current dataset.`);
+  return [
+    (state) => {
+      const fields = keyBy(type === "nodes" ? state.nodeFields : state.edgeFields, "id");
+      if (!fields[fieldId]) throw new Error(`The field ${fieldId} does not exist for ${type} in the current dataset.`);
 
-    const dataKey = type === "nodes" ? "nodeData" : "edgeData";
-    const data = state[dataKey];
-    const updatedItems = Array.from(itemIds).reduce((acc, itemId) => {
-      if (!data[itemId]) throw new Error(`The ${type} collection does not have any item with "${itemId}" id.`);
-      return { ...acc, [itemId]: { ...data[itemId], [fieldId]: value } };
-    }, {});
+      const dataKey = type === "nodes" ? "nodeData" : "edgeData";
+      const data = state[dataKey];
+      const updatedItems = Array.from(itemIds).reduce((acc, itemId) => {
+        if (!data[itemId]) throw new Error(`The ${type} collection does not have any item with "${itemId}" id.`);
+        return { ...acc, [itemId]: { ...data[itemId], [fieldId]: value } };
+      }, {});
 
-    return {
-      ...state,
-      [dataKey]: {
-        ...data,
-        ...updatedItems,
-      },
-    };
-  };
+      return {
+        ...state,
+        [dataKey]: {
+          ...data,
+          ...updatedItems,
+        },
+      };
+    },
+    itemsIndex(type, Array.from(itemIds)),
+  ];
 };
 
 const resetGraph: MultiProducer<[FiltersState, AppearanceState, SelectionState, GraphDataset]> = () => {
@@ -411,13 +436,13 @@ export const graphDatasetActions = {
   duplicateFieldModel: producerToAction(duplicateFieldModel, graphDatasetAtom),
 
   // Graph items:
-  createNode: producerToAction(createNode, graphDatasetAtom),
-  createEdge: producerToAction(createEdge, graphDatasetAtom),
-  updateNode: producerToAction(updateNode, graphDatasetAtom),
-  updateEdge: producerToAction(updateEdge, graphDatasetAtom),
-  updateItems: producerToAction(updateItems, graphDatasetAtom),
+  createNode: multiProducerToAction(createNode, [graphDatasetAtom, searchAtom]),
+  createEdge: multiProducerToAction(createEdge, [graphDatasetAtom, searchAtom]),
+  updateNode: multiProducerToAction(updateNode, [graphDatasetAtom, searchAtom]),
+  updateEdge: multiProducerToAction(updateEdge, [graphDatasetAtom, searchAtom]),
+  updateItems: multiProducerToAction(updateItems, [graphDatasetAtom, searchAtom]),
+  deleteItems: multiProducerToAction(deleteItems, [selectionAtom, graphDatasetAtom, searchAtom]),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
-  deleteItems: multiProducerToAction(deleteItems, [searchAtom, selectionAtom, graphDatasetAtom]),
 
   // Larger actions:
   setGraphDataset: producerToAction(setGraphDataset, graphDatasetAtom),

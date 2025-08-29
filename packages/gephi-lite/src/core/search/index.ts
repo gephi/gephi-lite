@@ -71,33 +71,43 @@ export const itemsRemove: Producer<SearchState, [ItemType, string[]]> = (type, i
   };
 };
 
-export const nodeIndex: Producer<SearchState, [string]> = (id) => {
-  return (state) => {
-    const graphDataset = graphDatasetAtom.get();
-    const sigmaGraph = sigmaGraphAtom.get();
-    const data = nodeToDocument(graphDataset, sigmaGraph, id);
-    if (state.index.has(`nodes-${id}`)) {
-      state.index.replace(data);
-    } else {
-      state.index.add(data);
-    }
-    return state;
-  };
+export const itemsIndex: Producer<SearchState, [ItemType, string[]]> = (type, ids) => {
+  return type === "edges" ? edgesIndex(ids) : nodesIndex(ids);
 };
 
-export const edgeIndex: Producer<SearchState, [string]> = (id) => {
+export const nodesIndex: Producer<SearchState, [string[]]> = (ids) => {
   return (state) => {
     const graphDataset = graphDatasetAtom.get();
     const sigmaGraph = sigmaGraphAtom.get();
-    const data = edgeToDocument(graphDataset, sigmaGraph, id);
-    if (state.index.has(`edges-${id}`)) {
-      state.index.replace(data);
-    } else {
-      state.index.add(data);
+    for (const id of ids) {
+      const data = nodeToDocument(graphDataset, sigmaGraph, id);
+      if (state.index.has(`nodes-${id}`)) {
+        state.index.replace(data);
+      } else {
+        state.index.add(data);
+      }
     }
     return state;
   };
 };
+export const nodeIndex: Producer<SearchState, [string]> = (id) => nodesIndex([id]);
+
+export const edgesIndex: Producer<SearchState, [string[]]> = (ids) => {
+  return (state) => {
+    const graphDataset = graphDatasetAtom.get();
+    const sigmaGraph = sigmaGraphAtom.get();
+    for (const id of ids) {
+      const data = edgeToDocument(graphDataset, sigmaGraph, id);
+      if (state.index.has(`edges-${id}`)) {
+        state.index.replace(data);
+      } else {
+        state.index.add(data);
+      }
+    }
+    return state;
+  };
+};
+export const edgeIndex: Producer<SearchState, [string]> = (id) => edgesIndex([id]);
 
 export const reset: Producer<SearchState, []> = () => {
   return () => getEmptySearchState();
@@ -113,8 +123,11 @@ export const searchActions = {
   indexAll: producerToAction(indexAll, searchAtom),
   nodeRemove: producerToAction(nodeRemove, searchAtom),
   nodeIndex: producerToAction(nodeIndex, searchAtom),
+  nodesIndex: producerToAction(nodesIndex, searchAtom),
   edgeRemove: producerToAction(edgeRemove, searchAtom),
   edgeIndex: producerToAction(edgeIndex, searchAtom),
+  edgesIndex: producerToAction(edgesIndex, searchAtom),
   itemsRemove: producerToAction(itemsRemove, searchAtom),
+  itemsIndex: producerToAction(itemsIndex, searchAtom),
   reset: producerToAction(reset, searchAtom),
 } as const;
