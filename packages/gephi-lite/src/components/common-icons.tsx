@@ -11,6 +11,7 @@ import {
   PiArrowsInSimple,
   PiBinary,
   PiBinaryBold,
+  PiBug,
   PiCalendarDots,
   PiCaretDown,
   PiCaretLeft,
@@ -92,6 +93,7 @@ export const AppearanceIcon = PiPalette;
 export const AppearanceIconFill = PiPaletteFill;
 export const AutoThemeIcon = PiCircleHalf;
 export const AutoThemeSelectedIcon = PiCircleHalfFill;
+export const BugIcon = PiBug;
 export const CancelIcon = PiX;
 export const CaptionClose = PiArrowsInSimple;
 export const CaptionOpen = PiQuestion;
