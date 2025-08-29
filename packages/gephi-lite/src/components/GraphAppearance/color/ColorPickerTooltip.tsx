@@ -90,9 +90,11 @@ const ColorPickerTooltip: FC<{
             <div ref={pickerWrapper} className="custom-color-picker">
               <SketchPicker
                 color={colorScalePoint.color}
-                onChangeComplete={(color) => {
-                  //TODO: debounce
+                onChange={(color, e) => {
                   onChange({ ...colorScalePoint, color: color.hex });
+                  // To avoid text selection while draggin
+                  if (e.stopPropagation) e.stopPropagation();
+                  if (e.preventDefault) e.preventDefault();
                 }}
                 styles={{
                   default: {
