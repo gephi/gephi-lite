@@ -2,7 +2,7 @@ import { DEFAULT_NODE_COLOR, FieldModel, NodeCoordinates, Scalar, StaticDynamicI
 import { groupBy, isNil, toPairs } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { PiChecks } from "react-icons/pi";
 import { useNavigate } from "react-router";
 
@@ -222,14 +222,21 @@ export const Selection: FC = () => {
     );
   }, [nodeData, dynamicNodeData, dynamicEdgeData, edgeData, type]);
 
-  const isVisible =
-    type === "nodes" ? filteredGraph.hasNode.bind(filteredGraph) : filteredGraph.hasEdge.bind(filteredGraph);
-  const { visible = [], hidden = [] } = groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
+  const { visible = [], hidden = [] } = useMemo(() => {
+    const isVisible =
+      type === "nodes" ? filteredGraph.hasNode.bind(filteredGraph) : filteredGraph.hasEdge.bind(filteredGraph);
+    return groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
+  }, [filteredGraph, items, type]);
 
   return (
     <>
       {/* Selection main list */}
-      <div className="panel-body">
+      <div className="panel-body gap-1">
+        {!!hidden.length && (
+          <div>
+            <Trans i18nKey={`selection.visible_${type}`} count={visible.length} />
+          </div>
+        )}
         <ul className="list-unstyled gl-m-0 gl-gap-1">
           <InfiniteScroll
             pageSize={50}
@@ -252,7 +259,10 @@ export const Selection: FC = () => {
         {!!hidden.length && (
           <>
             <hr />
-            <ul className="list-unstyled">
+            <div>
+              <Trans i18nKey={`selection.hidden_${type}`} count={hidden.length} />
+            </div>
+            <ul className="list-unstyled gl-m-0 gl-gap-1">
               <InfiniteScroll
                 scrollableTarget={"selection"}
                 pageSize={50}
