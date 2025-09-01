@@ -74,7 +74,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           <ul className="list-unstyled mb-0 d-flex flex-column">
             <li className="mb-1">
               <button
-                className="gl-btn"
+                className="gl-btn text-start"
                 title={t(`graph.open.local.title`).toString()}
                 onClick={() => {
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "local" } });
@@ -85,7 +85,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             </li>
             <li className="mb-1">
               <button
-                className="gl-btn"
+                className="gl-btn text-start"
                 title={t(`graph.open.github.title`).toString()}
                 onClick={() => {
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "github" } });
@@ -101,7 +101,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             {SAMPLES.map((sample) => (
               <li key={sample}>
                 <button
-                  className="gl-btn"
+                  className="gl-btn text-start"
                   onClick={async () => {
                     await open({
                       type: "remote",
