@@ -1,655 +1,95 @@
 {
-  "welcome": {
-    "title": "Welcome to Gephi Lite",
-    "disclaimer-1": "Gephi Lite is currently a work in progress.",
-    "disclaimer-2": "Feel free to check the GitHub project to see more about the upcoming features or to report bugs.",
-    "logo": "Gephi logo",
-    "open_recent": "Open recent",
-    "open_graph": "Open graph file",
-    "no_recent": "No remote file has been opened in that browser yet.",
-    "samples": "Samples"
-  },
-  "gephi-lite": {
-    "title": "Gephi Lite",
-    "info": "More info on Gephi Lite"
-  },
-  "error": {
-    "title": "Error",
-    "unknown": "An unknown error has occurred.",
-    "message": "Sorry, we are working to make gephi-lite better but bugs still happened... It will help us if you can open an issue on GitHub with a description of what you were doing.",
-    "report": "Report error",
-    "retry": "Retry",
-    "not_found": {
-      "title": "Page Not Found",
-      "subtitle": "The page you were looking for doesn't exist.",
-      "paragraph": "You may have mistyped the address or the page may have moved."
-    },
-    "form": {
-      "required": "Field is required",
-      "unique": "Value must be unique, and a data with the same value already exist"
-    }
-  },
-  "user": {
-    "avatar_alt": "{{name}}'s avatar"
-  },
-  "providers": {
-    "github": "GitHub"
-  },
-  "github": {
-    "title": "GitHub authentication",
-    "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
-    "logged_as": "You are currently logged into GitHub as {{username}}.",
-    "select_ui_language": "Select application language"
-  },
-  "auth": {
-    "unauth_success": "Unauthentication successful",
-    "sign_out": "Sign-out from GitHub",
-    "sign_in": "Sign-in to GitHub"
-  },
-  "storage": {
-    "cannot_restore": "Your graph cannot be restored.",
-    "restore_successful": "Your work graph has been restored."
-  },
-  "context": {
-    "title": "Data overview"
-  },
-  "selection": {
-    "nodes_zero": "No selected node",
-    "nodes_one": "One selected node",
-    "nodes": "{{count, number}} selected nodes",
-    "edges_zero": "No selected edge",
-    "edges_one": "One selected edge",
-    "edges": "{{count, number}} selected edges",
-    "visible_nodes_zero": "No visible selected node",
-    "visible_nodes_one": "One visible selected node",
-    "visible_nodes": "{{count, number}} visible selected nodes",
-    "visible_edges_zero": "No visible selected edge",
-    "visible_edges_one": "One visible selected edge",
-    "visible_edges": "{{count, number}} visible selected edges",
-    "hidden_nodes_one": "One hidden selected node",
-    "hidden_nodes": "{{count, number}} hidden selected nodes",
-    "hidden_edges_one": "One hidden selected edge",
-    "hidden_edges": "{{count, number}} hidden selected edges",
-    "select_all": "Select all",
-    "unselect_all": "Unselect all",
-    "unselect_all_hidden_nodes": "Unselect all hidden edges",
-    "unselect_all_hidden_edges": "Unselect all hidden edges",
-    "unselect_nodes": "Unselect this node",
-    "unselect_edges": "Unselect this edge",
-    "focus_nodes": "Select only this node",
-    "focus_edges": "Select only this edge",
-    "empty_nodes": "This node has no attribute",
-    "empty_edges": "This edge has no attribute",
-    "node_no_label": "(Empty label)",
-    "edge_no_label": "(Empty label)",
-    "locate_on_graph": "Locate on the graph"
-  },
   "appearance": {
-    "title": "Appearance",
-    "partition": "Partition",
-    "ranking": "Ranking",
-    "show_edges": "Show edges",
-    "transformation_methods": {
-      "title": "Transformation methods",
-      "linear": "linear",
-      "pow-2": "pow 2",
-      "pow-3": "pow 3",
-      "sqrt": "sqrt",
-      "log": "log",
-      "spline": "spline"
+    "color": {
+      "color_all_items": "Color for all {{items}}",
+      "data": "Input file",
+      "data_description": "All {{items}} colors are as they are in the input data file.",
+      "default_value": "Color for {{items}} with no valid value",
+      "fixed": "A constant color",
+      "quali": "as strings",
+      "quanti": "as numbers",
+      "ranking_intro": "Add color points on this scale",
+      "scale_point": "Scale point",
+      "set_color_from": "Set color from...",
+      "source": "Source nodes",
+      "source_description": "Each edge is colored as its source.",
+      "target": "Target nodes",
+      "target_description": "Each edge is colored as its target.",
+      "title": "Color"
     },
     "graph": {
       "background_color": "Background color",
       "layout_grid_color": "Layout evaluation grid color"
     },
-    "color": {
-      "title": "Color",
-      "set_color_from": "Set color from...",
-      "data": "Input file",
-      "fixed": "A constant color",
-      "source": "Source nodes",
-      "target": "Target nodes",
-      "quanti": "as numbers",
-      "quali": "as strings",
-      "default_value": "Color for {{items}} with no valid value",
-      "color_all_items": "Color for all {{items}}",
-      "data_description": "All {{items}} colors are as they are in the input data file.",
-      "source_description": "Each edge is colored as its source.",
-      "target_description": "Each edge is colored as its target.",
-      "scale_point": "Scale point",
-      "ranking_intro": "Add color points on this scale"
-    },
-    "labels": {
-      "title": "Labels",
-      "set_labels_from": "Set label from...",
-      "set_labels_size_from": "Set label sizes from...",
-      "data": "Input data",
-      "fixed": "A constant text",
-      "fixed_label": "Label for every {{items}}",
-      "fixed_label_size": "Label size for every {{items}}",
-      "none": "No label",
-      "fixed_size": "Fixed size",
-      "size": "{{items}} size",
-      "default_value": "Label for {{items}} with no valid value",
-      "size_coef": "Labels sizes (higher makes labels appear bigger)",
-      "adapts_to_zoom": "How much labels should grow with zoom",
-      "density": "How many labels should appear any time",
-      "data_description": "All {{items}} labels are as they are in the input data file.",
-      "none_description": "All {{items}} have no displayed label."
-    },
     "images": {
-      "title": "Images",
-      "set_labels_from": "Set image from...",
       "data": "Input data",
+      "data_description": "All {{items}} images are as they are in the input data file.",
+      "default_value": "Image for {{items}} with no valid value",
       "fixed": "A constant URL",
       "fixed_label": "Same image for every {{items}}",
       "none": "No label",
-      "default_value": "Image for {{items}} with no valid value",
-      "data_description": "All {{items}} images are as they are in the input data file.",
-      "none_description": "All {{items}} have no displayed image."
+      "none_description": "All {{items}} have no displayed image.",
+      "set_labels_from": "Set image from...",
+      "title": "Images"
     },
+    "labels": {
+      "adapts_to_zoom": "How much labels should grow with zoom",
+      "data": "Input data",
+      "data_description": "All {{items}} labels are as they are in the input data file.",
+      "default_value": "Label for {{items}} with no valid value",
+      "density": "How many labels should appear any time",
+      "fixed": "A constant text",
+      "fixed_label": "Label for every {{items}}",
+      "fixed_label_size": "Label size for every {{items}}",
+      "fixed_size": "Fixed size",
+      "none": "No label",
+      "none_description": "All {{items}} have no displayed label.",
+      "set_labels_from": "Set label from...",
+      "set_labels_size_from": "Set label sizes from...",
+      "size": "{{items}} size",
+      "size_coef": "Labels sizes (higher makes labels appear bigger)",
+      "title": "Labels"
+    },
+    "no_caption": "(no caption)",
+    "partition": "Partition",
+    "ranking": "Ranking",
+    "show_edges": "Show edges",
     "size": {
-      "title": "Size",
-      "set_size_from": "Set size from...",
       "data": "Input file",
-      "fixed": "A constant size",
+      "data_description": "All {{items}} sizes are as they are in the input data file.",
       "default_value": "Size for {{items}} with no valid value",
+      "fixed": "A constant size",
+      "set_size_from": "Set size from...",
       "size_all_items": "Size for all {{items}}",
-      "data_description": "All {{items}} sizes are as they are in the input data file."
+      "title": "Size"
     },
-    "no_caption": "(no caption)"
-  },
-  "filters": {
-    "title": "Filters",
-    "description": "This panel allows to filter the graph by stacking filters.",
-    "filter": "Filter",
-    "add_filter": "Add filter",
-    "full_graph": "Full graph",
-    "using": "Using",
-    "topological": "Topology",
-    "desactivated": "Desactivated filter, click to reactivate",
-    "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
-    "range": "range",
-    "terms": "exact values",
-    "script": "Custom filter",
-    "activated": "Activated filter",
-    "create_filter": "Create filter",
-    "keepMissingValues": "Keep missing values",
-    "inapplicable": "Filter disabled: only one value available"
-  },
-  "edition": {
-    "create_nodes": "Create new node",
-    "create_edges": "Create new edge",
-    "create_nodes_success": "The node has successfully been created.",
-    "create_edges_success": "The edge has successfully been created.",
-    "update_this_nodes": "Edit this node",
-    "update_this_edges": "Edit this edge",
-    "update_nodes": "Edit existing node",
-    "update_edges": "Edit existing edge",
-    "update_nodes_success": "The node has successfully been updated.",
-    "update_edges_success": "The edge has successfully been updated.",
-    "delete_this_nodes": "Delete this node",
-    "delete_this_edges": "Delete this edge",
-    "delete_nodes_zero": "Delete nodes",
-    "delete_nodes_one": "Delete one node",
-    "delete_nodes": "Delete {{count, number}} nodes",
-    "delete_edges_zero": "Delete edges",
-    "delete_edges_one": "Delete one edge",
-    "delete_edges": "Delete {{count, number}} edges",
-    "confirm_delete_nodes_one": "Are you sure you want to delete this one node?",
-    "confirm_delete_nodes": "Are you sure you want to delete {{count, number}} nodes?",
-    "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
-    "confirm_delete_edges": "Are you sure you want to delete {{count, number}} edges?",
-    "search_nodes": "Search on node labels..."
-  },
-  "graph": {
-    "title": "Graph",
-    "control": {
-      "zoomIn": "Zoom In",
-      "zoomOut": "Zoom Out",
-      "zoomReset": "See the whole graph",
-      "fullscreenEnter": "Enter fullscreen mode",
-      "fullscreenExit": "Exit fullscreen"
-    },
-    "metadata": {
-      "title": "Metadata",
-      "graph-title": "Title",
-      "description": "Description",
-      "keywords": "Keywords",
-      "authors": "Authors",
-      "graph-type": "Graph Type"
-    },
-    "partitioning": {
-      "title": "Partitioning",
-      "description": "To apply appearance or filters differently on different groups of {{items}}, partition your graph using any node category attribute.",
-      "partition": "Partition {{items}} on",
-      "status_no_partition": "{{items}} are not partitioned",
-      "status_item_preview": "The {{items}} will be grouped into",
-      "status_item": "The {{items}} are grouped into",
-      "status_partition": "{{nbPartitions}} partitions using the '{{attribute}}' attribute.",
-      "warning_nbMissing": "{{nbMissingValues}} {{items}} don't have a value for this attribute.",
-      "missing_partition_preview": "They will be grouped into a 'missing value' partition.",
-      "missing_partition": "They are grouped into a 'missing value' partition."
-    },
-    "model": {
-      "title": "Attributes' Model",
-      "no_attributes": "There is no attribute in the model yet.",
-      "directed": "Directed",
-      "undirected": "Undirected",
-      "mixed": "Mixed",
-      "graph": "graph",
-      "nodes_one": "node",
-      "nodes_zero": "node",
-      "nodes": "nodes",
-      "edges_one": "edge",
-      "edges_zero": "edge",
-      "edges": "edges",
-      "nodes-data": {
-        "id": "Node ID",
-        "label": "Node label",
-        "size": "Node size",
-        "color": "Node color",
-        "x": "Node x position",
-        "y": "Node y position",
-        "attributes": "Other attributes",
-        "attribute-name": "Attribute name",
-        "attribute-value": "Attribute value",
-        "new-attribute": "Add new attribute"
-      },
-      "edges-data": {
-        "id": "Edge ID",
-        "source": "Edge source",
-        "target": "Edge target",
-        "label": "Edge label",
-        "color": "Edge color",
-        "weight": "Edge weight",
-        "attributes": "Other attributes",
-        "attribute-name": "Attribute name",
-        "attribute-value": "Attribute value",
-        "new-attribute": "Add new attribute"
-      }
-    },
-    "open": {
-      "title": "Open a graph file",
-      "local": {
-        "title": "Open a local file",
-        "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML or Graphology JSON file ",
-        "success": "File {{filename}} has been successfully loaded",
-        "error": "An error occurred while opening the file. Please check that the file is a valid."
-      },
-      "remote": {
-        "success": "File {{filename}} has been successfully loaded",
-        "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid."
-      },
-      "github": {
-        "title": "Open a file from GitHub",
-        "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on GitHub",
-        "file-open-external": "Open {{filename}} on GitHub",
-        "select-file": "Select a file",
-        "success": "File {{filename}} has been successfully loaded",
-        "error": "A technical error occurred. Please check your connectivity or try later."
-      },
-      "new": {
-        "title": "Open an empty graph",
-        "message": "Current graph will be cleared, are you sure you want to continue ?",
-        "success": "Empty graph loaded"
-      }
-    },
-    "save": {
-      "title": "Save graph",
-      "name": "Save",
-      "github": {
-        "title": "Save on GitHub as...",
-        "field": {
-          "filename": "Filename",
-          "description": "Description",
-          "isPublic": "Create a public gist"
-        },
-        "success": "File {{filename}} has been successfully saved",
-        "error": "An error occurred while saving your graph. Please check your connectivity or try later."
-      },
-      "local": {
-        "title": "Save graph locally",
-        "success": "Graph has been saved locally",
-        "error": "Failed to save the graph locally"
-      }
-    },
-    "export": {
-      "title": "Export graph",
-      "png": {
-        "title": "Export PNG snapshot",
-        "success": "Your graph PNG export has successfully been saved.",
-        "fields": {
-          "filename": "Filename",
-          "width": "Width (in pixels)",
-          "height": "Height (in pixels)",
-          "preserve_camera": "Preserve current camera position"
-        }
-      },
-      "gexf": {
-        "title": "Export GEXF",
-        "success": "Your GEXF export has successfully been saved.",
-        "error": "GEXF export has failed"
-      }
-    },
-    "clone_in_new_tab": {
-      "title": "Clone in a new tab",
-      "success": "Your graph clone has successfully been opened in a new tab."
-    },
-    "caption": {
-      "color": "Color {{itemType}} by",
-      "size": "Size {{itemType}} by",
-      "title": "Caption",
-      "disabled": "Caption is available once appearance has been set."
+    "title": "Appearance",
+    "transformation_methods": {
+      "linear": "linear",
+      "log": "log",
+      "pow-2": "pow 2",
+      "pow-3": "pow 3",
+      "spline": "spline",
+      "sqrt": "sqrt",
+      "title": "Transformation methods"
     }
   },
-  "metrics": {
-    "title": "Metrics",
-    "compute_one": "Compute metric",
-    "compute": "Compute metrics",
-    "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",
-    "success": "The {{items}} metrics \"{{metrics}}\" have been added to the data.",
-    "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
-    "placeholder": "Select an algorithm",
-    "attributes_placeholder": "None",
-    "nodes_attribute_already_exists": "A node attribute named \"{{field}}\" already exists. Its values will be overridden.",
-    "edges_attribute_already_exists": "An edge attribute named \"{{field}}\" already exists. Its values will be overridden.",
-    "nodes": {
-      "louvain": {
-        "title": "Louvain community detection",
-        "description": "This algorithm aims at splitting the nodes as densely connected groups.",
-        "attributes": {
-          "modularityClass": "Modularity class attribute name"
-        },
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "Edge weight attribute",
-            "description": "An edge attribute that would represent edge weights."
-          },
-          "fastLocalMoves": {
-            "title": "Fast local moves",
-            "description": "Whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently."
-          },
-          "randomWalk": {
-            "title": "Random walk",
-            "description": "Whether to traverse the graph randomly."
-          },
-          "resolution": {
-            "title": "Resolution",
-            "description": "An increased resolution should produce more communities."
-          }
-        }
-      },
-      "pagerank": {
-        "title": "PageRank",
-        "attributes": {
-          "pagerank": "PageRank attribute name"
-        },
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "Edge weight attribute"
-          },
-          "alpha": {
-            "title": "Alpha"
-          },
-          "maxIterations": {
-            "title": "Max iterations"
-          },
-          "tolerance": {
-            "title": "Tolerance"
-          }
-        }
-      },
-      "betweennessCentrality": {
-        "title": "Betweenness centrality",
-        "attributes": {
-          "betweennessCentrality": "Betweenness centrality attribute name"
-        },
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "Edge weight attribute"
-          },
-          "normalize": {
-            "title": "Normalize output?"
-          }
-        }
-      },
-      "degree": {
-        "title": "Degree",
-        "attributes": {
-          "degree": "Degree attribute name"
-        },
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "Edge weight attribute"
-          },
-          "kind": {
-            "title": "Type of degree",
-            "values": {
-              "degree": "Degree",
-              "inDegree": "Incoming degree",
-              "outDegree": "Outgoing degree"
-            }
-          }
-        }
-      },
-      "hits": {
-        "title": "HITS",
-        "attributes": {
-          "authorities": "Authority score attribute name",
-          "hubs": "Hub score attribute name"
-        },
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "Edge weight attribute"
-          },
-          "maxIterations": {
-            "title": "Max iterations"
-          },
-          "normalize": {
-            "title": "Normalize output?"
-          },
-          "tolerance": {
-            "title": "Tolerance"
-          }
-        }
-      },
-      "nodescript": {
-        "title": "Custom node metric",
-        "description": "Define a function that compute a metric for a node.",
-        "attributes": {
-          "custom": "Attribute name on which to store the metric"
-        }
-      }
-    },
-    "edges": {
-      "disparity": {
-        "title": "Disparity",
-        "attributes": {
-          "disparity": "Disparity attribute name"
-        },
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "Edge weight attribute"
-          }
-        }
-      },
-      "simmelianStrength": {
-        "title": "Simmelian strength",
-        "attributes": {
-          "simmelianStrength": "Simmelian strength attribute name"
-        }
-      },
-      "edgescript": {
-        "title": "Custom edge metric",
-        "description": "Define a function that compute a metric for an edge.",
-        "attributes": {
-          "custom": "Attribute name on which to store the metric"
-        }
-      }
-    }
+  "auth": {
+    "sign_in": "Sign-in to GitHub",
+    "sign_out": "Sign-out from GitHub",
+    "unauth_success": "Unauthentication successful"
   },
-  "layouts": {
-    "title": "Layout",
-    "description": "This panel allows computing new coordinates to nodes of the graph. ",
-    "placeholder": "Select a layout algorithm",
-    "exec": {
-      "success": "Layout \"{{layout}}\" has successfully been applied.",
-      "started": "Layout {{layout}} is running",
-      "stopped": "Layout {{layout}} has been stopped"
-    },
-    "random": {
-      "title": "Random",
-      "description": "Random layout positioning every node by choosing each coordinates uniformly at random on the interval [0, 1)",
-      "parameters": {
-        "scale": {
-          "title": "Scale",
-          "description": "Scale of the layout"
-        },
-        "center": {
-          "title": "Center",
-          "description": "Center of the layout"
-        }
-      }
-    },
-    "circular": {
-      "title": "Circular",
-      "description": "Arranges the node in a circle",
-      "parameters": {
-        "scale": {
-          "title": "Scale",
-          "description": "Scale of the layout"
-        },
-        "center": {
-          "title": "Center",
-          "description": "Center of the layout"
-        }
-      }
-    },
-    "circlePack": {
-      "title": "CirclePack",
-      "description": "Arranges the nodes as a bubble chart, according to specified attributes",
-      "parameters": {
-        "scale": {
-          "title": "Scale",
-          "description": "Scale of the layout"
-        },
-        "groupingField": {
-          "title": "Hierarchy attribute",
-          "description": "An optional attribute to use to group the nodes"
-        },
-        "center": {
-          "title": "Center",
-          "description": "Center of the layout"
-        }
-      }
-    },
-    "fa2": {
-      "title": "ForceAtlas2",
-      "buttons": {
-        "autoSettings": {
-          "title": "Guess settings",
-          "description": "Generates settings that fit the current graph the best"
-        }
+  "cloud": {
+    "github": {
+      "auth": {
+        "asking_for_device_code": "Asking GitHub for device code",
+        "copy_code": "Copy the code below, and click on \"Open GitHub\" button. It will opened a new tab, on which GitHub will ask you the code",
+        "copy_success": "Code saved in clipboard",
+        "title": "GitHub authentification",
+        "waiting_validation": "Waiting validation"
       },
-      "parameters": {
-        "adjustSizes": {
-          "title": "Adjust sizes?",
-          "description": "Should the node’s sizes be taken into account?"
-        },
-        "barnesHutOptimize": {
-          "title": "barnesHutOptimize",
-          "description": "Whether to use the Barnes-Hut approximation to compute repulsion in O(n*log(n)) rather than default O(n^2), n being the number of nodes"
-        },
-        "barnesHutTheta": {
-          "title": "barnesHutTheta",
-          "description": "Barnes-Hut approximation theta parameter"
-        },
-        "edgeWeightInfluence": {
-          "title": "Edge weight influence",
-          "description": "Influence of the edge’s weights on the layout"
-        },
-        "gravity": {
-          "title": "Gravity",
-          "description": "Strength of the layout’s gravity"
-        },
-        "linLogMode": {
-          "title": "linLog mode",
-          "description": "Whether to use Noack’s LinLog model."
-        },
-        "outboundAttractionDistribution": {
-          "title": "Out bound attraction distribution"
-        },
-        "scalingRatio": {
-          "title": "Scaling ratio"
-        },
-        "slowDown": {
-          "title": "Slow down?"
-        },
-        "strongGravityMode": {
-          "title": "Strong gravity mode?"
-        }
-      }
-    },
-    "force": {
-      "title": "Force directed",
-      "parameters": {
-        "attraction": {
-          "title": "Attraction",
-          "description": "Importance of the attraction force, that attracts each pair of connected nodes like elastics"
-        },
-        "repulsion": {
-          "title": "Repulsion",
-          "description": "Importance of the repulsion force, that attracts each pair of nodes like magnets"
-        },
-        "gravity": {
-          "title": "Gravity",
-          "description": "Importance of the gravity force, that attracts all nodes to the center"
-        },
-        "inertia": {
-          "title": "Inertia",
-          "description": "Percentage of a node vector displacement that is preserved at each step. 0 means no inertia, 1 means no friction"
-        },
-        "maxMove": {
-          "title": "Maximum move",
-          "description": "Maximum length a node can travel at each step, in pixel"
-        }
-      }
-    },
-    "noverlap": {
-      "title": "Noverlap",
-      "description": "Anti-collision layout algorithm",
-      "parameters": {
-        "gridSize": {
-          "title": "Grid size",
-          "description": "Number of grid cells horizontally and vertically subdivising the graph’s space. This is used as an optimization scheme. Set it to 1 and you will have O(n²) time complexity, which can sometimes perform better with very few nodes."
-        },
-        "margin": {
-          "title": "Margin",
-          "description": "Margin to keep between nodes"
-        },
-        "expansion": {
-          "title": "Expansion",
-          "description": "Percentage of current space that nodes could attempt to move outside of"
-        },
-        "ratio": {
-          "title": "Ratio",
-          "description": "Ratio scaling node sizes"
-        },
-        "speed": {
-          "title": "Speed",
-          "description": "Dampening factor that will slow down node movements to ease the overall process"
-        }
-      }
-    },
-    "script": {
-      "title": "Custom layout",
-      "description": "Write your own layout by creating a function that returns a {x,y} object for each node"
+      "title": "GitHub"
     }
-  },
-  "file": {
-    "title": "Data management",
-    "login_capabilities": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists:"
   },
   "common": {
     "add": "Add",
@@ -669,69 +109,629 @@
     "hide": "Hide",
     "load-more": "Load more",
     "loading": "Loading",
-    "min": "Min",
     "max": "Max",
+    "min": "Min",
     "none": "None",
     "open": "Open",
-    "open_file": "Open {{filename}}",
     "open_code_editor": "Open code editor",
+    "open_file": "Open {{filename}}",
     "remove": "Remove",
     "reset": "Reset",
     "save": "Save",
     "save-and-run": "Save and run",
     "select": "Select...",
+    "show": "Show",
+    "show_less": "Show less",
+    "show_more": "Show more",
+    "size": "Size",
     "start": "Start",
     "stop": "Stop",
-    "size": "Size",
-    "show": "Show",
-    "show_more": "Show more",
-    "show_less": "Show less",
     "submit": "Submit",
     "updated": "Updated"
   },
-  "cloud": {
-    "github": {
-      "title": "GitHub",
-      "auth": {
-        "title": "GitHub authentification",
-        "asking_for_device_code": "Asking GitHub for device code",
-        "copy_code": "Copy the code below, and click on \"Open GitHub\" button. It will opened a new tab, on which GitHub will ask you the code",
-        "copy_success": "Code saved in clipboard",
-        "waiting_validation": "Waiting validation"
+  "context": {
+    "title": "Data overview"
+  },
+  "edition": {
+    "confirm_delete_edges": "Are you sure you want to delete {{count, number}} edges?",
+    "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
+    "confirm_delete_nodes": "Are you sure you want to delete {{count, number}} nodes?",
+    "confirm_delete_nodes_one": "Are you sure you want to delete this one node?",
+    "create_edges": "Create new edge",
+    "create_edges_success": "The edge has successfully been created.",
+    "create_nodes": "Create new node",
+    "create_nodes_success": "The node has successfully been created.",
+    "delete_edges": "Delete {{count, number}} edges",
+    "delete_edges_one": "Delete one edge",
+    "delete_edges_zero": "Delete edges",
+    "delete_nodes": "Delete {{count, number}} nodes",
+    "delete_nodes_one": "Delete one node",
+    "delete_nodes_zero": "Delete nodes",
+    "delete_this_edges": "Delete this edge",
+    "delete_this_nodes": "Delete this node",
+    "search_nodes": "Search on node labels...",
+    "update_edges": "Edit existing edge",
+    "update_edges_success": "The edge has successfully been updated.",
+    "update_nodes": "Edit existing node",
+    "update_nodes_success": "The node has successfully been updated.",
+    "update_this_edges": "Edit this edge",
+    "update_this_nodes": "Edit this node"
+  },
+  "error": {
+    "form": {
+      "required": "Field is required",
+      "unique": "Value must be unique, and a data with the same value already exist"
+    },
+    "message": "Sorry, we are working to make gephi-lite better but bugs still happened... It will help us if you can open an issue on GitHub with a description of what you were doing.",
+    "not_found": {
+      "paragraph": "You may have mistyped the address or the page may have moved.",
+      "subtitle": "The page you were looking for doesn't exist.",
+      "title": "Page Not Found"
+    },
+    "report": "Report error",
+    "retry": "Retry",
+    "title": "Error",
+    "unknown": "An unknown error has occurred."
+  },
+  "file": {
+    "login_capabilities": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists:",
+    "title": "Data management"
+  },
+  "filters": {
+    "activated": "Activated filter",
+    "add_filter": "Add filter",
+    "create_filter": "Create filter",
+    "desactivated": "Desactivated filter, click to reactivate",
+    "description": "This panel allows to filter the graph by stacking filters.",
+    "filter": "Filter",
+    "full_graph": "Full graph",
+    "inapplicable": "Filter disabled: only one value available",
+    "keepMissingValues": "Keep missing values",
+    "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
+    "range": "range",
+    "script": "Custom filter",
+    "terms": "exact values",
+    "title": "Filters",
+    "topological": "Topology",
+    "using": "Using"
+  },
+  "gephi-lite": {
+    "info": "More info on Gephi Lite",
+    "title": "Gephi Lite"
+  },
+  "github": {
+    "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
+    "logged_as": "You are currently logged into GitHub as {{username}}.",
+    "select_ui_language": "Select application language",
+    "title": "GitHub authentication"
+  },
+  "graph": {
+    "caption": {
+      "color": "Color {{itemType}} by",
+      "disabled": "Caption is available once appearance has been set.",
+      "size": "Size {{itemType}} by",
+      "title": "Caption"
+    },
+    "clone_in_new_tab": {
+      "success": "Your graph clone has successfully been opened in a new tab.",
+      "title": "Clone in a new tab"
+    },
+    "control": {
+      "fullscreenEnter": "Enter fullscreen mode",
+      "fullscreenExit": "Exit fullscreen",
+      "zoomIn": "Zoom In",
+      "zoomOut": "Zoom Out",
+      "zoomReset": "See the whole graph"
+    },
+    "export": {
+      "gexf": {
+        "error": "GEXF export has failed",
+        "success": "Your GEXF export has successfully been saved.",
+        "title": "Export GEXF"
+      },
+      "png": {
+        "fields": {
+          "filename": "Filename",
+          "height": "Height (in pixels)",
+          "preserve_camera": "Preserve current camera position",
+          "width": "Width (in pixels)"
+        },
+        "success": "Your graph PNG export has successfully been saved.",
+        "title": "Export PNG snapshot"
+      },
+      "title": "Export graph"
+    },
+    "metadata": {
+      "authors": "Authors",
+      "description": "Description",
+      "graph-title": "Title",
+      "graph-type": "Graph Type",
+      "keywords": "Keywords",
+      "title": "Metadata"
+    },
+    "model": {
+      "directed": "Directed",
+      "edges": "edges",
+      "edges-data": {
+        "attribute-name": "Attribute name",
+        "attribute-value": "Attribute value",
+        "attributes": "Other attributes",
+        "color": "Edge color",
+        "id": "Edge ID",
+        "label": "Edge label",
+        "new-attribute": "Add new attribute",
+        "source": "Edge source",
+        "target": "Edge target",
+        "weight": "Edge weight"
+      },
+      "edges_one": "edge",
+      "edges_zero": "edge",
+      "graph": "graph",
+      "mixed": "Mixed",
+      "no_attributes": "There is no attribute in the model yet.",
+      "nodes": "nodes",
+      "nodes-data": {
+        "attribute-name": "Attribute name",
+        "attribute-value": "Attribute value",
+        "attributes": "Other attributes",
+        "color": "Node color",
+        "id": "Node ID",
+        "label": "Node label",
+        "new-attribute": "Add new attribute",
+        "size": "Node size",
+        "x": "Node x position",
+        "y": "Node y position"
+      },
+      "nodes_one": "node",
+      "nodes_zero": "node",
+      "title": "Attributes' Model",
+      "undirected": "Undirected"
+    },
+    "open": {
+      "github": {
+        "error": "A technical error occurred. Please check your connectivity or try later.",
+        "file-open-external": "Open {{filename}} on GitHub",
+        "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on GitHub",
+        "select-file": "Select a file",
+        "success": "File {{filename}} has been successfully loaded",
+        "title": "Open a file from GitHub"
+      },
+      "local": {
+        "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML or Graphology JSON file ",
+        "error": "An error occurred while opening the file. Please check that the file is a valid.",
+        "success": "File {{filename}} has been successfully loaded",
+        "title": "Open a local file"
+      },
+      "new": {
+        "message": "Current graph will be cleared, are you sure you want to continue ?",
+        "success": "Empty graph loaded",
+        "title": "Open an empty graph"
+      },
+      "remote": {
+        "error": "An error occurred while opening the file. Please check your connectivity and that the file is a valid.",
+        "success": "File {{filename}} has been successfully loaded"
+      },
+      "title": "Open a graph file"
+    },
+    "partitioning": {
+      "description": "To apply appearance or filters differently on different groups of {{items}}, partition your graph using any node category attribute.",
+      "missing_partition": "They are grouped into a 'missing value' partition.",
+      "missing_partition_preview": "They will be grouped into a 'missing value' partition.",
+      "partition": "Partition {{items}} on",
+      "status_item": "The {{items}} are grouped into",
+      "status_item_preview": "The {{items}} will be grouped into",
+      "status_no_partition": "{{items}} are not partitioned",
+      "status_partition": "{{nbPartitions}} partitions using the '{{attribute}}' attribute.",
+      "title": "Partitioning",
+      "warning_nbMissing": "{{nbMissingValues}} {{items}} don't have a value for this attribute."
+    },
+    "save": {
+      "github": {
+        "error": "An error occurred while saving your graph. Please check your connectivity or try later.",
+        "field": {
+          "description": "Description",
+          "filename": "Filename",
+          "isPublic": "Create a public gist"
+        },
+        "success": "File {{filename}} has been successfully saved",
+        "title": "Save on GitHub as..."
+      },
+      "local": {
+        "error": "Failed to save the graph locally",
+        "success": "Graph has been saved locally",
+        "title": "Save graph locally"
+      },
+      "name": "Save",
+      "title": "Save graph"
+    },
+    "title": "Graph"
+  },
+  "layouts": {
+    "circlePack": {
+      "description": "Arranges the nodes as a bubble chart, according to specified attributes",
+      "parameters": {
+        "center": {
+          "description": "Center of the layout",
+          "title": "Center"
+        },
+        "groupingField": {
+          "description": "An optional attribute to use to group the nodes",
+          "title": "Hierarchy attribute"
+        },
+        "scale": {
+          "description": "Scale of the layout",
+          "title": "Scale"
+        }
+      },
+      "title": "CirclePack"
+    },
+    "circular": {
+      "description": "Arranges the node in a circle",
+      "parameters": {
+        "center": {
+          "description": "Center of the layout",
+          "title": "Center"
+        },
+        "scale": {
+          "description": "Scale of the layout",
+          "title": "Scale"
+        }
+      },
+      "title": "Circular"
+    },
+    "description": "This panel allows computing new coordinates to nodes of the graph. ",
+    "exec": {
+      "started": "Layout {{layout}} is running",
+      "stopped": "Layout {{layout}} has been stopped",
+      "success": "Layout \"{{layout}}\" has successfully been applied."
+    },
+    "fa2": {
+      "buttons": {
+        "autoSettings": {
+          "description": "Generates settings that fit the current graph the best",
+          "title": "Guess settings"
+        }
+      },
+      "parameters": {
+        "adjustSizes": {
+          "description": "Should the node’s sizes be taken into account?",
+          "title": "Adjust sizes?"
+        },
+        "barnesHutOptimize": {
+          "description": "Whether to use the Barnes-Hut approximation to compute repulsion in O(n*log(n)) rather than default O(n^2), n being the number of nodes",
+          "title": "barnesHutOptimize"
+        },
+        "barnesHutTheta": {
+          "description": "Barnes-Hut approximation theta parameter",
+          "title": "barnesHutTheta"
+        },
+        "edgeWeightInfluence": {
+          "description": "Influence of the edge’s weights on the layout",
+          "title": "Edge weight influence"
+        },
+        "gravity": {
+          "description": "Strength of the layout’s gravity",
+          "title": "Gravity"
+        },
+        "linLogMode": {
+          "description": "Whether to use Noack’s LinLog model.",
+          "title": "linLog mode"
+        },
+        "outboundAttractionDistribution": {
+          "title": "Out bound attraction distribution"
+        },
+        "scalingRatio": {
+          "title": "Scaling ratio"
+        },
+        "slowDown": {
+          "title": "Slow down?"
+        },
+        "strongGravityMode": {
+          "title": "Strong gravity mode?"
+        }
+      },
+      "title": "ForceAtlas2"
+    },
+    "force": {
+      "parameters": {
+        "attraction": {
+          "description": "Importance of the attraction force, that attracts each pair of connected nodes like elastics",
+          "title": "Attraction"
+        },
+        "gravity": {
+          "description": "Importance of the gravity force, that attracts all nodes to the center",
+          "title": "Gravity"
+        },
+        "inertia": {
+          "description": "Percentage of a node vector displacement that is preserved at each step. 0 means no inertia, 1 means no friction",
+          "title": "Inertia"
+        },
+        "maxMove": {
+          "description": "Maximum length a node can travel at each step, in pixel",
+          "title": "Maximum move"
+        },
+        "repulsion": {
+          "description": "Importance of the repulsion force, that attracts each pair of nodes like magnets",
+          "title": "Repulsion"
+        }
+      },
+      "title": "Force directed"
+    },
+    "noverlap": {
+      "description": "Anti-collision layout algorithm",
+      "parameters": {
+        "expansion": {
+          "description": "Percentage of current space that nodes could attempt to move outside of",
+          "title": "Expansion"
+        },
+        "gridSize": {
+          "description": "Number of grid cells horizontally and vertically subdivising the graph’s space. This is used as an optimization scheme. Set it to 1 and you will have O(n²) time complexity, which can sometimes perform better with very few nodes.",
+          "title": "Grid size"
+        },
+        "margin": {
+          "description": "Margin to keep between nodes",
+          "title": "Margin"
+        },
+        "ratio": {
+          "description": "Ratio scaling node sizes",
+          "title": "Ratio"
+        },
+        "speed": {
+          "description": "Dampening factor that will slow down node movements to ease the overall process",
+          "title": "Speed"
+        }
+      },
+      "title": "Noverlap"
+    },
+    "placeholder": "Select a layout algorithm",
+    "random": {
+      "description": "Random layout positioning every node by choosing each coordinates uniformly at random on the interval [0, 1)",
+      "parameters": {
+        "center": {
+          "description": "Center of the layout",
+          "title": "Center"
+        },
+        "scale": {
+          "description": "Scale of the layout",
+          "title": "Scale"
+        }
+      },
+      "title": "Random"
+    },
+    "script": {
+      "description": "Write your own layout by creating a function that returns a {x,y} object for each node",
+      "title": "Custom layout"
+    },
+    "title": "Layout"
+  },
+  "metrics": {
+    "attributes_placeholder": "None",
+    "compute": "Compute metrics",
+    "compute_one": "Compute metric",
+    "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
+    "edges": {
+      "disparity": {
+        "attributes": {
+          "disparity": "Disparity attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          }
+        },
+        "title": "Disparity"
+      },
+      "edgescript": {
+        "attributes": {
+          "custom": "Attribute name on which to store the metric"
+        },
+        "description": "Define a function that compute a metric for an edge.",
+        "title": "Custom edge metric"
+      },
+      "simmelianStrength": {
+        "attributes": {
+          "simmelianStrength": "Simmelian strength attribute name"
+        },
+        "title": "Simmelian strength"
       }
-    }
+    },
+    "edges_attribute_already_exists": "An edge attribute named \"{{field}}\" already exists. Its values will be overridden.",
+    "nodes": {
+      "betweennessCentrality": {
+        "attributes": {
+          "betweennessCentrality": "Betweenness centrality attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "normalize": {
+            "title": "Normalize output?"
+          }
+        },
+        "title": "Betweenness centrality"
+      },
+      "degree": {
+        "attributes": {
+          "degree": "Degree attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "kind": {
+            "title": "Type of degree",
+            "values": {
+              "degree": "Degree",
+              "inDegree": "Incoming degree",
+              "outDegree": "Outgoing degree"
+            }
+          }
+        },
+        "title": "Degree"
+      },
+      "hits": {
+        "attributes": {
+          "authorities": "Authority score attribute name",
+          "hubs": "Hub score attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "maxIterations": {
+            "title": "Max iterations"
+          },
+          "normalize": {
+            "title": "Normalize output?"
+          },
+          "tolerance": {
+            "title": "Tolerance"
+          }
+        },
+        "title": "HITS"
+      },
+      "louvain": {
+        "attributes": {
+          "modularityClass": "Modularity class attribute name"
+        },
+        "description": "This algorithm aims at splitting the nodes as densely connected groups.",
+        "parameters": {
+          "fastLocalMoves": {
+            "description": "Whether to use a well-known optimization relying on a queue set to traverse the graph more efficiently.",
+            "title": "Fast local moves"
+          },
+          "getEdgeWeight": {
+            "description": "An edge attribute that would represent edge weights.",
+            "title": "Edge weight attribute"
+          },
+          "randomWalk": {
+            "description": "Whether to traverse the graph randomly.",
+            "title": "Random walk"
+          },
+          "resolution": {
+            "description": "An increased resolution should produce more communities.",
+            "title": "Resolution"
+          }
+        },
+        "title": "Louvain community detection"
+      },
+      "nodescript": {
+        "attributes": {
+          "custom": "Attribute name on which to store the metric"
+        },
+        "description": "Define a function that compute a metric for a node.",
+        "title": "Custom node metric"
+      },
+      "pagerank": {
+        "attributes": {
+          "pagerank": "PageRank attribute name"
+        },
+        "parameters": {
+          "alpha": {
+            "title": "Alpha"
+          },
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "maxIterations": {
+            "title": "Max iterations"
+          },
+          "tolerance": {
+            "title": "Tolerance"
+          }
+        },
+        "title": "PageRank"
+      }
+    },
+    "nodes_attribute_already_exists": "A node attribute named \"{{field}}\" already exists. Its values will be overridden.",
+    "placeholder": "Select an algorithm",
+    "success": "The {{items}} metrics \"{{metrics}}\" have been added to the data.",
+    "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",
+    "title": "Metrics"
+  },
+  "providers": {
+    "github": "GitHub"
   },
   "search": {
+    "edges": {
+      "help": "Type something to find an edge",
+      "no_result": "No edge found",
+      "other_result": "... and {{count, number}} other edges",
+      "placeholder": "Search an edge..."
+    },
     "graph": {
-      "placeholder": "Search nodes, edges",
-      "no_result": "No results",
       "help": "Type something to search",
+      "no_result": "No results",
       "other_result": "... and {{count, number}} other results",
-      "select_all_nodes": "Add {{count, number}} nodes in the selection",
-      "select_all_edges": "Add {{count, number}} edges in the selection"
+      "placeholder": "Search nodes, edges",
+      "select_all_edges": "Add {{count, number}} edges in the selection",
+      "select_all_nodes": "Add {{count, number}} nodes in the selection"
     },
     "nodes": {
-      "placeholder": "Search a node ...",
-      "no_result": "No node found",
       "help": "Type something to find a node",
-      "other_result": "... and {{count, number}} other nodes"
-    },
-    "edges": {
-      "placeholder": "Search an edge...",
-      "no_result": "No edge found",
-      "help": "Type something to find an edge",
-      "other_result": "... and {{count, number}} other edges"
+      "no_result": "No node found",
+      "other_result": "... and {{count, number}} other nodes",
+      "placeholder": "Search a node ..."
     }
   },
+  "selection": {
+    "edge_no_label": "(Empty label)",
+    "edges": "{{count, number}} selected edges",
+    "edges_one": "One selected edge",
+    "edges_zero": "No selected edge",
+    "empty_edges": "This edge has no attribute",
+    "empty_nodes": "This node has no attribute",
+    "focus_edges": "Select only this edge",
+    "focus_nodes": "Select only this node",
+    "hidden_edges": "{{count, number}} hidden selected edges",
+    "hidden_edges_one": "One hidden selected edge",
+    "hidden_nodes": "{{count, number}} hidden selected nodes",
+    "hidden_nodes_one": "One hidden selected node",
+    "locate_on_graph": "Locate on the graph",
+    "node_no_label": "(Empty label)",
+    "nodes": "{{count, number}} selected nodes",
+    "nodes_one": "One selected node",
+    "nodes_zero": "No selected node",
+    "select_all": "Select all",
+    "unselect_all": "Unselect all",
+    "unselect_all_hidden_edges": "Unselect all hidden edges",
+    "unselect_all_hidden_nodes": "Unselect all hidden edges",
+    "unselect_edges": "Unselect this edge",
+    "unselect_nodes": "Unselect this node",
+    "visible_edges": "{{count, number}} visible selected edges",
+    "visible_edges_one": "One visible selected edge",
+    "visible_edges_zero": "No visible selected edge",
+    "visible_nodes": "{{count, number}} visible selected nodes",
+    "visible_nodes_one": "One visible selected node",
+    "visible_nodes_zero": "No visible selected node"
+  },
   "settings": {
-    "title": "User's settings",
     "danger-zone": {
-      "title": "Danger zone",
       "reset-state": {
-        "title": "Reset application state",
         "description": "All your data will be deleted, even the settings saved locally (ie. in your browser). Are you sure ?",
-        "success": "Application's state has been cleared"
-      }
-    }
+        "success": "Application's state has been cleared",
+        "title": "Reset application state"
+      },
+      "title": "Danger zone"
+    },
+    "title": "User's settings"
+  },
+  "storage": {
+    "cannot_restore": "Your graph cannot be restored.",
+    "restore_successful": "Your work graph has been restored."
+  },
+  "user": {
+    "avatar_alt": "{{name}}'s avatar"
+  },
+  "welcome": {
+    "disclaimer-1": "Gephi Lite is currently a work in progress.",
+    "disclaimer-2": "Feel free to check the GitHub project to see more about the upcoming features or to report bugs.",
+    "logo": "Gephi logo",
+    "no_recent": "No remote file has been opened in that browser yet.",
+    "open_graph": "Open graph file",
+    "open_recent": "Open recent",
+    "samples": "Samples",
+    "title": "Welcome to Gephi Lite"
   }
 }
