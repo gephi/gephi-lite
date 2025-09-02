@@ -8,7 +8,36 @@ const LANGUAGES = ["dev"];
 
 const IGNORE_MISSING: RegExp[] = [];
 
-const IGNORE_UNUSED: RegExp[] = [];
+const IGNORE_UNUSED: RegExp[] = [
+  /appearance\.title/,
+  /filters\.title/,
+  /error\.form\..*/,
+  /search\..*/,
+  /common\..*/,
+  /selection\..*/,
+  /layouts\..*/,
+  /metrics\..*/,
+  /edition\.data_creation/,
+  /edition\.update_this_nodes/,
+  /edition\.update_this_edges/,
+  /edition\.delete_this_nodes/,
+  /edition\.delete_this_edges/,
+  /edition\.delete_nodes/,
+  /edition\.delete_edges/,
+  /edition\.merge_selected_nodes/,
+  /edition\.search_nodes/,
+  /edition\.all_nodes/,
+  /edition\.filtered_nodes/,
+  /edition\.selected_nodes/,
+  /edition\.all_edges/,
+  /edition\.filtered_edges/,
+  /edition\.selected_edges/,
+  /datatable\..*_matching/,
+  /datatable\.protected_columns\.degree/,
+  /datatable\.protected_columns\.sourceId/,
+  /datatable\.protected_columns\.targetId/,
+  /datatable\.save_and_create_column/,
+];
 
 /**
  * Read a file and returns its content as a JSON

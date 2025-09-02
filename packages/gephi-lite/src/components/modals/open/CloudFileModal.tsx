@@ -5,14 +5,12 @@ import { useTranslation } from "react-i18next";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
-import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
 import { displayDateTime } from "../../../utils/date";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
 import { ExternalLinkIcon, LockIcon, SyncIcon } from "../../common-icons";
-import { Modal } from "../../modals";
 import { PleaseSignIn } from "../../user/PleaseSignIn";
 
 const PAGINATION_SIZE = 12;
@@ -114,7 +112,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                           href={file.webUrl}
                           title={t("graph.open.github.file-open-external", {
                             filename: file.filename,
-                            provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+                            provider: t(`providers.github`),
                           }).toString()}
                           target="_blank"
                           rel="noreferrer"
@@ -141,7 +139,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
           {!loading && files.length === 0 && (
             <p className="text-info">
               {t("graph.open.github.no-data", {
-                provider: user?.provider.type ? t(`providers.${user.provider.type}`) : null,
+                provider: t(`providers.github`),
               }).toString()}
             </p>
           )}
@@ -151,30 +149,5 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
         <PleaseSignIn />
       )}
     </>
-  );
-};
-
-export const OpenCloudFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
-  const { t } = useTranslation();
-  const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
-  const [user] = useConnectedUser();
-
-  useEffect(() => {
-    // closing the modal on success
-    if (status.type === "success") cancel();
-  }, [status, cancel]);
-
-  return (
-    <Modal title={t("graph.open.local.title").toString()}>
-      <>{user ? <OpenCloudFileForm id={"remoteFileForm"} onStatusChange={(s) => setStatus(s)} /> : <PleaseSignIn />}</>
-      <div className="gl-gap-2 d-flex">
-        <button title={t("common.cancel").toString()} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
-          {t("common.cancel").toString()}
-        </button>
-        <button className="gl-btn gl-btn-fill" form="localFileForm" disabled={status.type === "loading"}>
-          {t("common.open").toString()}
-        </button>
-      </div>
-    </Modal>
   );
 };
