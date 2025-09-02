@@ -232,6 +232,7 @@
     "delete_edges": "Supprimer {{count, number}} liens",
     "delete_edges_attributes": "Supprimer l'attribut '{{name}}' des liens",
     "delete_edges_one": "Supprimer un lien",
+    "delete_edges_success": "Les {{count,number}} liens ont bien été supprimés.",
     "delete_edges_success_one": "Le lien a été supprimé.",
     "delete_edges_zero": "Supprimer les liens",
     "delete_nodes": "Supprimer {{count, number}} nœuds",
@@ -250,10 +251,27 @@
     "edit_selected_edges_one": "Éditer le lien sélectionné",
     "edit_selected_nodes": "Éditer les nœuds sélectionnés",
     "edit_selected_nodes_one": "Éditer le nœud sélectionné",
+    "filtered_edges": "Liens filtrés seulement",
+    "filtered_nodes": "Nœuds filtrés seulement",
+    "merge_selected_nodes": "Fusionner les nœuds sélectionnés",
+    "multi": {
+      "select_attribute": "Sélectionner l'attribut à éditer pour la sélection",
+      "select_value": "Sélectionner une valeur à appliquer à la sélection"
+    },
     "search_nodes": "Rechercher par libellé de nœud...",
+    "selected_edges": "Liens sélectionnés seulement",
+    "selected_nodes": "Nœuds sélectionnées seulement",
     "update_edges": "Éditer le lien existant",
+    "update_edges_field": "Éditer l'attribut de liens",
+    "update_edges_field_success": "L'attribut de lien a bien été mis à jour.",
     "update_edges_success": "Le lien a été mis à jour avec succès.",
+    "update_multiple_edges": "Éditer les liens existants",
+    "update_multiple_edges_success": "Les {{count,number}} liens ont bien été mis à jour.",
+    "update_multiple_nodes": "Éditer les nœuds éxistants",
+    "update_multiple_nodes_success": "Les {{count,number}} nœuds ont bien été mis à jour.",
     "update_nodes": "Éditer le nœud existant",
+    "update_nodes_field": "Éditer l'attribut des nœuds",
+    "update_nodes_field_success": "L'attribut de nœud a bien été mis à jour.",
     "update_nodes_success": "Le nœud a été mis à jour avec succès.",
     "update_this_edges": "Éditer ce lien",
     "update_this_nodes": "Éditer ce nœud"
@@ -263,6 +281,7 @@
       "gexf_search_params": "Le paramètre d'URL `gexf=` pour ouvrir un fichier automatiquement a été renommé `file=` dans la version 0.4.0. Utiliser le paramètre gexf est déprécié, et pourrait ne plus fonctionner dans une version future. Veuillez utiliser `file=` à la place."
     },
     "form": {
+      "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
       "required": "Champs requis",
       "unique": "Une autre entrée existe déjà avec cette valeur"
     },
@@ -273,6 +292,7 @@
       "title": "Page non trouvée"
     },
     "report": "Signaler l'erreur",
+    "reset": "Tout réinitialiser",
     "retry": "Ré-essayer",
     "title": "Erreur",
     "unknown": "Une erreur inconnue s'est produite."
@@ -284,14 +304,30 @@
   "filters": {
     "activated": "Filtre activé",
     "add_filter": "Ajouter un filtre",
+    "create": {
+      "custom_script_description": "Ces filtres permettent d’écrire une fonction JavaScript qui indiquera, pour chaque nœud ou lien, s’il doit être conservé par le filtre.",
+      "edges_attributes_description": "Ces filtres permettent de filtrer les liens en fonction de leurs attributs. Certains types d’attributs sont désactivés car ils ne peuvent pas être utilisés pour filtrer.",
+      "no_edges_attributes": "Aucun attribut de lien",
+      "no_nodes_attributes": "Aucun attribut de nœud",
+      "nodes_attributes_description": "Ces filtres permettent de filtrer les nœuds en fonction de leurs attributs. Certains types d’attributs sont désactivés car ils ne peuvent pas être utilisés pour filtrer.",
+      "topological_description": "Ces filtres permettent de réduire la taille du réseau à l’aide de diverses méthodes topologiques.",
+      "what_kind": "Quel type de filtre voulez vous créer ?"
+    },
     "create_filter": "Créer un filtre",
+    "custom_script": "Script personnalisé",
     "desactivated": "Filtre désactivé, cliquez pour réactiver",
     "description": "Ce panneau permet de filtrer le graphe en superposant des filtres.",
+    "disable_following": "Montrer le réseau",
+    "disable_following_subtitle": "c.a.d. désactiver tous les filtres suivants",
+    "edges_fields": "Attributs des liens",
     "filter": "Filtre",
     "full_graph": "Graphe entier",
     "inapplicable": "Filtre désactivé : une seule valeur disponible.",
+    "insert": "Insérer un filtre",
+    "intermediate_graph": "Réseau intermédiaire",
     "keepMissingValues": "Conserver les valeurs manquantes",
     "no_concurrent_edit": "Un seul filtre peut être modifié à la fois. Confirmez l'édition en cours pour modifier ce filtre.",
+    "nodes_fields": "Attributs des nœuds",
     "range": "plage",
     "script": "Filtre personnalisé",
     "terms": "valeurs exactes",
@@ -323,10 +359,13 @@
         "summary_one": "La plus grande"
       }
     },
-    "using": "Utilisation"
+    "using": "Utilisation",
+    "visible_graph": "Réseau visible"
   },
   "gephi-lite": {
     "info": "Plus d'informations sur Gephi Lite",
+    "open_welcome_modal": "Ouvrir la modale d'accueil",
+    "report_issue": "Signaler un problème",
     "title": "Gephi Lite"
   },
   "github": {
@@ -381,6 +420,7 @@
     },
     "model": {
       "directed": "Orienté",
+      "directed_graph": "Réseau dirigé",
       "edges": "liens",
       "edges-data": {
         "attribute-name": "Nom de l'attribut",
@@ -396,8 +436,17 @@
       },
       "edges_one": "lien",
       "edges_zero": "lien",
+      "field": {
+        "date-format": "Format de date",
+        "id": "Identifiant",
+        "label": "Label",
+        "separator": "Séparateur de mots-clefs",
+        "type": "Type",
+        "will_be_serialized_as": "{{type}} sera sérialisé sous la forme de"
+      },
       "graph": "graph",
       "mixed": "Mixte",
+      "mixed_graph": "Réseau mixte",
       "no_attributes": "Il n'y a pas encore d'attribut dans le modèle.",
       "nodes": "nœuds",
       "nodes-data": {
@@ -416,8 +465,10 @@
       "nodes_zero": "nœud",
       "title": "Modèle d'attributs",
       "undirected": "Non orienté",
+      "undirected_graph": "Réseau non-dirigé",
       "warnings": {
         "allMissing": "Aucune valeur dans le graphe",
+        "invalid_data": "La valeur \"{{value}}\" ne peut être interprétée comme un⋅e \"{{type}}\".",
         "missing": "{{nbValues}} valeurs manquantes",
         "wrong": "{{nbValues}} valeurs ne sont pas quantitatives"
       }
@@ -426,12 +477,14 @@
       "github": {
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement.",
         "file-open-external": "Ouvrir {{filename}} sur GitHub",
+        "must-be-signed": "Cette fonctionnalité n'est disponible que si connecté à GitHub",
         "no-data": "Vous n'avez aucun fichier GEXF, GRAPHML ou JSON au format Graphology d'enregistré sur GitHub",
         "select-file": "Sélectionner un fichier",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "title": "Ouvrir un fichier depuis GitHub"
       },
       "local": {
+        "button_text": "Sélectionner un fichier local",
         "dragndrop_text": "Faites glisser-déposer un fichier GEXF, GRAPHML ou JSON au format Graphology.",
         "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier que le fichier est valide.",
         "success": "Le fichier {{filename}} a bien été ouvert",
@@ -472,6 +525,7 @@
         "title": "Enregistrer dans GitHub sous..."
       },
       "local": {
+        "description": "Cliquer ci-dessous pour télécharger le fichier JSON de l'espace de travail",
         "error": "Une erreur s'est produite lors de l'enregistrement de votre graphe. Veuillez vérifier votre connexion ou réessayer ultérieurement.",
         "success": "Le graphe a bien été enregistré",
         "title": "Enregistrer en local"
@@ -823,6 +877,10 @@
     "success_one": "La métrique \"{{metrics}}\" a été ajoutée aux données pour {{items}}.",
     "title": "Métriques"
   },
+  "pages": {
+    "data": "Données",
+    "graph": "Réseau"
+  },
   "providers": {
     "github": "GitHub"
   },
@@ -851,6 +909,7 @@
     }
   },
   "selection": {
+    "cursor": "Sélection simple",
     "edge_no_label": "(libellé vide)",
     "edges": "<strong>{{count, number}}</strong> liens sélectionnés",
     "edges_one": "<strong>Un</strong> lien sélectionné",
@@ -859,15 +918,23 @@
     "empty_nodes": "Ce nœud n'a pas d'attribut",
     "focus_edges": "Sélectionner uniquement ce lien",
     "focus_nodes": "Sélectionner uniquement ce nœud",
+    "hidden": "{{count, number}} cachés",
     "hidden_edges": "<strong>{{count, number}}</strong> liens sélectionnés masqués",
     "hidden_edges_one": "<strong>Un</strong> lien sélectionné masqué",
     "hidden_nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés masqués",
     "hidden_nodes_one": "<strong>Un</strong> nœud sélectionné masqué",
+    "hidden_one": "un caché",
+    "hidden_zero": "aucun caché",
+    "lasso": "Sélection par lasso",
     "locate_on_graph": "Localiser sur le graphe",
+    "marquee": "Sélection par rectangle",
+    "no_value": "Pas de valeur",
     "node_no_label": "(libellé vide)",
     "nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés",
     "nodes_one": "<strong>Un</strong> nœud sélectionné",
     "nodes_zero": "<strong>Aucun</strong> nœud sélectionné",
+    "open_in_data": "Voir dans Données",
+    "open_in_graph": "Voir dans le Réseau",
     "select_all": "Sélectionner tout",
     "select_node_neighbors": "Sélectionner les voisins du nœud",
     "unselect_all": "Tout désélectionner",
@@ -875,12 +942,15 @@
     "unselect_all_hidden_nodes": "Tout désélectionner pour les nœuds masqués",
     "unselect_edges": "Désélectionner ce lien",
     "unselect_nodes": "Désélectionner ce nœud",
+    "visible": "{{count, number}} visibles",
     "visible_edges": "<strong>{{count, number}}</strong> liens sélectionnés visibles",
     "visible_edges_one": "<strong>Un</strong> lien sélectionné visible",
     "visible_edges_zero": "<strong>Aucun</strong> lien sélectionné visible",
     "visible_nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés visibles",
     "visible_nodes_one": "<strong>Un</strong> nœud sélectionné visible",
-    "visible_nodes_zero": "<strong>Aucun</strong> nœud sélectionné visible"
+    "visible_nodes_zero": "<strong>Aucun</strong> nœud sélectionné visible",
+    "visible_one": "un visible",
+    "visible_zero": "aucun visible"
   },
   "settings": {
     "danger-zone": {
