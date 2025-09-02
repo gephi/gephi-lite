@@ -46,7 +46,7 @@ const SelectFilterModal: FC<
   return (
     <Modal title={t("filters.add_filter")} onClose={() => cancel()} className="modal-lg">
       <>
-        <p>What kind of filter do you want to create?</p>
+        <p>{t("filters.create.what_kind")}</p>
 
         <section className="mb-4">
           <h2>{t("filters.topological")}</h2>

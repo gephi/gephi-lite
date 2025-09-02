@@ -1,6 +1,7 @@
 import { FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { isNil } from "lodash";
 import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PiCheck } from "react-icons/pi";
 import TetherComponent from "react-tether";
 
@@ -25,6 +26,7 @@ export const EditDataCell: FC<{
   value: Scalar;
   close: () => void;
 }> = ({ type, id, field, close, value: initialValue }) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState<Scalar>(initialValue);
   const { updateNode, updateEdge } = useGraphDatasetActions();
   const update = type === "nodes" ? updateNode : updateEdge;
@@ -83,7 +85,7 @@ export const EditDataCell: FC<{
             }}
           >
             <EditItemAttribute autoFocus inTooltip field={field} scalar={value} onChange={(value) => setValue(value)} />
-            <button className="gl-btn gl-btn-fill gl-btn-icon">
+            <button className="gl-btn gl-btn-fill gl-btn-icon" title={t("datatable.save_cell")}>
               <PiCheck />
             </button>
           </form>

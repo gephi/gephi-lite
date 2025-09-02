@@ -34,6 +34,7 @@ const FilterInStack: FC<{
         <div className="filter-buttons">
           <button
             className="gl-btn gl-heading-3 fw-bold w-100 d-flex"
+            title={t("filters.desactivated")}
             onClick={(e) => {
               e.stopPropagation();
               updateFilter(filterIndex, { ...filter, disabled: !filter.disabled });

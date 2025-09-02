@@ -1,21 +1,14 @@
 {
   "welcome": {
-    "title": "Welcome to Gephi Lite",
-    "disclaimer-1": "Gephi Lite is currently a work in progress.",
-    "disclaimer-2": "Feel free to check the GitHub project to see more about the upcoming features or to report bugs.",
-    "logo": "Gephi logo",
-    "open_recent": "Open recent",
-    "open_graph": "Open graph file",
-    "no_recent": "No remote file has been opened in that browser yet.",
+    "documentation": "documentation",
+    "open_graph": "Open a graph file",
     "samples": "Samples",
-    "website": "website",
-    "documentation": "documentation"
+    "title": "Welcome to Gephi Lite",
+    "website": "website"
   },
   "gephi-lite": {
     "title": "Gephi Lite",
-    "info": "More info on Gephi Lite",
     "open_welcome_modal": "Open welcome modal",
-    "github_link": "Gephi Lite on GitHub",
     "report_issue": "Report an issue"
   },
   "error": {
@@ -44,21 +37,6 @@
   },
   "providers": {
     "github": "GitHub"
-  },
-  "github": {
-    "title": "GitHub authentication",
-    "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
-    "logged_as": "You are currently logged into GitHub as {{username}}.",
-    "select_ui_language": "Select application language"
-  },
-  "auth": {
-    "unauth_success": "Unauthentication successful",
-    "sign_out": "Sign-out from GitHub",
-    "sign_in": "Sign-in to GitHub"
-  },
-  "storage": {
-    "cannot_restore": "Your graph cannot be restored.",
-    "restore_successful": "Your work graph has been restored."
   },
   "selection": {
     "nodes_zero": "<strong>No</strong> selected node",
@@ -106,10 +84,7 @@
   },
   "appearance": {
     "title": "Appearance",
-    "partition": "Partition",
-    "ranking": "Ranking",
     "show_edges": "Show edges",
-    "no_caption": "(no caption)",
     "menu": {
       "nodes": "Nodes",
       "edges": "Edges",
@@ -122,8 +97,7 @@
       "pow-2": "pow 2",
       "pow-3": "pow 3",
       "sqrt": "sqrt",
-      "log": "log",
-      "spline": "spline"
+      "log": "log"
     },
     "graph": {
       "background_color": "Background color",
@@ -132,13 +106,11 @@
     "color": {
       "title": "Color",
       "set_color_from": "Set color from...",
-      "data": "Input file",
       "fixed": "A constant color",
       "source": "Source nodes",
       "target": "Target nodes",
       "default_value": "Color for {{items}} with no valid value",
       "color_all_items": "Color for all {{items}}",
-      "data_description": "All {{items}} colors are as they are in the input data file.",
       "source_description": "Each edge is colored as its source.",
       "target_description": "Each edge is colored as its target.",
       "scale_point": "Scale point",
@@ -152,10 +124,8 @@
       "shading_caption_2": "according to their {{attribute}} values."
     },
     "labels": {
-      "title": "Labels",
       "set_labels_from": "Set label from...",
       "set_labels_size_from": "Set label sizes from...",
-      "data": "Input data",
       "fixed": "A constant text",
       "fixed_label": "Label for every {{items}}",
       "fixed_label_size": "Label size for every {{items}}",
@@ -166,7 +136,6 @@
       "size_coef": "Labels sizes (higher makes labels appear bigger)",
       "adapts_to_zoom": "How much labels should grow with zoom",
       "density": "How many labels should appear any time",
-      "data_description": "All {{items}} labels are as they are in the input data file.",
       "none_description": "All {{items}} have no displayed label.",
       "ellipsis": {
         "enabled": "Shorten labels",
@@ -176,12 +145,10 @@
     "images": {
       "title": "Images",
       "set_labels_from": "Set image from...",
-      "data": "Input data",
       "fixed": "A constant URL",
       "fixed_label": "Same image for every {{items}}",
       "none": "No images",
       "default_value": "Image for {{items}} with no valid value",
-      "data_description": "All {{items}} images are as they are in the input data file.",
       "none_description": "All {{items}} have no displayed image."
     },
     "zIndex": {
@@ -190,36 +157,27 @@
       "none": "Default (faster)",
       "set_values_from": "Set depth from...",
       "none_description": "Gephi Lite renders all {{items}} in the order it meets them.",
-      "reverse_order": "Inverse order of elements (lower values on front, higher in the back)",
-      "default_value": ""
+      "reverse_order": "Inverse order of elements (lower values on front, higher in the back)"
     },
     "size": {
       "title": "Size",
       "set_size_from": "Set size from...",
-      "data": "Input file",
       "fixed": "A constant size",
-      "default_value": "Size for {{items}} with no valid value",
       "interpolate": "Interpolate between custom min and max values",
       "size_all_items": "Size for all {{items}}",
-      "data_description": "All {{items}} sizes are as they are in the input data file."
+      "default_value": "Size for {{items}} with no valid value"
     }
   },
   "filters": {
     "title": "Filters",
-    "description": "This panel allows to filter the graph by stacking filters.",
-    "filter": "Filter",
     "add_filter": "Add filter",
     "full_graph": "Full graph",
     "visible_graph": "Visible graph",
     "intermediate_graph": "Intermediate graph",
-    "using": "Using",
     "topological": "Topology",
     "custom_script": "Custom script",
     "desactivated": "Desactivated filter, click to reactivate",
-    "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
     "script": "Custom filter",
-    "activated": "Activated filter",
-    "create_filter": "Create filter",
     "keepMissingValues": "Keep missing values",
     "inapplicable": "Range is only displayed when there is at least two values to filter on.",
     "insert": "Insert filter",
@@ -235,11 +193,6 @@
       "no_nodes_attributes": "No node attribute",
       "edges_attributes_description": "These filters allow filtering the edges based on their attributes. Some types of attributes are not usable as filters, in which case they are disabled.",
       "no_edges_attributes": "No edge attribute"
-    },
-    "range": {
-      "from": "from {{min}}",
-      "to": "less than or equal {{max}}",
-      "from_to": "from {{min}} to {{max}}"
     },
     "topology": {
       "largestConnectedComponent": {
@@ -340,7 +293,6 @@
     "selected_edges": "Selected edges only"
   },
   "graph": {
-    "title": "Graph",
     "control": {
       "zoomIn": "Zoom In",
       "zoomOut": "Zoom Out",
@@ -348,36 +300,10 @@
       "fullscreenEnter": "Enter fullscreen mode",
       "fullscreenExit": "Exit fullscreen"
     },
-    "metadata": {
-      "title": "Metadata",
-      "graph-title": "Title",
-      "description": "Description",
-      "keywords": "Keywords",
-      "authors": "Authors",
-      "graph-type": "Graph Type"
-    },
-    "partitioning": {
-      "title": "Partitioning",
-      "description": "To apply appearance or filters differently on different groups of {{items}}, partition your graph using any category attribute.",
-      "partition": "Partition {{items}} on",
-      "status_no_partition": "{{items}} are not partitioned",
-      "status_item_preview": "The {{items}} will be grouped into",
-      "status_item": "The {{items}} are grouped into",
-      "status_partition": "{{nbPartitions}} partitions using the '{{attribute}}' attribute.",
-      "warning_nbMissing": "{{nbMissingValues}} {{items}} don't have a value for this attribute.",
-      "missing_partition_preview": "They will be grouped into a 'missing value' partition.",
-      "missing_partition": "They are grouped into a 'missing value' partition."
-    },
     "model": {
-      "title": "Attributes' Model",
-      "no_attributes": "There is no attribute in the model yet.",
-      "directed": "Directed",
-      "undirected": "Undirected",
-      "mixed": "Mixed",
       "directed_graph": "Directed graph",
       "undirected_graph": "Undirected graph",
       "mixed_graph": "Mixed graph",
-      "graph": "graph",
       "nodes_one": "node",
       "nodes_zero": "node",
       "nodes": "nodes",
@@ -386,31 +312,15 @@
       "edges": "edges",
       "nodes-data": {
         "id": "Node ID",
-        "label": "Node label",
-        "size": "Node size",
-        "color": "Node color",
         "x": "Node x position",
-        "y": "Node y position",
-        "attributes": "Other attributes",
-        "attribute-name": "Attribute name",
-        "attribute-value": "Attribute value",
-        "new-attribute": "Add new attribute"
+        "y": "Node y position"
       },
       "edges-data": {
         "id": "Edge ID",
         "source": "Edge source",
-        "target": "Edge target",
-        "label": "Edge label",
-        "color": "Edge color",
-        "weight": "Edge weight",
-        "attributes": "Other attributes",
-        "attribute-name": "Attribute name",
-        "attribute-value": "Attribute value",
-        "new-attribute": "Add new attribute"
+        "target": "Edge target"
       },
       "warnings": {
-        "missing": "{{nbValues}} missing values",
-        "wrong": "{{nbValues}} values are not quantitative",
         "invalid_data": "The value \"{{value}}\" cannot be interpreted as a \"{{type}}\" value."
       },
       "field": {
@@ -423,7 +333,6 @@
       }
     },
     "open": {
-      "title": "Open a graph file",
       "local": {
         "title": "Open a local file",
         "button_text": "Select a local file",
@@ -436,7 +345,6 @@
         "title": "Open a file from GitHub",
         "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on GitHub",
         "file-open-external": "Open {{filename}} on Gist",
-        "select-file": "Select a file",
         "success": "File {{filename}} has been successfully loaded",
         "error": "A technical error occurred. Please check your connectivity or try later."
       },
@@ -453,7 +361,6 @@
     "save": {
       "title": "Save workspace as...",
       "github": {
-        "title": "Save on GitHub",
         "field": {
           "filename": "Filename",
           "description": "Description",
@@ -463,14 +370,12 @@
         "error": "An error occurred while saving your graph. Please check your connectivity or try later."
       },
       "local": {
-        "title": "Save locally",
         "description": "Click below to download the workspace as a JSON file",
         "success": "Graph has been saved locally",
         "error": "Failed to save the graph locally"
       }
     },
     "export": {
-      "title": "Export graph",
       "png": {
         "title": "Export PNG snapshot",
         "success": "Your graph PNG export has successfully been saved.",
@@ -482,19 +387,16 @@
         }
       },
       "gexf": {
-        "title": "Export GEXF",
         "success": "Your GEXF export has successfully been saved.",
         "error": "GEXF export has failed"
       }
     },
     "clone_in_new_tab": {
-      "title": "Clone in a new tab",
       "success": "Your graph clone has successfully been opened in a new tab."
     },
     "caption": {
       "color": "Color {{itemType}} by",
       "size": "Size {{itemType}} by",
-      "title": "Caption",
       "disabled": "Caption is available once appearance has been set."
     }
   },
@@ -514,6 +416,7 @@
     "save_cell": "Save cell",
     "protected_columns": {
       "id": "ID",
+      "data": "Data",
       "selected": "Selected?",
       "preview": "Preview",
       "degree": "Degree",
@@ -529,8 +432,7 @@
     "move_left": "Move to the left",
     "move_right": "Move to the right",
     "insert_left": "Insert new column to the left",
-    "insert_right": "Insert new column to the right",
-    "column_label": "label"
+    "insert_right": "Insert new column to the right"
   },
   "metrics": {
     "title": "Metrics",
@@ -861,10 +763,6 @@
       "caption_deltaMax": "Grid size = Δmax = "
     }
   },
-  "file": {
-    "title": "Data management",
-    "login_capabilities": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists:"
-  },
   "common": {
     "add": "Add",
     "all": "All",
@@ -911,7 +809,6 @@
   },
   "cloud": {
     "github": {
-      "title": "GitHub",
       "auth": {
         "title": "GitHub authentification",
         "asking_for_device_code": "Asking GitHub for device code",
@@ -952,15 +849,6 @@
     }
   },
   "settings": {
-    "title": "User's settings",
-    "danger-zone": {
-      "title": "Danger zone",
-      "reset-state": {
-        "title": "Reset application state",
-        "description": "All your data will be deleted, even the settings saved locally (ie. in your browser). Are you sure ?",
-        "success": "Application's state has been cleared"
-      }
-    },
     "theme": {
       "auto": "Auto",
       "light": "Light",

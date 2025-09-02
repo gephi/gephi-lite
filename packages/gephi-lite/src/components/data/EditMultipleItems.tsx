@@ -56,13 +56,13 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
       notify({
         type: "success",
         title: t(`edition.update_multiple_${type}`),
-        message: t(`edition.update_multiple_${type}_success`),
+        message: t(`edition.update_multiple_${type}_success`, { count: items.size }),
       });
       onSubmitted();
     } catch (e) {
       notify({
         type: "error",
-        title: t("edition.update_items", { type }),
+        title: t(`edition.update_multiple_${type}`),
         message: (e as Error).message || t("error.unknown"),
       });
     }

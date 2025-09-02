@@ -42,6 +42,9 @@ jobs:
         env:
           NODE_OPTIONS: --max_old_space_size=4096
 
+      - name: Check I18N
+        run: npm run i18n-checker --workspace=@gephi/gephi-lite
+
       - name: Run unit tests
         run: npm run test
 
