@@ -61,6 +61,12 @@
       "size_coef": "Tailles des libellés (plus grand rend les libellés plus grands)",
       "title": "Libellés"
     },
+    "menu": {
+      "background": "Arrière-plan",
+      "edges": "Liens",
+      "labels": "Libellés",
+      "nodes": "Nœuds"
+    },
     "no_caption": "(pas de légende)",
     "partition": "Partition",
     "ranking": "Classement",
@@ -70,6 +76,7 @@
       "data_description": "Toutes les tailles des {{items}} sont celles du fichier de données d'entrée.",
       "default_value": "Taille pour {{items}} sans valeur valide",
       "fixed": "Une taille constante",
+      "interpolate": "Interpoler entre les valeurs personnalisées min et max",
       "set_size_from": "Définir la taille à partir de...",
       "size_all_items": "Taille pour tous les {{items}}",
       "title": "Taille"
@@ -103,10 +110,16 @@
     "github": {
       "auth": {
         "asking_for_device_code": "Demande d'un code d'appareil à GitHub",
-        "copy_code": "Copiez le code ci-dessous et cliquez sur le bouton \"Ouvrir GitHub\". Une nouvelle fenêtre s'ouvrira, sur laquelle GitHub vous demandera le code.",
+        "copy_code": "Copiez le code ci-dessous et cliquez sur le bouton \"Ouvrir GitHub\". Une nouvelle fenêtre s'ouvrira, sur laquelle GitHub vous demandera le code",
         "copy_success": "Code enregistré dans le presse-papiers",
         "title": "Authentification GitHub",
         "waiting_validation": "En attente de validation"
+      },
+      "disconnect": {
+        "action": "Déconnecter",
+        "message": "Êtes-vous sûr de vouloir vous déconnecter de GitHub ?",
+        "success": "Vous avez été déconnecté de GitHub",
+        "title": "Se déconnecter de GitHub ?"
       },
       "title": "GitHub"
     }
@@ -119,13 +132,18 @@
     "clear": "Effacer",
     "close": "Fermer",
     "collapse": "Réduire",
+    "colon": ":",
     "confirm": "Confirmer",
     "copy": "Copier",
     "created": "Créé",
     "delete": "Supprimer",
+    "disabled": "Désactivé",
+    "download": "Télécharger",
     "edit": "Modifier",
+    "enabled": "Activé",
     "expand": "Agrandir",
     "filename": "Nom du fichier",
+    "from": "De",
     "hide": "Masquer",
     "load-more": "Charger plus",
     "loading": "Chargement",
@@ -147,13 +165,47 @@
     "start": "Démarrer",
     "stop": "Arrêter",
     "submit": "Soumettre",
+    "to": "à",
     "updated": "Mis à jour"
   },
   "context": {
     "title": "Aperçu des données"
   },
+  "datatable": {
+    "create_column": "Créer la colonne",
+    "duplicate_column": "Dupliquer la colonne",
+    "edges_matching": "<strong>{{count, number}}</strong> liens correspondent à la recherche",
+    "edges_matching_one": "<strong>{{count, number}}</strong> lien correspond à la recherche",
+    "edges_matching_zero": "<strong>Aucun</strong> lien correspond à la recherche",
+    "edges_not_matching": "<strong>{{count, number}}</strong> liens ne correspondent pas à la recherche",
+    "edges_not_matching_one": "<strong>{{count, number}}</strong> lien ne correspond pas à la recherche",
+    "edges_not_matching_zero": "<strong>Aucun}</strong> lien ne correspond pas à la recherche",
+    "insert_left": "Insérer une nouvelle colonne à gauche",
+    "insert_right": "Insérer une nouvelle colonne à droite",
+    "modify_column": "Modifier la colonne",
+    "move_left": "Déplacer à gauche",
+    "move_right": "Déplacer à droite",
+    "nodes_matching": "<strong>{{count, number}}</strong> nœuds correspondent à la recherche",
+    "nodes_matching_one": "<strong>{{count, number}}</strong> nœud correspond à la recherche",
+    "nodes_matching_zero": "<strong>Aucun</strong> nœud correspond à la recherche",
+    "protected_columns": {
+      "degree": "Degré",
+      "id": "ID",
+      "preview": "Aperçu",
+      "selected": "Sélectionné ?",
+      "sourceId": "Source ID",
+      "targetId": "Cible ID"
+    },
+    "save_and_create_column": "Enregistrer et créer la colonne",
+    "save_cell": "Enregistrer la cellule",
+    "sort_asc": "Tri A→Z (0→9)",
+    "sort_desc": "Tri Z→A (9→0)"
+  },
   "edition": {
-    "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
+    "all_edges": "Tous les liens",
+    "all_nodes": "Tous les nœuds",
+    "code_editor": "Éditeur de code",
+    "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
     "confirm_delete_edges": "Êtes-vous sûr de vouloir supprimer {{count, number}} liens ?",
     "confirm_delete_edges_one": "Êtes-vous sûr de vouloir supprimer ce lien ?",
     "confirm_delete_nodes": "Êtes-vous sûr de vouloir supprimer {{count, number}} nœuds ?",
@@ -166,13 +218,24 @@
     "delete_edges": "Supprimer {{count, number}} liens",
     "delete_edges_attributes": "Supprimer l'attribut '{{name}}' des liens",
     "delete_edges_one": "Supprimer un lien",
+    "delete_edges_success_one": "Le lien a été supprimé.",
     "delete_edges_zero": "Supprimer les liens",
     "delete_nodes": "Supprimer {{count, number}} nœuds",
     "delete_nodes_attributes": "Supprimer l'attribut '{{name}}' des nœuds",
     "delete_nodes_one": "Supprimer un nœud",
+    "delete_nodes_success": "Les {{count, number}} nœuds ont été supprimés.",
+    "delete_nodes_success_one": "Le nœud a été supprimé.",
     "delete_nodes_zero": "Supprimer les nœuds",
+    "delete_selected_edges": "Supprimer les liens sélectionnés",
+    "delete_selected_edges_one": "Supprimer le lien sélectionné",
+    "delete_selected_nodes": "Supprimer les nœuds sélectionnés",
+    "delete_selected_nodes_one": "Supprimer le nœud sélectionné",
     "delete_this_edges": "Supprimer ce lien",
     "delete_this_nodes": "Supprimer ce nœud",
+    "edit_selected_edges": "Éditer les liens sélectionnés",
+    "edit_selected_edges_one": "Éditer le lien sélectionné",
+    "edit_selected_nodes": "Éditer les nœuds sélectionnés",
+    "edit_selected_nodes_one": "Éditer le nœud sélectionné",
     "search_nodes": "Rechercher par libellé de nœud...",
     "update_edges": "Éditer le lien existant",
     "update_edges_success": "Le lien a été mis à jour avec succès.",
@@ -189,7 +252,7 @@
       "required": "Champs requis",
       "unique": "Une autre entrée existe déjà avec cette valeur"
     },
-    "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur GitHub en cliquant sur le bouton ci-dessous.",
+    "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur GitHub en cliquant sur le bouton ci-dessous.",
     "not_found": {
       "paragraph": "Vous avez peut-être mal saisi l'adresse ou la page a été déplacée.",
       "subtitle": "La page que vous recherchez n'existe pas.",
@@ -212,7 +275,7 @@
     "description": "Ce panneau permet de filtrer le graphe en superposant des filtres.",
     "filter": "Filtre",
     "full_graph": "Graphe entier",
-    "inapplicable": "Filtre désactivé : une seule valeur disponible",
+    "inapplicable": "Filtre désactivé : une seule valeur disponible.",
     "keepMissingValues": "Conserver les valeurs manquantes",
     "no_concurrent_edit": "Un seul filtre peut être modifié à la fois. Confirmez l'édition en cours pour modifier ce filtre.",
     "range": "plage",
@@ -226,7 +289,7 @@
         "direction": {
           "both": "tous les liens",
           "in": "les liens entrant",
-          "label": "Suivant...",
+          "label": "Suivre",
           "out": "les liens sortants"
         },
         "ego": "Nœud « ego »",
@@ -355,8 +418,8 @@
         "title": "Ouvrir un fichier depuis GitHub"
       },
       "local": {
-        "dragndrop_text": "Faites glisser-déposer un fichier GEXF, GRAPHML ou JSON au format Graphology",
-        "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier que le fichier est  valide.",
+        "dragndrop_text": "Faites glisser-déposer un fichier GEXF, GRAPHML ou JSON au format Graphology.",
+        "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier que le fichier est valide.",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "title": "Ouvrir un fichier local"
       },
@@ -389,7 +452,7 @@
         "field": {
           "description": "Description",
           "filename": "Nom du fichier",
-          "isPublic": "Créer un gist public"
+          "isPublic": "Créer un Gist public"
         },
         "success": "Le fichier {{filename}} a bien été enregistré",
         "title": "Enregistrer dans GitHub sous..."
@@ -400,7 +463,7 @@
         "title": "Enregistrer en local"
       },
       "name": "Enregistrer",
-      "title": "Enregistrer le graphe"
+      "title": "Enregistrer l'espace de travail sous ..."
     },
     "title": "Graphe"
   },
@@ -566,7 +629,6 @@
     },
     "script": {
       "description": "Écrivez votre propre spatialisation en créant une fonction qui renvoie un objet {x, y} pour chaque nœud",
-      "parameters": {},
       "title": "Spatialisation personnalisée"
     },
     "title": "Spatialisation"
@@ -615,7 +677,7 @@
         "description": "Cet algorithme permet d'explorer l'ambiguïté dans la détection des communautés avec la méthode de Louvain. Il exécute l'algorithme de Louvain N fois, puis analyse comment les résultats varient au cours de multiples exécutions, en vérifiant pour chaque lien si ses extrémités appartiennent ou non à la même communauté.",
         "parameters": {
           "getEdgeWeight": {
-            "description": "Un attribut des liens qui peut représenter leurs poids",
+            "description": "Un attribut des liens qui peut représenter leurs poids.",
             "title": "Attribut pour le poids des liens pour Louvain"
           },
           "resolution": {
@@ -623,12 +685,12 @@
             "title": "Résolution"
           },
           "runs": {
-            "description": "Le nombre de fois qu'il faut exécuter la méthode de Louvain",
+            "description": "Le nombre de fois qu'il faut exécuter la méthode de Louvain.",
             "title": "Exécutions de Louvain"
           }
         },
         "preview": "Observer visuellement l'ambiguïté",
-        "preview_description": "Une manière de représenter l'ambiguïté dans les liens visuellement, est de colorer les liens par la classe de modularité de leurs sources, puis de mettre en évidence les nœuds et les liens les plus ambigus",
+        "preview_description": "Une manière de représenter l'ambiguïté dans les liens visuellement, est de colorer les liens par la classe de modularité de leurs sources, puis de mettre en évidence les nœuds et les liens les plus ambigus.",
         "preview_subtitle": "(ouvre un nouvel onglet)",
         "title": "Ambiguïté des liens dans la méthode de Louvain"
       }
@@ -776,22 +838,22 @@
   },
   "selection": {
     "edge_no_label": "(libellé vide)",
-    "edges": "{{count, number}} liens sélectionnés",
-    "edges_one": "Un lien sélectionné",
-    "edges_zero": "Aucun élément sélectionné",
+    "edges": "<strong>{{count, number}}</strong> liens sélectionnés",
+    "edges_one": "<strong>Un</strong> lien sélectionné",
+    "edges_zero": "<strong>Aucun</strong> lien sélectionné",
     "empty_edges": "Ce lien n'a pas d'attribut",
     "empty_nodes": "Ce nœud n'a pas d'attribut",
     "focus_edges": "Sélectionner uniquement ce lien",
     "focus_nodes": "Sélectionner uniquement ce nœud",
-    "hidden_edges": "{{count, number}} liens sélectionnés masqués",
-    "hidden_edges_one": "Un lien sélectionné masqué",
-    "hidden_nodes": "{{count, number}} nœuds sélectionnés masqués",
-    "hidden_nodes_one": "Un nœud sélectionné masqué",
+    "hidden_edges": "<strong>{{count, number}}</strong> liens sélectionnés masqués",
+    "hidden_edges_one": "<strong>Un</strong> lien sélectionné masqué",
+    "hidden_nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés masqués",
+    "hidden_nodes_one": "<strong>Un</strong> nœud sélectionné masqué",
     "locate_on_graph": "Localiser sur le graphe",
     "node_no_label": "(libellé vide)",
-    "nodes": "{{count, number}} nœuds sélectionnés",
-    "nodes_one": "Un nœud sélectionné",
-    "nodes_zero": "Aucun élément sélectionné",
+    "nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés",
+    "nodes_one": "<strong>Un</strong> nœud sélectionné",
+    "nodes_zero": "<strong>Aucun</strong> nœud sélectionné",
     "select_all": "Sélectionner tout",
     "select_node_neighbors": "Sélectionner les voisins du nœud",
     "unselect_all": "Tout désélectionner",
@@ -799,12 +861,12 @@
     "unselect_all_hidden_nodes": "Tout désélectionner pour les nœuds masqués",
     "unselect_edges": "Désélectionner ce lien",
     "unselect_nodes": "Désélectionner ce nœud",
-    "visible_edges": "{{count, number}} liens sélectionnés visibles",
-    "visible_edges_one": "Un lien sélectionné visible",
-    "visible_edges_zero": "Aucun élément sélectionné visible",
-    "visible_nodes": "{{count, number}} nœuds sélectionnés visibles",
-    "visible_nodes_one": "Un nœud sélectionné visible",
-    "visible_nodes_zero": "Aucun élément sélectionné visible"
+    "visible_edges": "<strong>{{count, number}}</strong> liens sélectionnés visibles",
+    "visible_edges_one": "<strong>Un</strong> lien sélectionné visible",
+    "visible_edges_zero": "<strong>Aucun</strong> lien sélectionné visible",
+    "visible_nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés visibles",
+    "visible_nodes_one": "<strong>Un</strong> nœud sélectionné visible",
+    "visible_nodes_zero": "<strong>Aucun</strong> nœud sélectionné visible"
   },
   "settings": {
     "danger-zone": {
@@ -815,7 +877,11 @@
       },
       "title": "Danger zone"
     },
-    "theme": "Choisissez un thème",
+    "theme": {
+      "auto": "Auto",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
     "title": "User's settings"
   },
   "storage": {
@@ -828,11 +894,26 @@
   "welcome": {
     "disclaimer-1": "Gephi Lite est actuellement en cours de développement.",
     "disclaimer-2": "N'hésitez pas à consulter le projet GitHub pour en savoir plus sur les fonctionnalités à venir ou pour signaler des bugs.",
+    "documentation": "documentation",
     "logo": "Logo de Gephi",
     "no_recent": "Aucun fichier distant n'a été ouvert dans ce navigateur pour le moment.",
     "open_graph": "Ouvrir un fichier de graphe",
     "open_recent": "Fichiers récemment ouverts",
     "samples": "Exemples",
-    "title": "Bienvenue dans Gephi Lite"
+    "title": "Bienvenue dans Gephi Lite",
+    "website": "Site internet"
+  },
+  "workspace": {
+    "menu": {
+      "duplicate": "Dupliquer dans un nouvel onglet",
+      "export_graph_file": "Exporter en fichier graph",
+      "export_image": "Exporter en image",
+      "github_signin": "Connectez-vous à GitHub",
+      "github_signout": "Se déconnecter de GitHub",
+      "new": "Créer un nouvel espace de travail",
+      "open": "Ouvrir ...",
+      "save": "Enregistrer",
+      "save_as": "Enregistrer sous..."
+    }
   }
 }
