@@ -1,435 +1,146 @@
 {
-  "graph": {
-    "export": {
-      "png": {
-        "fields": {
-          "height": "높이 (픽셀 수)",
-          "width": "폭 (픽셀 수)",
-          "preserve_camera": "현재 카메라 위치 유치",
-          "filename": "파일 이름"
-        },
-        "title": "PNG 스냅샷 내보내기",
-        "success": "그래프 PNG 내보내기가 성공적으로 저장되었습니다."
-      },
-      "title": "그래프 내보내기"
-    },
-    "save": {
-      "cloud": {
-        "field": {
-          "description": "설명",
-          "filename": "파일 이름",
-          "isPublic": "공개 요지 생성"
-        },
-        "title": "{{provider}}에 다음으로 저장...",
-        "error": "그래프를 저장하는 동안 오류가 발생했습니다. 연결을 확인하거나 나중에 시도하세요.",
-        "success": "{{filename}} 파일이 성공적으로 저장되었습니다"
-      },
-      "title": "그래프 저장"
-    },
-    "model": {
-      "edges-data": {
-        "new-attribute": "새 속성 추가",
-        "attributes": "기타 속성",
-        "source": "엣지 시작점",
-        "target": "엣지 도착점",
-        "color": "엣지 색상",
-        "attribute-name": "속성 이름",
-        "label": "엣지 라벨",
-        "id": "엣지 ID",
-        "weight": "엣지 가중치",
-        "attribute-value": "속성 값"
-      },
-      "nodes-data": {
-        "attributes": "기타 속성",
-        "new-attribute": "새 속성 추가",
-        "color": "노드 색상",
-        "attribute-name": "속성 이름",
-        "label": "노드 라벨",
-        "attribute-value": "속성 값",
-        "size": "노드 크기",
-        "id": "노드 ID",
-        "x": "노드 x 위치",
-        "y": "노드 y 위치"
-      },
-      "nodes_zero": "노드",
-      "undirected": "비방향성",
-      "edges_one": "엣지",
-      "mixed": "혼합적",
-      "nodes": "노드",
-      "edges_zero": "엣지",
-      "nodes_one": "노드",
-      "no_attributes": "모델에 아직 속성이 없습니다.",
-      "directed": "방향성",
-      "title": "속성의 모델",
-      "edges": "엣지"
-    },
-    "partitioning": {
-      "status_no_partition": "{{items}}가 분할되지 않았습니다",
-      "partition": "{{items}}를 분할",
-      "status_partition": "'{{attribute}}' 속성을 사용하는 {{nbPartitions}} 파티션.",
-      "title": "파티션",
-      "warning_nbMissing": "{{nbMissingValues}} {{items}}가 해당 속성에 대한 값을 가지고 있지 않습니다.",
-      "description": "{{items}}의 다른 그룹에 모양이나 필터를 다르게 적용하려면 노드 질적 속성을 사용하여 그래프를 분할하세요.",
-      "missing_partition": "그들은 '누락된 값'이라는 파티션으로 그룹화됩니다.",
-      "status_item": "{{items}}가 다음으로 그룹화됩니다",
-      "status_item_preview": "{{items}}가 다음으로 그룹화됩니다",
-      "missing_partition_preview": "그들은 '누락된 값'이라는 파티션으로 그룹화됩니다."
-    },
-    "caption": {
-      "title": "캡션",
-      "disabled": "모양이 설정되면 캡션을 사용할 수 있습니다.",
-      "color": "{{itemType}}을 색칠",
-      "size": "{{itemType}}의 크기 지정"
-    },
-    "metadata": {
-      "keywords": "키워드",
-      "title": "메타데이터",
-      "authors": "저자",
-      "description": "설명",
-      "graph-title": "제목",
-      "graph-type": "그래프 유형"
-    },
-    "control": {
-      "zoomIn": "확대",
-      "fullscreenExit": "전체 화면 모드 해제",
-      "zoomReset": "전체 그래프 보기",
-      "zoomOut": "축소",
-      "fullscreenEnter": "전체 화면 모드"
-    },
-    "open": {
-      "local": {
-        "title": "로컬 파일 열기",
-        "error": "파일을 읽는 동안 오류가 발생했습니다. 유효한 GEXF 파일인지 확인하세요.",
-        "dragndrop_text": "GEXF 파일을 끌어다 놓기",
-        "success": "{{filename}} 파일이 성공적으로 로드되었습니다"
-      },
-      "cloud": {
-        "title": "{{provider}}에서 파일 열기",
-        "error": "기술적 오류가 발생했습니다. 연결을 확인하거나 나중에 시도하세요.",
-        "select-file": "파일 선택",
-        "no-data": "{{provider}}로 저장된 GEXF 파일이 없습니다",
-        "file-open-external": "{{provider}}에서 {{filename}} 파일 열기",
-        "success": "{{filename}} 파일이 성공적으로 로드되었습니다"
-      },
-      "title": "그래프 파일 열기",
-      "remote": {
-        "title": "URL 열기",
-        "error": "파일을 읽는 동안 오류가 발생했습니다. 연결 여부 및 유효한 GEXF 파일인지 확인하세요.",
-        "success": "{{filename}} 파일이 성공적으로 로드되었습니다",
-        "url-field": "GEXF 파일의 URL"
-      }
-    },
-    "title": "그래프"
-  },
-  "edition": {
-    "search_nodes": "노드 라벨 검색...",
-    "update_this_edges": "엣지 수정",
-    "delete_edges_one": "엣지 하나 삭제",
-    "update_edges": "기존 엣지 편집",
-    "update_nodes": "기존 노드 편집",
-    "create_nodes_success": "노드가 성공적으로 생성됐습니다.",
-    "confirm_delete_nodes_one": "이 노드 하나를 삭제하시겠습니까?",
-    "delete_nodes_one": "노드 하나 삭제",
-    "delete_nodes_zero": "노드 삭제",
-    "delete_this_edges": "엣지 삭제",
-    "update_edges_success": "엣지가 성공적으로 업데이트됐습니다.",
-    "confirm_delete_edges": "{{count, number}} 개 엣지를 삭제하시겠습니까?",
-    "update_this_nodes": "노드 수정",
-    "delete_this_nodes": "노드 삭제",
-    "delete_edges_zero": "엣지 삭제",
-    "update_nodes_success": "노드가 성공적으로 업데이트됐습니다.",
-    "confirm_delete_nodes": "{{count, number}} 개 노드를 삭제하시겠습니까?",
-    "delete_edges": "{{count, number}} 개 엣지 삭제",
-    "delete_nodes": "{{count, number}} 개 노드 삭제",
-    "create_nodes": "새 노드 생성",
-    "create_edges_success": "엣지가 성공적으로 생성됐습니다.",
-    "create_edges": "새 엣지 생성",
-    "confirm_delete_edges_one": "이 노드 하나를 삭제하시겠습니까?"
-  },
-  "welcome": {
-    "no_recent": "해당 브라우저에서 아직 원격 파일이 열리지 않았습니다.",
-    "logo": "Gephi 로고",
-    "title": "Gephi Lite에 오신 것을 환영합니다",
-    "open_graph": "그래프 파일 열기",
-    "disclaimer-2": "향후의 기능을 알아 보거나 버그를 보고하려면 GitHub 프로젝트를 확인하세요.",
-    "open_recent": "최근 열기",
-    "disclaimer-1": "Gephi Lite는 현재 진행 중인 작업입니다.",
-    "samples": "예제"
-  },
-  "metrics": {
-    "nodes": {
-      "louvain": {
-        "description": "이 알고리즘은 노드들을 조밀하게 연결된 그룹으로 분리하는 것을 목표로 합니다.",
-        "parameters": {
-          "getEdgeWeight": {
-            "description": "엣지의 가중치를 표현하는 속성.",
-            "title": "엣지 가중치 속성"
-          },
-          "resolution": {
-            "description": "해상도가 올라가면 더 많은 커뮤니티를 생성합니다.",
-            "title": "그룹화 해상도"
-          },
-          "fastLocalMoves": {
-            "title": "빠른 로컬 이동",
-            "description": "그래프를 보다 효율적으로 탐색하기 위해 대기열 세트에 의존하는 잘 알려진 최적화를 사용할지 여부."
-          },
-          "randomWalk": {
-            "description": "그래프를 무작위로 탐색할지 여부.",
-            "title": "무작위 이동"
-          }
-        },
-        "title": "Louvain 커뮤니티 탐지",
-        "attributes": {
-          "modularityClass": "모듈성 클래스 속성 이름"
-        }
-      },
-      "nodescript": {
-        "title": "커스텀 노드 메트릭",
-        "attributes": {
-          "custom": "메트릭을 저장할 속성 이름"
-        },
-        "description": "노드의 메트릭을 계산하는 함수를 정의합니다."
-      },
-      "hits": {
-        "parameters": {
-          "tolerance": {
-            "title": "수렴 허용도"
-          },
-          "maxIterations": {
-            "title": "최대 반복"
-          },
-          "getEdgeWeight": {
-            "title": "엣지 가중치 속성"
-          },
-          "normalize": {
-            "title": "출력 정규화 할까요?"
-          }
-        },
-        "attributes": {
-          "authorities": "신뢰도 점수 속성 이름",
-          "hubs": "허브 점수 속성 이름"
-        },
-        "title": "HITS(하이퍼링크 기반 주제 검색)"
-      },
-      "degree": {
-        "parameters": {
-          "kind": {
-            "title": "차수 유형",
-            "values": {
-              "inDegree": "진입 차수",
-              "outDegree": "진출 차수",
-              "degree": "차수"
-            }
-          },
-          "getEdgeWeight": {
-            "title": "엣지 가중치 속성"
-          }
-        },
-        "attributes": {
-          "degree": "차수 속성 이름"
-        },
-        "title": "차수"
-      },
-      "pagerank": {
-        "title": "PageRank",
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "엣지 가중치 속성"
-          },
-          "maxIterations": {
-            "title": "최대 반복"
-          },
-          "alpha": {
-            "title": "알파"
-          },
-          "tolerance": {
-            "title": "수렴 허용도"
-          }
-        },
-        "attributes": {
-          "pagerank": "PageRank 속성 이름"
-        }
-      },
-      "betweennessCentrality": {
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "엣지 가중치 속성"
-          },
-          "normalize": {
-            "title": "출력 정규화 할까요?"
-          }
-        },
-        "title": "매개 중심성",
-        "attributes": {
-          "betweennessCentrality": "매개 중심성 속성 이름"
-        }
-      }
-    },
-    "edges": {
-      "simmelianStrength": {
-        "title": "Simmelian 강도",
-        "attributes": {
-          "simmelianStrength": "Simmelian 강도 속성 이름"
-        }
-      },
-      "edgescript": {
-        "description": "엣지의 메트릭을 계산하는 함수를 정의합니다.",
-        "attributes": {
-          "custom": "메트릭을 저장할 속성 이름"
-        },
-        "title": "커스텀 엣지 메트릭"
-      },
-      "disparity": {
-        "parameters": {
-          "getEdgeWeight": {
-            "title": "엣지 가중치 속성"
-          }
-        },
-        "title": "불균형도",
-        "attributes": {
-          "disparity": "불균형도 속성 이름"
-        }
-      }
-    },
-    "edges_attribute_already_exists": "\"{{field}}\"라는 이름의 엣지 속성이 이미 존재합니다. 새로운 값으로 덮어씌워집니다.",
-    "success": "{{items}}의 \"{{metrics}}\" 메트릭이 데이터에 추가되었습니다.",
-    "nodes_attribute_already_exists": "\"{{field}}\"라는 이름의 노드 속성이 이미 존재합니다. 새로운 값으로 덮어씌워집니다.",
-    "compute": "메트릭 계산",
-    "compute_one": "메트릭 계산",
-    "placeholder": "알고리즘 선택",
-    "attributes_placeholder": "없음",
-    "success_one": "{{items}}의 \"{{metrics}}\" 메트릭이 데이터에 추가되었습니다.",
-    "description": "이 패널에서 그래프의 노드나 엣지에 대한 새 속성을 계산할 수 있습니다. 이들 속성은 다른 패널에서, 예를 들어 모양이나 필터링을 위해 사용될 수 있습니다.",
-    "title": "통계"
-  },
-  "menu": {
-    "open": {
-      "cloud": "{{provider}}에서 그래프 열기",
-      "remote": "원격 그래프 열기",
-      "local": "로컬 그래프 열기"
-    },
-    "save": {
-      "cloud": "{{provider}}를 다음 이름으로 저장...",
-      "default": "저장"
-    },
-    "download": {
-      "gexf": "그래프를 로컬에 저장",
-      "gexf-error": "GEXF 파일을 생성하는 중 오류 발생"
-    }
-  },
   "appearance": {
     "color": {
-      "data_description": "모든 {{items}} 색상은 입력 데이터 파일과 동일합니다.",
-      "source": "소스 노드",
-      "quali": "문자열로",
-      "set_color_from": "색상 지정...",
       "color_all_items": "모든 {{items}} 색상",
+      "data": "입력 파일",
+      "data_description": "모든 {{items}} 색상은 입력 데이터 파일과 동일합니다.",
+      "default_value": "유효한 값이 없는 {{items}} 색상",
+      "fixed": "일정한 색상",
+      "quali": "문자열로",
       "quanti": "숫자로",
+      "ranking_intro": "스케일에 색상 점 추가",
       "scale_point": "스케일 점",
-      "title": "색상",
+      "set_color_from": "색상 지정...",
+      "source": "소스 노드",
       "source_description": "각 엣지는 자신의 소스와 같은 색상으로 표시됩니다.",
       "target": "타겟 노드",
-      "data": "입력 파일",
-      "fixed": "일정한 색상",
       "target_description": "각 엣지는 자신의 타겟과 같은 색상으로 표시됩니다.",
-      "default_value": "유효한 값이 없는 {{items}} 색상",
-      "ranking_intro": "스케일에 색상 점 추가"
+      "title": "색상"
     },
     "labels": {
-      "density": "얼마나 많은 라벨이 표시되어야 하는지",
-      "size_coef": "라벨 크기 (높은 값이 크게 표시됨)",
-      "data_description": "{{items}} 모든 라벨은 입력 데이터 파일에 있는 것과 같습니다.",
-      "none": "라벨 없음",
-      "set_labels_from": "라벨 설정...",
-      "fixed": "기본 텍스트",
-      "fixed_label_size": "모든 {{items}} 라벨 크기",
-      "none_description": "{{items}} 모두 표시된 라벨이 없습니다.",
-      "set_labels_size_from": "라벨 크기 설정...",
       "adapts_to_zoom": "줌 할 때 라벨이 얼마나 커져야 하는지",
-      "fixed_label": "모든 {{items}} 라벨",
-      "fixed_size": "고정 크기",
-      "default_value": "유효값을 갖지 않는 {{items}}의 라벨",
-      "title": "라벨",
       "data": "데이터 입력",
-      "size": "{{items}} 크기"
-    },
-    "show_edges": "엣지 보이기",
-    "transformation_methods": {
-      "title": "변환 방법",
-      "sqrt": "제곱근",
-      "pow-2": "2제곱",
-      "log": "로그",
-      "spline": "곡선",
-      "linear": "선형적",
-      "pow-3": "3제곱"
-    },
-    "ranking": "순위",
-    "size": {
-      "title": "크기",
-      "fixed": "기본 크기",
-      "default_value": "유효값을 갖지 않는 {{items}}의 크기",
-      "data": "입력 파일",
-      "set_size_from": "크기 설정...",
-      "size_all_items": "{{items}} 모두의 크기",
-      "data_description": "{{items}} 모두의 크기는 입력 데이터 파일에 있는 것과 같습니다."
+      "data_description": "{{items}} 모든 라벨은 입력 데이터 파일에 있는 것과 같습니다.",
+      "default_value": "유효값을 갖지 않는 {{items}}의 라벨",
+      "density": "얼마나 많은 라벨이 표시되어야 하는지",
+      "fixed": "기본 텍스트",
+      "fixed_label": "모든 {{items}} 라벨",
+      "fixed_label_size": "모든 {{items}} 라벨 크기",
+      "fixed_size": "고정 크기",
+      "none": "라벨 없음",
+      "none_description": "{{items}} 모두 표시된 라벨이 없습니다.",
+      "set_labels_from": "라벨 설정...",
+      "set_labels_size_from": "라벨 크기 설정...",
+      "size": "{{items}} 크기",
+      "size_coef": "라벨 크기 (높은 값이 크게 표시됨)",
+      "title": "라벨"
     },
     "no_caption": "(캡션 없음)",
+    "partition": "분할",
+    "ranking": "순위",
+    "show_edges": "엣지 보이기",
+    "size": {
+      "data": "입력 파일",
+      "data_description": "{{items}} 모두의 크기는 입력 데이터 파일에 있는 것과 같습니다.",
+      "default_value": "유효값을 갖지 않는 {{items}}의 크기",
+      "fixed": "기본 크기",
+      "set_size_from": "크기 설정...",
+      "size_all_items": "{{items}} 모두의 크기",
+      "title": "크기"
+    },
     "title": "모양",
-    "partition": "분할"
-  },
-  "filters": {
-    "topological": "연결 관계",
-    "add_filter": "필터 추가",
-    "activated": "활성화된 필터",
-    "no_concurrent_edit": "한 번에 하나의 필터만 편집할 수 있습니다. 이 필터를 수정하려면 현재 버전을 확인해 주세요.",
-    "full_graph": "전체 그래프",
-    "desactivated": "비활성화된 필터, 다시 활성화 하려면 클릭해 주세요",
-    "script": "사용자 정의 필터",
-    "terms": "정확한 값",
-    "description": "이 패널에서는 여러 필터를 적용하여 그래프를 필터링 할 수 있습니다.",
-    "using": "적용",
-    "filter": "필터",
-    "inapplicable": "필터 비활성화됨: 하나의 값만 사용 가능",
-    "range": "범위",
-    "create_filter": "필터 생성",
-    "keepMissingValues": "누락된 값 유지",
-    "title": "필터"
+    "transformation_methods": {
+      "linear": "선형적",
+      "log": "로그",
+      "pow-2": "2제곱",
+      "pow-3": "3제곱",
+      "spline": "곡선",
+      "sqrt": "제곱근",
+      "title": "변환 방법"
+    }
   },
   "auth": {
     "sign_in": "GitHub로 로그인",
-    "unauth_success": "인증 취소가 성공적으로 완료됐습니다",
-    "sign_out": "GitHub에서 로그아웃"
+    "sign_out": "GitHub에서 로그아웃",
+    "unauth_success": "인증 취소가 성공적으로 완료됐습니다"
   },
-  "selection": {
-    "unselect_all_hidden_nodes": "전체 숨김 엣지 선택 해제",
-    "hidden_edges_one": "1개의 선택된 숨김 엣지",
-    "unselect_edges": "엣지 선택 해제",
-    "unselect_all": "전체 선택 해제",
-    "visible_edges": "{{count, number}} 개의 선택된 가시 엣지",
-    "nodes_one": "1개의 선택된 노드",
-    "focus_edges": "해당 엣지만 선택",
-    "edges": "{{count, number}} 개의 선택된 엣지",
-    "edges_zero": "선택된 엣지 없음",
-    "visible_nodes": "{{count, number}} 개의 선택된 가시 노드",
-    "hidden_nodes_one": "1개의 선택된 숨김 노드",
-    "select_all": "전체 선택",
-    "visible_edges_one": "1개의 선택된 가시 엣지",
-    "node_no_label": "(빈 라벨)",
-    "locate_on_graph": "그래프에서 찾기",
-    "nodes": "{{count, number}} 개의 선택된 노드",
-    "visible_nodes_zero": "선택된 가시 노드 없음",
-    "edge_no_label": "(빈 라벨)",
-    "hidden_edges": "{{count, number}} 개의 숨김 엣지",
-    "hidden_nodes": "{{count, number}} 개의 선택된 숨김 노드",
-    "unselect_nodes": "노드 선택 해제",
-    "visible_edges_zero": "선택된 가시 엣지 없음",
-    "focus_nodes": "해당 노드만 선택",
-    "empty_nodes": "노드에 속성이 없습니다",
-    "edges_one": "1개의 선택된 엣지",
-    "visible_nodes_one": "1개의 선택된 가시 노드",
-    "empty_edges": "엣지에 속성이 없습니다",
-    "nodes_zero": "선택된 노드 없음",
-    "unselect_all_hidden_edges": "전체 숨김 엣지 선택 해제"
+  "cloud": {
+    "github": {
+      "auth": {
+        "asking_for_device_code": "GitHub에 장치 코드를 요청 중",
+        "copy_code": "아래 코드를 복사하고 \"GitHub 열기\" 버튼을 클릭하세요. GitHub가 코드를 묻는 새 탭이 열립니다",
+        "copy_success": "코드가 클립보드에 저장됨",
+        "title": "GitHub 인증",
+        "waiting_validation": "검증 대기 중"
+      },
+      "title": "GitHub"
+    }
+  },
+  "common": {
+    "add": "추가",
+    "all": "전체",
+    "apply": "적용",
+    "cancel": "취소",
+    "clear": "지우기",
+    "close": "닫기",
+    "collapse": "붕괴",
+    "confirm": "확인",
+    "copy": "복사",
+    "created": "생성됨",
+    "delete": "삭제",
+    "edit": "편집",
+    "expand": "확장",
+    "filename": "파일 이름",
+    "hide": "숨기기",
+    "load-more": "더 로드하기",
+    "loading": "로드 중",
+    "max": "최대",
+    "min": "최소",
+    "none": "없음",
+    "open": "열기",
+    "open_code_editor": "코드 편집기 열기",
+    "open_file": "{{filename}} 파일 열기",
+    "remove": "제거",
+    "reset": "재설정",
+    "save": "저장",
+    "save-and-run": "저장 및 실행",
+    "select": "선택...",
+    "show": "보이기",
+    "show_less": "덜 보이기",
+    "show_more": "더 보이기",
+    "size": "크기",
+    "start": "시작",
+    "stop": "정지",
+    "submit": "제출",
+    "updated": "업데이트됨"
+  },
+  "context": {
+    "title": "데이터 개요"
+  },
+  "edition": {
+    "confirm_delete_edges": "{{count, number}} 개 엣지를 삭제하시겠습니까?",
+    "confirm_delete_edges_one": "이 노드 하나를 삭제하시겠습니까?",
+    "confirm_delete_nodes": "{{count, number}} 개 노드를 삭제하시겠습니까?",
+    "confirm_delete_nodes_one": "이 노드 하나를 삭제하시겠습니까?",
+    "create_edges": "새 엣지 생성",
+    "create_edges_success": "엣지가 성공적으로 생성됐습니다.",
+    "create_nodes": "새 노드 생성",
+    "create_nodes_success": "노드가 성공적으로 생성됐습니다.",
+    "delete_edges": "{{count, number}} 개 엣지 삭제",
+    "delete_edges_one": "엣지 하나 삭제",
+    "delete_edges_zero": "엣지 삭제",
+    "delete_nodes": "{{count, number}} 개 노드 삭제",
+    "delete_nodes_one": "노드 하나 삭제",
+    "delete_nodes_zero": "노드 삭제",
+    "delete_this_edges": "엣지 삭제",
+    "delete_this_nodes": "노드 삭제",
+    "search_nodes": "노드 라벨 검색...",
+    "update_edges": "기존 엣지 편집",
+    "update_edges_success": "엣지가 성공적으로 업데이트됐습니다.",
+    "update_nodes": "기존 노드 편집",
+    "update_nodes_success": "노드가 성공적으로 업데이트됐습니다.",
+    "update_this_edges": "엣지 수정",
+    "update_this_nodes": "노드 수정"
   },
   "error": {
     "not_found": {
@@ -437,73 +148,171 @@
       "subtitle": "찾는 페이지가 존재하지 않습니다.",
       "title": "페이지 없음"
     },
-    "unknown": "알 수 없는 오류가 발생했습니다.",
-    "title": "오류"
+    "title": "오류",
+    "unknown": "알 수 없는 오류가 발생했습니다."
+  },
+  "file": {
+    "login_capabilities": "GitHub Gists로 직접 그래프 파일을 저장하고 로드하기 위해, Gephi Lite에서 GitHub에 로그인 가능합니다:",
+    "title": "데이터 관리"
+  },
+  "filters": {
+    "activated": "활성화된 필터",
+    "add_filter": "필터 추가",
+    "create_filter": "필터 생성",
+    "desactivated": "비활성화된 필터, 다시 활성화 하려면 클릭해 주세요",
+    "description": "이 패널에서는 여러 필터를 적용하여 그래프를 필터링 할 수 있습니다.",
+    "filter": "필터",
+    "full_graph": "전체 그래프",
+    "inapplicable": "필터 비활성화됨: 하나의 값만 사용 가능",
+    "keepMissingValues": "누락된 값 유지",
+    "no_concurrent_edit": "한 번에 하나의 필터만 편집할 수 있습니다. 이 필터를 수정하려면 현재 버전을 확인해 주세요.",
+    "range": "범위",
+    "script": "사용자 정의 필터",
+    "terms": "정확한 값",
+    "title": "필터",
+    "topological": "연결 관계",
+    "using": "적용"
+  },
+  "gephi-lite": {
+    "info": "Gephi Lite에 대한 추가 정보",
+    "title": "Gephi Lite"
+  },
+  "github": {
+    "description": "Gephi Lite에서 GitHub에 로그인하여 GitHub Gists로 직접 그래프 파일을 저장하고 로드할 수 있습니다.",
+    "logged_as": "현재 {{username}}으로 GitHub에 로그인되어 있습니다.",
+    "select_ui_language": "어플리케이션 언어 선택",
+    "title": "GitHub 인증"
+  },
+  "graph": {
+    "caption": {
+      "color": "{{itemType}}을 색칠",
+      "disabled": "모양이 설정되면 캡션을 사용할 수 있습니다.",
+      "size": "{{itemType}}의 크기 지정",
+      "title": "캡션"
+    },
+    "control": {
+      "fullscreenEnter": "전체 화면 모드",
+      "fullscreenExit": "전체 화면 모드 해제",
+      "zoomIn": "확대",
+      "zoomOut": "축소",
+      "zoomReset": "전체 그래프 보기"
+    },
+    "export": {
+      "png": {
+        "fields": {
+          "filename": "파일 이름",
+          "height": "높이 (픽셀 수)",
+          "preserve_camera": "현재 카메라 위치 유치",
+          "width": "폭 (픽셀 수)"
+        },
+        "success": "그래프 PNG 내보내기가 성공적으로 저장되었습니다.",
+        "title": "PNG 스냅샷 내보내기"
+      },
+      "title": "그래프 내보내기"
+    },
+    "metadata": {
+      "authors": "저자",
+      "description": "설명",
+      "graph-title": "제목",
+      "graph-type": "그래프 유형",
+      "keywords": "키워드",
+      "title": "메타데이터"
+    },
+    "model": {
+      "directed": "방향성",
+      "edges": "엣지",
+      "edges-data": {
+        "attribute-name": "속성 이름",
+        "attribute-value": "속성 값",
+        "attributes": "기타 속성",
+        "color": "엣지 색상",
+        "id": "엣지 ID",
+        "label": "엣지 라벨",
+        "new-attribute": "새 속성 추가",
+        "source": "엣지 시작점",
+        "target": "엣지 도착점",
+        "weight": "엣지 가중치"
+      },
+      "edges_one": "엣지",
+      "edges_zero": "엣지",
+      "mixed": "혼합적",
+      "no_attributes": "모델에 아직 속성이 없습니다.",
+      "nodes": "노드",
+      "nodes-data": {
+        "attribute-name": "속성 이름",
+        "attribute-value": "속성 값",
+        "attributes": "기타 속성",
+        "color": "노드 색상",
+        "id": "노드 ID",
+        "label": "노드 라벨",
+        "new-attribute": "새 속성 추가",
+        "size": "노드 크기",
+        "x": "노드 x 위치",
+        "y": "노드 y 위치"
+      },
+      "nodes_one": "노드",
+      "nodes_zero": "노드",
+      "title": "속성의 모델",
+      "undirected": "비방향성"
+    },
+    "open": {
+      "cloud": {
+        "error": "기술적 오류가 발생했습니다. 연결을 확인하거나 나중에 시도하세요.",
+        "file-open-external": "{{provider}}에서 {{filename}} 파일 열기",
+        "no-data": "{{provider}}로 저장된 GEXF 파일이 없습니다",
+        "select-file": "파일 선택",
+        "success": "{{filename}} 파일이 성공적으로 로드되었습니다",
+        "title": "{{provider}}에서 파일 열기"
+      },
+      "local": {
+        "dragndrop_text": "GEXF 파일을 끌어다 놓기",
+        "error": "파일을 읽는 동안 오류가 발생했습니다. 유효한 GEXF 파일인지 확인하세요.",
+        "success": "{{filename}} 파일이 성공적으로 로드되었습니다",
+        "title": "로컬 파일 열기"
+      },
+      "remote": {
+        "error": "파일을 읽는 동안 오류가 발생했습니다. 연결 여부 및 유효한 GEXF 파일인지 확인하세요.",
+        "success": "{{filename}} 파일이 성공적으로 로드되었습니다",
+        "title": "URL 열기",
+        "url-field": "GEXF 파일의 URL"
+      },
+      "title": "그래프 파일 열기"
+    },
+    "partitioning": {
+      "description": "{{items}}의 다른 그룹에 모양이나 필터를 다르게 적용하려면 노드 질적 속성을 사용하여 그래프를 분할하세요.",
+      "missing_partition": "그들은 '누락된 값'이라는 파티션으로 그룹화됩니다.",
+      "missing_partition_preview": "그들은 '누락된 값'이라는 파티션으로 그룹화됩니다.",
+      "partition": "{{items}}를 분할",
+      "status_item": "{{items}}가 다음으로 그룹화됩니다",
+      "status_item_preview": "{{items}}가 다음으로 그룹화됩니다",
+      "status_no_partition": "{{items}}가 분할되지 않았습니다",
+      "status_partition": "'{{attribute}}' 속성을 사용하는 {{nbPartitions}} 파티션.",
+      "title": "파티션",
+      "warning_nbMissing": "{{nbMissingValues}} {{items}}가 해당 속성에 대한 값을 가지고 있지 않습니다."
+    },
+    "save": {
+      "cloud": {
+        "error": "그래프를 저장하는 동안 오류가 발생했습니다. 연결을 확인하거나 나중에 시도하세요.",
+        "field": {
+          "description": "설명",
+          "filename": "파일 이름",
+          "isPublic": "공개 요지 생성"
+        },
+        "success": "{{filename}} 파일이 성공적으로 저장되었습니다",
+        "title": "{{provider}}에 다음으로 저장..."
+      },
+      "title": "그래프 저장"
+    },
+    "title": "그래프"
   },
   "layouts": {
-    "title": "레이아웃",
-    "exec": {
-      "success": "\"{{layout}}\" 레이아웃이 성공적으로 적용되었습니다.",
-      "stopped": "{{layout}} 레이아웃이 중단되었습니다",
-      "started": "{{layout}} 레이아웃이 실행 중입니다"
-    },
-    "random": {
-      "title": "무작위",
-      "parameters": {
-        "scale": {
-          "title": "크기 조절",
-          "description": "레이아웃 크기 조절"
-        },
-        "center": {
-          "title": "중심",
-          "description": "레이아웃 중심"
-        }
-      },
-      "description": "각 좌표를 구간 [0, 1)에서 무작위로 균일하게 선택하여 모든 노드를 배치하는 무작위 레이아웃"
-    },
-    "placeholder": "레이아웃 알고리즘을 선택",
-    "description": "이 패널에서 그래프 노드에 대한 새 좌표를 계산할 수 있습니다. ",
-    "circular": {
-      "title": "원형",
-      "description": "원 안에 노드를 배치",
-      "parameters": {
-        "center": {
-          "title": "중심",
-          "description": "레이아웃의 중심"
-        },
-        "scale": {
-          "title": "크기 조절",
-          "description": "레이아웃의 크기 조절"
-        }
-      }
-    },
-    "force": {
-      "title": "힘 방향",
-      "parameters": {
-        "inertia": {
-          "title": "관성",
-          "description": "각 단계에서 보존되는 노드 벡터 변위의 백분율입니다. 0은 관성이 없음을 의미하고, 1은 마찰이 없음을 의미"
-        },
-        "attraction": {
-          "title": "견인력",
-          "description": "탄성체와 같이 연결된 각 노드 쌍을 끌어당기는 견인력의 중요성"
-        },
-        "repulsion": {
-          "description": "자석처럼 각 노드 쌍을 끌어당기는 반발력의 중요성",
-          "title": "반발력"
-        },
-        "gravity": {
-          "title": "중력",
-          "description": "모든 노드를 중심으로 끌어들이는 중력의 중요성"
-        },
-        "maxMove": {
-          "title": "최대 이동",
-          "description": "각 단계에서 노드가 움직일 수 있는 최대 길이(픽셀)"
-        }
-      }
-    },
     "circlePack": {
+      "description": "지정된 속성에 따라 노드를 버블 차트로 배열합니다",
       "parameters": {
+        "center": {
+          "description": "레이아웃 중심",
+          "title": "중심"
+        },
         "groupingField": {
           "description": "노드를 그룹화하는 데 사용할 선택적 속성",
           "title": "계층 속성"
@@ -511,72 +320,105 @@
         "scale": {
           "description": "레이아웃 크기 조절",
           "title": "크기 조절"
-        },
-        "center": {
-          "title": "중심",
-          "description": "레이아웃 중심"
         }
       },
-      "title": "CirclePack(원형 배치)",
-      "description": "지정된 속성에 따라 노드를 버블 차트로 배열합니다"
+      "title": "CirclePack(원형 배치)"
     },
-    "script": {
-      "title": "커스텀 레이아웃",
-      "description": "각 노드에 대해 {x,y}개의 개체를 반환하는 함수를 생성하여 자신의 레이아웃 작성"
+    "circular": {
+      "description": "원 안에 노드를 배치",
+      "parameters": {
+        "center": {
+          "description": "레이아웃의 중심",
+          "title": "중심"
+        },
+        "scale": {
+          "description": "레이아웃의 크기 조절",
+          "title": "크기 조절"
+        }
+      },
+      "title": "원형"
+    },
+    "description": "이 패널에서 그래프 노드에 대한 새 좌표를 계산할 수 있습니다. ",
+    "exec": {
+      "started": "{{layout}} 레이아웃이 실행 중입니다",
+      "stopped": "{{layout}} 레이아웃이 중단되었습니다",
+      "success": "\"{{layout}}\" 레이아웃이 성공적으로 적용되었습니다."
     },
     "fa2": {
+      "buttons": {
+        "autoSettings": {
+          "description": "현재 그래프에 가장 적합한 설정을 생성합니다",
+          "title": "추측 설정"
+        }
+      },
       "parameters": {
-        "linLogMode": {
-          "title": "LinLog(선형 및 로그) 모드",
-          "description": "Noack의 LinLog 모델을 사용할지 여부."
-        },
-        "gravity": {
-          "description": "레이아웃의 중력 강도",
-          "title": "중력"
-        },
-        "slowDown": {
-          "title": "감속?"
-        },
-        "barnesHutTheta": {
-          "title": "Barnes-Hut 세타",
-          "description": "Barnes-Hut 근사 세타 파라미터"
-        },
-        "outboundAttractionDistribution": {
-          "title": "외부향 인력 분포"
+        "adjustSizes": {
+          "description": "노드의 크기를 고려해야 할까요?",
+          "title": "크기를 조정?"
         },
         "barnesHutOptimize": {
           "description": "기본 O(n^2)가 아닌 O(n*log(n))에서 반발력을 계산하기 위해 Barnes-Hut 근사를 사용할지 여부(n은 노드 수)",
           "title": "Barnes-Hut 최적화"
         },
-        "adjustSizes": {
-          "description": "노드의 크기를 고려해야 할까요?",
-          "title": "크기를 조정?"
-        },
-        "strongGravityMode": {
-          "title": "강한 중력 모드?"
+        "barnesHutTheta": {
+          "description": "Barnes-Hut 근사 세타 파라미터",
+          "title": "Barnes-Hut 세타"
         },
         "edgeWeightInfluence": {
-          "title": "엣지 가중치 영향도",
-          "description": "레이아웃에 대한 엣지의 가중치 영향도"
+          "description": "레이아웃에 대한 엣지의 가중치 영향도",
+          "title": "엣지 가중치 영향도"
+        },
+        "gravity": {
+          "description": "레이아웃의 중력 강도",
+          "title": "중력"
+        },
+        "linLogMode": {
+          "description": "Noack의 LinLog 모델을 사용할지 여부.",
+          "title": "LinLog(선형 및 로그) 모드"
+        },
+        "outboundAttractionDistribution": {
+          "title": "외부향 인력 분포"
         },
         "scalingRatio": {
           "title": "크기 조절 비율"
+        },
+        "slowDown": {
+          "title": "감속?"
+        },
+        "strongGravityMode": {
+          "title": "강한 중력 모드?"
         }
       },
-      "title": "ForceAtlas2",
-      "buttons": {
-        "autoSettings": {
-          "title": "추측 설정",
-          "description": "현재 그래프에 가장 적합한 설정을 생성합니다"
+      "title": "ForceAtlas2"
+    },
+    "force": {
+      "parameters": {
+        "attraction": {
+          "description": "탄성체와 같이 연결된 각 노드 쌍을 끌어당기는 견인력의 중요성",
+          "title": "견인력"
+        },
+        "gravity": {
+          "description": "모든 노드를 중심으로 끌어들이는 중력의 중요성",
+          "title": "중력"
+        },
+        "inertia": {
+          "description": "각 단계에서 보존되는 노드 벡터 변위의 백분율입니다. 0은 관성이 없음을 의미하고, 1은 마찰이 없음을 의미",
+          "title": "관성"
+        },
+        "maxMove": {
+          "description": "각 단계에서 노드가 움직일 수 있는 최대 길이(픽셀)",
+          "title": "최대 이동"
+        },
+        "repulsion": {
+          "description": "자석처럼 각 노드 쌍을 끌어당기는 반발력의 중요성",
+          "title": "반발력"
         }
-      }
+      },
+      "title": "힘 방향"
     },
     "noverlap": {
+      "description": "충돌 방지 레이아웃 알고리즘",
       "parameters": {
-        "speed": {
-          "title": "속도",
-          "description": "전체 프로세스를 용이하게 하기 위해 노드 이동 속도를 늦추는 감쇠 계수"
-        },
         "expansion": {
           "description": "노드가 외부로 이동을 시도할 수 있는 현재 공간의 백분율",
           "title": "확장"
@@ -590,111 +432,269 @@
           "title": "여백"
         },
         "ratio": {
-          "title": "비율",
-          "description": "비율 조정 노드 크기"
+          "description": "비율 조정 노드 크기",
+          "title": "비율"
+        },
+        "speed": {
+          "description": "전체 프로세스를 용이하게 하기 위해 노드 이동 속도를 늦추는 감쇠 계수",
+          "title": "속도"
         }
       },
-      "title": "겹침 없음",
-      "description": "충돌 방지 레이아웃 알고리즘"
+      "title": "겹침 없음"
+    },
+    "placeholder": "레이아웃 알고리즘을 선택",
+    "random": {
+      "description": "각 좌표를 구간 [0, 1)에서 무작위로 균일하게 선택하여 모든 노드를 배치하는 무작위 레이아웃",
+      "parameters": {
+        "center": {
+          "description": "레이아웃 중심",
+          "title": "중심"
+        },
+        "scale": {
+          "description": "레이아웃 크기 조절",
+          "title": "크기 조절"
+        }
+      },
+      "title": "무작위"
+    },
+    "script": {
+      "description": "각 노드에 대해 {x,y}개의 개체를 반환하는 함수를 생성하여 자신의 레이아웃 작성",
+      "title": "커스텀 레이아웃"
+    },
+    "title": "레이아웃"
+  },
+  "menu": {
+    "download": {
+      "gexf": "그래프를 로컬에 저장",
+      "gexf-error": "GEXF 파일을 생성하는 중 오류 발생"
+    },
+    "open": {
+      "cloud": "{{provider}}에서 그래프 열기",
+      "local": "로컬 그래프 열기",
+      "remote": "원격 그래프 열기"
+    },
+    "save": {
+      "cloud": "{{provider}}를 다음 이름으로 저장...",
+      "default": "저장"
     }
   },
-  "context": {
-    "title": "데이터 개요"
+  "metrics": {
+    "attributes_placeholder": "없음",
+    "compute": "메트릭 계산",
+    "compute_one": "메트릭 계산",
+    "description": "이 패널에서 그래프의 노드나 엣지에 대한 새 속성을 계산할 수 있습니다. 이들 속성은 다른 패널에서, 예를 들어 모양이나 필터링을 위해 사용될 수 있습니다.",
+    "edges": {
+      "disparity": {
+        "attributes": {
+          "disparity": "불균형도 속성 이름"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "엣지 가중치 속성"
+          }
+        },
+        "title": "불균형도"
+      },
+      "edgescript": {
+        "attributes": {
+          "custom": "메트릭을 저장할 속성 이름"
+        },
+        "description": "엣지의 메트릭을 계산하는 함수를 정의합니다.",
+        "title": "커스텀 엣지 메트릭"
+      },
+      "simmelianStrength": {
+        "attributes": {
+          "simmelianStrength": "Simmelian 강도 속성 이름"
+        },
+        "title": "Simmelian 강도"
+      }
+    },
+    "edges_attribute_already_exists": "\"{{field}}\"라는 이름의 엣지 속성이 이미 존재합니다. 새로운 값으로 덮어씌워집니다.",
+    "nodes": {
+      "betweennessCentrality": {
+        "attributes": {
+          "betweennessCentrality": "매개 중심성 속성 이름"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "엣지 가중치 속성"
+          },
+          "normalize": {
+            "title": "출력 정규화 할까요?"
+          }
+        },
+        "title": "매개 중심성"
+      },
+      "degree": {
+        "attributes": {
+          "degree": "차수 속성 이름"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "엣지 가중치 속성"
+          },
+          "kind": {
+            "title": "차수 유형",
+            "values": {
+              "degree": "차수",
+              "inDegree": "진입 차수",
+              "outDegree": "진출 차수"
+            }
+          }
+        },
+        "title": "차수"
+      },
+      "hits": {
+        "attributes": {
+          "authorities": "신뢰도 점수 속성 이름",
+          "hubs": "허브 점수 속성 이름"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "엣지 가중치 속성"
+          },
+          "maxIterations": {
+            "title": "최대 반복"
+          },
+          "normalize": {
+            "title": "출력 정규화 할까요?"
+          },
+          "tolerance": {
+            "title": "수렴 허용도"
+          }
+        },
+        "title": "HITS(하이퍼링크 기반 주제 검색)"
+      },
+      "louvain": {
+        "attributes": {
+          "modularityClass": "모듈성 클래스 속성 이름"
+        },
+        "description": "이 알고리즘은 노드들을 조밀하게 연결된 그룹으로 분리하는 것을 목표로 합니다.",
+        "parameters": {
+          "fastLocalMoves": {
+            "description": "그래프를 보다 효율적으로 탐색하기 위해 대기열 세트에 의존하는 잘 알려진 최적화를 사용할지 여부.",
+            "title": "빠른 로컬 이동"
+          },
+          "getEdgeWeight": {
+            "description": "엣지의 가중치를 표현하는 속성.",
+            "title": "엣지 가중치 속성"
+          },
+          "randomWalk": {
+            "description": "그래프를 무작위로 탐색할지 여부.",
+            "title": "무작위 이동"
+          },
+          "resolution": {
+            "description": "해상도가 올라가면 더 많은 커뮤니티를 생성합니다.",
+            "title": "그룹화 해상도"
+          }
+        },
+        "title": "Louvain 커뮤니티 탐지"
+      },
+      "nodescript": {
+        "attributes": {
+          "custom": "메트릭을 저장할 속성 이름"
+        },
+        "description": "노드의 메트릭을 계산하는 함수를 정의합니다.",
+        "title": "커스텀 노드 메트릭"
+      },
+      "pagerank": {
+        "attributes": {
+          "pagerank": "PageRank 속성 이름"
+        },
+        "parameters": {
+          "alpha": {
+            "title": "알파"
+          },
+          "getEdgeWeight": {
+            "title": "엣지 가중치 속성"
+          },
+          "maxIterations": {
+            "title": "최대 반복"
+          },
+          "tolerance": {
+            "title": "수렴 허용도"
+          }
+        },
+        "title": "PageRank"
+      }
+    },
+    "nodes_attribute_already_exists": "\"{{field}}\"라는 이름의 노드 속성이 이미 존재합니다. 새로운 값으로 덮어씌워집니다.",
+    "placeholder": "알고리즘 선택",
+    "success": "{{items}}의 \"{{metrics}}\" 메트릭이 데이터에 추가되었습니다.",
+    "success_one": "{{items}}의 \"{{metrics}}\" 메트릭이 데이터에 추가되었습니다.",
+    "title": "통계"
   },
   "providers": {
     "github": "GitHub"
   },
-  "github": {
-    "select_ui_language": "어플리케이션 언어 선택",
-    "title": "GitHub 인증",
-    "logged_as": "현재 {{username}}으로 GitHub에 로그인되어 있습니다.",
-    "description": "Gephi Lite에서 GitHub에 로그인하여 GitHub Gists로 직접 그래프 파일을 저장하고 로드할 수 있습니다."
+  "search": {
+    "edges": {
+      "help": "엣지를 검색할 항목을 입력",
+      "no_result": "엣지가 없습니다",
+      "other_result": "... 그리고 {{count, number}} 개의 다른 엣지",
+      "placeholder": "엣지 검색..."
+    },
+    "graph": {
+      "help": "검색할 항목을 입력",
+      "no_result": "결과 없음",
+      "other_result": "... 그리고 {{count, number}} 개의 다른 결과",
+      "placeholder": "노드, 엣지 검색...",
+      "select_all_edges": "선택 항목에 {{count, number}} 개 엣지를 추가",
+      "select_all_nodes": "선택 항목에 {{count, number}} 개 노드를 추가"
+    },
+    "nodes": {
+      "help": "노드를 검색할 항목을 입력",
+      "no_result": "노드가 없습니다",
+      "other_result": "... 그리고 {{count, number}} 개의 다른 노드",
+      "placeholder": "노드 검색 ..."
+    }
+  },
+  "selection": {
+    "edge_no_label": "(빈 라벨)",
+    "edges": "{{count, number}} 개의 선택된 엣지",
+    "edges_one": "1개의 선택된 엣지",
+    "edges_zero": "선택된 엣지 없음",
+    "empty_edges": "엣지에 속성이 없습니다",
+    "empty_nodes": "노드에 속성이 없습니다",
+    "focus_edges": "해당 엣지만 선택",
+    "focus_nodes": "해당 노드만 선택",
+    "hidden_edges": "{{count, number}} 개의 숨김 엣지",
+    "hidden_edges_one": "1개의 선택된 숨김 엣지",
+    "hidden_nodes": "{{count, number}} 개의 선택된 숨김 노드",
+    "hidden_nodes_one": "1개의 선택된 숨김 노드",
+    "locate_on_graph": "그래프에서 찾기",
+    "node_no_label": "(빈 라벨)",
+    "nodes": "{{count, number}} 개의 선택된 노드",
+    "nodes_one": "1개의 선택된 노드",
+    "nodes_zero": "선택된 노드 없음",
+    "select_all": "전체 선택",
+    "unselect_all": "전체 선택 해제",
+    "unselect_all_hidden_edges": "전체 숨김 엣지 선택 해제",
+    "unselect_all_hidden_nodes": "전체 숨김 엣지 선택 해제",
+    "unselect_edges": "엣지 선택 해제",
+    "unselect_nodes": "노드 선택 해제",
+    "visible_edges": "{{count, number}} 개의 선택된 가시 엣지",
+    "visible_edges_one": "1개의 선택된 가시 엣지",
+    "visible_edges_zero": "선택된 가시 엣지 없음",
+    "visible_nodes": "{{count, number}} 개의 선택된 가시 노드",
+    "visible_nodes_one": "1개의 선택된 가시 노드",
+    "visible_nodes_zero": "선택된 가시 노드 없음"
   },
   "storage": {
     "cannot_restore": "그래프를 복원할 수 없습니다.",
     "restore_successful": "작업 그래프가 복원되었습니다."
   },
-  "gephi-lite": {
-    "title": "Gephi Lite",
-    "info": "Gephi Lite에 대한 추가 정보"
-  },
   "user": {
     "avatar_alt": "{{name}}의 아바타"
   },
-  "search": {
-    "nodes": {
-      "help": "노드를 검색할 항목을 입력",
-      "other_result": "... 그리고 {{count, number}} 개의 다른 노드",
-      "placeholder": "노드 검색 ...",
-      "no_result": "노드가 없습니다"
-    },
-    "edges": {
-      "help": "엣지를 검색할 항목을 입력",
-      "placeholder": "엣지 검색...",
-      "no_result": "엣지가 없습니다",
-      "other_result": "... 그리고 {{count, number}} 개의 다른 엣지"
-    },
-    "graph": {
-      "no_result": "결과 없음",
-      "select_all_nodes": "선택 항목에 {{count, number}} 개 노드를 추가",
-      "help": "검색할 항목을 입력",
-      "other_result": "... 그리고 {{count, number}} 개의 다른 결과",
-      "select_all_edges": "선택 항목에 {{count, number}} 개 엣지를 추가",
-      "placeholder": "노드, 엣지 검색..."
-    }
-  },
-  "common": {
-    "hide": "숨기기",
-    "start": "시작",
-    "edit": "편집",
-    "show_more": "더 보이기",
-    "updated": "업데이트됨",
-    "save": "저장",
-    "collapse": "붕괴",
-    "add": "추가",
-    "created": "생성됨",
-    "all": "전체",
-    "load-more": "더 로드하기",
-    "save-and-run": "저장 및 실행",
-    "max": "최대",
-    "open_code_editor": "코드 편집기 열기",
-    "clear": "지우기",
-    "stop": "정지",
-    "delete": "삭제",
-    "cancel": "취소",
-    "show": "보이기",
-    "copy": "복사",
-    "confirm": "확인",
-    "select": "선택...",
-    "reset": "재설정",
-    "open": "열기",
-    "open_file": "{{filename}} 파일 열기",
-    "show_less": "덜 보이기",
-    "none": "없음",
-    "filename": "파일 이름",
-    "expand": "확장",
-    "apply": "적용",
-    "submit": "제출",
-    "loading": "로드 중",
-    "min": "최소",
-    "remove": "제거",
-    "size": "크기",
-    "close": "닫기"
-  },
-  "cloud": {
-    "github": {
-      "auth": {
-        "copy_success": "코드가 클립보드에 저장됨",
-        "asking_for_device_code": "GitHub에 장치 코드를 요청 중",
-        "title": "GitHub 인증",
-        "waiting_validation": "검증 대기 중",
-        "copy_code": "아래 코드를 복사하고 \"GitHub 열기\" 버튼을 클릭하세요. GitHub가 코드를 묻는 새 탭이 열립니다"
-      },
-      "title": "GitHub"
-    }
-  },
-  "file": {
-    "title": "데이터 관리",
-    "login_capabilities": "GitHub Gists로 직접 그래프 파일을 저장하고 로드하기 위해, Gephi Lite에서 GitHub에 로그인 가능합니다:"
+  "welcome": {
+    "disclaimer-1": "Gephi Lite는 현재 진행 중인 작업입니다.",
+    "disclaimer-2": "향후의 기능을 알아 보거나 버그를 보고하려면 GitHub 프로젝트를 확인하세요.",
+    "logo": "Gephi 로고",
+    "no_recent": "해당 브라우저에서 아직 원격 파일이 열리지 않았습니다.",
+    "open_graph": "그래프 파일 열기",
+    "open_recent": "최근 열기",
+    "samples": "예제",
+    "title": "Gephi Lite에 오신 것을 환영합니다"
   }
 }
