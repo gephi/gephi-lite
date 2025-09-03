@@ -314,7 +314,10 @@
       "kCore": {
         "core": "k: minimum degree nodes should have",
         "label": "K-Core",
-        "summary": "{{core}}-Core"
+        "summary": "{{core}}-Core",
+        "withSelfLoops": "with self-loops",
+        "withoutSelfLoops": "without self-loops",
+        "keepSelfLoop": "Keep self-loops"
       },
       "largestConnectedComponent": {
         "label": "Connected component",
