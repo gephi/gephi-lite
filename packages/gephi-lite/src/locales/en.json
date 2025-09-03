@@ -307,7 +307,10 @@
       "nodes_one": "node",
       "nodes_zero": "node",
       "title": "Attributes' Model",
-      "undirected": "Undirected"
+      "undirected": "Undirected",
+      "dynamic": "dynamic",
+      "selfLoop": "self-loop",
+      "degree": "degree"
     },
     "open": {
       "github": {

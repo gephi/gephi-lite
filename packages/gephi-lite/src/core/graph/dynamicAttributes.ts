@@ -6,7 +6,8 @@ import {
   Scalar,
   StaticDynamicItemData,
 } from "@gephi/gephi-lite-sdk";
-import { fromPairs, mapValues } from "lodash";
+import { t } from "i18next";
+import { fromPairs, mapValues, values } from "lodash";
 
 import { DatalessGraph } from "./types";
 
@@ -14,16 +15,32 @@ import { DatalessGraph } from "./types";
  * Dynamic attributes are recomputed at every graph topology change.
  * Do not add heavy or random-based one in dynamic attribute!
  */
-export const dynamicAttributes: DynamicItemsDataSpec = {
-  nodes: [
-    {
+
+export type DYNAMIC_NODE_ATTRIBUTE_ENUM = "degree";
+export type DYNAMIC_EDGE_ATTRIBUTE_ENUM = "selfLoop";
+
+export const dynamicAttributes: DynamicItemsDataSpec<DYNAMIC_NODE_ATTRIBUTE_ENUM, DYNAMIC_EDGE_ATTRIBUTE_ENUM> = {
+  nodes: {
+    degree: {
+      i18nKey: "graph.model.degree",
       field: { id: "degree", itemType: "nodes", type: "number", dynamic: true },
       compute: (nodeId: string, graph: DatalessGraph) => {
         return graph.degree(nodeId);
       },
+      showInDataTable: true,
     },
-  ],
-  edges: [],
+  },
+  edges: {
+    selfLoop: {
+      i18nKey: "graph.model.selfLoop",
+      field: { id: "selfLoop", itemType: "edges", type: "category", dynamic: true },
+      compute: (edgeId: string, graph: DatalessGraph) => {
+        //TODO: boolean field
+        return graph.isSelfLoop(edgeId) ? "true" : "false";
+      },
+      showInDataTable: (fullGraph: DatalessGraph) => fullGraph.selfLoopCount > 0,
+    },
+  },
 };
 
 export const computeAllDynamicAttributes = (itemType: ItemType, graph: DatalessGraph) => {
@@ -31,7 +48,7 @@ export const computeAllDynamicAttributes = (itemType: ItemType, graph: DatalessG
     graph[itemType]().map((n) => {
       return [
         n, // keyby itemid
-        dynamicAttributes[itemType].reduce(
+        values(dynamicAttributes[itemType]).reduce(
           (result, dan) => {
             return { ...result, [dan.field.id]: dan.compute(n, graph) };
           },
@@ -53,8 +70,12 @@ export const mergeStaticDynamicData = (
 export const staticDynamicAttributeKey = (field: FieldModel<ItemType, boolean>) =>
   `${field.dynamic ? "dynamic" : "static"}.${field.id}`;
 
-export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>) =>
-  `${field.label || field.id} ${field.dynamic ? " (dynamic)" : ""}`;
+export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>) => {
+  if (field.dynamic) {
+    return `${t(`graph.model.${field.id}`)} (${t("graph.model.dynamic")})`;
+  }
+  return field.label || field.id;
+};
 
 export function getScalarFromStaticDynamicData(
   data: StaticDynamicItemData,

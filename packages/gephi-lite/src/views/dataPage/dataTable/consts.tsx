@@ -1,20 +1,32 @@
-import { ItemData } from "@gephi/gephi-lite-sdk";
+import { ItemData, Scalar } from "@gephi/gephi-lite-sdk";
 import { Column } from "@tanstack/react-table";
+import { identity, mapValues } from "lodash";
 import { CSSProperties, ComponentType, FC, PropsWithChildren, createElement } from "react";
 import { PiArrowDown, PiArrowUp, PiArrowsDownUp } from "react-icons/pi";
+
+import {
+  DYNAMIC_EDGE_ATTRIBUTE_ENUM,
+  DYNAMIC_NODE_ATTRIBUTE_ENUM,
+  dynamicAttributes,
+} from "../../../core/graph/dynamicAttributes";
 
 export const SPECIFIC_COLUMNS = {
   id: "id",
   selected: "selected",
   preview: "preview",
-  degree: "degree",
   sourceId: "sourceId",
   targetId: "targetId",
+  // add dynamic
+  ...mapValues(dynamicAttributes.nodes, identity),
+  ...mapValues(dynamicAttributes.edges, identity),
 } as const;
 
 type BaseItemRow = { id: string; selected: boolean; data: ItemData };
-export type NodeItemRow = BaseItemRow & { degree: number };
-export type EdgeItemRow = BaseItemRow & { sourceId: string; targetId: string };
+export type NodeItemRow = BaseItemRow & Record<DYNAMIC_NODE_ATTRIBUTE_ENUM, Scalar>;
+export type EdgeItemRow = BaseItemRow & { sourceId: string; targetId: string } & Record<
+    DYNAMIC_EDGE_ATTRIBUTE_ENUM,
+    Scalar
+  >;
 export type ItemRow = NodeItemRow | EdgeItemRow;
 
 export const ARROWS = {

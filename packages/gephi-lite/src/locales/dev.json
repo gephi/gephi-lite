@@ -388,7 +388,10 @@
       "undirected_graph": "Undirected graph",
       "warnings": {
         "invalid_data": "The value \"{{value}}\" cannot be interpreted as a \"{{type}}\" value."
-      }
+      },
+      "dynamic": "dynamic",
+      "selfLoop": "self-loop",
+      "degree": "degree"
     },
     "open": {
       "github": {

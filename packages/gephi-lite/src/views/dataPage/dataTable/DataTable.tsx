@@ -1,4 +1,4 @@
-import { ItemType } from "@gephi/gephi-lite-sdk";
+import { ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { Row, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
@@ -13,6 +13,7 @@ import {
   useSelection,
 } from "../../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
+import { DYNAMIC_EDGE_ATTRIBUTE_ENUM, DYNAMIC_NODE_ATTRIBUTE_ENUM } from "../../../core/graph/dynamicAttributes";
 import { ItemRow, SPECIFIC_COLUMNS, getCommonPinningStyles } from "./consts";
 import { useDataTableColumns } from "./useDataTableColumns";
 
@@ -66,8 +67,8 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
           ? {
               id,
               selected: selectionType === type && items.has(id),
-              degree: dynamicData[id].degree as number,
               data: data[id],
+              ...(dynamicData[id] as Record<DYNAMIC_NODE_ATTRIBUTE_ENUM, Scalar>),
             }
           : {
               id,
@@ -75,6 +76,7 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
               sourceId: fullGraph.source(id),
               targetId: fullGraph.target(id),
               data: data[id],
+              ...(dynamicData[id] as Record<DYNAMIC_EDGE_ATTRIBUTE_ENUM, Scalar>),
             },
       ),
     [itemIDs, type, selectionType, items, dynamicData, data, fullGraph],

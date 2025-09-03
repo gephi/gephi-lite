@@ -347,7 +347,8 @@
       },
       "kCore": {
         "core": "k : degré minimal des nœuds à garder",
-        "label": "K-Cœur"
+        "label": "K-Cœur",
+        "keepSelfLoop": "Garder les boucles"
       },
       "largestConnectedComponent": {
         "label": "Composantes connexes",
@@ -466,7 +467,10 @@
         "invalid_data": "La valeur \"{{value}}\" ne peut être interprétée comme un⋅e \"{{type}}\".",
         "missing": "{{nbValues}} valeurs manquantes",
         "wrong": "{{nbValues}} valeurs ne sont pas quantitatives"
-      }
+      },
+      "dynamic": "dynamique",
+      "selfLoop": "boucle",
+      "degree": "degré"
     },
     "open": {
       "github": {
