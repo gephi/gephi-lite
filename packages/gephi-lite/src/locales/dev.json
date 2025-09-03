@@ -358,6 +358,14 @@
         "title": "Export PNG snapshot"
       }
     },
+    "metadata": {
+      "title": "Metadata",
+      "graph-title": "Title",
+      "description": "Description",
+      "keywords": "Keywords",
+      "authors": "Authors",
+      "graph-type": "Graph Type"
+    },
     "model": {
       "directed_graph": "Directed graph",
       "edges": "edges",
