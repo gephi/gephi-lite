@@ -1,10 +1,12 @@
+import { DatalessGraph } from "@gephi/gephi-lite-sdk";
+
 import { TopologicalFilterDefinition } from "../types";
 import { buildEgoFilterDefinition } from "./ego";
 import { buildKCoreFilterDefinition } from "./kCore";
 import { buildLargestConnectedComponentFilterDefinition } from "./largestConnectedComponentFilter";
 
-export const buildTopologicalFiltersDefinitions: (directed: boolean) => TopologicalFilterDefinition[] = (directed) => [
+export const buildTopologicalFiltersDefinitions: (graph: DatalessGraph) => TopologicalFilterDefinition[] = (graph) => [
   buildKCoreFilterDefinition(),
   buildLargestConnectedComponentFilterDefinition(),
-  buildEgoFilterDefinition(directed),
+  buildEgoFilterDefinition(graph.type === "directed"),
 ];

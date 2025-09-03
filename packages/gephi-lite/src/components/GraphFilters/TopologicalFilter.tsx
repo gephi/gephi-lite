@@ -1,10 +1,11 @@
+import { omit } from "lodash";
 import { FC, useMemo } from "react";
 
 import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { buildTopologicalFiltersDefinitions } from "../../core/filters/topological";
 import { FilterParameter, TopologicalFilterDefinition, TopologicalFilterType } from "../../core/filters/types";
 import { GraphSearch } from "../GraphSearch";
-import { EnumInput, NumberInput } from "../forms/TypedInputs";
+import { BooleanInput, EnumInput, NumberInput } from "../forms/TypedInputs";
 
 export function TopologicalFilterEditor<ParametersType extends FilterParameter[]>({
   filterDefinition,
@@ -20,14 +21,14 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <div className="d-flex flex-column">
+      <div className="d-flex flex-column gl-gap-2">
         {filterDefinition.parameters
           .filter((p) => !p.hidden)
           .map((p, i) => {
             switch (p.type) {
               case "node":
                 return (
-                  <div key={i} className="mt-1">
+                  <div key={i}>
                     <label className="form-check-label small">{p.label}</label>
                     <GraphSearch
                       className="form-control-sm"
@@ -48,31 +49,49 @@ export function TopologicalFilterEditor<ParametersType extends FilterParameter[]
                 );
               case "number":
                 return (
-                  <NumberInput
-                    {...p}
-                    key={i}
-                    value={parameters[i] as number}
-                    onChange={(value) => {
-                      updateFilter(filterIndex, {
-                        ...filter,
-                        parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
-                      });
-                    }}
-                  />
+                  <div key={i}>
+                    <NumberInput
+                      {...p}
+                      value={parameters[i] as number}
+                      onChange={(value) => {
+                        updateFilter(filterIndex, {
+                          ...filter,
+                          parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
+                        });
+                      }}
+                    />
+                  </div>
                 );
               case "enum":
                 return (
-                  <EnumInput
-                    {...p}
-                    key={i}
-                    value={parameters[i] as string}
-                    onChange={(value) => {
-                      updateFilter(filterIndex, {
-                        ...filter,
-                        parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
-                      });
-                    }}
-                  />
+                  <div key={i}>
+                    <EnumInput
+                      {...p}
+                      value={parameters[i] as string}
+                      onChange={(value) => {
+                        updateFilter(filterIndex, {
+                          ...filter,
+                          parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
+                        });
+                      }}
+                    />
+                  </div>
+                );
+              case "boolean":
+                return (
+                  <div key={i}>
+                    <BooleanInput
+                      {...omit(p, "defaultValue")}
+                      key={i}
+                      value={(parameters[i] as boolean) || p.defaultValue}
+                      onChange={(value) => {
+                        updateFilter(filterIndex, {
+                          ...filter,
+                          parameters: parameters.map((v: unknown, j: number) => (i === j ? value : v)),
+                        });
+                      }}
+                    />
+                  </div>
                 );
             }
           })}
@@ -85,13 +104,10 @@ export const TopologicalFilter: FC<{
   filter: TopologicalFilterType;
   filterIndex: number;
 }> = ({ filter, filterIndex }) => {
-  const {
-    metadata: { type: graphType },
-  } = useGraphDataset();
+  const { fullGraph } = useGraphDataset();
   const filterDefinition = useMemo(
-    () =>
-      buildTopologicalFiltersDefinitions(graphType !== "undirected").find((f) => f.id === filter.topologicalFilterId),
-    [filter.topologicalFilterId, graphType],
+    () => buildTopologicalFiltersDefinitions(fullGraph).find((f) => f.id === filter.topologicalFilterId),
+    [filter.topologicalFilterId, fullGraph],
   );
 
   return filterDefinition ? (

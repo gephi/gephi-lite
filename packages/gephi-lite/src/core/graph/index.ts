@@ -400,9 +400,9 @@ export const visualGettersAtom = derivedAtom(
     checkInput: false,
   },
 );
-export const topologicalFiltersAtom = derivedAtom(graphDatasetAtom, ({ metadata }) =>
-  buildTopologicalFiltersDefinitions(metadata.type !== "undirected"),
-);
+export const topologicalFiltersAtom = derivedAtom(graphDatasetAtom, ({ fullGraph }) => {
+  return buildTopologicalFiltersDefinitions(fullGraph);
+});
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters, graph: SigmaGraph | undefined) => {
