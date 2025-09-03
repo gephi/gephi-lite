@@ -36,7 +36,7 @@ const LocalSwitcher: FC = () => {
 
   return (
     <Dropdown options={localeOptions} side="right">
-      <button className={cx("gl-btn w-100", !isMobile && "dropdown-toggle")}>{locale}</button>
+      <button className={cx("lang-switcher-btn gl-btn w-100", !isMobile && "dropdown-toggle")}>{locale}</button>
     </Dropdown>
   );
 };
