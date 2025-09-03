@@ -307,23 +307,16 @@
           "out": "outbound edges"
         },
         "ego": "Ego node",
-        "label": "Ego network",
-        "summary_depth": "at depth {{depth}}",
-        "summary_direction": "following {{direction}}"
+        "label": "Ego network"
       },
       "kCore": {
         "core": "k: minimum degree nodes should have",
         "label": "K-Core",
-        "summary": "{{core}}-Core",
-        "withSelfLoops": "with self-loops",
-        "withoutSelfLoops": "without self-loops",
         "keepSelfLoop": "Keep self-loops"
       },
       "largestConnectedComponent": {
         "label": "Connected component",
-        "number": "Number of largest components to keep",
-        "summary": "The {{number}} largest",
-        "summary_one": "The largest"
+        "number": "Number of largest components to keep"
       }
     },
     "visible_graph": "Visible graph"

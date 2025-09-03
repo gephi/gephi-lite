@@ -11,8 +11,6 @@ export const buildLargestConnectedComponentFilterDefinition = (): TopologicalFil
   type: "topological",
   id: "largestConnectedComponent",
   label: t("filters.topology.largestConnectedComponent.label"),
-  summary: ([numberOfComponents]) =>
-    t("filters.topology.largestConnectedComponent.summary", { number: numberOfComponents }),
   parameters: [
     {
       id: "numberOfComponents",
