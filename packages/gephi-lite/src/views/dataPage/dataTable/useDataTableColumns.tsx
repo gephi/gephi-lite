@@ -1,5 +1,5 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { size } from "lodash";
+import { isBoolean, size, values } from "lodash";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,6 +17,7 @@ import {
   useGraphDatasetActions,
   useSelectionActions,
 } from "../../../core/context/dataContexts";
+import { dynamicAttributes, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { useModal } from "../../../core/modals";
 import { useMobile } from "../../../hooks/useMobile";
 import { DataCell } from "./DataCell";
@@ -26,7 +27,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
   const { t } = useTranslation();
   const { type } = useDataTable();
   const { openModal } = useModal();
-  const { nodeFields, edgeFields, nodeData, edgeData } = useGraphDataset();
+  const { nodeFields, edgeFields, nodeData, edgeData, fullGraph } = useGraphDataset();
   const isMobile = useMobile();
 
   const { setSort } = useDataTableActions();
@@ -36,7 +37,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
   const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
   const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
   const getReadOnlyColumn = useCallback(
-    (field: keyof ItemRow, size = 180): ColumnDef<ItemRow> => {
+    (field: keyof ItemRow, options?: { size?: number; label?: string }): ColumnDef<ItemRow> => {
       return {
         id: field,
         accessorFn: (row) => row[field],
@@ -47,7 +48,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         header: ({ header }) => (
           <>
             <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
-              {t(`datatable.protected_columns.${field}`)}
+              {options?.label ? options.label : t(`datatable.protected_columns.${field}`)}
             </span>
             <Arrow
               arrow={header.column.getIsSorted() || null}
@@ -61,7 +62,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             />
           </>
         ),
-        size,
+        size: options?.size || 180,
       };
     },
     [t],
@@ -142,10 +143,18 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       // Type specific dynamic / read-only columns:
       getReadOnlyColumn("id"),
       ...(type === "nodes"
-        ? [getReadOnlyColumn(SPECIFIC_COLUMNS.degree as keyof ItemRow, 120)]
+        ? values(dynamicAttributes.nodes).map((f) =>
+            // TODO make the specific size a const depending on dynamic field key
+            getReadOnlyColumn(f.field.id as keyof ItemRow, { size: 120, label: staticDynamicAttributeLabel(f.field) }),
+          )
         : [
             getReadOnlyColumn(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
             getReadOnlyColumn(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
+            ...values(dynamicAttributes.edges)
+              .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
+              .map((f) =>
+                getReadOnlyColumn(f.field.id as keyof ItemRow, { label: staticDynamicAttributeLabel(f.field) }),
+              ),
           ]),
 
       // Dataset-specific columns;
@@ -290,6 +299,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       toggle,
       type,
       unselect,
+      fullGraph,
     ],
   );
 

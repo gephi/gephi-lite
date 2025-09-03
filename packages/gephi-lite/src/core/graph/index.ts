@@ -17,7 +17,7 @@ import {
   useReadAtom,
 } from "@ouestware/atoms";
 import { Attributes } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, keys, last, mapValues, omit, omitBy, values } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -384,10 +384,10 @@ export const dynamicItemDataAtom = derivedAtom(
   (filteredGraphCache) => {
     const dynamicNodeData: DynamicItemData = {
       dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
-      dynamicNodeFields: dynamicAttributes.nodes?.map((n) => n.field) || [],
+      dynamicNodeFields: values(dynamicAttributes.nodes).map((a) => a.field) || [],
       dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
 
-      dynamicEdgeFields: dynamicAttributes.edges?.map((n) => n.field) || [],
+      dynamicEdgeFields: values(dynamicAttributes.edges).map((n) => n.field) || [],
     };
     return dynamicNodeData;
   },

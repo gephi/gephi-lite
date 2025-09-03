@@ -1,5 +1,5 @@
 import { DEFAULT_NODE_COLOR, FieldModel, NodeCoordinates, Scalar, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
-import { groupBy, isNil, toPairs } from "lodash";
+import { groupBy, isNil, toPairs, values } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { Trans, useTranslation } from "react-i18next";
@@ -74,7 +74,7 @@ function SelectedItem<
         field,
         value: data.static[field.id],
       })),
-      ...dynamicAttributes[type].map(({ field }) => ({
+      ...values(dynamicAttributes[type]).map(({ field }) => ({
         label: staticDynamicAttributeLabel(field),
         field: field as FieldModel,
         value: data.dynamic[field.id],
