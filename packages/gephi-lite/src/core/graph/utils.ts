@@ -135,7 +135,7 @@ export function dataGraphToFullGraph(
     NodeRenderingData & ItemData,
     EdgeRenderingData & ItemData,
     Omit<GraphDataset["metadata"], "type">
-  >();
+  >({ type: metadata.type });
 
   // metadata
   res.replaceAttributes(omit(metadata, ["type"]));
@@ -144,9 +144,11 @@ export function dataGraphToFullGraph(
   graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...layout[node] }));
 
   // edges
-  graph.forEachEdge((edge, _, source, target) =>
-    res.addEdgeWithKey(edge, source, target, { ...edgeData[edge], ...layout[edge] }),
-  );
+  graph.forEachEdge((edge, _, source, target) => {
+    if (res.type === "undirected" || (res.type === "mixed" && !graph.isDirected(edge)))
+      res.addUndirectedEdgeWithKey(edge, source, target, { ...edgeData[edge], ...layout[edge] });
+    else res.addDirectedEdgeWithKey(edge, source, target, { ...edgeData[edge], ...layout[edge] });
+  });
 
   return res;
 }
@@ -156,9 +158,13 @@ export function dataGraphToFullGraph(
  * and returns a SigmaGraph:
  */
 export function dataGraphToSigmaGraph({ fullGraph, layout }: GraphDataset, graph: DatalessGraph = fullGraph) {
-  const res: SigmaGraph = new MultiGraph<NodeRenderingData, EdgeRenderingData>();
+  const res: SigmaGraph = new MultiGraph<NodeRenderingData, EdgeRenderingData>({ type: graph.type });
   graph.forEachNode((node) => res.addNode(node, { ...layout[node] }));
-  graph.forEachEdge((edge, _, source, target) => res.addEdgeWithKey(edge, source, target, {}));
+  graph.forEachEdge((edge, _, source, target) => {
+    if (res.type === "undirected" || (res.type === "mixed" && !graph.isDirected(edge)))
+      res.addUndirectedEdgeWithKey(edge, source, target, {});
+    else res.addDirectedEdgeWithKey(edge, source, target, {});
+  });
   return res;
 }
 
@@ -168,13 +174,15 @@ export function dataGraphToSigmaGraph({ fullGraph, layout }: GraphDataset, graph
  * each item has all its data attributes):
  */
 export function getFilteredDataGraph({ nodeData, edgeData }: GraphDataset, graph: SigmaGraph): DataGraph {
-  const res = new MultiGraph<ItemData, ItemData>();
+  const res = new MultiGraph<ItemData, ItemData>({ type: graph.type });
 
   graph.forEachNode((node) => {
     res.addNode(node, nodeData[node] || {});
   });
   graph.forEachEdge((edge, _, source, target) => {
-    res.addEdgeWithKey(edge, source, target, edgeData[edge] || {});
+    if (res.type === "undirected" || (res.type === "mixed" && !graph.isDirected(edge)))
+      res.addUndirectedEdgeWithKey(edge, source, target, edgeData[edge] || {});
+    else res.addDirectedEdgeWithKey(edge, source, target, edgeData[edge] || {});
   });
 
   return res;

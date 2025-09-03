@@ -16,9 +16,11 @@ import { DatalessGraph } from "./types";
  * Do not add heavy or random-based one in dynamic attribute!
  */
 
+// 1. add your new dynamic attribute id here
 export type DYNAMIC_NODE_ATTRIBUTE_ENUM = "degree";
-export type DYNAMIC_EDGE_ATTRIBUTE_ENUM = "selfLoop";
+export type DYNAMIC_EDGE_ATTRIBUTE_ENUM = "selfLoop" | "directed";
 
+// 2. describe it here
 export const dynamicAttributes: DynamicItemsDataSpec<DYNAMIC_NODE_ATTRIBUTE_ENUM, DYNAMIC_EDGE_ATTRIBUTE_ENUM> = {
   nodes: {
     degree: {
@@ -39,6 +41,20 @@ export const dynamicAttributes: DynamicItemsDataSpec<DYNAMIC_NODE_ATTRIBUTE_ENUM
         return graph.isSelfLoop(edgeId) ? "true" : "false";
       },
       showInDataTable: (fullGraph: DatalessGraph) => fullGraph.selfLoopCount > 0,
+    },
+
+    directed: {
+      i18nKey: "graph.model.directed",
+      field: { id: "directed", itemType: "edges", type: "category", dynamic: true },
+      //TODO: updates an edge manually does not trigger this computation
+      compute: (edgeId: string, graph: DatalessGraph) => {
+        //TODO: boolean field
+        return graph.isDirected(edgeId) ? "true" : "false";
+      },
+      showInDataTable: (fullGraph: DatalessGraph) => {
+        console.log("graph type", fullGraph.type);
+        return fullGraph.type === "mixed";
+      },
     },
   },
 };
