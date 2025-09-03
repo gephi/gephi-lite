@@ -343,20 +343,15 @@
           "out": "les liens sortants"
         },
         "ego": "Nœud « ego »",
-        "label": "Réseau égocentré",
-        "summary_depth": "à la profondeur {{depth}}",
-        "summary_direction": "vers {{direction}}"
+        "label": "Réseau égocentré"
       },
       "kCore": {
         "core": "k : degré minimal des nœuds à garder",
-        "label": "K-Cœur",
-        "summary": "{{core}}-Cœur"
+        "label": "K-Cœur"
       },
       "largestConnectedComponent": {
         "label": "Composantes connexes",
-        "number": "Nombre de composantes à garder",
-        "summary": "Les {{number}} plus grandes",
-        "summary_one": "La plus grande"
+        "number": "Nombre de composantes à garder"
       }
     },
     "using": "Utilisation",

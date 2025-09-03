@@ -9,9 +9,6 @@ export const buildKCoreFilterDefinition = (): TopologicalFilterDefinition<
   type: "topological",
   id: "kCore",
   label: t("filters.topology.kCore.label"),
-  summary: ([core, keepSelfLoops]) =>
-    `${t("filters.topology.kCore.summary", { core: core })} ${keepSelfLoops ? t("filters.topology.kCore.withSelfLoops") : t("filters.topology.kCore.withoutSelfLoops")}`,
-
   parameters: [
     {
       id: "core",

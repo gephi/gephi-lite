@@ -1,7 +1,6 @@
 import { subgraph } from "graphology-operators";
 import { t } from "i18next";
 
-import { NodeComponentById } from "../../../components/data/Node";
 import { FilterEnumParameter, FilterNodeParameter, FilterNumberParameter, TopologicalFilterDefinition } from "../types";
 
 export type TraversalMode = "in" | "out" | "both";
@@ -12,25 +11,6 @@ export const buildEgoFilterDefinition = (
   type: "topological",
   id: "ego",
   label: t("filters.topology.ego.label"),
-  summary: ([egoId, depth, direction]) => (
-    <div>
-      {typeof egoId === "string" && (
-        <div className="d-inline-block me-1">
-          <NodeComponentById id={egoId} />
-        </div>
-      )}
-      <span className="align-top">
-        {t("filters.topology.ego.summary_depth", {
-          depth: depth,
-        }) +
-          (directed
-            ? ` ${t("filters.topology.ego.summary_direction", {
-                direction: t(`filters.topology.ego.direction.${direction}`),
-              })}`
-            : "")}
-      </span>
-    </div>
-  ),
   parameters: [
     {
       id: "egoId",

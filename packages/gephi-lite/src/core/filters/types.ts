@@ -1,16 +1,14 @@
-import { ReactNode } from "react";
-
 import { DatalessGraph } from "../graph/types";
 
 export {
   type BaseFilter,
-  type RangeFilterType,
-  type TermsFilterType,
-  type ScriptFilterType,
-  type TopologicalFilterType,
-  type FilterType,
-  type FiltersState,
   type FilteredGraph,
+  type FiltersState,
+  type FilterType,
+  type RangeFilterType,
+  type ScriptFilterType,
+  type TermsFilterType,
+  type TopologicalFilterType,
 } from "@gephi/gephi-lite-sdk";
 
 /**
@@ -64,7 +62,6 @@ export interface TopologicalFilterDefinition<ParametersType extends FilterParame
   id: string;
   label: string;
   parameters: ParametersType;
-  summary: (parameters: FilterParameterValueArray<ParametersType>) => ReactNode;
   filter: (parameters: FilterParameterValueArray<ParametersType>, graph: DatalessGraph) => DatalessGraph;
 }
 
