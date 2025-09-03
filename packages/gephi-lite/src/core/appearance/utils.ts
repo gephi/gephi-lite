@@ -428,7 +428,7 @@ export function getItemAttributes(
     label: (getLabel && getLabel(itemData)) || undefined,
     color: (getColor && getColor(itemData, id)) || defaultColor,
     hidden,
-    directed: graphDataset.metadata.type !== "undirected",
+    directed: type === "edges" ? graphDataset.fullGraph.isDirected(id) : undefined,
   };
 }
 

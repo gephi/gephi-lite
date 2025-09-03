@@ -30,7 +30,6 @@ export const AppearanceController: FC = () => {
   // Reducers:
   useEffect(() => {
     const graph = sigma.getGraph();
-    const edgeArrow = metadata.type !== "undirected";
     const mode = getAppliedTheme(theme);
 
     // what we've got in the state,
@@ -94,7 +93,11 @@ export const AppearanceController: FC = () => {
       !showEdges.value
         ? () => ({ hidden: true })
         : (id, { weight, ...attr }) => {
-            const res = { ...attr, size: weight, type: edgeArrow ? "arrow" : "line" } as Partial<CustomEdgeDisplayData>;
+            const res = {
+              ...attr,
+              size: weight,
+              type: graph.isDirected(id) ? "arrow" : "line",
+            } as Partial<CustomEdgeDisplayData>;
             res.zIndex = res.zIndex || 0;
             res.rawSize = res.size || DEFAULT_EDGE_SIZE;
 

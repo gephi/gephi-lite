@@ -40,6 +40,7 @@ import { DynamicItemData, FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
   cleanNode,
+  dataGraphToFullGraph,
   dataGraphToSigmaGraph,
   datasetToString,
   getEmptyGraphDataset,
@@ -260,16 +261,19 @@ const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   ];
 };
 
-const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, string, string]> = (
+const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, string, string, boolean]> = (
   edge,
   attributes,
   source,
   target,
+  directed,
 ) => {
   return [
     (state) => {
       const { data } = cleanEdge(edge, attributes);
-      state.fullGraph.addEdgeWithKey(edge, source, target, {});
+      if (directed || state.fullGraph.type === "directed")
+        state.fullGraph.addDirectedEdgeWithKey(edge, source, target, {});
+      else state.fullGraph.addUndirectedEdgeWithKey(edge, source, target, {});
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
       // index the edge
       searchActions.edgeIndex(edge);
@@ -301,15 +305,26 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
     nodeIndex(node),
   ];
 };
-const updateEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, { merge?: boolean }?]> = (
-  edge,
-  attributes,
-  { merge } = {},
-) => {
+const updateEdge: MultiProducer<
+  [GraphDataset, SearchState],
+  [string, Attributes, { merge?: boolean; directed?: boolean }?]
+> = (edge, attributes, { merge, directed } = {}) => {
   return [
     (state) => {
       const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      if (directed !== undefined && state.fullGraph.isDirected(edge) !== directed) {
+        // swap direction
+        console.log("swap edge direction", directed);
+        const src = state.fullGraph.source(edge);
+        const trg = state.fullGraph.target(edge);
+        const atts = state.fullGraph.getEdgeAttributes(edge);
+        state.fullGraph.dropEdge(edge);
+        if (directed) {
+          state.fullGraph.addDirectedEdgeWithKey(edge, src, trg, atts);
+        } else state.fullGraph.addUndirectedEdgeWithKey(edge, src, trg, atts);
+      }
+
       // index the edge
       searchActions.edgeIndex(edge);
       return {
@@ -550,6 +565,14 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When graph meta change, we set the page metadata
   if (updatedKeys.has("metadata")) {
     document.title = ["Gephi Lite", graphDataset.metadata.title].filter((s) => !isNil(s)).join(" - ");
+
+    // update fullGraph with the new direction type
+    if (graphDataset.metadata.type !== previousGraphDataset.metadata.type) {
+      graphDatasetAtom.set({
+        ...graphDataset,
+        fullGraph: dataGraphToFullGraph(graphDataset, graphDataset.fullGraph),
+      });
+    }
   }
 
   // Only "small enough" graphs are stored in the sessionStorage, because this

@@ -12,6 +12,7 @@ import { useNotifications } from "../../core/notifications";
 import { Scalar } from "../../core/types";
 import { GraphSearch } from "../GraphSearch";
 import { CancelIcon, FieldModelIcon } from "../common-icons";
+import { Select } from "../forms/Select";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
 
@@ -19,6 +20,7 @@ interface UpdatedEdgeState {
   id: string;
   source: string;
   target: string;
+  isDirected: boolean;
   attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
 
@@ -44,6 +46,7 @@ const useEditEdgeForm = ({
     if (isNew)
       return {
         weight: 1,
+        isDirected: fullGraph.type !== "undirected",
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
           value: undefined,
@@ -57,6 +60,7 @@ const useEditEdgeForm = ({
       id: edgeId,
       source,
       target,
+      isDirected: fullGraph.isDirected(edgeId),
       attributes: edgeFields.map((nf) => ({
         key: nf.id,
         value: edgeData[edgeId][nf.id],
@@ -109,7 +113,7 @@ const useEditEdgeForm = ({
         // Create new edge:
         if (isNew) {
           try {
-            createEdge(id, allAttributes, data.source, data.target);
+            createEdge(id, allAttributes, data.source, data.target, data.isDirected);
             select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
@@ -130,7 +134,7 @@ const useEditEdgeForm = ({
         // Update existing edge:
         else {
           try {
-            updateEdge(id, allAttributes);
+            updateEdge(id, allAttributes, { directed: data.isDirected });
             select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
@@ -230,6 +234,35 @@ const useEditEdgeForm = ({
             {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
           </div>
         </div>
+        {fullGraph.type === "mixed" && (
+          <div>
+            <Controller
+              control={control}
+              name="isDirected"
+              rules={{
+                required: false,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Select<{ label: string; value: string }>
+                  value={
+                    value
+                      ? { label: t("graph.model.directed"), value: "directed" }
+                      : { label: t("graph.model.undirected"), value: "undirected" }
+                  }
+                  options={[
+                    { label: t("graph.model.directed"), value: "directed" },
+                    { label: t("graph.model.undirected"), value: "undirected" },
+                  ]}
+                  onChange={(selected) => {
+                    if (selected) {
+                      onChange(selected.value === "directed");
+                    }
+                  }}
+                />
+              )}
+            />
+          </div>
+        )}
 
         {/* Other attributes */}
         <div className="panel-block">

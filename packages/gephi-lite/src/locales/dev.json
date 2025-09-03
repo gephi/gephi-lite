@@ -368,6 +368,9 @@
     },
     "model": {
       "directed_graph": "Directed graph",
+      "directed": "Directed",
+      "undirected": "Undirected",
+      "mixed": "Mixed",
       "edges": "edges",
       "edges-data": {
         "id": "Edge ID",

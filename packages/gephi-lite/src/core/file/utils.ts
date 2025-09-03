@@ -128,6 +128,7 @@ export function geFullDataGraph(): Graph {
   applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
 
   // change the type of the graph based on the meta type (default is directed)
+  // TODO: remove that asfullGraph instance now follows metadata.type
   if (graphDataset.metadata.type === "undirected") fullDataGraph = toUndirected(fullDataGraph);
 
   return fullDataGraph;
