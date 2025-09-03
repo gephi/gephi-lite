@@ -193,7 +193,29 @@
     "terms": "exact values",
     "title": "Filters",
     "topological": "Topology",
-    "using": "Using"
+    "using": "Using",
+    "topology": {
+      "ego": {
+        "core": "depth: maximum distance to ego",
+        "direction": {
+          "both": "any edges",
+          "in": "inbound edges",
+          "label": "Follow",
+          "out": "outbound edges"
+        },
+        "ego": "Ego node",
+        "label": "Ego network"
+      },
+      "kCore": {
+        "core": "k: minimum degree nodes should have",
+        "label": "K-Core",
+        "keepSelfLoop": "Keep self-loops"
+      },
+      "largestConnectedComponent": {
+        "label": "Connected component",
+        "number": "Number of largest components to keep"
+      }
+    }
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",

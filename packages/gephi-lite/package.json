@@ -9,7 +9,6 @@
     "serve": "vite preview",
     "test": "vitest run src",
     "test:e2e": "playwright test",
-    "translations-scan": "i18next-scanner --config ../../i18next-scanner.config.ts packages/gephi-lite/src/**/*.{ts,tsx}",
     "generate-json-schema": "typescript-json-schema src/core/file/types.ts GephiLiteFileFormat -o build/gephi-lite-format.schema.json",
     "prepare": "ts-patch install && typia patch",
     "i18n-checker": "tsx ./scripts/i18n-checker.ts"
@@ -120,7 +119,6 @@
     "@types/tether": "^1.4.9",
     "@vitejs/plugin-react-swc": "^3.7.2",
     "http-proxy-middleware": "^3.0.3",
-    "i18next-scanner": "^4.6.0",
     "json-key-path-list": "^2.0.3",
     "sass": "1.77.6",
     "ts-patch": "^3.3.0",
