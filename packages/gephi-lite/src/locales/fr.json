@@ -347,8 +347,8 @@
       },
       "kCore": {
         "core": "k : degré minimal des nœuds à garder",
-        "label": "K-Cœur",
-        "keepSelfLoop": "Garder les boucles"
+        "keepSelfLoop": "Garder les boucles",
+        "label": "K-Cœur"
       },
       "largestConnectedComponent": {
         "label": "Composantes connexes",
@@ -416,8 +416,10 @@
       "title": "Métadonnées"
     },
     "model": {
+      "degree": "Degré",
       "directed": "Orienté",
       "directed_graph": "Réseau dirigé",
+      "dynamic": "dynamique",
       "edges": "liens",
       "edges-data": {
         "attribute-name": "Nom de l'attribut",
@@ -460,6 +462,7 @@
       },
       "nodes_one": "nœud",
       "nodes_zero": "nœud",
+      "selfLoop": "Boucle ?",
       "title": "Modèle d'attributs",
       "undirected": "Non orienté",
       "undirected_graph": "Réseau non-dirigé",
@@ -468,10 +471,7 @@
         "invalid_data": "La valeur \"{{value}}\" ne peut être interprétée comme un⋅e \"{{type}}\".",
         "missing": "{{nbValues}} valeurs manquantes",
         "wrong": "{{nbValues}} valeurs ne sont pas quantitatives"
-      },
-      "dynamic": "dynamique",
-      "selfLoop": "Boucle ?",
-      "degree": "Degré"
+      }
     },
     "open": {
       "github": {
