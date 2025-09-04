@@ -5,9 +5,9 @@ import { CSSProperties, ComponentType, FC, PropsWithChildren, createElement } fr
 import { PiArrowDown, PiArrowUp, PiArrowsDownUp } from "react-icons/pi";
 
 import {
-  DYNAMIC_EDGE_ATTRIBUTE_ENUM,
-  DYNAMIC_NODE_ATTRIBUTE_ENUM,
-  dynamicAttributes,
+  DynamicEdgeAttributeId,
+  DynamicNodeAttributeId,
+  DYNAMIC_ATTRIBUTES,
 } from "../../../core/graph/dynamicAttributes";
 
 export const SPECIFIC_COLUMNS = {
@@ -17,14 +17,14 @@ export const SPECIFIC_COLUMNS = {
   sourceId: "sourceId",
   targetId: "targetId",
   // add dynamic
-  ...mapValues(dynamicAttributes.nodes, identity),
-  ...mapValues(dynamicAttributes.edges, identity),
+  ...mapValues(DYNAMIC_ATTRIBUTES.nodes, identity),
+  ...mapValues(DYNAMIC_ATTRIBUTES.edges, identity),
 } as const;
 
 type BaseItemRow = { id: string; selected: boolean; data: ItemData };
-export type NodeItemRow = BaseItemRow & Record<DYNAMIC_NODE_ATTRIBUTE_ENUM, Scalar>;
+export type NodeItemRow = BaseItemRow & Record<DynamicNodeAttributeId, Scalar>;
 export type EdgeItemRow = BaseItemRow & { sourceId: string; targetId: string } & Record<
-    DYNAMIC_EDGE_ATTRIBUTE_ENUM,
+    DynamicEdgeAttributeId,
     Scalar
   >;
 export type ItemRow = NodeItemRow | EdgeItemRow;

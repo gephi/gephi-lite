@@ -4,11 +4,13 @@
   margin-bottom: 0;
   display: flex;
   align-items: center;
+
   .form-check-input {
     margin-top: 0 !important;
     margin-right: 0.25rem;
 
-    &:checked {
+    &:checked,
+    &:indeterminate {
       background-color: var(--gl-component-bg);
       border-color: var(--gl-component-bg);
     }

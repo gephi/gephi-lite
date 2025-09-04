@@ -47,7 +47,9 @@ export function filterValue(
         if (value instanceof DateTime || isNumber(value)) {
           return !!filter.keepMissingValues;
         }
-        const strings = Array.isArray(value) ? value : !isNil(value) ? [value] : [];
+        const strings = (Array.isArray(value) ? value : !isNil(value) ? [value] : []).filter(
+          (v): v is string => typeof v === "string",
+        );
         return strings.some((string) => !filter.terms || filter.terms.has(string));
       }
     }

@@ -10,6 +10,7 @@ import {
 import { t } from "i18next";
 import { fromPairs, mapValues } from "lodash";
 
+// import { graphDatasetActions } from "./index";
 import { DatalessGraph } from "./types";
 
 /**
@@ -18,11 +19,12 @@ import { DatalessGraph } from "./types";
  */
 
 // 1. add your new dynamic attribute id here
-export type DYNAMIC_NODE_ATTRIBUTE_ENUM = "degree";
-export type DYNAMIC_EDGE_ATTRIBUTE_ENUM = "selfLoop" | "directed";
+export type DynamicNodeAttributeId = "degree";
+export type DynamicEdgeAttributeId = "selfLoop" | "directed";
+export type EditableDynamicEdgeAttributeId = "directed";
 
 // 2. describe it here
-export const dynamicAttributes: DynamicItemsDataSpec<DYNAMIC_NODE_ATTRIBUTE_ENUM, DYNAMIC_EDGE_ATTRIBUTE_ENUM> = {
+export const DYNAMIC_ATTRIBUTES: DynamicItemsDataSpec<DynamicNodeAttributeId, DynamicEdgeAttributeId> = {
   nodes: {
     degree: {
       i18nKey: "graph.model.degree",
@@ -34,17 +36,17 @@ export const dynamicAttributes: DynamicItemsDataSpec<DYNAMIC_NODE_ATTRIBUTE_ENUM
   edges: {
     selfLoop: {
       i18nKey: "graph.model.selfLoop",
-      field: { id: "selfLoop", itemType: "edges", type: "category", dynamic: true },
-      compute: (edgeId: string, graph: DatalessGraph) => (graph.isSelfLoop(edgeId) ? "true" : "false"),
+      field: { id: "selfLoop", itemType: "edges", type: "boolean", dynamic: true },
+      compute: (edgeId: string, graph: DatalessGraph) => graph.isSelfLoop(edgeId),
       showInDataTable: (fullGraph: DatalessGraph) => fullGraph.selfLoopCount > 0,
     },
 
     directed: {
       i18nKey: "graph.model.directed",
-      field: { id: "directed", itemType: "edges", type: "category", dynamic: true },
-      // TODO: updates an edge manually does not trigger this computation
-      compute: (edgeId: string, graph: DatalessGraph) => (graph.isDirected(edgeId) ? "true" : "false"),
+      field: { id: "directed", itemType: "edges", type: "boolean", dynamic: true },
+      compute: (edgeId: string, graph: DatalessGraph) => graph.isDirected(edgeId),
       showInDataTable: (fullGraph: DatalessGraph) => fullGraph.type === "mixed",
+      editable: true,
     },
   },
 };
@@ -53,7 +55,7 @@ export const computeAllDynamicAttributes = <T extends ItemType>(itemType: T, gra
   fromPairs(
     graph[itemType]().map((itemId) => [
       itemId,
-      mapValues(dynamicAttributes[itemType], ({ compute }: DynamicItemDataSpec<T>) => compute(itemId, graph)),
+      mapValues(DYNAMIC_ATTRIBUTES[itemType], ({ compute }: DynamicItemDataSpec<T>) => compute(itemId, graph)),
     ]),
   );
 

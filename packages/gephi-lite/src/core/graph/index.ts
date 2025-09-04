@@ -37,7 +37,7 @@ import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
-import { computeAllDynamicAttributes, dynamicAttributes } from "./dynamicAttributes";
+import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes } from "./dynamicAttributes";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
@@ -360,16 +360,16 @@ const updateEdge: MultiProducer<
       const newDirected = graphType === "mixed" ? directed : graphType === "directed";
 
       if (!isNil(newDirected) && fullGraph.isDirected(edge) !== directed) {
-        // Swap direction
-        const src = fullGraph.source(edge);
-        const trg = fullGraph.target(edge);
-        fullGraph.dropEdge(edge);
-        if (directed) {
-          fullGraph.addDirectedEdgeWithKey(edge, src, trg);
-        } else {
-          fullGraph.addUndirectedEdgeWithKey(edge, src, trg);
-        }
-        fullGraph = fullGraph.copy();
+        const newFullGraph = fullGraph.emptyCopy();
+        fullGraph.forEachEdge((e, _, source, target) => {
+          const isEdgeDirected = e === edge ? newDirected : fullGraph.isDirected(e);
+          if (isEdgeDirected) {
+            newFullGraph.addDirectedEdgeWithKey(e, source, target);
+          } else {
+            newFullGraph.addUndirectedEdgeWithKey(e, source, target);
+          }
+        });
+        fullGraph = newFullGraph;
       }
 
       // Index the edge
@@ -443,9 +443,9 @@ export const dynamicItemDataAtom = derivedAtom(
   [filteredGraphAtom, graphDatasetAtom],
   (filteredGraphCache) => ({
     dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
-    dynamicNodeFields: map(dynamicAttributes.nodes, ({ field }) => field) || [],
+    dynamicNodeFields: map(DYNAMIC_ATTRIBUTES.nodes, ({ field }) => field) || [],
     dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
-    dynamicEdgeFields: map(dynamicAttributes.edges, ({ field }) => field) || [],
+    dynamicEdgeFields: map(DYNAMIC_ATTRIBUTES.edges, ({ field }) => field) || [],
   }),
   { checkInput: false },
 );

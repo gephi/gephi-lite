@@ -1,4 +1,5 @@
 import { FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
+import cx from "classnames";
 import { isNil } from "lodash";
 import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,19 +11,50 @@ import { useGraphDatasetActions } from "../../../core/context/dataContexts";
 
 export const ReadDataCell = forwardRef<
   HTMLSpanElement,
-  { value: Scalar; field: FieldModel; onClick?: MouseEventHandler }
->(({ value, field, onClick }, ref) => {
+  { value: Scalar; field: FieldModel<ItemType, boolean>; onClick?: MouseEventHandler; readOnly?: boolean }
+>(({ value, field, onClick, readOnly }, ref) => {
   return (
-    <span ref={ref} className="data-cell" title={!isNil(value) ? value + "" : undefined} onClick={onClick}>
+    <span
+      ref={ref}
+      className={cx("data-cell", !readOnly && "editable")}
+      title={!isNil(value) ? value + "" : undefined}
+      onClick={onClick}
+    >
       <RenderItemAttribute value={value} field={field} />
     </span>
   );
 });
 
+export const InlineEditDataCell: FC<{
+  type: ItemType;
+  id: string;
+  field: FieldModel<ItemType, boolean>;
+  value: Scalar;
+}> = ({ type, id, field, value }) => {
+  const { updateNode, updateEdge } = useGraphDatasetActions();
+
+  return (
+    <span className="data-cell editable" title={!isNil(value) ? value + "" : undefined}>
+      <EditItemAttribute
+        field={field}
+        scalar={value}
+        onChange={(value) => {
+          const update = type === "nodes" ? updateNode : updateEdge;
+          if (field.dynamic) {
+            update(id, {}, { merge: true, [field.id]: value });
+          } else {
+            update(id, { [field.id]: value }, { merge: true });
+          }
+        }}
+      />
+    </span>
+  );
+};
+
 export const EditDataCell: FC<{
   type: ItemType;
   id: string;
-  field: FieldModel;
+  field: FieldModel<ItemType, boolean>;
   value: Scalar;
   close: () => void;
 }> = ({ type, id, field, close, value: initialValue }) => {
@@ -75,7 +107,11 @@ export const EditDataCell: FC<{
             ref={elementWrapper}
             onSubmit={(e) => {
               e.preventDefault();
-              update(id, { [field.id]: value }, { merge: true });
+              if (field.dynamic) {
+                update(id, {}, { merge: true, [field.id]: value });
+              } else {
+                update(id, { [field.id]: value }, { merge: true });
+              }
               close();
             }}
             onKeyDown={(e) => {
@@ -95,11 +131,23 @@ export const EditDataCell: FC<{
   );
 };
 
-export const DataCell: FC<{ type: ItemType; id: string; field: FieldModel; value: Scalar }> = (props) => {
+export const DataCell: FC<{
+  type: ItemType;
+  id: string;
+  field: FieldModel<ItemType, boolean>;
+  value: Scalar;
+  readOnly?: boolean;
+}> = (props) => {
+  const { readOnly } = props;
   const [isEditing, setIsEditing] = useState(false);
 
+  // Editable boolean fields are directly edited inline:
+  if (props.field.type === "boolean" && !readOnly) {
+    return <InlineEditDataCell {...props} />;
+  }
+
   return !isEditing ? (
-    <ReadDataCell {...props} onClick={() => setIsEditing(true)} />
+    <ReadDataCell {...props} onClick={!readOnly ? () => setIsEditing(true) : undefined} />
   ) : (
     <EditDataCell {...props} close={() => setIsEditing(false)} />
   );

@@ -1,11 +1,11 @@
-import { FieldModel } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ItemType } from "@gephi/gephi-lite-sdk";
 import { isNil } from "lodash";
 import { useMemo } from "react";
 
 import { useGraphDataset } from "../core/context/dataContexts";
 import { castScalarToModelValue } from "../core/graph/fieldModel";
 
-export function useDataCollection(field: FieldModel) {
+export function useDataCollection(field: FieldModel<ItemType, boolean>) {
   const { nodeData, edgeData } = useGraphDataset();
   const data = useMemo(() => (field.itemType === "nodes" ? nodeData : edgeData), [field.itemType, nodeData, edgeData]);
 

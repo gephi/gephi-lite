@@ -21,6 +21,7 @@ import {
   PiCheck,
   PiCheckCircle,
   PiCheckSquare,
+  PiCheckSquareOffset,
   PiCircleHalf,
   PiCircleHalfFill,
   PiCirclesFour,
@@ -199,6 +200,7 @@ export const FieldModelIcons: Record<FieldModelType, IconType> = {
   url: PiLink,
   number: PiChartBar,
   category: PiCirclesFour,
+  boolean: PiCheckSquareOffset,
   // Still in Bs consciously, the style difference isn't to contrasted
   keywords: BsTags,
   date: PiCalendarDots,

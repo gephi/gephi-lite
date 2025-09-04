@@ -23,6 +23,7 @@ import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import ColorPicker, { InlineColorPicker } from "../ColorPicker";
 import MessageTooltip from "../MessageTooltip";
 import { FieldModelIcon, InvalidDataIcon } from "../common-icons";
+import { Checkbox } from "../forms/Checkbox";
 import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
 /**
@@ -63,6 +64,11 @@ export const AttributeRenderers: {
     const { i18n } = useTranslation();
     return !isNil(value) ? <>{value.toLocaleString(i18n.language)}</> : null;
   },
+  boolean: ({ value }) => (
+    <div className="form-check h-100 ms-1">
+      <Checkbox className="form-check-input disabled" checked={value} />
+    </div>
+  ),
   category: ({ value }) => (!isNil(value) ? <span className="badge rounded-pill text-bg-dark">{value}</span> : null),
   keywords: ({ value }) =>
     value?.length ? (
@@ -84,6 +90,7 @@ export const AttributeRenderers: {
 };
 export const RenderText = AttributeRenderers.text;
 export const RenderNumber = AttributeRenderers.number;
+export const RenderBoolean = AttributeRenderers.boolean;
 export const RenderCategory = AttributeRenderers.category;
 export const RenderKeywords = AttributeRenderers.keywords;
 export const RenderDate = AttributeRenderers.date;
@@ -136,7 +143,7 @@ export const AttributeEditors: {
   [K in FieldModelType]: FC<{
     value?: FieldModelAbstraction[K]["expectedOutput"];
     onChange: (value?: FieldModelAbstraction[K]["expectedOutput"]) => void;
-    field: FieldModel<ItemType, false, K>;
+    field: FieldModel<ItemType, boolean, K>;
     autoFocus?: boolean;
     id?: string;
     placeholder?: string;
@@ -164,6 +171,17 @@ export const AttributeEditors: {
       />
     );
   },
+  boolean: ({ value, onChange, id, autoFocus }) => (
+    <div className="form-check h-100 ms-1">
+      <Checkbox
+        className="form-check-input"
+        id={id}
+        autoFocus={autoFocus}
+        checked={value}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+    </div>
+  ),
   category: ({ value, onChange, field, id, autoFocus, placeholder }) => {
     const values = useDataCollection(field);
     const options = useMemo(
@@ -299,12 +317,13 @@ export const AttributeEditors: {
 };
 export const EditText = AttributeEditors.text;
 export const EditNumber = AttributeEditors.number;
+export const EditBoolean = AttributeEditors.boolean;
 export const EditCategory = AttributeEditors.category;
 export const EditKeywords = AttributeEditors.keywords;
 export const EditDate = AttributeEditors.date;
 
 export const EditItemAttribute: FC<{
-  field: FieldModel;
+  field: FieldModel<ItemType, boolean>;
   scalar: Scalar;
   onChange: (value: Scalar) => void;
   id?: string;
@@ -313,7 +332,7 @@ export const EditItemAttribute: FC<{
   placeholder?: string;
 }> = ({ field, scalar, onChange, id, autoFocus, inTooltip, placeholder }) => {
   const EditComponent = AttributeEditors[field.type] as FC<{
-    field: FieldModel;
+    field: FieldModel<ItemType, boolean>;
     onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
     value?: FieldModelAbstraction[FieldModelType]["expectedOutput"];
     id?: string;
@@ -340,7 +359,7 @@ export const EditItemAttribute: FC<{
  * **********************
  */
 
-export const AttributeLabel: FC<{ field: FieldModel } & React.HTMLProps<HTMLSpanElement>> = ({
+export const AttributeLabel: FC<{ field: FieldModel<ItemType, boolean> } & React.HTMLProps<HTMLSpanElement>> = ({
   field,
   ...spanProps
 }) => {

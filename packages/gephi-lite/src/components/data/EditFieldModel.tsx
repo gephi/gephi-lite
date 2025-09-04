@@ -148,6 +148,7 @@ export const useEditFieldModelForm = ({
               { value: "date", label: "date" },
               { value: "text", label: "text" },
               { value: "color", label: "color" },
+              { value: "boolean", label: "boolean" },
             ]}
             value={{ value: fieldModel.type, label: fieldModel.type }}
             onChange={(option) => {

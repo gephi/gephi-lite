@@ -60,6 +60,10 @@ export type FieldModelAbstraction = {
     expectedOutput: string;
     options: {};
   };
+  boolean: {
+    expectedOutput: boolean;
+    options: {};
+  };
   url: {
     expectedOutput: string;
     options: {};
@@ -175,6 +179,7 @@ export type DynamicItemDataSpec<IT extends ItemType> = {
   field: FieldModel<IT, true>;
   compute: (id: string, graph: DatalessGraph) => Scalar;
   showInDataTable: boolean | ((graph: DatalessGraph) => boolean);
+  editable?: boolean;
 };
 export type DynamicItemsDataSpec<N_T extends string, E_T extends string> = {
   nodes: Record<N_T, DynamicItemDataSpec<"nodes">>;

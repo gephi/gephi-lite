@@ -120,6 +120,7 @@
     "edit": "Edit",
     "enabled": "Enabled",
     "expand": "Expand",
+    "false": "False",
     "filename": "Filename",
     "from": "From",
     "hide": "Hide",
@@ -144,6 +145,8 @@
     "stop": "Stop",
     "submit": "Submit",
     "to": "To",
+    "true": "True",
+    "indeterminate": "Indeterminate",
     "updated": "Updated"
   },
   "datatable": {
@@ -401,8 +404,8 @@
         "invalid_data": "The value \"{{value}}\" cannot be interpreted as a \"{{type}}\" value."
       },
       "dynamic": "dynamic",
-      "selfLoop": "self-loop",
-      "degree": "degree"
+      "selfLoop": "Self-loop?",
+      "degree": "Degree"
     },
     "open": {
       "github": {

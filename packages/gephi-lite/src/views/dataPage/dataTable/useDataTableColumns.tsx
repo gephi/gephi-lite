@@ -1,3 +1,4 @@
+import { DynamicItemDataSpec, ItemType } from "@gephi/gephi-lite-sdk";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { isBoolean, size, values } from "lodash";
 import { useCallback, useMemo } from "react";
@@ -17,7 +18,7 @@ import {
   useGraphDatasetActions,
   useSelectionActions,
 } from "../../../core/context/dataContexts";
-import { dynamicAttributes, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
+import { DYNAMIC_ATTRIBUTES } from "../../../core/graph/dynamicAttributes";
 import { useModal } from "../../../core/modals";
 import { useMobile } from "../../../hooks/useMobile";
 import { DataCell } from "./DataCell";
@@ -36,7 +37,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
 
   const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
   const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
-  const getReadOnlyColumn = useCallback(
+  const getSpecificRow = useCallback(
     (field: keyof ItemRow, options?: { size?: number; label?: string }): ColumnDef<ItemRow> => {
       return {
         id: field,
@@ -66,6 +67,46 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       };
     },
     [t],
+  );
+  const getDynamicColumn = useCallback(
+    (dynamicField: DynamicItemDataSpec<ItemType>): ColumnDef<ItemRow> => {
+      return {
+        id: `dynamic::${dynamicField.field.id}`,
+        accessorFn: (row) => row[dynamicField.field.id as keyof ItemRow],
+        cell: (props) => (
+          <DataCell
+            type={type}
+            id={props.row.getValue("id")}
+            field={dynamicField.field}
+            value={props.row.getValue(`dynamic::${dynamicField.field.id}`)}
+            readOnly={!dynamicField.editable}
+          />
+        ),
+        meta: {
+          protected: true,
+        },
+        header: ({ header }) => (
+          <>
+            <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
+              {t(dynamicField.i18nKey)}
+            </span>
+
+            <Arrow
+              arrow={header.column.getIsSorted() || null}
+              wrapper={({ children }) => (
+                <div>
+                  <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
+                    {children}
+                  </button>
+                </div>
+              )}
+            />
+          </>
+        ),
+        size: 180,
+      };
+    },
+    [t, type],
   );
   const columns = useMemo<ColumnDef<ItemRow>[]>(
     () => [
@@ -141,20 +182,15 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       }),
 
       // Type specific dynamic / read-only columns:
-      getReadOnlyColumn("id"),
+      getSpecificRow("id"),
       ...(type === "nodes"
-        ? values(dynamicAttributes.nodes).map((f) =>
-            // TODO make the specific size a const depending on dynamic field key
-            getReadOnlyColumn(f.field.id as keyof ItemRow, { size: 120, label: staticDynamicAttributeLabel(f.field) }),
-          )
+        ? values(DYNAMIC_ATTRIBUTES.nodes).map((f) => getDynamicColumn(f))
         : [
-            getReadOnlyColumn(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
-            getReadOnlyColumn(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
-            ...values(dynamicAttributes.edges)
+            getSpecificRow(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
+            getSpecificRow(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
+            ...values(DYNAMIC_ATTRIBUTES.edges)
               .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
-              .map((f) =>
-                getReadOnlyColumn(f.field.id as keyof ItemRow, { label: staticDynamicAttributeLabel(f.field) }),
-              ),
+              .map((f) => getDynamicColumn(f)),
           ]),
 
       // Dataset-specific columns;
@@ -283,23 +319,24 @@ export const useDataTableColumns = (itemIDs: string[]) => {
     ],
     [
       columnHelper,
-      deleteFieldModel,
-      duplicateFieldModel,
-      edgeData,
-      fields,
-      getReadOnlyColumn,
       isMobile,
-      itemIDs,
-      moveFieldModel,
-      nodeData,
-      openModal,
-      select,
-      setSort,
-      t,
-      toggle,
+      getSpecificRow,
       type,
+      fields,
+      select,
+      itemIDs,
       unselect,
+      toggle,
+      t,
+      getDynamicColumn,
       fullGraph,
+      openModal,
+      duplicateFieldModel,
+      moveFieldModel,
+      setSort,
+      nodeData,
+      edgeData,
+      deleteFieldModel,
     ],
   );
 

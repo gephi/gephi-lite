@@ -28,7 +28,7 @@ import {
   useVisualGetters,
 } from "../../core/context/dataContexts";
 import {
-  dynamicAttributes,
+  DYNAMIC_ATTRIBUTES,
   mergeStaticDynamicData,
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
@@ -74,7 +74,7 @@ function SelectedItem<
         field,
         value: data.static[field.id],
       })),
-      ...values(dynamicAttributes[type]).map(({ field }) => ({
+      ...values(DYNAMIC_ATTRIBUTES[type]).map(({ field }) => ({
         label: staticDynamicAttributeLabel(field),
         field: field as FieldModel,
         value: data.dynamic[field.id],

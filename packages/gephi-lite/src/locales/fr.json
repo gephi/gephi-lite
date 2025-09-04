@@ -469,8 +469,8 @@
         "wrong": "{{nbValues}} valeurs ne sont pas quantitatives"
       },
       "dynamic": "dynamique",
-      "selfLoop": "boucle",
-      "degree": "degré"
+      "selfLoop": "Boucle ?",
+      "degree": "Degré"
     },
     "open": {
       "github": {

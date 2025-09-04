@@ -309,8 +309,8 @@
       "title": "Attributes' Model",
       "undirected": "Undirected",
       "dynamic": "dynamic",
-      "selfLoop": "self-loop",
-      "degree": "degree"
+      "selfLoop": "Self-loop?",
+      "degree": "Degree"
     },
     "open": {
       "github": {
