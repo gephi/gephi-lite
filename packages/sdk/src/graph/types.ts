@@ -1,5 +1,5 @@
 import { MultiGraph } from "graphology";
-import { Attributes, GraphType, SerializedGraph } from "graphology-types";
+import { Attributes, SerializedGraph } from "graphology-types";
 import { DateTime } from "luxon";
 
 /**
@@ -44,9 +44,6 @@ export type NodeRenderingData = Attributes &
 export interface GraphMetadata {
   title?: string;
   description?: string;
-  authors?: string;
-  keywords?: string;
-  type: GraphType;
 }
 
 /**

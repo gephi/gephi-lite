@@ -37,6 +37,8 @@ const IGNORE_UNUSED: RegExp[] = [
   /datatable\.protected_columns\.sourceId/,
   /datatable\.protected_columns\.targetId/,
   /datatable\.save_and_create_column/,
+  /graph\.model\.selfLoop/,
+  /graph\.model\.degree/,
 ];
 
 /**

@@ -323,7 +323,10 @@ export function applyVisualProperties(
   getters: VisualGetters,
 ): void {
   graph.forEachNode((node) => {
-    const nodeData = { static: dataset.nodeData[node], dynamic: dynamicItemData.dynamicNodeData[node] };
+    const nodeData = {
+      static: dataset.nodeData[node] || {},
+      dynamic: dynamicItemData.dynamicNodeData[node],
+    };
     const attr: Partial<NodeRenderingData> = {};
     if (getters.getNodeSize) {
       attr.size = getters.getNodeSize(nodeData);
@@ -338,7 +341,7 @@ export function applyVisualProperties(
 
   graph.forEachEdge((edge) => {
     const edgeData = {
-      static: dataset.edgeData[edge],
+      static: dataset.edgeData[edge] || {},
       dynamic: dynamicItemData.dynamicEdgeData[edge],
     };
     const attr: Partial<EdgeRenderingData> = {};

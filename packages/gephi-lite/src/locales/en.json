@@ -264,12 +264,12 @@
       "title": "Export graph"
     },
     "metadata": {
-      "authors": "Authors",
       "description": "Description",
       "graph-title": "Title",
       "graph-type": "Graph Type",
-      "keywords": "Keywords",
-      "title": "Metadata"
+      "graph-type-directed-warning": "Applying this update will lose all edges directions, as they will all become directed.",
+      "graph-type-undirected-warning": "Applying this update will lose all edges directions, as they will all become undirected.",
+      "title": "Graph metadata"
     },
     "model": {
       "directed": "Directed",

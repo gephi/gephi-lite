@@ -407,11 +407,11 @@
       "title": "Exporter le graphe"
     },
     "metadata": {
-      "authors": "Auteurs",
       "description": "Description",
       "graph-title": "Titre",
       "graph-type": "Type de graphe",
-      "keywords": "Mots-clés",
+      "graph-type-directed-warning": "Faire cette modification va faire perdre toutes les directions des arcs, car ils vont tous devenir dirigés.",
+      "graph-type-undirected-warning": "Faire cette modification va faire perdre toutes les directions des arcs, car ils vont tous devenir non dirigés.",
       "title": "Métadonnées"
     },
     "model": {
