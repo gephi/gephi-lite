@@ -1,6 +1,7 @@
 import {
   APPEARANCE_ITEM_TYPES,
   AppearanceState,
+  DatalessGraph,
   FilteredGraph,
   FiltersState,
   ItemData,
@@ -16,8 +17,9 @@ import {
   producerToAction,
   useReadAtom,
 } from "@ouestware/atoms";
-import { Attributes } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, mapValues, omit, omitBy, values } from "lodash";
+import { MultiGraph } from "graphology";
+import { Attributes, GraphType } from "graphology-types";
+import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -36,17 +38,41 @@ import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
 import { computeAllDynamicAttributes, dynamicAttributes } from "./dynamicAttributes";
-import { DynamicItemData, FieldModel, GraphDataset, SigmaGraph } from "./types";
+import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
   cleanNode,
-  dataGraphToFullGraph,
   dataGraphToSigmaGraph,
   datasetToString,
   getEmptyGraphDataset,
   newItemModel,
   uniqFieldValuesAsStrings,
 } from "./utils";
+
+const GRAPH_TRANSFORMATION_METHODS: Record<GraphType, (g: DatalessGraph) => DatalessGraph> = {
+  mixed: (g) => {
+    const res = new MultiGraph({ type: "mixed" });
+    g.forEachNode((node) => res.addNode(node));
+    g.forEachEdge((edge, _, source, target) =>
+      g.isDirected(edge)
+        ? res.addDirectedEdgeWithKey(edge, source, target)
+        : res.addUndirectedEdgeWithKey(edge, source, target),
+    );
+    return res;
+  },
+  directed: (g) => {
+    const res = new MultiGraph({ type: "directed" });
+    g.forEachNode((node) => res.addNode(node));
+    g.forEachEdge((edge, _, source, target) => res.addDirectedEdgeWithKey(edge, source, target));
+    return res;
+  },
+  undirected: (g) => {
+    const res = new MultiGraph({ type: "undirected" });
+    g.forEachNode((node) => res.addNode(node));
+    g.forEachEdge((edge, _, source, target) => res.addUndirectedEdgeWithKey(edge, source, target));
+    return res;
+  },
+};
 
 /**
  * Producers:
@@ -66,6 +92,15 @@ const editGraphMeta: Producer<GraphDataset, [Partial<GraphDataset["metadata"]>]>
     ...state,
     metadata: { ...state.metadata, ...metadata },
   });
+};
+const setGraphType: Producer<GraphDataset, [GraphType]> = (newType) => {
+  return (state) =>
+    newType === state.fullGraph.type
+      ? state
+      : {
+          ...state,
+          fullGraph: GRAPH_TRANSFORMATION_METHODS[newType](state.fullGraph),
+        };
 };
 const setFieldModel: Producer<GraphDataset, [FieldModel, Record<string, Scalar>?]> = (fieldModel, itemValues) => {
   const fieldsKey = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
@@ -248,7 +283,7 @@ const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   return [
     (state) => {
       const { data, position } = cleanNode(node, attributes);
-      state.fullGraph.addNode(node, {});
+      state.fullGraph.addNode(node);
       const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
       return {
         ...state,
@@ -271,11 +306,16 @@ const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   return [
     (state) => {
       const { data } = cleanEdge(edge, attributes);
-      if (directed || state.fullGraph.type === "directed")
-        state.fullGraph.addDirectedEdgeWithKey(edge, source, target, {});
-      else state.fullGraph.addUndirectedEdgeWithKey(edge, source, target, {});
+      const graphType = state.fullGraph.type;
+      if (graphType === "directed" || (graphType === "mixed" && directed)) {
+        state.fullGraph.addDirectedEdgeWithKey(edge, source, target);
+      } else {
+        state.fullGraph.addUndirectedEdgeWithKey(edge, source, target);
+      }
+
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
-      // index the edge
+
+      // Index the edge
       searchActions.edgeIndex(edge);
       return {
         ...state,
@@ -313,22 +353,30 @@ const updateEdge: MultiProducer<
     (state) => {
       const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
-      if (directed !== undefined && state.fullGraph.isDirected(edge) !== directed) {
-        // swap direction
-        console.log("swap edge direction", directed);
-        const src = state.fullGraph.source(edge);
-        const trg = state.fullGraph.target(edge);
-        const atts = state.fullGraph.getEdgeAttributes(edge);
-        state.fullGraph.dropEdge(edge);
+
+      // Validate new edge direction:
+      let fullGraph = state.fullGraph;
+      const graphType = fullGraph.type;
+      const newDirected = graphType === "mixed" ? directed : graphType === "directed";
+
+      if (!isNil(newDirected) && fullGraph.isDirected(edge) !== directed) {
+        // Swap direction
+        const src = fullGraph.source(edge);
+        const trg = fullGraph.target(edge);
+        fullGraph.dropEdge(edge);
         if (directed) {
-          state.fullGraph.addDirectedEdgeWithKey(edge, src, trg, atts);
-        } else state.fullGraph.addUndirectedEdgeWithKey(edge, src, trg, atts);
+          fullGraph.addDirectedEdgeWithKey(edge, src, trg);
+        } else {
+          fullGraph.addUndirectedEdgeWithKey(edge, src, trg);
+        }
+        fullGraph = fullGraph.copy();
       }
 
-      // index the edge
+      // Index the edge
       searchActions.edgeIndex(edge);
       return {
         ...state,
+        fullGraph,
         edgeFields: newEdgeFieldModel,
         edgeData: { ...state.edgeData, [edge]: data },
       };
@@ -382,10 +430,8 @@ const resetGraph: MultiProducer<[FiltersState, AppearanceState, SelectionState, 
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
 export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
 export const filteredGraphAtom = derivedAtom(
-  [graphDatasetAtom, filteredGraphsAtom],
-  (graphDataset, filteredGraphCache) => {
-    return last(filteredGraphCache)?.graph || graphDataset.fullGraph;
-  },
+  [filteredGraphsAtom, graphDatasetAtom],
+  (filteredGraphCache, graphDataset) => last(filteredGraphCache)?.graph || graphDataset.fullGraph,
   { checkInput: false },
 );
 export const useFilteredGraphAt = (index: number) => {
@@ -394,26 +440,19 @@ export const useFilteredGraphAt = (index: number) => {
   return filteredGraphs[index]?.graph || graphDataset.fullGraph;
 };
 export const dynamicItemDataAtom = derivedAtom(
-  // filteredGraphsAtom is added in the dependencies because derived from derived are not triggered correctly. To be investigated later
-  [filteredGraphAtom, filteredGraphsAtom],
-  (filteredGraphCache) => {
-    const dynamicNodeData: DynamicItemData = {
-      dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
-      dynamicNodeFields: values(dynamicAttributes.nodes).map((a) => a.field) || [],
-      dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
-
-      dynamicEdgeFields: values(dynamicAttributes.edges).map((n) => n.field) || [],
-    };
-    return dynamicNodeData;
-  },
+  [filteredGraphAtom, graphDatasetAtom],
+  (filteredGraphCache) => ({
+    dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
+    dynamicNodeFields: map(dynamicAttributes.nodes, ({ field }) => field) || [],
+    dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
+    dynamicEdgeFields: map(dynamicAttributes.edges, ({ field }) => field) || [],
+  }),
   { checkInput: false },
 );
 export const visualGettersAtom = derivedAtom(
   [graphDatasetAtom, dynamicItemDataAtom, appearanceAtom],
   getAllVisualGetters,
-  {
-    checkInput: false,
-  },
+  { checkInput: false },
 );
 export const topologicalFiltersAtom = derivedAtom(graphDatasetAtom, ({ fullGraph }) => {
   return buildTopologicalFiltersDefinitions(fullGraph);
@@ -442,6 +481,7 @@ export const graphDatasetActions = {
   // Meta:
   setGraphMeta: producerToAction(setGraphMeta, graphDatasetAtom),
   editGraphMeta: producerToAction(editGraphMeta, graphDatasetAtom),
+  setGraphType: producerToAction(setGraphType, graphDatasetAtom),
 
   // Graph model:
   setFieldModel: producerToAction(setFieldModel, graphDatasetAtom),
@@ -560,19 +600,6 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     });
 
     appearanceAtom.set(newState);
-  }
-
-  // When graph meta change, we set the page metadata
-  if (updatedKeys.has("metadata")) {
-    document.title = ["Gephi Lite", graphDataset.metadata.title].filter((s) => !isNil(s)).join(" - ");
-
-    // update fullGraph with the new direction type
-    if (graphDataset.metadata.type !== previousGraphDataset.metadata.type) {
-      graphDatasetAtom.set({
-        ...graphDataset,
-        fullGraph: dataGraphToFullGraph(graphDataset, graphDataset.fullGraph),
-      });
-    }
   }
 
   // Only "small enough" graphs are stored in the sessionStorage, because this

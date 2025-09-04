@@ -1,19 +1,20 @@
 import { MultiGraph } from "graphology";
+import { GraphType } from "graphology-types";
 
 import { gephiLiteParse, gephiLiteStringify } from "../utils";
 import { GraphDataset, SerializedGraphDataset } from "./types";
 
 export * from "./types";
 
-export function getEmptyGraphDataset(): GraphDataset {
+export function getEmptyGraphDataset({ graphType = "mixed" }: { graphType?: GraphType } = {}): GraphDataset {
   return {
     nodeData: {},
     edgeData: {},
     layout: {},
-    metadata: { type: "mixed", title: "Untitled workspace" },
+    metadata: { title: "Untitled workspace" },
     nodeFields: [],
     edgeFields: [],
-    fullGraph: new MultiGraph(),
+    fullGraph: new MultiGraph({ type: graphType }),
   };
 }
 
@@ -33,7 +34,7 @@ export function deserializeDataset(
 ): Partial<GraphDataset> | GraphDataset {
   if (!dataset.fullGraph) return dataset as Omit<Partial<GraphDataset>, "fullGraph">;
 
-  const fullGraph = new MultiGraph();
+  const fullGraph = new MultiGraph(dataset.fullGraph.options);
   fullGraph.import(dataset.fullGraph);
 
   return {

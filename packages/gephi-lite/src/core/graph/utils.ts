@@ -52,13 +52,10 @@ export function initializeGraphDataset(
   graph: Graph,
   { nodeFields, edgeFields }: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] } = {},
 ): GraphDataset {
-  const dataset = getEmptyGraphDataset();
+  const dataset = getEmptyGraphDataset({ graphType: graph.type });
 
   // setting graph meta data
-  dataset.metadata.type = graph.type;
   if (graph.hasAttribute("title")) dataset.metadata.title = graph.getAttribute("title");
-  if (graph.hasAttribute("keywords")) dataset.metadata.keywords = graph.getAttribute("keywords");
-  if (graph.hasAttribute("creator")) dataset.metadata.authors = graph.getAttribute("creator");
   if (graph.hasAttribute("description")) dataset.metadata.description = graph.getAttribute("description");
 
   const nodeAttributeValues: Record<string, Scalar[]> = {};
@@ -128,22 +125,15 @@ export function initializeGraphDataset(
  * and returns a FullGraph:
  */
 export function dataGraphToFullGraph(
-  { fullGraph, layout, nodeData, edgeData, metadata }: GraphDataset,
+  { fullGraph, layout, nodeData, edgeData }: GraphDataset,
   graph: DatalessGraph = fullGraph,
 ) {
-  const res: FullGraph = new MultiGraph<
-    NodeRenderingData & ItemData,
-    EdgeRenderingData & ItemData,
-    Omit<GraphDataset["metadata"], "type">
-  >({ type: metadata.type });
+  const res: FullGraph = new MultiGraph({ type: fullGraph.type });
 
-  // metadata
-  res.replaceAttributes(omit(metadata, ["type"]));
-
-  // nodes
+  // Nodes
   graph.forEachNode((node) => res.addNode(node, { ...nodeData[node], ...layout[node] }));
 
-  // edges
+  // Edges
   graph.forEachEdge((edge, _, source, target) => {
     if (res.type === "undirected" || (res.type === "mixed" && !graph.isDirected(edge)))
       res.addUndirectedEdgeWithKey(edge, source, target, { ...edgeData[edge], ...layout[edge] });

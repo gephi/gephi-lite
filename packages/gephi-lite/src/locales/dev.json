@@ -359,12 +359,12 @@
       }
     },
     "metadata": {
-      "title": "Metadata",
-      "graph-title": "Title",
       "description": "Description",
-      "keywords": "Keywords",
-      "authors": "Authors",
-      "graph-type": "Graph Type"
+      "graph-title": "Title",
+      "graph-type": "Graph Type",
+      "graph-type-directed-warning": "Applying this update will lose all edges directions, as they will all become directed.",
+      "graph-type-undirected-warning": "Applying this update will lose all edges directions, as they will all become undirected.",
+      "title": "Graph metadata"
     },
     "model": {
       "directed_graph": "Directed graph",

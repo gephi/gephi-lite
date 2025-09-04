@@ -2,7 +2,6 @@ import { FieldModel, gephiLiteParse } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
-import { toUndirected } from "graphology-operators";
 
 import { appearanceActions } from "../appearance";
 import { applyVisualProperties } from "../appearance/utils";
@@ -121,15 +120,11 @@ export function geFullDataGraph(): Graph {
   const graphDataset = graphDatasetAtom.get();
   const filteredGraph = filteredGraphAtom.get();
   const dynamicNodeData = dynamicItemDataAtom.get();
-  let fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
+  const fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
 
   // apply current appearance on the graph
   const visualGetters = visualGettersAtom.get();
   applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
-
-  // change the type of the graph based on the meta type (default is directed)
-  // TODO: remove that asfullGraph instance now follows metadata.type
-  if (graphDataset.metadata.type === "undirected") fullDataGraph = toUndirected(fullDataGraph);
 
   return fullDataGraph;
 }

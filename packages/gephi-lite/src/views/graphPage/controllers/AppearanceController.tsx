@@ -1,13 +1,14 @@
-import { useSigma } from "@react-sigma/core";
-import { FC, useEffect } from "react";
-
-import { CustomEdgeDisplayData, CustomNodeDisplayData } from "../../../core/appearance/types";
 import {
+  CustomEdgeDisplayData,
+  CustomNodeDisplayData,
   DEFAULT_EDGE_COLOR,
   DEFAULT_EDGE_SIZE,
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_SIZE,
-} from "../../../core/appearance/utils";
+} from "@gephi/gephi-lite-sdk";
+import { useSigma } from "@react-sigma/core";
+import { FC, useEffect } from "react";
+
 import {
   useAppearance,
   useGraphDataset,
@@ -23,7 +24,7 @@ export const AppearanceController: FC = () => {
   const sigma: GephiLiteSigma = useSigma();
   const selection = useSelection();
   const { showEdges } = useAppearance();
-  const { metadata } = useGraphDataset();
+  const { fullGraph } = useGraphDataset();
   const { theme } = usePreferences();
   const { emphasizedNodes, emphasizedEdges, hoveredNode, highlightedNodes } = useSigmaState();
 
@@ -119,9 +120,9 @@ export const AppearanceController: FC = () => {
     selection,
     showEdges,
     sigma,
-    metadata.type,
     highlightedNodes,
     theme,
+    fullGraph.type,
   ]);
 
   return null;

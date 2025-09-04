@@ -70,7 +70,7 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
           <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
         </div>
-        <span>{t(`graph.model.${metadata.type || "mixed"}_graph`)}</span>
+        <span>{t(`graph.model.${fullGraph.type}_graph`)}</span>
 
         {hasFilters && <FiltersIconFill style={{ left: "calc(100% - 1.5em)", top: 0, position: "absolute" }} />}
       </div>
