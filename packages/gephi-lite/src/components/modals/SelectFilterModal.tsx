@@ -19,6 +19,7 @@ const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | n
   number: "range",
   keywords: "terms",
   category: "terms",
+  boolean: null,
   color: null,
   text: null,
   url: null,

@@ -13,7 +13,7 @@ import {
   useSelection,
 } from "../../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
-import { DYNAMIC_EDGE_ATTRIBUTE_ENUM, DYNAMIC_NODE_ATTRIBUTE_ENUM } from "../../../core/graph/dynamicAttributes";
+import { DynamicEdgeAttributeId, DynamicNodeAttributeId } from "../../../core/graph/dynamicAttributes";
 import { ItemRow, SPECIFIC_COLUMNS, getCommonPinningStyles } from "./consts";
 import { useDataTableColumns } from "./useDataTableColumns";
 
@@ -32,12 +32,7 @@ const TableBodyRow: FC<{
       }}
     >
       {row.getVisibleCells().map((cell) => (
-        <td
-          key={cell.id}
-          data-field={cell.column.id}
-          style={{ ...getCommonPinningStyles(cell.column) }}
-          className={cx(!(cell.column.id in SPECIFIC_COLUMNS) && "editable")}
-        >
+        <td key={cell.id} data-field={cell.column.id} style={{ ...getCommonPinningStyles(cell.column) }}>
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </td>
       ))}
@@ -68,7 +63,7 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
               id,
               selected: selectionType === type && items.has(id),
               data: data[id],
-              ...(dynamicData[id] as Record<DYNAMIC_NODE_ATTRIBUTE_ENUM, Scalar>),
+              ...(dynamicData[id] as Record<DynamicNodeAttributeId, Scalar>),
             }
           : {
               id,
@@ -76,7 +71,7 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
               sourceId: fullGraph.source(id),
               targetId: fullGraph.target(id),
               data: data[id],
-              ...(dynamicData[id] as Record<DYNAMIC_EDGE_ATTRIBUTE_ENUM, Scalar>),
+              ...(dynamicData[id] as Record<DynamicEdgeAttributeId, Scalar>),
             },
       ),
     [itemIDs, type, selectionType, items, dynamicData, data, fullGraph],

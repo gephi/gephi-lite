@@ -21,6 +21,8 @@ import { isValidColor } from "../../utils/colors";
 import linkify, { normalizeURL } from "../../utils/linkify";
 import { getScalarFromStaticDynamicData } from "./dynamicAttributes";
 
+const BOOLEAN_ACCEPTED_VALUES = new Set<Scalar>([true, false, "true", "false", 1, 0]);
+
 /**
  * This function takes an array of string values, and tries various separators
  * to see if one does match enough values.
@@ -67,6 +69,9 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
 
   // URLS
   if (getErrorRatio(values, (v) => typeof v === "string" && linkify.test(v)) < 0.05) return { type: "url" };
+
+  // BOOLEANS
+  if (getErrorRatio(values, (v) => BOOLEAN_ACCEPTED_VALUES.has(v)) < 0.05) return { type: "url" };
 
   // COLOR
   if (getErrorRatio(values, (v) => typeof v === "string" && isValidColor(v)) < 0.05) return { type: "color" };
@@ -159,6 +164,11 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
       return toStringArray(scalar, (fieldModel as FieldModelAbstraction["keywords"]["options"]).separator);
     case "date":
       return toDate(scalar, (fieldModel as FieldModelAbstraction["date"]["options"]).format);
+    case "boolean":
+      if (typeof scalar === "boolean") return scalar;
+      if (scalar === 1 || scalar === "true") return true;
+      if (scalar === 0 || scalar === "false") return false;
+      return undefined;
     default:
       throw new Error(`Unknown field type ${fieldModel.type}`);
   }
@@ -176,6 +186,7 @@ export function castScalarToQuantifiableValue<F extends FieldModelType = FieldMo
       return value !== undefined && value instanceof DateTime ? value.toMillis() : undefined;
     case "text":
     case "color":
+    case "boolean":
     case "category":
     case "keywords":
       return undefined;
@@ -202,6 +213,7 @@ export const getFieldValueFromQuantification = (
     }
     case "text":
     case "color":
+    case "boolean":
     case "category":
     case "keywords":
       return undefined;
@@ -238,10 +250,13 @@ export function serializeModelValueToScalar(
       if (typeof value !== "string") return originalScalar; // throw new CastValueError(`Wrong ${fieldModel.type} value`);
       return value;
     case "keywords":
-      if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) return originalScalar; // throw new CastValueError("Wrong keywords value");
+      if (!Array.isArray(value) || value.some((v: unknown) => typeof v !== "string")) return originalScalar; // throw new CastValueError("Wrong keywords value");
       return value.join(fieldModel.separator);
     case "date":
       if (!(value instanceof DateTime)) return originalScalar; // throw new CastValueError("Wrong Date value");
       return value.toFormat(fieldModel.format);
+    case "boolean":
+      if (typeof value !== "boolean") return originalScalar;
+      return value;
   }
 }

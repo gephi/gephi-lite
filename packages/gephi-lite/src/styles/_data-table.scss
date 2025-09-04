@@ -128,16 +128,14 @@ $table-editable-columns-cell-hover-bg: color-mix(
         padding: map.get($spacers, 1) map.get($spacers, 2);
 
         background: var(--gl-table-column-cell-non-editable-bg);
-        &.editable {
+
+        &:has(.data-cell.editable) {
+          padding: 0;
           background: var(--gl-table-column-cell-editable-bg);
 
           &:hover {
             background: $table-editable-columns-cell-hover-bg;
           }
-        }
-
-        &.editable {
-          padding: 0;
 
           .tether-target:not(.message-tooltip) {
             width: 100%;
