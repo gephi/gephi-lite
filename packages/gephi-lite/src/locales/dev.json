@@ -438,12 +438,14 @@
           "filename": "Filename",
           "isPublic": "Create a public Gist"
         },
-        "success": "File '{{filename}}' has been successfully saved"
+        "success": "File '{{filename}}' has been successfully saved",
+        "title": "Save on GitHub"
       },
       "local": {
         "description": "Click below to download the workspace as a JSON file",
         "error": "Failed to save the graph locally",
-        "success": "Graph has been saved locally"
+        "success": "Graph has been saved locally",
+        "title": "Save locally"
       },
       "title": "Save workspace as..."
     }
