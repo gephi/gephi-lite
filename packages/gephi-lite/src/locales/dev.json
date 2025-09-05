@@ -388,7 +388,9 @@
         "label": "Label",
         "separator": "Keywords separator",
         "type": "Type",
-        "will_be_serialized_as": "{{type}} will be serialized as"
+        "will_be_serialized_as": "{{type}} will be serialized as",
+        "dates_formats_message": "The dates are parsed using the Luxon open-source JavaScript library.",
+        "dates_formats_link_message": "Read more about Luxon's parsing tokens"
       },
       "mixed_graph": "Mixed graph",
       "nodes": "nodes",
