@@ -3,17 +3,6 @@ import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
 
-import { appearanceActions } from "../appearance";
-import { applyVisualProperties } from "../appearance/utils";
-import { filtersActions } from "../filters";
-import {
-  dynamicItemDataAtom,
-  filteredGraphAtom,
-  graphDatasetActions,
-  graphDatasetAtom,
-  visualGettersAtom,
-} from "../graph";
-import { dataGraphToFullGraph } from "../graph/utils";
 import { userAtom } from "../user";
 import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
 
@@ -48,9 +37,12 @@ async function getFileContent(file: FileTypeWithoutFormat): Promise<string> {
 }
 
 /**
- * Parse the content of the given file and returns its data and its type.
+ * Takes a graph file content and filename, and returns a Graphology instance (with some additional metadata).
  */
-export async function parseFile(file: FileTypeWithoutFormat): Promise<
+export async function extractGraphFromFile(
+  fileContent: string,
+  fileName: string,
+): Promise<
   | {
       format: "gexf" | "graphml" | "graphology";
       data: Graph;
@@ -58,15 +50,14 @@ export async function parseFile(file: FileTypeWithoutFormat): Promise<
     }
   | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
 > {
-  const content = await getFileContent(file);
-  const extension = (file.filename.split(".").pop() || "").toLowerCase();
+  const extension = (fileName.split(".").pop() || "").toLowerCase();
 
   // Based on file extension, parse it to build a graphology
   switch (extension) {
     case "gexf":
       return {
         format: "gexf",
-        data: gexf.parse(Graph, content, { allowUndeclaredAttributes: true, addMissingNodes: true }),
+        data: gexf.parse(Graph, fileContent, { allowUndeclaredAttributes: true, addMissingNodes: true }),
         metadata: {
           nodeFields: [
             {
@@ -92,10 +83,10 @@ export async function parseFile(file: FileTypeWithoutFormat): Promise<
     case "graphml":
       return {
         format: "graphml",
-        data: graphml.parse(Graph, content, { addMissingNodes: true }),
+        data: graphml.parse(Graph, fileContent, { addMissingNodes: true }),
       };
     case "json": {
-      const jsonContent = gephiLiteParse(content);
+      const jsonContent = gephiLiteParse(fileContent);
       if ("type" in jsonContent && jsonContent.type === "gephi-lite") {
         return {
           format: "gephi-lite",
@@ -109,40 +100,22 @@ export async function parseFile(file: FileTypeWithoutFormat): Promise<
       }
     }
   }
-  throw new Error(`Extension ${extension} for file ${file.filename} is not recognized`);
+  throw new Error(`Extension ${extension} for file ${fileName} is not recognized`);
 }
 
 /**
- * Return the full graph of gephi-lite with all the data attributes.
+ * Parse the content of the given file and returns its data and its type.
  */
-export function geFullDataGraph(): Graph {
-  // get the full graph
-  const graphDataset = graphDatasetAtom.get();
-  const filteredGraph = filteredGraphAtom.get();
-  const dynamicNodeData = dynamicItemDataAtom.get();
-  const fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
-
-  // apply current appearance on the graph
-  const visualGetters = visualGettersAtom.get();
-  applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
-
-  return fullDataGraph;
-}
-
-/**
- * Import a gephi-lite format
- */
-export function importGephiLiteFormat(data: GephiLiteFileFormat) {
-  const { graphDataset, appearance, filters } = data;
-  // Load the graph
-  const { setGraphDataset } = graphDatasetActions;
-  setGraphDataset(graphDataset);
-  // Load appearance
-  const { setFullState } = appearanceActions;
-  setFullState(appearance);
-  // Load filters
-  const { setFilters } = filtersActions;
-  setFilters(filters);
+export async function openAndParseFile(file: FileTypeWithoutFormat): Promise<
+  | {
+      format: "gexf" | "graphml" | "graphology";
+      data: Graph;
+      metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
+    }
+  | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
+> {
+  const content = await getFileContent(file);
+  return extractGraphFromFile(content, file.filename);
 }
 
 /**
