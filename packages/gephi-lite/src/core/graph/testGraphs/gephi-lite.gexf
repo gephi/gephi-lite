@@ -1,0 +1,1299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta>
+    <title>gephi-lite.gexf</title>
+  </meta>
+  <graph defaultedgetype="directed">
+    <attributes class="node">
+      <attribute id="type" title="type" type="string"/>
+      <attribute id="degree" title="degree" type="integer"/>
+      <attribute id="rawSize" title="rawSize" type="double"/>
+      <attribute id="start_year" title="start_year" type="integer"/>
+      <attribute id="image" title="image" type="string"/>
+      <attribute id="url" title="url" type="string"/>
+    </attributes>
+    <attributes class="edge">
+      <attribute id="rawWeight" title="rawWeight" type="double"/>
+      <attribute id="type" title="type" type="string"/>
+    </attributes>
+    <nodes>
+      <node id="mathieu_jacomy" label="Mathieu Jacomy">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="7"/>
+          <attvalue for="rawSize" value="3.0539197250103305"/>
+          <attvalue for="start_year" value="2007"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/mathieu-jacomy.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="3.0539197250103305"/>
+        <viz:position x="36.46704864501953" y="-13.000205039978027"/>
+      </node>
+      <node id="gephi" label="Gephi">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="17"/>
+          <attvalue for="rawSize" value="4"/>
+          <attvalue for="start_year" value="2008"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="4"/>
+        <viz:position x="28.09370994567871" y="98.09415435791016"/>
+      </node>
+      <node id="matthieu_bastian" label="Mathieu Bastian">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="2"/>
+          <attvalue for="rawSize" value="2.265257478950092"/>
+          <attvalue for="start_year" value="2008"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_mathieu_bastian.jpeg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2.265257478950092"/>
+        <viz:position x="56.07732391357422" y="124.91958618164062"/>
+      </node>
+      <node id="franck_ghitalla" label="Franck Ghitalla">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2007"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_franck_ghitalla.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="66.6468505859375" y="52.08317184448242"/>
+      </node>
+      <node id="dana" label="Dana Diminescu">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2008"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_diminescu_dana.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="48.88663864135742" y="168.81878662109375"/>
+      </node>
+      <node id="TICMigration" label="TIC Migration">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="2"/>
+          <attvalue for="rawSize" value="2.265257478950092"/>
+          <attvalue for="start_year" value="2008"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="2.265257478950092"/>
+        <viz:position x="41.4160041809082" y="147.5027313232422"/>
+      </node>
+      <node id="paper_icwsm" label="gephi@icwsm">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2009"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="23.678619384765625" y="115.7843246459961"/>
+      </node>
+      <node id="gexfexplorer" label="Gexf Explorer">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2009"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2"/>
+        <viz:position x="-102.78289794921875" y="-63.584373474121094"/>
+      </node>
+      <node id="gexfwalker" label="GEXF walker">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2010"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2"/>
+        <viz:position x="-101.6329574584961" y="-47.95030975341797"/>
+      </node>
+      <node id="sigmaflash" label="Sigma (Flash)">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2010"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2"/>
+        <viz:position x="-106.83441162109375" y="-55.46942138671875"/>
+      </node>
+      <node id="alexis_jacomy" label="Alexis Jacomy">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="7"/>
+          <attvalue for="rawSize" value="3.0539197250103305"/>
+          <attvalue for="start_year" value="2009"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_jacomyal.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="3.0539197250103305"/>
+        <viz:position x="-76.87332153320312" y="-54.30594253540039"/>
+      </node>
+      <node id="sigmajs" label="Sigma.js">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="17"/>
+          <attvalue for="rawSize" value="4"/>
+          <attvalue for="start_year" value="2012"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="4"/>
+        <viz:position x="-29.11299705505371" y="-50.230926513671875"/>
+      </node>
+      <node id="gexf-js" label="Gexf.js">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2011"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="18.77187156677246" y="170.15745544433594"/>
+      </node>
+      <node id="raphael_welt" label="Raphaël Velt">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2011"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_raphael_velt.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="21.353958129882812" y="192.00584411621094"/>
+      </node>
+      <node id="gephi_sigma_exporter" label="Gephi Sigma exporter">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="4"/>
+          <attvalue for="rawSize" value="2.6403882032022077"/>
+          <attvalue for="start_year" value="2012"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.6403882032022077"/>
+        <viz:position x="-25.057157516479492" y="42.85914993286133"/>
+      </node>
+      <node id="scott_hale" label="Scott Hale">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2012"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_scott_hale.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="-43.38505172729492" y="51.33266830444336"/>
+      </node>
+      <node id="gephi_plugin_seadragon" label="Gephi Seadragon">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2011"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="64.82210540771484" y="133.81390380859375"/>
+      </node>
+      <node id="manylines" label="manylines">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="7"/>
+          <attvalue for="rawSize" value="3.0539197250103305"/>
+          <attvalue for="start_year" value="2014"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="3.0539197250103305"/>
+        <viz:position x="-23.435590744018555" y="-72.78300476074219"/>
+      </node>
+      <node id="graphology" label="graphology">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="7"/>
+          <attvalue for="rawSize" value="3.0539197250103305"/>
+          <attvalue for="start_year" value="2016"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="3.0539197250103305"/>
+        <viz:position x="19.03271484375" y="-56.33910369873047"/>
+      </node>
+      <node id="guillaume_plique" label="Guillaume Plique">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="6"/>
+          <attvalue for="rawSize" value="2.9282361319409493"/>
+          <attvalue for="start_year" value="2013"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_plique.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2.9282361319409493"/>
+        <viz:position x="-5.023099899291992" y="-77.5833511352539"/>
+      </node>
+      <node id="sigma.js V0 @FOSDEM2013" label="sigma.js V0 @FOSDEM2013">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2013"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="-51.99662780761719" y="-39.17409133911133"/>
+      </node>
+      <node id="sigmav1_FOSDEM2015" label="sigma.js v1 @FOSDEM2015">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2015"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="-43.43650436401367" y="-35.059200286865234"/>
+      </node>
+      <node id="manylines_fosdem" label="manylines@FOSDEM2015">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2015"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="-34.447715759277344" y="-103.28567504882812"/>
+      </node>
+      <node id="graph recipes" label="Graph recipes">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2016"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="35.21577072143555" y="-50.805484771728516"/>
+      </node>
+      <node id="minivan" label="minivan">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="4"/>
+          <attvalue for="rawSize" value="2.6403882032022077"/>
+          <attvalue for="start_year" value="2018"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.6403882032022077"/>
+        <viz:position x="21.734352111816406" y="-33.37443542480469"/>
+      </node>
+      <node id="nansi" label="nansi">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="5"/>
+          <attvalue for="rawSize" value="2.791563351146877"/>
+          <attvalue for="start_year" value="2020"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.791563351146877"/>
+        <viz:position x="19.284467697143555" y="-75.52470397949219"/>
+      </node>
+      <node id="ipysigma" label="ipysigma">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="4"/>
+          <attvalue for="rawSize" value="2.6403882032022077"/>
+          <attvalue for="start_year" value="2018"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.6403882032022077"/>
+        <viz:position x="-13.773028373718262" y="-99.9026870727539"/>
+      </node>
+      <node id="retina" label="retina">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="5"/>
+          <attvalue for="rawSize" value="2.791563351146877"/>
+          <attvalue for="start_year" value="2022"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.791563351146877"/>
+        <viz:position x="-30.976179122924805" y="-14.64600944519043"/>
+      </node>
+      <node id="robin_de_moura" label="Robin de Mourat">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2020"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_robin.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="43.457359313964844" y="-93.44630432128906"/>
+      </node>
+      <node id="gephi@FOSDEM2019" label="Gephi JS @FOSDEM2019">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="2"/>
+          <attvalue for="rawSize" value="2.265257478950092"/>
+          <attvalue for="start_year" value="2019"/>
+          <attvalue for="url" value="https://archive.fosdem.org/2019/schedule/event/graph_gephi_js/"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2.265257478950092"/>
+        <viz:position x="0.4662110507488251" y="27.9399356842041"/>
+      </node>
+      <node id="eduardo_ramos" label="Eduardo Ramos Ibáñez">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2010"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_eduardo.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="10.97602653503418" y="109.20140838623047"/>
+      </node>
+      <node id="webatlas" label="webatlas">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2007"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="49.43920135498047" y="47.5997428894043"/>
+      </node>
+      <node id="oii" label="Oxford Internet Institute">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2012"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="2"/>
+        <viz:position x="-38.48692321777344" y="58.461605072021484"/>
+      </node>
+      <node id="gephi_lite" label="Gephi Lite">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="6"/>
+          <attvalue for="rawSize" value="2.9282361319409493"/>
+          <attvalue for="start_year" value="2022"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.9282361319409493"/>
+        <viz:position x="-70.63169860839844" y="-82.29825592041016"/>
+      </node>
+      <node id="IRI" label="Institut de Recherche et d’Innovation">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2011"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="2"/>
+        <viz:position x="12.04546070098877" y="190.2847442626953"/>
+      </node>
+      <node id="medialab" label="Sciences Po médialab">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="7"/>
+          <attvalue for="rawSize" value="3.0539197250103305"/>
+          <attvalue for="start_year" value="2013"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="3.0539197250103305"/>
+        <viz:position x="10.73831844329834" y="-82.75439453125"/>
+      </node>
+      <node id="paul_girard" label="Paul Girard">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2014"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_anomalie.jpeg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="-39.84231948852539" y="-94.55143737792969"/>
+      </node>
+      <node id="benoit_simard" label="Benoît Simard">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="2"/>
+          <attvalue for="rawSize" value="2.265257478950092"/>
+          <attvalue for="start_year" value="2020"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_bsimard.jpeg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2.265257478950092"/>
+        <viz:position x="-62.904518127441406" y="-68.72650909423828"/>
+      </node>
+      <node id="ouestware" label="OuestWare">
+        <attvalues>
+          <attvalue for="type" value="entreprise"/>
+          <attvalue for="degree" value="2"/>
+          <attvalue for="rawSize" value="2.265257478950092"/>
+          <attvalue for="start_year" value="2019"/>
+        </attvalues>
+        <viz:color r="80" g="175" b="154"/>
+        <viz:size value="2.265257478950092"/>
+        <viz:position x="-58.254974365234375" y="-76.50752258300781"/>
+      </node>
+      <node id="public_data_lab" label="Public Data Lab">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2018"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="2"/>
+        <viz:position x="43.66874313354492" y="-31.11034393310547"/>
+      </node>
+      <node id="gdotv" label="G.V()">
+        <attvalues>
+          <attvalue for="type" value="entreprise"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2023"/>
+        </attvalues>
+        <viz:color r="80" g="175" b="154"/>
+        <viz:size value="2"/>
+        <viz:position x="-49.68046951293945" y="-49.3922119140625"/>
+      </node>
+      <node id="tommv" label="Tommaso Venturini">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2022"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_tommaso.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="-46.069889068603516" y="-0.7599911689758301"/>
+      </node>
+      <node id="graphology@FOSDEM2017" label="graphology@FOSDEM2017">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2017"/>
+          <attvalue for="url" value="https://archive.fosdem.org/2017/schedule/event/graph_library_javascript/"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="46.169578552246094" y="-65.47432708740234"/>
+      </node>
+      <node id="bruno_latour" label="Bruno Latour">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2013"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_bruno_latour.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="29.43978500366211" y="-107.8389892578125"/>
+      </node>
+      <node id="sebastien_heymann" label="Sébastien Heymann">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2008"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/sebastien_heymann.png"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="48.746273040771484" y="99.29486083984375"/>
+      </node>
+      <node id="Gephisto" label="Gephisto">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2021"/>
+          <attvalue for="url" value="https://jacomyma.github.io/gephisto/"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="103.37560272216797" y="-15.947500228881836"/>
+      </node>
+      <node id="tantlab" label="TantLab">
+        <attvalues>
+          <attvalue for="type" value="research group"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2021"/>
+        </attvalues>
+        <viz:color r="101" g="174" b="74"/>
+        <viz:size value="2"/>
+        <viz:position x="123.52935791015625" y="-21.80495834350586"/>
+      </node>
+      <node id="Gephisto@convergence" label="Gephisto@Convergence">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2021"/>
+          <attvalue for="url" value="https://journals.sagepub.com/doi/abs/10.1177/13548565221129053"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="123.57005310058594" y="-12.618732452392578"/>
+      </node>
+      <node id="matthieu_totet" label="Mattthieu Totet">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2022"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_matthieu_totet.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="80.8716812133789" y="150.38531494140625"/>
+      </node>
+      <node id="ipysigma_FOSDEM" label="ipysigma@FOSDEM2023">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2023"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="-18.273101806640625" y="-130.21856689453125"/>
+      </node>
+      <node id="dfb39f98-c20a-4acc-a19b-5a00fc953577" label="Linkfluence">
+        <attvalues>
+          <attvalue for="type" value="entreprise"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2009"/>
+          <attvalue for="url" value="https://fr.wikipedia.org/wiki/Linkfluence"/>
+        </attvalues>
+        <viz:color r="80" g="175" b="154"/>
+        <viz:size value="2"/>
+        <viz:position x="12.208683013916016" y="118.80049896240234"/>
+      </node>
+      <node id="81d37bad-1b79-4710-9f93-06f7b9da29a4" label="Gephi Neo4J plugin @FOSDEM2012">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2012"/>
+          <attvalue for="url" value="https://archive.fosdem.org/2012/schedule/event/neo4j_gephi_visualization.html"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="47.290443420410156" y="108.66239929199219"/>
+      </node>
+      <node id="dacd6d7f-ab8f-4820-af22-d79465cf3019" label="Hyphe">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="6"/>
+          <attvalue for="rawSize" value="2.9282361319409493"/>
+          <attvalue for="start_year" value="2013"/>
+          <attvalue for="url" value="https://github.com/medialab/hyphe"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.9282361319409493"/>
+        <viz:position x="0.5237962603569031" y="-92.7562026977539"/>
+      </node>
+      <node id="ffe77f3f-1fe3-4f6b-a440-09c4e7a0003b" label="Benjamin Ooghe Tabanou">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2013"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_boogheta.jpg"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="3.5625834465026855" y="-124.09876251220703"/>
+      </node>
+      <node id="3fdee7b7-6ae8-4fdf-8d2e-58c66ee61fda" label="Traph @FOSDEM2018">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2018"/>
+          <attvalue for="url" value="https://archive.fosdem.org/2018/schedule/event/multi_level_graph_index/"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="12.91063404083252" y="-121.90789794921875"/>
+      </node>
+      <node id="26e6a099-b0e2-4b95-9c35-e980429055f3" label="Gephi week #1">
+        <attvalues>
+          <attvalue for="type" value="event"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2021"/>
+          <attvalue for="url" value="https://gephi.wordpress.com/2021/12/06/gephi-code-sustainability-retreat-2021-debriefing/"/>
+        </attvalues>
+        <viz:color r="202" g="93" b="65"/>
+        <viz:size value="2"/>
+        <viz:position x="21.464622497558594" y="124.76971435546875"/>
+      </node>
+      <node id="4334c73a-0307-4d5f-b535-d5857249ab4f" label="Gephi week #2">
+        <attvalues>
+          <attvalue for="type" value="event"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2022"/>
+          <attvalue for="url" value="https://gephi.wordpress.com/2022/10/16/gephi-week-2022-debriefing/"/>
+        </attvalues>
+        <viz:color r="202" g="93" b="65"/>
+        <viz:size value="2"/>
+        <viz:position x="39.406532287597656" y="114.84410858154297"/>
+      </node>
+      <node id="4848ec1d-269c-43a4-83b6-07d56027c8df" label="Publish to the web plugin">
+        <attvalues>
+          <attvalue for="type" value="software"/>
+          <attvalue for="degree" value="3"/>
+          <attvalue for="rawSize" value="2.468796701311758"/>
+          <attvalue for="start_year" value="2022"/>
+          <attvalue for="url" value="https://gephi.org/plugins/#/plugin/web-publish-plugin"/>
+        </attvalues>
+        <viz:color r="135" g="114" b="200"/>
+        <viz:size value="2.468796701311758"/>
+        <viz:position x="-7.321425914764404" y="56.03185272216797"/>
+      </node>
+      <node id="c4b319b4-a3a1-41e9-91c4-fbf344e324fc" label="Clément Levallois">
+        <attvalues>
+          <attvalue for="type" value="person"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2022"/>
+          <attvalue for="image" value="https://www.ouestware.com/talks/GephiLite@FOSDEM2024/images/photo_clement_levallois.jpg"/>
+          <attvalue for="url" value="https://clementlevallois.net/"/>
+        </attvalues>
+        <viz:color r="172" g="150" b="67"/>
+        <viz:size value="2"/>
+        <viz:position x="-16.303451538085938" y="70.17214965820312"/>
+      </node>
+      <node id="16eb578a-88b7-42ae-9736-194251735d81" label="Gephi towards v1.0 @FOSDEM2023">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2023"/>
+          <attvalue for="url" value="https://archive.fosdem.org/2023/schedule/event/graph_gephi_future/"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="32.835906982421875" y="121.9127426147461"/>
+      </node>
+      <node id="ec326d0d-462a-44fe-8316-7d508b3bcc20" label="Genesis Gephi Lite @FOSDEM 2024">
+        <attvalues>
+          <attvalue for="type" value="paper"/>
+          <attvalue for="degree" value="1"/>
+          <attvalue for="rawSize" value="2"/>
+          <attvalue for="start_year" value="2024"/>
+          <attvalue for="url" value="https://fosdem.org/2024/schedule/event/fosdem-2024-3253-bridging-research-and-open-source-the-genesis-of-gephi-lite/"/>
+        </attvalues>
+        <viz:color r="199" g="90" b="143"/>
+        <viz:size value="2"/>
+        <viz:position x="-92.68395233154297" y="-100.21464538574219"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="mj_gephi" source="mathieu_jacomy" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mb_gephi" source="matthieu_bastian" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_sigma" source="alexis_jacomy" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="rw_gexfjs" source="raphael_welt" target="gexf-js" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mb_seadragon" source="matthieu_bastian" target="gephi_plugin_seadragon" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="sh_sigmaexporter" source="scott_hale" target="gephi_sigma_exporter" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gp_manylines" source="guillaume_plique" target="manylines" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gp_sigma" source="guillaume_plique" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_manylines" source="alexis_jacomy" target="manylines" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_sigma_flash" source="alexis_jacomy" target="sigmaflash" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gp_ipysigma" source="guillaume_plique" target="ipysigma" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gp_nansi" source="guillaume_plique" target="nansi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="rdm_nansi" source="robin_de_moura" target="nansi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mj_graph_recipes" source="mathieu_jacomy" target="graph recipes" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gp_grapho" source="guillaume_plique" target="graphology" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mj_minivan" source="mathieu_jacomy" target="minivan" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_gexf_explorer" source="alexis_jacomy" target="gexfexplorer" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_gexf_walker" source="alexis_jacomy" target="gexfwalker" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mj_manylines" source="mathieu_jacomy" target="manylines" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_retina" source="alexis_jacomy" target="retina" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gexfjs_gephi" source="gexf-js" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="seadragon_gephi" source="gephi_plugin_seadragon" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="manylines_sigma" source="manylines" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gse_gephi" source="gephi_sigma_exporter" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gse_sigma" source="gephi_sigma_exporter" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="recipes_grapho" source="graph recipes" target="graphology" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="eri_gephi" source="eduardo_ramos" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="ips_sigma" source="ipysigma" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="minivan_grapho" source="minivan" target="graphology" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="minivan_sigma" source="minivan" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="retina_sigma" source="retina" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="retina_grapho" source="retina" target="graphology" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="nansi_sigma" source="nansi" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="nansi_grapho" source="nansi" target="graphology" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gepi_icwsm" source="gephi" target="paper_icwsm" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gephi_fosdem" source="gephi" target="gephi@FOSDEM2019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="sigma_fosdem_2023" source="sigmajs" target="sigma.js V0 @FOSDEM2013" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="sigma_fosdem_2015" source="sigmajs" target="sigmav1_FOSDEM2015" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="manylines_fosdem" source="manylines" target="manylines_fosdem" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="fg_webatlas" source="franck_ghitalla" target="webatlas" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="dana_tic" source="dana" target="TICMigration" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="created"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gephilite_sigma" source="gephi_lite" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="aj_gephilite" source="alexis_jacomy" target="gephi_lite" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="bs_gephilite" source="benoit_simard" target="gephi_lite" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="pg_gephilite" source="paul_girard" target="gephi_lite" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="pdl_minivan" source="public_data_lab" target="minivan" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gdotv_sigmajs" source="gdotv" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="tommv_retina" source="tommv" target="retina" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="medialab_manylines" source="medialab" target="manylines" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="medialab_sigma" source="medialab" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="medialab_grapho" source="medialab" target="graphology" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="medialab_nansi" source="medialab" target="nansi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="medialab_ipysigma" source="medialab" target="ipysigma" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="medi_recipe" source="medialab" target="graph recipes" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="ow_gephilite" source="ouestware" target="gephi_lite" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="simard_sigma" source="benoit_simard" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="grapho_paper" source="graphology" target="graphology@FOSDEM2017" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="webatlas_gephi" source="webatlas" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="tic_gephi" source="TICMigration" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="IRI_gexf" source="IRI" target="gexf-js" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="OII_gephisigma" source="oii" target="gephi_sigma_exporter" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="latour_medialab" source="bruno_latour" target="medialab" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="created"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="sh_gephi" source="sebastien_heymann" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mj_gephisto" source="mathieu_jacomy" target="Gephisto" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="tantlab_gephisto" source="tantlab" target="Gephisto" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="gephisto_paper" source="Gephisto" target="Gephisto@convergence" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="totet_seadragon" source="matthieu_totet" target="gephi_plugin_seadragon" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="mj_webatlas" source="mathieu_jacomy" target="webatlas" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="created"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="ow_sigma" source="ouestware" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="pg_manylines" source="paul_girard" target="manylines" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="sigma_gephiFOSDEM" source="sigmajs" target="gephi@FOSDEM2019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="ipysigma_fosdem" source="ipysigma" target="ipysigma_FOSDEM" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="eb2b9aa1-b307-4452-9da4-6bdf6ee16d88" source="dfb39f98-c20a-4acc-a19b-5a00fc953577" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="sponsored"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="57de6a94-7233-4b1f-9516-c2a9b9068819" source="gephi" target="81d37bad-1b79-4710-9f93-06f7b9da29a4" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="ff03b184-395e-49d5-bc9a-10489129c9ed" source="mathieu_jacomy" target="dacd6d7f-ab8f-4820-af22-d79465cf3019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="cd622841-8481-4a3c-b59e-e39dd95fee64" source="paul_girard" target="dacd6d7f-ab8f-4820-af22-d79465cf3019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="b5f90f7e-fe88-45c9-b411-1bb24e1380eb" source="ffe77f3f-1fe3-4f6b-a440-09c4e7a0003b" target="dacd6d7f-ab8f-4820-af22-d79465cf3019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="4b6d0c9c-ce6e-4ed4-aec3-a0a61f006d83" source="guillaume_plique" target="dacd6d7f-ab8f-4820-af22-d79465cf3019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="7ec7283b-e771-4ffb-b563-87c53f92afa6" source="dacd6d7f-ab8f-4820-af22-d79465cf3019" target="sigmajs" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="ef753b60-c9c3-471e-b046-5e789f9687dc" source="dacd6d7f-ab8f-4820-af22-d79465cf3019" target="3fdee7b7-6ae8-4fdf-8d2e-58c66ee61fda" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="5c5ecf8a-970f-453e-87f6-73c751c62ea2" source="26e6a099-b0e2-4b95-9c35-e980429055f3" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="supports"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="a7001908-3dde-4036-b969-af4f84a330ec" source="4334c73a-0307-4d5f-b535-d5857249ab4f" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="supports"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="a1fa729e-80ba-409b-ab77-aacb321c8c59" source="4848ec1d-269c-43a4-83b6-07d56027c8df" target="gephi" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="dc8e2675-f024-4e24-aeb2-73f4b94c9cec" source="4848ec1d-269c-43a4-83b6-07d56027c8df" target="retina" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="requires"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="9400440a-0db5-48f5-93c9-fc797a9a2672" source="c4b319b4-a3a1-41e9-91c4-fbf344e324fc" target="4848ec1d-269c-43a4-83b6-07d56027c8df" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="2fe51b81-44f7-45c0-b04f-8a224895a502" source="gephi" target="16eb578a-88b7-42ae-9736-194251735d81" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="05f801a2-5c93-4c58-8e04-c19f4e89a7dd" source="gephi_lite" target="ec326d0d-462a-44fe-8316-7d508b3bcc20" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="presented at"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+      <edge id="047453ec-d845-4cc4-902e-188f34e760fd" source="medialab" target="dacd6d7f-ab8f-4820-af22-d79465cf3019" weight="0.5">
+        <attvalues>
+          <attvalue for="rawWeight" value="0.5"/>
+          <attvalue for="type" value="supports"/>
+        </attvalues>
+        <viz:color r="204" g="204" b="204"/>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

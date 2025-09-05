@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { extractGraphFromFile } from "../file/utils";
 import DIVIDED_THEY_BLOG from "./testGraphs/divided-they-blog.gexf?raw";
+import GEPHI_LITE from "./testGraphs/gephi-lite.gexf?raw";
 import MARVEL from "./testGraphs/marvel-characters-by-stories.gexf?raw";
 import SPOTIFY_ESPINOZA from "./testGraphs/spotify-veronica-espinoza.gexf?raw";
 import WORLD_FLIGHT_ROUTES from "./testGraphs/world-flight-routes.gexf?raw";
@@ -38,6 +39,33 @@ const SAMPLES: {
         color: { type: "color" },
         value: { type: "boolean" },
         source: { type: "keywords", options: { separator: "," } },
+      },
+    },
+  },
+  {
+    /**
+     * This dataset comes from @ouestware's 2024 FOSDEM talk about Gephi Lite:
+     * https://archive.fosdem.org/2024/schedule/event/fosdem-2024-3253-bridging-research-and-open-source-the-genesis-of-gephi-lite/
+     */
+    content: GEPHI_LITE,
+    fileName: "gephi-lite.gexf",
+    expectedTypes: {
+      nodes: {
+        label: { type: "text" },
+        size: { type: "number" },
+        color: { type: "color" },
+        type: { type: "category" },
+        degree: { type: "number" },
+        rawSize: { type: "number" },
+        start_year: { type: "date", options: { format: "yyyy" } },
+        image: { type: "url" },
+        url: { type: "url" },
+      },
+      edges: {
+        weight: { type: "number" },
+        color: { type: "color" },
+        rawWeight: { type: "number" },
+        type: { type: "category" },
       },
     },
   },
@@ -127,17 +155,17 @@ describe("Full dataset types inference", () => {
         const itemType = key as ItemType;
         for (const field in expectedTypes[itemType] || {}) {
           const { type: expectedType, options: expectedOptions } = expectedTypes[itemType]![field];
-          const inferedType = types[itemType][field];
+          const inferredType = types[itemType][field];
 
           it(
             `should detect type "${expectedType}" for ${itemType} field "${field}"` +
               (expectedOptions ? ` (with options ${JSON.stringify(expectedOptions)})` : ""),
             () => {
-              expect(inferedType.type).toEqual(expectedType);
+              expect(inferredType.type).toEqual(expectedType);
               if (expectedOptions) {
                 for (const option in expectedOptions) {
-                  expect(option in inferedType).toBeTruthy();
-                  expect(inferedType[option as keyof typeof inferedType]).toEqual(
+                  expect(option in inferredType).toBeTruthy();
+                  expect(inferredType[option as keyof typeof inferredType]).toEqual(
                     (expectedOptions as Record<string, unknown>)[option],
                   );
                 }
