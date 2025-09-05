@@ -1,18 +1,25 @@
 import { gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { Producer, asyncAction, atom, producerToAction } from "@ouestware/atoms";
+import Graph from "graphology";
 import { write } from "graphology-gexf";
 import { isEmpty, isEqual } from "lodash";
 
 import { config } from "../../config";
 import { appearanceActions, appearanceAtom } from "../appearance";
-import { inferAppearanceState } from "../appearance/utils";
+import { applyVisualProperties, inferAppearanceState } from "../appearance/utils";
 import { resetStates } from "../context/dataContexts";
-import { filtersAtom } from "../filters";
-import { graphDatasetActions, graphDatasetAtom } from "../graph";
-import { initializeGraphDataset } from "../graph/utils";
+import { filtersActions, filtersAtom } from "../filters";
+import {
+  dynamicItemDataAtom,
+  filteredGraphAtom,
+  graphDatasetActions,
+  graphDatasetAtom,
+  visualGettersAtom,
+} from "../graph";
+import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
 import { resetCamera } from "../sigma";
 import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
-import { geFullDataGraph, importGephiLiteFormat, parseFile } from "./utils";
+import { openAndParseFile } from "./utils";
 
 function getEmptyFileState(): FileState {
   return { current: null, recentFiles: [], status: { type: "idle" } };
@@ -25,6 +32,20 @@ function getLocalStorageFileState(): FileState {
     ...getEmptyFileState(),
     ...state,
   };
+}
+
+function geFullDataGraph(): Graph {
+  // get the full graph
+  const graphDataset = graphDatasetAtom.get();
+  const filteredGraph = filteredGraphAtom.get();
+  const dynamicNodeData = dynamicItemDataAtom.get();
+  const fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
+
+  // apply current appearance on the graph
+  const visualGetters = visualGettersAtom.get();
+  applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
+
+  return fullDataGraph;
 }
 
 /**
@@ -65,12 +86,21 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
 
   try {
     // Parse the file
-    const { data, metadata, format } = await parseFile(file);
+    const { data, metadata, format } = await openAndParseFile(file);
 
     // Do the import
     resetStates(false);
     if (format === "gephi-lite") {
-      importGephiLiteFormat(data);
+      const { graphDataset, appearance, filters } = data;
+      // Load the graph
+      const { setGraphDataset } = graphDatasetActions;
+      setGraphDataset(graphDataset);
+      // Load appearance
+      const { setFullState } = appearanceActions;
+      setFullState(appearance);
+      // Load filters
+      const { setFilters } = filtersActions;
+      setFilters(filters);
     } else {
       const { setGraphDataset } = graphDatasetActions;
       const { mergeState } = appearanceActions;
