@@ -183,7 +183,6 @@ export const DATE_FORMATS: Array<{ example: string; format: string; description:
   { example: "Sun, 06 Nov 1994 08:49:37 GMT", format: "EEE, dd MMM yyyy HH:mm:ss 'GMT'", description: "RFC 2822 GMT" },
 
   // Common date formats
-  { example: "2017-05-15", format: "yyyy-MM-dd", description: "ISO date" },
   { example: "2017-05-15 09:24:15", format: "yyyy-MM-dd HH:mm:ss", description: "ISO datetime with space" },
   { example: "May 25 1982", format: "MMM dd yyyy", description: "Month name with day and year" },
 
