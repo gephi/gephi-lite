@@ -20,6 +20,7 @@ const Tooltip = forwardRef<
     >
   >
 >(({ children: [target, content], targetClassName, hoverable, closeOnClickContent, ...tether }, ref) => {
+  const lastCloseOnClickTime = useRef<number>(-Infinity);
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState<null | "click" | "hover">(null);
 
@@ -28,7 +29,7 @@ const Tooltip = forwardRef<
 
   useEffect(() => {
     if (isHovered) {
-      if (!showTooltip) setShowTooltip("hover");
+      if (!showTooltip && Date.now() - lastCloseOnClickTime.current >= 100) setShowTooltip("hover");
       return;
     }
 
@@ -64,7 +65,9 @@ const Tooltip = forwardRef<
         (showTooltip && closeOnClickContent) ||
         (!tooltipWrapper.current.contains(node) && !targetWrapper.current.contains(node))
       ) {
+        lastCloseOnClickTime.current = Date.now();
         setShowTooltip(null);
+        setIsHovered(false);
       }
     };
 
