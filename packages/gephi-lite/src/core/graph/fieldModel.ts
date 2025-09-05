@@ -13,9 +13,10 @@ import {
   toString,
   toStringArray,
 } from "@gephi/gephi-lite-sdk";
-import { countBy, isNumber, mean, size, sortBy, take, uniq } from "lodash";
+import { countBy, mean, size, sortBy, take, uniq } from "lodash";
 import { DateTime } from "luxon";
 
+import { isNumber } from "../../components/GraphFilters/utils";
 import { isValidColor } from "../../utils/colors";
 import { DATE_FORMATS } from "../../utils/date";
 import linkify, { normalizeURL } from "../../utils/linkify";
@@ -106,7 +107,10 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
   if (getErrorRatio(values, (v) => typeof v === "string" && linkify.test(v)) < 0.05) return { type: "url" };
 
   // BOOLEANS
-  if (getErrorRatio(values, (v) => BOOLEAN_ACCEPTED_VALUES.has(v)) < 0.05) return { type: "boolean" };
+  if (
+    getErrorRatio(values, (v) => BOOLEAN_ACCEPTED_VALUES.has(typeof v === "string" ? v.trim().toLowerCase() : v)) < 0.05
+  )
+    return { type: "boolean" };
 
   // COLOR
   if (getErrorRatio(values, (v) => typeof v === "string" && isValidColor(v)) < 0.05) return { type: "color" };
@@ -126,8 +130,9 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
     if (new Set(["size", "weight", "rawsize", "rawweight", "degree"]).has(cleanedFieldName)) return { type: "number" };
 
     // Numbers non uniq & in series from 0 or 1 => category
-    const uniqValues = sortBy(uniq(values.filter((v) => isNumber(v))));
-    if (uniqValues.length < values.length) {
+    const numberValues = values.flatMap((v) => (isNumber(v) ? [toNumber(v) as number] : []));
+    const uniqValues = sortBy(uniq(numberValues));
+    if (uniqValues.length < numberValues.length) {
       const isSeriesFrom0Or1 = uniqValues.every(
         (v, i) => (i === 0 && (v === 0 || v === 1)) || i === uniqValues.length - 1 || v === uniqValues[i + 1] - 1,
       );
@@ -152,7 +157,7 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
 
   // CATEGORIES
   const uniqValuesCount = uniq(values).length;
-  if (uniqValuesCount > 1 && uniqValuesCount < Math.max(Math.pow(itemsCount, 0.75), 5)) {
+  if (uniqValuesCount > 1 && uniqValuesCount < Math.pow(values.length, 0.75)) {
     return { type: "category" };
   }
 
@@ -184,8 +189,8 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
       return toDate(scalar, (fieldModel as FieldModelAbstraction["date"]["options"]).format);
     case "boolean":
       if (typeof scalar === "boolean") return scalar;
-      if (scalar === 1 || scalar === "true") return true;
-      if (scalar === 0 || scalar === "false") return false;
+      if (scalar === 1 || (typeof scalar === "string" && scalar.trim().toLowerCase() === "true")) return true;
+      if (scalar === 0 || (typeof scalar === "string" && scalar.trim().toLowerCase() === "false")) return false;
       return undefined;
     default:
       throw new Error(`Unknown field type ${fieldModel.type}`);
