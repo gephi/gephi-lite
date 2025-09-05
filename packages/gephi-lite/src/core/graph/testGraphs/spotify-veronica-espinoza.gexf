@@ -1,0 +1,1930 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2024-03-05">
+    <creator>NetworkX 3.2.1</creator>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <attributes mode="static" class="node">
+      <attribute id="0" title="image" type="string" />
+      <attribute id="1" title="genre" type="string" />
+      <attribute id="2" title="followers" type="long" />
+      <attribute id="3" title="popularity" type="long" />
+    </attributes>
+    <nodes>
+      <node id="Elton John" label="Elton John">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb0a7388b95df960b5c0da8970" />
+          <attvalue for="1" value="glam rock, mellow gold, piano rock, rock" />
+          <attvalue for="2" value="12881752" />
+          <attvalue for="3" value="82" />
+        </attvalues>
+      </node>
+      <node id="Billy Joel" label="Billy Joel">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb34057d59275011032ef8bc8" />
+          <attvalue for="1" value="album rock, classic rock, heartland rock, mellow gold, piano rock, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="5752176" />
+          <attvalue for="3" value="77" />
+        </attvalues>
+      </node>
+      <node id="Chicago" label="Chicago">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebbab088e2157b02848dfcbc1e" />
+          <attvalue for="1" value="album rock, classic rock, mellow gold, rock, soft rock, yacht rock" />
+          <attvalue for="2" value="3933450" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="Daryl Hall &amp; John Oates" label="Daryl Hall &amp; John Oates">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebae81417d966e209b735b1160" />
+          <attvalue for="1" value="album rock, classic rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="2321580" />
+          <attvalue for="3" value="73" />
+        </attvalues>
+      </node>
+      <node id="Paul McCartney" label="Paul McCartney">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb03bf2fe26e397122faa3d323" />
+          <attvalue for="1" value="classic rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="4643157" />
+          <attvalue for="3" value="71" />
+        </attvalues>
+      </node>
+      <node id="Eagles" label="Eagles">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb0767e116a2307495e37cd7fb" />
+          <attvalue for="1" value="album rock, classic rock, heartland rock, mellow gold, rock, soft rock, yacht rock" />
+          <attvalue for="2" value="10324223" />
+          <attvalue for="3" value="75" />
+        </attvalues>
+      </node>
+      <node id="Rod Stewart" label="Rod Stewart">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb876f7ad601fe9a02247b9fb9" />
+          <attvalue for="1" value="mellow gold, soft rock" />
+          <attvalue for="2" value="4557523" />
+          <attvalue for="3" value="72" />
+        </attvalues>
+      </node>
+      <node id="John Lennon" label="John Lennon">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb207c6849d1a1f4480e6aa222" />
+          <attvalue for="1" value="classic rock, rock" />
+          <attvalue for="2" value="5837372" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="Electric Light Orchestra" label="Electric Light Orchestra">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb3f289b61b4d965ce54e31841" />
+          <attvalue for="1" value="album rock, art rock, beatlesque, classic rock, glam rock, mellow gold, rock, soft rock, symphonic rock" />
+          <attvalue for="2" value="3942153" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="David Bowie" label="David Bowie">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb78f77c5583ae99472dd4a49" />
+          <attvalue for="1" value="art rock, classic rock, glam rock, permanent wave, rock" />
+          <attvalue for="2" value="10164571" />
+          <attvalue for="3" value="76" />
+        </attvalues>
+      </node>
+      <node id="Bee Gees" label="Bee Gees">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/1d5a05673975ba0c378cd280344e000b0b865620" />
+          <attvalue for="1" value="disco, mellow gold, soft rock" />
+          <attvalue for="2" value="7511396" />
+          <attvalue for="3" value="77" />
+        </attvalues>
+      </node>
+      <node id="Fleetwood Mac" label="Fleetwood Mac">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebc8752dd511cda8c31e9daee8" />
+          <attvalue for="1" value="album rock, classic rock, rock, soft rock, yacht rock" />
+          <attvalue for="2" value="11063970" />
+          <attvalue for="3" value="81" />
+        </attvalues>
+      </node>
+      <node id="Phil Collins" label="Phil Collins">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd4e38c4e3e5c82774740e28d" />
+          <attvalue for="1" value="rock drums, soft rock" />
+          <attvalue for="2" value="5631385" />
+          <attvalue for="3" value="75" />
+        </attvalues>
+      </node>
+      <node id="Simon &amp; Garfunkel" label="Simon &amp; Garfunkel">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/afde2fdd14f8c8ca23393f257e3a369a234a24b6" />
+          <attvalue for="1" value="classic rock, folk, folk rock, melancholia, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="5011165" />
+          <attvalue for="3" value="71" />
+        </attvalues>
+      </node>
+      <node id="The Beach Boys" label="The Beach Boys">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebfaeabbf20cf22ba59c117785" />
+          <attvalue for="1" value="baroque pop, classic rock, folk rock, mellow gold, psychedelic rock, rock, sunshine pop" />
+          <attvalue for="2" value="4379474" />
+          <attvalue for="3" value="71" />
+        </attvalues>
+      </node>
+      <node id="Neil Diamond" label="Neil Diamond">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/f4d0fb18cb338eddee6b482779d946183a743b12" />
+          <attvalue for="1" value="adult standards, brill building pop, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="2667076" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="TOTO" label="TOTO">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eba59a5bcab211f964fe9bfb06" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, mellow gold, rock, soft rock, yacht rock" />
+          <attvalue for="2" value="2823729" />
+          <attvalue for="3" value="73" />
+        </attvalues>
+      </node>
+      <node id="The Who" label="The Who">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/9cd709cabb4a614b4f1dd9ec256a5f30e21f0150" />
+          <attvalue for="1" value="album rock, british invasion, classic rock, hard rock, rock" />
+          <attvalue for="2" value="5251126" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="The Doobie Brothers" label="The Doobie Brothers">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb68a38c02f356fae44e7dd63b" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="2433397" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Foreigner" label="Foreigner">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb338d6964565206f741d5ad1" />
+          <attvalue for="1" value="album rock, classic rock, glam metal, hard rock, heartland rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="3055608" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="George Harrison" label="George Harrison">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb7fda8adcbe0cd99ec83a3bcf" />
+          <attvalue for="1" value="album rock, classic rock, folk rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2600498" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="The Beatles" label="The Beatles">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe9348cc01ff5d55971b22433" />
+          <attvalue for="1" value="british invasion, classic rock, merseybeat, psychedelic rock, rock" />
+          <attvalue for="2" value="26801332" />
+          <attvalue for="3" value="84" />
+        </attvalues>
+      </node>
+      <node id="The Rolling Stones" label="The Rolling Stones">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe4cea917b68726aadb4854b8" />
+          <attvalue for="1" value="album rock, british invasion, classic rock, rock" />
+          <attvalue for="2" value="13625858" />
+          <attvalue for="3" value="79" />
+        </attvalues>
+      </node>
+      <node id="The Doors" label="The Doors">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb440959e022afc20e819050bd" />
+          <attvalue for="1" value="acid rock, album rock, classic rock, hard rock, psychedelic rock, rock" />
+          <attvalue for="2" value="7634310" />
+          <attvalue for="3" value="72" />
+        </attvalues>
+      </node>
+      <node id="Bob Dylan" label="Bob Dylan">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46cd7064356b04a156664a37c4f" />
+          <attvalue for="1" value="classic rock, country rock, folk, folk rock, rock, roots rock, singer-songwriter" />
+          <attvalue for="2" value="6326718" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="Led Zeppelin" label="Led Zeppelin">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/207803ce008388d3427a685254f9de6a8f61dc2e" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, rock" />
+          <attvalue for="2" value="13979869" />
+          <attvalue for="3" value="75" />
+        </attvalues>
+      </node>
+      <node id="Jimi Hendrix" label="Jimi Hendrix">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb31f6ab67e6025de876475814" />
+          <attvalue for="1" value="acid rock, album rock, alternative rock, classic rock, hard rock, proto-metal, psychedelic rock, rock" />
+          <attvalue for="2" value="6525909" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="The Kinks" label="The Kinks">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb81f4e878e8b959fa68f15322" />
+          <attvalue for="1" value="album rock, art rock, british invasion, classic rock, folk rock, glam rock, protopunk, psychedelic rock, rock, singer-songwriter" />
+          <attvalue for="2" value="2519419" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Pink Floyd" label="Pink Floyd">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/e69f71e2be4b67b82af90fb8e9d805715e0684fa" />
+          <attvalue for="1" value="album rock, art rock, classic rock, progressive rock, psychedelic rock, rock, symphonic rock" />
+          <attvalue for="2" value="19878662" />
+          <attvalue for="3" value="78" />
+        </attvalues>
+      </node>
+      <node id="Eric Clapton" label="Eric Clapton">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46ca60e8f215103f6841d8a83f0" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, electric blues, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="5668275" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="The Police" label="The Police">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/1f73a61faca2942cd5ea29c2143184db8645f0b3" />
+          <attvalue for="1" value="album rock, classic rock, permanent wave, rock" />
+          <attvalue for="2" value="5877435" />
+          <attvalue for="3" value="76" />
+        </attvalues>
+      </node>
+      <node id="The Mamas &amp; The Papas" label="The Mamas &amp; The Papas">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4626b4e3185058d73c9ec7a7" />
+          <attvalue for="1" value="classic rock, folk, folk rock, mellow gold, psychedelic rock, rock, soft rock, sunshine pop" />
+          <attvalue for="2" value="1718723" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="Elvis Presley" label="Elvis Presley">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb9a93e273380982dff84c0d7c" />
+          <attvalue for="1" value="rock-and-roll, rockabilly" />
+          <attvalue for="2" value="9128799" />
+          <attvalue for="3" value="77" />
+        </attvalues>
+      </node>
+      <node id="Roy Orbison" label="Roy Orbison">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb63c7956d7de45418d7fe6b25" />
+          <attvalue for="1" value="adult standards, classic rock, folk rock, mellow gold, rock-and-roll, rockabilly, singer-songwriter" />
+          <attvalue for="2" value="1945638" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Chuck Berry" label="Chuck Berry">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/d58323616d4f5d22b51e9dfe0ba53aedabe53cd4" />
+          <attvalue for="1" value="blues, blues rock, classic rock, rock, rock-and-roll, rockabilly, soul" />
+          <attvalue for="2" value="1931833" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Jerry Lee Lewis" label="Jerry Lee Lewis">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb01ff3e4f94ff73cab6c4c0bb" />
+          <attvalue for="1" value="piano rock, rock-and-roll, rockabilly" />
+          <attvalue for="2" value="874460" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Buddy Holly" label="Buddy Holly">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ff6c6ecd90618f5fb0f8fbf51bf8477586c8843b" />
+          <attvalue for="1" value="classic rock, folk rock, mellow gold, rock-and-roll, rockabilly, singer-songwriter" />
+          <attvalue for="2" value="1281969" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="The Everly Brothers" label="The Everly Brothers">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebea4e50a3c95e9024bb990fb9" />
+          <attvalue for="1" value="adult standards, folk rock, mellow gold, rock-and-roll, rockabilly, sunshine pop" />
+          <attvalue for="2" value="915897" />
+          <attvalue for="3" value="58" />
+        </attvalues>
+      </node>
+      <node id="Little Richard" label="Little Richard">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/8482a715712ad99032f35870bd2430b9b71b7283" />
+          <attvalue for="1" value="blues, rock-and-roll, rockabilly, soul" />
+          <attvalue for="2" value="915826" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Frank Sinatra" label="Frank Sinatra">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/fc4e0f474fb4c4cb83617aa884dc9fd9822d4411" />
+          <attvalue for="1" value="adult standards, easy listening, lounge" />
+          <attvalue for="2" value="6909523" />
+          <attvalue for="3" value="77" />
+        </attvalues>
+      </node>
+      <node id="Johnny Cash" label="Johnny Cash">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb152cf48cf9541c7061570857" />
+          <attvalue for="1" value="arkansas country, outlaw country, rock" />
+          <attvalue for="2" value="6085386" />
+          <attvalue for="3" value="73" />
+        </attvalues>
+      </node>
+      <node id="Creedence Clearwater Revival" label="Creedence Clearwater Revival">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd2e2b04b7ba5d60b72f54506" />
+          <attvalue for="1" value="album rock, classic rock, country rock, rock, southern rock, swamp rock" />
+          <attvalue for="2" value="6332666" />
+          <attvalue for="3" value="80" />
+        </attvalues>
+      </node>
+      <node id="Dean Martin" label="Dean Martin">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4dccee2f9fe2960b14f9a4d3" />
+          <attvalue for="1" value="adult standards, easy listening, lounge, vocal jazz" />
+          <attvalue for="2" value="1612022" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="Ritchie Valens" label="Ritchie Valens">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/c0797b7eeb72ffd9760fa5a026641d14b3fd547a" />
+          <attvalue for="1" value="rock-and-roll, rockabilly" />
+          <attvalue for="2" value="560379" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="Fats Domino" label="Fats Domino">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb5305958de2ad389172f3cd78" />
+          <attvalue for="1" value="louisiana blues, motown, new orleans blues, piano blues, rock-and-roll, rockabilly" />
+          <attvalue for="2" value="532681" />
+          <attvalue for="3" value="54" />
+        </attvalues>
+      </node>
+      <node id="The Animals" label="The Animals">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb3ce1e2a99cffc7c662938b01" />
+          <attvalue for="1" value="album rock, british invasion, classic rock, hard rock, protopunk, psychedelic rock, rock" />
+          <attvalue for="2" value="2338499" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Cream" label="Cream">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/aab6a0a0e9ca2ab17460b0451e59ba507cc5802a" />
+          <attvalue for="1" value="album rock, blues rock, british blues, classic rock, folk rock, hard rock, psychedelic rock, rock, singer-songwriter, supergroup" />
+          <attvalue for="2" value="2293481" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="Janis Joplin" label="Janis Joplin">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebbf0ee2c099003f6886e4da0c" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, psychedelic rock, rock, singer-songwriter" />
+          <attvalue for="2" value="3255505" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Jim Morrison" label="Jim Morrison">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/3010121a2fdfae58a270eb399bace970d89ddc6a" />
+          <attvalue for="1" value="album rock, classic rock, psychedelic rock, rock" />
+          <attvalue for="2" value="1756692" />
+          <attvalue for="3" value="48" />
+        </attvalues>
+      </node>
+      <node id="Deep Purple" label="Deep Purple">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb607e7523c28dd40288a08df4" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, metal, rock" />
+          <attvalue for="2" value="5329470" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="ZZ Top" label="ZZ Top">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46ca56aa897505a21aebecf7ea3" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, hard rock, rock" />
+          <attvalue for="2" value="4211886" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="Lynyrd Skynyrd" label="Lynyrd Skynyrd">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb451eb07ddc6e68d3e474c2bf" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, rock, southern rock" />
+          <attvalue for="2" value="4972375" />
+          <attvalue for="3" value="72" />
+        </attvalues>
+      </node>
+      <node id="Talking Heads" label="Talking Heads">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/e4c5b04fce8706c87663357b1f78522a3a5c641b" />
+          <attvalue for="1" value="alternative rock, art punk, dance rock, funk rock, new wave, permanent wave, post-punk, rock, zolo" />
+          <attvalue for="2" value="2363808" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="Iggy Pop" label="Iggy Pop">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb21e6d14c3d8aab9887380d00" />
+          <attvalue for="1" value="alternative rock, glam rock, permanent wave, protopunk, rock" />
+          <attvalue for="2" value="1578331" />
+          <attvalue for="3" value="60" />
+        </attvalues>
+      </node>
+      <node id="Lou Reed" label="Lou Reed">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/2e1e9a6fe696b536a1f9e6a27fc1ed23d2c97099" />
+          <attvalue for="1" value="classic rock, glam rock, permanent wave, rock, singer-songwriter" />
+          <attvalue for="2" value="1772062" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="The Velvet Underground" label="The Velvet Underground">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/d69c2cf10323bf08443c7d122f3a1824a760ab57" />
+          <attvalue for="1" value="alternative rock, melancholia, permanent wave, protopunk, rock" />
+          <attvalue for="2" value="1869473" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="T. Rex" label="T. Rex">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb442d3e951ecf7ec0c1f27fbb" />
+          <attvalue for="1" value="classic rock, glam rock, protopunk, rock" />
+          <attvalue for="2" value="1025299" />
+          <attvalue for="3" value="60" />
+        </attvalues>
+      </node>
+      <node id="Joy Division" label="Joy Division">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/5eeddd733170399db794d2c430a8d2cde7ae1425" />
+          <attvalue for="1" value="alternative rock, indie rock, madchester, new wave, post-punk, punk, rock, uk post-punk" />
+          <attvalue for="2" value="2347024" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="The Clash" label="The Clash">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab470b275daa38351810a1eb91d107ebdb821302" />
+          <attvalue for="1" value="alternative rock, permanent wave, punk, rock" />
+          <attvalue for="2" value="2658721" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="The Cure" label="The Cure">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/7ca743e822b80133971ccf5c70fcbd77a4f4f508" />
+          <attvalue for="1" value="new wave, permanent wave, rock, uk post-punk" />
+          <attvalue for="2" value="5195516" />
+          <attvalue for="3" value="75" />
+        </attvalues>
+      </node>
+      <node id="Roxy Music" label="Roxy Music">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb35572c81290a3e3d4a0906e3" />
+          <attvalue for="1" value="art rock, glam rock, melancholia, new romantic, new wave, new wave pop, sophisti-pop" />
+          <attvalue for="2" value="965733" />
+          <attvalue for="3" value="60" />
+        </attvalues>
+      </node>
+      <node id="Blur" label="Blur">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb00620d736644d2359ce99430" />
+          <attvalue for="1" value="alternative rock, britpop, madchester, permanent wave, rock" />
+          <attvalue for="2" value="3205160" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="Pixies" label="Pixies">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb6397f98673384aa50c9581df" />
+          <attvalue for="1" value="alternative rock, boston rock, permanent wave, rock" />
+          <attvalue for="2" value="2839383" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="New Order" label="New Order">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eba080a8e96758f416301578f9" />
+          <attvalue for="1" value="alternative rock, dance rock, madchester, new romantic, new wave, permanent wave, post-punk, synthpop, uk post-punk" />
+          <attvalue for="2" value="2109366" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Black Sabbath" label="Black Sabbath">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4870cd833ebe1092601820c3" />
+          <attvalue for="1" value="album rock, alternative metal, birmingham metal, classic rock, hard rock, metal, rock, stoner rock, uk doom metal" />
+          <attvalue for="2" value="7554162" />
+          <attvalue for="3" value="73" />
+        </attvalues>
+      </node>
+      <node id="Van Halen" label="Van Halen">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd8475001d2700686e1008dfb" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, rock" />
+          <attvalue for="2" value="5811997" />
+          <attvalue for="3" value="71" />
+        </attvalues>
+      </node>
+      <node id="Rush" label="Rush">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb896c4b043fb3063178afd716" />
+          <attvalue for="1" value="album rock, canadian metal, classic canadian rock, classic rock, hard rock, progressive rock, rock" />
+          <attvalue for="2" value="2236080" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Ozzy Osbourne" label="Ozzy Osbourne">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb5b52f7e13f720c7a4856306" />
+          <attvalue for="1" value="album rock, alternative metal, birmingham metal, classic rock, glam metal, hard rock, metal, rock" />
+          <attvalue for="2" value="5265773" />
+          <attvalue for="3" value="71" />
+        </attvalues>
+      </node>
+      <node id="Robert Plant" label="Robert Plant">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/6a29772fd3afae9ec890a860c500fa55267d8870" />
+          <attvalue for="1" value="album rock, art rock, blues rock, classic rock, hard rock, heartland rock, mellow gold, progressive rock, rock, singer-songwriter, uk americana" />
+          <attvalue for="2" value="1084101" />
+          <attvalue for="3" value="54" />
+        </attvalues>
+      </node>
+      <node id="Steppenwolf" label="Steppenwolf">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/8208d86ed91c50bc9ffbf8f436c6e323e6bda480" />
+          <attvalue for="1" value="acid rock, album rock, blues rock, classic canadian rock, classic rock, hard rock, proto-metal, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1547208" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Soundgarden" label="Soundgarden">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebafa254b2a224584485286526" />
+          <attvalue for="1" value="alternative metal, alternative rock, classic rock, grunge, hard rock, nu metal, rock" />
+          <attvalue for="2" value="4258324" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Blue Öyster Cult" label="Blue Öyster Cult">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eba50ccc99f741a7899654bc16" />
+          <attvalue for="1" value="album rock, classic rock, glam metal, hard rock, progressive rock, rock" />
+          <attvalue for="2" value="1512673" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Huey Lewis &amp; The News" label="Huey Lewis &amp; The News">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb8dfb95eb4902b28206963614" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, mellow gold, new romantic, new wave pop, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1557678" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="John Mellencamp" label="John Mellencamp">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb39cf2e0c338c08d5b8350053" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1658372" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="Kenny Loggins" label="Kenny Loggins">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe5ade0d346536449c7a75b48" />
+          <attvalue for="1" value="album rock, classic rock, heartland rock, mellow gold, new wave pop, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="1049635" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="REO Speedwagon" label="REO Speedwagon">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebfc5a03aa1823cfbe08b8b2ed" />
+          <attvalue for="1" value="album rock, classic rock, glam metal, hard rock, heartland rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="2470050" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="Styx" label="Styx">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebfef3008e708e59efaa5667ed" />
+          <attvalue for="1" value="album rock, classic rock, glam metal, hard rock, mellow gold, progressive rock, rock, soft rock" />
+          <attvalue for="2" value="1904347" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="James Taylor" label="James Taylor">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb5921cb8f2ec7bf6b5e725bcc" />
+          <attvalue for="1" value="classic rock, folk, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2531459" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Boston" label="Boston">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/051ffa17a5832586c6e0f8ee8a705ad15114e9c0" />
+          <attvalue for="1" value="album rock, classic rock, glam metal, hard rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="2649193" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Steve Miller Band" label="Steve Miller Band">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb624ddceb90bdf808ed4e2e35" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2933576" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="The Cars" label="The Cars">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ccef506dcc1eafa2f44270918b3ba962e67ea3ad" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, mellow gold, new romantic, new wave, new wave pop, permanent wave, power pop, rock, singer-songwriter, soft rock, synthpop" />
+          <attvalue for="2" value="1758381" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Don Henley" label="Don Henley">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/e3bb4b09ffbf0a8f420ae14837208056cf64451e" />
+          <attvalue for="1" value="album rock, classic rock, heartland rock, mellow gold, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="1545880" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Paul Simon" label="Paul Simon">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebddc148cfa465c2065846c636" />
+          <attvalue for="1" value="classic rock, folk, folk rock, mellow gold, permanent wave, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2248002" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Bob Seger" label="Bob Seger">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd98e2abb8fbebc2e2340f178" />
+          <attvalue for="1" value="album rock, classic rock, country rock, detroit rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2307599" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Tom Petty and the Heartbreakers" label="Tom Petty and the Heartbreakers">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebfabc6315ae43968729ce9e36" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2680300" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Little River Band" label="Little River Band">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb5f17a87e41d29bd4e0fe2afc" />
+          <attvalue for="1" value="album rock, classic rock, country rock, mellow gold, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="1165861" />
+          <attvalue for="3" value="56" />
+        </attvalues>
+      </node>
+      <node id="America" label="America">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb57332e3fc2b97bb33577e65" />
+          <attvalue for="1" value="alternative metal, modern rock, neo mellow, neon pop punk, pop punk, pop rock, post-grunge" />
+          <attvalue for="2" value="2573591" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Joe Walsh" label="Joe Walsh">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/d710b1d866858b418e298b6b7b087e6f841f27c1" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, country rock, folk rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock, southern rock" />
+          <attvalue for="2" value="1232212" />
+          <attvalue for="3" value="54" />
+        </attvalues>
+      </node>
+      <node id="Crosby, Stills &amp; Nash" label="Crosby, Stills &amp; Nash">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/b9c086901cca94cab20e8fcdc35bd79c7b39526a" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk, folk rock, heartland rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="1878294" />
+          <attvalue for="3" value="58" />
+        </attvalues>
+      </node>
+      <node id="Journey" label="Journey">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe848dfb35ea4969099662dfd" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, heartland rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="5306598" />
+          <attvalue for="3" value="73" />
+        </attvalues>
+      </node>
+      <node id="Heart" label="Heart">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebfabc6315ae43968729ce9e36" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2680300" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Peter Frampton" label="Peter Frampton">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebdf422233531e21eefeec9996" />
+          <attvalue for="1" value="album rock, british blues, classic rock, country rock, folk rock, hard rock, heartland rock, mellow gold, progressive rock, rock, singer-songwriter, soft rock, southern rock" />
+          <attvalue for="2" value="1234182" />
+          <attvalue for="3" value="55" />
+        </attvalues>
+      </node>
+      <node id="Three Dog Night" label="Three Dog Night">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/aa4bb75d6dff8cbb79e790e370ee27a40b3a6cc9" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk rock, hard rock, heartland rock, mellow gold, soft rock" />
+          <attvalue for="2" value="959122" />
+          <attvalue for="3" value="56" />
+        </attvalues>
+      </node>
+      <node id="Judas Priest" label="Judas Priest">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4b3cfc24737acb15e73e8bd6" />
+          <attvalue for="1" value="album rock, alternative metal, birmingham metal, glam metal, hard rock, metal, rock" />
+          <attvalue for="2" value="3928743" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Motörhead" label="Motörhead">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd515caed893876a1d42bc2a9" />
+          <attvalue for="1" value="alternative metal, hard rock, metal, rock, speed metal" />
+          <attvalue for="2" value="3889401" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="Dio" label="Dio">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe059f569bd7f4c8d8210d64c" />
+          <attvalue for="1" value="melodic rap" />
+          <attvalue for="2" value="1816386" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="Megadeth" label="Megadeth">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb79058c0b634631533ed40b22" />
+          <attvalue for="1" value="alternative metal, hard rock, melodic thrash, metal, old school thrash, rock, speed metal, thrash metal" />
+          <attvalue for="2" value="5134437" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="Iron Maiden" label="Iron Maiden">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb232a905537f61c00da9d16e0" />
+          <attvalue for="1" value="alternative metal, hard rock, metal, nwobhm, rock" />
+          <attvalue for="2" value="8747576" />
+          <attvalue for="3" value="71" />
+        </attvalues>
+      </node>
+      <node id="Slayer" label="Slayer">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/8c81130db7b5f933412c4906c30327817f1e1b43" />
+          <attvalue for="1" value="alternative metal, death metal, groove metal, hard rock, metal, old school thrash, rock, speed metal, thrash metal" />
+          <attvalue for="2" value="3785912" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Anthrax" label="Anthrax">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/9c13e8d805f8ba3a676dc272b0e2e237cdcf41a5" />
+          <attvalue for="1" value="alternative metal, glam metal, groove metal, hard rock, metal, nu metal, old school thrash, rap metal, rock, speed metal, thrash metal" />
+          <attvalue for="2" value="1612632" />
+          <attvalue for="3" value="55" />
+        </attvalues>
+      </node>
+      <node id="Alice Cooper" label="Alice Cooper">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb33b97c45348420d27fb92d68" />
+          <attvalue for="1" value="album rock, classic rock, detroit rock, glam metal, glam rock, hard rock, metal, protopunk, rock" />
+          <attvalue for="2" value="3604644" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Pantera" label="Pantera">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe21999c0102c240bdf094d9b" />
+          <attvalue for="1" value="alternative metal, groove metal, hard rock, metal, nu metal, old school thrash, rock, texas metal" />
+          <attvalue for="2" value="4809918" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="Rainbow" label="Rainbow">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb1b8f08f741213f04e4c3a25a" />
+          <attvalue for="1" value="pov: indie" />
+          <attvalue for="2" value="1081355" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="Twisted Sister" label="Twisted Sister">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/758604f17b98e5db650adeebf9cf8cb55feda0f0" />
+          <attvalue for="1" value="album rock, glam metal, hard rock, metal, rock" />
+          <attvalue for="2" value="2565107" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Sepultura" label="Sepultura">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb716f574b796045f28ce4f4f3" />
+          <attvalue for="1" value="alternative metal, brazilian groove metal, brazilian metal, brazilian thrash metal, death metal, deathrash, groove metal, hard rock, latin metal, metal, metal mineiro, nu metal, old school thrash, speed metal, thrash metal" />
+          <attvalue for="2" value="1844639" />
+          <attvalue for="3" value="60" />
+        </attvalues>
+      </node>
+      <node id="Mötley Crüe" label="Mötley Crüe">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebab0922f900e6c22b8ef4c01c" />
+          <attvalue for="1" value="album rock, alternative metal, glam metal, hard rock, metal, rock, sleaze rock" />
+          <attvalue for="2" value="4984416" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="Danzig" label="Danzig">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46cfc6c290e700ffc24fce643c1" />
+          <attvalue for="1" value="alternative metal, groove metal, grunge, hard rock, industrial rock, metal, nu metal, punk" />
+          <attvalue for="2" value="900546" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Black Label Society" label="Black Label Society">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebca9e1ddb61172c1b9672567a" />
+          <attvalue for="1" value="alternative metal, groove metal, hard rock, metal, nu metal" />
+          <attvalue for="2" value="1636383" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Jefferson Airplane" label="Jefferson Airplane">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb0c739f8231961acda83a4bf8" />
+          <attvalue for="1" value="acid rock, album rock, blues rock, classic rock, folk rock, hard rock, mellow gold, psychedelic rock, rock, singer-songwriter" />
+          <attvalue for="2" value="1538228" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="The Yardbirds" label="The Yardbirds">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4a237d4c8a075c2afd8d7f99" />
+          <attvalue for="1" value="album rock, blues rock, british blues, british invasion, classic rock, country rock, folk rock, hard rock, psychedelic rock, rock, singer-songwriter" />
+          <attvalue for="2" value="941243" />
+          <attvalue for="3" value="46" />
+        </attvalues>
+      </node>
+      <node id="Jethro Tull" label="Jethro Tull">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb94631f08038eac322c090f0" />
+          <attvalue for="1" value="album rock, art rock, blues rock, classic rock, flute rock, folk rock, hard rock, progressive rock, psychedelic rock, rock, singer-songwriter, symphonic rock" />
+          <attvalue for="2" value="1825385" />
+          <attvalue for="3" value="58" />
+        </attvalues>
+      </node>
+      <node id="Bad Company" label="Bad Company">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/65d37e5c4ee9ef8bfb76de6a17e7c05316199724" />
+          <attvalue for="1" value="album rock, classic rock, country rock, glam metal, hard rock, mellow gold, rock, singer-songwriter, soft rock, southern rock" />
+          <attvalue for="2" value="1117106" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="The Marshall Tucker Band" label="The Marshall Tucker Band">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb48bbd7b9258b38689f6dc919" />
+          <attvalue for="1" value="album rock, classic rock, country rock, mellow gold, singer-songwriter, soft rock, southern rock" />
+          <attvalue for="2" value="979949" />
+          <attvalue for="3" value="54" />
+        </attvalues>
+      </node>
+      <node id="Ted Nugent" label="Ted Nugent">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb030bcb95866eee7f4a49961c" />
+          <attvalue for="1" value="acid rock, album rock, blues rock, classic rock, glam metal, hard rock, heartland rock, rock, southern rock" />
+          <attvalue for="2" value="1153580" />
+          <attvalue for="3" value="52" />
+        </attvalues>
+      </node>
+      <node id="Foghat" label="Foghat">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebc99812527711745e4e0bf29c" />
+          <attvalue for="1" value="album rock, blues rock, british blues, classic rock, country rock, glam metal, hard rock, heartland rock, mellow gold, rock, soft rock" />
+          <attvalue for="2" value="851825" />
+          <attvalue for="3" value="51" />
+        </attvalues>
+      </node>
+      <node id="Allman Brothers Band" label="Allman Brothers Band">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46c08f5d15585b77b0cb059717b" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, country rock, electric blues, folk rock, hard rock, heartland rock, jam band, mellow gold, rock, singer-songwriter, soft rock, southern rock" />
+          <attvalue for="2" value="1570316" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="George Thorogood &amp; The Destroyers" label="George Thorogood &amp; The Destroyers">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb757998cdb9826e05ca888216" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, country rock, hard rock, heartland rock, mellow gold, rock" />
+          <attvalue for="2" value="886014" />
+          <attvalue for="3" value="56" />
+        </attvalues>
+      </node>
+      <node id="38 Special" label="38 Special">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/30a387423ed24633753a0c72bf5d57809c8cba9d" />
+          <attvalue for="1" value="album rock, classic rock, country rock, glam metal, hard rock, mellow gold, rock, soft rock, southern rock" />
+          <attvalue for="2" value="1193433" />
+          <attvalue for="3" value="56" />
+        </attvalues>
+      </node>
+      <node id="Molly Hatchet" label="Molly Hatchet">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/2203a2f8b70a214c9d6a7c9f7e9f8cb5ade95d96" />
+          <attvalue for="1" value="album rock, classic rock, country rock, glam metal, hard rock, heartland rock, southern rock" />
+          <attvalue for="2" value="580414" />
+          <attvalue for="3" value="45" />
+        </attvalues>
+      </node>
+      <node id="The Charlie Daniels Band" label="The Charlie Daniels Band">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb84e8dcb90d1d55643d417744" />
+          <attvalue for="1" value="album rock, classic rock, country, country rock, heartland rock, southern rock" />
+          <attvalue for="2" value="787132" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Kansas" label="Kansas">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebce30906f8428166de2e7b592" />
+          <attvalue for="1" value="album rock, classic rock, hard rock, heartland rock, mellow gold, progressive rock, rock, soft rock" />
+          <attvalue for="2" value="1502241" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Bachman-Turner Overdrive" label="Bachman-Turner Overdrive">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb8d254fbc1fd13a5f650b2101" />
+          <attvalue for="1" value="album rock, classic canadian rock, classic rock, country rock, folk rock, hard rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="981636" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Grand Funk Railroad" label="Grand Funk Railroad">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb54445ff310afccebf830a71b" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, country rock, hard rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="998407" />
+          <attvalue for="3" value="55" />
+        </attvalues>
+      </node>
+      <node id="Joe Cocker" label="Joe Cocker">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb97996e2b05450ffbeafe15da" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, folk rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2257141" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="Leo Sayer" label="Leo Sayer">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebefe4bdbd3d0222742ef14692" />
+          <attvalue for="1" value="mellow gold, soft rock" />
+          <attvalue for="2" value="535981" />
+          <attvalue for="3" value="56" />
+        </attvalues>
+      </node>
+      <node id="Dr. Hook" label="Dr. Hook">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/db8117c5757ee73c402eda5dd52c29cdcc3cfbbd" />
+          <attvalue for="1" value="country rock, mellow gold, soft rock" />
+          <attvalue for="2" value="583296" />
+          <attvalue for="3" value="58" />
+        </attvalues>
+      </node>
+      <node id="Carly Simon" label="Carly Simon">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd167409d8eff3cc0e9aeb21d" />
+          <attvalue for="1" value="classic rock, folk, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1112631" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Barry Manilow" label="Barry Manilow">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb01507fa881d04b98dc44ebb4" />
+          <attvalue for="1" value="adult standards, mellow gold, soft rock, yacht rock" />
+          <attvalue for="2" value="1611779" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Paul Young" label="Paul Young">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb240f1dd467e6bbad1a0e5acd" />
+          <attvalue for="1" value="mellow gold, new romantic, new wave, new wave pop, soft rock" />
+          <attvalue for="2" value="922084" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Lionel Richie" label="Lionel Richie">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb002684808eb17d8b3645b57c" />
+          <attvalue for="1" value="disco, soft rock" />
+          <attvalue for="2" value="3430606" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="Tina Turner" label="Tina Turner">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb22102415297132237b78829d" />
+          <attvalue for="1" value="soft rock" />
+          <attvalue for="2" value="3917158" />
+          <attvalue for="3" value="69" />
+        </attvalues>
+      </node>
+      <node id="Olivia Newton-John" label="Olivia Newton-John">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/a9c4bea41f06c1be30efa9e06cb6e1a07f27e3f5" />
+          <attvalue for="1" value="adult standards, australian dance, disco, mellow gold, soft rock" />
+          <attvalue for="2" value="1505887" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Robert Palmer" label="Robert Palmer">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/d0f9136003814386988d37964be13b1da0b1c6e1" />
+          <attvalue for="1" value="album rock, classic rock, dance rock, heartland rock, mellow gold, new romantic, new wave, new wave pop, singer-songwriter, soft rock, yacht rock" />
+          <attvalue for="2" value="986047" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Pretenders" label="Pretenders">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb1b707c8d39a723170714fe20" />
+          <attvalue for="1" value="album rock, classic rock, mellow gold, new romantic, new wave, new wave pop, permanent wave, rock, soft rock" />
+          <attvalue for="2" value="1471305" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Van Morrison" label="Van Morrison">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb5885f6c2d3ecf8e08bdfa472" />
+          <attvalue for="1" value="classic rock, folk, folk rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="3074393" />
+          <attvalue for="3" value="72" />
+        </attvalues>
+      </node>
+      <node id="Jackson Browne" label="Jackson Browne">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebef4b0122d50775167339c7c2" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk, folk rock, heartland rock, mellow gold, piano rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1307569" />
+          <attvalue for="3" value="60" />
+        </attvalues>
+      </node>
+      <node id="The Band" label="The Band">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb5b9b91f430a06b8094efcbda" />
+          <attvalue for="1" value="disco, mellow gold, new wave pop, soft rock, soul" />
+          <attvalue for="2" value="973560" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="Crosby, Stills, Nash &amp; Young" label="Crosby, Stills, Nash &amp; Young">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4e5018dad07ee004f171d7d3" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk, folk rock, heartland rock, mellow gold, rock, roots rock, soft rock, supergroup" />
+          <attvalue for="2" value="1662209" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Bonnie Raitt" label="Bonnie Raitt">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebe86f788af4e127154da1257f" />
+          <attvalue for="1" value="country rock, electric blues, folk, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="690806" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Carole King" label="Carole King">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/813fde33623cbfd065053789cf1ffb22b55efd4a" />
+          <attvalue for="1" value="brill building pop, classic rock, folk, folk rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1502347" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Neil Young" label="Neil Young">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46c49b91a07c864561ba7c78ba7" />
+          <attvalue for="1" value="canadian singer-songwriter, classic canadian rock, classic rock, folk rock, mellow gold, permanent wave, rock, roots rock, singer-songwriter" />
+          <attvalue for="2" value="2842192" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="Buffalo Springfield" label="Buffalo Springfield">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/b701ba75981d0b9aeef036b9fab4e3c96609e364" />
+          <attvalue for="1" value="album rock, blues rock, classic rock, country rock, folk, folk rock, heartland rock, mellow gold, psychedelic rock, rock, soft rock, southern rock" />
+          <attvalue for="2" value="791550" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="Steely Dan" label="Steely Dan">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/9d01e4e9aac39b891d684d3d1a5b3a451d7c72bd" />
+          <attvalue for="1" value="album rock, classic rock, country rock, folk rock, mellow gold, rock, soft rock, yacht rock" />
+          <attvalue for="2" value="2159558" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Traveling Wilburys" label="Traveling Wilburys">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebabde33de707730af52c01bb0" />
+          <attvalue for="1" value="album rock, beatlesque, classic rock, country rock, folk, folk rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock, supergroup" />
+          <attvalue for="2" value="1178355" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="The Byrds" label="The Byrds">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/f1cf7faba3223b4be7a0734f7c5cccaa39630570" />
+          <attvalue for="1" value="album rock, beatlesque, blues rock, classic rock, cosmic american, country rock, folk, folk rock, heartland rock, mellow gold, psychedelic rock, rock, soft rock" />
+          <attvalue for="2" value="974137" />
+          <attvalue for="3" value="55" />
+        </attvalues>
+      </node>
+      <node id="Yusuf / Cat Stevens" label="Yusuf / Cat Stevens">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebcff97c36c1d9a2a1d421966c" />
+          <attvalue for="1" value="british folk, classic rock, folk, folk rock, mellow gold, singer-songwriter" />
+          <attvalue for="2" value="1858377" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="Jim Croce" label="Jim Croce">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/9f9b40704e3361c93ea8a8b7a86a5d9ee755466e" />
+          <attvalue for="1" value="classic rock, country rock, folk, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1366826" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Steve Winwood" label="Steve Winwood">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/8a6cfe2373a091c0041b2bae6e576e395944eacd" />
+          <attvalue for="1" value="album rock, classic rock, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1020675" />
+          <attvalue for="3" value="58" />
+        </attvalues>
+      </node>
+      <node id="Little Feat" label="Little Feat">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb3de0198740050980dbf91087" />
+          <attvalue for="1" value="blues rock, country rock, electric blues, folk, folk rock, heartland rock, jam band, mellow gold, roots rock, southern rock, swamp rock" />
+          <attvalue for="2" value="444048" />
+          <attvalue for="3" value="52" />
+        </attvalues>
+      </node>
+      <node id="B.B. King" label="B.B. King">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/22c8cd28a71661b4dbd462e2d45b04b3e1b78572" />
+          <attvalue for="1" value="rock-and-roll, soul" />
+          <attvalue for="2" value="577398" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="Stevie Ray Vaughan" label="Stevie Ray Vaughan">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/1de60c936683320769a1bfb6fba7f75902859085" />
+          <attvalue for="1" value="album rock, blues, blues rock, classic rock, electric blues, hard rock, heartland rock, instrumental rock, rock, texas blues" />
+          <attvalue for="2" value="2392229" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Derek &amp; The Dominos" label="Derek &amp; The Dominos">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/cfec75171b6394ae543eb906e86e4d50cbafd9dc" />
+          <attvalue for="1" value="album rock, blues, blues rock, british blues, classic rock, country rock, electric blues, folk rock, hard rock, heartland rock, mellow gold, psychedelic rock, rock, singer-songwriter" />
+          <attvalue for="2" value="685995" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Jeff Beck" label="Jeff Beck">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/c54d3e62fa857b691de4e391b3cca35234462761" />
+          <attvalue for="1" value="album rock, blues, blues rock, british blues, classic rock, electric blues, hard rock, instrumental rock, jazz fusion, progressive rock" />
+          <attvalue for="2" value="736713" />
+          <attvalue for="3" value="53" />
+        </attvalues>
+      </node>
+      <node id="Buddy Guy" label="Buddy Guy">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebb421cddbc392e714006f6606" />
+          <attvalue for="1" value="blues, blues rock, chicago blues, country blues, electric blues, modern blues, soul blues, traditional blues" />
+          <attvalue for="2" value="798960" />
+          <attvalue for="3" value="52" />
+        </attvalues>
+      </node>
+      <node id="Muddy Waters" label="Muddy Waters">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/b4ccc4c928c953fbe755c88c4774df70db977a5c" />
+          <attvalue for="1" value="blues, blues rock, chicago blues, classic rock, electric blues, soul, traditional blues" />
+          <attvalue for="2" value="1257528" />
+          <attvalue for="3" value="54" />
+        </attvalues>
+      </node>
+      <node id="Santana" label="Santana">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb09882b1b7b33732abd60fc38" />
+          <attvalue for="1" value="blues rock, classic rock, mexican classic rock" />
+          <attvalue for="2" value="3245829" />
+          <attvalue for="3" value="70" />
+        </attvalues>
+      </node>
+      <node id="Mark Knopfler" label="Mark Knopfler">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb94b957255b1e4d4ddcc470ce" />
+          <attvalue for="1" value="soft rock" />
+          <attvalue for="2" value="1523995" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Genesis" label="Genesis">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebdfb2b3c69199bc2dfbf3e5b9" />
+          <attvalue for="1" value="album rock, art rock, classic rock, hard rock, mellow gold, progressive rock, rock, soft rock, symphonic rock" />
+          <attvalue for="2" value="3247747" />
+          <attvalue for="3" value="67" />
+        </attvalues>
+      </node>
+      <node id="Peter, Paul and Mary" label="Peter, Paul and Mary">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/8775d2330e168b1c4183a976afcf8bd529bd6d36" />
+          <attvalue for="1" value="american folk revival, folk, folk rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="749615" />
+          <attvalue for="3" value="53" />
+        </attvalues>
+      </node>
+      <node id="Art Garfunkel" label="Art Garfunkel">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/a83ec5dc782d63b0ff98af793f018012d0b5ecf7" />
+          <attvalue for="1" value="folk, folk rock, mellow gold, soft rock" />
+          <attvalue for="2" value="564356" />
+          <attvalue for="3" value="47" />
+        </attvalues>
+      </node>
+      <node id="Don McLean" label="Don McLean">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb960f33e2e44a53d836dc8ffb" />
+          <attvalue for="1" value="classic rock, folk, folk rock, heartland rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="946946" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="John Denver" label="John Denver">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb748322a35cb459c837d5ac9e" />
+          <attvalue for="1" value="classic country pop, folk, folk rock, mellow gold, singer-songwriter, soft rock" />
+          <attvalue for="2" value="2087281" />
+          <attvalue for="3" value="68" />
+        </attvalues>
+      </node>
+      <node id="The Monkees" label="The Monkees">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebbdef7f178c9cf2e8d50cb9b9" />
+          <attvalue for="1" value="album rock, beatlesque, bubblegum pop, classic rock, folk rock, heartland rock, mellow gold, psychedelic rock, rock, rock-and-roll, singer-songwriter, soft rock, sunshine pop" />
+          <attvalue for="2" value="1158418" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+      <node id="Leonard Cohen" label="Leonard Cohen">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebd09c1295779cfb71683cee99" />
+          <attvalue for="1" value="canadian singer-songwriter, melancholia, permanent wave, singer-songwriter" />
+          <attvalue for="2" value="3284189" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="The Zombies" label="The Zombies">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb4bbeb54a562d3de858825979" />
+          <attvalue for="1" value="baroque pop, british invasion, classic rock, folk rock, psychedelic rock" />
+          <attvalue for="2" value="945584" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="The Hollies" label="The Hollies">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/722e36849bde408b99330c713ebeb19157eabc89" />
+          <attvalue for="1" value="album rock, british invasion, classic rock, folk rock, mellow gold, merseybeat, soft rock" />
+          <attvalue for="2" value="1152188" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="The Turtles" label="The Turtles">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/1065764f6bfae289f03651c9927dbd84eabae766" />
+          <attvalue for="1" value="bubblegum pop, classic garage rock, classic rock, folk rock, psychedelic rock, rock-and-roll, rockabilly" />
+          <attvalue for="2" value="592615" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="Herman's Hermits" label="Herman's Hermits">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab67616d0000b273fba71dd27b388ae454a19be1" />
+          <attvalue for="1" value="" />
+          <attvalue for="2" value="1011" />
+          <attvalue for="3" value="13" />
+        </attvalues>
+      </node>
+      <node id="Sonny &amp; Cher" label="Sonny &amp; Cher">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ad4df17118081886d4b98d847f8e6a4ae3d23417" />
+          <attvalue for="1" value="adult standards, bubblegum pop, folk, folk rock, mellow gold, rock-and-roll, rockabilly, singer-songwriter, soft rock" />
+          <attvalue for="2" value="410156" />
+          <attvalue for="3" value="51" />
+        </attvalues>
+      </node>
+      <node id="Wings" label="Wings">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/826d206c73f95f1353383c17f27f22aeb628369a" />
+          <attvalue for="1" value="album rock, art rock, classic rock, folk rock, heartland rock, mellow gold, rock, singer-songwriter, soft rock" />
+          <attvalue for="2" value="1050823" />
+          <attvalue for="3" value="64" />
+        </attvalues>
+      </node>
+      <node id="Ringo Starr" label="Ringo Starr">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46c0a18f8be6d36079f2b164c2d" />
+          <attvalue for="1" value="classic rock, folk rock, rock drums" />
+          <attvalue for="2" value="929328" />
+          <attvalue for="3" value="48" />
+        </attvalues>
+      </node>
+      <node id="The Lovin' Spoonful" label="The Lovin' Spoonful">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/d0fc74cb2e10858c1b0b2436e6f14cee0944f8df" />
+          <attvalue for="1" value="bubblegum pop, classic rock, country rock, folk, folk rock, mellow gold, psychedelic rock, rock-and-roll, soft rock" />
+          <attvalue for="2" value="493451" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Michael Bolton" label="Michael Bolton">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb621cbb757dcbf609042f98d8" />
+          <attvalue for="1" value="soft rock" />
+          <attvalue for="2" value="2052689" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="Billy Ocean" label="Billy Ocean">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb32077f76ce695c7dfa2686aa" />
+          <attvalue for="1" value="disco, mellow gold, new romantic, new wave pop, soft rock, yacht rock" />
+          <attvalue for="2" value="1142255" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Commodores" label="Commodores">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb21a213a4fe1a6f9b45d3f7f9" />
+          <attvalue for="1" value="adult standards, disco, funk, mellow gold, motown, quiet storm, soft rock, soul" />
+          <attvalue for="2" value="1816049" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Diana Ross" label="Diana Ross">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5ebdb59e1c017a93648b119f0cc" />
+          <attvalue for="1" value="adult standards, disco, motown, quiet storm, soft rock, soul" />
+          <attvalue for="2" value="1744975" />
+          <attvalue for="3" value="65" />
+        </attvalues>
+      </node>
+      <node id="Peabo Bryson" label="Peabo Bryson">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/29d1f2378dbd138b2b7fad8666ab6b547448e498" />
+          <attvalue for="1" value="quiet storm" />
+          <attvalue for="2" value="524520" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="Peter Cetera" label="Peter Cetera">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/d25e8d5f1d06e238771595e9b2fda6063454e85f" />
+          <attvalue for="1" value="soft rock" />
+          <attvalue for="2" value="956258" />
+          <attvalue for="3" value="60" />
+        </attvalues>
+      </node>
+      <node id="Richard Marx" label="Richard Marx">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46c5a23fa4fa56b6bb1483733d2" />
+          <attvalue for="1" value="new wave pop, soft rock" />
+          <attvalue for="2" value="1274865" />
+          <attvalue for="3" value="66" />
+        </attvalues>
+      </node>
+      <node id="James Ingram" label="James Ingram">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/dcd0a82176f8716c4e18420809c6939fb8bab0d3" />
+          <attvalue for="1" value="quiet storm" />
+          <attvalue for="2" value="601733" />
+          <attvalue for="3" value="57" />
+        </attvalues>
+      </node>
+      <node id="Dionne Warwick" label="Dionne Warwick">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb460f728695000dadb44a4e8c" />
+          <attvalue for="1" value="adult standards, brill building pop, disco, quiet storm, soft rock, vocal jazz" />
+          <attvalue for="2" value="897554" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Vanessa Williams" label="Vanessa Williams">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/458af73774ab8a6411df7df25829c6bd345152fc" />
+          <attvalue for="1" value="contemporary r&amp;b, quiet storm, urban contemporary" />
+          <attvalue for="2" value="472277" />
+          <attvalue for="3" value="50" />
+        </attvalues>
+      </node>
+      <node id="Sheena Easton" label="Sheena Easton">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/c89848e407aa02ab2ebfe404843812fe16cad5b7" />
+          <attvalue for="1" value="mellow gold, minneapolis sound, new romantic, new wave pop, soft rock" />
+          <attvalue for="2" value="662785" />
+          <attvalue for="3" value="55" />
+        </attvalues>
+      </node>
+      <node id="The Pointer Sisters" label="The Pointer Sisters">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6772690000c46c8c57ac844d8c2170149462e3" />
+          <attvalue for="1" value="disco, girl group, hi-nrg, motown, new wave pop, soft rock" />
+          <attvalue for="2" value="1019509" />
+          <attvalue for="3" value="61" />
+        </attvalues>
+      </node>
+      <node id="Jon Secada" label="Jon Secada">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ee5bad15b240a6ed3c619dea089c0b92205c5eca" />
+          <attvalue for="1" value="soft rock" />
+          <attvalue for="2" value="398510" />
+          <attvalue for="3" value="59" />
+        </attvalues>
+      </node>
+      <node id="Paula Abdul" label="Paula Abdul">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eba7ba20987b161a07aa30e79f" />
+          <attvalue for="1" value="dance pop, new wave pop, soft rock" />
+          <attvalue for="2" value="1095233" />
+          <attvalue for="3" value="51" />
+        </attvalues>
+      </node>
+      <node id="Culture Club" label="Culture Club">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb5903965a15551fd12feb8b87" />
+          <attvalue for="1" value="new romantic, new wave, new wave pop, soft rock, synthpop" />
+          <attvalue for="2" value="1526920" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="Donna Summer" label="Donna Summer">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/ab6761610000e5eb739ffc27b8655e4ae4f12a66" />
+          <attvalue for="1" value="disco, hi-nrg, new wave pop, soft rock" />
+          <attvalue for="2" value="1902085" />
+          <attvalue for="3" value="63" />
+        </attvalues>
+      </node>
+      <node id="Natalie Cole" label="Natalie Cole">
+        <attvalues>
+          <attvalue for="0" value="https://i.scdn.co/image/a3201f2fbdfa1bfd894e509bd3fbf3faf7da0a00" />
+          <attvalue for="1" value="adult standards, disco, quiet storm, soul, vocal jazz" />
+          <attvalue for="2" value="600650" />
+          <attvalue for="3" value="62" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="Elton John" target="Billy Joel" id="0" />
+      <edge source="Elton John" target="Chicago" id="1" />
+      <edge source="Elton John" target="Daryl Hall &amp; John Oates" id="2" />
+      <edge source="Elton John" target="Paul McCartney" id="3" />
+      <edge source="Elton John" target="Eagles" id="4" />
+      <edge source="Elton John" target="Rod Stewart" id="5" />
+      <edge source="Elton John" target="John Lennon" id="6" />
+      <edge source="Elton John" target="Electric Light Orchestra" id="7" />
+      <edge source="Elton John" target="David Bowie" id="8" />
+      <edge source="Elton John" target="Bee Gees" id="9" />
+      <edge source="Elton John" target="Fleetwood Mac" id="10" />
+      <edge source="Elton John" target="Phil Collins" id="11" />
+      <edge source="Elton John" target="Simon &amp; Garfunkel" id="12" />
+      <edge source="Elton John" target="The Beach Boys" id="13" />
+      <edge source="Elton John" target="Neil Diamond" id="14" />
+      <edge source="Elton John" target="TOTO" id="15" />
+      <edge source="Elton John" target="The Who" id="16" />
+      <edge source="Elton John" target="The Doobie Brothers" id="17" />
+      <edge source="Elton John" target="Foreigner" id="18" />
+      <edge source="Elton John" target="George Harrison" id="19" />
+      <edge source="Elton John" target="The Beatles" id="20" />
+      <edge source="Billy Joel" target="The Beatles" id="21" />
+      <edge source="Billy Joel" target="Daryl Hall &amp; John Oates" id="22" />
+      <edge source="Billy Joel" target="Huey Lewis &amp; The News" id="23" />
+      <edge source="Billy Joel" target="Chicago" id="24" />
+      <edge source="Billy Joel" target="John Mellencamp" id="25" />
+      <edge source="Billy Joel" target="The Doobie Brothers" id="26" />
+      <edge source="Billy Joel" target="Kenny Loggins" id="27" />
+      <edge source="Billy Joel" target="REO Speedwagon" id="28" />
+      <edge source="Billy Joel" target="Styx" id="29" />
+      <edge source="Billy Joel" target="Foreigner" id="30" />
+      <edge source="Billy Joel" target="James Taylor" id="31" />
+      <edge source="Billy Joel" target="Boston" id="32" />
+      <edge source="Billy Joel" target="Eagles" id="33" />
+      <edge source="Billy Joel" target="Steve Miller Band" id="34" />
+      <edge source="Billy Joel" target="Neil Diamond" id="35" />
+      <edge source="Billy Joel" target="The Cars" id="36" />
+      <edge source="Billy Joel" target="Don Henley" id="37" />
+      <edge source="Billy Joel" target="Paul Simon" id="38" />
+      <edge source="Billy Joel" target="Bob Seger" id="39" />
+      <edge source="Billy Joel" target="Tom Petty and the Heartbreakers" id="40" />
+      <edge source="Chicago" target="Eagles" id="41" />
+      <edge source="Chicago" target="Rod Stewart" id="42" />
+      <edge source="Paul McCartney" target="The Beatles" id="43" />
+      <edge source="Paul McCartney" target="Elvis Presley" id="44" />
+      <edge source="Paul McCartney" target="The Rolling Stones" id="45" />
+      <edge source="Paul McCartney" target="Bob Dylan" id="46" />
+      <edge source="Paul McCartney" target="The Beach Boys" id="47" />
+      <edge source="Paul McCartney" target="John Lennon" id="48" />
+      <edge source="Paul McCartney" target="Ringo Starr" id="49" />
+      <edge source="Paul McCartney" target="George Harrison" id="50" />
+      <edge source="Paul McCartney" target="Wings" id="51" />
+      <edge source="Paul McCartney" target="The Monkees" id="52" />
+      <edge source="Paul McCartney" target="The Who" id="53" />
+      <edge source="Paul McCartney" target="The Mamas &amp; The Papas" id="54" />
+      <edge source="Paul McCartney" target="Paul Simon" id="55" />
+      <edge source="Paul McCartney" target="The Kinks" id="56" />
+      <edge source="Paul McCartney" target="Simon &amp; Garfunkel" id="57" />
+      <edge source="Paul McCartney" target="The Byrds" id="58" />
+      <edge source="Paul McCartney" target="The Hollies" id="59" />
+      <edge source="Paul McCartney" target="Electric Light Orchestra" id="60" />
+      <edge source="Paul McCartney" target="Traveling Wilburys" id="61" />
+      <edge source="Paul McCartney" target="Cream" id="62" />
+      <edge source="Paul McCartney" target="Eric Clapton" id="63" />
+      <edge source="Paul McCartney" target="Jim Morrison" id="64" />
+      <edge source="Eagles" target="Steve Miller Band" id="65" />
+      <edge source="Eagles" target="The Doobie Brothers" id="66" />
+      <edge source="Eagles" target="Don Henley" id="67" />
+      <edge source="Eagles" target="Bob Seger" id="68" />
+      <edge source="Eagles" target="Boston" id="69" />
+      <edge source="Eagles" target="Little River Band" id="70" />
+      <edge source="Eagles" target="John Mellencamp" id="71" />
+      <edge source="Eagles" target="America" id="72" />
+      <edge source="Eagles" target="Tom Petty and the Heartbreakers" id="73" />
+      <edge source="Eagles" target="Foreigner" id="74" />
+      <edge source="Eagles" target="REO Speedwagon" id="75" />
+      <edge source="Eagles" target="Joe Walsh" id="76" />
+      <edge source="Eagles" target="Styx" id="77" />
+      <edge source="Eagles" target="Crosby, Stills &amp; Nash" id="78" />
+      <edge source="Eagles" target="Lynyrd Skynyrd" id="79" />
+      <edge source="Eagles" target="Journey" id="80" />
+      <edge source="Eagles" target="Heart" id="81" />
+      <edge source="Eagles" target="Peter Frampton" id="82" />
+      <edge source="Eagles" target="Three Dog Night" id="83" />
+      <edge source="Eagles" target="Rod Stewart" id="84" />
+      <edge source="Rod Stewart" target="Elvis Presley" id="85" />
+      <edge source="Rod Stewart" target="Joe Cocker" id="86" />
+      <edge source="Rod Stewart" target="Neil Diamond" id="87" />
+      <edge source="Rod Stewart" target="Leo Sayer" id="88" />
+      <edge source="Rod Stewart" target="Dr. Hook" id="89" />
+      <edge source="Rod Stewart" target="Carly Simon" id="90" />
+      <edge source="Rod Stewart" target="Bee Gees" id="91" />
+      <edge source="Rod Stewart" target="Barry Manilow" id="92" />
+      <edge source="Rod Stewart" target="Eric Clapton" id="93" />
+      <edge source="Rod Stewart" target="Paul Young" id="94" />
+      <edge source="Rod Stewart" target="Peter Frampton" id="95" />
+      <edge source="Rod Stewart" target="Roy Orbison" id="96" />
+      <edge source="Rod Stewart" target="Lionel Richie" id="97" />
+      <edge source="Rod Stewart" target="Tina Turner" id="98" />
+      <edge source="Rod Stewart" target="Olivia Newton-John" id="99" />
+      <edge source="Rod Stewart" target="Robert Palmer" id="100" />
+      <edge source="Rod Stewart" target="Phil Collins" id="101" />
+      <edge source="Rod Stewart" target="Pretenders" id="102" />
+      <edge source="Rod Stewart" target="Simon &amp; Garfunkel" id="103" />
+      <edge source="John Lennon" target="The Beatles" id="104" />
+      <edge source="John Lennon" target="Elvis Presley" id="105" />
+      <edge source="John Lennon" target="The Rolling Stones" id="106" />
+      <edge source="John Lennon" target="Bob Dylan" id="107" />
+      <edge source="John Lennon" target="The Beach Boys" id="108" />
+      <edge source="John Lennon" target="George Harrison" id="109" />
+      <edge source="John Lennon" target="Ringo Starr" id="110" />
+      <edge source="John Lennon" target="Wings" id="111" />
+      <edge source="John Lennon" target="Jim Morrison" id="112" />
+      <edge source="John Lennon" target="The Who" id="113" />
+      <edge source="John Lennon" target="The Kinks" id="114" />
+      <edge source="John Lennon" target="The Mamas &amp; The Papas" id="115" />
+      <edge source="John Lennon" target="The Monkees" id="116" />
+      <edge source="John Lennon" target="The Byrds" id="117" />
+      <edge source="John Lennon" target="The Animals" id="118" />
+      <edge source="John Lennon" target="The Doors" id="119" />
+      <edge source="John Lennon" target="Jimi Hendrix" id="120" />
+      <edge source="John Lennon" target="Simon &amp; Garfunkel" id="121" />
+      <edge source="John Lennon" target="Janis Joplin" id="122" />
+      <edge source="John Lennon" target="Cream" id="123" />
+      <edge source="David Bowie" target="The Beatles" id="124" />
+      <edge source="David Bowie" target="The Rolling Stones" id="125" />
+      <edge source="David Bowie" target="Talking Heads" id="126" />
+      <edge source="David Bowie" target="Iggy Pop" id="127" />
+      <edge source="David Bowie" target="Lou Reed" id="128" />
+      <edge source="David Bowie" target="The Velvet Underground" id="129" />
+      <edge source="David Bowie" target="The Who" id="130" />
+      <edge source="David Bowie" target="T. Rex" id="131" />
+      <edge source="David Bowie" target="Joy Division" id="132" />
+      <edge source="David Bowie" target="The Clash" id="133" />
+      <edge source="David Bowie" target="The Cure" id="134" />
+      <edge source="David Bowie" target="The Kinks" id="135" />
+      <edge source="David Bowie" target="The Doors" id="136" />
+      <edge source="David Bowie" target="Jimi Hendrix" id="137" />
+      <edge source="David Bowie" target="Roxy Music" id="138" />
+      <edge source="David Bowie" target="The Police" id="139" />
+      <edge source="David Bowie" target="Blur" id="140" />
+      <edge source="David Bowie" target="Pixies" id="141" />
+      <edge source="David Bowie" target="George Harrison" id="142" />
+      <edge source="David Bowie" target="Bob Dylan" id="143" />
+      <edge source="David Bowie" target="New Order" id="144" />
+      <edge source="Bee Gees" target="Elvis Presley" id="145" />
+      <edge source="Simon &amp; Garfunkel" target="The Beatles" id="146" />
+      <edge source="Simon &amp; Garfunkel" target="Paul Simon" id="147" />
+      <edge source="Simon &amp; Garfunkel" target="Peter, Paul and Mary" id="148" />
+      <edge source="Simon &amp; Garfunkel" target="The Mamas &amp; The Papas" id="149" />
+      <edge source="Simon &amp; Garfunkel" target="Yusuf / Cat Stevens" id="150" />
+      <edge source="Simon &amp; Garfunkel" target="Art Garfunkel" id="151" />
+      <edge source="Simon &amp; Garfunkel" target="Crosby, Stills &amp; Nash" id="152" />
+      <edge source="Simon &amp; Garfunkel" target="Crosby, Stills, Nash &amp; Young" id="153" />
+      <edge source="Simon &amp; Garfunkel" target="Don McLean" id="154" />
+      <edge source="Simon &amp; Garfunkel" target="Carole King" id="155" />
+      <edge source="Simon &amp; Garfunkel" target="James Taylor" id="156" />
+      <edge source="Simon &amp; Garfunkel" target="Carly Simon" id="157" />
+      <edge source="Simon &amp; Garfunkel" target="The Byrds" id="158" />
+      <edge source="Simon &amp; Garfunkel" target="Bob Dylan" id="159" />
+      <edge source="Simon &amp; Garfunkel" target="John Denver" id="160" />
+      <edge source="Simon &amp; Garfunkel" target="Neil Diamond" id="161" />
+      <edge source="Simon &amp; Garfunkel" target="The Monkees" id="162" />
+      <edge source="Simon &amp; Garfunkel" target="George Harrison" id="163" />
+      <edge source="Simon &amp; Garfunkel" target="Jim Croce" id="164" />
+      <edge source="Simon &amp; Garfunkel" target="Neil Young" id="165" />
+      <edge source="Simon &amp; Garfunkel" target="The Beach Boys" id="166" />
+      <edge source="The Beach Boys" target="The Beatles" id="167" />
+      <edge source="The Beach Boys" target="Elvis Presley" id="168" />
+      <edge source="The Beach Boys" target="The Monkees" id="169" />
+      <edge source="The Beach Boys" target="The Mamas &amp; The Papas" id="170" />
+      <edge source="The Beach Boys" target="The Kinks" id="171" />
+      <edge source="The Beach Boys" target="George Harrison" id="172" />
+      <edge source="The Beach Boys" target="Buddy Holly" id="173" />
+      <edge source="The Beach Boys" target="The Zombies" id="174" />
+      <edge source="The Beach Boys" target="The Byrds" id="175" />
+      <edge source="The Beach Boys" target="The Hollies" id="176" />
+      <edge source="The Beach Boys" target="The Turtles" id="177" />
+      <edge source="The Beach Boys" target="Herman's Hermits" id="178" />
+      <edge source="The Beach Boys" target="Sonny &amp; Cher" id="179" />
+      <edge source="The Beach Boys" target="Wings" id="180" />
+      <edge source="The Beach Boys" target="Chuck Berry" id="181" />
+      <edge source="The Beach Boys" target="Ringo Starr" id="182" />
+      <edge source="The Beach Boys" target="Roy Orbison" id="183" />
+      <edge source="The Beach Boys" target="The Who" id="184" />
+      <edge source="The Beach Boys" target="The Lovin' Spoonful" id="185" />
+      <edge source="Neil Diamond" target="Elvis Presley" id="186" />
+      <edge source="The Who" target="The Beatles" id="187" />
+      <edge source="The Who" target="The Rolling Stones" id="188" />
+      <edge source="The Who" target="Led Zeppelin" id="189" />
+      <edge source="The Who" target="The Doors" id="190" />
+      <edge source="The Who" target="Eric Clapton" id="191" />
+      <edge source="The Who" target="Bob Dylan" id="192" />
+      <edge source="The Who" target="Jimi Hendrix" id="193" />
+      <edge source="The Doobie Brothers" target="Van Morrison" id="194" />
+      <edge source="George Harrison" target="The Beatles" id="195" />
+      <edge source="George Harrison" target="The Rolling Stones" id="196" />
+      <edge source="George Harrison" target="The Doors" id="197" />
+      <edge source="George Harrison" target="Eric Clapton" id="198" />
+      <edge source="George Harrison" target="Bob Dylan" id="199" />
+      <edge source="The Beatles" target="The Rolling Stones" id="200" />
+      <edge source="The Beatles" target="The Doors" id="201" />
+      <edge source="The Beatles" target="Bob Dylan" id="202" />
+      <edge source="The Beatles" target="Led Zeppelin" id="203" />
+      <edge source="The Beatles" target="Jimi Hendrix" id="204" />
+      <edge source="The Beatles" target="The Kinks" id="205" />
+      <edge source="The Beatles" target="Pink Floyd" id="206" />
+      <edge source="The Beatles" target="Eric Clapton" id="207" />
+      <edge source="The Beatles" target="The Police" id="208" />
+      <edge source="The Beatles" target="The Mamas &amp; The Papas" id="209" />
+      <edge source="The Beatles" target="Elvis Presley" id="210" />
+      <edge source="The Rolling Stones" target="Elvis Presley" id="211" />
+      <edge source="The Rolling Stones" target="Jimi Hendrix" id="212" />
+      <edge source="The Rolling Stones" target="The Doors" id="213" />
+      <edge source="The Rolling Stones" target="Led Zeppelin" id="214" />
+      <edge source="The Rolling Stones" target="The Animals" id="215" />
+      <edge source="The Rolling Stones" target="Cream" id="216" />
+      <edge source="The Rolling Stones" target="The Kinks" id="217" />
+      <edge source="The Rolling Stones" target="Janis Joplin" id="218" />
+      <edge source="The Rolling Stones" target="Bob Dylan" id="219" />
+      <edge source="The Rolling Stones" target="Jim Morrison" id="220" />
+      <edge source="The Rolling Stones" target="Deep Purple" id="221" />
+      <edge source="The Rolling Stones" target="Eric Clapton" id="222" />
+      <edge source="The Rolling Stones" target="Creedence Clearwater Revival" id="223" />
+      <edge source="The Rolling Stones" target="ZZ Top" id="224" />
+      <edge source="The Rolling Stones" target="The Police" id="225" />
+      <edge source="The Rolling Stones" target="Lynyrd Skynyrd" id="226" />
+      <edge source="The Doors" target="Led Zeppelin" id="227" />
+      <edge source="The Doors" target="Jim Morrison" id="228" />
+      <edge source="The Doors" target="Janis Joplin" id="229" />
+      <edge source="The Doors" target="Jimi Hendrix" id="230" />
+      <edge source="The Doors" target="Jefferson Airplane" id="231" />
+      <edge source="The Doors" target="Cream" id="232" />
+      <edge source="The Doors" target="The Animals" id="233" />
+      <edge source="The Doors" target="Deep Purple" id="234" />
+      <edge source="The Doors" target="Steppenwolf" id="235" />
+      <edge source="The Doors" target="The Velvet Underground" id="236" />
+      <edge source="The Doors" target="The Kinks" id="237" />
+      <edge source="The Doors" target="Iggy Pop" id="238" />
+      <edge source="The Doors" target="Black Sabbath" id="239" />
+      <edge source="The Doors" target="Lou Reed" id="240" />
+      <edge source="The Doors" target="The Yardbirds" id="241" />
+      <edge source="The Doors" target="The Clash" id="242" />
+      <edge source="The Doors" target="Jethro Tull" id="243" />
+      <edge source="The Doors" target="Bob Dylan" id="244" />
+      <edge source="Bob Dylan" target="Eric Clapton" id="245" />
+      <edge source="Bob Dylan" target="Neil Young" id="246" />
+      <edge source="Bob Dylan" target="Lou Reed" id="247" />
+      <edge source="Bob Dylan" target="Paul Simon" id="248" />
+      <edge source="Bob Dylan" target="The Band" id="249" />
+      <edge source="Bob Dylan" target="Leonard Cohen" id="250" />
+      <edge source="Bob Dylan" target="Crosby, Stills, Nash &amp; Young" id="251" />
+      <edge source="Bob Dylan" target="The Velvet Underground" id="252" />
+      <edge source="Bob Dylan" target="The Byrds" id="253" />
+      <edge source="Bob Dylan" target="Janis Joplin" id="254" />
+      <edge source="Bob Dylan" target="Jimi Hendrix" id="255" />
+      <edge source="Bob Dylan" target="The Kinks" id="256" />
+      <edge source="Bob Dylan" target="Van Morrison" id="257" />
+      <edge source="Bob Dylan" target="Cream" id="258" />
+      <edge source="Led Zeppelin" target="Jimi Hendrix" id="259" />
+      <edge source="Led Zeppelin" target="Deep Purple" id="260" />
+      <edge source="Led Zeppelin" target="Black Sabbath" id="261" />
+      <edge source="Led Zeppelin" target="Cream" id="262" />
+      <edge source="Led Zeppelin" target="Lynyrd Skynyrd" id="263" />
+      <edge source="Led Zeppelin" target="Janis Joplin" id="264" />
+      <edge source="Led Zeppelin" target="Pink Floyd" id="265" />
+      <edge source="Led Zeppelin" target="ZZ Top" id="266" />
+      <edge source="Led Zeppelin" target="Van Halen" id="267" />
+      <edge source="Led Zeppelin" target="Jim Morrison" id="268" />
+      <edge source="Led Zeppelin" target="Rush" id="269" />
+      <edge source="Led Zeppelin" target="Ozzy Osbourne" id="270" />
+      <edge source="Led Zeppelin" target="Robert Plant" id="271" />
+      <edge source="Led Zeppelin" target="Steppenwolf" id="272" />
+      <edge source="Led Zeppelin" target="Soundgarden" id="273" />
+      <edge source="Led Zeppelin" target="The Animals" id="274" />
+      <edge source="Led Zeppelin" target="Blue Öyster Cult" id="275" />
+      <edge source="Jimi Hendrix" target="Black Sabbath" id="276" />
+      <edge source="Jimi Hendrix" target="Eric Clapton" id="277" />
+      <edge source="Jimi Hendrix" target="Cream" id="278" />
+      <edge source="Jimi Hendrix" target="Jim Morrison" id="279" />
+      <edge source="Jimi Hendrix" target="Janis Joplin" id="280" />
+      <edge source="Jimi Hendrix" target="Jefferson Airplane" id="281" />
+      <edge source="Jimi Hendrix" target="Stevie Ray Vaughan" id="282" />
+      <edge source="Jimi Hendrix" target="The Animals" id="283" />
+      <edge source="Jimi Hendrix" target="Steppenwolf" id="284" />
+      <edge source="Jimi Hendrix" target="Deep Purple" id="285" />
+      <edge source="Jimi Hendrix" target="The Yardbirds" id="286" />
+      <edge source="Jimi Hendrix" target="The Kinks" id="287" />
+      <edge source="Jimi Hendrix" target="The Velvet Underground" id="288" />
+      <edge source="Jimi Hendrix" target="Chuck Berry" id="289" />
+      <edge source="Jimi Hendrix" target="B.B. King" id="290" />
+      <edge source="Jimi Hendrix" target="Lynyrd Skynyrd" id="291" />
+      <edge source="Jimi Hendrix" target="ZZ Top" id="292" />
+      <edge source="Eric Clapton" target="Elvis Presley" id="293" />
+      <edge source="Eric Clapton" target="B.B. King" id="294" />
+      <edge source="Eric Clapton" target="Joe Cocker" id="295" />
+      <edge source="Eric Clapton" target="Stevie Ray Vaughan" id="296" />
+      <edge source="Eric Clapton" target="Cream" id="297" />
+      <edge source="Eric Clapton" target="Derek &amp; The Dominos" id="298" />
+      <edge source="Eric Clapton" target="Jeff Beck" id="299" />
+      <edge source="Eric Clapton" target="Buddy Guy" id="300" />
+      <edge source="Eric Clapton" target="Peter Frampton" id="301" />
+      <edge source="Eric Clapton" target="Muddy Waters" id="302" />
+      <edge source="Eric Clapton" target="Allman Brothers Band" id="303" />
+      <edge source="Eric Clapton" target="Santana" id="304" />
+      <edge source="Eric Clapton" target="Mark Knopfler" id="305" />
+      <edge source="Eric Clapton" target="Crosby, Stills, Nash &amp; Young" id="306" />
+      <edge source="Eric Clapton" target="Neil Young" id="307" />
+      <edge source="Eric Clapton" target="Deep Purple" id="308" />
+      <edge source="Eric Clapton" target="Genesis" id="309" />
+      <edge source="Elvis Presley" target="Roy Orbison" id="310" />
+      <edge source="Elvis Presley" target="Chuck Berry" id="311" />
+      <edge source="Elvis Presley" target="Jerry Lee Lewis" id="312" />
+      <edge source="Elvis Presley" target="Buddy Holly" id="313" />
+      <edge source="Elvis Presley" target="The Everly Brothers" id="314" />
+      <edge source="Elvis Presley" target="Little Richard" id="315" />
+      <edge source="Elvis Presley" target="Frank Sinatra" id="316" />
+      <edge source="Elvis Presley" target="Johnny Cash" id="317" />
+      <edge source="Elvis Presley" target="Creedence Clearwater Revival" id="318" />
+      <edge source="Elvis Presley" target="Dean Martin" id="319" />
+      <edge source="Elvis Presley" target="Ritchie Valens" id="320" />
+      <edge source="Elvis Presley" target="Fats Domino" id="321" />
+      <edge source="Deep Purple" target="Black Sabbath" id="322" />
+      <edge source="ZZ Top" target="Lynyrd Skynyrd" id="323" />
+      <edge source="Lynyrd Skynyrd" target="Bad Company" id="324" />
+      <edge source="Lynyrd Skynyrd" target="The Marshall Tucker Band" id="325" />
+      <edge source="Lynyrd Skynyrd" target="Ted Nugent" id="326" />
+      <edge source="Lynyrd Skynyrd" target="Steppenwolf" id="327" />
+      <edge source="Lynyrd Skynyrd" target="Foghat" id="328" />
+      <edge source="Lynyrd Skynyrd" target="Allman Brothers Band" id="329" />
+      <edge source="Lynyrd Skynyrd" target="George Thorogood &amp; The Destroyers" id="330" />
+      <edge source="Lynyrd Skynyrd" target="Steve Miller Band" id="331" />
+      <edge source="Lynyrd Skynyrd" target="38 Special" id="332" />
+      <edge source="Lynyrd Skynyrd" target="Molly Hatchet" id="333" />
+      <edge source="Lynyrd Skynyrd" target="Boston" id="334" />
+      <edge source="Lynyrd Skynyrd" target="Blue Öyster Cult" id="335" />
+      <edge source="Lynyrd Skynyrd" target="Bob Seger" id="336" />
+      <edge source="Lynyrd Skynyrd" target="Joe Walsh" id="337" />
+      <edge source="Lynyrd Skynyrd" target="The Charlie Daniels Band" id="338" />
+      <edge source="Lynyrd Skynyrd" target="Kansas" id="339" />
+      <edge source="Lynyrd Skynyrd" target="Bachman-Turner Overdrive" id="340" />
+      <edge source="Lynyrd Skynyrd" target="Grand Funk Railroad" id="341" />
+      <edge source="Lynyrd Skynyrd" target="Styx" id="342" />
+      <edge source="Black Sabbath" target="Ozzy Osbourne" id="343" />
+      <edge source="Black Sabbath" target="Judas Priest" id="344" />
+      <edge source="Black Sabbath" target="Motörhead" id="345" />
+      <edge source="Black Sabbath" target="Dio" id="346" />
+      <edge source="Black Sabbath" target="Megadeth" id="347" />
+      <edge source="Black Sabbath" target="Iron Maiden" id="348" />
+      <edge source="Black Sabbath" target="Slayer" id="349" />
+      <edge source="Black Sabbath" target="Anthrax" id="350" />
+      <edge source="Black Sabbath" target="Alice Cooper" id="351" />
+      <edge source="Black Sabbath" target="Pantera" id="352" />
+      <edge source="Black Sabbath" target="Rainbow" id="353" />
+      <edge source="Black Sabbath" target="Twisted Sister" id="354" />
+      <edge source="Black Sabbath" target="Sepultura" id="355" />
+      <edge source="Black Sabbath" target="Blue Öyster Cult" id="356" />
+      <edge source="Black Sabbath" target="Van Halen" id="357" />
+      <edge source="Black Sabbath" target="Mötley Crüe" id="358" />
+      <edge source="Black Sabbath" target="Danzig" id="359" />
+      <edge source="Black Sabbath" target="Black Label Society" id="360" />
+      <edge source="James Taylor" target="Van Morrison" id="361" />
+      <edge source="Paul Simon" target="Van Morrison" id="362" />
+      <edge source="Tom Petty and the Heartbreakers" target="Van Morrison" id="363" />
+      <edge source="Crosby, Stills &amp; Nash" target="Van Morrison" id="364" />
+      <edge source="Allman Brothers Band" target="Van Morrison" id="365" />
+      <edge source="Barry Manilow" target="Lionel Richie" id="366" />
+      <edge source="Paul Young" target="Lionel Richie" id="367" />
+      <edge source="Lionel Richie" target="Michael Bolton" id="368" />
+      <edge source="Lionel Richie" target="Billy Ocean" id="369" />
+      <edge source="Lionel Richie" target="Commodores" id="370" />
+      <edge source="Lionel Richie" target="Diana Ross" id="371" />
+      <edge source="Lionel Richie" target="Peabo Bryson" id="372" />
+      <edge source="Lionel Richie" target="Peter Cetera" id="373" />
+      <edge source="Lionel Richie" target="Richard Marx" id="374" />
+      <edge source="Lionel Richie" target="James Ingram" id="375" />
+      <edge source="Lionel Richie" target="Dionne Warwick" id="376" />
+      <edge source="Lionel Richie" target="Vanessa Williams" id="377" />
+      <edge source="Lionel Richie" target="Tina Turner" id="378" />
+      <edge source="Lionel Richie" target="Sheena Easton" id="379" />
+      <edge source="Lionel Richie" target="The Pointer Sisters" id="380" />
+      <edge source="Lionel Richie" target="Jon Secada" id="381" />
+      <edge source="Lionel Richie" target="Paula Abdul" id="382" />
+      <edge source="Lionel Richie" target="Culture Club" id="383" />
+      <edge source="Lionel Richie" target="Donna Summer" id="384" />
+      <edge source="Lionel Richie" target="Natalie Cole" id="385" />
+      <edge source="Van Morrison" target="Jackson Browne" id="386" />
+      <edge source="Van Morrison" target="The Band" id="387" />
+      <edge source="Van Morrison" target="Crosby, Stills, Nash &amp; Young" id="388" />
+      <edge source="Van Morrison" target="Bonnie Raitt" id="389" />
+      <edge source="Van Morrison" target="Carole King" id="390" />
+      <edge source="Van Morrison" target="Neil Young" id="391" />
+      <edge source="Van Morrison" target="Buffalo Springfield" id="392" />
+      <edge source="Van Morrison" target="Steely Dan" id="393" />
+      <edge source="Van Morrison" target="Traveling Wilburys" id="394" />
+      <edge source="Van Morrison" target="The Byrds" id="395" />
+      <edge source="Van Morrison" target="Yusuf / Cat Stevens" id="396" />
+      <edge source="Van Morrison" target="Jim Croce" id="397" />
+      <edge source="Van Morrison" target="Steve Winwood" id="398" />
+      <edge source="Van Morrison" target="Little Feat" id="399" />
+    </edges>
+  </graph>
+</gexf>

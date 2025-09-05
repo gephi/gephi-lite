@@ -11,6 +11,7 @@ export type Scalar = boolean | number | string | undefined | null;
 export const SCALAR_TYPES = new Set(["boolean", "number", "string", "undefined"]);
 
 export type ItemType = "nodes" | "edges";
+export const ITEM_TYPES: ItemType[] = ["nodes", "edges"];
 export type ItemData = Record<string, Scalar>;
 export type StaticDynamicItemData = { static: ItemData; dynamic: ItemData };
 
