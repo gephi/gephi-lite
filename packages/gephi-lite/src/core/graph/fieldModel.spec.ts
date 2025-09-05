@@ -86,7 +86,7 @@ describe("Field Model", () => {
       });
     });
 
-    it("should properly detect date and format", () => {
+    it("should not detect date when there is no consensual format", () => {
       expect(
         inferFieldType(
           "foobar",
@@ -94,15 +94,11 @@ describe("Field Model", () => {
           6,
         ),
       ).toEqual({
-        type: "date",
-        format: "yyyy-MM-dd",
+        type: "text",
       });
     });
-
     it("should properly detect date and format", () => {
-      expect(
-        inferFieldType("foobar", ["2025", "2023", "2012", "2012-05-25", "2025-07-25", "2025-06-24T15:30:21.907Z"], 6),
-      ).toEqual({
+      expect(inferFieldType("foobar", ["2025", "2023", "2012", "2013", "2023", "2023"], 6)).toEqual({
         type: "date",
         format: "yyyy",
       });
@@ -110,7 +106,7 @@ describe("Field Model", () => {
     it("should properly detect date and format", () => {
       expect(inferFieldType("foobar", ["2025-06-24T15:30:21.907Z"], 1)).toEqual({
         type: "date",
-        format: "yyyy-MM-ddTHH:mm:ss.SSS[Z]",
+        format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
       });
     });
     it("should properly detect date and format", () => {

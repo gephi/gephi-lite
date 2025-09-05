@@ -13,11 +13,11 @@ import {
   toString,
   toStringArray,
 } from "@gephi/gephi-lite-sdk";
-import guessFormat from "@gristlabs/moment-guess";
-import { countBy, isNumber, mean, size, sortBy, take, toPairs, uniq } from "lodash";
+import { countBy, isNumber, mean, size, sortBy, take, uniq } from "lodash";
 import { DateTime } from "luxon";
 
 import { isValidColor } from "../../utils/colors";
+import { DATE_FORMATS } from "../../utils/date";
 import linkify, { normalizeURL } from "../../utils/linkify";
 import { getScalarFromStaticDynamicData } from "./dynamicAttributes";
 
@@ -53,6 +53,37 @@ export function guessSeparator(values: string[]): string | null {
   return bestSeparator || null;
 }
 
+/**
+ * This function takes an array of string values, and tries to find a consensual enough data format
+ * to interpret the most possible of them.
+ */
+export function guessDateFormat(values: string[]): string | null {
+  const formatsFrequencies = DATE_FORMATS.reduce(
+    (iter, { format }) => ({
+      ...iter,
+      [format]: 0,
+    }),
+    {},
+  ) as Record<string, number>;
+
+  values.forEach((value) =>
+    DATE_FORMATS.forEach(({ format }) => {
+      const { isValid } = DateTime.fromFormat(value, format);
+      if (isValid) formatsFrequencies[format]++;
+    }),
+  );
+
+  const bestSeparator = sortBy(
+    DATE_FORMATS.filter(({ format }) => formatsFrequencies[format] >= values.length / 10),
+    ({ format }) => -formatsFrequencies[format],
+  )[0];
+
+  return bestSeparator?.format || null;
+}
+
+/**
+ * This function detects an error ratio, given a list of values and a predicate.
+ */
 export function getErrorRatio<T>(values: T[], predicate: (v: T) => boolean): number {
   const totalLength = values.length;
   const onlyValidLength = values.filter(predicate).length;
@@ -66,6 +97,10 @@ export function getErrorRatio<T>(values: T[], predicate: (v: T) => boolean): num
  */
 export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: number): FieldModelTypeSpec {
   const cleanedFieldName = fieldName.trim().toLowerCase();
+  const first100StringValues = take(
+    values.map((v) => "" + v),
+    100,
+  );
 
   // URLS
   if (getErrorRatio(values, (v) => typeof v === "string" && linkify.test(v)) < 0.05) return { type: "url" };
@@ -76,9 +111,19 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
   // COLOR
   if (getErrorRatio(values, (v) => typeof v === "string" && isValidColor(v)) < 0.05) return { type: "color" };
 
+  // DATES
+  const format = guessDateFormat(first100StringValues);
+  if (format) {
+    const errorRatio = getErrorRatio(first100StringValues, (v) => !!toDate(v, format));
+
+    if (errorRatio <= 0.05) {
+      return { type: "date", format };
+    }
+  }
+
   // NUMBER
   if (getErrorRatio(values, (v) => isNumber(v)) < 0.01) {
-    if (new Set(["size", "weight", "degree"]).has(cleanedFieldName)) return { type: "number" };
+    if (new Set(["size", "weight", "rawsize", "rawweight", "degree"]).has(cleanedFieldName)) return { type: "number" };
 
     // Numbers non uniq & in series from 0 or 1 => category
     const uniqValues = sortBy(uniq(values.filter((v) => isNumber(v))));
@@ -93,35 +138,8 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
     return { type: "number" };
   }
 
-  // DATE
-  const dateFormats: Record<string, number> = {};
-  if (
-    getErrorRatio(values, (v) => {
-      try {
-        const _dateFormat = guessFormat("" + v, "");
-
-        // format guesser can return multiple choices, we just pick one
-        const dateFormat = Array.isArray(_dateFormat) ? _dateFormat[0] : _dateFormat;
-        const correctedDateFormat = dateFormat.replaceAll("Y", "y").replaceAll("D", "d");
-
-        dateFormats[correctedDateFormat] = (dateFormats[correctedDateFormat] || 0) + 1;
-        return true;
-      } catch {
-        return false;
-      }
-    }) < 0.05
-  ) {
-    const [format] = sortBy(toPairs(dateFormats), ([, count]) => -1 * count)[0];
-    return { type: "date", format };
-  }
-
   // KEYWORDS
-  const separator = guessSeparator(
-    take(
-      values.map((v) => "" + v),
-      100,
-    ),
-  );
+  const separator = guessSeparator(first100StringValues);
   if (separator) {
     const splitValuesCounts = countBy(values.flatMap((v) => (v + "").split(separator)));
     const uniqSplitValuesCount = size(splitValuesCounts);
