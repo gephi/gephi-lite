@@ -39,7 +39,7 @@ const GraphTitle: FC<{ title?: string }> = ({ title }) => {
 
   return (
     <div className="graph-title d-flex" style={{ alignItems: "baseline" }}>
-      <span className="flex-grow-1 gl-px-2 gl-text-wrap-anywhere"> {title}</span>
+      <span className="flex-grow-1 gl-px-2 gl-text-wrap-anywhere"> {title || "Untitled workspace"}</span>
 
       <button
         id="graph-title-btn"

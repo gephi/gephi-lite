@@ -8,7 +8,7 @@ import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
-import { useFileActions, useGraphDatasetActions } from "./context/dataContexts";
+import { useFileActions, useGraphDataset, useGraphDatasetActions } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
@@ -32,6 +32,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { notify } = useNotifications();
   const { openModal } = useModal();
   const { open } = useFileActions();
+  const { metadata } = useGraphDataset();
   const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
@@ -182,6 +183,13 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialize]);
+
+  /**
+   * Update document title:
+   */
+  useEffect(() => {
+    document.title = metadata.title ? `Gephi Lite - ${metadata.title}` : "Gephi Lite";
+  }, [metadata.title]);
 
   return (
     <I18n>
