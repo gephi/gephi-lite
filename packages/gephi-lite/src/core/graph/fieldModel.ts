@@ -71,7 +71,7 @@ export function inferFieldType(fieldName: string, values: Scalar[], itemsCount: 
   if (getErrorRatio(values, (v) => typeof v === "string" && linkify.test(v)) < 0.05) return { type: "url" };
 
   // BOOLEANS
-  if (getErrorRatio(values, (v) => BOOLEAN_ACCEPTED_VALUES.has(v)) < 0.05) return { type: "url" };
+  if (getErrorRatio(values, (v) => BOOLEAN_ACCEPTED_VALUES.has(v)) < 0.05) return { type: "boolean" };
 
   // COLOR
   if (getErrorRatio(values, (v) => typeof v === "string" && isValidColor(v)) < 0.05) return { type: "color" };

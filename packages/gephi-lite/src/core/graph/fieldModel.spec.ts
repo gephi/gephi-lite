@@ -24,12 +24,6 @@ describe("Field Model", () => {
       });
     });
 
-    it("should properly handle a list of repeating strings", () => {
-      expect(inferFieldType("foobar", ["true", "true", "true", "false", "false"], 5)).toEqual({
-        type: "category",
-      });
-    });
-
     it("should properly handle a list of repeating numbers", () => {
       expect(inferFieldType("foobar", [44, 44, 44, 75, 75], 5)).toEqual({
         type: "number",
@@ -59,6 +53,23 @@ describe("Field Model", () => {
       const numbersFromSeriesRepeating = shuffle([2, 2, 3, 4, 5, 5, 5, 6, 6, 7, 10]);
       expect(inferFieldType("foobar", numbersFromSeriesRepeating, numbersFromSeriesRepeating.length)).toEqual({
         type: "number",
+      });
+    });
+
+    // Booleans:
+    it("should properly detect strings booleans", () => {
+      expect(inferFieldType("foobar", ["true", "true", "true", "false", "false"], 5)).toEqual({
+        type: "boolean",
+      });
+    });
+    it("should properly detect number booleans", () => {
+      expect(inferFieldType("foobar", [1, 1, 1, 0, 0], 5)).toEqual({
+        type: "boolean",
+      });
+    });
+    it("should properly detect actual booleans", () => {
+      expect(inferFieldType("foobar", [true, true, true, false, false], 5)).toEqual({
+        type: "boolean",
       });
     });
 
