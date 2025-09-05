@@ -11,7 +11,7 @@ export function getEmptyGraphDataset({ graphType = "mixed" }: { graphType?: Grap
     nodeData: {},
     edgeData: {},
     layout: {},
-    metadata: { title: "Untitled workspace" },
+    metadata: { title: "" },
     nodeFields: [],
     edgeFields: [],
     fullGraph: new MultiGraph({ type: graphType }),
