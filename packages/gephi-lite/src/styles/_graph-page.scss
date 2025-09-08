@@ -81,3 +81,9 @@
 :root {
   --sigma-background-color: transparent;
 }
+
+ul.attributes-list {
+  li:not(:last-child) {
+    border-bottom: 1px solid var(--gl-container-border-color);
+  }
+}

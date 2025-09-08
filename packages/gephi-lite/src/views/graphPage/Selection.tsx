@@ -8,7 +8,13 @@ import { useNavigate } from "react-router";
 
 import Dropdown from "../../components/Dropdown";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
-import { CaretDownIcon, CaretUpIcon, ThreeDotsVerticalIcon, TrashIcon } from "../../components/common-icons";
+import {
+  CaretDownIcon,
+  CaretUpIcon,
+  FieldModelIcon,
+  ThreeDotsVerticalIcon,
+  TrashIcon,
+} from "../../components/common-icons";
 import { RenderItemAttribute, RenderText } from "../../components/data/Attribute";
 import { EdgeComponent } from "../../components/data/Edge";
 import { EditEdgeModal } from "../../components/data/EditEdge";
@@ -180,11 +186,17 @@ function SelectedItem<
         </Dropdown>
       </h4>
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
-        <ul className="list-unstyled small">
+        <ul className="attributes-list list-unstyled small">
           {attributes.map((attribute, i) => (
-            <li key={i} className="overflow-hidden">
-              <div className="gl-container-muted-bg text-break gl-border gl-px-2 gl-py-1">{attribute.label}</div>{" "}
-              <div className="mb-1 text-break gl-px-2 gl-py-1">
+            <li
+              key={i}
+              className="overflow-hidden gl-px-2 gl-py-2 d-flex flex-column  flex-wrap align-items-start gl-gap-x-2 gl-gap-y-1 "
+            >
+              <span className="d-inline-flex align-items-center gl-gap-1 text-break ">
+                {attribute.field && <FieldModelIcon type={attribute.field.type} />}
+                {attribute.label}
+              </span>{" "}
+              <span className="text-break ">
                 {!isNil(attribute.value) ? (
                   attribute.field ? (
                     <RenderItemAttribute value={attribute.value} field={attribute.field} />
@@ -194,7 +206,7 @@ function SelectedItem<
                 ) : (
                   <span className="fst-italic">{t("selection.no_value")}</span>
                 )}
-              </div>
+              </span>
             </li>
           ))}
         </ul>
