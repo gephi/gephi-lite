@@ -184,3 +184,9 @@ $table-editable-columns-cell-hover-bg: color-mix(
     }
   }
 }
+
+.data-cell {
+  .form-check {
+    @extend .ms-1;
+  }
+}
