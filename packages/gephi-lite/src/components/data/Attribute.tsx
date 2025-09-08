@@ -65,7 +65,7 @@ export const AttributeRenderers: {
     return !isNil(value) ? <>{value.toLocaleString(i18n.language)}</> : null;
   },
   boolean: ({ value }) => (
-    <div className="form-check h-100 ms-1">
+    <div className="form-check h-100 ">
       <Checkbox className="form-check-input disabled" checked={value} />
     </div>
   ),
@@ -172,7 +172,7 @@ export const AttributeEditors: {
     );
   },
   boolean: ({ value, onChange, id, autoFocus }) => (
-    <div className="form-check h-100 ms-1">
+    <div className="form-check h-100 ">
       <Checkbox
         className="form-check-input"
         id={id}
