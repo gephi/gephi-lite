@@ -104,13 +104,15 @@ const InteractionsController: FC = () => {
       >
         <ZoomResetIcon />
       </button>
-      <button
-        className={btnClassName}
-        onClick={() => toggle()}
-        title={isFullScreen ? t("graph.control.fullscreenExit") : t("graph.control.fullscreenEnter")}
-      >
-        {isFullScreen ? <ExitFullScreenIcon /> : <FullScreenIcon />}
-      </button>
+      {document.fullscreenEnabled && (
+        <button
+          className={btnClassName}
+          onClick={() => toggle()}
+          title={isFullScreen ? t("graph.control.fullscreenExit") : t("graph.control.fullscreenEnter")}
+        >
+          {isFullScreen ? <ExitFullScreenIcon /> : <FullScreenIcon />}
+        </button>
+      )}
     </div>
   );
 };
