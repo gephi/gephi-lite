@@ -190,13 +190,13 @@ function SelectedItem<
           {attributes.map((attribute, i) => (
             <li
               key={i}
-              className="overflow-hidden gl-px-2 gl-py-2 d-flex flex-column  flex-wrap align-items-start gl-gap-x-2 gl-gap-y-1 "
+              className="overflow-hidden  gl-py-2 d-flex flex-column  flex-wrap align-items-start gl-gap-x-2 gl-gap-y-1 "
             >
               <span className="d-inline-flex align-items-center gl-gap-1 text-break ">
                 {attribute.field && <FieldModelIcon type={attribute.field.type} />}
                 {attribute.label}
               </span>{" "}
-              <span className="text-break ">
+              <span className="text-break">
                 {!isNil(attribute.value) ? (
                   attribute.field ? (
                     <RenderItemAttribute value={attribute.value} field={attribute.field} />
