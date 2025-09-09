@@ -87,3 +87,10 @@ ul.attributes-list {
     border-bottom: 1px solid var(--gl-container-border-color);
   }
 }
+
+.selected-nodes-item,
+.selected-edges-item {
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
