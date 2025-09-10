@@ -13,13 +13,7 @@ import Graph from "graphology";
 async function openGraphInGephiLite(graph: Graph) {
   const driver = new GephiLiteDriver();
 
-  await new Promise<void>((resolve) => {
-    // Wait for new instance to be fully working:
-    driver.on("newInstance", () => {
-      resolve();
-    });
-    driver.openGephiLite();
-  });
+  await driver.openGephiLite();
 
   await driver.importGraph(graph.toJSON());
 
