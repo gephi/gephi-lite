@@ -12,16 +12,7 @@ export async function openInNewTab({
   filters = filtersAtom.get(),
 }: { dataset?: GraphDataset; appearance?: AppearanceState; filters?: FiltersState } = {}) {
   const driver = new GephiLiteDriver();
-
-  await new Promise<void>((resolve) => {
-    // Wait for new instance to be fully working:
-    driver.on("newInstance", () => {
-      resolve();
-    });
-    driver.openGephiLite({
-      baseUrl: location.pathname,
-    });
-  });
+  await driver.openGephiLite({ baseUrl: location.pathname });
 
   await Promise.all([driver.setAppearance(appearance), driver.setFilters(filters)]);
   await driver.setGraphDataset(dataset);

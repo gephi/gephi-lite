@@ -41,6 +41,7 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
   private timeout: number = 2000;
   private channel: BroadcastChannel;
   private pendingReplies: Map<string, (payload: unknown) => void> = new Map();
+  private window: Window | null = null;
 
   constructor(name: string = uuidV4()) {
     super();
@@ -141,17 +142,48 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
   setFilters(filters: FiltersState) {
     return this.callMethod<SetFiltersMethod>("setFilters", filters);
   }
+  getWindow() {
+    return this.window;
+  }
 
   /**
    * Helper/lifecycle methods:
    * *************************
    */
-  openGephiLite({
+  async openGephiLite({
     baseUrl = "/gephi-lite",
     target = "_blank",
     features = "noopener",
-  }: { baseUrl?: string; target?: string; features?: string } = {}) {
-    return open(`${baseUrl}?broadcast=${this.name}`, target, features);
+    timeout = 10000,
+  }: { baseUrl?: string; target?: string; features?: string; timeout?: number } = {}) {
+    let url: URL | undefined = undefined;
+    try {
+      url = new URL(baseUrl);
+    } catch {
+      // not an url, assuming a path, nothing to check
+    }
+
+    if (url) {
+      if (url.host !== window.location.host) {
+        throw new Error("Communicating with Gephi Lite is only possible on the same domain.");
+      }
+    }
+
+    const gephiLiteWindow = await new Promise<Window | null>((resolve, reject) => {
+      const openingGephiLiteTimeout = timeout
+        ? setTimeout(() => {
+            reject(new Error(`Couldn't set up communication channel with Gephi Lite before ${timeout}`));
+          }, timeout)
+        : null;
+
+      // Wait for new instance to be fully working:
+      this.on("newInstance", () => {
+        if (openingGephiLiteTimeout) clearTimeout(openingGephiLiteTimeout);
+        resolve(this.getWindow());
+      });
+      this.window = open(`${baseUrl}?broadcast=${this.name}`, target, features);
+    });
+    return gephiLiteWindow;
   }
   destroy(): void {
     this.channel.onmessage = null;
