@@ -64,7 +64,8 @@ function SelectedItem<
 
   const sigmaGraph = useSigmaGraph();
   const graphDataset = useGraphDataset();
-  const { edgeFields, nodeFields } = graphDataset;
+  const { edgeFields, nodeFields, fullGraph, nodeData } = graphDataset;
+  const { dynamicNodeData } = useDynamicItemData();
   const fields = useMemo(() => (type === "edges" ? edgeFields : nodeFields), [edgeFields, nodeFields, type]);
 
   const visualGetters = useVisualGetters();
@@ -99,8 +100,32 @@ function SelectedItem<
   if (type === "nodes") {
     content = <NodeComponent label={item.label} color={item.color} hidden={item.hidden} />;
   } else {
-    const source = sigmaGraph.getNodeAttributes(sigmaGraph.source(id));
-    const target = sigmaGraph.getNodeAttributes(sigmaGraph.target(id));
+    //if edge is filtered out, use nodeData to compute rendering data and not sigmaGraph
+    const mergedStaticDynamicNodeData =
+      !item.hidden && sigmaGraph.hasEdge(id) ? {} : mergeStaticDynamicData(nodeData, dynamicNodeData);
+
+    const source =
+      !item.hidden && sigmaGraph.hasEdge(id)
+        ? sigmaGraph.getNodeAttributes(sigmaGraph.source(id))
+        : getItemAttributes(
+            "nodes",
+            fullGraph.source(id),
+            filteredGraph,
+            mergedStaticDynamicNodeData[fullGraph.source(id)],
+            graphDataset,
+            visualGetters,
+          );
+    const target =
+      !item.hidden && sigmaGraph.hasEdge(id)
+        ? sigmaGraph.getNodeAttributes(sigmaGraph.target(id))
+        : getItemAttributes(
+            "nodes",
+            fullGraph.target(id),
+            filteredGraph,
+            mergedStaticDynamicNodeData[fullGraph.target(id)],
+            graphDataset,
+            visualGetters,
+          );
 
     content = (
       <EdgeComponent
