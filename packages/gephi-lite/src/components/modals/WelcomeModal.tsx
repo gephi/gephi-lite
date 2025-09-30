@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { version } from "../../../package.json";
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
-import { useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
+import { useFile, useFileActions, useGraphDatasetActions, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
@@ -21,6 +21,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { theme } = usePreferences();
+  const { resetGraph } = useGraphDatasetActions();
   const {
     status: { type: fileStateType },
   } = useFile();
@@ -38,8 +39,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
 
   return (
     <Modal showHeader={false} onClose={fileStateType === "loading" ? undefined : () => cancel()} className="modal-lg">
-      <div className="row position-relative align-items-center mb-5 mt-4">
-        <div className="col-12 col-sm-6 d-flex flex-column align-items-center gl-gap-1 mb-5 mb-sm-0 py-4">
+      <div className="row position-relative align-items-end mb-5 mt-4">
+        <div className="col-12 col-sm-6 d-flex flex-column align-items-center gl-gap-1 mb-5 mb-sm-0">
           {getAppliedTheme(theme) === "light" ? (
             <GephiLiteLogo className="mb-3 gl-px-2 w-33" />
           ) : (
@@ -75,23 +76,35 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             <li className="mb-1">
               <button
                 className="gl-btn text-start"
-                title={t(`graph.open.local.title`).toString()}
+                title={t(`graph.open.local.title`)}
                 onClick={() => {
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "local" } });
                 }}
               >
-                {t(`graph.open.local.title`).toString()}
+                {t(`graph.open.local.title`)}
               </button>
             </li>
             <li className="mb-1">
               <button
                 className="gl-btn text-start"
-                title={t(`graph.open.github.title`).toString()}
+                title={t(`graph.open.github.title`)}
                 onClick={() => {
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "github" } });
                 }}
               >
-                {t(`graph.open.github.title`).toString()}
+                {t(`graph.open.github.title`)}
+              </button>
+            </li>
+            <li className="mb-1">
+              <button
+                className="gl-btn text-start"
+                title={t(`graph.open.github.title`)}
+                onClick={() => {
+                  resetGraph();
+                  submit({});
+                }}
+              >
+                {t(`graph.open.new.title`)}
               </button>
             </li>
           </ul>
