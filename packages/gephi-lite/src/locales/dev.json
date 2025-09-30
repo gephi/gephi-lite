@@ -878,7 +878,7 @@
   },
   "workspace": {
     "menu": {
-      "duplicate": "Duplicate in a new tab",
+      "duplicate": "Clone workspace",
       "export_graph_file": "Export graph file",
       "export_image": "Export image",
       "github_signin": "Sign-in to GitHub",

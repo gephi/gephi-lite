@@ -39,7 +39,7 @@ const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide
             {option.type === "text" && <div className="dropdown-item-text">{option.label}</div>}
             {"url" in option && (
               <a
-                className={cx("dropdown-item gl-menu-item ", option.disabled && "disabled")}
+                className={cx("dropdown-item gl-menu-item", option.disabled && "disabled")}
                 href={option.url}
                 title={option.title}
                 target="_blank"
@@ -50,7 +50,7 @@ const Dropdown: FC<{ children: ReactNode; options: Option[]; side?: DropdownSide
             )}
             {"onClick" in option && (
               <button
-                className={cx("dropdown-item gl-menu-item ", option.disabled && "disabled")}
+                className={cx("dropdown-item gl-menu-item", option.disabled && "disabled")}
                 title={option.title}
                 disabled={option.disabled}
                 onClick={option.onClick}
