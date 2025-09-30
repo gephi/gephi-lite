@@ -19,8 +19,12 @@
     @extend .gl-py-3;
   }
 
+  .filter-title button {
+    @extend .gl-px-3;
+    border-radius: 0;
+  }
   .filter-buttons {
-    @extend .gl-px-2;
+    @extend .gl-px-3;
   }
 }
 
