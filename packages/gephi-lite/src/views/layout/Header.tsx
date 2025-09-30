@@ -10,7 +10,15 @@ import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
 import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
-import { BugIcon, DataIcon, DataIconFill, GraphIcon, GraphIconFill, HomeIcon } from "../../components/common-icons";
+import {
+  BugIcon,
+  DataIcon,
+  DataIconFill,
+  ExternalLinkIcon,
+  GraphIcon,
+  GraphIconFill,
+  HomeIcon,
+} from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
@@ -61,7 +69,11 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             }),
         },
         {
-          label: t("workspace.menu.duplicate"),
+          label: (
+            <span className="d-flex">
+              <span className="flex-grow-1">{t("workspace.menu.duplicate")}</span> <ExternalLinkIcon />
+            </span>
+          ),
           onClick: async () => {
             await openInNewTab();
             notify({
