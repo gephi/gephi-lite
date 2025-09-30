@@ -31,7 +31,7 @@ const FilterInStack: FC<{
   return (
     <>
       <div className={cx("filter-item d-flex flex-column", filter.disabled && "disabled")}>
-        <div className="filter-buttons">
+        <div className="filter-title">
           <button
             className="gl-btn gl-heading-3 fw-bold w-100 d-flex"
             title={t("filters.desactivated")}
@@ -66,13 +66,13 @@ const FilterInStack: FC<{
 
         <div className="filter-buttons">
           <button
-            className="gl-btn"
+            className="gl-btn gl-btn-outline"
             onClick={(e) => {
               e.stopPropagation();
               deleteFilter(filterIndex);
             }}
           >
-            <FilterDeleteIcon /> Delete filter
+            <FilterDeleteIcon /> {t("filters.delete_filter")}
           </button>
         </div>
       </div>
@@ -102,7 +102,7 @@ const GraphFilters: FC = () => {
         <div className="filter-item filter-creator gl-px-3 d-flex justify-content-center">
           <button
             type="button"
-            className="gl-btn gl-btn-outline w-100"
+            className="gl-btn gl-btn-fill w-100"
             onClick={() => {
               openModal({
                 component: SelectFilterModal,
