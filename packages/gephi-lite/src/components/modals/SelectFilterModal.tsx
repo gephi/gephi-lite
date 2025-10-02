@@ -103,6 +103,7 @@ const SelectFilterModal: FC<
                               itemType: type,
                               type: filterType,
                               field,
+                              keepMissingValues: true,
                             });
                         }}
                       >
