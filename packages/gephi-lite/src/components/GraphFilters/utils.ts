@@ -40,3 +40,14 @@ export function isNumber(v: unknown): boolean {
 
   return false;
 }
+
+export function toPairsCompatibleWithSymbol(
+  termsOccurrences: Record<string | symbol, number>,
+): [string | symbol, number][] {
+  const pairs: [string | symbol, number][] = [];
+  const terms = Reflect.ownKeys(termsOccurrences);
+  terms.forEach((term) => {
+    pairs.push([term, termsOccurrences[term]]);
+  });
+  return pairs;
+}

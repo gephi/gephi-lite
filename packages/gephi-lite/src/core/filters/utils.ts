@@ -24,7 +24,8 @@ export function filterValue(
 ): boolean {
   // missingValues
   if (scalar === undefined || scalar === null) {
-    return !!filter.keepMissingValues;
+    // we keep missing values if user specifically asked for them
+    return (filter.type === "terms" && filter.terms?.has(null)) || !!filter.keepMissingValues;
   }
 
   switch (filter.type) {

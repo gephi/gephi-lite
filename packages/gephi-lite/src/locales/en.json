@@ -215,7 +215,8 @@
         "label": "Connected component",
         "number": "Number of largest components to keep"
       }
-    }
+    },
+    "unavailable": "No value"
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",

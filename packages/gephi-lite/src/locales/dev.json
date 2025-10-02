@@ -323,7 +323,8 @@
         "number": "Number of largest components to keep"
       }
     },
-    "visible_graph": "Visible graph"
+    "visible_graph": "Visible graph",
+    "unavailable": "No value"
   },
   "gephi-lite": {
     "open_welcome_modal": "Open welcome modal",
