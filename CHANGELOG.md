@@ -1,5 +1,19 @@
 # Gephi Lite - Changelog:
 
+## 1.0.0 aka "we're proud of it"
+
+This version results from the user research made by the UX designer Arthur Desaintjan with the OuestWare team.
+The User Interface has been totally revamped following the results of a users interview campaign.
+Learn more on the design process in this [blog post](https://www.ouestware.com/2025/07/31/gephi-lite-new-design-en/).
+
+### New features
+
+- **Enhanced User Interfaces**: new minimalist graphic style, enhancement of the main menu, filters interface simplified...
+- The graph data can be explored in node/edge **data table** just like the Gephi data laboratory
+- Node/edge attribute **new data model** (new types: category, number, keywords, text, date, url, color, boolean)
+- Use Gephi lite on your **phone or tablet**!
+- New selections tool: **lasso selection**. Selection tools were hidden behind keyboard shortcuts, they now have their own buttons.
+
 ## 0.6.0 version aka FOSDEM 2025
 
 This version has been developed in a one-week iteration organized at the [2025 Gephi Lite sprint](https://www.ouestware.com/2025/02/10/gephi-lite-0-6-en/), right before FOSDEM 2025.
