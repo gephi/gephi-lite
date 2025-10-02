@@ -287,6 +287,7 @@
       "what_kind": "Який фільтр ви хочете створити?"
     },
     "custom_script": "Власний скрипт",
+    "delete_filter": "Видалити фільтр",
     "desactivated": "Деактивований фільтр, натисніть, щоб повторно активувати",
     "disable_following": "Показати графік",
     "disable_following_subtitle": "наприклад, вимкніть усі фільтри після",
@@ -296,6 +297,8 @@
     "insert": "Вставити фільтр",
     "intermediate_graph": "Проміжний графік",
     "keepMissingValues": "Зберегти відсутні значення",
+    "missingValues": "Відсутні значення",
+    "noValueOption": "Без значення",
     "nodes_fields": "Атрибути вузлів",
     "script": "Користувацький фільтр",
     "title": "Фільтри",
@@ -890,7 +893,7 @@
   },
   "workspace": {
     "menu": {
-      "duplicate": "Дублювати в новій вкладці",
+      "duplicate": "Клонувати робочу область",
       "export_graph_file": "Експортувати файл графіка",
       "export_image": "Експорт зображення",
       "github_signin": "Увійти до GitHub",
