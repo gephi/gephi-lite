@@ -326,6 +326,7 @@
     "insert": "Insérer un filtre",
     "intermediate_graph": "Réseau intermédiaire",
     "keepMissingValues": "Conserver les valeurs manquantes",
+    "noValueOption": "Pas de valeur",
     "no_concurrent_edit": "Un seul filtre peut être modifié à la fois. Confirmez l'édition en cours pour modifier ce filtre.",
     "nodes_fields": "Attributs des nœuds",
     "range": "plage",
@@ -356,8 +357,7 @@
       }
     },
     "using": "Utilisation",
-    "visible_graph": "Réseau visible",
-    "noValueOption": "Pas de valeur"
+    "visible_graph": "Réseau visible"
   },
   "gephi-lite": {
     "info": "Plus d'informations sur Gephi Lite",
