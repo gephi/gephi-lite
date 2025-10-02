@@ -223,6 +223,7 @@ export const AttributeEditors: {
         value={!isNil(value) ? optionize(value) : undefined}
         onChange={(newValue) => onChange(newValue?.value)}
         options={options}
+        isClearable
         components={{
           Option: OptionComponent,
           SingleValue: SingleValueComponent,
@@ -272,6 +273,7 @@ export const AttributeEditors: {
         value={value?.map(optionize)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
         options={options}
+        isClearable
         components={{
           Option: OptionComponent,
           MultiValueContainer: MultiValueContainerComponent,
