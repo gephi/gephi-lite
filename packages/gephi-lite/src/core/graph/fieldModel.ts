@@ -182,7 +182,7 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
     }
     case "category":
     case "text":
-      return toString(scalar) || "";
+      return toString(scalar);
     case "keywords":
       return toStringArray(scalar, (fieldModel as FieldModelAbstraction["keywords"]["options"]).separator);
     case "date":
