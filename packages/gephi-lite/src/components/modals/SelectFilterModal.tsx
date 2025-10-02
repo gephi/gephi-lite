@@ -11,7 +11,7 @@ import {
 } from "../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { ModalProps } from "../../core/modals/types";
-import { FieldModelIcons, ItemTypeIcon } from "../common-icons";
+import { FieldModelIcons, ItemTypeIcon, MissingValueFilterIcon } from "../common-icons";
 import { Modal } from "../modals";
 
 const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | null> = {
@@ -88,30 +88,46 @@ const SelectFilterModal: FC<
               <p className="text-muted">{t(`filters.create.${type}_attributes_description`)}</p>
               <div className="d-flex flex-wrap gap-3">
                 {fieldsList.length ? (
-                  fieldsList.map((field) => {
-                    const Icon = FieldModelIcons[field.type];
-                    const filterType = FILTER_TYPES_PER_FIELD_TYPES[field.type];
+                  [
+                    fieldsList.map((field) => {
+                      const Icon = FieldModelIcons[field.type];
+                      const filterType = FILTER_TYPES_PER_FIELD_TYPES[field.type];
 
-                    return (
-                      <button
-                        key={field.id}
-                        className="gl-btn gl-btn-outline"
-                        disabled={!filterType}
-                        onClick={() => {
-                          if (filterType)
-                            createNewFilter({
-                              itemType: type,
-                              type: filterType,
-                              field,
-                              keepMissingValues: true,
-                            });
-                        }}
-                      >
-                        <Icon className="me-1" />
-                        {staticDynamicAttributeLabel(field)}
-                      </button>
-                    );
-                  })
+                      return (
+                        <button
+                          key={field.id}
+                          className="gl-btn gl-btn-outline"
+                          disabled={!filterType}
+                          onClick={() => {
+                            if (filterType)
+                              createNewFilter({
+                                itemType: type,
+                                type: filterType,
+                                field,
+                                keepMissingValues: true,
+                              });
+                          }}
+                        >
+                          <Icon className="me-1" />
+                          {staticDynamicAttributeLabel(field)}
+                        </button>
+                      );
+                    }),
+                    // empty value filter
+                    <button
+                      key="missingValue"
+                      className="gl-btn gl-btn-outline"
+                      onClick={() => {
+                        createNewFilter({
+                          itemType: type,
+                          type: "missingValue",
+                        });
+                      }}
+                    >
+                      <MissingValueFilterIcon className="me-1" />
+                      {t("filters.missingValues")}
+                    </button>,
+                  ]
                 ) : (
                   <span className="text-muted fst-italic">{t(`filters.create.no_${type}_attributes`)}</span>
                 )}

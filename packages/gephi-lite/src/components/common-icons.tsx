@@ -164,6 +164,7 @@ export const UserIcon = PiUser;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
 export const ZoomResetIcon = PiGps;
+export const MissingValueFilterIcon = PiSpinner;
 
 export const GraphSelectionModeIcons: Record<GraphSelectionMode, { normal: IconType; fill: IconType }> = {
   cursor: { normal: MouseIcon, fill: MouseIconFill },

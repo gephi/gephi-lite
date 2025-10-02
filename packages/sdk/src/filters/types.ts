@@ -31,7 +31,17 @@ export interface TopologicalFilterType extends Omit<BaseFilter, "itemType" | "fi
   parameters: unknown[];
 }
 
-export type FilterType = RangeFilterType | TermsFilterType | TopologicalFilterType | ScriptFilterType;
+export interface MissingValueFilterType extends Omit<BaseFilter, "field"> {
+  type: "missingValue";
+  field?: FieldModel;
+}
+
+export type FilterType =
+  | RangeFilterType
+  | TermsFilterType
+  | TopologicalFilterType
+  | ScriptFilterType
+  | MissingValueFilterType;
 
 export interface FilteredGraph {
   filterFingerprint: string;
