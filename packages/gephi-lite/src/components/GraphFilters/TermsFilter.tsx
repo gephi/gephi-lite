@@ -54,7 +54,7 @@ export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> =
         value={
           filter.terms
             ? Array.from(filter.terms).map((term) => ({
-                label: term === null ? t("filters.unavailable") : term,
+                label: term === null ? t("filters.noValueOption") : term,
                 value: term,
               }))
             : []
@@ -77,7 +77,7 @@ export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> =
         }}
         options={sortBy(toPairsCompatibleWithSymbol(dataTerms), ([_term, nbOcc]) => -1 * nbOcc).map(([term, nbOcc]) => {
           return {
-            label: `${typeof term === "symbol" ? t("filters.unavailable") : term} (${nbOcc} ${t(`graph.model.${filter.itemType}`)})`,
+            label: `${typeof term === "symbol" ? t("filters.noValueOption") : term} (${nbOcc} ${t(`graph.model.${filter.itemType}`)})`,
             value: term === unavailableValue ? null : term,
           };
         })}

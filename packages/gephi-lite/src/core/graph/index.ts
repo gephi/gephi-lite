@@ -538,7 +538,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     const filtersState = filtersAtom.get();
     const filterFilters = (f: FilterType) =>
       // here we test only static field
-      !("field" in f) || nodeFields.includes(f.field.id) || edgeFields.includes(f.field.id);
+      !("field" in f) || f.field === undefined || nodeFields.includes(f.field.id) || edgeFields.includes(f.field.id);
     filtersAtom.set({
       filters: filtersState.filters.filter(filterFilters),
     });

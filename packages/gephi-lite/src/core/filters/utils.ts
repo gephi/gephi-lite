@@ -1,4 +1,4 @@
-import { FilteredGraph, Scalar, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
+import { FilteredGraph, MissingValueFilterType, Scalar, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { subgraph } from "graphology-operators";
 import { isNil, isNumber } from "lodash";
 import { DateTime } from "luxon";
@@ -20,12 +20,19 @@ export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "
  */
 export function filterValue(
   scalar: Scalar,
-  filter: Omit<RangeFilterType, "itemType"> | Omit<TermsFilterType, "itemType">,
+  filter:
+    | Omit<RangeFilterType, "itemType">
+    | Omit<TermsFilterType, "itemType">
+    | Omit<MissingValueFilterType, "itemType">,
 ): boolean {
   // missingValues
   if (scalar === undefined || scalar === null) {
     // we keep missing values if user specifically asked for them
-    return (filter.type === "terms" && filter.terms?.has(null)) || !!filter.keepMissingValues;
+    return (
+      filter.type === "missingValue" ||
+      (filter.type === "terms" && filter.terms?.has(null)) ||
+      !!filter.keepMissingValues
+    );
   }
 
   switch (filter.type) {
@@ -54,6 +61,8 @@ export function filterValue(
         return strings.some((string) => !filter.terms || filter.terms.has(string));
       }
     }
+    case "missingValue":
+      return false;
     // TODO: search filter
   }
 }
@@ -84,42 +93,52 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
 
   // Nodes:
   if (filter.itemType === "nodes") {
-    let nodes: string[];
+    let nodes: null | string[] = null;
     if (filter.type === "script") {
       const fullGraph = dataGraphToFullGraph(dataset, graph);
+
       nodes = graph.filterNodes((nodeID) =>
         filter.script ? filter.script(nodeID, fullGraph.getNodeAttributes(nodeID), fullGraph) : true,
       );
     } else {
-      const dynamicNodeData = filter.field.dynamic ? computeAllDynamicAttributes("nodes", graph) : {};
-      const staticDynamicNodeData = mergeStaticDynamicData(nodeData, dynamicNodeData);
-      nodes = graph.filterNodes((nodeID) => {
-        const scalar = getScalarFromStaticDynamicData(staticDynamicNodeData[nodeID], filter.field);
-        return filterValue(scalar, filter);
-      });
+      if (filter.field) {
+        const dynamicNodeData = filter.field.dynamic ? computeAllDynamicAttributes("nodes", graph) : {};
+        const staticDynamicNodeData = mergeStaticDynamicData(nodeData, dynamicNodeData);
+        const field = filter.field;
+        nodes = graph.filterNodes((nodeID) => {
+          const scalar = getScalarFromStaticDynamicData(staticDynamicNodeData[nodeID], field);
+          return filterValue(scalar, filter);
+        });
+      }
     }
-    return subgraph(graph, nodes) as G;
+
+    return nodes !== null ? (subgraph(graph, nodes) as G) : graph;
   }
 
   // Edges:
   else {
-    let edges: string[];
+    let edges: string[] | null = null;
     if (filter.type === "script") {
       const fullGraph = dataGraphToFullGraph(dataset, graph);
       edges = graph.filterEdges((edgeID) =>
         filter.script ? filter.script(edgeID, fullGraph.getEdgeAttributes(edgeID), fullGraph) : true,
       );
     } else {
-      const dynamicEdgeData = filter.field.dynamic ? computeAllDynamicAttributes("edges", graph) : {};
-      const staticDynamicEdgeData = mergeStaticDynamicData(edgeData, dynamicEdgeData);
-      edges = graph.filterEdges((edgeID) => {
-        const scalar = getScalarFromStaticDynamicData(staticDynamicEdgeData[edgeID], filter.field);
-        return filterValue(scalar, filter);
-      });
+      if (filter.field) {
+        const dynamicEdgeData = filter.field.dynamic ? computeAllDynamicAttributes("edges", graph) : {};
+        const staticDynamicEdgeData = mergeStaticDynamicData(edgeData, dynamicEdgeData);
+        const field = filter.field;
+        edges = graph.filterEdges((edgeID) => {
+          const scalar = getScalarFromStaticDynamicData(staticDynamicEdgeData[edgeID], field);
+          return filterValue(scalar, filter);
+        });
+      }
     }
-    const res = graph.emptyCopy() as G;
-    edges.forEach((id) => res.addEdgeWithKey(id, graph.source(id), graph.target(id), graph.getEdgeAttributes(id)));
-    return res;
+    if (edges !== null) {
+      const res = graph.emptyCopy() as G;
+      edges.forEach((id) => res.addEdgeWithKey(id, graph.source(id), graph.target(id), graph.getEdgeAttributes(id)));
+      return res;
+    } else return graph;
   }
 }
 

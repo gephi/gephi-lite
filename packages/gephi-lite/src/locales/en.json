@@ -216,7 +216,8 @@
         "number": "Number of largest components to keep"
       }
     },
-    "unavailable": "No value"
+    "missingValues": "Missing values",
+    "noValueOption": "No value"
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",

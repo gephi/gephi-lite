@@ -65,13 +65,4 @@ export interface TopologicalFilterDefinition<ParametersType extends FilterParame
   filter: (parameters: FilterParameterValueArray<ParametersType>, graph: DatalessGraph) => DatalessGraph;
 }
 
-// largest connected components
-// arguments number
-
-// connected components by size
-// arguments minimumsize number
-
-// degree
-// k-core
-// ego-network
 // shortest path

@@ -16,6 +16,7 @@ import {
 } from "../common-icons";
 import SelectFilterModal from "../modals/SelectFilterModal";
 import { FilteredGraphSummary } from "./FilteredGraphSummary";
+import { MissingValueFilter } from "./MissingValueFilter";
 import { RangeFilter } from "./RangeFilter";
 import { ScriptFilter } from "./ScriptFilter";
 import { TermsFilter } from "./TermsFilter";
@@ -49,6 +50,8 @@ const FilterInStack: FC<{
               {(filter.type === "range" || filter.type === "terms") && staticDynamicAttributeLabel(filter.field)}
               {filter.type === "topological" && t(`filters.topology.${filter.topologicalFilterId}.label`)}
               {filter.type === "script" && t("filters.script")}
+
+              {filter.type === "missingValue" && t("filters.missingValues")}
             </span>
 
             <span className="flex-shrink-0">{filter.disabled ? <FilterDisabledIcon /> : <FilterEnabledIcon />}</span>
@@ -61,6 +64,7 @@ const FilterInStack: FC<{
             {filter.type === "terms" && <TermsFilter filter={filter} filterIndex={filterIndex} />}
             {filter.type === "script" && <ScriptFilter filter={filter} filterIndex={filterIndex} />}
             {filter.type === "topological" && <TopologicalFilter filter={filter} filterIndex={filterIndex} />}
+            {filter.type === "missingValue" && <MissingValueFilter filter={filter} filterIndex={filterIndex} />}
           </div>
         )}
 
