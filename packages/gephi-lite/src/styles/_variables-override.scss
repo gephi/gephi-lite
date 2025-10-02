@@ -1,9 +1,12 @@
 @use "sass:map";
 
 // Bootstrap variables:
-$position-values: map.merge($position-values,
-    (5: 0.5em,
-    ));
+$position-values: map.merge(
+  $position-values,
+  (
+    5: 0.5em,
+  )
+);
 
 // Switch customization:
 $form-switch-checked-color: $form-switch-color;
@@ -19,4 +22,6 @@ $form-switch-checked-bg-image: $form-switch-bg-image;
   --range-in-body: #{$gray-100};
   --range-out-bg: #{$gray-800};
   --range-out-body: #{$gray-800};
+
+  --bs-code-color: $gl-ref-color-neutral-100 !important;
 }
