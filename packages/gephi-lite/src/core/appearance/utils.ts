@@ -274,7 +274,8 @@ export function makeGetStringAttr<
   let getLabel: StringAttrGetter | null = null;
   switch (stringAttrDef.type) {
     case "none":
-      getLabel = () => null;
+      // using "" instead of null to workaround adge-node labels dependency see https://github.com/jacomyal/sigma.js/issues/1527
+      getLabel = () => "";
       break;
     case "fixed":
       getLabel = () => stringAttrDef.value;
