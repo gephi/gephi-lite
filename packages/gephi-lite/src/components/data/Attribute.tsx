@@ -244,9 +244,15 @@ export const AttributeEditors: {
       (props: OptionProps<BaseOption, true>) => {
         const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;
         return (
-          <Option {...props}>
-            <RenderKeywords value={[props.data.value]} separator={field.separator} />
-          </Option>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <Option {...props}>
+              <RenderKeywords value={[props.data.value]} separator={field.separator} />
+            </Option>
+          </div>
         );
       },
       [field.separator],
