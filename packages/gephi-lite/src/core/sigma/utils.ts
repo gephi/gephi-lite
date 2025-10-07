@@ -42,7 +42,8 @@ export function drawDiscNodeHover<
 
   const PADDING = 2;
 
-  if (typeof data.label === "string") {
+  // TODO: remove the data.label !== "" once we decide what to do about https://github.com/jacomyal/sigma.js/issues/1527
+  if (typeof data.label === "string" && data.label !== "") {
     const textWidth = context.measureText(data.label).width,
       boxWidth = Math.round(textWidth + 5),
       boxHeight = Math.round(size + 2 * PADDING),
