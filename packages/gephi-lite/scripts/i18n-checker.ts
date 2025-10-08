@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as ts from "typescript";
 import { jsonKeyPathList } from "json-key-path-list";
 import { readFile } from "node:fs/promises";
