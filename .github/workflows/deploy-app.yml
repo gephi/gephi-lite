@@ -24,11 +24,45 @@ jobs:
       - name: Install
         run: npm install
 
+      - uses: nyaa8/package-version@v1
+        with:
+          path: "packages/gephi-lite/package.json"
+
       - name: Build
         run: npm run build
+        env:
+          BASE_URL: /gephi-lite/v${{ env.PACKAGE_VERSION }}
+
+      - name: Create site folder
+        run: mkdir -p website/v${{ env.PACKAGE_VERSION }}
+
+      - name: Copy gephi lite files
+        run: cp -rf packages/gephi-lite/build/* website/v${{ env.PACKAGE_VERSION }}
+
+      - name: Create index page with redirection
+        run: |
+          cat <<EOF > website/index.html
+          <!DOCTYPE HTML>
+          <html lang="en-US">
+            <head>
+              <meta charset="UTF-8">
+              <noscript>
+              <meta http-equiv="refresh" content="0; url=https://gephi.org/gephi-lite/v${{ env.PACKAGE_VERSION }}/">
+              </noscript>
+              <script type="text/javascript">
+                window.location.href = "https://gephi.org/gephi-lite/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
+              </script>
+              <title>Page Redirection</title>
+            </head>
+            <body>
+                If you are not redirected automatically, follow this <a href='https://gephi.org/gephi-lite/v${{ env.PACKAGE_VERSION }}/'>link</a>.
+            </body>
+          </html>
+          EOF
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
+          folder: website # The folder the action should deploy.
           branch: gh-pages # The branch the action should deploy to.
-          folder: packages/gephi-lite/build # The folder the action should deploy.
+          clean: false # keep what is already in the directory
