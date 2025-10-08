@@ -39,6 +39,9 @@ jobs:
       - name: Copy gephi lite files
         run: cp -rf packages/gephi-lite/build/* website/v${{ env.PACKAGE_VERSION }}
 
+      - name: Copy CNAME files
+        run: cp CNAME website/CNAME
+
       - name: Create index page with redirection
         run: |
           cat <<EOF > website/index.html
@@ -47,15 +50,15 @@ jobs:
             <head>
               <meta charset="UTF-8">
               <noscript>
-              <meta http-equiv="refresh" content="0; url=https://gephi.org/gephi-lite/v${{ env.PACKAGE_VERSION }}/">
+              <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
               </noscript>
               <script type="text/javascript">
-                window.location.href = "https://gephi.org/gephi-lite/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
+                window.location.href = "https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
               </script>
               <title>Page Redirection</title>
             </head>
             <body>
-                If you are not redirected automatically, follow this <a href='https://gephi.org/gephi-lite/v${{ env.PACKAGE_VERSION }}/'>link</a>.
+                If you are not redirected automatically, follow this <a href='https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/'>link</a>.
             </body>
           </html>
           EOF
