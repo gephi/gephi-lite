@@ -1,6 +1,6 @@
 {
   "name": "@gephi/gephi-lite",
-  "version": "0.6.3",
+  "version": "1.0.0",
   "private": true,
   "license": "gpl-3.0",
   "scripts": {
@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "^0.5.1",
-    "@gephi/gephi-lite-broadcast": "^0.6.2",
-    "@gephi/gephi-lite-sdk": "^0.6.2",
+    "@gephi/gephi-lite-broadcast": "^1.0.0",
+    "@gephi/gephi-lite-sdk": "^1.0.0",
     "@monaco-editor/react": "^4.6.0",
     "@octokit/auth-oauth-device": "^7.1.2",
     "@octokit/core": "^6.1.3",
