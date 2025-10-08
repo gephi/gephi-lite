@@ -1,0 +1,955 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "AppearanceState": {
+            "description": "Describes how each visual variable should be used to render the graph in Gephi Lite.",
+            "properties": {
+                "backgroundColor": {
+                    "type": "string"
+                },
+                "edgesColor": {
+                    "$ref": "#/definitions/EdgeColor"
+                },
+                "edgesLabel": {
+                    "$ref": "#/definitions/StringAttr"
+                },
+                "edgesLabelEllipsis": {
+                    "$ref": "#/definitions/LabelEllipsis"
+                },
+                "edgesLabelSize": {
+                    "$ref": "#/definitions/LabelSize"
+                },
+                "edgesShadingColor": {
+                    "$ref": "#/definitions/ShadingColor"
+                },
+                "edgesSize": {
+                    "$ref": "#/definitions/Size"
+                },
+                "edgesZIndex": {
+                    "$ref": "#/definitions/ZIndexAttr"
+                },
+                "layoutGridColor": {
+                    "type": "string"
+                },
+                "nodesColor": {
+                    "$ref": "#/definitions/Color"
+                },
+                "nodesImage": {
+                    "$ref": "#/definitions/StringAttr"
+                },
+                "nodesLabel": {
+                    "$ref": "#/definitions/StringAttr"
+                },
+                "nodesLabelEllipsis": {
+                    "$ref": "#/definitions/LabelEllipsis"
+                },
+                "nodesLabelSize": {
+                    "$ref": "#/definitions/LabelSize"
+                },
+                "nodesShadingColor": {
+                    "$ref": "#/definitions/ShadingColor"
+                },
+                "nodesSize": {
+                    "$ref": "#/definitions/Size"
+                },
+                "showEdges": {
+                    "$ref": "#/definitions/BooleanAppearance"
+                }
+            },
+            "type": "object"
+        },
+        "BaseFilter": {
+            "properties": {
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "itemType": {
+                    "$ref": "#/definitions/ItemType"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "BooleanAppearance": {
+            "properties": {
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "value": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "Color": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/DataColor"
+                },
+                {
+                    "$ref": "#/definitions/FixedColor"
+                },
+                {
+                    "$ref": "#/definitions/RankingColor"
+                },
+                {
+                    "$ref": "#/definitions/PartitionColor"
+                }
+            ]
+        },
+        "ColorScalePointType": {
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "scalePoint": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "DataColor": {
+            "properties": {
+                "type": {
+                    "const": "data",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DataSize": {
+            "properties": {
+                "type": {
+                    "const": "data",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DataStringAttr": {
+            "properties": {
+                "type": {
+                    "const": "data",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DatalessGraph": {
+            "description": "A Graphology graph, without any attribute, to just describe the topology of a graph.",
+            "properties": {
+                "allowSelfLoops": {
+                    "type": "boolean"
+                },
+                "directedSelfLoopCount": {
+                    "type": "number"
+                },
+                "directedSize": {
+                    "type": "number"
+                },
+                "implementation": {
+                    "type": "string"
+                },
+                "multi": {
+                    "type": "boolean"
+                },
+                "order": {
+                    "type": "number"
+                },
+                "selfLoopCount": {
+                    "type": "number"
+                },
+                "size": {
+                    "type": "number"
+                },
+                "type": {
+                    "$ref": "#/definitions/GraphType"
+                },
+                "undirectedSelfLoopCount": {
+                    "type": "number"
+                },
+                "undirectedSize": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "EdgeColor": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/DataColor"
+                },
+                {
+                    "$ref": "#/definitions/SourceNodeColor"
+                },
+                {
+                    "$ref": "#/definitions/TargetNodeColor"
+                },
+                {
+                    "$ref": "#/definitions/FixedColor"
+                },
+                {
+                    "$ref": "#/definitions/RankingColor"
+                },
+                {
+                    "$ref": "#/definitions/PartitionColor"
+                }
+            ]
+        },
+        "FieldModel<\"edges\",false>": {
+            "description": "Describes how Gephi Lite should interpret a nodes or edges field.",
+            "properties": {
+                "dynamic": {
+                    "const": false,
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "itemType": {
+                    "const": "edges",
+                    "type": "string"
+                },
+                "qualitative": {
+                    "properties": {
+                        "separator": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "quantitative": {
+                    "properties": {
+                        "unit": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "FieldModel<\"nodes\",false>": {
+            "description": "Describes how Gephi Lite should interpret a nodes or edges field.",
+            "properties": {
+                "dynamic": {
+                    "const": false,
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "itemType": {
+                    "const": "nodes",
+                    "type": "string"
+                },
+                "qualitative": {
+                    "properties": {
+                        "separator": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "quantitative": {
+                    "properties": {
+                        "unit": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "FieldStringAttr": {
+            "properties": {
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "missingValue": {
+                    "type": "string"
+                },
+                "type": {
+                    "const": "field",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FilterType": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/RangeFilterType"
+                },
+                {
+                    "$ref": "#/definitions/TermsFilterType"
+                },
+                {
+                    "$ref": "#/definitions/ScriptFilterType"
+                },
+                {
+                    "$ref": "#/definitions/TopologicalFilterType"
+                }
+            ]
+        },
+        "FiltersState": {
+            "properties": {
+                "future": {
+                    "items": {
+                        "$ref": "#/definitions/FilterType"
+                    },
+                    "type": "array"
+                },
+                "past": {
+                    "items": {
+                        "$ref": "#/definitions/FilterType"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "FixedColor": {
+            "properties": {
+                "type": {
+                    "const": "fixed",
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FixedLabelSize": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/NoFieldValue<\"fixed\">"
+                },
+                {
+                    "properties": {
+                        "density": {
+                            "type": "number"
+                        },
+                        "zoomCorrelation": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                }
+            ]
+        },
+        "FixedSize": {
+            "properties": {
+                "type": {
+                    "const": "fixed",
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "FixedStringAttr": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/NoFieldValue<\"fixed\">"
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            ]
+        },
+        "GraphDataset": {
+            "description": "A canonical structure that contains the topology of a graph, its nodes and edges attributes and rendering attributes,\nas well as the models to know how to interpret all the attributes.",
+            "properties": {
+                "edgeData": {
+                    "$ref": "#/definitions/Record<string,ItemData>"
+                },
+                "edgeFields": {
+                    "items": {
+                        "$ref": "#/definitions/FieldModel<\"edges\",false>"
+                    },
+                    "type": "array"
+                },
+                "edgeRenderingData": {
+                    "$ref": "#/definitions/Record<string,EdgeRenderingData>"
+                },
+                "fullGraph": {
+                    "$ref": "#/definitions/DatalessGraph"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/GraphMetadata"
+                },
+                "nodeData": {
+                    "$ref": "#/definitions/Record<string,ItemData>"
+                },
+                "nodeFields": {
+                    "items": {
+                        "$ref": "#/definitions/FieldModel<\"nodes\",false>"
+                    },
+                    "type": "array"
+                },
+                "nodeRenderingData": {
+                    "$ref": "#/definitions/Record<string,NodeRenderingData>"
+                }
+            },
+            "type": "object"
+        },
+        "GraphMetadata": {
+            "properties": {
+                "authors": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/GraphType"
+                }
+            },
+            "type": "object"
+        },
+        "GraphType": {
+            "enum": [
+                "directed",
+                "mixed",
+                "undirected"
+            ],
+            "type": "string"
+        },
+        "ItemDataField": {
+            "properties": {
+                "dynamic": {
+                    "type": "boolean"
+                },
+                "field": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ItemLabelSize": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/NoFieldValue<\"item\">"
+                },
+                {
+                    "properties": {
+                        "density": {
+                            "type": "number"
+                        },
+                        "zoomCorrelation": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "sizeCorrelation": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                }
+            ]
+        },
+        "ItemType": {
+            "enum": [
+                "edges",
+                "nodes"
+            ],
+            "type": "string"
+        },
+        "LabelEllipsis": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/NoFieldValue<\"ellipsis\">"
+                },
+                {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "maxLength": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                }
+            ]
+        },
+        "LabelSize": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/FixedLabelSize"
+                },
+                {
+                    "$ref": "#/definitions/ItemLabelSize"
+                }
+            ]
+        },
+        "NoFieldValue<\"ellipsis\">": {
+            "properties": {
+                "type": {
+                    "const": "ellipsis",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "NoFieldValue<\"fixed\">": {
+            "properties": {
+                "type": {
+                    "const": "fixed",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "NoFieldValue<\"item\">": {
+            "properties": {
+                "type": {
+                    "const": "item",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "NoFieldValue<\"none\">": {
+            "properties": {
+                "type": {
+                    "const": "none",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "NoStringAttr": {
+            "properties": {
+                "type": {
+                    "const": "none",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PartitionColor": {
+            "properties": {
+                "colorPalette": {
+                    "$ref": "#/definitions/Record<string,string>"
+                },
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "missingColor": {
+                    "type": "string"
+                },
+                "type": {
+                    "const": "partition",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "RangeFilterType": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/BaseFilter"
+                },
+                {
+                    "properties": {
+                        "itemType": {
+                            "$ref": "#/definitions/ItemType"
+                        },
+                        "keepMissingValues": {
+                            "type": "boolean"
+                        },
+                        "type": {
+                            "const": "range",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "max": {
+                            "type": "number"
+                        },
+                        "min": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                }
+            ]
+        },
+        "RankingColor": {
+            "properties": {
+                "colorScalePoints": {
+                    "items": {
+                        "$ref": "#/definitions/ColorScalePointType"
+                    },
+                    "type": "array"
+                },
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "missingColor": {
+                    "type": "string"
+                },
+                "transformationMethod": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "pow": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "spline": {
+                                    "items": [
+                                        {
+                                            "items": [
+                                                {
+                                                    "type": "number"
+                                                },
+                                                {
+                                                    "type": "number"
+                                                }
+                                            ],
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        },
+                                        {
+                                            "items": [
+                                                {
+                                                    "type": "number"
+                                                },
+                                                {
+                                                    "type": "number"
+                                                }
+                                            ],
+                                            "maxItems": 2,
+                                            "minItems": 2,
+                                            "type": "array"
+                                        }
+                                    ],
+                                    "maxItems": 2,
+                                    "minItems": 2,
+                                    "type": "array"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        {
+                            "const": "log",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "type": {
+                    "const": "ranking",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "RankingSize": {
+            "properties": {
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "maxSize": {
+                    "type": "number"
+                },
+                "minSize": {
+                    "type": "number"
+                },
+                "missingSize": {
+                    "type": "number"
+                },
+                "transformationMethod": {
+                    "$ref": "#/definitions/TransformationMethod"
+                },
+                "type": {
+                    "const": "ranking",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Record<string,EdgeRenderingData>": {
+            "type": "object"
+        },
+        "Record<string,ItemData>": {
+            "type": "object"
+        },
+        "Record<string,NodeRenderingData>": {
+            "type": "object"
+        },
+        "Record<string,string>": {
+            "type": "object"
+        },
+        "ScriptFilterType": {
+            "properties": {
+                "itemType": {
+                    "$ref": "#/definitions/ItemType"
+                },
+                "script": {
+                    "type": "object"
+                },
+                "type": {
+                    "const": "script",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Set<string>": {
+            "properties": {
+                "__@toStringTag@25": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "ShadingColor": {
+            "properties": {
+                "factor": {
+                    "type": "number"
+                },
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "missingColor": {
+                    "type": "string"
+                },
+                "targetColor": {
+                    "type": "string"
+                },
+                "type": {
+                    "const": "shading",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Size": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/DataSize"
+                },
+                {
+                    "$ref": "#/definitions/FixedSize"
+                },
+                {
+                    "$ref": "#/definitions/RankingSize"
+                }
+            ]
+        },
+        "SourceNodeColor": {
+            "properties": {
+                "type": {
+                    "const": "source",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "StringAttr": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/NoStringAttr"
+                },
+                {
+                    "$ref": "#/definitions/DataStringAttr"
+                },
+                {
+                    "$ref": "#/definitions/FixedStringAttr"
+                },
+                {
+                    "$ref": "#/definitions/FieldStringAttr"
+                }
+            ]
+        },
+        "TargetNodeColor": {
+            "properties": {
+                "type": {
+                    "const": "target",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "TermsFilterType": {
+            "properties": {
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "itemType": {
+                    "$ref": "#/definitions/ItemType"
+                },
+                "keepMissingValues": {
+                    "type": "boolean"
+                },
+                "terms": {
+                    "$ref": "#/definitions/Set<string>"
+                },
+                "type": {
+                    "const": "terms",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "TopologicalFilterType": {
+            "properties": {
+                "parameters": {
+                    "items": {},
+                    "type": "array"
+                },
+                "topologicalFilterId": {
+                    "type": "string"
+                },
+                "type": {
+                    "const": "topological",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "TransformationMethod": {
+            "anyOf": [
+                {
+                    "properties": {
+                        "pow": {
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "spline": {
+                            "items": [
+                                {
+                                    "items": [
+                                        {
+                                            "type": "number"
+                                        },
+                                        {
+                                            "type": "number"
+                                        }
+                                    ],
+                                    "maxItems": 2,
+                                    "minItems": 2,
+                                    "type": "array"
+                                },
+                                {
+                                    "items": [
+                                        {
+                                            "type": "number"
+                                        },
+                                        {
+                                            "type": "number"
+                                        }
+                                    ],
+                                    "maxItems": 2,
+                                    "minItems": 2,
+                                    "type": "array"
+                                }
+                            ],
+                            "maxItems": 2,
+                            "minItems": 2,
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                {
+                    "const": "log",
+                    "type": "string"
+                }
+            ]
+        },
+        "ZIndexAttr": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/ZIndexFieldAttr"
+                },
+                {
+                    "$ref": "#/definitions/NoFieldValue<\"none\">"
+                }
+            ]
+        },
+        "ZIndexFieldAttr": {
+            "properties": {
+                "field": {
+                    "$ref": "#/definitions/ItemDataField"
+                },
+                "reversed": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "const": "field",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "description": "A serializable structure, to allow Gephi Lite to load and save graphs, with their surrounding context.\nThis includes:\n- The full graph dataset\n- The filters state\n- The appearance state",
+    "properties": {
+        "appearance": {
+            "$ref": "#/definitions/AppearanceState"
+        },
+        "filters": {
+            "$ref": "#/definitions/FiltersState"
+        },
+        "graphDataset": {
+            "$ref": "#/definitions/GraphDataset"
+        },
+        "type": {
+            "const": "gephi-lite",
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
+
