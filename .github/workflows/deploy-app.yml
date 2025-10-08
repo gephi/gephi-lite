@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          BASE_URL: /gephi-lite/v${{ env.PACKAGE_VERSION }}
+          BASE_URL: ./
 
       - name: Create site folder
         run: mkdir -p website/v${{ env.PACKAGE_VERSION }}
