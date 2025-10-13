@@ -1,6 +1,7 @@
 import { getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
+import { sessionStorage } from "../../utils/storage";
 import { ItemType } from "../types";
 import {
   AppearanceState,

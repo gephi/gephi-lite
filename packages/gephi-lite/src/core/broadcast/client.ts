@@ -39,7 +39,7 @@ const BROADCAST_METHODS: {
     return;
   },
   getVersion: async () => {
-    return config.version;
+    return config.version.toString();
   },
   importGraph: async (data) => {
     if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");

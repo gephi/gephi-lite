@@ -5,6 +5,7 @@ import useKonami from "react-use-konami";
 
 import { WelcomeModal } from "../components/modals/WelcomeModal";
 import { I18n } from "../locales/provider";
+import { sessionStorage } from "../utils/storage";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";

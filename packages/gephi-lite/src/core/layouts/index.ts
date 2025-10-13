@@ -3,6 +3,7 @@ import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
 import seedRandom from "seedrandom";
 
+import { localStorage } from "../../utils/storage";
 import { EVENTS, emitter } from "../context/eventsContext";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";

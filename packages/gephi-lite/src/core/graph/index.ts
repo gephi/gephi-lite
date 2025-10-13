@@ -23,6 +23,7 @@ import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omi
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
+import { sessionStorage } from "../../utils/storage";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { useGraphDataset } from "../context/dataContexts";

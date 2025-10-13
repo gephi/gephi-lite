@@ -1,6 +1,7 @@
 import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
 import { i18n } from "../../locales/provider";
+import { localStorage } from "../../utils/storage";
 import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
