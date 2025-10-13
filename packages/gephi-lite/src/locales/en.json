@@ -325,7 +325,7 @@
       },
       "local": {
         "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML or Graphology JSON file ",
-        "error": "An error occurred while opening the file. Please check that the file is a valid.",
+        "error": "An error occurred while opening the file. Please check that the file is a valid and compatible with the actual version.",
         "success": "File {{filename}} has been successfully loaded",
         "title": "Open a local file"
       },

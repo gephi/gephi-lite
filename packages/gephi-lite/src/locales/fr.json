@@ -486,7 +486,7 @@
       "local": {
         "button_text": "Sélectionner un fichier local",
         "dragndrop_text": "Faites glisser-déposer un fichier GEXF, GRAPHML ou JSON au format Graphology.",
-        "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier que le fichier est valide.",
+        "error": "Une erreur s'est produite lors de l'ouverture du fichier. Veuillez vérifier que le fichier est valide et compatible avec la version courante.",
         "success": "Le fichier {{filename}} a bien été ouvert",
         "title": "Ouvrir un fichier local"
       },

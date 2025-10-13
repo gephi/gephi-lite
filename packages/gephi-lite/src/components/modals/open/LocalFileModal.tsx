@@ -23,6 +23,8 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
     status: { type: importStateType },
   } = useFile();
 
+  useEffect(() => {}, []);
+
   const onSubmit = useCallback(
     async (file: File) => {
       onStatusChange({ type: "loading" });
@@ -61,13 +63,13 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
         if (file) onSubmit(file);
       }}
     >
-      {importStateType === "error" && <p className="text-center text-danger">{t("graph.open.local.error")}</p>}
       <DropInput
         value={file}
         onChange={(file) => setFile(file)}
         helpText={t("graph.open.local.dragndrop_text")}
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
       >
+        {importStateType === "error" && <p className="text-center text-danger">{t("graph.open.local.error")}</p>}
         {!file && (
           <button className="gl-btn gl-btn-outline mb-2">
             <PiFolderOpen /> {t("graph.open.local.button_text")}

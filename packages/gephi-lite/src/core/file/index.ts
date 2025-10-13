@@ -32,6 +32,7 @@ function getLocalStorageFileState(): FileState {
   return {
     ...getEmptyFileState(),
     ...state,
+    status: { type: "idle" },
   };
 }
 
@@ -119,11 +120,10 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
 
     // Reset the camera
     resetCamera({ forceRefresh: true });
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
     throw e;
-  } finally {
-    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
   }
 });
 

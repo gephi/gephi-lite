@@ -2,7 +2,9 @@ import { FieldModel, gephiLiteParse } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
+import { parse as parseVersion } from "semver";
 
+import { config } from "../../config";
 import { userAtom } from "../user";
 import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
 
@@ -88,10 +90,18 @@ export async function extractGraphFromFile(
     case "json": {
       const jsonContent = gephiLiteParse(fileContent);
       if ("type" in jsonContent && jsonContent.type === "gephi-lite") {
-        return {
-          format: "gephi-lite",
-          data: jsonContent,
-        };
+        const version = parseVersion(jsonContent.version);
+        console.log("version", version, config.version);
+        if (version && version.major === config.version.major && version.minor === config.version.minor) {
+          return {
+            format: "gephi-lite",
+            data: jsonContent,
+          };
+        } else {
+          throw new Error(
+            `Your file is from an older version of gephi-lite (${version?.toString()}) which is not compatible with the actual version`,
+          );
+        }
       } else {
         return {
           format: "graphology",
