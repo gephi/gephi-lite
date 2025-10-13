@@ -1,5 +1,6 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
+import { localStorage } from "../../utils/storage";
 import { Preferences } from "./types";
 import { getAppliedTheme, getCurrentPreferences, serializePreferences } from "./utils";
 

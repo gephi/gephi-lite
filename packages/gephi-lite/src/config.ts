@@ -1,7 +1,9 @@
+import { parse } from "semver";
+
 import { version } from "../package.json";
 
 export const config = {
-  version,
+  version: parse(version)!,
   website_url: "https://github.com/gephi/gephi-lite#readme",
   notificationTimeoutMs: 3000,
   github_proxy: import.meta.env.VITE_GITHUB_PROXY || "/_github",

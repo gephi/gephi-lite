@@ -2,6 +2,7 @@ import { isNil } from "lodash";
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { localStorage } from "../../utils/storage";
 import { ghProviderDeserialize } from "../cloud/github/provider";
 import { useNotifications } from "../notifications";
 import { LS_USER_KEY, useConnectedUser } from "./index";

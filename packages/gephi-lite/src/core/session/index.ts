@@ -1,5 +1,6 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
+import { sessionStorage } from "../../utils/storage";
 import { Session } from "./types";
 import { getEmptySession, serializeSession } from "./utils";
 

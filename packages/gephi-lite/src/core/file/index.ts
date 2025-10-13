@@ -5,6 +5,7 @@ import { write } from "graphology-gexf";
 import { isEmpty, isEqual } from "lodash";
 
 import { config } from "../../config";
+import { localStorage } from "../../utils/storage";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { applyVisualProperties, inferAppearanceState } from "../appearance/utils";
 import { resetStates } from "../context/dataContexts";
@@ -132,7 +133,7 @@ export const exportAsGephiLite = asyncAction(async (callback: (data: string) => 
   try {
     const data: GephiLiteFileFormat = {
       type: "gephi-lite",
-      version: config.version,
+      version: config.version.toString(),
       graphDataset: graphDatasetAtom.get(),
       filters: filtersAtom.get(),
       appearance: appearanceAtom.get(),

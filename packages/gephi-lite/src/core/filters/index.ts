@@ -1,6 +1,7 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { dropRight, inRange } from "lodash";
 
+import { sessionStorage } from "../../utils/storage";
 import { FilterType, FiltersState } from "./types";
 import { getEmptyFiltersState, serializeFiltersState } from "./utils";
 
