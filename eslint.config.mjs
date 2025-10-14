@@ -84,7 +84,6 @@ export default [
   },
   {
     files: ["**/dist/*.d.ts", "**/dist/**/*.d.ts", "**/dist/*.d.mts", "**/dist/**/*.d.mts"],
-
     rules: {
       "import/extensions": "off",
       "@typescript-eslint/no-explicit-any": "off",
