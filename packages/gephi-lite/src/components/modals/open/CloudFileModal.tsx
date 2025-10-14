@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
+import { errorToString } from "../../../core/errors";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
 import { displayDateTime } from "../../../utils/date";
@@ -18,13 +19,14 @@ const PAGINATION_SIZE = 12;
 interface OpenCloudFileFormProps {
   id?: string;
   onStatusChange: (status: AsyncStatus) => void;
+  status: AsyncStatus;
 }
 
-export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChange }) => {
+export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChange, status }) => {
   const [user] = useConnectedUser();
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { loading, error, getFiles, openFile } = useCloudProvider();
+  const { loading, getFiles, openFile } = useCloudProvider();
   // list files retrived from the cloud
   const [files, setFiles] = useState<Array<Omit<CloudFile, "format">>>([]);
   // the selected file by the user
@@ -58,13 +60,8 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
             message: t("graph.open.github.success", { filename: selected.filename }).toString(),
           });
         } catch (e) {
-          onStatusChange({ type: "error" });
+          onStatusChange({ type: "error", message: errorToString(e) });
           console.error(e);
-          notify({
-            type: "error",
-            message: t("graph.open.github.error"),
-            title: t("gephi-lite.title"),
-          });
         }
       }
     },
@@ -81,7 +78,9 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
             onSubmit(selected);
           }}
         >
-          {error && <p className="text-center text-danger">{t("graph.open.github.error")}</p>}
+          {status.type === "error" && (
+            <p className="text-center text-danger">{status.message || t("graph.open.github.error")}</p>
+          )}
 
           {files.length > 0 && (
             <>

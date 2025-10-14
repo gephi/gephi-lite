@@ -2,7 +2,8 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiFolderOpen } from "react-icons/pi";
 
-import { useFile, useFileActions } from "../../../core/context/dataContexts";
+import { useFileActions } from "../../../core/context/dataContexts";
+import { errorToString } from "../../../core/errors";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
@@ -13,17 +14,17 @@ import { Modal } from "../../modals";
 interface OpenLocalFileFormProps {
   id?: string;
   onStatusChange: (status: AsyncStatus) => void;
+  status: AsyncStatus;
 }
-export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChange }) => {
+export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChange, status }) => {
   const { t } = useTranslation();
   const { open } = useFileActions();
   const { notify } = useNotifications();
   const [file, setFile] = useState<File | null>(null);
-  const {
-    status: { type: importStateType },
-  } = useFile();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (file === null) onStatusChange({ type: "idle" });
+  }, [file, onStatusChange]);
 
   const onSubmit = useCallback(
     async (file: File) => {
@@ -42,13 +43,8 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
           message: t("graph.open.local.success", { filename: file.name }),
         });
       } catch (e) {
-        onStatusChange({ type: "error" });
+        onStatusChange({ type: "error", message: errorToString(e) });
         console.error(e);
-        notify({
-          type: "error",
-          message: t("graph.open.local.error"),
-          title: t("gephi-lite.title"),
-        });
       }
     },
     [open, notify, t, onStatusChange],
@@ -69,14 +65,16 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
         helpText={t("graph.open.local.dragndrop_text")}
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
       >
-        {importStateType === "error" && <p className="text-center text-danger">{t("graph.open.local.error")}</p>}
+        {status.type === "error" && (
+          <p className="text-center text-danger">{status.message || t("graph.open.local.error")}</p>
+        )}
         {!file && (
           <button className="gl-btn gl-btn-outline mb-2">
             <PiFolderOpen /> {t("graph.open.local.button_text")}
           </button>
         )}
       </DropInput>
-      {importStateType === "loading" && <Loader />}
+      {status.type === "loading" && <Loader />}
     </form>
   );
 };
@@ -92,7 +90,7 @@ export const OpenLocalFileModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
   return (
     <Modal title={t("graph.open.local.title")}>
-      <OpenLocalFileForm id={"localFileForm"} onStatusChange={(s) => setStatus(s)} />
+      <OpenLocalFileForm id={"localFileForm"} onStatusChange={(s) => setStatus(s)} status={status} />
       <div className="gl-gap-2 d-flex">
         <button title={t("common.cancel")} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}
