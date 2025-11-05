@@ -39,4 +39,7 @@
     );
     box-shadow: 0 0 0 4px rgba(var(--gl-component-bg-rgb), 0.33);
   }
+  &:invalid {
+    box-shadow: 0 0 0 4px rgba(var(--gl-error-rgb), 0.7);
+  }
 }

@@ -180,6 +180,8 @@ $colors-light: (
   // Tooltip
   "tooltip-color": $gl-ref-color-neutral-10,
   "tooltip-bg": $gl-ref-color-neutral-95,
+  //
+  "error": $gl-ref-color-neutral-100,
 );
 
 $colors-dark: (
@@ -210,6 +212,8 @@ $colors-dark: (
   // Tooltip
   "tooltip-color": $gl-ref-color-neutral-10,
   "tooltip-bg": $gl-ref-color-neutral-95,
+  //
+  "error": $gl-ref-color-neutral-00,
 );
 
 :root {
