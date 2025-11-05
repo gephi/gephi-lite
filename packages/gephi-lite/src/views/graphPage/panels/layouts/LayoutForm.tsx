@@ -1,7 +1,7 @@
 import { FieldModel } from "@gephi/gephi-lite-sdk";
 import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
-import { isNil } from "lodash";
+import { isNil, omit } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
@@ -35,6 +35,7 @@ export const LayoutForm: FC<{
   const dataset = useGraphDataset();
   const sigmaGraph = useSigmaGraph();
   const { nodeFields, edgeFields } = dataset;
+  const [errors, setErrors] = useState<{ [fieldId: string]: string[] } | null>(null);
   const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
   // get layout parameter from the session if it exists
   const [session, setSession] = useAtom(sessionAtom);
@@ -55,6 +56,25 @@ export const LayoutForm: FC<{
     [layout],
   );
 
+  useEffect(() => {
+    const errors: { [fieldId: string]: string[] } = {};
+    layout.parameters.forEach((param) => {
+      const value = layoutParameters[param.id];
+
+      const fieldErrors = [];
+      if (param.required === true && isNil(value)) fieldErrors.push(`form.error.required`);
+      if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
+        fieldErrors.push(`form.error.min`);
+      if ("max" in param && param.max && !isNil(value) && (value as number) < param.max)
+        fieldErrors.push(`form.error.max`);
+
+      if (fieldErrors.length > 0) {
+        errors[param.id] = fieldErrors;
+      }
+    });
+    setErrors(Object.keys(errors).length > 0 ? errors : null);
+  }, [layout, layoutParameters]);
+
   /**
    * When the layout change
    * => we load the layout paramaters
@@ -74,6 +94,7 @@ export const LayoutForm: FC<{
 
   /**
    * OnChange function for parameters
+   * if the new value is null or undefined, we remove it from the parameters.
    */
   const changeParameter = useCallback(
     (key: string, value: unknown) => {
@@ -82,8 +103,8 @@ export const LayoutForm: FC<{
         layoutsParameters: {
           ...prev.layoutsParameters,
           [layout.id]: {
-            ...(prev.layoutsParameters[layout.id] || {}),
-            ...{ [key]: value },
+            ...omit(prev.layoutsParameters[layout.id] || {}, [key]),
+            ...(!isNil(value) ? { [key]: value } : {}),
           },
         },
       }));
@@ -116,6 +137,11 @@ export const LayoutForm: FC<{
   }, []);
 
   const submit = useCallback(() => {
+    if (errors) {
+      console.error(errors);
+      return;
+    }
+
     if (isRunning) onStop();
     else {
       try {
@@ -123,6 +149,7 @@ export const LayoutForm: FC<{
         // to ensure having up-to-date data:
         const latestSession = sessionAtom.get();
         const latestLayoutParameters = latestSession.layoutsParameters[layout.id] || {};
+        console.log(latestLayoutParameters);
         onStart(latestLayoutParameters);
         if (layout.type === "sync")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
@@ -130,7 +157,7 @@ export const LayoutForm: FC<{
         console.error(e);
       }
     }
-  }, [isRunning, layout.id, layout.type, onStart, onStop, setSuccessMessage, t]);
+  }, [isRunning, layout.id, layout.type, onStart, onStop, setSuccessMessage, t, errors]);
 
   return (
     <form
@@ -283,7 +310,7 @@ export const LayoutForm: FC<{
             <ResetIcon />
           </button>
 
-          <button type="submit" className="gl-btn gl-btn-fill">
+          <button type="submit" className="gl-btn gl-btn-fill" disabled={errors !== null}>
             {layout.type === "sync" && <>{t("common.apply")}</>}
             {layout.type === "worker" && (
               <>
