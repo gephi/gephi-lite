@@ -48,16 +48,19 @@ jobs:
         run: |
           cat <<EOF > website/index.html
           <!DOCTYPE HTML>
-          <html lang="en-US">
+          <html lang="en-US" prefix="og: https://ogp.me/ns#">
             <head>
               <meta charset="UTF-8">
+              <title>Gephi-Lite</title>
+              <meta property="og:title" content="Gephi-Lite" />
+              <meta property="og:url" content="https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/" />
+              <meta property="og:image" content="//gephi.org/icons/gephi-lite-logo-inverted.svg" />
               <noscript>
-              <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
+                <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
               </noscript>
               <script type="text/javascript">
                 window.location.href = "https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
               </script>
-              <title>Page Redirection</title>
             </head>
             <body>
                 If you are not redirected automatically, follow this <a href='https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/'>link</a>.
