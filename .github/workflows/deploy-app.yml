@@ -51,10 +51,12 @@ jobs:
           <html lang="en-US" prefix="og: https://ogp.me/ns#">
             <head>
               <meta charset="UTF-8">
-              <title>Gephi-Lite</title>
-              <meta property="og:title" content="Gephi-Lite" />
+              <title>Gephi Lite</title>
+              <meta name="description" content="Gephi Lite is an open-source web application dedicated to visual network analysis" />
+              <meta property="og:title" content="Gephi Lite" />
+              <meta property="og:description" content="Gephi Lite is an open-source web application dedicated to visual network analysis" />
+              <meta property="og:image" content="https://gephi.org/icons/gephi-lite-logo-inverted.svg" />
               <meta property="og:url" content="https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/" />
-              <meta property="og:image" content="//gephi.org/icons/gephi-lite-logo-inverted.svg" />
               <noscript>
                 <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
               </noscript>
