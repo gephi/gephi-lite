@@ -13,6 +13,7 @@ type OpenCollectionMenuItem = MenuItem<{
   component: ComponentType<{
     id?: string;
     onStatusChange: (status: AsyncStatus) => void;
+    status: AsyncStatus;
   }>;
 }>;
 
@@ -60,7 +61,7 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
           onSelectedChange={(item) => setSelectedOpen(item)}
         />
         <div className="selected-component-wrapper">
-          <selectedOpen.component id="openForm" onStatusChange={setStatus} />
+          <selectedOpen.component id="openForm" onStatusChange={setStatus} status={status} />
         </div>
       </>
       <div className="gl-gap-2 d-flex">

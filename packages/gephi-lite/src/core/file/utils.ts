@@ -5,6 +5,7 @@ import graphml from "graphology-graphml/browser";
 import { parse as parseVersion } from "semver";
 
 import { config } from "../../config";
+import { GephiLiteError } from "../errors";
 import { userAtom } from "../user";
 import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
 
@@ -91,16 +92,14 @@ export async function extractGraphFromFile(
       const jsonContent = gephiLiteParse(fileContent);
       if ("type" in jsonContent && jsonContent.type === "gephi-lite") {
         const version = parseVersion(jsonContent.version);
-        console.log("version", version, config.version);
-        if (version && version.major === config.version.major && version.minor === config.version.minor) {
+        if (version) {
+          if (version.major !== config.version.major || version.minor !== config.version.minor) {
+            throw new GephiLiteError("IMPORT_BAD_VERSION", { version: version?.toString() });
+          }
           return {
             format: "gephi-lite",
             data: jsonContent,
           };
-        } else {
-          throw new Error(
-            `Your file is from an older version of gephi-lite (${version?.toString()}) which is not compatible with the actual version`,
-          );
         }
       } else {
         return {
@@ -110,7 +109,7 @@ export async function extractGraphFromFile(
       }
     }
   }
-  throw new Error(`Extension ${extension} for file ${fileName} is not recognized`);
+  throw new GephiLiteError("IMPORT_BAD_FORMAT", { extension, fileName });
 }
 
 /**

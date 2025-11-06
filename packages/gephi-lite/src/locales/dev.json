@@ -258,6 +258,8 @@
     "deprecated": {
       "gexf_search_params": "The `gexf=` url params to open a graph file has been renamed as `file=` in version 0.4.0. Using gexf params is deprecated  and might be removed in future version. Please use `file=` instead."
     },
+    "IMPORT_BAD_FORMAT": "Extension {{extension}} for file {{fileName}} is not recognized",
+    "IMPORT_BAD_VERSION": "Your file is from an older version of Gephi-Lite ({{version}}) which is not compatible with the actual version",
     "form": {
       "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
       "max": "Field {{name}} should be less than or equal to {{max}}",
@@ -265,7 +267,7 @@
       "required": "Field {{name}} is required",
       "unique": "Value must be unique, and a data with the same value already exist"
     },
-    "message": "Sorry, we are working to make gephi-lite better, but bugs still happened...<br />It will help us if you can open an issue on GitHub with a description of what you were doing.",
+    "message": "Sorry, we are working to make Gephi-Lite better, but bugs still happened...<br />It will help us if you can open an issue on GitHub with a description of what you were doing.",
     "not_found": {
       "paragraph": "You may have mistyped the address or the page may have moved.",
       "subtitle": "The page you were looking for doesn't exist.",
