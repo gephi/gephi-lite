@@ -190,13 +190,14 @@
     "full_graph": "Full graph",
     "inapplicable": "Filter disabled: only one value available",
     "keepMissingValues": "Keep missing values",
+    "missingValues": "Missing values",
+    "noValueOption": "No value",
     "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
     "range": "range",
     "script": "Custom filter",
     "terms": "exact values",
     "title": "Filters",
     "topological": "Topology",
-    "using": "Using",
     "topology": {
       "ego": {
         "core": "depth: maximum distance to ego",
@@ -211,16 +212,15 @@
       },
       "kCore": {
         "core": "k: minimum degree nodes should have",
-        "label": "K-Core",
-        "keepSelfLoop": "Keep self-loops"
+        "keepSelfLoop": "Keep self-loops",
+        "label": "K-Core"
       },
       "largestConnectedComponent": {
         "label": "Connected component",
         "number": "Number of largest components to keep"
       }
     },
-    "missingValues": "Missing values",
-    "noValueOption": "No value"
+    "using": "Using"
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",
@@ -277,7 +277,9 @@
       "title": "Graph metadata"
     },
     "model": {
+      "degree": "Degree",
       "directed": "Directed",
+      "dynamic": "dynamic",
       "edges": "edges",
       "edges-data": {
         "attribute-name": "Attribute name",
@@ -311,11 +313,9 @@
       },
       "nodes_one": "node",
       "nodes_zero": "node",
-      "title": "Attributes' Model",
-      "undirected": "Undirected",
-      "dynamic": "dynamic",
       "selfLoop": "Self-loop?",
-      "degree": "Degree"
+      "title": "Attributes' Model",
+      "undirected": "Undirected"
     },
     "open": {
       "github": {
