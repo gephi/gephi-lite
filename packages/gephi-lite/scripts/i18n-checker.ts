@@ -172,7 +172,7 @@ function visitCallExpression(
   // function argument
   if (optionsNode && ts.isObjectLiteralExpression(optionsNode)) {
     const optionsType = checker.getTypeAtLocation(optionsNode);
-    const nsSymbol = optionsType.symbol.members?.get(ts.escapeLeadingUnderscores("ns"));
+    const nsSymbol = optionsType.symbol?.members?.get(ts.escapeLeadingUnderscores("ns"));
     if (
       nsSymbol &&
       nsSymbol.valueDeclaration &&
@@ -184,7 +184,7 @@ function visitCallExpression(
 
     // The key prefix option is only valid if getFixedT() was called with a
     // prefix
-    const keyPrefixSymbol = optionsType.symbol.members?.get(ts.escapeLeadingUnderscores("keyPrefix"));
+    const keyPrefixSymbol = optionsType.symbol?.members?.get(ts.escapeLeadingUnderscores("keyPrefix"));
     if (
       prefix &&
       keyPrefixSymbol &&
