@@ -1,5 +1,14 @@
 # Gephi Lite - Changelog:
 
+## 1.0.1
+
+### Debug
+
+- [#272](https://github.com/gephi/gephi-lite/issues/272): Layout & metric form validation
+- [#268](https://github.com/gephi/gephi-lite/issues/268): Importing v0.6.3 JSON file
+- Improve dark mode for loader and checkboxes
+- Add major–minor versioning to session/local-storage keys
+
 ## 1.0.0 aka "we're proud of it"
 
 This version results from the user research made by the UX designer Arthur Desaintjan with the OuestWare team.
