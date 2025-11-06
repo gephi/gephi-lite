@@ -35,7 +35,7 @@ export const LayoutForm: FC<{
   const dataset = useGraphDataset();
   const sigmaGraph = useSigmaGraph();
   const { nodeFields, edgeFields } = dataset;
-  const [errors, setErrors] = useState<{ [fieldId: string]: string[] } | null>(null);
+  const [errors, setErrors] = useState<{ [fieldId: string]: string } | null>(null);
   const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
   // get layout parameter from the session if it exists
   const [session, setSession] = useAtom(sessionAtom);
@@ -57,23 +57,19 @@ export const LayoutForm: FC<{
   );
 
   useEffect(() => {
-    const errors: { [fieldId: string]: string[] } = {};
+    const errors: { [fieldId: string]: string } = {};
     layout.parameters.forEach((param) => {
+      const name = t(`layouts.${layout.id}.parameters.${param.id}.title`);
       const value = layoutParameters[param.id];
 
-      const fieldErrors = [];
-      if (param.required === true && isNil(value)) fieldErrors.push(`form.error.required`);
-      if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
-        fieldErrors.push(`form.error.min`);
-      if ("max" in param && param.max && !isNil(value) && (value as number) < param.max)
-        fieldErrors.push(`form.error.max`);
-
-      if (fieldErrors.length > 0) {
-        errors[param.id] = fieldErrors;
-      }
+      if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
+      else if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
+        errors[param.id] = t(`error.form.min`, { ...param, name });
+      else if ("max" in param && param.max && !isNil(value) && (value as number) < param.max)
+        errors[param.id] = t(`error.form.max`, { ...param, name });
     });
     setErrors(Object.keys(errors).length > 0 ? errors : null);
-  }, [layout, layoutParameters]);
+  }, [layout, layoutParameters, t]);
 
   /**
    * When the layout change
@@ -279,6 +275,21 @@ export const LayoutForm: FC<{
       <div className="panel-footer ">
         {success && (
           <MessageAlert key={success.date} message={<p className="gl-m-0">{success.message}</p>} type="success" />
+        )}
+        {errors && (
+          <MessageAlert
+            key={JSON.stringify(errors)}
+            message={
+              <ul className="list-unstyled">
+                {Object.keys(errors).map((fieldId) => (
+                  <li key={fieldId} className="gl-my-2">
+                    {errors[fieldId]}
+                  </li>
+                ))}
+              </ul>
+            }
+            type="error"
+          />
         )}
         <div className="gl-actions">
           {layout.buttons?.map(({ id, description, getSettings }) => (

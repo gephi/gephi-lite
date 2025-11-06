@@ -159,7 +159,10 @@
   },
   "error": {
     "form": {
-      "required": "Field is required",
+      "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
+      "max": "Field {{name}} should be less than or equal to {{max}}",
+      "min": "Field {{name}} should be greater than or equal to {{min}}",
+      "required": "Field {{name}} is required",
       "unique": "Value must be unique, and a data with the same value already exist"
     },
     "message": "Sorry, we are working to make gephi-lite better but bugs still happened... It will help us if you can open an issue on GitHub with a description of what you were doing.",

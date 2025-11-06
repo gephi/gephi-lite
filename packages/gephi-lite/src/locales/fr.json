@@ -282,7 +282,9 @@
     },
     "form": {
       "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
-      "required": "Champs requis",
+      "max": "Le champ {{name}} doit être inférieur ou égal à {{max}}",
+      "min": "Le champ {{name}} doit être supérieur ou égal à {{min}}",
+      "required": "Le champ {{name}} est requis",
       "unique": "Une autre entrée existe déjà avec cette valeur"
     },
     "message": "Désolé ! gephi-lite est en constante amélioration mais des bugs nous échappe... Vous pouvez signaler cette erreur sur GitHub en cliquant sur le bouton ci-dessous.",
