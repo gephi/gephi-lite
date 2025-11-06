@@ -277,11 +277,11 @@
     "update_this_nodes": "Éditer ce nœud"
   },
   "error": {
+    "IMPORT_BAD_FORMAT": "L'extension {{extension}} du fichier {{fileName}} n'est pas reconnue",
+    "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante",
     "deprecated": {
       "gexf_search_params": "Le paramètre d'URL `gexf=` pour ouvrir un fichier automatiquement a été renommé `file=` dans la version 0.4.0. Utiliser le paramètre gexf est déprécié, et pourrait ne plus fonctionner dans une version future. Veuillez utiliser `file=` à la place."
     },
-    "IMPORT_BAD_FORMAT": "L'extension {{extension}} du fichier {{fileName}} n'est pas reconnue",
-    "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante",
     "form": {
       "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
       "max": "Le champ {{name}} doit être inférieur ou égal à {{max}}",
