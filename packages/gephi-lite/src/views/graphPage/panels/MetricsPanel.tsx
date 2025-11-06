@@ -30,13 +30,18 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
     edges: keyBy(edgeFields, "id"),
   };
   const [success, setSuccess] = useState<{ date: number; message: string } | null>(null);
+  const [errors, setErrors] = useState<{ [fieldId: string]: string } | null>(null);
   const [submitCount, setSubmitCount] = useState(0);
   // get metric config from the preference if it exists
   const [session, setSession] = useAtom(sessionAtom);
-  const metricConfig = session.metrics[metric.id] || {
-    parameters: {},
-    attributeNames: {},
-  };
+  const metricConfig = useMemo(
+    () =>
+      session.metrics[metric.id] || {
+        parameters: {},
+        attributeNames: {},
+      },
+    [metric.id, session.metrics],
+  );
 
   // default metric config
   const metricDefaultConfig = useMemo(
@@ -80,6 +85,33 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
       return next;
     });
   }, [metric, metricDefaultConfig, setSession]);
+
+  /**
+   * When the metric params changed
+   * => we check for form errors
+   */
+  useEffect(() => {
+    const errors: { [fieldId: string]: string } = {};
+    // Checking parameters
+    metric.parameters.forEach((param) => {
+      const name = t(`${prefix}.parameters.${param.id}.title`);
+      const value = metricConfig.parameters[param.id];
+
+      if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
+      else if ("min" in param && param.min && !isNil(value) && (value as unknown as number) < param.min)
+        errors[param.id] = t(`error.form.min`, { ...param, name });
+      else if ("max" in param && param.max && !isNil(value) && (value as unknown as number) < param.max)
+        errors[param.id] = t(`error.form.max`, { ...param, name });
+    });
+    // Checking output, they are required
+    flatMap(metric.outputs, (outputs, _itemType: ItemType) =>
+      map(outputs, (_type, name) => {
+        const value = metricConfig.attributeNames[name];
+        if (isNil(value) || value === "") errors[name] = t(`error.form.required`, { name });
+      }),
+    );
+    setErrors(Object.keys(errors).length > 0 ? errors : null);
+  }, [metric, metricConfig, prefix, t]);
 
   /**
    * OnChange function for parameters
@@ -260,6 +292,21 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
         {success && (
           <MessageAlert key={success.date} message={<p className="gl-m-0">{success.message}</p>} type="success" />
         )}
+        {errors && (
+          <MessageAlert
+            key={JSON.stringify(errors)}
+            message={
+              <ul className="list-unstyled">
+                {Object.keys(errors).map((fieldId) => (
+                  <li key={fieldId} className="gl-my-2">
+                    {errors[fieldId]}
+                  </li>
+                ))}
+              </ul>
+            }
+            type="error"
+          />
+        )}
         <div className="gl-actions">
           <button
             type="reset"
@@ -269,7 +316,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
           >
             <ResetIcon />
           </button>
-          <button type="submit" className="gl-btn gl-btn-fill">
+          <button type="submit" className="gl-btn gl-btn-fill" disabled={errors !== null}>
             {t("metrics.compute", { count: Object.keys(metricConfig.attributeNames).length })}
           </button>
         </div>

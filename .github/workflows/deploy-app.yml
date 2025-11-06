@@ -58,7 +58,7 @@ jobs:
               <meta property="og:image" content="https://gephi.org/icons/gephi-lite-logo-inverted.svg" />
               <meta property="og:url" content="https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/" />
               <noscript>
-                <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
+              <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
               </noscript>
               <script type="text/javascript">
                 window.location.href = "https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')

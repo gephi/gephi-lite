@@ -56,6 +56,10 @@ export const LayoutForm: FC<{
     [layout],
   );
 
+  /**
+   * When layout params changed
+   * => we check for form errors
+   */
   useEffect(() => {
     const errors: { [fieldId: string]: string } = {};
     layout.parameters.forEach((param) => {
