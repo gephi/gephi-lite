@@ -222,8 +222,12 @@
     "missingValues": "Missing values",
     "noValueOption": "No value",
     "timeline": {
-      "label": "Timeline range",
-      "description": "Filter edges by date/time range"
+      "label": "Timeline",
+      "description": "Filter edges by date/time range",
+      "window_mode": "Fixed time window mode",
+      "window_size": "Window size",
+      "fade_mode": "Show faded edges and nodes",
+      "fade_mode_hint": "Keep filtered items visible with low opacity instead of hiding them"
     }
   },
   "gephi-lite": {

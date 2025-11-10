@@ -1,7 +1,6 @@
 import cx from "classnames";
-import { clamp, flatMap, keyBy, last, mapValues, max, min, uniq } from "lodash";
+import { flatMap, last, max, min } from "lodash";
 import { DateTime } from "luxon";
-import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +13,7 @@ import {
   mergeStaticDynamicData,
 } from "../../core/graph/dynamicAttributes";
 import { castScalarToModelValue } from "../../core/graph/fieldModel";
+import { TimeRangeSlider } from "./TimeRangeSlider";
 import { findRanges, shortenNumber } from "./utils";
 
 interface TimeRange {
@@ -30,13 +30,6 @@ interface TimelineMetric {
   maxCount: number;
   ranges: TimeRange[];
 }
-
-const TIMELINE_STYLE = {
-  dotStyle: { borderColor: "#ccc" },
-  railStyle: { backgroundColor: "#ccc" },
-  activeDotStyle: { borderColor: "black" },
-  trackStyle: [{ backgroundColor: "black" }, { backgroundColor: "black" }],
-};
 
 export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: number }> = ({ filter, filterIndex }) => {
   const parentGraph = useFilteredGraphAt(filterIndex - 1);
@@ -94,26 +87,6 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
   // Call hooks before any early returns
   const filteredGraph = useFilteredGraphAt(filterIndex);
 
-  const marks: SliderProps["marks"] = timelineMetric
-    ? mapValues(
-        keyBy(
-          uniq(
-            timelineMetric.ranges
-              .flatMap((r) => [r.min, r.max])
-              .concat([
-                filter.minDate || timelineMetric.min,
-                filter.maxDate !== undefined ? filter.maxDate + timelineMetric.step : timelineMetric.max,
-              ]),
-          ),
-        ),
-        () => "",
-      )
-    : {};
-
-  const formatTimestamp = (timestamp: number) => {
-    return DateTime.fromMillis(timestamp).toFormat("yyyy-MM-dd");
-  };
-
   if (!timelineMetric) return null;
 
   const filteredEdgeData = mergeStaticDynamicData(
@@ -124,7 +97,7 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
   return (
     <>
       <div className="filter-content">
-        <label htmlFor={`filter-${filterIndex}-timeline`}>{t("filters.timeline.label")}</label>
+        <label htmlFor={`filter-${filterIndex}-timeline`}>{t("Timeline")}</label>
 
         <ul className="range-filter-barchart">
           {timelineMetric.ranges.map((range, i) => {
@@ -164,57 +137,47 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
           })}
         </ul>
 
-        <Slider
-          className="pb-3"
-          range
-          disabled={timelineMetric.min === timelineMetric.max}
+        <TimeRangeSlider
+          min={new Date(timelineMetric.min)}
+          max={new Date(timelineMetric.max)}
           value={[
-            filter.minDate ?? timelineMetric.min,
-            (filter.maxDate ?? timelineMetric.max) + timelineMetric.step,
-          ].map((n) => clamp(n, timelineMetric.min, timelineMetric.max + timelineMetric.step))}
-          {...timelineMetric}
-          marks={marks}
-          onChange={(value) => {
-            if (Array.isArray(value)) {
-              const [minSelected, maxSelected] = value;
-              const newMin = minSelected;
-              const newMax = maxSelected;
+            new Date(filter.minDate ?? timelineMetric.min),
+            new Date(filter.maxDate ?? timelineMetric.max),
+          ]}
+          onChange={(range) => {
+            const [minDate, maxDate] = range;
+            const newMin = minDate.getTime();
+            const newMax = maxDate.getTime();
 
-              updateFilter(filterIndex, {
-                ...filter,
-                minDate: newMin === timelineMetric.min ? undefined : newMin,
-                maxDate: newMax - timelineMetric.step === timelineMetric.max ? undefined : newMax - timelineMetric.step,
-              });
-            }
+            updateFilter(filterIndex, {
+              ...filter,
+              minDate: newMin === timelineMetric.min ? undefined : newMin,
+              maxDate: newMax === timelineMetric.max ? undefined : newMax,
+            });
           }}
-          {...TIMELINE_STYLE}
+          step={timelineMetric.step}
+          disabled={timelineMetric.min === timelineMetric.max}
         />
 
-        <div className="row mb-3">
-          <div className="col">
-            <label htmlFor={`filter-${filterIndex}-min`}>{t("filters.range.min")}</label>
-            <input
-              id={`filter-${filterIndex}-min`}
-              type="text"
-              disabled={timelineMetric.min === timelineMetric.max}
-              className="form-control"
-              value={filter.minDate ? formatTimestamp(filter.minDate) : ""}
-              placeholder={formatTimestamp(timelineMetric.min)}
-              readOnly
-            />
-          </div>
-          <div className="col">
-            <label htmlFor={`filter-${filterIndex}-max`}>{t("filters.range.max")}</label>
-            <input
-              id={`filter-${filterIndex}-max`}
-              type="text"
-              disabled={timelineMetric.min === timelineMetric.max}
-              className="form-control"
-              value={filter.maxDate ? formatTimestamp(filter.maxDate) : ""}
-              placeholder={formatTimestamp(timelineMetric.max)}
-              readOnly
-            />
-          </div>
+        <div className="form-check mt-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id={`filter-${filterIndex}-fade-mode`}
+            checked={filter.fadeInsteadOfHide ?? false}
+            onChange={(e) => {
+              updateFilter(filterIndex, {
+                ...filter,
+                fadeInsteadOfHide: e.target.checked,
+              });
+            }}
+            disabled={timelineMetric.min === timelineMetric.max}
+          />
+          <label className="form-check-label" htmlFor={`filter-${filterIndex}-fade-mode`}>
+            {t("Fade Nodes")}
+            {" "}
+            <small className="text-muted">({t("Keep filtered items visible with low opacity instead of hiding them")})</small>
+          </label>
         </div>
       </div>
     </>

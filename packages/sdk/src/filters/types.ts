@@ -19,6 +19,7 @@ export interface TimelineFilterType extends BaseFilter {
   minDate?: number; // Unix timestamp in milliseconds
   maxDate?: number; // Unix timestamp in milliseconds
   keepMissingValues?: boolean;
+  fadeInsteadOfHide?: boolean; // If true, apply low opacity instead of hiding filtered items
 }
 
 export interface TermsFilterType extends BaseFilter {
