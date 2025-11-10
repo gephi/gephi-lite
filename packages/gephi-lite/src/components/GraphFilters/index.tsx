@@ -20,6 +20,7 @@ import { MissingValueFilter } from "./MissingValueFilter";
 import { RangeFilter } from "./RangeFilter";
 import { ScriptFilter } from "./ScriptFilter";
 import { TermsFilter } from "./TermsFilter";
+import { TimelineFilter } from "./TimelineFilter";
 import { TopologicalFilter } from "./TopologicalFilter";
 
 const FilterInStack: FC<{
@@ -47,7 +48,8 @@ const FilterInStack: FC<{
               ) : (
                 <ItemTypeIcon type={filter.itemType} className="me-2" />
               )}
-              {(filter.type === "range" || filter.type === "terms") && staticDynamicAttributeLabel(filter.field)}
+              {(filter.type === "range" || filter.type === "terms" || filter.type === "timeline") &&
+                staticDynamicAttributeLabel(filter.field)}
               {filter.type === "topological" && t(`filters.topology.${filter.topologicalFilterId}.label`)}
               {filter.type === "script" && t("filters.script")}
 
@@ -61,6 +63,7 @@ const FilterInStack: FC<{
         {!filter.disabled && (
           <div className="filter-content">
             {filter.type === "range" && <RangeFilter filter={filter} filterIndex={filterIndex} />}
+            {filter.type === "timeline" && <TimelineFilter filter={filter} filterIndex={filterIndex} />}
             {filter.type === "terms" && <TermsFilter filter={filter} filterIndex={filterIndex} />}
             {filter.type === "script" && <ScriptFilter filter={filter} filterIndex={filterIndex} />}
             {filter.type === "topological" && <TopologicalFilter filter={filter} filterIndex={filterIndex} />}

@@ -220,7 +220,11 @@
       }
     },
     "missingValues": "Missing values",
-    "noValueOption": "No value"
+    "noValueOption": "No value",
+    "timeline": {
+      "label": "Timeline range",
+      "description": "Filter edges by date/time range"
+    }
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",

@@ -13,6 +13,14 @@ export type RangeFilterType = BaseFilter & {
   keepMissingValues?: boolean;
 } & { min?: number; max?: number };
 
+export interface TimelineFilterType extends BaseFilter {
+  type: "timeline";
+  itemType: "edges"; // Timeline filters only apply to edges
+  minDate?: number; // Unix timestamp in milliseconds
+  maxDate?: number; // Unix timestamp in milliseconds
+  keepMissingValues?: boolean;
+}
+
 export interface TermsFilterType extends BaseFilter {
   type: "terms";
   itemType: ItemType;
@@ -38,6 +46,7 @@ export interface MissingValueFilterType extends Omit<BaseFilter, "field"> {
 
 export type FilterType =
   | RangeFilterType
+  | TimelineFilterType
   | TermsFilterType
   | TopologicalFilterType
   | ScriptFilterType

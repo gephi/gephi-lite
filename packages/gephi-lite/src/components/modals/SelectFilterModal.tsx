@@ -14,8 +14,8 @@ import { ModalProps } from "../../core/modals/types";
 import { FieldModelIcons, ItemTypeIcon, MissingValueFilterIcon } from "../common-icons";
 import { Modal } from "../modals";
 
-const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | null> = {
-  date: "range",
+const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | "timeline" | null> = {
+  date: "range", // Will be overridden to "timeline" for edges
   number: "range",
   keywords: "terms",
   category: "terms",
@@ -91,7 +91,11 @@ const SelectFilterModal: FC<
                   [
                     fieldsList.map((field) => {
                       const Icon = FieldModelIcons[field.type];
-                      const filterType = FILTER_TYPES_PER_FIELD_TYPES[field.type];
+                      // Use timeline filter for date fields on edges, range filter for nodes
+                      let filterType = FILTER_TYPES_PER_FIELD_TYPES[field.type];
+                      if (filterType === "range" && field.type === "date" && type === "edges") {
+                        filterType = "timeline";
+                      }
 
                       return (
                         <button
@@ -99,13 +103,28 @@ const SelectFilterModal: FC<
                           className="gl-btn gl-btn-outline"
                           disabled={!filterType}
                           onClick={() => {
-                            if (filterType)
+                            if (filterType === "timeline") {
                               createNewFilter({
-                                itemType: type,
-                                type: filterType,
+                                itemType: "edges",
+                                type: "timeline",
                                 field,
                                 keepMissingValues: true,
                               });
+                            } else if (filterType === "range") {
+                              createNewFilter({
+                                itemType: type,
+                                type: "range",
+                                field,
+                                keepMissingValues: true,
+                              });
+                            } else if (filterType === "terms") {
+                              createNewFilter({
+                                itemType: type,
+                                type: "terms",
+                                field,
+                                keepMissingValues: true,
+                              });
+                            }
                           }}
                         >
                           <Icon className="me-1" />

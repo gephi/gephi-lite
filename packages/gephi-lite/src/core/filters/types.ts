@@ -6,6 +6,7 @@ export {
   type FiltersState,
   type FilterType,
   type RangeFilterType,
+  type TimelineFilterType,
   type ScriptFilterType,
   type TermsFilterType,
   type TopologicalFilterType,

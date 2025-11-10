@@ -1,0 +1,229 @@
+{
+  "type": "gephi-lite",
+  "version": "1.0.0",
+  "graphDataset": {
+    "nodeData": {
+      "alice": {
+        "label": "Alice",
+        "size": 10,
+        "color": "#e74c3c"
+      },
+      "bob": {
+        "label": "Bob",
+        "size": 10,
+        "color": "#3498db"
+      },
+      "carol": {
+        "label": "Carol",
+        "size": 10,
+        "color": "#2ecc71"
+      },
+      "dave": {
+        "label": "Dave",
+        "size": 10,
+        "color": "#f39c12"
+      },
+      "eve": {
+        "label": "Eve",
+        "size": 10,
+        "color": "#9b59b6"
+      }
+    },
+    "edgeData": {
+      "e1": {
+        "timestamp": "2023-01-15",
+        "weight": 5,
+        "interaction": "message"
+      },
+      "e2": {
+        "timestamp": "2023-02-20",
+        "weight": 3,
+        "interaction": "call"
+      },
+      "e3": {
+        "timestamp": "2023-03-10",
+        "weight": 8,
+        "interaction": "meeting"
+      },
+      "e4": {
+        "timestamp": "2023-04-05",
+        "weight": 2,
+        "interaction": "email"
+      },
+      "e5": {
+        "timestamp": "2023-05-12",
+        "weight": 6,
+        "interaction": "message"
+      },
+      "e6": {
+        "timestamp": "2023-06-18",
+        "weight": 4,
+        "interaction": "call"
+      },
+      "e7": {
+        "timestamp": "2023-07-22",
+        "weight": 7,
+        "interaction": "meeting"
+      },
+      "e8": {
+        "timestamp": "2023-08-30",
+        "weight": 3,
+        "interaction": "email"
+      },
+      "e9": {
+        "timestamp": "2023-09-14",
+        "weight": 9,
+        "interaction": "message"
+      },
+      "e10": {
+        "timestamp": "2023-10-25",
+        "weight": 5,
+        "interaction": "call"
+      }
+    },
+    "layout": {
+      "alice": { "x": 0, "y": 100 },
+      "bob": { "x": 100, "y": 0 },
+      "carol": { "x": 200, "y": 100 },
+      "dave": { "x": 100, "y": 200 },
+      "eve": { "x": 100, "y": 100 }
+    },
+    "metadata": {
+      "title": "Social Network Timeline"
+    },
+    "nodeFields": [
+      {
+        "id": "label",
+        "itemType": "nodes",
+        "type": "text"
+      },
+      {
+        "id": "size",
+        "itemType": "nodes",
+        "type": "number"
+      },
+      {
+        "id": "color",
+        "itemType": "nodes",
+        "type": "color"
+      }
+    ],
+    "edgeFields": [
+      {
+        "id": "timestamp",
+        "itemType": "edges",
+        "type": "date",
+        "format": "yyyy-MM-dd"
+      },
+      {
+        "id": "weight",
+        "itemType": "edges",
+        "type": "number"
+      },
+      {
+        "id": "interaction",
+        "itemType": "edges",
+        "type": "category"
+      }
+    ],
+    "fullGraph": {
+      "options": {
+        "type": "undirected",
+        "multi": true,
+        "allowSelfLoops": true
+      },
+      "attributes": {},
+      "nodes": [
+        { "key": "alice" },
+        { "key": "bob" },
+        { "key": "carol" },
+        { "key": "dave" },
+        { "key": "eve" }
+      ],
+      "edges": [
+        { "key": "e1", "source": "alice", "target": "bob" },
+        { "key": "e2", "source": "bob", "target": "carol" },
+        { "key": "e3", "source": "carol", "target": "dave" },
+        { "key": "e4", "source": "dave", "target": "eve" },
+        { "key": "e5", "source": "eve", "target": "alice" },
+        { "key": "e6", "source": "alice", "target": "carol" },
+        { "key": "e7", "source": "bob", "target": "dave" },
+        { "key": "e8", "source": "carol", "target": "eve" },
+        { "key": "e9", "source": "alice", "target": "dave" },
+        { "key": "e10", "source": "bob", "target": "eve" }
+      ]
+    }
+  },
+  "filters": {
+    "filters": []
+  },
+  "appearance": {
+    "showEdges": {
+      "value": true
+    },
+    "nodesSize": {
+      "type": "fixed",
+      "value": 10
+    },
+    "edgesSize": {
+      "type": "ranking",
+      "field": {
+        "id": "weight",
+        "itemType": "edges",
+        "type": "number"
+      },
+      "missingSize": 2,
+      "minSize": 2,
+      "maxSize": 10
+    },
+    "backgroundColor": "#FFFFFF",
+    "nodesColor": {
+      "type": "fixed",
+      "value": "#666666"
+    },
+    "edgesColor": {
+      "type": "fixed",
+      "value": "#cccccc"
+    },
+    "nodesLabel": {
+      "type": "field",
+      "field": {
+        "id": "label",
+        "itemType": "nodes",
+        "type": "text"
+      },
+      "missingValue": null
+    },
+    "edgesLabel": {
+      "type": "none"
+    },
+    "nodesLabelSize": {
+      "type": "fixed",
+      "value": 14,
+      "zoomCorrelation": 0,
+      "density": 1
+    },
+    "edgesLabelSize": {
+      "type": "fixed",
+      "value": 14,
+      "zoomCorrelation": 0,
+      "density": 1
+    },
+    "nodesLabelEllipsis": {
+      "type": "ellipsis",
+      "enabled": false,
+      "maxLength": 25
+    },
+    "edgesLabelEllipsis": {
+      "type": "ellipsis",
+      "enabled": false,
+      "maxLength": 25
+    },
+    "nodesImage": {
+      "type": "none"
+    },
+    "edgesZIndex": {
+      "type": "none"
+    }
+  }
+}

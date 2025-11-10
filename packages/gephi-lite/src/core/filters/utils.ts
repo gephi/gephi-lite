@@ -23,7 +23,8 @@ export function filterValue(
   filter:
     | Omit<RangeFilterType, "itemType">
     | Omit<TermsFilterType, "itemType">
-    | Omit<MissingValueFilterType, "itemType">,
+    | Omit<MissingValueFilterType, "itemType">
+    | Omit<import("./types").TimelineFilterType, "itemType">,
 ): boolean {
   // missingValues
   if (scalar === undefined || scalar === null) {
@@ -47,6 +48,20 @@ export function filterValue(
           )) ||
         (typeof valueAsNumber !== "number" && !!filter.keepMissingValues)
       );
+    }
+    case "timeline": {
+      const value = castScalarToModelValue(scalar, filter.field);
+      // Timeline filters work with DateTime objects
+      if (value instanceof DateTime) {
+        const timestamp = value.toMillis();
+        return inRangeIncluded(
+          timestamp,
+          typeof filter.minDate === "number" ? filter.minDate : -Infinity,
+          typeof filter.maxDate === "number" ? filter.maxDate : Infinity,
+        );
+      }
+      // If value is not a DateTime, check if we should keep missing values
+      return !!filter.keepMissingValues;
     }
     case "terms": {
       const value = castScalarToModelValue(scalar, filter.field);
