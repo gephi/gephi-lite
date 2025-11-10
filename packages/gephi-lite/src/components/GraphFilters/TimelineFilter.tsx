@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 
 import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { TimelineFilterType } from "../../core/filters/types";
-import { inRangeIncluded } from "../../core/filters/utils";
 import { useFilteredGraphAt } from "../../core/graph";
 import {
   computeAllDynamicAttributes,
@@ -92,6 +91,9 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
     }
   }, [filter.field, parentGraph, edgeData]);
 
+  // Call hooks before any early returns
+  const filteredGraph = useFilteredGraphAt(filterIndex);
+
   const marks: SliderProps["marks"] = timelineMetric
     ? mapValues(
         keyBy(
@@ -114,7 +116,6 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
 
   if (!timelineMetric) return null;
 
-  const filteredGraph = useFilteredGraphAt(filterIndex);
   const filteredEdgeData = mergeStaticDynamicData(
     edgeData,
     filter.field.dynamic ? computeAllDynamicAttributes("edges", filteredGraph) : {},
