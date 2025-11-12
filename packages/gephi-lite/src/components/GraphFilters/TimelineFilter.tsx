@@ -97,7 +97,7 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
   return (
     <>
       <div className="filter-content">
-        <label htmlFor={`filter-${filterIndex}-timeline`}>{t("Timeline")}</label>
+        <label htmlFor={`filter-${filterIndex}-timeline`}>{t("filters.timeline.label")}</label>
 
         <ul className="range-filter-barchart">
           {timelineMetric.ranges.map((range, i) => {
@@ -174,9 +174,9 @@ export const TimelineFilter: FC<{ filter: TimelineFilterType; filterIndex: numbe
             disabled={timelineMetric.min === timelineMetric.max}
           />
           <label className="form-check-label" htmlFor={`filter-${filterIndex}-fade-mode`}>
-            {t("Fade Nodes")}
+            {t("filters.timeline.fade_mode")}
             {" "}
-            <small className="text-muted">({t("Keep filtered items visible with low opacity instead of hiding them")})</small>
+            <small className="text-muted">({t("filters.timeline.fade_mode_hint")})</small>
           </label>
         </div>
       </div>
