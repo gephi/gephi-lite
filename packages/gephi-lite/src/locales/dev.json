@@ -258,7 +258,7 @@
     "deprecated": {
       "gexf_search_params": "The `gexf=` url params to open a graph file has been renamed as `file=` in version 0.4.0. Using gexf params is deprecated  and might be removed in future version. Please use `file=` instead."
     },
-    "IMPORT_BAD_FORMAT": "Extension {{extension}} for file {{fileName}} is not recognized",
+    "IMPORT_BAD_FILE_FORMAT": "Format of file {{fileName}} is not recognized",
     "IMPORT_BAD_VERSION": "Your file is from an older version of Gephi-Lite ({{version}}) which is not compatible with the actual version",
     "form": {
       "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
