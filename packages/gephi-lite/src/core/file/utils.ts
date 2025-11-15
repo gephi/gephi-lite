@@ -53,7 +53,7 @@ export async function extractGraphFromFile(
     }
   | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
 > {
-  const extension = (fileName.split(".").pop() || "").toLowerCase();
+  const extension = (fileName.split("?").shift().split(".").pop() || "").toLowerCase();
 
   // Based on file extension, parse it to build a graphology
   switch (extension) {
