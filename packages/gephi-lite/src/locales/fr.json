@@ -361,7 +361,9 @@
       }
     },
     "using": "Utilisation",
-    "visible_graph": "Réseau visible"
+    "visible_graph": "Réseau visible",
+    "booleanTrueOption": "vrai",
+    "booleanFalseOption": "faux"
   },
   "gephi-lite": {
     "info": "Plus d'informations sur Gephi Lite",

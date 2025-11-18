@@ -28,11 +28,17 @@ export function filterValue(
   // missingValues
   if (scalar === undefined || scalar === null) {
     // we keep missing values if user specifically asked for them
-    return (
-      filter.type === "missingValue" ||
-      (filter.type === "terms" && filter.terms?.has(null)) ||
-      !!filter.keepMissingValues
-    );
+
+    // dedicated filter
+    if (filter.type === "missingValue") return true;
+
+    // terms filter on category/boolean has a special explicit choice for including missing values
+    // we keep missing value if no choice has been made yet (empty filter) or if the special case has been selected
+    if (filter.type === "terms" && ["category", "boolean"].includes(filter.field.type))
+      return filter.terms === undefined || filter.terms.size === 0 || filter.terms?.has(null);
+
+    // for all other filter we have a dedicated special settings for that
+    return filter.keepMissingValues === true;
   }
 
   switch (filter.type) {
@@ -55,10 +61,10 @@ export function filterValue(
         if (value instanceof DateTime || isNumber(value)) {
           return !!filter.keepMissingValues;
         }
-        const strings = (Array.isArray(value) ? value : !isNil(value) ? [value] : []).filter(
-          (v): v is string => typeof v === "string",
+        const stringsOrBoolean = (Array.isArray(value) ? value : !isNil(value) ? [value] : []).filter(
+          (v): v is string => ["string", "boolean"].includes(typeof v),
         );
-        return strings.some((string) => !filter.terms || filter.terms.has(string));
+        return stringsOrBoolean.some((stringOrBoolean) => !filter.terms || filter.terms.has(stringOrBoolean));
       }
     }
     case "missingValue":

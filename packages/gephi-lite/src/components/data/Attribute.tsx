@@ -24,7 +24,7 @@ import ColorPicker, { InlineColorPicker } from "../ColorPicker";
 import MessageTooltip from "../MessageTooltip";
 import { FieldModelIcon, InvalidDataIcon } from "../common-icons";
 import { Checkbox } from "../forms/Checkbox";
-import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
+import { CreatableSelect, StringOption, optionize } from "../forms/Select";
 
 /**
  * Render values:
@@ -191,8 +191,8 @@ export const AttributeEditors: {
           .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
       [values],
     );
-    const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
-      const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
+    const OptionComponent = useCallback((props: OptionProps<StringOption, false>) => {
+      const Option = components.Option<StringOption, false, GroupBase<StringOption>>;
       return (
         <div
           onClick={(e) => {
@@ -205,8 +205,8 @@ export const AttributeEditors: {
         </div>
       );
     }, []);
-    const SingleValueComponent = useCallback((props: SingleValueProps<BaseOption, false>) => {
-      const SingleValue = components.SingleValue<BaseOption, false, GroupBase<BaseOption>>;
+    const SingleValueComponent = useCallback((props: SingleValueProps<StringOption, false>) => {
+      const SingleValue = components.SingleValue<StringOption, false, GroupBase<StringOption>>;
       return (
         <SingleValue {...props}>
           <RenderCategory value={props.data.value} />
@@ -215,7 +215,7 @@ export const AttributeEditors: {
     }, []);
 
     return (
-      <CreatableSelect<BaseOption>
+      <CreatableSelect<StringOption>
         id={id}
         autoFocus={autoFocus}
         menuPosition="absolute"
@@ -241,8 +241,8 @@ export const AttributeEditors: {
       [values],
     );
     const OptionComponent = useCallback(
-      (props: OptionProps<BaseOption, true>) => {
-        const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;
+      (props: OptionProps<StringOption, true>) => {
+        const Option = components.Option<StringOption, true, GroupBase<StringOption>>;
         return (
           <div
             onClick={(e) => {
@@ -258,8 +258,8 @@ export const AttributeEditors: {
       [field.separator],
     );
     const MultiValueContainerComponent = useCallback(
-      (props: MultiValueProps<BaseOption, true>) => {
-        const MultiValueContainer = components.MultiValueContainer<BaseOption, true, GroupBase<BaseOption>>;
+      (props: MultiValueProps<StringOption, true>) => {
+        const MultiValueContainer = components.MultiValueContainer<StringOption, true, GroupBase<StringOption>>;
         return (
           <MultiValueContainer {...props}>
             <RenderKeywords value={[props.data.value]} separator={field.separator} />
@@ -270,13 +270,13 @@ export const AttributeEditors: {
     );
 
     return (
-      <CreatableSelect<BaseOption, true>
+      <CreatableSelect<StringOption, true>
         isMulti
         id={id}
         autoFocus={autoFocus}
         menuPosition="absolute"
         placeholder={placeholder}
-        value={value?.map(optionize)}
+        value={value?.map(optionize<string>)}
         onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
         options={options}
         isClearable

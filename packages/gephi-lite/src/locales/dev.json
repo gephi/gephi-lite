@@ -329,7 +329,9 @@
     },
     "visible_graph": "Visible graph",
     "missingValues": "Missing values",
-    "noValueOption": "No value"
+    "noValueOption": "No value",
+    "booleanTrueOption": "true",
+    "booleanFalseOption": "false"
   },
   "gephi-lite": {
     "open_welcome_modal": "Open welcome modal",
