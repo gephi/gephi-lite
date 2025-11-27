@@ -67,11 +67,13 @@ export const LayoutForm: FC<{
       const value = layoutParameters[param.id];
 
       if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
-      else if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
+      else if ("min" in param && param.min && !isNil(value) && (value as number) <= param.min)
         errors[param.id] = t(`error.form.min`, { ...param, name });
-      else if ("max" in param && param.max && !isNil(value) && (value as number) < param.max)
+      else if ("max" in param && param.max && !isNil(value) && (value as number) >= param.max)
         errors[param.id] = t(`error.form.max`, { ...param, name });
     });
+
+    console.log(errors);
     setErrors(Object.keys(errors).length > 0 ? errors : null);
   }, [layout, layoutParameters, t]);
 
