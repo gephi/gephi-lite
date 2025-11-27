@@ -221,11 +221,8 @@
     },
     "missingValues": "Missing values",
     "noValueOption": "No value",
-    "timeline": {
-      "label": "Timeline",
-      "fade_mode": "Show faded edges and nodes",
-      "fade_mode_hint": "Keep filtered items visible with low opacity instead of hiding them"
-    }
+    "booleanTrueOption": "true",
+    "booleanFalseOption": "false"
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",

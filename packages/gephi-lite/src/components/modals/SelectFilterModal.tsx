@@ -19,7 +19,7 @@ const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | "
   number: "range",
   keywords: "terms",
   category: "terms",
-  boolean: null,
+  boolean: "terms",
   color: null,
   text: null,
   url: null,
@@ -108,6 +108,7 @@ const SelectFilterModal: FC<
                                 itemType: "edges",
                                 type: "timeline",
                                 field,
+                                //Note: keepMissingValues is ignored when type is category or boolean
                                 keepMissingValues: true,
                               });
                             } else if (filterType === "range") {

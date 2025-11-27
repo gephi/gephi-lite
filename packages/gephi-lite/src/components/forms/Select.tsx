@@ -28,25 +28,27 @@ const useDefaultSelectProps = () => {
   };
 };
 
-export interface BaseOption<T extends string = string> {
-  value: T;
+export interface BaseOption<V> {
+  value: V;
   label: ReactNode;
 }
 
+export type StringOption = BaseOption<string>;
+
 export function optionize(value: undefined): undefined;
-export function optionize<T extends string = string>(value: T): BaseOption<T>;
-export function optionize<T extends string = string>(value?: T): BaseOption<T> | undefined {
-  return !isNil(value) ? { value, label: value } : undefined;
+export function optionize<V>(value: V): BaseOption<V>;
+export function optionize<V>(value?: V): BaseOption<V> | undefined {
+  return !isNil(value) ? { value, label: value + "" } : undefined;
 }
 
-export function Select<T = BaseOption, IsMulti extends boolean = false>({
+export function Select<BO, IsMulti extends boolean = false>({
   ref,
   ...props
-}: Props<T, IsMulti> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+}: Props<BO, IsMulti> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
   const defaultProps = useDefaultSelectProps();
   return (
-    <ReactSelect<T, IsMulti>
+    <ReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
       {...defaultProps}
       {...props}
@@ -59,14 +61,14 @@ export function Select<T = BaseOption, IsMulti extends boolean = false>({
   );
 }
 
-export function AsyncSelect<T = BaseOption, IsMulti extends boolean = false>({
+export function AsyncSelect<BO, IsMulti extends boolean = false>({
   ref,
   ...props
-}: AsyncProps<T, IsMulti, GroupBase<T>> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+}: AsyncProps<BO, IsMulti, GroupBase<BO>> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
   const defaultProps = useDefaultSelectProps();
   return (
-    <AsyncReactSelect<T, IsMulti>
+    <AsyncReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
       {...defaultProps}
       {...props}
@@ -79,14 +81,14 @@ export function AsyncSelect<T = BaseOption, IsMulti extends boolean = false>({
   );
 }
 
-export function CreatableSelect<T = BaseOption, IsMulti extends boolean = false>({
+export function CreatableSelect<BO, IsMulti extends boolean = false>({
   ref,
   ...props
-}: CreatableProps<T, IsMulti, GroupBase<T>> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+}: CreatableProps<BO, IsMulti, GroupBase<BO>> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
   const defaultProps = useDefaultSelectProps();
   return (
-    <CreatableReactSelect<T, IsMulti>
+    <CreatableReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
       {...defaultProps}
       {...props}
@@ -99,14 +101,14 @@ export function CreatableSelect<T = BaseOption, IsMulti extends boolean = false>
   );
 }
 
-export function AsyncCreatableSelect<T = BaseOption, IsMulti extends boolean = false>({
+export function AsyncCreatableSelect<BO, IsMulti extends boolean = false>({
   ref,
   ...props
-}: AsyncCreatableProps<T, IsMulti, GroupBase<T>> & { ref?: LegacyRef<SelectInstance<T, IsMulti>> }) {
+}: AsyncCreatableProps<BO, IsMulti, GroupBase<BO>> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
   const defaultProps = useDefaultSelectProps();
   return (
-    <AsyncCreatableReactSelect<T, IsMulti>
+    <AsyncCreatableReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
       {...defaultProps}
       {...props}
