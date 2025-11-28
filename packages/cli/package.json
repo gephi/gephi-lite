@@ -1,0 +1,49 @@
+{
+  "name": "@gephi/gephi-lite-cli",
+  "description": "A command line tool to open local graphs with gephi-lite easily.",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/gephi-gephi-lite-cli.cjs.js",
+  "module": "dist/gephi-gephi-lite-cli.esm.js",
+  "files": [
+    "/dist"
+  ],
+  "sideEffects": false,
+  "homepage": "https://gephi.org/gephi-lite",
+  "bugs": "https://github.com/gephi/gephi-lite/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gephi/gephi-lite.git",
+    "directory": "packages/template"
+  },
+  "scripts": {
+    "dev": "node ./src/index.ts"
+  },
+  "dependencies": {
+    "cmd-ts": "^0.14.3",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "graphology": "^0.25.4",
+    "open": "^11.0.0"
+  },
+  "devDependencies": {
+    "@gephi/gephi-lite-sdk": "^1.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "graphology-types": "^0.24.8"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts"
+    ]
+  },
+  "license": "gpl-3.0",
+  "exports": {
+    ".": {
+      "module": "./dist/gephi-gephi-lite-cli.esm.js",
+      "import": "./dist/gephi-gephi-lite-cli.cjs.mjs",
+      "default": "./dist/gephi-gephi-lite-cli.cjs.js"
+    },
+    "./package.json": "./package.json"
+  }
+}
