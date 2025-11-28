@@ -60,7 +60,7 @@ export const startLayout = asyncAction(async (id: string, params: unknown) => {
     }, 0);
   }
 
-  // Sync layout
+  // Async layout
   if (layout && layout.type === "worker") {
     const worker = new layout.supervisor(sigmaGraphAtom.get(), { settings: params });
     worker.start();
