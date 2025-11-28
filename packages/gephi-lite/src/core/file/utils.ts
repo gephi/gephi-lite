@@ -73,7 +73,7 @@ export async function extractGraphFromFile(
     const secondLine = readNextLine();
 
     // GEXF
-    if (secondLine?.startsWith("<gexf ")) {
+    if (firstLine?.includes("<gexf") || secondLine?.includes("<gexf")) {
       return {
         format: "gexf",
         data: gexf.parse(Graph, fileContent, { allowUndeclaredAttributes: true, addMissingNodes: true }),
@@ -102,7 +102,7 @@ export async function extractGraphFromFile(
     }
 
     // GRAPHML
-    if (secondLine?.startsWith("<graphml ")) {
+    if (firstLine?.includes("<graphml") || secondLine?.includes("<graphml")) {
       return {
         format: "graphml",
         data: graphml.parse(Graph, fileContent, { addMissingNodes: true }),
