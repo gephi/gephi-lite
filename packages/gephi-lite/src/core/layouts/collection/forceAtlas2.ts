@@ -18,7 +18,7 @@ export const ForceAtlas2Layout = {
       id: "autoSettings",
       description: true,
       getSettings(_currentSettings, dataGraph: DataGraph) {
-        return inferSettings(dataGraph);
+        return { ...FA2_DEFAULT_SETTINGS, ...inferSettings(dataGraph) };
       },
     },
   ],
