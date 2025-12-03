@@ -3,6 +3,7 @@ import en from "./en.json";
 import fr from "./fr.json";
 import hu from "./hu.json";
 import ko from "./ko.json";
+import uk from "./uk.json";
 
 export const LOCALES = {
   dev: {
@@ -24,6 +25,10 @@ export const LOCALES = {
   ko: {
     translation: ko,
     label: "한국인",
+  },
+  uk: {
+    translation: uk,
+    label: "Yкраїнська",
   },
 };
 
