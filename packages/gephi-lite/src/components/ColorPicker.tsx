@@ -1,9 +1,9 @@
 import { FC, useRef } from "react";
 import { SketchPicker } from "react-color";
+import { useTranslation } from "react-i18next";
 
 import { hexToRgba, rgbaToHex } from "../utils/colors";
 import Tooltip, { TooltipAPI } from "./Tooltip";
-import { CheckedIcon, CloseIcon } from "./common-icons";
 
 export const InlineColorPicker: FC<{ color: string | undefined; onChange: (color: string | undefined) => void }> = ({
   color,
@@ -36,6 +36,7 @@ const ColorPicker: FC<
     | { color: string; onChange: (color: string) => void; clearable?: false }
   ) & { className?: string }
 > = ({ color, onChange, clearable, className }) => {
+  const { t } = useTranslation();
   const tooltipRef = useRef<TooltipAPI>(null);
 
   return (
@@ -51,12 +52,12 @@ const ColorPicker: FC<
         <InlineColorPicker onChange={onChange} color={color} />
         <div className="text-end gl-gap-1 d-flex justify-content-end">
           {clearable && (
-            <button className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onChange(undefined)}>
-              <CloseIcon />
+            <button className="gl-btn gl-btn-outline" onClick={() => onChange(undefined)}>
+              {t("common.clear")}
             </button>
           )}
-          <button className="gl-btn gl-btn-icon gl-btn-fill" onClick={() => tooltipRef.current?.close()}>
-            <CheckedIcon />
+          <button className="gl-btn gl-btn-fill" onClick={() => tooltipRef.current?.close()}>
+            {t("common.close")}
           </button>
         </div>
       </div>
