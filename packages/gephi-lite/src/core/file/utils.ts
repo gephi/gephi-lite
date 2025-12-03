@@ -115,7 +115,7 @@ export async function extractGraphFromFile(
     if ("type" in jsonContent && jsonContent.type === "gephi-lite") {
       const version = parseVersion(jsonContent.version);
       if (version) {
-        if (version.major !== config.version.major || version.minor !== config.version.minor) {
+        if (version.major !== config.version.current.major || version.minor !== config.version.current.minor) {
           throw new GephiLiteError("IMPORT_BAD_VERSION", { version: version?.toString() });
         }
         return {

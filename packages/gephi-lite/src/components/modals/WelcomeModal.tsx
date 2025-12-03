@@ -1,7 +1,6 @@
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { version } from "../../../package.json";
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
 import { useFile, useFileActions, useGraphDatasetActions, usePreferences } from "../../core/context/dataContexts";
@@ -9,8 +8,9 @@ import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { getAppliedTheme } from "../../core/preferences/utils";
+import { useVersion } from "../../core/version/useVersion";
 import { Loader } from "../Loader";
-import { GitHubIcon } from "../common-icons";
+import { GitHubIcon, NewsIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { OpenModal } from "./open/OpenModal";
 
@@ -18,6 +18,7 @@ const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf"];
 
 export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
+  const { current, latest } = useVersion();
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { theme } = usePreferences();
@@ -48,11 +49,20 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           )}
           <h2 className="gl-px-2 gl-heading-2 text-center mb-0">{t("welcome.title")}</h2>
           <div>
-            v{version} -{" "}
+            v{current.version} -{" "}
             <a rel="noreferrer" target="_blank" href="https://github.com/gephi/gephi-lite/blob/main/CHANGELOG.md">
               changelog
             </a>
           </div>
+          {latest && latest.type === "version" && (
+            <div className="mt-2">
+              <NewsIcon className="gl-icon-size-text gl-mx-1" />
+              {t("welcome.new_version_available")}{" "}
+              <a href={latest.url} title={`Gephi-Lite v${latest.version}`}>
+                {t("common.here")}
+              </a>
+            </div>
+          )}
           <div className="d-flex flex-wrap align-items-center gl-gap-2 justify-content-center mt-3">
             <a rel="noreferrer" target="_blank" className="gl-btn gl-btn-outline" href="https://gephi.org/lite">
               {t("welcome.website")}

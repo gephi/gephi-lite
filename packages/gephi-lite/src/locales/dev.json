@@ -123,6 +123,7 @@
     "false": "False",
     "filename": "Filename",
     "from": "From",
+    "here": "here",
     "hide": "Hide",
     "load-more": "Load more",
     "loading": "Loading",
@@ -880,6 +881,7 @@
   },
   "welcome": {
     "documentation": "documentation",
+    "new_version_available": "A new version is available",
     "open_graph": "Open a graph file",
     "samples": "Samples",
     "title": "Welcome to Gephi Lite",

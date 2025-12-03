@@ -18,6 +18,8 @@ jobs:
       contents: read
       attestations: write
       id-token: write
+    env:
+      VITE_CHECK_LATEST_VERSION: "false"
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
