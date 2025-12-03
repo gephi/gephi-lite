@@ -1,5 +1,13 @@
 # Gephi Lite - Changelog:
 
+## 1.0.3 (WIP)
+
+### New features
+
+- Adding Ukrainian locale 
+- Display a message on the welcome modale if a newer version is available
+
+
 ## 1.0.2
 
 ### Debug
