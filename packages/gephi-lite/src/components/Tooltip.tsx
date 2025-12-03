@@ -72,10 +72,10 @@ const Tooltip = forwardRef<
     };
 
     setTimeout(() => {
-      document.body.addEventListener("click", handleClickBody);
+      document.body.addEventListener("mousedown", handleClickBody);
     }, 0);
     return () => {
-      document.body.removeEventListener("click", handleClickBody);
+      document.body.removeEventListener("mousedown", handleClickBody);
     };
   }, [closeOnClickContent, showTooltip]);
 
