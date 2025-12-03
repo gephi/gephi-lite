@@ -3,7 +3,11 @@ import { parse } from "semver";
 import { version } from "../package.json";
 
 export const config = {
-  version: parse(version)!,
+  version: {
+    current: parse(version)!,
+    versionsUrl: import.meta.env.VITE_VERSION_URL || "https://lite.gephi.org/versions.json",
+    checkForNewVersion: (import.meta.env.VITE_CHECK_LATEST_VERSION || "false") === "true",
+  },
   website_url: "https://github.com/gephi/gephi-lite#readme",
   notificationTimeoutMs: 3000,
   github_proxy: import.meta.env.VITE_GITHUB_PROXY || "/_github",

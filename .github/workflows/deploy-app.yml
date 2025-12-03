@@ -13,6 +13,8 @@ jobs:
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
       VITE_MATOMO_URL: "https://matomo.ouestware.com"
       VITE_MATOMO_SITEID: 32
+      VITE_CHECK_LATEST_VERSION: "true"
+      VITE_VERSIONS_URL: https://lite.gephi.org/versions.json
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,6 +45,14 @@ jobs:
 
       - name: Copy CNAME files
         run: cp CNAME website/CNAME
+
+      - name: Create versions files
+        run: |
+          cat <<EOF > website/versions.json 
+          [
+            { "version":${{ env.PACKAGE_VERSION }}, "url":"https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/" }
+          ]
+            EOF
 
       - name: Create index page with redirection
         run: |

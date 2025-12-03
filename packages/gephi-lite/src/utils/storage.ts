@@ -1,7 +1,7 @@
 import { config } from "../config";
 
 function getPrefixedKey(key: string) {
-  return `${config.version.major}.${config.version.minor}_${key}`;
+  return `${config.version.current.major}.${config.version.current.minor}_${key}`;
 }
 export const localStorage = {
   getItem: (key: string): string | null => window.localStorage.getItem(getPrefixedKey(key)),
