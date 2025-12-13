@@ -25,36 +25,96 @@ const COOKIE_DOMAIN = (() => {
 
 const cookieStorage = {
   getItem: (key) => {
+    // console.log("[AuthDebug] Lookup key:", key);
     const cookies = document.cookie
       .split(";")
       .map((c) => c.trim())
-      .filter(Boolean);
+      .reduce((acc, current) => {
+        const [k, ...v] = current.split("=");
+        acc[k] = v.join("=");
+        return acc;
+      }, {});
 
-    for (const c of cookies) {
-      const [k, ...rest] = c.split("=");
-      if (k === key) {
-        const rawVal = decodeURIComponent(rest.join("="));
-        try { return JSON.parse(rawVal); } catch (e) { }
-        try {
-          let toDecode = rawVal.startsWith('base64-') ? rawVal.slice(7) : rawVal;
-          const base64Standard = toDecode.replace(/-/g, '+').replace(/_/g, '/');
-          return JSON.parse(atob(base64Standard));
-        } catch (e) { return null; }
+    let rawVal = cookies[key];
+
+    // If exact key not found, try to find chunked cookies (key.0, key.1, ...)
+    if (!rawVal) {
+      const chunks = [];
+      let i = 0;
+      while (cookies[`${key}.${i}`]) {
+        chunks.push(cookies[`${key}.${i}`]);
+        i++;
       }
+      if (chunks.length > 0) {
+        // console.log(`[AuthDebug] Found ${chunks.length} chunks for ${key}`);
+        rawVal = chunks.join("");
+      }
+    }
+
+    if (!rawVal) {
+      // console.log("[AuthDebug] No value found");
+      return null;
+    }
+
+    // Decoding attempts
+    // 1. Try raw JSON
+    try {
+      const res = JSON.parse(rawVal);
+      // console.log("[AuthDebug] Raw JSON parsed success");
+      return res;
+    } catch (e) { }
+
+    // 2. Try URL-decoded JSON
+    const decodedVal = decodeURIComponent(rawVal);
+    try {
+      const res = JSON.parse(decodedVal);
+      // console.log("[AuthDebug] URL-decoded JSON parsed success");
+      return res;
+    } catch (e) { }
+
+    // 3. Try Base64 decoding (Supabase standard)
+    try {
+      let toDecode = decodedVal.trim();
+      // Remove 'base64-' prefix if present
+      if (toDecode.startsWith('base64-')) {
+        toDecode = toDecode.slice(7);
+      }
+      // Fix URL-safe base64 to standard base64
+      const base64Standard = toDecode.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonStr = atob(base64Standard);
+      const res = JSON.parse(jsonStr);
+      // console.log("[AuthDebug] Base64 parsed success");
+      return res;
+    } catch (e) {
+      console.error("[AuthDebug] All parse attempts failed for cookie", e);
     }
     return null;
   },
   setItem: (key, value) => {
     let encoded;
     try { encoded = btoa(value); } catch (e) { return; }
-    let cookieStr = `${key}=${encoded}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=None; Secure`;
+    let cookieStr = `${key}=${encoded}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax; Secure`;
     if (COOKIE_DOMAIN) cookieStr += `; Domain=${COOKIE_DOMAIN}`;
     document.cookie = cookieStr;
   },
   removeItem: (key) => {
-    let cookieStr = `${key}=; Max-Age=0; Path=/; SameSite=None; Secure`;
-    if (COOKIE_DOMAIN) cookieStr += `; Domain=${COOKIE_DOMAIN}`;
-    document.cookie = cookieStr;
+    const deleteCookie = (name) => {
+      let cookieStr = `${name}=; Max-Age=0; Path=/; SameSite=Lax; Secure`;
+      if (COOKIE_DOMAIN) cookieStr += `; Domain=${COOKIE_DOMAIN}`;
+      document.cookie = cookieStr;
+    };
+
+    // Delete main cookie
+    deleteCookie(key);
+
+    // Delete chunked cookies (key.0, key.1, ...)
+    // Iterate over all cookies to find chunks
+    const cookies = document.cookie.split(';').map(c => c.trim().split('=')[0]);
+    cookies.forEach(cookieKey => {
+      if (cookieKey.startsWith(`${key}.`)) {
+        deleteCookie(cookieKey);
+      }
+    });
   },
 };
 
@@ -192,7 +252,7 @@ class DatavizGlobalHeader {
 
     // アカウントページのURL
     const accountUrl = `${AUTH_APP_URL}/account`;
-    const loginUrl = `${AUTH_APP_URL}/auth/sign-up?redirect_to=${encodeURIComponent(window.location.href)}`;
+    const loginUrl = `${AUTH_APP_URL}/auth/login?redirect_to=${encodeURIComponent(window.location.href)}`;
 
     let rightContent = '';
 
@@ -263,8 +323,8 @@ function performRedirect(url, reason) {
 async function verifyUserAccess(session) {
   if (!session) {
     const redirectTo = encodeURIComponent(window.location.href);
-    const signUpUrl = `${AUTH_APP_URL}/auth/sign-up?redirect_to=${redirectTo}`;
-    performRedirect(signUpUrl, 'Unauthenticated');
+    const loginUrl = `${AUTH_APP_URL}/auth/login?redirect_to=${redirectTo}`;
+    performRedirect(loginUrl, 'Unauthenticated');
     return null;
   }
 
@@ -288,7 +348,7 @@ async function verifyUserAccess(session) {
     const isActive = status === "active" || status === "trialing" || isCanceledButValid;
 
     if (!isActive) {
-      performRedirect(AUTH_APP_URL, `Inactive Subscription (${status})`);
+      performRedirect(`${AUTH_APP_URL}/account`, `Inactive Subscription (${status})`);
       return null;
     }
 
@@ -376,3 +436,4 @@ async function initDatavizToolAuth() {
 
 // 自動実行
 initDatavizToolAuth();
+window.supabase = supabase;
