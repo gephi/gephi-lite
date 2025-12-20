@@ -131,6 +131,8 @@ export class DatavizCloudProvider implements CloudProvider {
             console.warn("[DatavizCloudProvider] Skipping thumbnail upload. Thumbnail:", !!thumbnail, "User:", !!user);
         }
 
+        const token = await this.getToken();
+
         const projectData = {
             id,
             user_id: user?.id,
@@ -142,22 +144,33 @@ export class DatavizCloudProvider implements CloudProvider {
             updated_at: new Date().toISOString()
         };
 
-        console.log("[DatavizCloudProvider] Inserting into DB directly:", projectData);
+        console.log("[DatavizCloudProvider] Inserting into DB manually:", projectData);
 
-        // @ts-expect-error window.supabase is dynamically injected
-        const { data: insertedData, error: dbError } = await window.supabase
-            .from('projects')
-            .upsert(projectData)
-            .select()
-            .single();
+        // @ts-expect-error accessing internal properties
+        const supabaseUrl = window.supabase.supabaseUrl;
+        // @ts-expect-error accessing internal properties
+        const supabaseKey = window.supabase.supabaseKey;
 
-        if (dbError) {
-            console.error("[DatavizCloudProvider] DB Error:", dbError);
-            alert(`プロジェクトの保存に失敗しました (DB Error): ${dbError.message}`);
-            throw new Error(`Failed to save project: ${dbError.message}`);
+        const res = await fetch(`${supabaseUrl}/rest/v1/projects`, {
+            method: "POST",
+            headers: {
+                "apikey": supabaseKey,
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates,return=representation"
+            },
+            body: JSON.stringify(projectData)
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error("[DatavizCloudProvider] DB Error:", res.status, errorText);
+            alert(`プロジェクトの保存に失敗しました (DB Error: ${res.status}): ${errorText}`);
+            throw new Error(`Failed to save project: ${res.status} ${errorText}`);
         }
 
-        const p = insertedData;
+        const insertedData = await res.json();
+        const p = insertedData[0]; // return=representation returns array
         console.log("[DatavizCloudProvider] DB Success:", p);
         return {
             type: "cloud",
