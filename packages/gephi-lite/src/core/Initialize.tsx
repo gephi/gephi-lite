@@ -13,7 +13,7 @@ import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
 import { parseDataset } from "./graph/utils";
-import { useModal } from "./modals";
+// import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
 import { preferencesAtom } from "./preferences";
 import { getCurrentPreferences } from "./preferences/utils";
