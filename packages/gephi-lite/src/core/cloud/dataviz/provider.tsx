@@ -148,7 +148,6 @@ export class DatavizCloudProvider implements CloudProvider {
             id,
             user_id: user?.id,
             name,
-            description: "",
             app_name: APP_NAME,
             storage_path: jsonPath, // Save storage path instead of raw data
             thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null,
