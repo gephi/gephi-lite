@@ -108,6 +108,29 @@ export class DatavizCloudProvider implements CloudProvider {
         const { data: sessionData } = await window.supabase.auth.getSession();
         const user = sessionData?.session?.user;
 
+        const token = await this.getToken();
+
+        // 1. Upload Project Content (JSON) to Storage
+        const jsonPath = `${user.id}/${id}.json`;
+        console.log(`[DatavizCloudProvider] Uploading project JSON to ${jsonPath}...`);
+
+        const jsonBlob = new Blob([content], { type: 'application/json' });
+        // @ts-expect-error window.supabase is dynamically injected
+        const { error: jsonUploadError } = await window.supabase
+            .storage
+            .from('user_projects')
+            .upload(jsonPath, jsonBlob, {
+                upsert: true,
+                contentType: 'application/json'
+            });
+
+        if (jsonUploadError) {
+            console.error("[DatavizCloudProvider] Failed to upload project JSON:", jsonUploadError);
+            alert(`プロジェクトデータのアップロードに失敗しました: ${jsonUploadError.message}`);
+            throw new Error(`Failed to upload project JSON: ${jsonUploadError.message}`);
+        }
+
+        // 2. Upload Thumbnail to Storage (if exists)
         if (thumbnail && user) {
             console.log(`[DatavizCloudProvider] Uploading thumbnail for ${id}...`);
             // @ts-expect-error window.supabase is dynamically injected
@@ -121,17 +144,11 @@ export class DatavizCloudProvider implements CloudProvider {
 
             if (uploadError) {
                 console.error("[DatavizCloudProvider] Failed to upload thumbnail:", uploadError);
-                alert(`サムネイルのアップロードに失敗しました: ${uploadError.message}`);
-                // Proceed without thumbnail or throw error? 
-                // We proceed but log warning.
+                // Proceed without thumbnail
             } else {
                 console.log("[DatavizCloudProvider] Thumbnail uploaded:", uploadData);
             }
-        } else {
-            console.warn("[DatavizCloudProvider] Skipping thumbnail upload. Thumbnail:", !!thumbnail, "User:", !!user);
         }
-
-        const token = await this.getToken();
 
         const projectData = {
             id,
@@ -139,7 +156,7 @@ export class DatavizCloudProvider implements CloudProvider {
             name,
             description: "",
             app_name: APP_NAME,
-            data: data,
+            storage_path: jsonPath, // Save storage path instead of raw data
             thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null,
             updated_at: new Date().toISOString()
         };
