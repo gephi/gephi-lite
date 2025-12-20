@@ -28,8 +28,10 @@ import { useConnectedUser } from "./user";
 // React.StrictMode:
 // https://react.dev/reference/react/StrictMode#fixing-bugs-found-by-double-rendering-in-development
 let isInitialized = false;
+let isCloudLoadingStarted = false;
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
+  console.log(`[${new Date().toISOString()}] Initialize component mounted`);
   const { t } = useTranslation();
   const { notify } = useNotifications();
   // const { openModal } = useModal();
@@ -70,14 +72,19 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * - ...
    */
   const initialize = useCallback(async () => {
-    if (isInitialized) return;
+    if (isInitialized) {
+      console.log(`[${new Date().toISOString()}] initialize() skipped: already initialized`);
+      return;
+    }
     isInitialized = true;
 
     // If loading from cloud (project_id), skip all local initialization
     const url = new URL(window.location.href);
     if (url.searchParams.has("project_id")) {
+      console.log(`[${new Date().toISOString()}] initialize() returned: project_id detected`);
       return;
     }
+    console.log(`[${new Date().toISOString()}] initialize() proceeding with local init`);
 
     // Load session from local storage
     sessionAtom.set(() => {
@@ -194,16 +201,18 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
   // Load project from cloud if project_id is in URL and user is connected
   const [user] = useConnectedUser();
-  const loadingRef = useRef(false);
 
   useEffect(() => {
     const url = new URL(window.location.href);
     const projectId = url.searchParams.get("project_id");
 
     const loadCloudProject = async () => {
-      // Ensure we only load once and when user is ready
-      if (user && projectId && !loadingRef.current) {
-        loadingRef.current = true;
+      console.log(`[${new Date().toISOString()}] loadCloudProject called. user=${!!user}, projectId=${projectId}, globalFlag=${isCloudLoadingStarted}`);
+
+      // Ensure we only load once globally (even across re-renders in Strict Mode)
+      if (user && projectId && !isCloudLoadingStarted) {
+        console.log(`[${new Date().toISOString()}] Starting cloud load...`);
+        isCloudLoadingStarted = true;
         try {
           await open({
             type: "cloud",
@@ -220,6 +229,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           } as any);
 
           // Success! Clean up URL.
+          console.log(`[${new Date().toISOString()}] Cloud load success`);
           url.searchParams.delete("project_id");
           window.history.pushState({}, "", url);
 
@@ -230,14 +240,21 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
             title: t("gephi-lite.title"),
             message: "Failed to load project from cloud",
           });
-        } finally {
-          // loadingRef.current = false; // Keep true to prevent duplicate loading
+          // On error, we might want to allow retry?
+          // But 'Already being loaded' means it IS loading.
+          // So let's NOT reset the flag here if the error is "Already being loaded".
+          const errMsg = (e instanceof Error) ? e.message : String(e);
+          if (!errMsg.includes("already being loaded")) {
+            isCloudLoadingStarted = false; // Allow retry for other errors
+          }
         }
       }
     };
 
     if (user && projectId) {
       loadCloudProject();
+    } else {
+      console.log(`[${new Date().toISOString()}] useEffect skipped load: user=${!!user}, projectId=${projectId}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); // Depends on user authentication status
