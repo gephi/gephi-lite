@@ -95,13 +95,7 @@ export class DatavizCloudProvider implements CloudProvider {
     private async saveProject(name: string, content: string, thumbnail?: Blob): Promise<CloudFile> {
 
 
-        let data;
-        try {
-            data = JSON.parse(content);
-        } catch (e) {
-            console.error("Failed to parse content as JSON", e);
-            throw new Error("Invalid content format");
-        }
+
 
         const id = crypto.randomUUID();
         // @ts-expect-error window.supabase is dynamically injected
