@@ -3,7 +3,7 @@ import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
-import { WelcomeModal } from "../components/modals/WelcomeModal";
+// import { WelcomeModal } from "../components/modals/WelcomeModal";
 import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
@@ -31,7 +31,7 @@ let isInitialized = false;
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { openModal } = useModal();
+  // const { openModal } = useModal();
   const { open } = useFileActions();
   const { metadata } = useGraphDataset();
   const { resetGraph } = useGraphDatasetActions();
@@ -85,7 +85,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // Load a graph
     // ~~~~~~~~~~~~
     let graphFound = false;
-    let showWelcomeModal = true;
+    // let showWelcomeModal = true;
     const url = new URL(window.location.href);
     const broadcastID = url.searchParams.get("broadcast");
     setBroadcastID(broadcastID);
@@ -97,7 +97,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       graphFound = true;
       url.searchParams.delete("new");
       window.history.pushState({}, "", url);
-      showWelcomeModal = false;
+      // showWelcomeModal = false;
     }
 
     // If query params has file (or GEXF, although it's deprecated)
@@ -115,7 +115,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           url: file,
         });
         graphFound = true;
-        showWelcomeModal = false;
+        // showWelcomeModal = false;
         // remove param in url
         url.searchParams.delete("file");
         window.history.pushState({}, "", url);
@@ -147,7 +147,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
 
-          if (dataset.fullGraph.order > 0) showWelcomeModal = false;
+          // if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }
       }
     }
@@ -161,11 +161,11 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       history.replaceState(null, "", cleanedURL);
     }
 
-    if (showWelcomeModal)
-      openModal({
-        component: WelcomeModal,
-        arguments: {},
-      });
+    // if (showWelcomeModal)
+    //   openModal({
+    //     component: WelcomeModal,
+    //     arguments: {},
+    //   });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
