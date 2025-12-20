@@ -52,7 +52,14 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
           ratio: 1,
         });
 
+        if (thumbnail) {
+          console.log(`[SaveCloudFileForm] Thumbnail generated. Size: ${thumbnail.size}, Type: ${thumbnail.type}`);
+        } else {
+          console.error("[SaveCloudFileForm] Thumbnail generation returned null/undefined.");
+        }
+
         await exportAsGephiLite(async (content) => {
+          console.log("[SaveCloudFileForm] Calling createFile with content length:", content.length);
           try {
             await createFile(
               {

@@ -107,8 +107,9 @@ export class DatavizCloudProvider implements CloudProvider {
         const { data: { user } } = await window.supabase.auth.getUser();
 
         if (thumbnail && user) {
+            console.log(`[DatavizCloudProvider] Uploading thumbnail for ${id}...`);
             // @ts-expect-error window.supabase is dynamically injected
-            const { error: uploadError } = await window.supabase
+            const { data: uploadData, error: uploadError } = await window.supabase
                 .storage
                 .from('user_projects')
                 .upload(`${user.id}/${id}.png`, thumbnail, {
@@ -117,10 +118,15 @@ export class DatavizCloudProvider implements CloudProvider {
                 });
 
             if (uploadError) {
-                console.error("Failed to upload thumbnail", uploadError);
+                console.error("[DatavizCloudProvider] Failed to upload thumbnail:", uploadError);
+                alert(`サムネイルのアップロードに失敗しました: ${uploadError.message}`);
                 // Proceed without thumbnail or throw error? 
                 // We proceed but log warning.
+            } else {
+                console.log("[DatavizCloudProvider] Thumbnail uploaded:", uploadData);
             }
+        } else {
+            console.warn("[DatavizCloudProvider] Skipping thumbnail upload. Thumbnail:", !!thumbnail, "User:", !!user);
         }
 
         const body = {
@@ -131,6 +137,8 @@ export class DatavizCloudProvider implements CloudProvider {
             thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null
         };
 
+        console.log("[DatavizCloudProvider] Sending API request with body:", body);
+
         const res = await fetch(`${API_BASE_URL}/api/projects`, {
             method: "POST",
             headers: {
@@ -140,9 +148,15 @@ export class DatavizCloudProvider implements CloudProvider {
             body: JSON.stringify(body)
         });
 
-        if (!res.ok) throw new Error("Failed to save project");
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error("[DatavizCloudProvider] API Error:", res.status, errorText);
+            alert(`プロジェクトの保存に失敗しました (API Error: ${res.status}): ${errorText}`);
+            throw new Error(`Failed to save project: ${res.status} ${errorText}`);
+        }
 
         const p = await res.json();
+        console.log("[DatavizCloudProvider] API Success:", p);
         return {
             type: "cloud",
             id: p.id,

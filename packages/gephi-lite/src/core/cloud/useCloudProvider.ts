@@ -57,6 +57,9 @@ export function useCloudProvider() {
     try {
       if (isNil(user)) throw new Error("You must be logged !");
       if (!currentFile || currentFile.type !== "cloud") throw new Error("Not a cloud graph");
+      if (thumbnail) console.log("[useCloudProvider] saveFile called with thumbnail");
+      else console.log("[useCloudProvider] saveFile called WITHOUT thumbnail");
+
       await exportAsGephiLite(async (content) => {
         await user.provider.saveFile(currentFile as CloudFile, content, thumbnail);
       });
@@ -77,6 +80,10 @@ export function useCloudProvider() {
       setError(null);
       try {
         if (isNil(user)) throw new Error("You must be logged !");
+
+        if (thumbnail) console.log("[useCloudProvider] createFile called with thumbnail");
+        else console.log("[useCloudProvider] createFile called WITHOUT thumbnail");
+
         const result = await user.provider.createFile(file, content, thumbnail);
         setCurrentFile(result);
       } catch (e) {
