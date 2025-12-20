@@ -1,5 +1,5 @@
 import { parseAppearanceState } from "@gephi/gephi-lite-sdk";
-import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
@@ -22,6 +22,7 @@ import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
 import { AuthSync } from "./user/AuthSync";
+import { useConnectedUser } from "./user";
 
 // This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
@@ -72,6 +73,12 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     if (isInitialized) return;
     isInitialized = true;
 
+    // If loading from cloud (project_id), skip all local initialization
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("project_id")) {
+      return;
+    }
+
     // Load session from local storage
     sessionAtom.set(() => {
       const raw = sessionStorage.getItem("session");
@@ -86,7 +93,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // ~~~~~~~~~~~~
     let graphFound = false;
     // let showWelcomeModal = true;
-    const url = new URL(window.location.href);
+    // const url = new URL(window.location.href);
     const broadcastID = url.searchParams.get("broadcast");
     setBroadcastID(broadcastID);
 
@@ -184,6 +191,56 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialize]);
+
+  // Load project from cloud if project_id is in URL and user is connected
+  const [user] = useConnectedUser();
+  const loadingRef = useRef(false);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const projectId = url.searchParams.get("project_id");
+
+    const loadCloudProject = async () => {
+      // Ensure we only load once and when user is ready
+      if (user && projectId && !loadingRef.current) {
+        loadingRef.current = true;
+        try {
+          await open({
+            type: "cloud",
+            id: projectId,
+            // Dummy metadata, provider will fetch content using id
+            filename: "Loading.json",
+            description: "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isPublic: false,
+            size: 0,
+            format: "gephi-lite"
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any);
+
+          // Success! Clean up URL.
+          url.searchParams.delete("project_id");
+          window.history.pushState({}, "", url);
+
+        } catch (e) {
+          console.error("Failed to load cloud project:", e);
+          notify({
+            type: "error",
+            title: t("gephi-lite.title"),
+            message: "Failed to load project from cloud",
+          });
+        } finally {
+          // loadingRef.current = false; // Keep true to prevent duplicate loading
+        }
+      }
+    };
+
+    if (user && projectId) {
+      loadCloudProject();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]); // Depends on user authentication status
 
   /**
    * Update document title:
