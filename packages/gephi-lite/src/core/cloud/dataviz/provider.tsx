@@ -9,7 +9,7 @@ export class DatavizCloudProvider implements CloudProvider {
     icon = (<CloudIcon />);
 
     private async getToken(): Promise<string> {
-        // @ts-ignore
+        // @ts-expect-error window.supabase is dynamically injected
         const { data } = await window.supabase.auth.getSession();
         if (!data.session?.access_token) {
             throw new Error("No active session");
@@ -17,7 +17,7 @@ export class DatavizCloudProvider implements CloudProvider {
         return data.session.access_token;
     }
 
-    async getFiles(skip: number = 0, limit: number = 100): Promise<Array<Omit<CloudFile, "format">>> {
+    async getFiles(_skip: number = 0, _limit: number = 100): Promise<Array<Omit<CloudFile, "format">>> {
         const token = await this.getToken();
         const url = new URL(`${API_BASE_URL}/api/projects`);
         url.searchParams.append("app", APP_NAME);
@@ -139,7 +139,7 @@ export class DatavizCloudProvider implements CloudProvider {
 
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function datavizProviderDeserialize(json: string): DatavizCloudProvider {
+
+export function datavizProviderDeserialize(_json: string): DatavizCloudProvider {
     return new DatavizCloudProvider();
 }

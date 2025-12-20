@@ -85,22 +85,22 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         { type: "divider" },
         ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
           ? [
-              {
-                label: t("workspace.menu.save"),
-                onClick: async () => {
-                  try {
-                    await saveFile();
-                    notify({
-                      type: "success",
-                      message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    notify({ type: "error", message: t("graph.save.github.error").toString() });
-                  }
-                },
+            {
+              label: t("workspace.menu.save"),
+              onClick: async () => {
+                try {
+                  await saveFile();
+                  notify({
+                    type: "success",
+                    message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
+                  });
+                } catch (e) {
+                  console.error(e);
+                  notify({ type: "error", message: t("graph.save.github.error").toString() });
+                }
               },
-            ]
+            },
+          ]
           : []),
         {
           label: t("workspace.menu.save_as"),
@@ -126,31 +126,34 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           },
         },
         { type: "divider" },
-        ...(user
+        ...(user && user.provider.type !== "dataviz"
           ? [
-              {
-                label: t("workspace.menu.github_signout"),
-                onClick: () =>
-                  openModal({
-                    component: ConfirmModal,
-                    beforeSubmit: () => {
-                      setUser(null);
-                    },
-                    arguments: {
-                      title: t("cloud.github.disconnect.title"),
-                      message: t("cloud.github.disconnect.message"),
-                      confirmMsg: t("cloud.github.disconnect.action"),
-                      successMsg: t("cloud.github.disconnect.success"),
-                    },
-                  }),
-              },
-            ]
-          : [
-              {
-                label: t("workspace.menu.github_signin"),
-                onClick: () => openModal({ component: GithubLoginModal, arguments: {} }),
-              },
-            ]),
+            {
+              label: t("workspace.menu.github_signout"),
+              onClick: () =>
+                openModal({
+                  component: ConfirmModal,
+                  beforeSubmit: () => {
+                    setUser(null);
+                  },
+                  arguments: {
+                    title: t("cloud.github.disconnect.title"),
+                    message: t("cloud.github.disconnect.message"),
+                    confirmMsg: t("cloud.github.disconnect.action"),
+                    successMsg: t("cloud.github.disconnect.success"),
+                  },
+                }),
+            },
+          ]
+          : []),
+        ...(!user
+          ? [
+            {
+              label: t("workspace.menu.github_signin"),
+              onClick: () => openModal({ component: GithubLoginModal, arguments: {} }),
+            },
+          ]
+          : []),
       ] as Option[],
     [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile],
   );
