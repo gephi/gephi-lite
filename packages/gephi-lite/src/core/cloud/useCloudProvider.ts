@@ -50,7 +50,7 @@ export function useCloudProvider() {
   /**
    * Save the current graph in the provider.
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
+
   const saveFile = useCallback(async (thumbnail?: Blob) => {
     setLoading(true);
     setError(null);
