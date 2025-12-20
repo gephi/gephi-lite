@@ -104,7 +104,8 @@ export class DatavizCloudProvider implements CloudProvider {
 
         const id = crypto.randomUUID();
         // @ts-expect-error window.supabase is dynamically injected
-        const { data: { user } } = await window.supabase.auth.getUser();
+        const { data: sessionData } = await window.supabase.auth.getSession();
+        const user = sessionData?.session?.user;
 
         if (thumbnail && user) {
             console.log(`[DatavizCloudProvider] Uploading thumbnail for ${id}...`);
