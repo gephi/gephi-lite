@@ -1,8 +1,9 @@
 import { keyBy } from "lodash";
-import { type ComponentType, type FC, useEffect, useState } from "react";
+import { type ComponentType, type FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { ModalProps } from "../../../core/modals/types";
+import { useConnectedUser } from "../../../core/user";
 import type { AsyncStatus } from "../../../utils/promises";
 import { type MenuItem, SideMenu } from "../../SideMenu";
 import { Modal } from "../../modals";
@@ -16,27 +17,36 @@ type OpenCollectionMenuItem = MenuItem<{
   }>;
 }>;
 
-const OPEN_COLLECTION_MENU: OpenCollectionMenuItem[] = [
-  {
-    id: "local",
-    i18nKey: "graph.open.local.title",
-    component: OpenLocalFileForm,
-  },
-  {
-    id: "github",
-    i18nKey: "graph.open.github.title",
-    component: OpenCloudFileForm,
-  },
-];
-const OPEN_COLLECTION_MENU_DICT = keyBy(OPEN_COLLECTION_MENU, "id");
-
 export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
   cancel,
   arguments: { initialOpenedTab },
 }) => {
   const { t } = useTranslation();
+  const [user] = useConnectedUser();
+
+  const menu = useMemo<OpenCollectionMenuItem[]>(() => {
+    let cloudLabel: string = t("graph.open.github.title");
+    if (user?.provider?.type === "dataviz") {
+      cloudLabel = "Cloud (Dataviz)";
+    }
+    return [
+      {
+        id: "local",
+        i18nKey: "graph.open.local.title",
+        component: OpenLocalFileForm,
+      },
+      {
+        id: "github",
+        label: cloudLabel,
+        component: OpenCloudFileForm,
+      },
+    ];
+  }, [t, user]);
+
+  const menuDict = useMemo(() => keyBy(menu, "id"), [menu]);
+
   const [selectedOpen, setSelectedOpen] = useState<OpenCollectionMenuItem>(
-    () => OPEN_COLLECTION_MENU_DICT[initialOpenedTab || ""] || OPEN_COLLECTION_MENU[0],
+    () => menuDict[initialOpenedTab || ""] || menu[0],
   );
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
 
@@ -55,7 +65,7 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
     >
       <>
         <SideMenu
-          menu={OPEN_COLLECTION_MENU}
+          menu={menu}
           selected={selectedOpen?.id}
           onSelectedChange={(item) => setSelectedOpen(item)}
         />

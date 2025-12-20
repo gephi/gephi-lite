@@ -21,6 +21,7 @@ import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
+import { AuthSync } from "./user/AuthSync";
 
 // This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
@@ -194,6 +195,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <I18n>
       <AuthInit />
+      <AuthSync />
       {children}
     </I18n>
   );

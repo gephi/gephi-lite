@@ -1,7 +1,8 @@
-import { type ComponentType, type FC, useEffect, useState } from "react";
+import { type ComponentType, type FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { ModalProps } from "../../../core/modals/types";
+import { useConnectedUser } from "../../../core/user";
 import type { AsyncStatus } from "../../../utils/promises";
 import { type MenuItem, SideMenu } from "../../SideMenu";
 import { Modal } from "../../modals";
@@ -15,22 +16,31 @@ type SaveCollectionMenuItem = MenuItem<{
   }>;
 }>;
 
-const SAVE_COLLECTION_MENU: SaveCollectionMenuItem[] = [
-  {
-    id: "local",
-    i18nKey: "graph.save.local.title",
-    component: SaveLocally,
-  },
-  {
-    id: "github",
-    i18nKey: "graph.save.github.title",
-    component: SaveCloudFileForm,
-  },
-];
-
 export const SaveAsModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const { t } = useTranslation();
-  const [selected, setSelected] = useState<SaveCollectionMenuItem>(SAVE_COLLECTION_MENU[0]);
+  const [user] = useConnectedUser();
+
+  const menu = useMemo<SaveCollectionMenuItem[]>(() => {
+    let cloudLabel: string = t("graph.save.github.title");
+    if (user?.provider?.type === "dataviz") {
+      cloudLabel = "Cloud (Dataviz)";
+    }
+
+    return [
+      {
+        id: "local",
+        i18nKey: "graph.save.local.title",
+        component: SaveLocally,
+      },
+      {
+        id: "github",
+        label: cloudLabel,
+        component: SaveCloudFileForm,
+      },
+    ];
+  }, [t, user]);
+
+  const [selected, setSelected] = useState<SaveCollectionMenuItem>(menu[0]);
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
 
   useEffect(() => {
@@ -47,7 +57,7 @@ export const SaveAsModal: FC<ModalProps<unknown>> = ({ cancel }) => {
       doNotPreserveData
     >
       <>
-        <SideMenu menu={SAVE_COLLECTION_MENU} selected={selected?.id} onSelectedChange={(item) => setSelected(item)} />
+        <SideMenu menu={menu} selected={selected?.id} onSelectedChange={(item) => setSelected(item)} />
         <div className="selected-component-wrapper">
           <selected.component id="saveForm" onStatusChange={setStatus} />
         </div>

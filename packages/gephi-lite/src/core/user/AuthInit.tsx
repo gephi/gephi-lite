@@ -2,6 +2,7 @@ import { isNil } from "lodash";
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { datavizProviderDeserialize } from "../cloud/dataviz/provider";
 import { ghProviderDeserialize } from "../cloud/github/provider";
 import { useNotifications } from "../notifications";
 import { LS_USER_KEY, useConnectedUser } from "./index";
@@ -20,9 +21,14 @@ export const AuthInit: FC = () => {
     if (!isNil(lsUserString)) {
       try {
         const lsUser = JSON.parse(lsUserString);
-        // TODO: need to check the validity of the user
-        // before to set it and also to find a better way to deserialize provider
-        setUser({ ...lsUser, provider: ghProviderDeserialize(lsUser.provider) });
+        let provider;
+        const providerData = JSON.parse(lsUser.provider);
+        if (providerData.type === "dataviz") {
+          provider = datavizProviderDeserialize(lsUser.provider);
+        } else {
+          provider = ghProviderDeserialize(lsUser.provider);
+        }
+        setUser({ ...lsUser, provider });
       } catch (e) {
         console.error("Failed to load user from localstorage", e);
         notify({

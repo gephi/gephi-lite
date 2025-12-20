@@ -27,6 +27,7 @@ import {
   PiCirclesFour,
   PiCirclesThree,
   PiClipboard,
+  PiCloud,
   PiCode,
   PiCornersIn,
   PiCornersOut,
@@ -104,6 +105,7 @@ export const CaretRightIcon = PiCaretRight;
 export const CaretUpIcon = PiCaretUp;
 export const CheckedIcon = PiCheck;
 export const ClipboardIcon = PiClipboard;
+export const CloudIcon = PiCloud;
 export const CloseIcon = PiX;
 export const CodeEditorIcon = PiCode;
 export const DarkThemeIcon = PiMoonStars;
