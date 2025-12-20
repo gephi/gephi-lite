@@ -169,11 +169,11 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       history.replaceState(null, "", cleanedURL);
     }
 
-    if (showWelcomeModal)
-      openModal({
-        component: WelcomeModal,
-        arguments: {},
-      });
+    // if (showWelcomeModal)
+    //   openModal({
+    //     component: WelcomeModal,
+    //     arguments: {},
+    //   });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -199,10 +199,10 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const loadingRef = useRef(false);
 
   useEffect(() => {
-    const loadCloudProject = async () => {
-      const url = new URL(window.location.href);
-      const projectId = url.searchParams.get("project_id");
+    const url = new URL(window.location.href);
+    const projectId = url.searchParams.get("project_id");
 
+    const loadCloudProject = async () => {
       if (user && projectId && !loadingRef.current) {
         loadingRef.current = true;
         try {
@@ -240,8 +240,14 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       }
     };
 
-    loadCloudProject();
-  }, [user, open, notify, closeModal, t]);
+    if (user && projectId) {
+      // Delay slightly to avoid race condition with initial load checks
+      const timer = setTimeout(() => {
+        loadCloudProject();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]); // Only re-run if user status changes
 
   /**
    * Update document title:
