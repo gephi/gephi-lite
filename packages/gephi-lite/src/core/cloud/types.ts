@@ -9,6 +9,7 @@ export interface CloudFile extends AbstractFile {
   isPublic: boolean;
   size: number;
   webUrl?: string;
+  thumbnailUrl?: string;
 }
 
 export interface CloudProvider {

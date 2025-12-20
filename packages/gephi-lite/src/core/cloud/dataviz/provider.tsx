@@ -44,7 +44,8 @@ export class DatavizCloudProvider implements CloudProvider {
             updatedAt: new Date(p.updated_at),
             isPublic: false,
             size: 0,
-            webUrl: ""
+            webUrl: "",
+            thumbnailUrl: p.thumbnail_path
         }));
     }
 
@@ -130,34 +131,34 @@ export class DatavizCloudProvider implements CloudProvider {
             console.warn("[DatavizCloudProvider] Skipping thumbnail upload. Thumbnail:", !!thumbnail, "User:", !!user);
         }
 
-        const body = {
+        const projectData = {
             id,
+            user_id: user?.id,
             name,
+            description: "",
             app_name: APP_NAME,
             data: data,
-            thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null
+            thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null,
+            updated_at: new Date().toISOString()
         };
 
-        console.log("[DatavizCloudProvider] Sending API request with body:", body);
+        console.log("[DatavizCloudProvider] Inserting into DB directly:", projectData);
 
-        const res = await fetch(`${API_BASE_URL}/api/projects`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(body)
-        });
+        // @ts-expect-error window.supabase is dynamically injected
+        const { data: insertedData, error: dbError } = await window.supabase
+            .from('projects')
+            .upsert(projectData)
+            .select()
+            .single();
 
-        if (!res.ok) {
-            const errorText = await res.text();
-            console.error("[DatavizCloudProvider] API Error:", res.status, errorText);
-            alert(`プロジェクトの保存に失敗しました (API Error: ${res.status}): ${errorText}`);
-            throw new Error(`Failed to save project: ${res.status} ${errorText}`);
+        if (dbError) {
+            console.error("[DatavizCloudProvider] DB Error:", dbError);
+            alert(`プロジェクトの保存に失敗しました (DB Error): ${dbError.message}`);
+            throw new Error(`Failed to save project: ${dbError.message}`);
         }
 
-        const p = await res.json();
-        console.log("[DatavizCloudProvider] API Success:", p);
+        const p = insertedData;
+        console.log("[DatavizCloudProvider] DB Success:", p);
         return {
             type: "cloud",
             id: p.id,
@@ -168,6 +169,7 @@ export class DatavizCloudProvider implements CloudProvider {
             isPublic: false,
             size: 0,
             webUrl: "",
+            thumbnailUrl: p.thumbnail_path,
             format: "gephi-lite"
         } as CloudFile;
     }
