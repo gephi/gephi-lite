@@ -1,9 +1,9 @@
 import { parseAppearanceState } from "@gephi/gephi-lite-sdk";
-import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
-// import { WelcomeModal } from "../components/modals/WelcomeModal";
+import { WelcomeModal } from "../components/modals/WelcomeModal";
 import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
@@ -22,7 +22,6 @@ import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
 import { AuthSync } from "./user/AuthSync";
-import { useConnectedUser } from "./user";
 
 // This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
@@ -32,12 +31,8 @@ let isInitialized = false;
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  // const { openModal } = useModal();
+  const { openModal } = useModal();
   const { open } = useFileActions();
-
-  // ... (skip down to useEffect) ...
-
-
   const { metadata } = useGraphDataset();
   const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
@@ -90,17 +85,10 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // Load a graph
     // ~~~~~~~~~~~~
     let graphFound = false;
-    // let showWelcomeModal = true;
+    let showWelcomeModal = true;
     const url = new URL(window.location.href);
     const broadcastID = url.searchParams.get("broadcast");
     setBroadcastID(broadcastID);
-
-    // If query params has project_id
-    // => skip default init, wait for auth to load project
-    if (url.searchParams.has("project_id")) {
-      graphFound = true;
-      // showWelcomeModal = false;
-    }
 
     // If query params has new
     // => empty graph & open welcome modal
@@ -109,7 +97,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       graphFound = true;
       url.searchParams.delete("new");
       window.history.pushState({}, "", url);
-      // showWelcomeModal = false;
+      showWelcomeModal = false;
     }
 
     // If query params has file (or GEXF, although it's deprecated)
@@ -127,7 +115,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           url: file,
         });
         graphFound = true;
-        // showWelcomeModal = false;
+        showWelcomeModal = false;
         // remove param in url
         url.searchParams.delete("file");
         window.history.pushState({}, "", url);
@@ -159,7 +147,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
 
-          // if (dataset.fullGraph.order > 0) showWelcomeModal = false;
+          if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }
       }
     }
@@ -173,11 +161,11 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       history.replaceState(null, "", cleanedURL);
     }
 
-    // if (showWelcomeModal)
-    //   openModal({
-    //     component: WelcomeModal,
-    //     arguments: {},
-    //   });
+    if (showWelcomeModal)
+      openModal({
+        component: WelcomeModal,
+        arguments: {},
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -196,72 +184,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialize]);
-
-  // Load project from cloud if project_id is in URL and user is connected
-  const [user] = useConnectedUser();
-  const { closeModal } = useModal();
-  const loadingRef = useRef(false);
-
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    const projectId = url.searchParams.get("project_id");
-
-    const loadCloudProject = async (retries = 3) => {
-      if (user && projectId && !loadingRef.current) {
-        loadingRef.current = true;
-        try {
-          await open({
-            type: "cloud",
-            id: projectId,
-            // Dummy metadata, provider will fetch content using id
-            filename: "Loading.json",
-            description: "",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            isPublic: false,
-            size: 0,
-            format: "gephi-lite"
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } as any);
-
-          // Remove project_id from URL
-          url.searchParams.delete("project_id");
-          window.history.pushState({}, "", url);
-
-          // Close welcome modal if open
-          closeModal();
-
-        } catch (e) {
-          const errMsg = (e instanceof Error) ? e.message : String(e);
-          if (errMsg.includes("already being loaded")) {
-            if (retries > 0) {
-              console.log(`Project load conflict. Retrying in 2s... (${retries} left)`);
-              loadingRef.current = false;
-              setTimeout(() => loadCloudProject(retries - 1), 2000);
-              return;
-            }
-          }
-          console.error("Failed to load cloud project:", e);
-          notify({
-            type: "error",
-            title: t("gephi-lite.title"),
-            message: "Failed to load project from cloud",
-          });
-        } finally {
-          loadingRef.current = false;
-        }
-      }
-    };
-
-    if (user && projectId) {
-      // Delay slightly to avoid race condition with initial load checks
-      const timer = setTimeout(() => {
-        loadCloudProject();
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]); // Only re-run if user status changes
 
   /**
    * Update document title:
