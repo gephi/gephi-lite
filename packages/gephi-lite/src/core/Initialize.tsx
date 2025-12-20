@@ -90,7 +90,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // Load a graph
     // ~~~~~~~~~~~~
     let graphFound = false;
-    let showWelcomeModal = true;
+    // let showWelcomeModal = true;
     const url = new URL(window.location.href);
     const broadcastID = url.searchParams.get("broadcast");
     setBroadcastID(broadcastID);
@@ -99,7 +99,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // => skip default init, wait for auth to load project
     if (url.searchParams.has("project_id")) {
       graphFound = true;
-      showWelcomeModal = false;
+      // showWelcomeModal = false;
     }
 
     // If query params has new
@@ -109,7 +109,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       graphFound = true;
       url.searchParams.delete("new");
       window.history.pushState({}, "", url);
-      showWelcomeModal = false;
+      // showWelcomeModal = false;
     }
 
     // If query params has file (or GEXF, although it's deprecated)
@@ -127,7 +127,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           url: file,
         });
         graphFound = true;
-        showWelcomeModal = false;
+        // showWelcomeModal = false;
         // remove param in url
         url.searchParams.delete("file");
         window.history.pushState({}, "", url);
@@ -159,7 +159,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
 
-          if (dataset.fullGraph.order > 0) showWelcomeModal = false;
+          // if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }
       }
     }
@@ -251,6 +251,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       }, 500);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); // Only re-run if user status changes
 
   /**
