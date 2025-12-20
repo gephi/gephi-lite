@@ -232,6 +232,11 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           closeModal();
 
         } catch (e) {
+          const errMsg = (e instanceof Error) ? e.message : String(e);
+          if (errMsg.includes("already being loaded")) {
+            console.log("Project load conflict handled (ignored).");
+            return;
+          }
           console.error("Failed to load cloud project:", e);
           notify({
             type: "error",
