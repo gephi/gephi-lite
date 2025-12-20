@@ -50,14 +50,15 @@ export function useCloudProvider() {
   /**
    * Save the current graph in the provider.
    */
-  const saveFile = useCallback(async () => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const saveFile = useCallback(async (thumbnail?: Blob) => {
     setLoading(true);
     setError(null);
     try {
       if (isNil(user)) throw new Error("You must be logged !");
       if (!currentFile || currentFile.type !== "cloud") throw new Error("Not a cloud graph");
       await exportAsGephiLite(async (content) => {
-        await user.provider.saveFile(currentFile as CloudFile, content);
+        await user.provider.saveFile(currentFile as CloudFile, content, thumbnail);
       });
     } catch (e) {
       setError(e as Error);
@@ -71,12 +72,12 @@ export function useCloudProvider() {
    * Save the current graph in the provider.
    */
   const createFile = useCallback(
-    async (file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">, content: string) => {
+    async (file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">, content: string, thumbnail?: Blob) => {
       setLoading(true);
       setError(null);
       try {
         if (isNil(user)) throw new Error("You must be logged !");
-        const result = await user.provider.createFile(file, content);
+        const result = await user.provider.createFile(file, content, thumbnail);
         setCurrentFile(result);
       } catch (e) {
         setError(e as Error);

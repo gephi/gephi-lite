@@ -42,12 +42,13 @@ export interface CloudProvider {
   createFile(
     file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">,
     content: string,
+    thumbnail?: Blob
   ): Promise<CloudFile>;
 
   /**
    * Save/Update a file.
    */
-  saveFile(file: CloudFile, content: string): Promise<CloudFile>;
+  saveFile(file: CloudFile, content: string, thumbnail?: Blob): Promise<CloudFile>;
 
   /**
    * Delete a file.

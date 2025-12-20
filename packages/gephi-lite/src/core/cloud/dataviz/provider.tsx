@@ -65,11 +65,11 @@ export class DatavizCloudProvider implements CloudProvider {
         return await res.text();
     }
 
-    async createFile(file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">, content: string): Promise<CloudFile> {
-        return this.saveProject(file.filename, content);
+    async createFile(file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">, content: string, thumbnail?: Blob): Promise<CloudFile> {
+        return this.saveProject(file.filename, content, thumbnail);
     }
 
-    async saveFile(file: CloudFile, content: string): Promise<CloudFile> {
+    async saveFile(file: CloudFile, content: string, thumbnail?: Blob): Promise<CloudFile> {
         if (file.id) {
             try {
                 await this.deleteFile(file);
@@ -77,7 +77,7 @@ export class DatavizCloudProvider implements CloudProvider {
                 console.warn("Failed to delete old file before saving new one", e);
             }
         }
-        return this.saveProject(file.filename, content);
+        return this.saveProject(file.filename, content, thumbnail);
     }
 
     async deleteFile(file: CloudFile): Promise<void> {
@@ -91,8 +91,9 @@ export class DatavizCloudProvider implements CloudProvider {
         if (!res.ok) throw new Error("Failed to delete project");
     }
 
-    private async saveProject(name: string, content: string): Promise<CloudFile> {
+    private async saveProject(name: string, content: string, thumbnail?: Blob): Promise<CloudFile> {
         const token = await this.getToken();
+
         let data;
         try {
             data = JSON.parse(content);
@@ -101,7 +102,29 @@ export class DatavizCloudProvider implements CloudProvider {
             throw new Error("Invalid content format");
         }
 
+        const id = crypto.randomUUID();
+        // @ts-expect-error window.supabase is dynamically injected
+        const { data: { user } } = await window.supabase.auth.getUser();
+
+        if (thumbnail && user) {
+            // @ts-expect-error window.supabase is dynamically injected
+            const { error: uploadError } = await window.supabase
+                .storage
+                .from('user_projects')
+                .upload(`${user.id}/${id}.png`, thumbnail, {
+                    upsert: true,
+                    contentType: 'image/png'
+                });
+
+            if (uploadError) {
+                console.error("Failed to upload thumbnail", uploadError);
+                // Proceed without thumbnail or throw error? 
+                // We proceed but log warning.
+            }
+        }
+
         const body = {
+            id,
             name,
             app_name: APP_NAME,
             data: data

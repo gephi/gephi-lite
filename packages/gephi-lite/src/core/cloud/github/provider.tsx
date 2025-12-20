@@ -9,12 +9,12 @@ import { CloudFile, CloudProvider } from "../types";
 
 export type GistFile =
   | {
-      filename?: string;
-      type?: string;
-      language?: string;
-      raw_url?: string;
-      size?: number;
-    }
+    filename?: string;
+    type?: string;
+    language?: string;
+    raw_url?: string;
+    size?: number;
+  }
   | undefined
   | null;
 export class GithubProvider implements CloudProvider {
@@ -105,7 +105,7 @@ export class GithubProvider implements CloudProvider {
   /**
    * Create a gist on github
    */
-  async createFile(file: CloudFile, content: string): Promise<CloudFile> {
+  async createFile(file: CloudFile, content: string, _thumbnail?: Blob): Promise<CloudFile> {
     const filename = getFilename(file.filename, file.format);
     const body = {
       description: file.description || file.filename,
@@ -123,7 +123,7 @@ export class GithubProvider implements CloudProvider {
   /**
    * Save (ie.update) a file on github
    */
-  async saveFile(file: CloudFile, content: string): Promise<CloudFile> {
+  async saveFile(file: CloudFile, content: string, _thumbnail?: Blob): Promise<CloudFile> {
     const body = {
       description: file.description,
       public: file.isPublic || false,

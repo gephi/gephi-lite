@@ -3,10 +3,11 @@ import { useTranslation } from "react-i18next";
 import { PiCloudArrowUp } from "react-icons/pi";
 
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
-import { useFile, useFileActions } from "../../../core/context/dataContexts";
+import { useAppearance, useFile, useFileActions, useSigmaAtom } from "../../../core/context/dataContexts";
 import { getFilename } from "../../../core/file/utils";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
+import { getGraphSnapshot } from "../../../utils/sigma";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
 import { PleaseSignIn } from "../../user/PleaseSignIn";
@@ -22,6 +23,8 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
   const { notify } = useNotifications();
   const { exportAsGephiLite } = useFileActions();
   const { current } = useFile();
+  const sigma = useSigmaAtom();
+  const { backgroundColor } = useAppearance();
 
   const [filename, setFilename] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -39,26 +42,41 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
   const onSubmit = useCallback(async () => {
     if (isValid) {
       onStatusChange({ type: "loading" });
-      await exportAsGephiLite(async (content) => {
-        try {
-          await createFile(
-            {
-              filename,
-              description,
-              isPublic,
-              format: "gephi-lite",
-            },
-            content,
-          );
-          onStatusChange({ type: "success" });
-          notify({ type: "success", message: t("graph.save.github.success", { filename }).toString() });
-        } catch (e) {
-          onStatusChange({ type: "error" });
-          console.error(e);
-        }
-      });
+
+      try {
+        const thumbnail = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
+          width: 800,
+          height: 600,
+          backgroundColor,
+          cameraState: sigma.getCamera().getState(),
+          ratio: 1,
+        });
+
+        await exportAsGephiLite(async (content) => {
+          try {
+            await createFile(
+              {
+                filename,
+                description,
+                isPublic,
+                format: "gephi-lite",
+              },
+              content,
+              thumbnail
+            );
+            onStatusChange({ type: "success" });
+            notify({ type: "success", message: t("graph.save.github.success", { filename }).toString() });
+          } catch (e) {
+            onStatusChange({ type: "error" });
+            console.error(e);
+          }
+        });
+      } catch (e) {
+        console.error("Failed to generate thumbnail or save", e);
+        onStatusChange({ type: "error" });
+      }
     }
-  }, [isValid, createFile, filename, description, isPublic, notify, t, exportAsGephiLite, onStatusChange]);
+  }, [isValid, createFile, filename, description, isPublic, notify, t, exportAsGephiLite, onStatusChange, sigma, backgroundColor]);
 
   return (
     <>
