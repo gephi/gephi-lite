@@ -1,5 +1,5 @@
 import { parseAppearanceState } from "@gephi/gephi-lite-sdk";
-import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
