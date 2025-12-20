@@ -55,15 +55,41 @@ export class DatavizCloudProvider implements CloudProvider {
     }
 
     async getFileContent(id: string): Promise<string> {
+
+        // 1. Get storage_path from DB
+        // @ts-expect-error accessing internal properties
+        const supabaseUrl = window.supabase.supabaseUrl;
+        // @ts-expect-error accessing internal properties
+        const supabaseKey = window.supabase.supabaseKey;
         const token = await this.getToken();
-        const res = await fetch(`${API_BASE_URL}/api/projects/${id}`, {
+
+        const dbRes = await fetch(`${supabaseUrl}/rest/v1/projects?id=eq.${id}&select=storage_path`, {
             headers: {
+                "apikey": supabaseKey,
                 "Authorization": `Bearer ${token}`
             }
         });
-        if (!res.ok) throw new Error("Failed to fetch project content");
-        // The content is returned directly as JSON
-        return await res.text();
+
+        if (!dbRes.ok) throw new Error("Failed to fetch project metadata");
+        const rows = await dbRes.json();
+        if (rows.length === 0) throw new Error("Project not found");
+
+        const storagePath = rows[0].storage_path;
+        if (!storagePath) throw new Error("Project content not found (no storage_path)");
+
+        // 2. Download from Storage
+        // @ts-expect-error window.supabase is dynamically injected
+        const { data, error } = await window.supabase
+            .storage
+            .from('user_projects')
+            .download(storagePath);
+
+        if (error) {
+            console.error("Storage download error:", error);
+            throw new Error(`Failed to download project content: ${error.message}`);
+        }
+
+        return await data.text();
     }
 
     async createFile(file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">, content: string, thumbnail?: Blob): Promise<CloudFile> {
