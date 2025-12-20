@@ -211,12 +211,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
       // Ensure we only load once globally (even across re-renders in Strict Mode)
       if (user && projectId && !isCloudLoadingStarted) {
-        console.log(`[${new Date().toISOString()}] Starting cloud load (waiting 3s)...`);
+        console.log(`[${new Date().toISOString()}] Starting cloud load...`);
         isCloudLoadingStarted = true;
-
-        // Wait for system to stabilize
-        await new Promise(r => setTimeout(r, 3000));
-
         try {
           await open({
             type: "cloud",

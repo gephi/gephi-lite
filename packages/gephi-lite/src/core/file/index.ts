@@ -31,6 +31,7 @@ function getLocalStorageFileState(): FileState {
   return {
     ...getEmptyFileState(),
     ...state,
+    status: { type: "idle" },
   };
 }
 
