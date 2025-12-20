@@ -1,5 +1,5 @@
 import { parseAppearanceState } from "@gephi/gephi-lite-sdk";
-import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
@@ -189,19 +189,21 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   // Load project from cloud if project_id is in URL and user is connected
   const [user] = useConnectedUser();
   const { closeModal } = useModal();
+  const loadingRef = useRef(false);
 
   useEffect(() => {
     const loadCloudProject = async () => {
       const url = new URL(window.location.href);
       const projectId = url.searchParams.get("project_id");
 
-      if (user && projectId) {
+      if (user && projectId && !loadingRef.current) {
+        loadingRef.current = true;
         try {
           await open({
             type: "cloud",
             id: projectId,
             // Dummy metadata, provider will fetch content using id
-            filename: "Loading...",
+            filename: "Loading.json",
             description: "",
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -225,6 +227,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
             title: t("gephi-lite.title"),
             message: "Failed to load project from cloud",
           });
+        } finally {
+          loadingRef.current = false;
         }
       }
     };
