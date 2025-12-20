@@ -93,7 +93,7 @@ export class DatavizCloudProvider implements CloudProvider {
     }
 
     private async saveProject(name: string, content: string, thumbnail?: Blob): Promise<CloudFile> {
-        const token = await this.getToken();
+
 
         let data;
         try {
