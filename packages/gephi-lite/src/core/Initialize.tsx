@@ -31,11 +31,10 @@ let isInitialized = false;
 let isCloudLoadingStarted = false;
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
-  console.log(`[${new Date().toISOString()}] Initialize component mounted`);
   const { t } = useTranslation();
   const { notify } = useNotifications();
   // const { openModal } = useModal();
-  const { open } = useFileActions();
+  const { open, reset } = useFileActions();
   const { metadata } = useGraphDataset();
   const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
@@ -73,7 +72,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    */
   const initialize = useCallback(async () => {
     if (isInitialized) {
-      console.log(`[${new Date().toISOString()}] initialize() skipped: already initialized`);
       return;
     }
     isInitialized = true;
@@ -81,10 +79,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // If loading from cloud (project_id), skip all local initialization
     const url = new URL(window.location.href);
     if (url.searchParams.has("project_id")) {
-      console.log(`[${new Date().toISOString()}] initialize() returned: project_id detected`);
       return;
     }
-    console.log(`[${new Date().toISOString()}] initialize() proceeding with local init`);
 
     // Load session from local storage
     sessionAtom.set(() => {
@@ -207,12 +203,10 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     const projectId = url.searchParams.get("project_id");
 
     const loadCloudProject = async () => {
-      console.log(`[${new Date().toISOString()}] loadCloudProject called. user=${!!user}, projectId=${projectId}, globalFlag=${isCloudLoadingStarted}`);
-
       // Ensure we only load once globally (even across re-renders in Strict Mode)
       if (user && projectId && !isCloudLoadingStarted) {
-        console.log(`[${new Date().toISOString()}] Starting cloud load...`);
         isCloudLoadingStarted = true;
+        reset(true);
         try {
           await open({
             type: "cloud",
@@ -229,7 +223,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           } as any);
 
           // Success! Clean up URL.
-          console.log(`[${new Date().toISOString()}] Cloud load success`);
           url.searchParams.delete("project_id");
           window.history.pushState({}, "", url);
 
@@ -253,8 +246,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     if (user && projectId) {
       loadCloudProject();
-    } else {
-      console.log(`[${new Date().toISOString()}] useEffect skipped load: user=${!!user}, projectId=${projectId}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); // Depends on user authentication status

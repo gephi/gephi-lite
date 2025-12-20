@@ -11,7 +11,6 @@ import Dropdown, { type Option } from "../../components/Dropdown";
 import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
 import {
-  BugIcon,
   DataIcon,
   DataIconFill,
   ExternalLinkIcon,
@@ -158,7 +157,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile],
   );
 
-  const logoMenuList = useMemo(
+  const logoMenuList: Option[] = useMemo(
     () => [
       {
         label: t("gephi-lite.open_welcome_modal"),
@@ -169,7 +168,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             arguments: {},
           }),
       },
-      { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
+      // { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
     ],
     [t, openModal],
   );
@@ -186,8 +185,10 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             </div>
             <ThemeSwitcher />
             <LocalSwitcher />
-            {logoMenuList.map(({ label, icon, onClick, url }, i) =>
-              url ? (
+            {logoMenuList.map((item, i) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const { label, icon, onClick, url } = item as any;
+              return url ? (
                 <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
                   {icon}
                 </a>
@@ -195,8 +196,8 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
                 <button key={i} className="gl-btn" onClick={onClick} title={label}>
                   {icon}
                 </button>
-              ),
-            )}
+              );
+            })}
           </section>
         </div>
       </AnimateHeight>
