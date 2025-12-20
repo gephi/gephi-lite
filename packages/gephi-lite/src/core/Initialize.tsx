@@ -22,6 +22,7 @@ import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
 import { AuthSync } from "./user/AuthSync";
+import { useConnectedUser } from "./user";
 
 // This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
@@ -184,6 +185,52 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialize]);
+
+  // Load project from cloud if project_id is in URL and user is connected
+  const [user] = useConnectedUser();
+  const { closeModal } = useModal();
+
+  useEffect(() => {
+    const loadCloudProject = async () => {
+      const url = new URL(window.location.href);
+      const projectId = url.searchParams.get("project_id");
+
+      if (user && projectId) {
+        try {
+          await open({
+            type: "cloud",
+            id: projectId,
+            // Dummy metadata, provider will fetch content using id
+            filename: "Loading...",
+            description: "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isPublic: false,
+            size: 0,
+            format: "gephi-lite"
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any);
+
+          // Remove project_id from URL
+          url.searchParams.delete("project_id");
+          window.history.pushState({}, "", url);
+
+          // Close welcome modal if open
+          closeModal();
+
+        } catch (e) {
+          console.error("Failed to load cloud project:", e);
+          notify({
+            type: "error",
+            title: t("gephi-lite.title"),
+            message: "Failed to load project from cloud",
+          });
+        }
+      }
+    };
+
+    loadCloudProject();
+  }, [user, open, notify, closeModal, t]);
 
   /**
    * Update document title:
