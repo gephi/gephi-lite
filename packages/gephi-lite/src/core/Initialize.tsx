@@ -206,7 +206,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     const url = new URL(window.location.href);
     const projectId = url.searchParams.get("project_id");
 
-    const loadCloudProject = async () => {
+    const loadCloudProject = async (retries = 3) => {
       if (user && projectId && !loadingRef.current) {
         loadingRef.current = true;
         try {
@@ -234,8 +234,12 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         } catch (e) {
           const errMsg = (e instanceof Error) ? e.message : String(e);
           if (errMsg.includes("already being loaded")) {
-            console.log("Project load conflict handled (ignored).");
-            return;
+            if (retries > 0) {
+              console.log(`Project load conflict. Retrying in 2s... (${retries} left)`);
+              loadingRef.current = false;
+              setTimeout(() => loadCloudProject(retries - 1), 2000);
+              return;
+            }
           }
           console.error("Failed to load cloud project:", e);
           notify({
@@ -253,7 +257,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       // Delay slightly to avoid race condition with initial load checks
       const timer = setTimeout(() => {
         loadCloudProject();
-      }, 500);
+      }, 2000);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
