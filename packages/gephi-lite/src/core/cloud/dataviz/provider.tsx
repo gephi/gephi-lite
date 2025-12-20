@@ -127,7 +127,8 @@ export class DatavizCloudProvider implements CloudProvider {
             id,
             name,
             app_name: APP_NAME,
-            data: data
+            data: data,
+            thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null
         };
 
         const res = await fetch(`${API_BASE_URL}/api/projects`, {
