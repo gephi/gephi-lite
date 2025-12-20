@@ -3,7 +3,7 @@ import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
-import { WelcomeModal } from "../components/modals/WelcomeModal";
+// import { WelcomeModal } from "../components/modals/WelcomeModal";
 import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
@@ -32,8 +32,12 @@ let isInitialized = false;
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { openModal } = useModal();
+  // const { openModal } = useModal();
   const { open } = useFileActions();
+
+  // ... (skip down to useEffect) ...
+
+
   const { metadata } = useGraphDataset();
   const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
