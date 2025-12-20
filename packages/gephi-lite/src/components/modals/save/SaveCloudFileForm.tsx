@@ -28,7 +28,7 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
 
   const [filename, setFilename] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [isPublic, setIsPublic] = useState<boolean>(true);
+  const [isPublic, setIsPublic] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
 
   useEffect(() => {
