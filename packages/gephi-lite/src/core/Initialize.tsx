@@ -91,6 +91,13 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     const broadcastID = url.searchParams.get("broadcast");
     setBroadcastID(broadcastID);
 
+    // If query params has project_id
+    // => skip default init, wait for auth to load project
+    if (url.searchParams.has("project_id")) {
+      graphFound = true;
+      showWelcomeModal = false;
+    }
+
     // If query params has new
     // => empty graph & open welcome modal
     if (url.searchParams.has("new") || broadcastID) {
