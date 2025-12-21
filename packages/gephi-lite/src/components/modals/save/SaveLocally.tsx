@@ -8,6 +8,16 @@ import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
 import { DownloadIcon } from "../../common-icons";
 
+const getDateString = () => {
+  const date = new Date();
+  const YYYY = date.getFullYear();
+  const MM = String(date.getMonth() + 1).padStart(2, "0");
+  const DD = String(date.getDate()).padStart(2, "0");
+  const HH = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  return `${YYYY}-${MM}-${DD} ${HH}:${mm}`;
+};
+
 interface SaveCLocallyProps {
   id?: string;
   onStatusChange: (status: AsyncStatus) => void;
@@ -22,7 +32,7 @@ export const SaveLocally: FC<SaveCLocallyProps> = ({ id, onStatusChange }) => {
     try {
       onStatusChange({ type: "loading" });
       await exportAsGephiLite((content) => {
-        FileSaver(new Blob([content]), getFilename(current?.filename || "gephi-lite", "gephi-lite"));
+        FileSaver(new Blob([content]), getFilename(current?.filename || getDateString(), "gephi-lite"));
       });
       onStatusChange({ type: "success" });
       notify({
