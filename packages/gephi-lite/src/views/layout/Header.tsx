@@ -26,11 +26,19 @@ import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useDataTable, useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import {
+  useAppearance,
+  useDataTable,
+  useFile,
+  useFileActions,
+  useGraphDatasetActions,
+  useSigmaAtom,
+} from "../../core/context/dataContexts";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
+import { getGraphSnapshot } from "../../utils/sigma";
 
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
@@ -43,6 +51,8 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { saveFile } = useCloudProvider();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile } = useFile();
+  const sigma = useSigmaAtom();
+  const { backgroundColor } = useAppearance();
 
   // For mobile burger menu:
   const [expanded, setExpanded] = useState(false);
@@ -88,7 +98,21 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               label: t("workspace.menu.save"),
               onClick: async () => {
                 try {
-                  await saveFile();
+                  const thumbnail = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
+                    width: 800,
+                    height: 600,
+                    backgroundColor,
+                    cameraState: sigma.getCamera().getState(),
+                    ratio: 1,
+                  });
+
+                  if (thumbnail) {
+                    console.log(`[Header] Thumbnail generated for save. Size: ${thumbnail.size}, Type: ${thumbnail.type}`);
+                  } else {
+                    console.error("[Header] Thumbnail generation returned null/undefined.");
+                  }
+
+                  await saveFile(thumbnail || undefined);
                   notify({
                     type: "success",
                     message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),

@@ -61,7 +61,8 @@ export function useCloudProvider() {
       else console.log("[useCloudProvider] saveFile called WITHOUT thumbnail");
 
       await exportAsGephiLite(async (content) => {
-        await user.provider.saveFile(currentFile as CloudFile, content, thumbnail);
+        const result = await user.provider.saveFile(currentFile as CloudFile, content, thumbnail);
+        setCurrentFile(result);
       });
     } catch (e) {
       setError(e as Error);
@@ -69,7 +70,7 @@ export function useCloudProvider() {
     } finally {
       setLoading(false);
     }
-  }, [user, exportAsGephiLite, currentFile]);
+  }, [user, exportAsGephiLite, currentFile, setCurrentFile]);
 
   /**
    * Save the current graph in the provider.
