@@ -180,7 +180,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           <section className="d-flex flex-row">
             <div className="flex-grow-1">
               <Dropdown options={workspaceMenuList}>
-                <button className="gl-btn">Workspace</button>
+                <button className="gl-btn">ワークスペース</button>
               </Dropdown>
             </div>
             <ThemeSwitcher />
@@ -206,7 +206,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center">
           {/* Tablet and desktop display: */}
           <Dropdown options={workspaceMenuList} className="d-none d-sm-block">
-            <button className="gl-btn dropdown-toggle">Workspace</button>
+            <button className="gl-btn dropdown-toggle">ワークスペース</button>
           </Dropdown>
           {/* Mobile display: */}
           {children}
