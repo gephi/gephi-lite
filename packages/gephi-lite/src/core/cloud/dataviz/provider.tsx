@@ -17,6 +17,15 @@ export class DatavizCloudProvider implements CloudProvider {
         return data.session.access_token;
     }
 
+    private blobToBase64(blob: Blob): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
     async getFiles(_skip: number = 0, _limit: number = 100): Promise<Array<Omit<CloudFile, "format">>> {
         const token = await this.getToken();
         const url = new URL(`${API_BASE_URL}/api/projects`);
@@ -32,7 +41,9 @@ export class DatavizCloudProvider implements CloudProvider {
             throw new Error(`Failed to fetch projects: ${res.statusText}`);
         }
 
-        const projects = await res.json();
+        const data = await res.json();
+        // Handle both array (legacy?) and object (spec) responses
+        const projects = Array.isArray(data) ? data : (data.projects || []);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return projects.map((p: any) => ({
@@ -55,159 +66,55 @@ export class DatavizCloudProvider implements CloudProvider {
     }
 
     async getFileContent(id: string): Promise<string> {
-
-        // 1. Get storage_path from DB
-        // @ts-expect-error accessing internal properties
-        const supabaseUrl = window.supabase.supabaseUrl;
-        // @ts-expect-error accessing internal properties
-        const supabaseKey = window.supabase.supabaseKey;
         const token = await this.getToken();
-
-        const dbRes = await fetch(`${supabaseUrl}/rest/v1/projects?id=eq.${id}&select=storage_path`, {
+        const res = await fetch(`${API_BASE_URL}/api/projects/${id}`, {
             headers: {
-                "apikey": supabaseKey,
                 "Authorization": `Bearer ${token}`
             }
         });
 
-        if (!dbRes.ok) throw new Error("Failed to fetch project metadata");
-        const rows = await dbRes.json();
-        if (rows.length === 0) throw new Error("Project not found");
-
-        const storagePath = rows[0].storage_path;
-        if (!storagePath) throw new Error("Project content not found (no storage_path)");
-
-        // 2. Download from Storage
-        // @ts-expect-error window.supabase is dynamically injected
-        const { data, error } = await window.supabase
-            .storage
-            .from('user_projects')
-            .download(storagePath);
-
-        if (error) {
-            console.error("Storage download error:", error);
-            throw new Error(`Failed to download project content: ${error.message}`);
+        if (!res.ok) {
+            throw new Error(`Failed to fetch project content: ${res.statusText}`);
         }
 
-        return await data.text();
+        // The API returns the JSON object directly.
+        // We need to return it as a string.
+        const data = await res.json();
+        return JSON.stringify(data);
     }
 
     async createFile(file: Pick<CloudFile, "filename" | "description" | "isPublic" | "format">, content: string, thumbnail?: Blob): Promise<CloudFile> {
-        return this.saveProject(file.filename, content, thumbnail);
-    }
-
-    async saveFile(file: CloudFile, content: string, thumbnail?: Blob): Promise<CloudFile> {
-        if (file.id) {
-            try {
-                await this.deleteFile(file);
-            } catch (e) {
-                console.warn("Failed to delete old file before saving new one", e);
-            }
-        }
-        return this.saveProject(file.filename, content, thumbnail);
-    }
-
-    async deleteFile(file: CloudFile): Promise<void> {
-        const token = await this.getToken();
-        const res = await fetch(`${API_BASE_URL}/api/projects/${file.id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        if (!res.ok) throw new Error("Failed to delete project");
-    }
-
-    private async saveProject(name: string, content: string, thumbnail?: Blob): Promise<CloudFile> {
-
-
-
-
-        const id = crypto.randomUUID();
-        // @ts-expect-error window.supabase is dynamically injected
-        const { data: sessionData } = await window.supabase.auth.getSession();
-        const user = sessionData?.session?.user;
-
         const token = await this.getToken();
 
-        // 1. Upload Project Content (JSON) to Storage
-        const jsonPath = `${user.id}/${id}.json`;
-        console.log(`[DatavizCloudProvider] Uploading project JSON to ${jsonPath}...`);
-
-        const jsonBlob = new Blob([content], { type: 'application/json' });
-        // @ts-expect-error window.supabase is dynamically injected
-        const { error: jsonUploadError } = await window.supabase
-            .storage
-            .from('user_projects')
-            .upload(jsonPath, jsonBlob, {
-                upsert: true,
-                contentType: 'application/json'
-            });
-
-        if (jsonUploadError) {
-            console.error("[DatavizCloudProvider] Failed to upload project JSON:", jsonUploadError);
-            alert(`プロジェクトデータのアップロードに失敗しました: ${jsonUploadError.message}`);
-            throw new Error(`Failed to upload project JSON: ${jsonUploadError.message}`);
-        }
-
-        // 2. Upload Thumbnail to Storage (if exists)
-        if (thumbnail && user) {
-            console.log(`[DatavizCloudProvider] Uploading thumbnail for ${id}...`);
-            // @ts-expect-error window.supabase is dynamically injected
-            const { data: uploadData, error: uploadError } = await window.supabase
-                .storage
-                .from('user_projects')
-                .upload(`${user.id}/${id}.png`, thumbnail, {
-                    upsert: true,
-                    contentType: 'image/png'
-                });
-
-            if (uploadError) {
-                console.error("[DatavizCloudProvider] Failed to upload thumbnail:", uploadError);
-                // Proceed without thumbnail
-            } else {
-                console.log("[DatavizCloudProvider] Thumbnail uploaded:", uploadData);
-            }
-        }
-
-        const projectData = {
-            id,
-            user_id: user?.id,
-            name,
+        // Prepare payload
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const payload: any = {
+            name: file.filename,
             app_name: APP_NAME,
-            storage_path: jsonPath, // Save storage path instead of raw data
-            thumbnail_path: thumbnail && user ? `${user.id}/${id}.png` : null,
-            updated_at: new Date().toISOString()
+            data: JSON.parse(content)
         };
 
-        console.log("[DatavizCloudProvider] Inserting into DB manually:", projectData);
+        if (thumbnail) {
+            payload.thumbnail = await this.blobToBase64(thumbnail);
+        }
 
-        // @ts-expect-error accessing internal properties
-        const supabaseUrl = window.supabase.supabaseUrl;
-        // @ts-expect-error accessing internal properties
-        const supabaseKey = window.supabase.supabaseKey;
-
-        const res = await fetch(`${supabaseUrl}/rest/v1/projects`, {
+        const res = await fetch(`${API_BASE_URL}/api/projects`, {
             method: "POST",
             headers: {
-                "apikey": supabaseKey,
                 "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-                "Prefer": "resolution=merge-duplicates,return=representation"
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(projectData)
+            body: JSON.stringify(payload)
         });
 
         if (!res.ok) {
             const errorText = await res.text();
-            console.error("[DatavizCloudProvider] DB Error:", res.status, errorText);
-            alert(`プロジェクトの保存に失敗しました (DB Error: ${res.status}): ${errorText}`);
-            throw new Error(`Failed to save project: ${res.status} ${errorText}`);
+            throw new Error(`Failed to create project: ${res.status} ${errorText}`);
         }
 
-        const insertedData = await res.json();
-        const p = insertedData[0]; // return=representation returns array
-        console.log("[DatavizCloudProvider] DB Success:", p);
+        const responseData = await res.json();
+        const p = responseData.project;
+
         return {
             type: "cloud",
             id: p.id,
@@ -223,12 +130,68 @@ export class DatavizCloudProvider implements CloudProvider {
         } as CloudFile;
     }
 
+    async saveFile(file: CloudFile, content: string, thumbnail?: Blob): Promise<CloudFile> {
+        const token = await this.getToken();
+
+        // Prepare payload
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const payload: any = {
+            name: file.filename,
+            data: JSON.parse(content)
+        };
+
+        if (thumbnail) {
+            payload.thumbnail = await this.blobToBase64(thumbnail);
+        }
+
+        const res = await fetch(`${API_BASE_URL}/api/projects/${file.id}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Failed to update project: ${res.status} ${errorText}`);
+        }
+
+        const responseData = await res.json();
+        const p = responseData.project;
+
+        return {
+            type: "cloud",
+            id: p.id,
+            filename: p.name,
+            description: "",
+            createdAt: new Date(p.updated_at), // Use updated_at 
+            updatedAt: new Date(p.updated_at),
+            isPublic: false,
+            size: 0,
+            webUrl: "",
+            thumbnailUrl: p.thumbnail_path,
+            format: "gephi-lite"
+        } as CloudFile;
+    }
+
+    async deleteFile(file: CloudFile): Promise<void> {
+        const token = await this.getToken();
+        const res = await fetch(`${API_BASE_URL}/api/projects/${file.id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (!res.ok) throw new Error("Failed to delete project");
+    }
+
     serialize(): string {
         return JSON.stringify({ type: this.type });
     }
 
 }
-
 
 export function datavizProviderDeserialize(_json: string): DatavizCloudProvider {
     return new DatavizCloudProvider();
