@@ -178,7 +178,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           ]
           : []),
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile],
+    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile, backgroundColor, sigma],
   );
 
   const logoMenuList: Option[] = useMemo(
