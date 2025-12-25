@@ -37,8 +37,8 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
   const { backgroundColor } = useAppearance();
 
   const [filename, setFilename] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [isPublic, setIsPublic] = useState<boolean>(false);
+  // const [description, setDescription] = useState<string>("");
+  // const [isPublic, setIsPublic] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
 
   useEffect(() => {
@@ -74,8 +74,8 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
             await createFile(
               {
                 filename,
-                description,
-                isPublic,
+                description: "", // Hardcoded empty description
+                isPublic: false, // Hardcoded private
                 format: "gephi-lite",
               },
               content,
@@ -93,7 +93,7 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
         onStatusChange({ type: "error" });
       }
     }
-  }, [isValid, createFile, filename, description, isPublic, notify, t, exportAsGephiLite, onStatusChange, sigma, backgroundColor]);
+  }, [isValid, createFile, filename, notify, t, exportAsGephiLite, onStatusChange, sigma, backgroundColor]);
 
   return (
     <>
@@ -120,29 +120,7 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
             required={true}
           />
 
-          <label htmlFor="description" className="form-label">
-            {t("graph.save.github.field.description").toString()}
-          </label>
-          <textarea
-            id="description"
-            className="form-control mb-2 flex-grow-1"
-            value={description}
-            rows={3}
-            onChange={(e) => setDescription(e.target.value)}
-          />
 
-          <div className="form-check mb-2">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="isPublic"
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="isPublic">
-              {t("graph.save.github.field.isPublic").toString()}
-            </label>
-          </div>
 
           <div className="gl-gap-2 d-flex justify-content-end">
             <button form="saveForm" className="gl-btn gl-btn-outline" disabled={loading}>
