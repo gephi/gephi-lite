@@ -23,7 +23,7 @@ export const SaveAsModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   const menu = useMemo<SaveCollectionMenuItem[]>(() => {
     let cloudLabel: string = t("graph.save.github.title");
     if (user?.provider?.type === "dataviz") {
-      cloudLabel = "クラウドに保存";
+      cloudLabel = "サーバに保存";
     }
 
     return [
