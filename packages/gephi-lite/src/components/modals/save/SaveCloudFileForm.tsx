@@ -46,7 +46,7 @@ export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChan
   }, [filename]);
 
   useEffect(() => {
-    setFilename(current?.filename ? getFilename(current.filename, "gephi-lite") : getDateString());
+    setFilename(getDateString());
   }, [current]);
 
   const onSubmit = useCallback(async () => {
