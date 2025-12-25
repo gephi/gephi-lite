@@ -363,7 +363,7 @@
           "isPublic": "公開 Gist を作成"
         },
         "success": "{{filename}} を保存しました。",
-        "title": "GitHub に保存..."
+        "title": "サーバに保存"
       },
       "local": {
         "error": "ローカル保存に失敗しました",
