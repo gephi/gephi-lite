@@ -4,7 +4,7 @@ import { PiCloudArrowUp } from "react-icons/pi";
 
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
 import { useAppearance, useFile, useFileActions, useSigmaAtom } from "../../../core/context/dataContexts";
-import { getFilename } from "../../../core/file/utils";
+
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
 import { getGraphSnapshot } from "../../../utils/sigma";
