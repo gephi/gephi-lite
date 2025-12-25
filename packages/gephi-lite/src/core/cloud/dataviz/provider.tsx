@@ -187,6 +187,26 @@ export class DatavizCloudProvider implements CloudProvider {
         if (!res.ok) throw new Error("Failed to delete project");
     }
 
+    async getThumbnail(file: CloudFile): Promise<string> {
+        if (!file.thumbnailUrl) return "";
+
+        const token = await this.getToken();
+        const res = await fetch(`${API_BASE_URL}/api/projects/${file.id}/thumbnail`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            // Simply return empty string if thumbnail fetch fails, no need to crash the app
+            console.warn(`Failed to fetch thumbnail for ${file.filename}`);
+            return "";
+        }
+
+        const blob = await res.blob();
+        return URL.createObjectURL(blob);
+    }
+
     serialize(): string {
         return JSON.stringify({ type: this.type });
     }

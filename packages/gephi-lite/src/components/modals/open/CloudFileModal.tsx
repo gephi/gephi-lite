@@ -24,7 +24,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
   const [user] = useConnectedUser();
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { loading, error, getFiles, openFile } = useCloudProvider();
+  const { loading, error, getFiles, openFile, getThumbnail } = useCloudProvider();
   // list files retrived from the cloud
   const [files, setFiles] = useState<Array<Omit<CloudFile, "format">>>([]);
   // the selected file by the user
@@ -89,6 +89,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                 <thead>
                   <tr>
                     <th scope="col"></th>
+                    <th scope="col">{t("common.image")}</th>
                     <th scope="col">{t("common.filename").toString()}</th>
                     <th scope="col">{t("common.updated").toString()}</th>
                     <th scope="col">{t("common.size").toString()}</th>
@@ -96,33 +97,13 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
                 </thead>
                 <tbody>
                   {files.map((file) => (
-                    <tr
+                    <CloudFileRow
                       key={file.id}
-                      title={file.description}
-                      className={cx("cursor-pointer", selected && selected.id === file.id && "table-active")}
-                      onClick={() => {
-                        setSelected(selected && selected.id === file.id ? null : file);
-                      }}
-                    >
-                      <td>{!file.isPublic && <LockIcon />}</td>
-                      <td>
-                        {file.filename}
-                        <a
-                          className="m-2"
-                          href={file.webUrl}
-                          title={t("graph.open.github.file-open-external", {
-                            filename: file.filename,
-                            provider: t(`providers.github`),
-                          }).toString()}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <ExternalLinkIcon />
-                        </a>
-                      </td>
-                      <td>{displayDateTime(file.updatedAt)}</td>
-                      <td>{`${byteSize(file.size)}`}</td>
-                    </tr>
+                      file={file}
+                      selected={selected?.id === file.id}
+                      onClick={() => setSelected(selected && selected.id === file.id ? null : file)}
+                      getThumbnail={getThumbnail}
+                    />
                   ))}
                 </tbody>
               </table>
@@ -149,5 +130,67 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
         <PleaseSignIn />
       )}
     </>
+  );
+
+};
+
+interface CloudFileRowProps {
+  file: Omit<CloudFile, "format">;
+  selected: boolean;
+  onClick: () => void;
+  getThumbnail: (file: CloudFile) => Promise<string>;
+}
+
+const CloudFileRow: FC<CloudFileRowProps> = ({ file, selected, onClick, getThumbnail }) => {
+  const { t } = useTranslation();
+  const [thumbUrl, setThumbUrl] = useState<string>("");
+
+  useEffect(() => {
+    let active = true;
+    getThumbnail(file as CloudFile).then((url) => {
+      if (active && url) setThumbUrl(url);
+    });
+    return () => {
+      active = false;
+    };
+  }, [file, getThumbnail]);
+
+  return (
+    <tr
+      title={file.description}
+      className={cx("cursor-pointer", selected && "table-active")}
+      onClick={onClick}
+    >
+      <td className="align-middle">{!file.isPublic && <LockIcon />}</td>
+      <td className="align-middle">
+        {thumbUrl ? (
+          <img
+            src={thumbUrl}
+            alt={file.filename}
+            style={{ width: "60px", height: "40px", objectFit: "cover", borderRadius: "4px" }}
+          />
+        ) : (
+          <div style={{ width: "60px", height: "40px", backgroundColor: "#eee", borderRadius: "4px" }} />
+        )}
+      </td>
+      <td className="align-middle">
+        {file.filename}
+        <a
+          className="m-2"
+          href={file.webUrl}
+          title={t("graph.open.github.file-open-external", {
+            filename: file.filename,
+            provider: t(`providers.github`),
+          }).toString()}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ExternalLinkIcon />
+        </a>
+      </td>
+      <td className="align-middle">{displayDateTime(file.updatedAt)}</td>
+      <td className="align-middle">{`${byteSize(file.size)}`}</td>
+    </tr>
   );
 };

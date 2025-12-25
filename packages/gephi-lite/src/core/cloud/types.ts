@@ -57,6 +57,11 @@ export interface CloudProvider {
   deleteFile(file: CloudFile): Promise<void>;
 
   /**
+   * Get thumbnail url properly (handling auth if needed)
+   */
+  getThumbnail?(file: CloudFile): Promise<string>;
+
+  /**
    * Serialize the cloud provider.
    * It is used when we save the user (with the provider) in the localstorage
    */

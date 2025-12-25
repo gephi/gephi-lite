@@ -97,5 +97,15 @@ export function useCloudProvider() {
     [user, setCurrentFile],
   );
 
-  return { loading, error, getFiles, openFile, saveFile, createFile };
+  const getThumbnail = useCallback(
+    async (file: CloudFile) => {
+      if (user && user.provider.getThumbnail) {
+        return await user.provider.getThumbnail(file);
+      }
+      return file.thumbnailUrl || "";
+    },
+    [user]
+  );
+
+  return { loading, error, getFiles, openFile, saveFile, createFile, getThumbnail };
 }
