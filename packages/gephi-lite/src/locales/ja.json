@@ -327,10 +327,11 @@
         "title": "GitHub からファイルを開く"
       },
       "local": {
+        "button_text": "ローカル・ファイルを選択してください",
         "dragndrop_text": "GEXF / GRAPHML / Graphology JSON ファイルをドラッグ＆ドロップしてください",
         "error": "ファイルの読み込み中にエラーが発生しました。ファイルが有効か確認してください。",
         "success": "{{filename}} を読み込みました。",
-        "title": "ローカルファイルを開く"
+        "title": "ローカルから開く"
       },
       "new": {
         "message": "現在のグラフを消去します。続行してよろしいですか？",

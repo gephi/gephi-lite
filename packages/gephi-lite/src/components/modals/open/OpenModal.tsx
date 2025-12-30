@@ -27,7 +27,7 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
   const menu = useMemo<OpenCollectionMenuItem[]>(() => {
     let cloudLabel: string = t("graph.open.github.title");
     if (user?.provider?.type === "dataviz") {
-      cloudLabel = "Cloud (Dataviz)";
+      cloudLabel = "サーバから開く";
     }
     return [
       {
