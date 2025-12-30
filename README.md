@@ -46,7 +46,9 @@ npm start
 ```
 
 開発モードでアプリケーションが起動します。
-ブラウザで [http://localhost:5173/gephi-lite](http://localhost:5173/gephi-lite) を開いて確認できます。
+
+http://localhost:5173/gephi-lite
+http://localhost:5173/gephi-lite/?auth_debug
 
 ファイルを編集すると、ページが自動的にリロードされます。
 コンソールにはリント エラーが表示されます。
