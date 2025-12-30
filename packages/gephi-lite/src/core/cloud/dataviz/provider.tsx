@@ -9,7 +9,6 @@ export class DatavizCloudProvider implements CloudProvider {
     icon = (<CloudIcon />);
 
     private async getToken(): Promise<string> {
-        // @ts-expect-error window.supabase is dynamically injected
         const { data } = await window.supabase.auth.getSession();
         if (!data.session?.access_token) {
             throw new Error("No active session");

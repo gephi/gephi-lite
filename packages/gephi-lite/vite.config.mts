@@ -34,6 +34,7 @@ export default defineConfig({
     globals: true,
     exclude: ["e2e", "node_modules"],
   },
+  publicDir: "public",
   build: {
     outDir: "build",
     sourcemap: true,

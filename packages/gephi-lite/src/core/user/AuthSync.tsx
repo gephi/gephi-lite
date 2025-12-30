@@ -11,12 +11,10 @@ export const AuthSync: FC = () => {
         if (mounted.current) return;
         mounted.current = true;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { auth } = (window as any).supabase || {};
+        const { auth } = window.supabase || {};
         if (!auth) return;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: { subscription } } = auth.onAuthStateChange((event: string, session: any) => {
+        const { data: { subscription } } = auth.onAuthStateChange((event, session) => {
             if (
                 event === "SIGNED_IN" ||
                 event === "TOKEN_REFRESHED" ||
