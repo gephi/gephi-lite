@@ -40,6 +40,8 @@ interface SupabaseClient {
 declare global {
     interface Window {
         supabase: SupabaseClient;
+        datavizSupabase: SupabaseClient;
+        datavizApiUrl: string;
     }
 }
 

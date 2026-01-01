@@ -11,7 +11,7 @@ export const AuthSync: FC = () => {
         if (mounted.current) return;
         mounted.current = true;
 
-        const { auth } = window.supabase || {};
+        const { auth } = window.datavizSupabase || {};
         if (!auth) return;
 
         const { data: { subscription } } = auth.onAuthStateChange((event, session) => {

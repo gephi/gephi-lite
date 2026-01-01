@@ -62,7 +62,7 @@ const cookieStorage = {
 };
 
 // ---- Supabase クライアント作成 ----
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: cookieStorage,
     storageKey: AUTH_COOKIE_NAME,
@@ -70,9 +70,12 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
-});
+}) : null;
 // 外部公開（リファクタリング対応）
-window.datavizSupabase = supabase;
+if (supabase) {
+  window.datavizSupabase = supabase;
+  window.datavizApiUrl = API_BASE_URL;
+}
 
 
 // =========================================================================
@@ -105,10 +108,7 @@ class DatavizGlobalHeader extends HTMLElement {
         display: block;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         z-index: 99999;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
+        position: relative;
       }
       .dv-header {
         background-color: #111;

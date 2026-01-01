@@ -1,7 +1,7 @@
 import { CloudIcon } from "../../../components/common-icons";
 import { CloudFile, CloudProvider } from "../types";
 
-const API_BASE_URL = "https://api.dataviz.jp";
+const API_BASE_URL = window.datavizApiUrl || "https://api.dataviz.jp";
 const APP_NAME = "gephi-lite";
 
 export class DatavizCloudProvider implements CloudProvider {
@@ -9,7 +9,7 @@ export class DatavizCloudProvider implements CloudProvider {
     icon = (<CloudIcon />);
 
     private async getToken(): Promise<string> {
-        const { data } = await window.supabase.auth.getSession();
+        const { data } = await window.datavizSupabase.auth.getSession();
         if (!data.session?.access_token) {
             throw new Error("No active session");
         }
