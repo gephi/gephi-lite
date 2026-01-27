@@ -1,5 +1,11 @@
 header {
   .lang-switcher-btn {
-    line-height: 1 !important;
+    display: none !important; // Hide language switcher
+  }
+
+  // Hide theme switcher (Auto/light/dark dropdown)
+  .dropdown:has(.dropdown-toggle[title*="theme"]),
+  .dropdown:has(.dropdown-toggle[title*="Theme"]) {
+    display: none !important;
   }
 }
