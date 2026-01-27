@@ -20,6 +20,7 @@ import { getCurrentPreferences } from "./preferences/utils";
 import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
+import { ToolHeaderConfig } from "./ToolHeaderConfig";
 import { AuthInit } from "./user/AuthInit";
 import { AuthSync } from "./user/AuthSync";
 import { useConnectedUser } from "./user";
@@ -261,6 +262,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     <I18n>
       <AuthInit />
       <AuthSync />
+      <ToolHeaderConfig />
       {children}
     </I18n>
   );

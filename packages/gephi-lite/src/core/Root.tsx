@@ -16,38 +16,42 @@ export const Root: FC = () => {
   const portalTarget = useMemo(() => document.getElementById("portal-target") as HTMLDivElement, []);
 
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorComponent}
-      onReset={(details) => {
-        // Reset the state of your app so the error doesn't happen again
-        console.debug(details);
-      }}
-    >
-      <HashRouter>
-        <MatomoProvider>
-          <UIContext.Provider
-            value={{
-              ...emptyUIContext,
-              portalTarget: portalTarget,
-            }}
-          >
-            <AtomsContextsRoot>
-              <Initialize>
-                <Routes>
-                  <Route path="/design-system" element={<DesignSystemPage />} />
-                  <Route path="/design-system/:page" element={<DesignSystemPage />} />
-                  <Route path="/" element={<GraphPage />} />
-                  <Route path="/data/nodes" element={<DataPage type="nodes" />} />
-                  <Route path="/data/edges" element={<DataPage type="edges" />} />
+    <>
+      {/* @ts-expect-error - Custom element not in type definitions */}
+      <dataviz-tool-header></dataviz-tool-header>
+      <ErrorBoundary
+        FallbackComponent={ErrorComponent}
+        onReset={(details) => {
+          // Reset the state of your app so the error doesn't happen again
+          console.debug(details);
+        }}
+      >
+        <HashRouter>
+          <MatomoProvider>
+            <UIContext.Provider
+              value={{
+                ...emptyUIContext,
+                portalTarget: portalTarget,
+              }}
+            >
+              <AtomsContextsRoot>
+                <Initialize>
+                  <Routes>
+                    <Route path="/design-system" element={<DesignSystemPage />} />
+                    <Route path="/design-system/:page" element={<DesignSystemPage />} />
+                    <Route path="/" element={<GraphPage />} />
+                    <Route path="/data/nodes" element={<DataPage type="nodes" />} />
+                    <Route path="/data/edges" element={<DataPage type="edges" />} />
 
-                  {/* Error pages: */}
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-              </Initialize>
-            </AtomsContextsRoot>
-          </UIContext.Provider>
-        </MatomoProvider>
-      </HashRouter>
-    </ErrorBoundary>
+                    {/* Error pages: */}
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </Initialize>
+              </AtomsContextsRoot>
+            </UIContext.Provider>
+          </MatomoProvider>
+        </HashRouter>
+      </ErrorBoundary>
+    </>
   );
 };
