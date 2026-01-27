@@ -2,6 +2,7 @@ import { FieldModel, gephiLiteParse } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
+import { isArray, isFunction } from "lodash";
 import { parse as parseVersion } from "semver";
 
 import { config } from "../../config";
@@ -125,8 +126,16 @@ export async function extractGraphFromFile(
       }
     }
 
-    // Graphology
-    if (jsonContent.nodes && jsonContent.edges) {
+    // Graphology already deserialized thanks to `gephiLiteParse` with its `deserializer`
+    if (jsonContent.nodes && jsonContent.edges && isFunction(jsonContent.nodes) && isFunction(jsonContent.edges)) {
+      return {
+        format: "graphology",
+        data: jsonContent as Graph,
+      };
+    }
+
+    // Graphology serialized (keept it in case)
+    if (jsonContent.nodes && jsonContent.edges && isArray(jsonContent.nodes) && isArray(jsonContent.edges)) {
       return {
         format: "graphology",
         data: Graph.from(jsonContent),
