@@ -45,18 +45,23 @@ export class DatavizCloudProvider implements CloudProvider {
         const projects = Array.isArray(data) ? data : (data.projects || []);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return projects.map((p: any) => ({
-            type: "cloud",
-            id: p.id,
-            filename: p.name,
-            description: "",
-            createdAt: new Date(p.created_at),
-            updatedAt: new Date(p.updated_at),
-            isPublic: false,
-            size: 0,
-            webUrl: "",
-            thumbnailUrl: p.thumbnail_path
-        }));
+        return projects.map((p: any) => {
+            const hasExtension = /\.(json|gexf|graphml)$/i.test(p.name);
+            const filename = hasExtension ? p.name : `${p.name}.json`;
+
+            return {
+                type: "cloud",
+                id: p.id,
+                filename,
+                description: "",
+                createdAt: new Date(p.created_at),
+                updatedAt: new Date(p.updated_at),
+                isPublic: false,
+                size: 0,
+                webUrl: "",
+                thumbnailUrl: p.thumbnail_path
+            };
+        });
     }
 
     async getFile(id: string): Promise<Omit<CloudFile, "format"> | null> {
