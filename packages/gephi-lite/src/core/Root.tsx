@@ -17,8 +17,6 @@ export const Root: FC = () => {
 
   return (
     <>
-      {/* @ts-expect-error - Custom element not in type definitions */}
-      <dataviz-tool-header></dataviz-tool-header>
       <ErrorBoundary
         FallbackComponent={ErrorComponent}
         onReset={(details) => {

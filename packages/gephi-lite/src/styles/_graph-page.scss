@@ -1,6 +1,8 @@
 #graph-page {
   // default background color which can be customized by user
   background-color: var(--gl-body-bg);
+  position: relative;
+  overflow: hidden;
 
   .stage {
     position: absolute;
@@ -63,13 +65,11 @@
   z-index: 141;
   top: -0.625rem !important;
 
-  > div {
+  >div {
     textarea {
-      background-color: color-mix(
-        in hsl,
-        var(--gl-container-highest-bg),
-        var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix
-      );
+      background-color: color-mix(in hsl,
+          var(--gl-container-highest-bg),
+          var(--gl-body-color) $gl-sys-proportion-component-hover-color-mix );
       max-width: calc(100% - 4px);
       height: 5rem;
       padding-left: 0.45rem;

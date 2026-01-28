@@ -142,3 +142,10 @@
   width: 100%;
   background: linear-gradient(180deg, transparent, var(--gl-container-highest-bg));
 }
+
+#root {
+  padding-top: 96px; // 48px dataviz-header + 48px dataviz-tool-header
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

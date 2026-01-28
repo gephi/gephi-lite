@@ -9,3 +9,20 @@ header {
     display: none !important;
   }
 }
+
+// Fix header overlap
+dataviz-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+dataviz-tool-header {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 100%;
+  z-index: 998;
+}
