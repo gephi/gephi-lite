@@ -31,14 +31,14 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
     }
     return [
       {
-        id: "local",
-        i18nKey: "graph.open.local.title",
-        component: OpenLocalFileForm,
-      },
-      {
         id: "github",
         label: cloudLabel,
         component: OpenCloudFileForm,
+      },
+      {
+        id: "local",
+        i18nKey: "graph.open.local.title",
+        component: OpenLocalFileForm,
       },
     ];
   }, [t, user]);

@@ -28,14 +28,14 @@ export const SaveAsModal: FC<ModalProps<unknown>> = ({ cancel }) => {
 
     return [
       {
-        id: "local",
-        i18nKey: "graph.save.local.title",
-        component: SaveLocally,
-      },
-      {
         id: "github",
         label: cloudLabel,
         component: SaveCloudFileForm,
+      },
+      {
+        id: "local",
+        i18nKey: "graph.save.local.title",
+        component: SaveLocally,
       },
     ];
   }, [t, user]);
