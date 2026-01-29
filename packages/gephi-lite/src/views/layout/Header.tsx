@@ -58,7 +58,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     () =>
       [
         {
-          label: "新しいワークスペースを作成",
+          label: t("workspace.menu.new"),
           onClick: () =>
             openModal({
               component: ConfirmModal,
@@ -73,7 +73,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         {
           label: (
             <span className="d-flex">
-              <span className="flex-grow-1">ワークスペースをクローン</span> <ExternalLinkIcon />
+              <span className="flex-grow-1">{t("workspace.menu.duplicate")}</span> <ExternalLinkIcon />
             </span>
           ),
           onClick: async () => {
@@ -88,7 +88,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
           ? [
             {
-              label: "保存",
+              label: t("workspace.menu.save"),
               onClick: async () => {
                 try {
                   const thumbnail = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
@@ -127,7 +127,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const logoMenuList: Option[] = useMemo(
     () => [
       {
-        label: "ウェルカム画面を開く",
+        label: t("gephi-lite.open_welcome_modal"),
         icon: <HomeIcon />,
         onClick: () =>
           openModal({
@@ -137,7 +137,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       },
       // { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
     ],
-    [openModal],
+    [t, openModal],
   );
 
   return (
@@ -180,13 +180,13 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
           <Link to="/" className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
-            {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} グラフ
+            {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
           <Link
             to={`/data/${dataTableItemType}`}
             className={cx("gl-btn", location.pathname.startsWith("/data") && "gl-btn-fill")}
           >
-            {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} データ
+            {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">

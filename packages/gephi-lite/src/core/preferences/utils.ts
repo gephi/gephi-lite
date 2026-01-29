@@ -1,6 +1,6 @@
 import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
-import { i18n } from "../../locales/provider";
+// import { i18n } from "../../locales/provider";
 import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
@@ -8,7 +8,7 @@ export function getEmptyPreferences(): Preferences {
     layoutsParameters: {},
     metrics: {},
     // default is the local detected by i18n
-    locale: i18n.language,
+    locale: "ja",
     theme: "auto",
   };
 }
