@@ -60,11 +60,11 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     () =>
       [
         {
-          label: t("workspace.menu.open"),
+          label: "開く...",
           onClick: () => openModal({ component: OpenModal, arguments: {} }),
         },
         {
-          label: t("workspace.menu.new"),
+          label: "新しいワークスペースを作成",
           onClick: () =>
             openModal({
               component: ConfirmModal,
@@ -79,7 +79,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         {
           label: (
             <span className="d-flex">
-              <span className="flex-grow-1">{t("workspace.menu.duplicate")}</span> <ExternalLinkIcon />
+              <span className="flex-grow-1">ワークスペースをクローン</span> <ExternalLinkIcon />
             </span>
           ),
           onClick: async () => {
@@ -94,7 +94,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
           ? [
             {
-              label: t("workspace.menu.save"),
+              label: "保存",
               onClick: async () => {
                 try {
                   const thumbnail = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
@@ -125,7 +125,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           ]
           : []),
         {
-          label: t("workspace.menu.save_as"),
+          label: "別名で保存...",
           onClick: () => openModal({ component: SaveAsModal, arguments: {} }),
         },
         // Export moved to tool header
@@ -133,7 +133,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         ...(user && user.provider.type !== "dataviz"
           ? [
             {
-              label: t("workspace.menu.github_signout"),
+              label: "GitHub との接続解除",
               onClick: () =>
                 openModal({
                   component: ConfirmModal,
@@ -153,7 +153,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         ...(!user
           ? [
             {
-              label: t("workspace.menu.github_signin"),
+              label: "GitHub へログイン",
               onClick: () => openModal({ component: GithubLoginModal, arguments: {} }),
             },
           ]
@@ -165,7 +165,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const logoMenuList: Option[] = useMemo(
     () => [
       {
-        label: t("gephi-lite.open_welcome_modal"),
+        label: "ウェルカム画面を開く",
         icon: <HomeIcon />,
         onClick: () =>
           openModal({
@@ -175,7 +175,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       },
       // { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
     ],
-    [t, openModal],
+    [openModal],
   );
 
   return (
@@ -218,13 +218,13 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
           <Link to="/" className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
-            {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
+            {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} グラフ
           </Link>
           <Link
             to={`/data/${dataTableItemType}`}
             className={cx("gl-btn", location.pathname.startsWith("/data") && "gl-btn-fill")}
           >
-            {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
+            {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} データ
           </Link>
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
