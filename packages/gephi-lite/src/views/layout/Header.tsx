@@ -1,5 +1,5 @@
 import cx from "classnames";
-import FileSaver from "file-saver";
+// import FileSaver from "file-saver";
 import { type FC, PropsWithChildren, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
@@ -21,7 +21,7 @@ import {
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
-import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
+// import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
 import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
@@ -30,11 +30,10 @@ import {
   useAppearance,
   useDataTable,
   useFile,
-  useFileActions,
   useGraphDatasetActions,
   useSigmaAtom,
 } from "../../core/context/dataContexts";
-import { getFilename } from "../../core/file/utils";
+// import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
@@ -49,7 +48,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { type: dataTableItemType } = useDataTable();
   const { resetGraph } = useGraphDatasetActions();
   const { saveFile } = useCloudProvider();
-  const { exportAsGexf } = useFileActions();
+  // const { exportAsGexf } = useFileActions();
   const { current: currentFile } = useFile();
   const sigma = useSigmaAtom();
   const { backgroundColor } = useAppearance();
@@ -129,25 +128,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           label: t("workspace.menu.save_as"),
           onClick: () => openModal({ component: SaveAsModal, arguments: {} }),
         },
-        { type: "divider" },
-        {
-          label: t("workspace.menu.export_image"),
-          onClick: () => openModal({ component: ExportPNGModal, arguments: {} }),
-        },
-        {
-          label: t("workspace.menu.export_graph_file"),
-          onClick: async () => {
-            try {
-              await exportAsGexf((content) => {
-                FileSaver(new Blob([content]), getFilename(currentFile?.filename || "gephi-lite", "gexf"));
-              });
-              notify({ type: "success", message: t("graph.export.gexf.success").toString() });
-            } catch (e) {
-              console.error(e);
-              notify({ type: "error", message: t("graph.export.gexf.error").toString() });
-            }
-          },
-        },
+        // Export moved to tool header
         { type: "divider" },
         ...(user && user.provider.type !== "dataviz"
           ? [
@@ -178,7 +159,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           ]
           : []),
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile, backgroundColor, sigma],
+    [t, user, openModal, notify, resetGraph, setUser, currentFile, saveFile, backgroundColor, sigma],
   );
 
   const logoMenuList: Option[] = useMemo(

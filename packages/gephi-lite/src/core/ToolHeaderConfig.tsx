@@ -1,16 +1,20 @@
+import FileSaver from "file-saver";
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useModal } from "./modals";
-import { useFileActions } from "./context/dataContexts";
-import { useNotifications } from "./notifications";
-import { OpenModal } from "../components/modals/open/OpenModal";
+import { ExportPNGModal } from "../components/modals/export/ExportPNGModal";
 import { SaveAsModal } from "../components/modals/save/SaveAsModal";
+import { OpenModal } from "../components/modals/open/OpenModal";
+import { useFile, useFileActions } from "./context/dataContexts";
+import { getFilename } from "./file/utils";
+import { useModal } from "./modals";
+import { useNotifications } from "./notifications";
 
 const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf"];
 
 export const ToolHeaderConfig: FC = () => {
     const { openModal } = useModal();
-    const { open } = useFileActions();
+    const { open, exportAsGexf } = useFileActions();
+    const { current: currentFile } = useFile();
     const { notify } = useNotifications();
     const { t } = useTranslation();
 
@@ -64,12 +68,37 @@ export const ToolHeaderConfig: FC = () => {
                             label: 'プロジェクトの保存',
                             action: () => openModal({ component: SaveAsModal, arguments: {} }),
                             align: 'right'
+                        },
+                        {
+                            label: 'エクスポート',
+                            type: 'dropdown',
+                            align: 'right',
+                            items: [
+                                {
+                                    label: '画像 (png)',
+                                    action: () => openModal({ component: ExportPNGModal, arguments: {} })
+                                },
+                                {
+                                    label: 'グラフ (gexf)',
+                                    action: async () => {
+                                        try {
+                                            await exportAsGexf((content) => {
+                                                FileSaver(new Blob([content]), getFilename(currentFile?.filename || "gephi-lite", "gexf"));
+                                            });
+                                            notify({ type: "success", message: t("graph.export.gexf.success").toString() });
+                                        } catch (e) {
+                                            console.error(e);
+                                            notify({ type: "error", message: t("graph.export.gexf.error").toString() });
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     ]
                 });
             }
         });
-    }, [openModal, open, notify, t]);
+    }, [openModal, open, notify, t, currentFile, exportAsGexf]);
 
     return null;
 };
