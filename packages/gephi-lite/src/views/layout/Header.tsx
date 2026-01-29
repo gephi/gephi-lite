@@ -22,7 +22,7 @@ import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
 // import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
-import { OpenModal } from "../../components/modals/open/OpenModal";
+// import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
@@ -59,10 +59,6 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const workspaceMenuList = useMemo(
     () =>
       [
-        {
-          label: "開く...",
-          onClick: () => openModal({ component: OpenModal, arguments: {} }),
-        },
         {
           label: "新しいワークスペースを作成",
           onClick: () =>
