@@ -23,7 +23,7 @@ import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
 // import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
 // import { OpenModal } from "../../components/modals/open/OpenModal";
-import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
+// import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import {
@@ -120,10 +120,6 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             },
           ]
           : []),
-        {
-          label: "別名で保存...",
-          onClick: () => openModal({ component: SaveAsModal, arguments: {} }),
-        },
         // Export moved to tool header
         { type: "divider" },
         ...(user && user.provider.type !== "dataviz"
