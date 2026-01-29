@@ -19,11 +19,9 @@ import {
   HomeIcon,
 } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
-import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
+// import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
-// import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
-// import { OpenModal } from "../../components/modals/open/OpenModal";
-// import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
+
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import {
@@ -42,7 +40,7 @@ import { getGraphSnapshot } from "../../utils/sigma";
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const { t } = useTranslation();
-  const [user, setUser] = useConnectedUser();
+  const [user] = useConnectedUser();
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
@@ -86,7 +84,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             });
           },
         },
-        { type: "divider" },
+
         ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
           ? [
             {
@@ -120,38 +118,10 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             },
           ]
           : []),
-        // Export moved to tool header
-        { type: "divider" },
-        ...(user && user.provider.type !== "dataviz"
-          ? [
-            {
-              label: "GitHub との接続解除",
-              onClick: () =>
-                openModal({
-                  component: ConfirmModal,
-                  beforeSubmit: () => {
-                    setUser(null);
-                  },
-                  arguments: {
-                    title: t("cloud.github.disconnect.title"),
-                    message: t("cloud.github.disconnect.message"),
-                    confirmMsg: t("cloud.github.disconnect.action"),
-                    successMsg: t("cloud.github.disconnect.success"),
-                  },
-                }),
-            },
-          ]
-          : []),
-        ...(!user
-          ? [
-            {
-              label: "GitHub へログイン",
-              onClick: () => openModal({ component: GithubLoginModal, arguments: {} }),
-            },
-          ]
-          : []),
+
+
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, currentFile, saveFile, backgroundColor, sigma],
+    [t, user, openModal, notify, resetGraph, currentFile, saveFile, backgroundColor, sigma],
   );
 
   const logoMenuList: Option[] = useMemo(
