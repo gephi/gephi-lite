@@ -6,21 +6,17 @@ import { useTranslation } from "react-i18next";
 import { PiList, PiX } from "react-icons/pi";
 import { Link, useLocation } from "react-router";
 
-import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
-import LocalSwitcher from "../../components/LocalSwitcher";
-import { ThemeSwitcher } from "../../components/ThemeSwitcher";
 import {
   DataIcon,
   DataIconFill,
   ExternalLinkIcon,
   GraphIcon,
   GraphIconFill,
-  HomeIcon,
 } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 // import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
-import { WelcomeModal } from "../../components/modals/WelcomeModal";
+
 
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
@@ -124,21 +120,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     [t, user, openModal, notify, resetGraph, currentFile, saveFile, backgroundColor, sigma],
   );
 
-  const logoMenuList: Option[] = useMemo(
-    () => [
-      {
-        label: t("gephi-lite.open_welcome_modal"),
-        icon: <HomeIcon />,
-        onClick: () =>
-          openModal({
-            component: WelcomeModal,
-            arguments: {},
-          }),
-      },
-      // { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
-    ],
-    [t, openModal],
-  );
+
 
   return (
     <header className="gl-container-high-bg container-fluid border-bottom">
@@ -150,21 +132,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
                 <button className="gl-btn">ワークスペース</button>
               </Dropdown>
             </div>
-            <ThemeSwitcher />
-            <LocalSwitcher />
-            {logoMenuList.map((item, i) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const { label, icon, onClick, url } = item as any;
-              return url ? (
-                <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
-                  {icon}
-                </a>
-              ) : (
-                <button key={i} className="gl-btn" onClick={onClick} title={label}>
-                  {icon}
-                </button>
-              );
-            })}
+
           </section>
         </div>
       </AnimateHeight>
@@ -192,13 +160,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}
           <div className="d-none d-sm-flex">
-            <ThemeSwitcher />
-            <LocalSwitcher />
-            <Dropdown options={logoMenuList} side="right">
-              <button className="gl-btn dropdown-toggle">
-                <GephiLogo height="1em" width="1em" />
-              </button>
-            </Dropdown>
+
           </div>
           {/* Mobile display: */}
           <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
