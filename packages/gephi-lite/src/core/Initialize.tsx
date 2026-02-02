@@ -10,6 +10,7 @@ import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
 import { useFileActions, useGraphDataset, useGraphDatasetActions } from "./context/dataContexts";
+import { errorToCode } from "./errors";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
@@ -109,11 +110,26 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       const file = url.searchParams.get("file") || url.searchParams.get("gexf") || "";
 
       try {
-        await open({
-          type: "remote",
-          filename: extractFilename(file),
-          url: file,
-        });
+        try {
+          await open({
+            type: "remote",
+            filename: extractFilename(file),
+            url: file,
+          });
+        } catch (e) {
+          if (errorToCode(e) === "IMPORT_BAD_VERSION") {
+            await open(
+              {
+                type: "remote",
+                filename: extractFilename(file),
+                url: file,
+              },
+              { force: true },
+            );
+            // notify
+            notify({ type: "warning", message: t("graph.open.force_notification") });
+          } else throw e;
+        }
         graphFound = true;
         showWelcomeModal = false;
         // remove param in url

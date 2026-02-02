@@ -39,3 +39,14 @@ export function errorToString(error: unknown): string {
   }
   return message;
 }
+
+/**
+ * Given an error, it gives its error code.
+ */
+export function errorToCode(error: unknown): ErrorCode | undefined {
+  let code: ErrorCode | undefined = undefined;
+  if (error instanceof GephiLiteError) {
+    code = error.code;
+  }
+  return code;
+}

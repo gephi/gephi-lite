@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
-import { errorToString } from "../../../core/errors";
+import { errorToCode, errorToString } from "../../../core/errors";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
 import { displayDateTime } from "../../../utils/date";
@@ -49,18 +49,18 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
   }, [getFiles, page, user]);
 
   const onSubmit = useCallback(
-    async (selected: Omit<CloudFile, "format"> | null) => {
-      if (selected) {
+    async (file: Omit<CloudFile, "format"> | null, force = false) => {
+      if (file) {
         try {
           onStatusChange({ type: "loading" });
-          await openFile(selected);
+          await openFile(file, { force });
           onStatusChange({ type: "success" });
           notify({
             type: "success",
-            message: t("graph.open.github.success", { filename: selected.filename }).toString(),
+            message: t("graph.open.github.success", { filename: file.filename }).toString(),
           });
         } catch (e) {
-          onStatusChange({ type: "error", message: errorToString(e) });
+          onStatusChange({ type: "error", message: errorToString(e), code: errorToCode(e) });
           console.error(e);
         }
       }
@@ -79,7 +79,24 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
           }}
         >
           {status.type === "error" && (
-            <p className="text-center text-danger">{status.message || t("graph.open.github.error")}</p>
+            <div className="error d-flex flex-column align-items-center mb-3">
+              <p className="text-danger mb-0">{status.message || t("graph.open.local.error")}</p>
+              {status.code === "IMPORT_BAD_VERSION" && (
+                <>
+                  <p className="text-danger mb-0">{t("graph.open.force.description")}</p>
+                  <button
+                    className="gl-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (selected) onSubmit(selected, true);
+                    }}
+                  >
+                    {t("graph.open.force.action")}
+                  </button>
+                </>
+              )}
+            </div>
           )}
 
           {files.length > 0 && (

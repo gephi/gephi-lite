@@ -32,11 +32,11 @@ export function useCloudProvider() {
   );
 
   const openFile = useCallback(
-    async (file: Omit<CloudFile, "format">) => {
+    async (file: Omit<CloudFile, "format">, opts: { force?: boolean } = {}) => {
       setLoading(true);
       setError(null);
       try {
-        await open(file);
+        await open(file, opts);
       } catch (e) {
         setError(e as Error);
         throw e;

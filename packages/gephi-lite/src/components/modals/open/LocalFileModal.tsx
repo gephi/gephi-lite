@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { PiFolderOpen } from "react-icons/pi";
 
 import { useFileActions } from "../../../core/context/dataContexts";
-import { errorToString } from "../../../core/errors";
+import { errorToCode, errorToString } from "../../../core/errors";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
@@ -27,23 +27,26 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
   }, [file, onStatusChange]);
 
   const onSubmit = useCallback(
-    async (file: File) => {
+    async (file: File, force = false) => {
       onStatusChange({ type: "loading" });
       try {
-        await open({
-          type: "local",
-          filename: file.name,
-          updatedAt: new Date(file.lastModified),
-          size: file.size,
-          source: file,
-        });
+        await open(
+          {
+            type: "local",
+            filename: file.name,
+            updatedAt: new Date(file.lastModified),
+            size: file.size,
+            source: file,
+          },
+          { force },
+        );
         onStatusChange({ type: "success" });
         notify({
           type: "success",
           message: t("graph.open.local.success", { filename: file.name }),
         });
       } catch (e) {
-        onStatusChange({ type: "error", message: errorToString(e) });
+        onStatusChange({ type: "error", message: errorToString(e), code: errorToCode(e) });
         console.error(e);
       }
     },
@@ -66,7 +69,22 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
       >
         {status.type === "error" && (
-          <p className="text-center text-danger">{status.message || t("graph.open.local.error")}</p>
+          <div className="alert gl-m-0 gl-alert-error d-flex flex-column align-items-center mb-3">
+            <p>{status.message || t("graph.open.local.error")}</p>
+            {status.code === "IMPORT_BAD_VERSION" && (
+              <button
+                className="gl-btn gl-btn-fill"
+                title={t("graph.open.force.description")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (file) onSubmit(file, true);
+                }}
+              >
+                {t("graph.open.force")}
+              </button>
+            )}
+          </div>
         )}
         {!file && (
           <button className="gl-btn gl-btn-outline mb-2">

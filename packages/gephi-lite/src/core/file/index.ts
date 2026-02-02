@@ -82,13 +82,13 @@ export const reset: Producer<FileState, [boolean]> = (full) => {
  * Actions:
  * ********
  */
-export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
+export const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { force?: boolean } = {}) => {
   if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");
   fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
 
   try {
     // Parse the file
-    const { data, metadata, format } = await openAndParseFile(file);
+    const { data, metadata, format } = await openAndParseFile(file, opts);
 
     // Do the import
     resetStates(false);

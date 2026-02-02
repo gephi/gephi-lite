@@ -281,8 +281,8 @@
     "deprecated": {
       "gexf_search_params": "Le paramètre d'URL `gexf=` pour ouvrir un fichier automatiquement a été renommé `file=` dans la version 0.4.0. Utiliser le paramètre gexf est déprécié, et pourrait ne plus fonctionner dans une version future. Veuillez utiliser `file=` à la place."
     },
-    "IMPORT_BAD_FILE_FORMAT": "Le fichier {{fileName}} n'est pas reconnue",
-    "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante",
+    "IMPORT_BAD_FILE_FORMAT": "Le fichier {{fileName}} n'est pas reconnue.",
+    "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante. Vous pouvez ouvrir le fichier en cliquant sur le bouton ci-dessous, toutefois vous perdrez les informations d'apparences, de filtre, ...",
     "form": {
       "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
       "max": "Le champ {{name}} doit être inférieur ou égal à {{max}}",
@@ -481,6 +481,8 @@
       }
     },
     "open": {
+      "force": "Ouvrir malgré tout",
+      "force_notification": "Votre fichier a été ouvert en mode dégradé car il n'est pas compatible avec la version courante. Uniquement les données de graphe ont pu être importé.",
       "github": {
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement.",
         "file-open-external": "Ouvrir {{filename}} sur GitHub",
