@@ -58,7 +58,11 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
         <SideMenu
           menu={OPEN_COLLECTION_MENU}
           selected={selectedOpen?.id}
-          onSelectedChange={(item) => setSelectedOpen(item)}
+          onSelectedChange={(item) => {
+            // Reset status to avoid keeping erroir state when changing
+            setStatus({ type: "idle" });
+            setSelectedOpen(item);
+          }}
         />
         <div className="selected-component-wrapper">
           <selectedOpen.component id="openForm" onStatusChange={setStatus} status={status} />

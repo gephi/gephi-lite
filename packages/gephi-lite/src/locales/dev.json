@@ -259,8 +259,8 @@
     "deprecated": {
       "gexf_search_params": "The `gexf=` url params to open a graph file has been renamed as `file=` in version 0.4.0. Using gexf params is deprecated  and might be removed in future version. Please use `file=` instead."
     },
-    "IMPORT_BAD_FILE_FORMAT": "Format of file {{fileName}} is not recognized",
-    "IMPORT_BAD_VERSION": "Your file is from an older version of Gephi-Lite ({{version}}) which is not compatible with the actual version",
+    "IMPORT_BAD_FILE_FORMAT": "Format of file {{fileName}} is not recognized.",
+    "IMPORT_BAD_VERSION": "Your file comes from a previous version of Gephi-Lite ({{version}}) that is not compatible with the current version. You can open the file by clicking the button below; however, you will lose appearance and filter information, …",
     "form": {
       "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
       "max": "Field {{name}} should be less than or equal to {{max}}",
@@ -420,6 +420,8 @@
       "degree": "Degree"
     },
     "open": {
+      "force": "Open anyway",
+      "force_notification": "Your file was opened in degraded mode because it is not compatible with the current version. Only the graph data have been imported.",
       "github": {
         "error": "A technical error occurred. Please check your connectivity or try later.",
         "file-open-external": "Open {{filename}} on Gist",
