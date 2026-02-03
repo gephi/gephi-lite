@@ -640,6 +640,17 @@
     "compute_one": "Compute metric",
     "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
     "edges": {
+      "chiSquare": {
+        "attributes": {
+          "chiSquareStrength": "Chi square attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          }
+        },
+        "title": "Chi square"
+      },
       "disparity": {
         "attributes": {
           "disparity": "Disparity attribute name"

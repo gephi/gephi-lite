@@ -716,6 +716,17 @@
     "compute_one": "Calculer une métrique",
     "description": "Ce panneau permet de calculer de nouvelles attributs pour les nœuds ou les liens du graphe. Ces attributs peuvent ensuite être utilisés dans les autres panneaux, par exemple pour l'apparence ou le filtrage.",
     "edges": {
+      "chiSquare": {
+        "attributes": {
+          "chiSquareStrength": "Nom de l'attribut du khi carré"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Attribut de poids des liens"
+          }
+        },
+        "title": "Khi carré"
+      },
       "disparity": {
         "attributes": {
           "disparity": "Nom de l'attribut de disparité"
