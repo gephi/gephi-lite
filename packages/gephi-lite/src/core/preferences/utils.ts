@@ -1,4 +1,4 @@
-import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ItemType, gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
 import { i18n } from "../../locales/provider";
 import { localStorage } from "../../utils/storage";
@@ -8,6 +8,7 @@ export function getEmptyPreferences(): Preferences {
   return {
     layoutsParameters: {},
     metrics: {},
+    colors: { partition: [], ranking: [] },
     // default is the local detected by i18n
     locale: i18n.language,
     theme: "auto",
@@ -49,4 +50,8 @@ export function getAppliedTheme(theme: Preferences["theme"]): "light" | "dark" {
     else return "light";
   }
   return theme;
+}
+
+export function isSameField(field1: FieldModel<ItemType, boolean>, field2: FieldModel<ItemType, boolean>) {
+  return field1.id === field2.id && field1.itemType === field2.itemType;
 }

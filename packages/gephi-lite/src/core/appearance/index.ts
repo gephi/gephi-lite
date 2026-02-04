@@ -2,6 +2,7 @@ import { getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
 import { sessionStorage } from "../../utils/storage";
+import { preferencesActions } from "../preferences";
 import { ItemType } from "../types";
 import {
   AppearanceState,
@@ -106,6 +107,18 @@ export const appearanceActions = {
  * Bindings:
  * *********
  */
-appearanceAtom.bind((appearanceState) => {
+appearanceAtom.bind((appearanceState, previousAppearanceState) => {
   sessionStorage.setItem("appearance", serializeAppearanceState(appearanceState));
+
+  // update color mapping LRU
+  if (previousAppearanceState.nodesColor !== appearanceState.nodesColor) {
+    if (appearanceState.nodesColor.type === "partition" || appearanceState.nodesColor.type === "ranking") {
+      preferencesActions.newColorPaletteUsage(appearanceState.nodesColor);
+    }
+  }
+  if (previousAppearanceState.edgesColor !== appearanceState.edgesColor) {
+    if (appearanceState.edgesColor.type === "partition" || appearanceState.edgesColor.type === "ranking") {
+      preferencesActions.newColorPaletteUsage(appearanceState.edgesColor);
+    }
+  }
 });
