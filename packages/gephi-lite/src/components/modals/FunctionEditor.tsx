@@ -6,7 +6,7 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
-import graphologyDts from "../../assets/graphology-types.txt?raw";
+import graphologyDts from "../../assets/graphology-types.txt";
 import { useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
