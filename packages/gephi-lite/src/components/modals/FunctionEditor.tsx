@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { getGraphTypeScriptDefinition } from "@gephi/gephi-lite-sdk";
 import Editor, { Monaco } from "@monaco-editor/react";
-import graphologyDts from "graphology-types/index.d.ts?raw";
 import { useCallback, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
+import graphologyDts from "../../assets/graphology-types.txt?raw";
 import { useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";

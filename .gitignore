@@ -30,3 +30,4 @@ playwright-report/
 playwright/.cache/
 tsconfig.tsbuildinfo
 **/__screenshots__
+graphology-types.txt
