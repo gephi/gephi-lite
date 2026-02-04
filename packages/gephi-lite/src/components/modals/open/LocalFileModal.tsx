@@ -74,7 +74,6 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
             {status.code === "IMPORT_BAD_VERSION" && (
               <button
                 className="gl-btn gl-btn-fill"
-                title={t("graph.open.force.description")}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();

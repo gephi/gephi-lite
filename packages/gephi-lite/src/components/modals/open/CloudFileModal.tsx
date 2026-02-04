@@ -80,21 +80,18 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
         >
           {status.type === "error" && (
             <div className="error d-flex flex-column align-items-center mb-3">
-              <p className="text-danger mb-0">{status.message || t("graph.open.local.error")}</p>
+              <p className="text-danger mb-0">{status.message || t("graph.open.github.error")}</p>
               {status.code === "IMPORT_BAD_VERSION" && (
-                <>
-                  <p className="text-danger mb-0">{t("graph.open.force.description")}</p>
-                  <button
-                    className="gl-btn"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (selected) onSubmit(selected, true);
-                    }}
-                  >
-                    {t("graph.open.force.action")}
-                  </button>
-                </>
+                <button
+                  className="gl-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (selected) onSubmit(selected, true);
+                  }}
+                >
+                  {t("graph.open.force")}
+                </button>
               )}
             </div>
           )}
