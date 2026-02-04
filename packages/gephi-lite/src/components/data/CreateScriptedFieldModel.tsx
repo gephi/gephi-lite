@@ -7,11 +7,9 @@ import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../..
 import { graphDatasetAtom } from "../../core/graph";
 import { inferFieldType } from "../../core/graph/fieldModel";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
-import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { isScalar } from "../../utils/check";
 import { CancelIcon } from "../common-icons";
-import { Modal } from "../modals";
 import { useFunctionEditor } from "../modals/FunctionEditor";
 
 export type CreateScriptedFieldModelFormProps = {
@@ -27,16 +25,35 @@ type ScriptedFieldModelFunction = (id: string, attributes: ItemData, index: numb
 const BASE_JS = {
   nodes: {
     doc: `/**
-* Function that return the metric value for the specified node.
+* Function that returns a new attribute value for the specified node.
 *
 * @param {string} id The ID of the node
-* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
-* @returns number|string The computed metric of the node
+* @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
+* @returns number|string|boolean|null|undefined" The value of the new node's attribut
 */`,
-    baseFn: `function nodeMetric(id, attributes, index, graph) {
+    baseFn: `function addNodeAttribut(id, attributes, index, graph) {
+  //
   // Your code goes here
+  //~~~~~~~~~~~~~~~~~~~~
+  //
+  // Write here your own function that returns the value for your new attribut.
+  //
+  // Example 1: If you have an attribut named 'valid' which take 0 or 1,
+  // you can cast it into a boolean
+  // ------------------------------------------------------------------------
+  // \`\`\`
+  // return attributes.valid === 1;
+  // \`\`\`
+  //
+  // Example 2: If you have attributs named 'firstname' and 'lastname'
+  // you can concatenate them (usefull for graph label)
+  // -----------------------------------------------------------------------
+  // \`\`\`
+  // return (attributes.firstname || "") + " " + (attributes.lastname || ");
+  // \`\`\`
+  //
   return Math.random();
 }`,
     check: (fn: ScriptedFieldModelFunction) => {
@@ -50,16 +67,35 @@ const BASE_JS = {
   },
   edges: {
     doc: `/**
-* Function that return the metric value for the specified edge.
+* Function that returns a new attribute value for the specified edge.
 *
 * @param {string} id The ID of the edge
-* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
-* @returns number|string The computed metric of the edge
+* @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
+* @returns number|string|boolean|null|undefined" The value of the new edge's attribut
 */`,
-    baseFn: `function edgeMetric(id, attributes, index, graph) {
+    baseFn: `function addEdgeAttribut(id, attributes, index, graph) {
+  //
   // Your code goes here
+  //~~~~~~~~~~~~~~~~~~~~
+  //
+  // Write here your own function that returns the value for your new attribut.
+  //
+  // Example 1: If you have an attribut named 'valid' which take 0 or 1,
+  // you can cast it into a boolean
+  // ------------------------------------------------------------------------
+  // \`\`\`
+  // return attributes.valid === 1;
+  // \`\`\`
+  //
+  // Example 2: If you have attributs named 'firstname' and 'lastname'
+  // you can concatenate them (usefull for graph label)
+  // -----------------------------------------------------------------------
+  // \`\`\`
+  // return (attributes.firstname || "") + " " + (attributes.lastname || ");
+  // \`\`\`
+  //
   return Math.random();
 }`,
     check: (fn: ScriptedFieldModelFunction) => {
@@ -222,34 +258,6 @@ export const useCreateScriptedFieldModelForm = ({
       </div>
     ),
   };
-};
-
-export const CreateScriptedFieldModelModal: FC<
-  ModalProps<Omit<CreateScriptedFieldModelFormProps, "onSubmitted" | "onCancel" | "fullEditor">>
-> = ({ cancel, submit, arguments: props }) => {
-  const { t } = useTranslation();
-  const {
-    main,
-    footer,
-    submit: submitForm,
-  } = useCreateScriptedFieldModelForm({
-    onSubmitted: () => submit({}),
-    onCancel: () => cancel(),
-    fullEditor: true,
-    ...props,
-  });
-
-  return (
-    <Modal
-      title={t(`edition.create_${props.type}_scripted_field`)}
-      onClose={() => cancel()}
-      className="modal-lg edit-attribute"
-      onSubmit={submitForm}
-    >
-      {main}
-      {footer}
-    </Modal>
-  );
 };
 
 export const CreateScriptedFieldModelForm: FC<Omit<CreateScriptedFieldModelFormProps, "fullEditor">> = (props) => {

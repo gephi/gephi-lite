@@ -1,15 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
+import { getGraphTypeScriptDefinition } from "@gephi/gephi-lite-sdk";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useCallback, useState } from "react";
+import graphologyDts from "graphology-types/index.d.ts?raw";
+import { useCallback, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
-import { usePreferences } from "../../core/context/dataContexts";
+import { useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { getAppliedTheme } from "../../core/preferences/utils";
 import { codeToFunction } from "../../utils/functions";
-import { CodeEditorIcon } from "../common-icons";
+import { CodeEditorIcon, HelpIcon } from "../common-icons";
 import { Modal } from "../modals";
 
 export interface FunctionEditorProps<T extends Function> {
@@ -34,6 +37,21 @@ export function useFunctionEditor<T extends Function>({
   const { theme } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
+  const graphDataset = useGraphDataset();
+
+  // TS types for graphology and graph items
+  const graphTypes = useMemo(() => getGraphTypeScriptDefinition(graphDataset), [graphDataset]);
+  const graphologyTypes = useMemo(() => {
+    const regexExport = new RegExp("export \\{(.*)\\};", "gs");
+    const regexDefaultExport = new RegExp("export default .*;", "gs");
+    return (
+      graphologyDts
+        // Remove export
+        .replace(regexExport, "")
+        // Remove default export
+        .replace(regexDefaultExport, "")
+    );
+  }, []);
 
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState<string>(initialFunctionCode);
@@ -110,22 +128,25 @@ export function useFunctionEditor<T extends Function>({
         <Editor
           height="40vh"
           theme={getAppliedTheme(theme) === "light" ? "light" : "vs-dark"}
-          defaultLanguage="javascript"
+          language="javascript"
           value={`${functionJsDoc}\n${code}`}
           onChange={(e) => {
             setError(null);
             setCode(codeToFunction(e || "").toString());
           }}
           onMount={(editor, monaco: Monaco) => {
+            const lines = editor.getValue().split("\n");
+            const nbLines = lines.length;
+            const headerLines = [0, functionJsDoc.split("\n").length + 2];
+            const footerLines = [nbLines, nbLines + 1];
+
             // Making read only the header & footer of the function
             editor.onKeyDown((e: KeyboardEvent) => {
+              const headerRange = new monaco.Range(headerLines[0], 0, headerLines[1], 0);
+              const footerRange = new monaco.Range(footerLines[0], 0, footerLines[1], 0);
               if (!["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.code)) {
-                const fnHeaderRange = new monaco.Range(0, 0, functionJsDoc.split("\n").length + 2, 0);
-                const nbLines = editor.getValue().split("\n").length;
-                const fnFooterRange = new monaco.Range(nbLines, 0, nbLines + 1, 0);
                 const contains = (editor.getSelections() ?? []).findIndex(
-                  (range: Monaco["Range"]) =>
-                    fnHeaderRange.intersectRanges(range) || fnFooterRange.intersectRanges(range),
+                  (range: Monaco["Range"]) => headerRange.intersectRanges(range) || footerRange.intersectRanges(range),
                 );
                 if (contains !== -1) {
                   e.stopPropagation();
@@ -133,6 +154,18 @@ export function useFunctionEditor<T extends Function>({
                 }
               }
             });
+
+            // Adding graph types
+            monaco.languages.typescript.javascriptDefaults.setExtraLibs([
+              { content: graphTypes },
+              { content: graphologyTypes },
+            ]);
+
+            // Select text of the function body (ie. the documentation)
+            editor.setSelection(
+              new monaco.Range(headerLines[1], 0, footerLines[0] - 1, lines[footerLines[0] - 2].length + 1),
+            );
+            editor.focus();
           }}
           options={{
             tabSize: 2,
@@ -171,7 +204,25 @@ export function FunctionEditorModal<T extends Function>(
   );
 
   return (
-    <Modal className="modal-xl" bodyClassName="p-0" title={title} onClose={() => cancel()} onSubmit={() => save(true)}>
+    <Modal
+      className="modal-xl"
+      bodyClassName="p-0"
+      title={
+        <>
+          {title}
+          <Link
+            className="ms-1 d-flex align-items-center"
+            to="https://docs.gephi.org/lite/user-manual/custom-scripts"
+            title={t("common.help")}
+            target="_blank"
+          >
+            <HelpIcon />
+          </Link>
+        </>
+      }
+      onClose={() => cancel()}
+      onSubmit={() => save(true)}
+    >
       {content}
       <div className="gl-gap-2 d-flex">
         <button type="button" title={t("common.cancel")} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
