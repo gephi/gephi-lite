@@ -1,3 +1,4 @@
+import type { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { isBoolean } from "lodash";
 import { FC } from "react";
@@ -13,23 +14,73 @@ import { CodeEditorIcon } from "../common-icons";
 import { FunctionEditorModal } from "../modals/FunctionEditor";
 
 const nodeFilterCustomFn = `function nodeFilter(id, attributes, graph) {
+  //
   // Your code goes here
+  //~~~~~~~~~~~~~~~~~~~~
+  //
+  // Write here your own function that filter nodes.
+  // For each nodes, this function will be called, and if its result is true, the node is kept.
+  //
+  // Example 1: keeping nodes that have a property 'age' superior than 18
+  // --------------------------------------------------------------------
+  // \`\`\`
+  // return attributes.age > 18;
+  // \`\`\`
+  //
+  // Example 2: filtering node that have a property 'age' below 18 and with a degree inferior to 10
+  // ----------------------------------------------------------------------------------------------
+  // \`\`\`
+  // return attributes.age < 18 ? graph.degree(id) < 10 : true;
+  // \`\`\`
+  //
+  // Example 3: filtering nodes on which the property 'job' is not defined
+  // ---------------------------------------------------------------------
+  // \`\`\`
+  // return attributes.job !== undefined;
+  // \`\`\`
+  //
   return true;
 }`;
 
 const edgeFilterCustomFn = `function edgeFilter(id, attributes, graph) {
+  //
   // Your code goes here
+  //~~~~~~~~~~~~~~~~~~~~
+  //
+  // Write here your own function that filter edges.
+  // For each edges, this function will be called, and if its result is true, the edge is kept.
+  //
+  // Example 1: keep edges that have a property 'cooccurence' superior than 5
+  // ------------------------------------------------------------------------
+  // \`\`\`
+  // return attributes.cooccurence > 5;
+  // \`\`\`
+  //
+  // Example 2: Keep edges whose target node have a degree superior than 5
+  // ----------------------------------------------------------------------
+  // \`\`\`
+  // const targetNode = graph.target(id);
+  // return graph.degree(targetNode) > 5;
+  // \`\`\`
+  //
+  //
   return true;
 }`;
 
-const SCRIPT_JS_DOC = `/**
- * Filtering function.
+function getScriptJsDoc(itemType: ItemType) {
+  const name = itemType === "nodes" ? "node" : "edge";
+  const itemAttrsType = itemType === "nodes" ? "GraphNode" : "GraphEdge";
+  return `/**
+ * Define a custom filter function.
+ * The function is executed for each ${name}. 
+ * If it returns true, the ${name} is included in the result set; otherwise, it is excluded.
  *
  * @param {string} id ID of the item
- * @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the item
- * @param {FullGraph} full graph (data and rendering attributes + topology) dataset
+ * @param {${itemAttrsType}} attributes Attributes of the item
+ * @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
  * @return {boolean} TRUE if the item should be kept in the graph, FALSE to filter it
  */`;
+}
 
 export const ScriptFilter: FC<{
   filter: ScriptFilterType;
@@ -61,7 +112,7 @@ export const ScriptFilter: FC<{
                 component: FunctionEditorModal<NonNullable<ScriptFilterType["script"]>>,
                 arguments: {
                   title: "Custom filter",
-                  functionJsDoc: SCRIPT_JS_DOC,
+                  functionJsDoc: getScriptJsDoc(filter.itemType),
                   initialFunctionCode:
                     filter.script?.toString() ??
                     (filter.itemType === "nodes" ? nodeFilterCustomFn : edgeFilterCustomFn),

@@ -10,7 +10,31 @@ import { LayoutMapping, LayoutScriptFunction, SyncLayout } from "../types";
 // definition of a custom layout function
 const nodeCoordinatesCustomFn =
   codeToFunction<LayoutScriptFunction>(`function nodeCoordinates(id, attributes, index, graph) {
-  // / Your code goes here
+  //
+  // Your code goes here
+  //~~~~~~~~~~~~~~~~~~~~
+  //
+  // Write here your own function that spatialized nodes.
+  // For each node, this function will be called to get its coordinates.
+  //
+  // Example 1: A random layout on a 1000x1000 space
+  // ------------------------------------------------------------------------
+  // \`\`\`
+  // return { 
+  //   x: Math.random() * 1000, 
+  //   y: Math.random() * 1000 
+  // };
+  // \`\`\`
+  //
+  // Example 2: Circular layout
+  // ----------------------------------------------------------------------
+  // \`\`\`
+  // return { 
+  //   x: Math.cos(index * (Math.PI *2) / graph.order) * 500, 
+  //   y: Math.sin(index * (Math.PI *2) / graph.order) * 500 
+  // };
+  // \`\`\`
+  //
   return { x: Math.random() * 1000, y: Math.random() * 1000 };
 }`);
 
@@ -23,12 +47,12 @@ export const ScriptLayout = {
       id: "script",
       type: "script",
       functionJsDoc: `/**
-* Function that return coordinates for the specified node.
+* Function that returns coordinates for the specified node.
 *
 * @param {string} id The ID of the node
-* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/ )
+* @param {AbstractGraph<GraphNode, GraphEdge>} graph The graphology instance (https://graphology.github.io/)
 * @returns {x: number, y: number} The computed coordinates of the node
 */`,
       defaultValue: nodeCoordinatesCustomFn,

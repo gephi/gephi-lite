@@ -129,6 +129,7 @@ export const GitHubIcon = PiGithubLogo;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
+export const HelpIcon = PiInfo;
 export const HomeIcon = PiHouseLine;
 export const InvalidDataIcon = PiWarningCircle;
 export const LassoIcon = PiLasso;
