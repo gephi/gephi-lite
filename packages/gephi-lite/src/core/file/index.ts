@@ -133,7 +133,7 @@ export const exportAsGephiLite = asyncAction(async (callback: (data: string) => 
   try {
     const data: GephiLiteFileFormat = {
       type: "gephi-lite",
-      version: config.version.toString(),
+      version: config.version.current.toString(),
       graphDataset: graphDatasetAtom.get(),
       filters: filtersAtom.get(),
       appearance: appearanceAtom.get(),
