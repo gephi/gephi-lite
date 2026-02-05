@@ -5,11 +5,13 @@ import { isNil, omit } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
 import { LoaderFill } from "../../../../components/Loader";
 import MessageAlert from "../../../../components/MessageAlert";
 import {
   CodeEditorIcon,
+  ExternalLinkIcon,
   GuessSettingsIcon,
   PlayIconFill,
   ResetIcon,
@@ -248,7 +250,20 @@ export const LayoutForm: FC<{
                             openModal({
                               component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
                               arguments: {
-                                title: "Custom layout",
+                                title: t("layouts.script.title"),
+                                description: (
+                                  <div className="m-3">
+                                    <p className="mb-0">{t("layouts.script.description")}</p>
+                                    <Link
+                                      to="https://docs.gephi.org/lite/user-manual/custom-scripts"
+                                      title={t("common.help")}
+                                      target="_blank"
+                                    >
+                                      {t("common.see-documentation")}
+                                      <ExternalLinkIcon className="ms-1" />
+                                    </Link>
+                                  </div>
+                                ),
                                 withSaveAndRun: true,
                                 functionJsDoc: param.functionJsDoc,
                                 initialFunctionCode: value?.toString() ?? param.defaultValue.toString(),
