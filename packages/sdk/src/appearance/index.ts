@@ -4,6 +4,7 @@ import { type AppearanceState, ColorScalePointType } from "./types";
 export * from "./types";
 
 export const DEFAULT_NODE_COLOR = "#999999";
+export const MISSING_PALETTE_COLOR = "#d0d0d0";
 export const DEFAULT_EDGE_COLOR = "#cccccc";
 export const DEFAULT_NODE_SIZE = 20;
 export const DEFAULT_EDGE_SIZE = 6;

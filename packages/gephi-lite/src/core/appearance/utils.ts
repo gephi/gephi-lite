@@ -4,6 +4,7 @@ import {
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
   DEFAULT_NODE_SIZE,
+  MISSING_PALETTE_COLOR,
   StaticDynamicItemData,
   toString,
 } from "@gephi/gephi-lite-sdk";
@@ -180,8 +181,12 @@ export function makeGetColor<
       break;
     case "partition":
       getColor = (data: StaticDynamicItemData) => {
-        const valueAsString = getFieldValue(data, colorsDef.field) + "";
-        return valueAsString in colorsDef.colorPalette ? colorsDef.colorPalette[valueAsString] : colorsDef.missingColor;
+        const valueAsString = getFieldValue(data, colorsDef.field) as string | undefined;
+        return valueAsString === undefined
+          ? colorsDef.missingColor
+          : valueAsString in colorsDef.colorPalette && colorsDef.colorPalette[valueAsString] !== null
+            ? colorsDef.colorPalette[valueAsString]
+            : MISSING_PALETTE_COLOR;
       };
       break;
     case "ranking": {

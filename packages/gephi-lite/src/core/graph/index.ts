@@ -24,7 +24,7 @@ import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { sessionStorage } from "../../utils/storage";
-import { appearanceAtom } from "../appearance";
+import { appearanceAtom, checkAppearanceAfterAttributeUpdate } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { useGraphDataset } from "../context/dataContexts";
 import { EVENTS, emitter } from "../context/eventsContext";
@@ -327,11 +327,10 @@ const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes
     edgeIndex(edge),
   ];
 };
-const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes, { merge?: boolean }?]> = (
-  node,
-  attributes,
-  { merge } = {},
-) => {
+const updateNode: MultiProducer<
+  [GraphDataset, SearchState, AppearanceState],
+  [string, Attributes, { merge?: boolean }?]
+> = (node, attributes, { merge } = {}) => {
   return [
     (state) => {
       const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
@@ -344,10 +343,11 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
       };
     },
     nodeIndex(node),
+    checkAppearanceAfterAttributeUpdate("nodes", node, attributes),
   ];
 };
 const updateEdge: MultiProducer<
-  [GraphDataset, SearchState],
+  [GraphDataset, SearchState, AppearanceState],
   [string, Attributes, { merge?: boolean; directed?: boolean }?]
 > = (edge, attributes, { merge, directed } = {}) => {
   return [
@@ -383,6 +383,7 @@ const updateEdge: MultiProducer<
       };
     },
     edgeIndex(edge),
+    checkAppearanceAfterAttributeUpdate("edges", edge, attributes),
   ];
 };
 const updateItems: MultiProducer<[GraphDataset, SearchState], [ItemType, Set<string>, string, Scalar]> = (
@@ -494,8 +495,8 @@ export const graphDatasetActions = {
   // Graph items:
   createNode: multiProducerToAction(createNode, [graphDatasetAtom, searchAtom]),
   createEdge: multiProducerToAction(createEdge, [graphDatasetAtom, searchAtom]),
-  updateNode: multiProducerToAction(updateNode, [graphDatasetAtom, searchAtom]),
-  updateEdge: multiProducerToAction(updateEdge, [graphDatasetAtom, searchAtom]),
+  updateNode: multiProducerToAction(updateNode, [graphDatasetAtom, searchAtom, appearanceAtom]),
+  updateEdge: multiProducerToAction(updateEdge, [graphDatasetAtom, searchAtom, appearanceAtom]),
   updateItems: multiProducerToAction(updateItems, [graphDatasetAtom, searchAtom]),
   deleteItems: multiProducerToAction(deleteItems, [selectionAtom, graphDatasetAtom, searchAtom]),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),

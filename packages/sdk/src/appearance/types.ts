@@ -56,7 +56,7 @@ export interface RankingColor extends AppearanceBaseElement {
 export interface PartitionColor extends AppearanceBaseElement {
   type: "partition";
   field: FieldModel<ItemType, boolean>;
-  colorPalette: Record<string, string>;
+  colorPalette: Record<string, string | null>;
   missingColor: string;
 }
 export interface ShadingColor extends AppearanceBaseElement {
