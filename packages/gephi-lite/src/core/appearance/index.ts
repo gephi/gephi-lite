@@ -1,7 +1,9 @@
-import { getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
+import { PartitionColor, getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
+import { Attributes } from "graphology-types";
 
 import { sessionStorage } from "../../utils/storage";
+import { castScalarToModelValue } from "../graph/fieldModel";
 import { preferencesActions } from "../preferences";
 import { ItemType } from "../types";
 import {
@@ -77,6 +79,36 @@ const setNodesLabelEllipsisAppearance: Producer<AppearanceState, [LabelEllipsis]
 
 const setEdgesLabelEllipsisAppearance: Producer<AppearanceState, [LabelEllipsis]> = (labelEllipsis) => {
   return (state) => ({ ...state, edgesLabelEllipsis: labelEllipsis });
+};
+
+export const checkAppearanceAfterAttributeUpdate: Producer<AppearanceState, [ItemType, string, Attributes]> = (
+  itemType,
+  _id,
+  attributes,
+) => {
+  const colorStateVariableName = itemType === "nodes" ? "nodesColor" : "edgesColor";
+
+  return (appearanceState) => {
+    // PARTITION: colorPalette must sync attribute values
+    let newColorState: PartitionColor | undefined = undefined;
+    if (
+      appearanceState[colorStateVariableName].type === "partition" &&
+      !appearanceState[colorStateVariableName].field.dynamic
+    ) {
+      const partition = appearanceState[colorStateVariableName];
+      const value = castScalarToModelValue(attributes[partition.field.id], partition.field);
+      if (typeof value === "string" && !(value in partition.colorPalette)) {
+        newColorState = { ...partition, colorPalette: { ...partition.colorPalette, [value]: null } };
+      }
+    }
+
+    if (newColorState !== undefined)
+      return {
+        ...appearanceState,
+        [colorStateVariableName]: newColorState,
+      };
+    return appearanceState;
+  };
 };
 
 /**

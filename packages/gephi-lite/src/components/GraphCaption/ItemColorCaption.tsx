@@ -1,3 +1,4 @@
+import { MISSING_PALETTE_COLOR } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { sortBy, toPairs } from "lodash";
 import { FC, ReactNode } from "react";
@@ -69,7 +70,7 @@ export const ItemsColorCaption: FC<
               >
                 <span
                   className={cx(itemType === "nodes" && "disc", itemType === "edges" && "rectangle", "flex-shrink-0")}
-                  style={{ backgroundColor: color }}
+                  style={{ backgroundColor: color === null ? MISSING_PALETTE_COLOR : color }}
                 />
                 <span className="label">{label}</span>
               </div>

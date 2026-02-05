@@ -46,7 +46,8 @@ const ColorPicker: FC<
         className="gl-btn square border border-black border-2"
         style={{ background: color || "#ffffff" }}
       >
-        <span style={{ color: "transparent" }}>X</span>
+        {/* icon container which can hold a symbol depending on targetClassName. It's used for palette missing color cases */}
+        <span className="icon-container"></span>
       </button>
       <div className="custom-color-picker gl-border">
         <InlineColorPicker onChange={onChange} color={color} />

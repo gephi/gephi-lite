@@ -1,9 +1,8 @@
 import {
   DEFAULT_COLOR_SCALE_POINTS,
-  DEFAULT_EDGE_COLOR,
-  DEFAULT_NODE_COLOR,
   FieldModel,
   ItemType,
+  MISSING_PALETTE_COLOR,
   PartitionColor,
   RankingColor,
 } from "@gephi/gephi-lite-sdk";
@@ -18,11 +17,15 @@ export function useColorPalette() {
 
   const getColorPartition = useCallback(
     (field: FieldModel<ItemType, boolean>, values: string[]): PartitionColor => {
-      const baseValue = field.itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
+      const baseValue = MISSING_PALETTE_COLOR;
       const previousSpec = colors.partition?.find((p) => isSameField(p.field, field));
-      if (previousSpec && values.every((v) => previousSpec.colorPalette[v] !== undefined)) return previousSpec;
-      else {
-        //TODO when previousSpec exist but with not all values augment it rather than replace it
+      if (previousSpec) {
+        // make sure all existing values are listed in the palette, if not add them as null
+        values
+          .filter((v) => previousSpec.colorPalette[v] === undefined)
+          .forEach((v) => (previousSpec.colorPalette[v] = null));
+        return previousSpec;
+      } else {
         // create a new partition
         const newPartition: PartitionColor = {
           type: "partition",
@@ -38,7 +41,7 @@ export function useColorPalette() {
 
   const getColorRanking = useCallback(
     (field: FieldModel<ItemType, boolean>): RankingColor => {
-      const baseValue = field.itemType === "nodes" ? DEFAULT_NODE_COLOR : DEFAULT_EDGE_COLOR;
+      const baseValue = MISSING_PALETTE_COLOR;
       const previousSpec = colors.ranking?.find((p) => isSameField(p.field, field));
       if (previousSpec) return previousSpec;
       else {
