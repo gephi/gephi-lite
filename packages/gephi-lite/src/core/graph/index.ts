@@ -5,6 +5,7 @@ import {
   FilteredGraph,
   FiltersState,
   ItemData,
+  NodeCoordinates,
   Scalar,
   getEmptyAppearanceState,
 } from "@gephi/gephi-lite-sdk";
@@ -280,10 +281,13 @@ const deleteItemsAttribute: Producer<GraphDataset, [ItemType, string]> = (type, 
     };
   };
 };
-const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes]> = (node, attributes) => {
+const createNode: MultiProducer<
+  [GraphDataset, SearchState],
+  [string, { itemData: ItemData; technical: NodeCoordinates }]
+> = (node, { itemData = {}, technical }) => {
   return [
     (state) => {
-      const { data, position } = cleanNode(node, attributes);
+      const { data, position } = cleanNode(node, itemData, technical);
       state.fullGraph.addNode(node);
       const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
       return {
@@ -297,7 +301,7 @@ const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   ];
 };
 
-const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, string, string, boolean]> = (
+const createEdge: MultiProducer<[GraphDataset, SearchState], [string, ItemData, string, string, boolean]> = (
   edge,
   attributes,
   source,
@@ -329,11 +333,15 @@ const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes
 };
 const updateNode: MultiProducer<
   [GraphDataset, SearchState, AppearanceState],
-  [string, Attributes, { merge?: boolean }?]
-> = (node, attributes, { merge } = {}) => {
+  [string, { itemData?: ItemData; technical?: NodeCoordinates; dynamic?: Attributes; merge?: boolean }]
+> = (node, { itemData = {}, technical, merge }) => {
   return [
-    (state) => {
-      const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
+    (state): GraphDataset => {
+      const { data, position } = cleanNode(
+        node,
+        merge ? { ...state.nodeData[node], ...itemData } : itemData,
+        technical || state.layout[node],
+      );
       const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
       return {
         ...state,
@@ -343,16 +351,18 @@ const updateNode: MultiProducer<
       };
     },
     nodeIndex(node),
-    checkAppearanceAfterAttributeUpdate("nodes", node, attributes),
+    checkAppearanceAfterAttributeUpdate("nodes", node, itemData),
   ];
 };
 const updateEdge: MultiProducer<
   [GraphDataset, SearchState, AppearanceState],
-  [string, Attributes, { merge?: boolean; directed?: boolean }?]
-> = (edge, attributes, { merge, directed } = {}) => {
+  [string, { itemData?: ItemData; technical?: NodeCoordinates; dynamic?: Attributes; merge?: boolean }]
+> = (edge, { itemData = {}, merge, dynamic }) => {
+  const directed = dynamic?.directed;
+
   return [
-    (state) => {
-      const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
+    (state): GraphDataset => {
+      const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...itemData } : itemData);
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
 
       // Validate new edge direction:
@@ -373,8 +383,6 @@ const updateEdge: MultiProducer<
         fullGraph = newFullGraph;
       }
 
-      // Index the edge
-      searchActions.edgeIndex(edge);
       return {
         ...state,
         fullGraph,
@@ -383,7 +391,7 @@ const updateEdge: MultiProducer<
       };
     },
     edgeIndex(edge),
-    checkAppearanceAfterAttributeUpdate("edges", edge, attributes),
+    checkAppearanceAfterAttributeUpdate("edges", edge, itemData),
   ];
 };
 const updateItems: MultiProducer<[GraphDataset, SearchState], [ItemType, Set<string>, string, Scalar]> = (

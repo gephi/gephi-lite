@@ -41,9 +41,9 @@ export const InlineEditDataCell: FC<{
         onChange={(value) => {
           const update = type === "nodes" ? updateNode : updateEdge;
           if (field.dynamic) {
-            update(id, {}, { merge: true, [field.id]: value });
+            update(id, { merge: true, dynamic: { [field.id]: value } });
           } else {
-            update(id, { [field.id]: value }, { merge: true });
+            update(id, { itemData: { [field.id]: value }, merge: true });
           }
         }}
       />
@@ -108,9 +108,9 @@ export const EditDataCell: FC<{
             onSubmit={(e) => {
               e.preventDefault();
               if (field.dynamic) {
-                update(id, {}, { merge: true, [field.id]: value });
+                update(id, { merge: true, dynamic: { [field.id]: value } });
               } else {
-                update(id, { [field.id]: value }, { merge: true });
+                update(id, { itemData: { [field.id]: value }, merge: true });
               }
               close();
             }}

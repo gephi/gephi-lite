@@ -86,24 +86,22 @@ const useEditNodeForm = ({
           return;
         }
 
-        const allAttributes = {
-          ...fromPairs(
-            data.attributes
-              .filter(({ value }) => value !== "" || value === undefined)
-              .map(({ key, value }) => {
-                // value are all string because input are all text whatever the data model
-                // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-                const valueAsNumber = toNumber(value);
-                return [key, valueAsNumber ? valueAsNumber : value];
-              }),
-          ),
-          ...pick(data, "x", "y"),
-        };
+        const allAttributes = fromPairs(
+          data.attributes
+            .filter(({ value }) => value !== "" || value === undefined)
+            .map(({ key, value }) => {
+              // value are all string because input are all text whatever the data model
+              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+              const valueAsNumber = toNumber(value);
+              return [key, valueAsNumber ? valueAsNumber : value];
+            }),
+        );
+        const coordinates = pick(data, "x", "y");
 
         // Create new node:
         if (isNew) {
           try {
-            createNode(id, allAttributes);
+            createNode(id, { itemData: allAttributes, technical: coordinates });
             select({ type: "nodes", items: new Set([id]), replace: true });
             notify({
               type: "success",
@@ -124,7 +122,7 @@ const useEditNodeForm = ({
         // Update existing node:
         else {
           try {
-            updateNode(id, allAttributes);
+            updateNode(id, { itemData: allAttributes, technical: coordinates });
             select({ type: "nodes", items: new Set([id]), replace: true });
             notify({
               type: "success",
