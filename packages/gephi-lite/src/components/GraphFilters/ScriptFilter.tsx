@@ -4,40 +4,19 @@ import { isBoolean } from "lodash";
 import { FC } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
 import { useFiltersActions } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
 import { graphDatasetAtom, useFilteredGraphAt } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
-import { CodeEditorIcon } from "../common-icons";
+import { CodeEditorIcon, ExternalLinkIcon } from "../common-icons";
 import { FunctionEditorModal } from "../modals/FunctionEditor";
 
 const nodeFilterCustomFn = `function nodeFilter(id, attributes, graph) {
   //
   // Your code goes here
-  //~~~~~~~~~~~~~~~~~~~~
-  //
-  // Write here your own function that filter nodes.
-  // For each nodes, this function will be called, and if its result is true, the node is kept.
-  //
-  // Example 1: keeping nodes that have a property 'age' superior than 18
-  // --------------------------------------------------------------------
-  // \`\`\`
-  // return attributes.age > 18;
-  // \`\`\`
-  //
-  // Example 2: filtering node that have a property 'age' below 18 and with a degree inferior to 10
-  // ----------------------------------------------------------------------------------------------
-  // \`\`\`
-  // return attributes.age < 18 ? graph.degree(id) < 10 : true;
-  // \`\`\`
-  //
-  // Example 3: filtering nodes on which the property 'job' is not defined
-  // ---------------------------------------------------------------------
-  // \`\`\`
-  // return attributes.job !== undefined;
-  // \`\`\`
   //
   return true;
 }`;
@@ -45,24 +24,6 @@ const nodeFilterCustomFn = `function nodeFilter(id, attributes, graph) {
 const edgeFilterCustomFn = `function edgeFilter(id, attributes, graph) {
   //
   // Your code goes here
-  //~~~~~~~~~~~~~~~~~~~~
-  //
-  // Write here your own function that filter edges.
-  // For each edges, this function will be called, and if its result is true, the edge is kept.
-  //
-  // Example 1: keep edges that have a property 'cooccurence' superior than 5
-  // ------------------------------------------------------------------------
-  // \`\`\`
-  // return attributes.cooccurence > 5;
-  // \`\`\`
-  //
-  // Example 2: Keep edges whose target node have a degree superior than 5
-  // ----------------------------------------------------------------------
-  // \`\`\`
-  // const targetNode = graph.target(id);
-  // return graph.degree(targetNode) > 5;
-  // \`\`\`
-  //
   //
   return true;
 }`;
@@ -111,7 +72,20 @@ export const ScriptFilter: FC<{
               openModal({
                 component: FunctionEditorModal<NonNullable<ScriptFilterType["script"]>>,
                 arguments: {
-                  title: "Custom filter",
+                  title: t("filters.script"),
+                  description: (
+                    <div className="m-3">
+                      <p className="mb-0">{t("filters.script_description")}</p>
+                      <Link
+                        to="https://docs.gephi.org/lite/user-manual/custom-scripts"
+                        title={t("common.help")}
+                        target="_blank"
+                      >
+                        {t("common.see-documentation")}
+                        <ExternalLinkIcon className="ms-1" />
+                      </Link>
+                    </div>
+                  ),
                   functionJsDoc: getScriptJsDoc(filter.itemType),
                   initialFunctionCode:
                     filter.script?.toString() ??
@@ -135,7 +109,7 @@ export const ScriptFilter: FC<{
                     }
 
                     const result = fn(id ?? "0", attributs ?? {}, graphGraph);
-                    if (!isBoolean(result)) throw new Error("Function must returned a boolean");
+                    if (!isBoolean(result)) throw new Error("Function must return a boolean");
                   },
                 },
                 beforeSubmit: ({ fn }) => {

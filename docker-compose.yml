@@ -1,10 +1,10 @@
 services:
-    gephi-lite:
-        image: node:lts
-        user: node
-        hostname: gephi-lite
-        volumes:
-            - .:/gephi-lite
-        entrypoint: /gephi-lite/entrypoint.sh
-        ports:
-            - 5173:5173
+  gephi-lite:
+    image: node:lts
+    user: node
+    hostname: gephi-lite
+    volumes:
+      - .:/code
+    entrypoint: /code/entrypoint.sh
+    ports:
+      - 5173:5173

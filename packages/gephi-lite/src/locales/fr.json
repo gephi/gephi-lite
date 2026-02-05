@@ -160,6 +160,7 @@
     "save": "Enregistrer",
     "save-and-run": "Enregistrer et exécuter",
     "select": "Sélectionner...",
+    "see-documentation": "Consulter la documentation",
     "show": "Afficher",
     "show_less": "Afficher moins",
     "show_more": "Afficher plus",
@@ -210,7 +211,6 @@
   "edition": {
     "all_edges": "Tous les liens",
     "all_nodes": "Tous les nœuds",
-    "code_editor": "Éditeur de code",
     "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
     "confirm_delete_edges": "Êtes-vous sûr de vouloir supprimer {{count, number}} liens ?",
     "confirm_delete_edges_one": "Êtes-vous sûr de vouloir supprimer ce lien ?",
@@ -337,6 +337,7 @@
     "nodes_fields": "Attributs des nœuds",
     "range": "plage",
     "script": "Filtre personnalisé",
+    "script_description": "Implémentez la fonction de filtrage en JavaScript dans l’éditeur de code ci-dessous.",
     "terms": "valeurs exactes",
     "title": "Filtres",
     "topological": "Topologie",

@@ -2,6 +2,7 @@ import { FieldModel, FullGraph, ItemData, ItemType, Scalar } from "@gephi/gephi-
 import cx from "classnames";
 import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { graphDatasetAtom } from "../../core/graph";
@@ -9,7 +10,7 @@ import { inferFieldType } from "../../core/graph/fieldModel";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useNotifications } from "../../core/notifications";
 import { isScalar } from "../../utils/check";
-import { CancelIcon } from "../common-icons";
+import { CancelIcon, ExternalLinkIcon } from "../common-icons";
 import { useFunctionEditor } from "../modals/FunctionEditor";
 
 export type CreateScriptedFieldModelFormProps = {
@@ -36,23 +37,6 @@ const BASE_JS = {
     baseFn: `function addNodeAttribut(id, attributes, index, graph) {
   //
   // Your code goes here
-  //~~~~~~~~~~~~~~~~~~~~
-  //
-  // Write here your own function that returns the value for your new attribut.
-  //
-  // Example 1: If you have an attribut named 'valid' which take 0 or 1,
-  // you can cast it into a boolean
-  // ------------------------------------------------------------------------
-  // \`\`\`
-  // return attributes.valid === 1;
-  // \`\`\`
-  //
-  // Example 2: If you have attributs named 'firstname' and 'lastname'
-  // you can concatenate them (usefull for graph label)
-  // -----------------------------------------------------------------------
-  // \`\`\`
-  // return (attributes.firstname || "") + " " + (attributes.lastname || ");
-  // \`\`\`
   //
   return Math.random();
 }`,
@@ -78,23 +62,6 @@ const BASE_JS = {
     baseFn: `function addEdgeAttribut(id, attributes, index, graph) {
   //
   // Your code goes here
-  //~~~~~~~~~~~~~~~~~~~~
-  //
-  // Write here your own function that returns the value for your new attribut.
-  //
-  // Example 1: If you have an attribut named 'valid' which take 0 or 1,
-  // you can cast it into a boolean
-  // ------------------------------------------------------------------------
-  // \`\`\`
-  // return attributes.valid === 1;
-  // \`\`\`
-  //
-  // Example 2: If you have attributs named 'firstname' and 'lastname'
-  // you can concatenate them (usefull for graph label)
-  // -----------------------------------------------------------------------
-  // \`\`\`
-  // return (attributes.firstname || "") + " " + (attributes.lastname || ");
-  // \`\`\`
   //
   return Math.random();
 }`,
@@ -205,6 +172,20 @@ export const useCreateScriptedFieldModelForm = ({
     checkFunction,
     functionJsDoc: BASE_JS[type].doc,
     initialFunctionCode: BASE_JS[type].baseFn,
+    title: type === "nodes" ? t("edition.create_nodes_scripted_field") : t("edition.create_edges_scripted_field"),
+    description: (
+      <div className="m-3">
+        <p className="mb-0">
+          {type === "nodes"
+            ? t("edition.create_nodes_scripted_script_description")
+            : t("edition.create_edges_scripted_script_description")}
+        </p>
+        <Link to="https://docs.gephi.org/lite/user-manual/custom-scripts" title={t("common.help")} target="_blank">
+          {t("common.see-documentation")}
+          <ExternalLinkIcon className="ms-1" />
+        </Link>
+      </div>
+    ),
     onSubmit: isFormValid ? onSubmit : undefined,
     saveAndRunI18nKey: "datatable.save_and_create_column",
   });
@@ -218,7 +199,6 @@ export const useCreateScriptedFieldModelForm = ({
     main: (
       <div className="panel-body">
         <h2>{t(`edition.create_${type}_scripted_field`)}</h2>
-
         <div className="panel-block">
           <label htmlFor="column-id" className="form-label">
             {t("graph.model.field.id")}
@@ -240,7 +220,6 @@ export const useCreateScriptedFieldModelForm = ({
             </div>
           )}
         </div>
-
         {editorContent}
       </div>
     ),

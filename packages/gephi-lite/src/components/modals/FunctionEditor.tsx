@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { getGraphTypeScriptDefinition } from "@gephi/gephi-lite-sdk";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useCallback, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
 
-import graphologyDts from "../../assets/graphology-types.txt";
+import graphologyDts from "../../assets/graphology-types.txt?raw";
 import { useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { getAppliedTheme } from "../../core/preferences/utils";
 import { codeToFunction } from "../../utils/functions";
-import { CodeEditorIcon, HelpIcon } from "../common-icons";
+import { CodeEditorIcon } from "../common-icons";
 import { Modal } from "../modals";
 
 export interface FunctionEditorProps<T extends Function> {
@@ -23,6 +22,8 @@ export interface FunctionEditorProps<T extends Function> {
   checkFunction: (fn: T) => void; // throw error for unvalid
   onSubmit?: (fn: T) => void;
   saveAndRunI18nKey?: string;
+  title: string;
+  description?: ReactNode;
 }
 
 export function useFunctionEditor<T extends Function>({
@@ -33,6 +34,8 @@ export function useFunctionEditor<T extends Function>({
   initialFunctionCode,
   onSubmit,
   saveAndRunI18nKey,
+  title,
+  description,
 }: FunctionEditorProps<T>) {
   const { theme } = usePreferences();
   const { t } = useTranslation();
@@ -56,17 +59,24 @@ export function useFunctionEditor<T extends Function>({
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState<string>(initialFunctionCode);
 
-  const getFunction = useCallback(() => {
-    try {
-      if (!code.trim().length) throw new Error("Code is required");
-      const fn = codeToFunction<T>(code);
+  const toFunction = useCallback(
+    (text: string) => {
+      if (!text.trim().length) throw new Error("Code is required");
+      const fn = codeToFunction<T>(text);
       checkFunction(fn);
       return fn;
+    },
+    [checkFunction],
+  );
+
+  const getFunction = useCallback(() => {
+    try {
+      return toFunction(code);
     } catch (e) {
       setError(`${e}`);
       return null;
     }
-  }, [checkFunction, code]);
+  }, [toFunction, code]);
 
   if (!fullEditor)
     return {
@@ -92,7 +102,8 @@ export function useFunctionEditor<T extends Function>({
                       openModal({
                         component: FunctionEditorModal<T>,
                         arguments: {
-                          title: t("edition.code_editor"),
+                          title,
+                          description,
                           editorName,
                           functionJsDoc,
                           checkFunction,
@@ -124,8 +135,13 @@ export function useFunctionEditor<T extends Function>({
     getFunction,
     content: (
       <>
-        {error && <p className="text-danger text-center">{error}</p>}
+        {error && (
+          <div className="alert gl-m-0 gl-alert-error d-flex flex-column align-items-center mb-3">
+            <p className="mb-0">{error}</p>
+          </div>
+        )}
         <Editor
+          className=""
           height="40vh"
           theme={getAppliedTheme(theme) === "light" ? "light" : "vs-dark"}
           language="javascript"
@@ -143,15 +159,20 @@ export function useFunctionEditor<T extends Function>({
             // Making read only the header & footer of the function
             editor.onKeyDown((e: KeyboardEvent) => {
               const headerRange = new monaco.Range(headerLines[0], 0, headerLines[1], 0);
-              const footerRange = new monaco.Range(footerLines[0], 0, footerLines[1], 0);
               if (!["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.code)) {
-                const contains = (editor.getSelections() ?? []).findIndex(
-                  (range: Monaco["Range"]) => headerRange.intersectRanges(range) || footerRange.intersectRanges(range),
+                const contains = (editor.getSelections() ?? []).findIndex((range: Monaco["Range"]) =>
+                  headerRange.intersectRanges(range),
                 );
                 if (contains !== -1) {
                   e.stopPropagation();
                   e.preventDefault(); // for Ctrl+C, Ctrl+V
                 }
+              }
+
+              // CTRL+Enter, submit the code execution
+              if (e.code === "Enter" && e.ctrlKey) {
+                const fn = toFunction(editor.getValue());
+                if (onSubmit && fn) onSubmit(fn);
               }
             });
 
@@ -183,6 +204,7 @@ export function FunctionEditorModal<T extends Function>(
   props: ModalProps<
     Omit<FunctionEditorProps<T>, "fullEditor"> & {
       title: string;
+      description?: ReactNode;
       withSaveAndRun?: boolean;
     },
     { run: boolean; fn: T }
@@ -190,8 +212,12 @@ export function FunctionEditorModal<T extends Function>(
 ) {
   const { t } = useTranslation();
   const { submit, cancel } = props;
-  const { title, withSaveAndRun, saveAndRunI18nKey = "common.save-and-run" } = props.arguments;
-  const { content, getFunction } = useFunctionEditor({ ...props.arguments, fullEditor: true });
+  const { title, description, withSaveAndRun, saveAndRunI18nKey = "common.save-and-run" } = props.arguments;
+  const { content, getFunction } = useFunctionEditor({
+    ...props.arguments,
+    onSubmit: (fn: T) => submit({ run: true, fn }),
+    fullEditor: true,
+  });
 
   const save = useCallback(
     (run: boolean) => {
@@ -204,26 +230,12 @@ export function FunctionEditorModal<T extends Function>(
   );
 
   return (
-    <Modal
-      className="modal-xl"
-      bodyClassName="p-0"
-      title={
-        <>
-          {title}
-          <Link
-            className="ms-1 d-flex align-items-center"
-            to="https://docs.gephi.org/lite/user-manual/custom-scripts"
-            title={t("common.help")}
-            target="_blank"
-          >
-            <HelpIcon />
-          </Link>
-        </>
-      }
-      onClose={() => cancel()}
-      onSubmit={() => save(true)}
-    >
-      {content}
+    <Modal className="modal-xl" bodyClassName="p-0" title={title} onClose={() => cancel()} onSubmit={() => save(true)}>
+      <>
+        {description}
+        {content}
+      </>
+
       <div className="gl-gap-2 d-flex">
         <button type="button" title={t("common.cancel")} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}
