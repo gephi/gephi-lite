@@ -194,8 +194,10 @@ const useEditEdgeForm = ({
                 required: true,
                 validate: (value) => value in layout,
               }}
-              render={({ field: { onChange, value } }) => (
+              disabled={!isNew}
+              render={({ field: { onChange, value, disabled } }) => (
                 <GraphSearch
+                  isDisabled={disabled}
                   onChange={(option) => {
                     if (option === null || "id" in option) {
                       onChange(option?.id);
@@ -219,8 +221,10 @@ const useEditEdgeForm = ({
                 required: true,
                 validate: (value) => value in layout,
               }}
-              render={({ field: { onChange, value } }) => (
+              disabled={!isNew}
+              render={({ field: { onChange, value, disabled } }) => (
                 <GraphSearch
+                  isDisabled={disabled}
                   onChange={(option) => {
                     if (option === null || "id" in option) {
                       onChange(option?.id);
