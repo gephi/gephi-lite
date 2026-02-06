@@ -25,6 +25,7 @@ import {
 } from "../../components/common-icons";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { useMobile } from "../../hooks/useMobile";
@@ -93,7 +94,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       { type: "mixed", metrics: MIXED_METRICS },
     ].flatMap(({ type, metrics }) => [
       {
-        id: type,
+        id: `metric-${type}`,
         type: "text",
         i18nKey: `graph.model.${type}`,
         className: "gl-heading-3",
@@ -114,6 +115,7 @@ export const GraphPage: FC = () => {
   const { emptySelection } = useSelectionActions();
   const { t } = useTranslation();
   const isMobile = useMobile();
+  const { emitter } = useEventsContext();
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
@@ -135,6 +137,29 @@ export const GraphPage: FC = () => {
   useEffect(() => {
     setExpanded(false);
   }, [items]);
+
+  /**
+   * Listening to events for opening a menu item.
+   * Used in the graph controller layout button
+   */
+  useEffect(() => {
+    const menu_items = MENU.flatMap((item) => {
+      if ("children" in item) return [item, ...item.children];
+      return item;
+    });
+    const fn = ({ menuId }: { menuId: string }) => {
+      const itemToOpen = menu_items.find((e) => e.id === menuId);
+      if (itemToOpen && itemToOpen.panel)
+        setSelectedTool({
+          id: itemToOpen.id,
+          panel: itemToOpen.panel,
+        });
+    };
+    emitter.on(EVENTS.openMenu, fn);
+    return () => {
+      emitter.off(EVENTS.openMenu, fn);
+    };
+  }, [emitter, setSelectedTool]);
 
   return (
     <>
@@ -187,7 +212,7 @@ export const GraphPage: FC = () => {
             <>
               <button
                 type="button"
-                className="gl-btn-close gl-btn d-none d-sm-block"
+                className="gl-btn-close gl-btn d-none d-sm-block  z-over-loader"
                 aria-label={t("common.close")}
                 onClick={() => setSelectedTool(undefined)}
               >

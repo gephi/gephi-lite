@@ -13,9 +13,9 @@ import {
   CodeEditorIcon,
   ExternalLinkIcon,
   GuessSettingsIcon,
+  PauseIconFill,
   PlayIconFill,
   ResetIcon,
-  StopIconFill,
 } from "../../../../components/common-icons";
 import { BooleanInput, EnumInput, NumberInput } from "../../../../components/forms/TypedInputs";
 import { FunctionEditorModal } from "../../../../components/modals/FunctionEditor";
@@ -27,7 +27,6 @@ import { sessionAtom } from "../../../../core/session";
 
 export const LayoutForm: FC<{
   layout: Layout;
-  onCancel: () => void;
   onStart: (params: Record<string, unknown>) => void;
   onStop: () => void;
   isRunning: boolean;
@@ -341,20 +340,17 @@ export const LayoutForm: FC<{
           </button>
 
           <button type="submit" className="gl-btn gl-btn-fill" disabled={errors !== null}>
-            {layout.type === "sync" && <>{t("common.apply")}</>}
-            {layout.type === "worker" && (
+            {isRunning && (
               <>
-                {isRunning ? (
-                  <>
-                    <StopIconFill />
-                    {t("common.stop")}
-                  </>
-                ) : (
-                  <>
-                    <PlayIconFill />
-                    {t("common.start")}
-                  </>
-                )}
+                <PauseIconFill />
+                {t("common.stop")}
+              </>
+            )}
+            {!isRunning && layout.type === "sync" && <>{t("common.apply")}</>}
+            {!isRunning && layout.type === "worker" && (
+              <>
+                <PlayIconFill />
+                {t("common.start")}
               </>
             )}
           </button>

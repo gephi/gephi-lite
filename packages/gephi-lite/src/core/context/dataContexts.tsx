@@ -147,6 +147,7 @@ export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
 export const useUser = makeUseAtom(CONTEXTS.user);
 export const useDynamicItemData = makeUseAtom(CONTEXTS.dynamicItemData);
+export const useSessionData = makeUseAtom(CONTEXTS.session);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
 export const useFiltersActions = makeUseActions(filtersActions);
@@ -159,6 +160,7 @@ export const useSearchActions = makeUseActions(searchActions);
 export const useFileActions = makeUseActions(fileActions);
 export const useLayoutActions = makeUseActions(layoutActions);
 export const useUserActions = makeUseActions(userActions);
+export const useSessionActions = makeUseActions(sessionActions);
 
 export const useResetStates = () => {
   return resetStates;
