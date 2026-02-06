@@ -129,6 +129,7 @@ export const EventsController: FC = () => {
 
           for (const node in dragState.initialNodesPosition) {
             const initialPosition = dragState.initialNodesPosition[node];
+            graph.setNodeAttribute(node, "fixed", true);
             graph.setNodeAttribute(node, "x", initialPosition.x + delta.x);
             graph.setNodeAttribute(node, "y", initialPosition.y + delta.y);
           }
