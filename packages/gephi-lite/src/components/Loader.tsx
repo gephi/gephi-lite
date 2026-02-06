@@ -23,8 +23,9 @@ export const Loader: FC = () => (
 /**
  * Display a loader that takes the size of its parent container.
  */
-export const LoaderFill: FC = () => (
+export const LoaderFill: FC<{ message?: string }> = ({ message }) => (
   <div className="loader-fill">
     <Spinner style={{ width: "3rem", height: " 3rem" }} />
+    {message && <p className="text-center">{message}</p>}
   </div>
 );

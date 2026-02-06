@@ -1,4 +1,4 @@
-import { type FC, useEffect } from "react";
+import { type FC } from "react";
 
 import { useLayoutActions, useLayoutState } from "../../../../core/context/dataContexts";
 import type { Layout } from "../../../../core/layouts/types";
@@ -8,14 +8,7 @@ import { LayoutForm } from "./LayoutForm";
 export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
   const { notify } = useNotifications();
   const { startLayout, stopLayout } = useLayoutActions();
-  const { type } = useLayoutState();
-
-  useEffect(() => {
-    return () => {
-      stopLayout();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const layoutState = useLayoutState();
 
   return (
     <LayoutForm
@@ -30,10 +23,7 @@ export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
       onStop={() => {
         stopLayout();
       }}
-      isRunning={type === "running"}
-      onCancel={() => {
-        stopLayout();
-      }}
+      isRunning={layoutState.type === "running" && layoutState.layoutId === layout.id}
     />
   );
 };

@@ -11,6 +11,7 @@ export const EVENTS = {
   nodeCreated: "nodeCreated",
   edgeCreated: "edgeCreated",
   searchResultsSelected: "searchResultsSelected",
+  openMenu: "openMenu",
 } as const;
 
 /**

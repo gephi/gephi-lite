@@ -7,6 +7,7 @@ import { localStorage } from "../../utils/storage";
 import { EVENTS, emitter } from "../context/eventsContext";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
+import { sessionActions, sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
 import { LAYOUTS } from "./collection";
 import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
@@ -34,41 +35,7 @@ export const layoutStateAtom = atom<LayoutState>(getLocalStorageLayoutState());
  * Actions:
  * ********
  */
-export const startLayout = asyncAction(async (id: string, params: unknown) => {
-  const { setNodePositions } = graphDatasetActions;
-  const dataset = graphDatasetAtom.get();
-
-  // search the layout
-  const layout = LAYOUTS.find((l) => l.id === id);
-
-  // Sync layout
-  if (layout && layout.type === "sync") {
-    layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id }));
-
-    // generate positions
-    const fullGraph = dataGraphToFullGraph(dataset);
-    const positions = layout.run(fullGraph, { settings: params });
-
-    // Save it
-    setNodePositions(positions);
-
-    // To prevent resetting the camera before sigma receives new data, we
-    // need to wait a frame, and also wait for it to trigger a refresh:
-    setTimeout(() => {
-      layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
-      resetCamera({ forceRefresh: false });
-    }, 0);
-  }
-
-  // Async layout
-  if (layout && layout.type === "worker") {
-    const worker = new layout.supervisor(sigmaGraphAtom.get(), { settings: params });
-    worker.start();
-    layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: worker }));
-  }
-});
-
-export const stopLayout = asyncAction(async () => {
+export const stopLayout = asyncAction(async (isForRestart = false) => {
   const { setNodePositions } = graphDatasetActions;
   const layoutState = layoutStateAtom.get();
 
@@ -77,15 +44,74 @@ export const stopLayout = asyncAction(async () => {
     layoutState.supervisor.stop();
     layoutState.supervisor.kill();
 
-    // Save data
-    const positions: LayoutMapping = {};
-    sigmaGraphAtom.get().forEachNode((node, { x, y }) => {
-      positions[node] = { x, y };
-    });
-    setNodePositions(positions);
+    // DOn't save position if it's for a restart
+    if (!isForRestart) {
+      // Save data
+      const positions: LayoutMapping = {};
+      sigmaGraphAtom.get().forEachNode((node, { x, y }) => {
+        positions[node] = { x, y };
+      });
+      setNodePositions(positions);
+    }
   }
 
-  layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+  // Don't set the state if it's for restart
+  if (!isForRestart) layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+});
+
+export const startLayout = asyncAction(async (id: string, params: unknown, isForRestart = false) => {
+  // Stop the previous algo (the "if needed" is done in the function itself)
+  await stopLayout(isForRestart);
+  
+  const { setNodePositions } = graphDatasetActions;
+  const { setLastLayoutUsed } = sessionActions;
+
+  // search the layout
+  const layout = LAYOUTS.find((l) => l.id === id);
+
+  if (layout) {
+    if (!isForRestart) setLastLayoutUsed(layout.id);
+
+    // Sync layout
+    if (layout.type === "sync") {
+      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id }));
+
+      // generate positions
+      const dataset = graphDatasetAtom.get();
+      const fullGraph = dataGraphToFullGraph(dataset);
+      const positions = layout.run(fullGraph, { settings: params });
+
+      // Save it
+      setNodePositions(positions);
+
+      // To prevent resetting the camera before sigma receives new data, we
+      // need to wait a frame, and also wait for it to trigger a refresh:
+      setTimeout(() => {
+        layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+        resetCamera({ forceRefresh: false });
+      }, 0);
+    }
+
+    // Async layout
+    if (layout.type === "worker") {
+      const worker = new layout.supervisor(sigmaGraphAtom.get(), { settings: params });
+      worker.start();
+      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: worker }));
+    }
+  }
+});
+
+export const restartLastLayout = asyncAction(async () => {
+  // Get the algo and its parameters
+  const session = sessionAtom.get();
+  if (session.lastLayoutUsed) {
+    const layoutId = session.lastLayoutUsed;
+    const layout = LAYOUTS.find((e) => e.id === layoutId);
+    const params = session.layoutsParameters[layoutId] || {};
+    if (layout) {
+      await startLayout(layoutId, params, true);
+    }
+  }
 });
 
 export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
@@ -105,8 +131,9 @@ const _computeLayoutQualityMetric: Producer<LayoutState> = () => {
 };
 
 export const layoutActions = {
-  startLayout,
   stopLayout,
+  startLayout,
+  restartLastLayout,
   setQuality: producerToAction(setQuality, layoutStateAtom),
   computeLayoutQualityMetric: producerToAction(_computeLayoutQualityMetric, layoutStateAtom),
 };
@@ -138,5 +165,15 @@ gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
     emitter.off(EVENTS.graphImported, fn);
     emitter.off(EVENTS.nodesDragged, fn);
     sigmaGraph.off("eachNodeAttributesUpdated", fn);
+  };
+});
+
+layoutStateAtom.bindEffect((state) => {
+  if (state.type !== "running") return;
+
+  const fnHandleDraggin = debounce(restartLastLayout, 100, { leading: true, trailing: true, maxWait: 100 });
+  emitter.on(EVENTS.nodesDragged, fnHandleDraggin);
+  return () => {
+    emitter.off(EVENTS.nodesDragged, fnHandleDraggin);
   };
 });

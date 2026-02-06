@@ -58,6 +58,8 @@ import {
   PiPaintBrush,
   PiPalette,
   PiPaletteFill,
+  PiPause,
+  PiPauseFill,
   PiPencilSimpleLine,
   PiPencilSimpleLineFill,
   PiPlay,
@@ -71,6 +73,8 @@ import {
   PiSelection,
   PiSelectionBold,
   PiSignIn,
+  PiSkipForwardFill,
+  PiSkipForwardLight,
   PiSpinner,
   PiSquare,
   PiStop,
@@ -152,6 +156,10 @@ export const MouseIconFill = PiCursorFill;
 export const OpenInGraphIcon = PiCrosshair;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
+export const PlaySyncIcon = PiSkipForwardLight;
+export const PlaySyncIconFill = PiSkipForwardFill;
+export const PauseIcon = PiPause;
+export const PauseIconFill = PiPauseFill;
 export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
 export const SearchIcon = PiMagnifyingGlass;

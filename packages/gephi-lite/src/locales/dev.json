@@ -355,6 +355,11 @@
     "control": {
       "fullscreenEnter": "Enter fullscreen mode",
       "fullscreenExit": "Exit fullscreen",
+      "layout-open-settings": "Open '{{name}}' layout settings",
+      "layout-no-layout": "Disabled: there is no layout in your history",
+      "layout-run-latest": "Run layout '{{name}}'",
+      "layout-start-latest": "Start layout '{{name}}'",
+      "layout-stop-latest": "Stop layout '{{name}}'",
       "zoomIn": "Zoom In",
       "zoomOut": "Zoom Out",
       "zoomReset": "See the whole graph"
@@ -506,9 +511,9 @@
     },
     "description": "This panel allows computing new coordinates to nodes of the graph. ",
     "exec": {
-      "started": "Layout {{layout}} is running",
-      "stopped": "Layout {{layout}} has been stopped",
-      "success": "Layout \"{{layout}}\" has successfully been applied."
+      "started": "Layout '{{layout}}' is running",
+      "stopped": "Layout '{{layout}}' has been stopped",
+      "success": "Layout '{{layout}}' has successfully been applied."
     },
     "fa2": {
       "buttons": {

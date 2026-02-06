@@ -394,6 +394,10 @@
     "control": {
       "fullscreenEnter": "Activer le mode plein écran",
       "fullscreenExit": "Quitter le mode plein écran",
+      "layout-run-latest": "Exécuter la spatialisation '{{name}}'",
+      "layout-start-latest": "Démarrer la spatialisation '{{name}}'",
+      "layout-stop-latest": "Arrêter la spatialisation '{{name}}'",
+      "layout-open-settings": "Ouvrir le panneau de paramétrage du layout '{{name}}'",
       "zoomIn": "Zoom avant",
       "zoomOut": "Zoom arrière",
       "zoomReset": "Afficher tout le graphe"
