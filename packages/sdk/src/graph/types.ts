@@ -40,6 +40,7 @@ export type NodeRenderingData = Attributes &
     rawSize?: number;
     image?: string | null;
     fixed?: boolean;
+    dragging?:boolean;
   };
 
 export interface GraphMetadata {

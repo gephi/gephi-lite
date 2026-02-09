@@ -59,10 +59,11 @@ export const stopLayout = asyncAction(async (isForRestart = false) => {
   if (!isForRestart) layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
 });
 
-export const startLayout = asyncAction(async (id: string, params: unknown, isForRestart = false) => {
+export const startLayout = asyncAction(async (id: string, params: Record<string, unknown>, isForRestart = false) => {
   // Stop the previous algo (the "if needed" is done in the function itself)
   await stopLayout(isForRestart);
 
+  const dataset = graphDatasetAtom.get();
   const { setNodePositions } = graphDatasetActions;
 
   // search the layout
@@ -74,7 +75,6 @@ export const startLayout = asyncAction(async (id: string, params: unknown, isFor
       layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: undefined }));
 
       // generate positions
-      const dataset = graphDatasetAtom.get();
       const fullGraph = dataGraphToFullGraph(dataset);
       const positions = layout.run(fullGraph, { settings: params });
 
@@ -91,7 +91,28 @@ export const startLayout = asyncAction(async (id: string, params: unknown, isFor
 
     // Async layout
     if (layout.type === "worker") {
-      const worker = new layout.supervisor(sigmaGraphAtom.get(), { settings: params });
+      const graph = sigmaGraphAtom.get();
+
+      // Fixed node management
+      // ---------------------
+      // If layout parameter has a `getNodeFixedAttribut`, then we have to set the 'fixed' attribut in sigma's graph
+      // On a layout restart, if parameter has been removed, we need to set to false
+      // We also use the 'fixed' attribut for drag'n'drop
+      graph.updateEachNodeAttributes((id, attrs) => {
+        let fixed = attrs.dragging === true;
+        if ("getNodeFixedAttribut" in params && params.getNodeFixedAttribut) {
+          const fixedAttribut = `${params.getNodeFixedAttribut}`;
+          if (dataset.nodeData[id][fixedAttribut] === true) {
+            fixed = true;
+          }
+        }
+        return {
+          ...attrs,
+          fixed,
+        };
+      });
+
+      const worker = new layout.supervisor(graph, { settings: params });
       worker.start();
       layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: worker }));
     }
