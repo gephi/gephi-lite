@@ -539,6 +539,9 @@
           "description": "Influence of the edge’s weights on the layout",
           "title": "Edge weight influence"
         },
+        "getNodeFixedAttribut": {
+          "title": "Attribute indicating whether the node’s position is fixed"
+        },
         "gravity": {
           "description": "Strength of the layout’s gravity",
           "title": "Gravity"

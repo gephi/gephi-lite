@@ -96,8 +96,8 @@ export const EventsController: FC = () => {
 
         const initialNodesPosition: LayoutMapping = {};
         nodes.forEach((node) => {
-          // Fixing the node position, it's needed while a layout is running
-          graph.setNodeAttribute(node, "fixed", true);
+          // Set dragging prop on node, which fix the node
+          graph.setNodeAttribute(node, "dragging", true);
           const { x, y } = graph.getNodeAttributes(node);
           initialNodesPosition[node] = { x, y };
         });
@@ -131,7 +131,7 @@ export const EventsController: FC = () => {
 
           for (const node in dragState.initialNodesPosition) {
             const initialPosition = dragState.initialNodesPosition[node];
-            graph.setNodeAttribute(node, "fixed", true);
+            graph.setNodeAttribute(node, "dragging", true);
             graph.setNodeAttribute(node, "x", initialPosition.x + delta.x);
             graph.setNodeAttribute(node, "y", initialPosition.y + delta.y);
           }
@@ -162,7 +162,12 @@ export const EventsController: FC = () => {
           resetHoveredNode();
           resetHoveredEdge();
         }
-        graph.forEachNode((node) => graph.setNodeAttribute(node, "fixed", false));
+        // Remove the dragging state on each node
+        graph.forEachNode((node) => graph.setNodeAttribute(node, "dragging", false));
+        // Emit the last dragged event when the dragging prop is removed
+        // so the algo can restart with the good data
+        globalEmitter.emit(EVENTS.nodesDragged);
+        // Update drag status
         dragStateRef.current = { type: "idle" };
       }
     };
