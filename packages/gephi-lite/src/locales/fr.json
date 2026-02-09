@@ -613,6 +613,9 @@
           "description": "Influence des poids des liens sur la spatialisation",
           "title": "Influence du poids des liens"
         },
+        "getNodeFixedAttribut": {
+          "title": "Attribut indiquant si la position du nœud est fixée"
+        },
         "gravity": {
           "description": "Intensité de la gravité de la spatialisation",
           "title": "Gravité"

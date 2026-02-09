@@ -76,5 +76,12 @@ export const ForceAtlas2Layout = {
     },
     { id: "slowDown", type: "number", defaultValue: FA2_DEFAULT_SETTINGS.slowDown, min: 1, step:"any"},
     { id: "strongGravityMode", type: "boolean", defaultValue: FA2_DEFAULT_SETTINGS.strongGravityMode },
+    {
+      id: "getNodeFixedAttribut",
+      type: "attribute",
+      itemType: "nodes",
+      restriction: ["boolean"],
+      required: false,
+    },
   ],
 } as WorkerLayout<ForceAtlas2LayoutParameters>;
