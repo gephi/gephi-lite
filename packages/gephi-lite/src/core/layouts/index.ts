@@ -44,7 +44,7 @@ export const stopLayout = asyncAction(async (isForRestart = false) => {
     layoutState.supervisor.stop();
     layoutState.supervisor.kill();
 
-    // DOn't save position if it's for a restart
+    // Don't save position if it's for a restart
     if (!isForRestart) {
       // Save data
       const positions: LayoutMapping = {};
