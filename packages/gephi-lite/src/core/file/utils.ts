@@ -201,7 +201,7 @@ export function parseGephiLiteJsonContent<T extends { type: "gephi-lite" } & { [
         graph = Graph.from(graphDataset.fullGraph as any);
       }
 
-      // Merging node's attributs
+      // Merging node's attributes
       const nodeMapDataType = ["layout", "nodeRenderingData", "nodeData"] as const;
       for (const nodeMapData of nodeMapDataType) {
         if (has(graphDataset, nodeMapData) && isObject(graphDataset[nodeMapData])) {
@@ -213,7 +213,7 @@ export function parseGephiLiteJsonContent<T extends { type: "gephi-lite" } & { [
         }
       }
 
-      // Merging edge's attributs
+      // Merging edge's attributes
       const edgeMapDataType = ["edgeRenderingData", "edgeData"] as const;
       for (const edgeMapData of edgeMapDataType) {
         if (has(graphDataset, edgeMapData) && isObject(graphDataset[edgeMapData])) {

@@ -32,9 +32,9 @@ const BASE_JS = {
 * @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
 * @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
-* @returns number|string|boolean|null|undefined" The value of the new node's attribut
+* @returns number|string|boolean|null|undefined" The value of the new node's attribute
 */`,
-    baseFn: `function addNodeAttribut(id, attributes, index, graph) {
+    baseFn: `function addNodeAttribute(id, attributes, index, graph) {
   //
   // Your code goes here
   //
@@ -44,8 +44,8 @@ const BASE_JS = {
       if (!fn) throw new Error("Function is not defined");
       const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
       const id = fullGraph.nodes()[0];
-      const attributs = fullGraph.getNodeAttributes(id);
-      const result = fn(id, attributs, 0, fullGraph);
+      const attributes = fullGraph.getNodeAttributes(id);
+      const result = fn(id, attributes, 0, fullGraph);
       if (!isScalar(result)) throw new Error("Function must returns a number, a string, a boolean, null or undefined");
     },
   },
@@ -57,9 +57,9 @@ const BASE_JS = {
 * @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
 * @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
-* @returns number|string|boolean|null|undefined" The value of the new edge's attribut
+* @returns number|string|boolean|null|undefined" The value of the new edge's attribute
 */`,
-    baseFn: `function addEdgeAttribut(id, attributes, index, graph) {
+    baseFn: `function addEdgeAttribute(id, attributes, index, graph) {
   //
   // Your code goes here
   //
@@ -94,8 +94,8 @@ export const useCreateScriptedFieldModelForm = ({
 
       const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
       const id = fullGraph[type]()[0];
-      const attributs = type === "nodes" ? fullGraph.getNodeAttributes(id) : fullGraph.getEdgeAttributes(id);
-      const result = fn(id, attributs, 0, fullGraph);
+      const attributes = type === "nodes" ? fullGraph.getNodeAttributes(id) : fullGraph.getEdgeAttributes(id);
+      const result = fn(id, attributes, 0, fullGraph);
       if (!isScalar(result)) throw new Error("Function must returns a number, a string, a boolean, null or undefined");
     },
     [type],
