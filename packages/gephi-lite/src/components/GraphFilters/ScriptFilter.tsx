@@ -94,21 +94,21 @@ export const ScriptFilter: FC<{
                     if (!fn) throw new Error("Function is not defined");
                     // Check/test the function
                     let id = null;
-                    let attributs = null;
+                    let attributes = null;
                     const graphDataset = graphDatasetAtom.get();
 
                     const graphGraph = dataGraphToFullGraph(graphDataset, parentGraph);
 
                     if (filter.itemType === "nodes" && parentGraph.order > 0) {
                       id = parentGraph.nodes()[0];
-                      attributs = graphGraph.getNodeAttributes(id);
+                      attributes = graphGraph.getNodeAttributes(id);
                     }
                     if (filter.itemType === "edges" && parentGraph.size > 0) {
                       id = parentGraph.edges()[0];
-                      attributs = graphGraph.getEdgeAttributes(id);
+                      attributes = graphGraph.getEdgeAttributes(id);
                     }
 
-                    const result = fn(id ?? "0", attributs ?? {}, graphGraph);
+                    const result = fn(id ?? "0", attributes ?? {}, graphGraph);
                     if (!isBoolean(result)) throw new Error("Function must return a boolean");
                   },
                 },

@@ -39,8 +39,8 @@ export const ScriptLayout = {
         // Check & test the function
         const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
         const id = fullGraph.nodes()[0];
-        const attributs = fullGraph.getNodeAttributes(id);
-        const result = fn(id, attributs, 0, fullGraph);
+        const attributes = fullGraph.getNodeAttributes(id);
+        const result = fn(id, attributes, 0, fullGraph);
         if (!isObject(result)) throw new Error("Function must return an object");
         if (isNil(result.x)) throw new Error("Function must return an object with a `x` property");
         if (isNil(result.y)) throw new Error("Function must return an object with a `y` property");
