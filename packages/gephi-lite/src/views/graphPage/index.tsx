@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { type ComponentType, FC, useEffect, useState } from "react";
+import { type ComponentType, FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
 
@@ -24,7 +24,7 @@ import {
   MetricsIconFill,
 } from "../../components/common-icons";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
-import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
+import { useLayoutState, useSelection, useSelectionActions } from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
@@ -113,9 +113,27 @@ export const GraphPage: FC = () => {
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
   const { items } = useSelection();
   const { emptySelection } = useSelectionActions();
+  const layoutState = useLayoutState();
   const { t } = useTranslation();
   const isMobile = useMobile();
   const { emitter } = useEventsContext();
+
+  const menuExtended:MenuItem<{ panel?: ComponentType, isRunning?:boolean }>[] = useMemo(
+    () =>
+      MENU.map((section) => {
+        if (section.id === "layout" && layoutState.type === "running" && "children" in section) {
+          return {
+            ...section,
+            children: section.children.map((item) => ({
+              ...item,
+              isRunning: `layout-${layoutState.layoutId}` === item.id,
+            })),
+          };
+        }
+        return section;
+      }),
+    [layoutState],
+  );
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
@@ -190,7 +208,7 @@ export const GraphPage: FC = () => {
             <GraphSummary />
             <GraphSearchSelection />
             <SideMenu
-              menu={MENU}
+              menu={menuExtended}
               selected={selectedTool?.id}
               onSelectedChange={(item) =>
                 setSelectedTool(

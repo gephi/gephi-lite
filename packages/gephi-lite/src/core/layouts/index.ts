@@ -7,7 +7,7 @@ import { localStorage } from "../../utils/storage";
 import { EVENTS, emitter } from "../context/eventsContext";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
-import { sessionActions, sessionAtom } from "../session";
+import { sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
 import { LAYOUTS } from "./collection";
 import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
@@ -62,19 +62,16 @@ export const stopLayout = asyncAction(async (isForRestart = false) => {
 export const startLayout = asyncAction(async (id: string, params: unknown, isForRestart = false) => {
   // Stop the previous algo (the "if needed" is done in the function itself)
   await stopLayout(isForRestart);
-  
+
   const { setNodePositions } = graphDatasetActions;
-  const { setLastLayoutUsed } = sessionActions;
 
   // search the layout
   const layout = LAYOUTS.find((l) => l.id === id);
 
   if (layout) {
-    if (!isForRestart) setLastLayoutUsed(layout.id);
-
     // Sync layout
     if (layout.type === "sync") {
-      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id }));
+      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: undefined }));
 
       // generate positions
       const dataset = graphDatasetAtom.get();
@@ -104,8 +101,8 @@ export const startLayout = asyncAction(async (id: string, params: unknown, isFor
 export const restartLastLayout = asyncAction(async () => {
   // Get the algo and its parameters
   const session = sessionAtom.get();
-  if (session.lastLayoutUsed) {
-    const layoutId = session.lastLayoutUsed;
+  if (session.lastLayout) {
+    const layoutId = session.lastLayout;
     const layout = LAYOUTS.find((e) => e.id === layoutId);
     const params = session.layoutsParameters[layoutId] || {};
     if (layout) {

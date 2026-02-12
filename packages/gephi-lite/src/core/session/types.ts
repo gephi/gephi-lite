@@ -1,6 +1,6 @@
 export interface Session {
+  lastLayout?: string;
   // for each layout, we save the parameters
-  lastLayoutUsed?: string;
   layoutsParameters: { [layout: string]: Record<string, unknown> };
   // for each metrics, we save the parameters
   metrics: {

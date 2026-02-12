@@ -87,8 +87,18 @@ const InteractionsController: FC = () => {
 
   // Get the latest layout run in the history with its data
   const lastLayoutActive = useMemo(() => {
-    if (!session.lastLayoutUsed) return null;
-    const layoutId = session.lastLayoutUsed;
+    if (!session.lastLayout) return null;
+    const layoutId = session.lastLayout;
+    
+    // Special case for layout quality
+    if(layoutId === "layout-quality") 
+      return {
+      id: "quality",
+      name: t(`layouts.${layoutId}.title`),
+      type: "quality",
+      params:{}
+    }
+
     const layout = LAYOUTS.find((e) => e.id === layoutId);
     if (!layout) return null;
 
@@ -98,7 +108,7 @@ const InteractionsController: FC = () => {
       type: layout.type,
       params: session.layoutsParameters[layout.id] || {},
     };
-  }, [session.lastLayoutUsed, session.layoutsParameters, t]);
+  }, [session.lastLayout, session.layoutsParameters, t]);
 
   // Get needed info to render the layout button
   const layoutButton = useMemo(() => {
@@ -122,6 +132,13 @@ const InteractionsController: FC = () => {
             title: t("graph.control.layout-run-latest", { name: lastLayoutActive.name }),
             icon: <PlaySyncIcon />,
             disabled: false,
+            className: "gl-btn gl-btn-icon gl-btn-outline bg-body",
+          };
+        } else if (lastLayoutActive.type === "quality") {
+          result = {
+            title: t("graph.control.layout-run-latest", { name: lastLayoutActive.name }),
+            icon: <PlaySyncIcon />,
+            disabled: true,
             className: "gl-btn gl-btn-icon gl-btn-outline bg-body",
           };
         } else {

@@ -18,16 +18,16 @@ export const reset: Producer<Session, []> = () => {
   return () => getEmptySession();
 };
 
-const setLastLayoutUsed: Producer<Session, [Session["lastLayoutUsed"]]> = (lastLayoutUsed) => {
+const setLastLayout: Producer<Session, [Session["lastLayout"]]> = (layoutId) => {
   return (session) => ({
     ...session,
-    lastLayoutUsed,
+    lastLayout: layoutId
   });
 };
 
 export const sessionActions = {
   reset: producerToAction(reset, sessionAtom),
-  setLastLayoutUsed: producerToAction(setLastLayoutUsed, sessionAtom),
+  setLastLayout: producerToAction(setLastLayout, sessionAtom),
 };
 
 /**

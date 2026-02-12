@@ -7,7 +7,6 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
-import { LoaderFill } from "../../../../components/Loader";
 import MessageAlert from "../../../../components/MessageAlert";
 import {
   CodeEditorIcon,
@@ -27,7 +26,7 @@ import { sessionAtom } from "../../../../core/session";
 
 export const LayoutForm: FC<{
   layout: Layout;
-  onStart: (params: Record<string, unknown>) => void;
+  onStart: (params: Record<string, unknown>, restart?:boolean) => void;
   onStop: () => void;
   isRunning: boolean;
 }> = ({ layout, onStart, onStop, isRunning }) => {
@@ -74,8 +73,16 @@ export const LayoutForm: FC<{
         errors[param.id] = t(`error.form.max`, { ...param, name });
     });
 
-    setErrors(Object.keys(errors).length > 0 ? errors : null);
-  }, [layout, layoutParameters, t]);
+    const hasError = Object.keys(errors).length > 0 
+    setErrors(hasError ? errors : null);
+
+    if(layout.type === "worker" && !hasError && isRunning){
+      onStart(layoutParameters, true);
+
+    } 
+    // I don't want to trigger this useeffect when the isRunning value changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layout, layoutParameters, t, onStart]);
 
   /**
    * When the layout change
@@ -187,7 +194,6 @@ export const LayoutForm: FC<{
                       param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                     }
                     value={value as number}
-                    disabled={isRunning}
                     onChange={(v) => changeParameter(param.id, v)}
                     required={param.required || false}
                     min={param.min}
@@ -203,7 +209,6 @@ export const LayoutForm: FC<{
                       param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                     }
                     value={!!value as boolean}
-                    disabled={isRunning}
                     onChange={(v) => changeParameter(param.id, v)}
                     required={param.required || false}
                   />
@@ -218,7 +223,6 @@ export const LayoutForm: FC<{
                     }
                     placeholder={t("common.none")}
                     value={value as string}
-                    disabled={isRunning}
                     onChange={(v) => changeParameter(param.id, v)}
                     options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
                       .filter((field) => (param.restriction ? param.restriction.includes(field.type) : true))
@@ -286,7 +290,6 @@ export const LayoutForm: FC<{
               </div>
             );
           })}
-          {isRunning && <LoaderFill />}
         </div>
       </div>
 
@@ -324,7 +327,6 @@ export const LayoutForm: FC<{
                 const graph = getFilteredDataGraph(dataset, sigmaGraph);
                 setParameters(getSettings(layoutParameters, graph));
               }}
-              disabled={isRunning}
             >
               <GuessSettingsIcon />
             </button>
@@ -334,7 +336,6 @@ export const LayoutForm: FC<{
             title={t("common.reset")}
             className="gl-btn gl-btn-outline gl-btn-icon"
             onClick={() => setParameters()}
-            disabled={isRunning}
           >
             <ResetIcon />
           </button>
