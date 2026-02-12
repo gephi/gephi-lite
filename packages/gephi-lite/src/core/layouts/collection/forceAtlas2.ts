@@ -57,7 +57,7 @@ export const ForceAtlas2Layout = {
       description: true,
       defaultValue: FA2_DEFAULT_SETTINGS.gravity,
       min: 0,
-      step: 0.01,
+      step: "any",
       required: true,
     },
     { id: "linLogMode", type: "boolean", description: true, defaultValue: FA2_DEFAULT_SETTINGS.linLogMode },
@@ -74,7 +74,7 @@ export const ForceAtlas2Layout = {
       step: 1,
       required: true,
     },
-    { id: "slowDown", type: "number", defaultValue: FA2_DEFAULT_SETTINGS.slowDown, min: 1, step: 1 },
+    { id: "slowDown", type: "number", defaultValue: FA2_DEFAULT_SETTINGS.slowDown, min: 1, step:"any"},
     { id: "strongGravityMode", type: "boolean", defaultValue: FA2_DEFAULT_SETTINGS.strongGravityMode },
   ],
 } as WorkerLayout<ForceAtlas2LayoutParameters>;
