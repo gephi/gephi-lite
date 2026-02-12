@@ -7,6 +7,7 @@ import { IconType } from "react-icons";
 import TetherComponent from "react-tether";
 
 import { CaretDownIcon, CaretRightIcon } from "./common-icons";
+import { Spinner } from "./Loader";
 
 type MenuCommon<T = unknown> = {
   id: string;
@@ -22,17 +23,18 @@ type MenuCommon<T = unknown> = {
     }
 ) &
   T;
-type MenuButton<T> = MenuCommon<T> & { type?: "button" };
+type MenuButton<T> = MenuCommon<T> & { type?: "button" , isRunning?:boolean};
 type MenuText<T> = MenuCommon<T> & { type: "text"; className?: string };
 type MenuSimpleItem<T> = MenuButton<T> | MenuText<T>;
-type MenuSection<T> = MenuSimpleItem<T> & { children: MenuSimpleItem<T>[] };
+export type MenuSection<T> = MenuSimpleItem<T> & { children: MenuSimpleItem<T>[] };
 export type MenuItem<T = unknown> = MenuSimpleItem<T> | MenuSection<T>;
 
-const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean; isSelected?: boolean }> = ({
+const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean; isSelected?: boolean, isLoading? :boolean }> = ({
   item,
   isOpened,
   isSelected,
-}) => {
+  isLoading
+}) =>{
   const { t } = useTranslation();
   return (
     <div className="d-flex align-items-center w-100">
@@ -46,6 +48,7 @@ const ItemMenuInner: FC<{ item: MenuItem; isOpened?: boolean; isSelected?: boole
           <span className="side-menu-item">{item.capitalize ? capitalize(t(item.i18nKey)) : t(item.i18nKey)}</span>
         </>
       )}
+      {isLoading && (<Spinner className="spinner-border-sm ms-2"/>)}
       {isOpened !== undefined && <span>{isOpened ? <CaretDownIcon /> : <CaretRightIcon />}</span>}
     </div>
   );
@@ -69,7 +72,7 @@ function SimpleItem<T = unknown>({
       className={cx("gl-btn w-100 text-start", selected === item.id && "gl-btn-fill")}
       onClick={() => onSelectedChange(item)}
     >
-      <ItemMenuInner item={item} isSelected={selected === item.id} />
+      <ItemMenuInner item={item} isSelected={selected === item.id} isLoading={item.isRunning}/>
     </button>
   );
 }
