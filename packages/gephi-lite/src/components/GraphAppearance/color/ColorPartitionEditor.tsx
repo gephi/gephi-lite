@@ -1,6 +1,6 @@
 import { MISSING_PALETTE_COLOR, PartitionColor } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { map } from "lodash";
+import { values as getValues, map } from "lodash";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import { useDynamicItemData, useGraphDataset } from "../../../core/context/dataC
 import { uniqFieldValuesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
+import { getPalette } from "./utils";
 
 const COLLAPSED_HEIGHT = 200;
 
@@ -97,6 +98,18 @@ export const ColorPartitionEditor: FC<{
               {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}
             </label>
           </div>
+          {getValues(color.colorPalette).some((v) => v === null) && (
+            <button
+              className="gl-btn gl-btn-outline"
+              onClick={() => {
+                const newPalette = getPalette(values, color.colorPalette);
+                setColor({ ...color, colorPalette: newPalette });
+              }}
+            >
+              {" "}
+              expand colors
+            </button>
+          )}
         </div>
 
         {!expanded && shouldShowButton && <div className="filler-fade-out position-absolute bottom-0" />}
