@@ -89,15 +89,15 @@ const InteractionsController: FC = () => {
   const lastLayoutActive = useMemo(() => {
     if (!session.lastLayout) return null;
     const layoutId = session.lastLayout;
-    
+
     // Special case for layout quality
-    if(layoutId === "layout-quality") 
+    if (layoutId === "layout-quality")
       return {
-      id: "quality",
-      name: t(`layouts.${layoutId}.title`),
-      type: "quality",
-      params:{}
-    }
+        id: "quality",
+        name: t(`layouts.${layoutId}.title`),
+        type: "quality",
+        params: {},
+      };
 
     const layout = LAYOUTS.find((e) => e.id === layoutId);
     if (!layout) return null;
