@@ -5,6 +5,7 @@ import { ForceAtlas2LayoutParameters, ForceAtlas2Settings, inferSettings } from 
 import RAW_FA2_DEFAULT_SETTINGS from "graphology-layout-forceatlas2/defaults";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
 
+import { GuessSettingsIcon } from "../../../components/common-icons";
 import { WorkerLayout } from "../types";
 
 const FA2_DEFAULT_SETTINGS = RAW_FA2_DEFAULT_SETTINGS as Required<ForceAtlas2Settings>;
@@ -16,9 +17,12 @@ export const ForceAtlas2Layout = {
   buttons: [
     {
       id: "autoSettings",
+      icon: GuessSettingsIcon,
       description: true,
-      getSettings(_currentSettings, dataGraph: DataGraph) {
-        return { ...FA2_DEFAULT_SETTINGS, ...inferSettings(dataGraph) };
+      onClick(_currentSettings, dataGraph: DataGraph) {
+        return {
+          setSettings: { ...FA2_DEFAULT_SETTINGS, ...inferSettings(dataGraph) },
+        };
       },
     },
   ],

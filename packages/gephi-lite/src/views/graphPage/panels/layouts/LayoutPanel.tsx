@@ -1,10 +1,10 @@
+import { debounce } from "lodash";
 import { type FC, useCallback, useEffect } from "react";
 
 import { useLayoutActions, useLayoutState, useSessionActions } from "../../../../core/context/dataContexts";
 import type { Layout } from "../../../../core/layouts/types";
 import { useNotifications } from "../../../../core/notifications";
 import { LayoutForm } from "./LayoutForm";
-import { debounce } from "lodash";
 
 export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
   const { notify } = useNotifications();
@@ -25,14 +25,26 @@ export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
   }, [layout.id, layoutState, stopLayout, setLastLayout]);
 
   //eslint-disable-next-line react-hooks/exhaustive-deps
-  const onStart = useCallback(debounce(
-    async (params: Record<string, unknown>, restart = false) => {
-      try {
-        await startLayout(layout.id, params, restart);
-      } catch (e) {
-        notify({ type: "error", message: (e as Error).message });
-      }
-    }, 300),
+  const onStart = useCallback(
+    debounce(
+      async ({
+        params,
+        then,
+        restart = false,
+      }: {
+        params: Record<string, unknown>;
+        then?: () => void;
+        restart?: boolean;
+      }) => {
+        try {
+          await startLayout(layout.id, params, restart);
+          then?.();
+        } catch (e) {
+          notify({ type: "error", message: (e as Error).message });
+        }
+      },
+      300,
+    ),
     [startLayout, layout.id, notify],
   );
 
@@ -42,6 +54,7 @@ export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
       onStart={onStart}
       onStop={stopLayout}
       isRunning={layoutState.type === "running" && layoutState.layoutId === layout.id}
+      onCancel={stopLayout}
     />
   );
 };
