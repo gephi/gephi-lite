@@ -10,12 +10,19 @@
   .sigma-container,
   .sigma-layers {
     position: absolute;
+
+    height: 100%;
+    top: 0;
+
     width: 100vw;
-    height: 100dvh;
     left: 50%;
-    top: 50%;
     margin-left: -50vw;
-    margin-top: -50dvh;
+
+    @include media-breakpoint-down(sm) {
+      height: 100dvh;
+      top: 50%;
+      margin-top: -50dvh;
+    }
   }
 
   .react-sigma {
