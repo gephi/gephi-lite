@@ -1,6 +1,7 @@
 import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import { ConnectedClosenessResult } from "graphology-metrics/layout-quality/connected-closeness";
+import { ComponentType } from "react";
 import { Coordinates } from "sigma/types";
 
 import { DataGraph, ItemData } from "../graph/types";
@@ -37,6 +38,12 @@ export interface LayoutAttributeParameter extends BaseLayoutParameter {
   restriction?: FieldModelType[];
 }
 
+export interface LayoutEnumParameter extends BaseLayoutParameter {
+  type: "enum";
+  options: Array<{ id: string }>;
+  defaultValue: string;
+}
+
 export type LayoutScriptFunction = (
   id: string,
   attributes: ItemData,
@@ -54,12 +61,22 @@ export type LayoutParameter =
   | LayoutScriptParameter
   | LayoutBooleanParameter
   | LayoutNumberParameter
-  | LayoutAttributeParameter;
+  | LayoutAttributeParameter
+  | LayoutEnumParameter;
+
+export interface LayoutButtonInstructions<P = unknown> {
+  setSettings?: P;
+  applyLayout?: boolean;
+  before?: () => void;
+  then?: () => void;
+}
 
 export interface LayoutButton<P = unknown> {
   id: string;
   description?: boolean;
-  getSettings: (currentSettings: P, dataGraph: DataGraph) => P;
+  icon?: ComponentType;
+  disabled?: (currentSettings: P, dataGraph: DataGraph) => boolean;
+  onClick: (currentSettings: P, dataGraph: DataGraph) => LayoutButtonInstructions<P>;
 }
 
 /**
@@ -73,8 +90,10 @@ export interface SyncLayout<P = any> {
   id: string;
   type: "sync";
   description?: boolean;
+  hideReset?: boolean;
   buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
+  inferSettings?: (dataGraph: DataGraph) => Partial<P>;
   run: (graph: DataGraph, options?: { settings: P }) => LayoutMapping;
 }
 
@@ -93,8 +112,10 @@ export interface WorkerLayout<P = any> {
   id: string;
   type: "worker";
   description?: boolean;
+  hideReset?: boolean;
   buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
+  inferSettings?: (dataGraph: DataGraph) => Partial<P>;
   supervisor: WorkerSupervisorConstructor;
 }
 
@@ -106,5 +127,5 @@ export interface LayoutQuality {
 }
 export type LayoutState = { quality: LayoutQuality } & (
   | { type: "idle" }
-  | { type: "running"; layoutId: string; supervisor?: WorkerSupervisorInterface }
+  | { type: "running"; layoutId: string; supervisor?: WorkerSupervisorInterface; getPositions?: () => LayoutMapping }
 );

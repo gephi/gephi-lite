@@ -26,7 +26,8 @@ import { sessionAtom } from "../../../../core/session";
 
 export const LayoutForm: FC<{
   layout: Layout;
-  onStart: (params: Record<string, unknown>, restart?:boolean) => void;
+  onCancel: () => void;
+  onStart: (input: { params: Record<string, unknown>; then?: () => void; restart?: boolean }) => void;
   onStop: () => void;
   isRunning: boolean;
 }> = ({ layout, onStart, onStop, isRunning }) => {
@@ -55,6 +56,11 @@ export const LayoutForm: FC<{
       ),
     [layout],
   );
+  // inferred parameters (smart defaults from graph data)
+  const inferredParameters = useMemo(() => {
+    if (!layout.inferSettings) return {};
+    return layout.inferSettings(getFilteredDataGraph(dataset, sigmaGraph));
+  }, [layout, dataset, sigmaGraph]);
 
   /**
    * When layout params changed
@@ -73,13 +79,12 @@ export const LayoutForm: FC<{
         errors[param.id] = t(`error.form.max`, { ...param, name });
     });
 
-    const hasError = Object.keys(errors).length > 0 
+    const hasError = Object.keys(errors).length > 0;
     setErrors(hasError ? errors : null);
 
-    if(layout.type === "worker" && !hasError && isRunning){
-      onStart(layoutParameters, true);
-
-    } 
+    if (layout.type === "worker" && !hasError && isRunning) {
+      onStart({ params: layoutParameters, restart: true });
+    }
     // I don't want to trigger this useeffect when the isRunning value changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layout, layoutParameters, t, onStart]);
@@ -95,11 +100,12 @@ export const LayoutForm: FC<{
         ...prev.layoutsParameters,
         [layout.id]: {
           ...layoutDefaultParameters,
+          ...inferredParameters,
           ...(prev.layoutsParameters[layout.id] || {}),
         },
       },
     }));
-  }, [layout, layoutDefaultParameters, setSession]);
+  }, [layout, layoutDefaultParameters, inferredParameters, setSession]);
 
   /**
    * OnChange function for parameters
@@ -158,7 +164,7 @@ export const LayoutForm: FC<{
         // to ensure having up-to-date data:
         const latestSession = sessionAtom.get();
         const latestLayoutParameters = latestSession.layoutsParameters[layout.id] || {};
-        onStart(latestLayoutParameters);
+        onStart({ params: latestLayoutParameters });
         if (layout.type === "sync")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
       } catch (e) {
@@ -230,6 +236,23 @@ export const LayoutForm: FC<{
                         value: field.id,
                         label: field.id,
                       }))}
+                  />
+                )}
+                {param.type === "enum" && (
+                  <EnumInput
+                    id={id}
+                    label={t(`layouts.${layout.id}.parameters.${param.id}.title`)}
+                    description={
+                      param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
+                    }
+                    value={(value as string) ?? param.defaultValue}
+                    disabled={isRunning}
+                    onChange={(v) => changeParameter(param.id, v)}
+                    options={param.options.map((opt) => ({
+                      value: opt.id,
+                      label: t(`layouts.${layout.id}.parameters.${param.id}.options.${opt.id}`),
+                    }))}
+                    required
                   />
                 )}
                 {param.type === "script" && (
@@ -313,33 +336,50 @@ export const LayoutForm: FC<{
           />
         )}
         <div className="gl-actions">
-          {layout.buttons?.map(({ id, description, getSettings }) => (
+          {layout.buttons?.map((button) => {
+            const { id, description, icon: Icon, disabled, onClick } = button;
+            const title = description
+              ? t(`layouts.${layout.id}.buttons.${id}.description`)
+              : t(`layouts.${layout.id}.buttons.${id}.title`);
+            const graph = getFilteredDataGraph(dataset, sigmaGraph);
+            const isButtonDisabled = isRunning || errors !== null || !!disabled?.(layoutParameters, graph);
+            return (
+              <button
+                key={id}
+                type="button"
+                className={cx("gl-btn gl-btn-outline", Icon && "gl-btn-icon")}
+                title={title}
+                disabled={isButtonDisabled}
+                onClick={() => {
+                  const instructions = onClick(layoutParameters, graph);
+                  if (instructions.setSettings) setParameters(instructions.setSettings as Record<string, unknown>);
+                  if (instructions.applyLayout) {
+                    if (errors || isRunning) return;
+                    instructions.before?.();
+                    const params = (instructions.setSettings ?? layoutParameters) as Record<string, unknown>;
+                    onStart({ params, then: instructions.then });
+                    if (layout.type === "sync")
+                      setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
+                  } else {
+                    instructions.before?.();
+                    instructions.then?.();
+                  }
+                }}
+              >
+                {Icon ? <Icon /> : t(`layouts.${layout.id}.buttons.${id}.title`)}
+              </button>
+            );
+          })}
+          {!layout.hideReset && (
             <button
-              key={id}
               type="reset"
+              title={t("common.reset")}
               className="gl-btn gl-btn-outline gl-btn-icon"
-              title={
-                description
-                  ? t(`layouts.${layout.id}.buttons.${id}.description`)
-                  : t(`layouts.${layout.id}.buttons.${id}.title`)
-              }
-              onClick={() => {
-                const graph = getFilteredDataGraph(dataset, sigmaGraph);
-                setParameters(getSettings(layoutParameters, graph));
-              }}
+              onClick={() => setParameters()}
             >
-              <GuessSettingsIcon />
+              <ResetIcon />
             </button>
-          ))}
-          <button
-            type="reset"
-            title={t("common.reset")}
-            className="gl-btn gl-btn-outline gl-btn-icon"
-            onClick={() => setParameters()}
-          >
-            <ResetIcon />
-          </button>
-
+          )}
           <button type="submit" className="gl-btn gl-btn-fill" disabled={errors !== null}>
             {isRunning && (
               <>
