@@ -11,7 +11,6 @@ import MessageAlert from "../../../../components/MessageAlert";
 import {
   CodeEditorIcon,
   ExternalLinkIcon,
-  GuessSettingsIcon,
   PauseIconFill,
   PlayIconFill,
   ResetIcon,
