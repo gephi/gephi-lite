@@ -1,5 +1,22 @@
 {
   "appearance": {
+    "background": {
+      "layer_mode": "Background layer",
+      "none": "None",
+      "map": {
+        "label": "Map",
+        "title": "Map background",
+        "maplibre": {
+          "custom_style": "Custom style",
+          "edit_style": "Edit map style",
+          "reset_style": "Reset to default style",
+          "style": "Map style",
+          "style_description": "For proper alignment with the map, apply the Geographic layout with Web Mercator projection. The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
+          "style_default": "Default",
+          "style_editor_title": "Edit map style"
+        }
+      }
+    },
     "color": {
       "color_all_items": "Color for all {{items}}",
       "data": "Input file",
@@ -414,6 +431,45 @@
       "title": "Circular"
     },
     "description": "This panel allows computing new coordinates to nodes of the graph. ",
+    "geographic": {
+      "description": "Positions nodes according to their geographic coordinates (latitude/longitude)",
+      "buttons": {
+        "applyWithMap": {
+          "description": "Apply layout and enable map background",
+          "title": "Apply with map"
+        }
+      },
+      "parameters": {
+        "projection": {
+          "description": "Map projection to apply to geographic coordinates",
+          "title": "Projection",
+          "options": {
+            "webmercator": "Web Mercator",
+            "equirectangular": "Equirectangular",
+            "equalearth": "Equal Earth",
+            "naturalearth1": "Natural Earth 1"
+          }
+        },
+        "latitudeField": {
+          "description": "Node attribute containing latitude values",
+          "title": "Latitude field"
+        },
+        "longitudeField": {
+          "description": "Node attribute containing longitude values",
+          "title": "Longitude field"
+        },
+        "missingStrategy": {
+          "description": "How to handle nodes without valid geographic coordinates",
+          "title": "Missing coordinates",
+          "options": {
+            "keep": "Keep current position",
+            "grid": "Place in grid (left of map)",
+            "barycentergrid": "Neighbors barycenter + grid"
+          }
+        }
+      },
+      "title": "Geographic"
+    },
     "exec": {
       "started": "Layout {{layout}} is running",
       "stopped": "Layout {{layout}} has been stopped",

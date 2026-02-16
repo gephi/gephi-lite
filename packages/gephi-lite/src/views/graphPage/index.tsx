@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { type ComponentType, FC, useCallback, useEffect, useMemo, useState } from "react";
+import { type ComponentType, FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
 
@@ -25,7 +25,7 @@ import {
 } from "../../components/common-icons";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useLayoutState, useSelection, useSelectionActions } from "../../core/context/dataContexts";
-import { EVENTS, emitter, useEventsContext } from "../../core/context/eventsContext";
+import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { useMobile } from "../../hooks/useMobile";
@@ -38,16 +38,6 @@ import { MetricsPanel } from "./panels/MetricsPanel";
 import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
 type PanelMenuItem = MenuItem<{ panel?: ComponentType }>;
-
-function findMenuPanel(menu: PanelMenuItem[], id: string): { id: string; panel: ComponentType } | undefined {
-  for (const item of menu) {
-    if (item.id === id && "panel" in item && item.panel) return { id: item.id, panel: item.panel };
-    if ("children" in item) {
-      const found = findMenuPanel(item.children, id);
-      if (found) return found;
-    }
-  }
-}
 
 const MENU: PanelMenuItem[] = [
   {
