@@ -27,6 +27,11 @@
 
   .react-sigma {
     z-index: -1;
+
+    // MapLibre layer should be behind sigma's canvas
+    .maplibregl-map {
+      z-index: -1 !important;
+    }
   }
 
   .graph-layout-grid {

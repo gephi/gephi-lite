@@ -1,7 +1,7 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 import { fitViewportToNodes } from "@sigma/utils";
 import { mapValues, pick } from "lodash";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
 
 import {
@@ -10,6 +10,7 @@ import {
   useSelection,
   useSelectionActions,
   useSigmaActions,
+  useVisualGetters,
 } from "../../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { GephiLiteSigma } from "../../../core/graph/types";
@@ -28,6 +29,11 @@ export const EventsController: FC = () => {
   const { select, toggle, emptySelection } = useSelectionActions();
   const { setHoveredNode, resetHoveredNode, setHoveredEdge, resetHoveredEdge } = useSigmaActions();
   const { type: layoutStatus } = useLayoutState();
+  const { reverseNodePosition: reverseNodePositionOrNull } = useVisualGetters();
+  const reverseNodePosition = useMemo(
+    () => reverseNodePositionOrNull ?? ((pos: { x: number; y: number }) => pos),
+    [reverseNodePositionOrNull],
+  );
 
   const dragStateRef = useRef<
     | { type: "idle" }
@@ -122,16 +128,19 @@ export const EventsController: FC = () => {
           dragEventsCountRef.current++;
           const graph = sigma.getGraph();
 
-          // Set new positions for nodes:
+          // Get mouse position in sigma's graph space (Mercator if map mode)
           const newPosition = sigma.viewportToGraph(e.event);
           const delta = {
             x: newPosition.x - dragState.initialMousePosition.x,
             y: newPosition.y - dragState.initialMousePosition.y,
           };
 
+          // Set new positions for nodes
           for (const node in dragState.initialNodesPosition) {
             const initialPosition = dragState.initialNodesPosition[node];
             graph.setNodeAttribute(node, "dragging", true);
+
+            // Apply delta in sigma's coordinate space
             graph.setNodeAttribute(node, "x", initialPosition.x + delta.x);
             graph.setNodeAttribute(node, "y", initialPosition.y + delta.y);
           }
@@ -148,14 +157,16 @@ export const EventsController: FC = () => {
       const dragState = dragStateRef.current;
       if (dragState.type === "downing" || dragState.type === "dragging") {
         const graph = sigma.getGraph();
+
         if (dragState.type === "dragging") {
           // Save new positions in graph dataset if layout is not running
           // Positions will be saved when the algo will be stopped and saving positions here
           // will retrigger the layout with the initial positions (#138)
           if (layoutStatus !== "running") {
-            const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) =>
-              pick(graph.getNodeAttributes(id), ["x", "y"]),
-            );
+            const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) => {
+              const pos = pick(graph.getNodeAttributes(id), ["x", "y"]) as { x: number; y: number };
+              return reverseNodePosition(pos);
+            });
             setNodePositions(positions);
           }
 
@@ -190,6 +201,7 @@ export const EventsController: FC = () => {
     setNodePositions,
     globalEmitter,
     layoutStatus,
+    reverseNodePosition,
   ]);
 
   // DOM events not handled by sigma:

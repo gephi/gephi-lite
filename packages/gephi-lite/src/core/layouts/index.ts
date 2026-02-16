@@ -152,7 +152,7 @@ export const startLayout = asyncAction(async (id: string, params: Record<string,
       // need to wait a frame, and also wait for it to trigger a refresh:
       setTimeout(() => {
         layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
-        resetCamera({ forceRefresh: false });
+        resetCamera({ forceRefresh: true });
       }, 0);
     }
 
