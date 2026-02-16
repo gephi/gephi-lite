@@ -94,6 +94,16 @@ export interface BooleanAppearance extends AppearanceBaseElement {
   value: boolean;
 }
 
+// Background management:
+export type MapBackgroundLayer = {
+  type: "map";
+  map: {
+    engine: "maplibre";
+    style?: Record<string, unknown>;
+  };
+};
+export type BackgroundLayer = MapBackgroundLayer; // TODO: ImageBackgroundLayer
+
 // Z-index management:
 export interface ZIndexFieldAttr extends AppearanceBaseElement {
   type: "field";
@@ -113,6 +123,7 @@ export interface AppearanceState {
   edgesSize: Size;
   backgroundColor: string;
   layoutGridColor: string;
+  backgroundLayer?: BackgroundLayer;
   nodesColor: Color;
   nodesShadingColor?: ShadingColor;
   edgesColor: EdgeColor;
@@ -130,6 +141,7 @@ export interface AppearanceState {
 export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | null> = {
   backgroundColor: null,
   layoutGridColor: null,
+  backgroundLayer: null,
 
   nodesSize: "nodes",
   nodesColor: "nodes",
