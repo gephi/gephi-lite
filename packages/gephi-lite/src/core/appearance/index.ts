@@ -1,4 +1,11 @@
-import { PartitionColor, getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
+import {
+  BackgroundLayer,
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_LAYOUT_GRID_COLOR,
+  PartitionColor,
+  getEmptyAppearanceState,
+  serializeAppearanceState,
+} from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { Attributes } from "graphology-types";
 
@@ -17,7 +24,6 @@ import {
   StringAttr,
   ZIndexAttr,
 } from "./types";
-import { DEFAULT_BACKGROUND_COLOR, DEFAULT_LAYOUT_GRID_COLOR } from "./utils";
 
 const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();
@@ -44,6 +50,10 @@ const setBackgroundColorAppearance: Producer<AppearanceState, [string | undefine
 const setLayoutGridColorAppearance: Producer<AppearanceState, [string | undefined]> = (color) => {
   return (state) => ({ ...state, layoutGridColor: color || DEFAULT_LAYOUT_GRID_COLOR });
 };
+const setBackgroundLayer: Producer<AppearanceState, [BackgroundLayer | undefined]> = (backgroundLayer) => {
+  return (state) => ({ ...state, backgroundLayer });
+};
+
 const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemType, color) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
 };
@@ -127,6 +137,7 @@ export const appearanceActions = {
   setShadingColorAppearance: producerToAction(setShadingColorAppearance, appearanceAtom),
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
   setLayoutGridColorAppearance: producerToAction(setLayoutGridColorAppearance, appearanceAtom),
+  setBackgroundLayer: producerToAction(setBackgroundLayer, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
   setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),

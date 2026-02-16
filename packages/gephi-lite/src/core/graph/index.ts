@@ -562,6 +562,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
         if (
           appearanceElement &&
           !isString(appearanceElement) &&
+          "field" in appearanceElement &&
           appearanceElement.field &&
           // here we test only static field
           !appearanceElement.field.dynamic &&
@@ -580,7 +581,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
     // to keep appearance state in sync we must check at least partitions
     forEach(newState, (appearanceElement, key: keyof AppearanceState) => {
-      if (!appearanceElement || isString(appearanceElement) || !("type" in appearanceElement)) return appearanceElement;
+      if (
+        !appearanceElement ||
+        isString(appearanceElement) ||
+        !("type" in appearanceElement) ||
+        !("field" in appearanceElement)
+      )
+        return appearanceElement;
       // TODO
       // - check if data field quali/quanti is still the good one
 
