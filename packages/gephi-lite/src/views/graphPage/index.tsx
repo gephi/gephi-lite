@@ -3,7 +3,7 @@ import { type ComponentType, FC, useCallback, useEffect, useMemo, useState } fro
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
 
-import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
+import { GraphBackgroundAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
@@ -86,7 +86,7 @@ const MENU: PanelMenuItem[] = [
       {
         id: "appearance-background",
         i18nKey: "appearance.menu.background",
-        panel: () => <GraphGraphAppearance />,
+        panel: () => <GraphBackgroundAppearance />,
       },
     ],
   },

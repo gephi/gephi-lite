@@ -1,9 +1,11 @@
-import { FC } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppearance, useAppearanceActions } from "../../core/context/dataContexts";
 import { ItemType } from "../../core/types";
 import ColorPicker from "../ColorPicker";
+import { EnumInput } from "../forms/TypedInputs";
+import { MapBackgroundLayerForm } from "./background/MapBackgroundLayerForm";
 import { ColorItem } from "./color/ColorItem";
 import { StringAttrItem } from "./label/StringAttrItem";
 import { SizeItem } from "./size/SizeItem";
@@ -50,10 +52,26 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
   );
 };
 
-export const GraphGraphAppearance: FC<unknown> = () => {
+type LayerMode = "none" | "map";
+
+export const GraphBackgroundAppearance: FC<unknown> = () => {
   const { t } = useTranslation();
-  const { backgroundColor, layoutGridColor } = useAppearance();
-  const { setBackgroundColorAppearance, setLayoutGridColorAppearance } = useAppearanceActions();
+  const { backgroundColor, layoutGridColor, backgroundLayer } = useAppearance();
+  const { setBackgroundColorAppearance, setLayoutGridColorAppearance, setBackgroundLayer } = useAppearanceActions();
+
+  const layerMode: LayerMode = backgroundLayer?.type || "none";
+
+  const layerModeOptions = useMemo(
+    () => [
+      { value: "none", label: t("appearance.background.none") },
+      { value: "map", label: t("appearance.background.map.label") },
+    ],
+    [t],
+  );
+
+  const enableMapLayer = useCallback(() => {
+    setBackgroundLayer({ type: "map", map: { engine: "maplibre" } });
+  }, [setBackgroundLayer]);
 
   return (
     <div className="panel-body">
@@ -80,6 +98,22 @@ export const GraphGraphAppearance: FC<unknown> = () => {
           />
         </div>
       </div>
+
+      <div className="panel-block">
+        <EnumInput
+          id="background-layer-mode"
+          label={t("appearance.background.layer_mode")}
+          value={layerMode}
+          options={layerModeOptions}
+          onChange={(v) => {
+            if (v === "map") enableMapLayer();
+            else setBackgroundLayer(undefined);
+          }}
+          required
+        />
+      </div>
+
+      {layerMode === "map" && <MapBackgroundLayerForm />}
     </div>
   );
 };

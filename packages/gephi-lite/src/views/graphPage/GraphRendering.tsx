@@ -37,6 +37,7 @@ import NodeProgramBorder from "../../utils/bordered-node-program";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { EventsController } from "./controllers/EventsController";
 import { GridController } from "./controllers/GridController";
+import { MapLayerController } from "./controllers/MapLayerController";
 import { SelectionController } from "./controllers/SelectionController";
 import { SettingsController } from "./controllers/SettingsController";
 
@@ -304,6 +305,7 @@ export const GraphRendering: FC = () => {
         <EventsController />
         <AppearanceController />
         <SettingsController setIsReady={setReady} />
+        <MapLayerController />
         <div className="sigma-layers">
           {quality.enabled && quality.showGrid && quality.metric?.deltaMax && (
             <GridController

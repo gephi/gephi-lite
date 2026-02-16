@@ -4,7 +4,9 @@ import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
 import Sigma from "sigma";
 
-import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
+import { MERCATOR_WORLD } from "../../utils/geo";
+import { appearanceAtom } from "../appearance";
+import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
 import { SigmaState } from "./types";
 import { getEmptySigmaState } from "./utils";
 
@@ -115,6 +117,53 @@ export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
  *   sigma as the source would require having a first rendered frame with the
  *   "old" bounding box
  */
+/**
+ * Sets MERCATOR_WORLD bbox and fits the camera to a Mercator extent.
+ */
+function fitCameraToMercatorExtent(
+  sigma: Sigma,
+  extent: { minX: number; minY: number; maxX: number; maxY: number },
+) {
+  sigma.setCustomBBox(MERCATOR_WORLD);
+  sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
+
+  if (extent.minX > extent.maxX || extent.minY > extent.maxY) return;
+
+  const centerX = (extent.minX + extent.maxX) / 2;
+  const centerY = (extent.minY + extent.maxY) / 2;
+  const extentW = extent.maxX - extent.minX;
+  const extentH = extent.maxY - extent.minY;
+
+  // Visible range at ratio=1 with a 1×1 bbox: sigma fits the square to the
+  // viewport preserving aspect ratio, so the longer axis spans W/H or H/W.
+  const { width, height } = sigma.getDimensions();
+  const visibleW = width >= height ? width / height : 1;
+  const visibleH = width >= height ? 1 : height / width;
+
+  const margin = 1.1;
+  const ratio = Math.max((extentW * margin) / visibleW, (extentH * margin) / visibleH, 0.01);
+  sigma.getCamera().setState({ angle: 0, x: centerX, y: centerY, ratio });
+}
+
+/**
+ * Computes the Mercator extent of all nodes by projecting dataset positions
+ * through the given coordinate getter.
+ */
+function computeMercatorExtent(
+  layout: Record<string, { x: number; y: number }>,
+  getNodePosition: (pos: { x: number; y: number }) => { x: number; y: number },
+) {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const node in layout) {
+    const pos = getNodePosition(layout[node]);
+    minX = Math.min(minX, pos.x);
+    minY = Math.min(minY, pos.y);
+    maxX = Math.max(maxX, pos.x);
+    maxY = Math.max(maxY, pos.y);
+  }
+  return { minX, minY, maxX, maxY };
+}
+
 export const resetCamera = ({
   source = "dataset",
   forceRefresh,
@@ -124,44 +173,84 @@ export const resetCamera = ({
 } = {}) => {
   const sigma = sigmaAtom.get();
   const sigmaGraph = sigmaGraphAtom.get();
-  sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
+  const appearance = appearanceAtom.get();
+  const isMapMode = appearance.backgroundLayer?.type === "map";
 
-  if (source === "dataset") {
+  if (isMapMode) {
     const dataset = graphDatasetAtom.get();
-    const filteredGraph = filteredGraphAtom.get();
-
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-    const nodes = filteredGraph.nodes();
-    for (let i = 0, l = nodes.length; i < l; i++) {
-      const node = nodes[i];
-      const { x, y } = dataset.layout[node];
-      const size = (sigmaGraph.hasNode(node) && sigmaGraph.getNodeAttribute(node, "size")) || 0;
-
-      minX = Math.min(minX, x - size);
-      minY = Math.min(minY, y - size);
-      maxX = Math.max(maxX, x + size);
-      maxY = Math.max(maxY, y + size);
+    const visualGetters = visualGettersAtom.get();
+    if (visualGetters.getNodePosition) {
+      fitCameraToMercatorExtent(sigma, computeMercatorExtent(dataset.layout, visualGetters.getNodePosition));
     }
-
-    // This bit of code prevents zooming fully on the graph, when there are only 1, 2 or 3 nodes:
-    const extentX = maxX - minX;
-    const extentY = maxY - minY;
-    const marginFactor = Math.max(3 - nodes.length, 0);
-
-    const bbox = {
-      x: [minX - marginFactor * extentX, maxX + marginFactor * extentX] as Extent,
-      y: [minY - marginFactor * extentY, maxY + marginFactor * extentY] as Extent,
-    };
-    sigma.setCustomBBox(bbox);
   } else {
-    sigma.setCustomBBox(sigma.getBBox());
+    sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
+
+    if (source === "dataset") {
+      const dataset = graphDatasetAtom.get();
+      const filteredGraph = filteredGraphAtom.get();
+
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      const nodes = filteredGraph.nodes();
+      for (let i = 0, l = nodes.length; i < l; i++) {
+        const node = nodes[i];
+        const { x, y } = dataset.layout[node];
+        const size = (sigmaGraph.hasNode(node) && sigmaGraph.getNodeAttribute(node, "size")) || 0;
+
+        minX = Math.min(minX, x - size);
+        minY = Math.min(minY, y - size);
+        maxX = Math.max(maxX, x + size);
+        maxY = Math.max(maxY, y + size);
+      }
+
+      // This bit of code prevents zooming fully on the graph, when there are only 1, 2 or 3 nodes:
+      const extentX = maxX - minX;
+      const extentY = maxY - minY;
+      const marginFactor = Math.max(3 - nodes.length, 0);
+
+      const bbox = {
+        x: [minX - marginFactor * extentX, maxX + marginFactor * extentX] as Extent,
+        y: [minY - marginFactor * extentY, maxY + marginFactor * extentY] as Extent,
+      };
+      sigma.setCustomBBox(bbox);
+    } else {
+      sigma.setCustomBBox(sigma.getBBox());
+    }
   }
 
   if (forceRefresh) sigma.refresh();
 };
+
+// Reset camera automatically when map mode is toggled on/off.
+// Uses visualGettersAtom (not sigmaGraphAtom) because sigmaGraphAtom returns the
+// same object reference and its bindEffect may not fire. For the map transition,
+// Mercator extent is computed directly from dataset + visual getters so we don't
+// depend on the debounced sigmaGraphAtom rebuild.
+let _prevIsMapMode: boolean | null = null;
+visualGettersAtom.bindEffect((visualGetters): undefined => {
+  const appearance = appearanceAtom.get();
+  const isMapMode = appearance.backgroundLayer?.type === "map";
+  const wasMapMode = _prevIsMapMode;
+  _prevIsMapMode = isMapMode;
+  if (wasMapMode === null || wasMapMode === isMapMode) return;
+
+  if (!isMapMode) {
+    resetCamera({ forceRefresh: true });
+    return;
+  }
+
+  const sigma = sigmaAtom.get();
+  const dataset = graphDatasetAtom.get();
+  if (visualGetters.getNodePosition) {
+    fitCameraToMercatorExtent(sigma, computeMercatorExtent(dataset.layout, visualGetters.getNodePosition));
+  } else {
+    sigma.setCustomBBox(MERCATOR_WORLD);
+    sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
+  }
+  sigma.refresh();
+});
 
 export const sigmaActions = {
   resetState: producerToAction(resetState, sigmaStateAtom),

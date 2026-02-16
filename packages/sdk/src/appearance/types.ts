@@ -164,6 +164,7 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
 export type NumberGetter = (data: StaticDynamicItemData) => number;
 export type ColorGetter = (data: StaticDynamicItemData, edgeId?: string) => string;
 export type StringAttrGetter = (data: StaticDynamicItemData) => string | null;
+export type CoordinateGetter = (pos: { x: number; y: number }) => { x: number; y: number };
 
 /**
  * This state contains the visual getters, i.e. the functions to get a node or
@@ -174,6 +175,8 @@ export interface VisualGetters {
   getNodeColor: ColorGetter | null;
   getNodeLabel: StringAttrGetter | null;
   getNodeImage: StringAttrGetter | null;
+  getNodePosition: CoordinateGetter | null;
+  reverseNodePosition: CoordinateGetter | null;
   getEdgeSize: NumberGetter | null;
   getEdgeColor: ColorGetter | null;
   getEdgeLabel: StringAttrGetter | null;

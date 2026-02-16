@@ -8,6 +8,7 @@ import { useAppearance, useGraphDataset, usePreferences } from "../../../core/co
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { GephiLiteSigma, resetCamera, sigmaAtom } from "../../../core/sigma";
 import { drawDiscNodeHover } from "../../../core/sigma/utils";
+import { MERCATOR_PAN_BOUNDS } from "../../../utils/geo";
 import { inputToStateThreshold } from "../../../utils/labels";
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
@@ -15,7 +16,6 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
   const graphDataset = useGraphDataset();
   const graphAppearance = useAppearance();
   const { theme } = usePreferences();
-
   useEffect(() => {
     sigmaAtom.set(sigma);
     resetCamera({ forceRefresh: true });
@@ -36,6 +36,12 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     const labelDensity = labelThreshold === 0 ? Infinity : DEFAULT_SETTINGS.labelDensity;
     sigma.setSetting("labelRenderedSizeThreshold", labelThreshold);
     sigma.setSetting("labelDensity", labelDensity);
+
+    const isMapMode = graphAppearance.backgroundLayer?.type === "map";
+    sigma.setSetting("stagePadding", isMapMode ? 0 : 30);
+    sigma.setSetting("enableCameraRotation", !isMapMode);
+    sigma.setSetting("maxCameraRatio", isMapMode ? 1 : null);
+    sigma.setSetting("cameraPanBoundaries", isMapMode ? { boundaries: MERCATOR_PAN_BOUNDS } : null);
 
     setIsReady();
   }, [graphAppearance, graphDataset, setIsReady, sigma, theme]);

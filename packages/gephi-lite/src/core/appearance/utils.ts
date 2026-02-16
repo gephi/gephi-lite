@@ -1,4 +1,5 @@
 import {
+  CoordinateGetter,
   DEFAULT_EDGE_COLOR,
   DEFAULT_EDGE_SIZE,
   DEFAULT_NODE_COLOR,
@@ -14,6 +15,7 @@ import { forEach, identity, isNil, keyBy } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
+import { MAP_Y_LIMIT, MAP_Y_MARGIN, MERCATOR_SIZE_RATIO, smoothClamp, smoothClampInverse } from "../../utils/geo";
 import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
@@ -303,11 +305,42 @@ export function getAllVisualGetters(
   dynamicNodeData: DynamicItemData,
   appearance: AppearanceState,
 ): VisualGetters {
+  const isMap = appearance.backgroundLayer?.type === "map";
+
+  // Base size getters
+  const baseGetNodeSize = makeGetNumberAttr("nodes", "size", dataset, dynamicNodeData, appearance);
+  const baseGetEdgeSize = makeGetNumberAttr("edges", "size", dataset, dynamicNodeData, appearance);
+
+  // Wrap size getters to apply sizeRatio in map mode
+  const getNodeSize: NumberGetter | null =
+    baseGetNodeSize && isMap ? (data) => baseGetNodeSize(data) * MERCATOR_SIZE_RATIO : baseGetNodeSize;
+  const getEdgeSize: NumberGetter | null =
+    baseGetEdgeSize && isMap ? (data) => baseGetEdgeSize(data) * MERCATOR_SIZE_RATIO : baseGetEdgeSize;
+
+  const getNodePosition: CoordinateGetter | null = isMap
+    ? (pos) => {
+        const y = smoothClamp(pos.y, MAP_Y_LIMIT, MAP_Y_MARGIN);
+        return { x: (pos.x + 180) / 360, y: (180 + y) / 360 };
+      }
+    : null;
+
+  const reverseNodePosition: CoordinateGetter | null = isMap
+    ? (pos) => {
+        const rawY = pos.y * 360 - 180;
+        return {
+          x: pos.x * 360 - 180,
+          y: smoothClampInverse(rawY, MAP_Y_LIMIT, MAP_Y_MARGIN),
+        };
+      }
+    : null;
+
   const nodeVisualGetters: VisualGetters = {
-    getNodeSize: makeGetNumberAttr("nodes", "size", dataset, dynamicNodeData, appearance),
+    getNodeSize,
     getNodeColor: makeGetColor("nodes", dataset, dynamicNodeData, appearance),
     getNodeLabel: makeGetStringAttr("nodes", "labels", dataset, appearance),
     getNodeImage: makeGetStringAttr("nodes", "images", dataset, appearance),
+    getNodePosition,
+    reverseNodePosition,
     getEdgeSize: null,
     getEdgeColor: null,
     getEdgeLabel: null,
@@ -316,7 +349,7 @@ export function getAllVisualGetters(
 
   return {
     ...nodeVisualGetters,
-    getEdgeSize: makeGetNumberAttr("edges", "size", dataset, dynamicNodeData, appearance),
+    getEdgeSize,
     getEdgeColor: makeGetColor("edges", dataset, dynamicNodeData, appearance, nodeVisualGetters),
     getEdgeLabel: makeGetStringAttr("edges", "labels", dataset, appearance),
     getEdgeZIndex: makeGetNumberAttr("edges", "zIndex", dataset, dynamicNodeData, appearance),
@@ -342,6 +375,14 @@ export function applyVisualProperties(
     if (getters.getNodeColor) attr.color = getters.getNodeColor(nodeData);
     if (getters.getNodeLabel) attr.label = getters.getNodeLabel(nodeData);
     if (getters.getNodeImage) attr.image = getters.getNodeImage(nodeData);
+    if (getters.getNodePosition) {
+      const pos = dataset.layout[node];
+      if (pos) {
+        const transformed = getters.getNodePosition(pos);
+        attr.x = transformed.x;
+        attr.y = transformed.y;
+      }
+    }
     graph.mergeNodeAttributes(node, attr);
   });
 
