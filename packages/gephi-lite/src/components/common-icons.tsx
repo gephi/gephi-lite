@@ -53,6 +53,7 @@ import {
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
+  PiMapTrifold,
   PiMoonStars,
   PiMoonStarsFill,
   PiPaintBrush,
@@ -144,6 +145,7 @@ export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
 export const LockIcon = PiLock;
 export const LoginIcon = PiSignIn;
+export const MapIcon = PiMapTrifold;
 export const MarqueeIcon = PiSelection;
 export const MarqueeIconFill = PiSelectionBold;
 export const MenuCollapseIcon = PiCaretDown;
