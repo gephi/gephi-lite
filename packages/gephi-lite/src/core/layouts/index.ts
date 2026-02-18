@@ -16,14 +16,7 @@ import {
   sigmaGraphAtom,
   visualGettersAtom,
 } from "../graph";
-import {
-  DatalessGraph,
-  DynamicItemData,
-  EdgeRenderingData,
-  GraphDataset,
-  NodeRenderingData,
-  SigmaGraph,
-} from "../graph/types";
+import { DatalessGraph, DynamicItemData, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
