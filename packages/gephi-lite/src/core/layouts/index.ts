@@ -1,13 +1,29 @@
-import { CoordinateGetter } from "@gephi/gephi-lite-sdk";
+import { CoordinateGetter, DEFAULT_EDGE_SIZE, DEFAULT_NODE_SIZE, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import { Producer, asyncAction, atom, derivedAtom, producerToAction } from "@ouestware/atoms";
-import Graph from "graphology";
+import Graph, { MultiGraph } from "graphology";
 import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
 import seedRandom from "seedrandom";
 
 import { localStorage } from "../../utils/storage";
+import { VisualGetters } from "../appearance/types";
 import { EVENTS, emitter } from "../context/eventsContext";
-import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
+import {
+  dynamicItemDataAtom,
+  filteredGraphAtom,
+  graphDatasetActions,
+  graphDatasetAtom,
+  sigmaGraphAtom,
+  visualGettersAtom,
+} from "../graph";
+import {
+  DatalessGraph,
+  DynamicItemData,
+  EdgeRenderingData,
+  GraphDataset,
+  NodeRenderingData,
+  SigmaGraph,
+} from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
@@ -21,49 +37,107 @@ import {
 } from "./types";
 
 /**
- * Creates a layout supervisor that runs on a cloned graph. In map mode,
- * positions are projected between graph space and Mercator space; otherwise
- * positions are copied as-is.
+ * Builds a lightweight layout graph from dataset sources with only what layouts
+ * need: x, y, size, fixed for nodes; weight for edges.
  */
-function createLayoutSupervisor(
-  SupervisorClass: WorkerSupervisorConstructor,
-  sigmaGraph: Graph,
-  options: unknown,
-  transforms?: {
-    getNodePosition?: CoordinateGetter;
-    reverseNodePosition?: CoordinateGetter;
-  },
-): { supervisor: WorkerSupervisorInterface; getPositions: () => LayoutMapping } {
-  const passthrough: CoordinateGetter = (pos) => pos;
-  const toGraph = transforms?.reverseNodePosition ?? passthrough;
-  const toSigma = transforms?.getNodePosition ?? passthrough;
+export function buildLayoutGraph({
+  dataset,
+  filteredGraph,
+  visualGetters,
+  dynamicItemData,
+  sigmaGraph,
+  params,
+  useSigmaPositions,
+}: {
+  dataset: GraphDataset;
+  filteredGraph: DatalessGraph;
+  visualGetters: VisualGetters;
+  dynamicItemData: DynamicItemData;
+  sigmaGraph: SigmaGraph;
+  params: Record<string, unknown>;
+  useSigmaPositions: boolean;
+}): SigmaGraph {
+  const layoutGraph = sigmaGraph.nullCopy();
+  const reversePos = visualGetters.reverseNodePosition;
+  const fixedAttr =
+    "getNodeFixedAttribut" in params && params.getNodeFixedAttribut ? `${params.getNodeFixedAttribut}` : null;
 
-  const shadowGraph = sigmaGraph.copy();
-  shadowGraph.forEachNode((node, { x, y }) => {
-    const pos = toGraph({ x, y });
-    shadowGraph.setNodeAttribute(node, "x", pos.x);
-    shadowGraph.setNodeAttribute(node, "y", pos.y);
-  });
-
-  const syncToSigma = () => {
-    if (transforms?.getNodePosition) {
-      let minY = Infinity,
-        maxY = -Infinity;
-      shadowGraph.forEachNode((_, { y }) => {
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
-      });
+  filteredGraph.forEachNode((node) => {
+    let x: number, y: number;
+    if (useSigmaPositions) {
+      const sx = sigmaGraph.getNodeAttribute(node, "x");
+      const sy = sigmaGraph.getNodeAttribute(node, "y");
+      if (reversePos) {
+        const p = reversePos({ x: sx, y: sy });
+        x = p.x;
+        y = p.y;
+      } else {
+        x = sx;
+        y = sy;
+      }
+    } else {
+      const pos = dataset.layout[node];
+      x = pos?.x ?? 0;
+      y = pos?.y ?? 0;
     }
 
-    shadowGraph.forEachNode((node, { x, y }) => {
-      const pos = toSigma({ x, y });
-      sigmaGraph.setNodeAttribute(node, "x", pos.x);
-      sigmaGraph.setNodeAttribute(node, "y", pos.y);
+    const data: StaticDynamicItemData = {
+      static: dataset.nodeData[node] || {},
+      dynamic: dynamicItemData.dynamicNodeData[node] || {},
+    };
+    const size = visualGetters.getNodeSize ? visualGetters.getNodeSize(data) : DEFAULT_NODE_SIZE;
+    const fixed =
+      sigmaGraph.getNodeAttribute(node, "dragging") === true ||
+      (fixedAttr !== null && dataset.nodeData[node]?.[fixedAttr] === true);
+
+    layoutGraph.addNode(node, { x, y, size, fixed });
+  });
+
+  filteredGraph.forEachEdge((edge, _attrs, source, target) => {
+    const data: StaticDynamicItemData = {
+      static: dataset.edgeData[edge] || {},
+      dynamic: dynamicItemData.dynamicEdgeData[edge] || {},
+    };
+    const weight = visualGetters.getEdgeSize ? visualGetters.getEdgeSize(data) : DEFAULT_EDGE_SIZE;
+    if (filteredGraph.isDirected(edge)) {
+      layoutGraph.addDirectedEdgeWithKey(edge, source, target, { weight });
+    } else {
+      layoutGraph.addUndirectedEdgeWithKey(edge, source, target, { weight });
+    }
+  });
+
+  return layoutGraph;
+}
+
+/**
+ * Creates a layout supervisor that runs on a pre-built layout graph and syncs
+ * positions back to the sigma graph on each tick.
+ */
+export function createLayoutSupervisor(
+  SupervisorClass: WorkerSupervisorConstructor,
+  layoutGraph: MultiGraph,
+  sigmaGraph: Graph,
+  options: unknown,
+  toSigma?: CoordinateGetter,
+): { supervisor: WorkerSupervisorInterface; getPositions: () => LayoutMapping } {
+  const syncToSigma = () => {
+    sigmaGraph.updateEachNodeAttributes((node, attrs) => {
+      if (!layoutGraph.hasNode(node)) return attrs;
+      const { x, y } = layoutGraph.getNodeAttributes(node);
+      if (toSigma) {
+        const pos = toSigma({ x, y });
+        attrs.x = pos.x;
+        attrs.y = pos.y;
+      } else {
+        attrs.x = x;
+        attrs.y = y;
+      }
+      return attrs;
     });
   };
-  shadowGraph.on("eachNodeAttributesUpdated", syncToSigma);
+  layoutGraph.on("eachNodeAttributesUpdated", syncToSigma);
 
-  const inner = new SupervisorClass(shadowGraph, { settings: options });
+  const inner = new SupervisorClass(layoutGraph, { settings: options });
 
   return {
     supervisor: {
@@ -71,13 +145,13 @@ function createLayoutSupervisor(
       stop: () => inner.stop(),
       kill: () => {
         inner.kill();
-        shadowGraph.off("eachNodeAttributesUpdated", syncToSigma);
+        layoutGraph.off("eachNodeAttributesUpdated", syncToSigma);
       },
       isRunning: () => inner.isRunning(),
     },
     getPositions: () => {
       const positions: LayoutMapping = {};
-      shadowGraph.forEachNode((node, { x, y }) => {
+      layoutGraph.forEachNode((node, { x, y }) => {
         positions[node] = { x, y };
       });
       return positions;
@@ -126,66 +200,66 @@ export const stopLayout = asyncAction(async (isForRestart = false) => {
   if (!isForRestart) layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
 });
 
-export const startLayout = asyncAction(async (id: string, params: Record<string, unknown>, isForRestart = false) => {
-  // Stop the previous algo (the "if needed" is done in the function itself)
-  await stopLayout(isForRestart);
+export const startLayout = asyncAction(
+  async (id: string, params: Record<string, unknown>, isForRestart: boolean = false) => {
+    // Stop the previous algo (the "if needed" is done in the function itself)
+    await stopLayout(isForRestart);
 
-  const dataset = graphDatasetAtom.get();
-  const { setNodePositions } = graphDatasetActions;
+    const dataset = graphDatasetAtom.get();
+    const { setNodePositions } = graphDatasetActions;
 
-  // search the layout
-  const layout = LAYOUTS.find((l) => l.id === id);
+    // search the layout
+    const layout = LAYOUTS.find((l) => l.id === id);
 
-  if (layout) {
-    // Sync layout
-    if (layout.type === "sync") {
-      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: undefined }));
+    if (layout) {
+      // Sync layout
+      if (layout.type === "sync") {
+        layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: undefined }));
 
-      // generate positions
-      const fullGraph = dataGraphToFullGraph(dataset);
-      const positions = layout.run(fullGraph, { settings: params });
+        // generate positions
+        const fullGraph = dataGraphToFullGraph(dataset);
+        const positions = layout.run(fullGraph, { settings: params });
 
-      // Save it
-      setNodePositions(positions);
+        // Save it
+        setNodePositions(positions);
 
-      // To prevent resetting the camera before sigma receives new data, we
-      // need to wait a frame, and also wait for it to trigger a refresh:
-      setTimeout(() => {
-        layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
-        resetCamera({ forceRefresh: true });
-      }, 0);
+        // To prevent resetting the camera before sigma receives new data, we
+        // need to wait a frame, and also wait for it to trigger a refresh:
+        setTimeout(() => {
+          layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+          resetCamera({ forceRefresh: true });
+        }, 0);
+      }
+
+      // Async layout
+      if (layout.type === "worker") {
+        const sigmaGraph = sigmaGraphAtom.get();
+        const visualGetters = visualGettersAtom.get();
+        const filteredGraph = filteredGraphAtom.get();
+        const dynamicItemData = dynamicItemDataAtom.get();
+
+        const layoutGraph = buildLayoutGraph({
+          dataset,
+          filteredGraph,
+          visualGetters,
+          dynamicItemData,
+          sigmaGraph,
+          params,
+          useSigmaPositions: isForRestart,
+        });
+        const { supervisor, getPositions } = createLayoutSupervisor(
+          layout.supervisor,
+          layoutGraph,
+          sigmaGraph,
+          params,
+          visualGetters.getNodePosition ?? undefined,
+        );
+        supervisor.start();
+        layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor, getPositions }));
+      }
     }
-
-    // Async layout
-    if (layout.type === "worker") {
-      const sigmaGraph = sigmaGraphAtom.get();
-      const visualGetters = visualGettersAtom.get();
-
-      // Fixed node management
-      // ---------------------
-      // If layout parameter has a `getNodeFixedAttribut`, then we have to set the 'fixed' attribut in sigma's graph
-      // On a layout restart, if parameter has been removed, we need to set to false
-      // We also use the 'fixed' attribut for drag'n'drop
-      sigmaGraph.updateEachNodeAttributes((id, attrs) => {
-        let fixed = attrs.dragging === true;
-        if ("getNodeFixedAttribut" in params && params.getNodeFixedAttribut) {
-          const fixedAttribut = `${params.getNodeFixedAttribut}`;
-          if (dataset.nodeData[id][fixedAttribut] === true) {
-            fixed = true;
-          }
-        }
-        return { ...attrs, fixed };
-      });
-
-      const { supervisor, getPositions } = createLayoutSupervisor(layout.supervisor, sigmaGraph, params, {
-        getNodePosition: visualGetters.getNodePosition ?? undefined,
-        reverseNodePosition: visualGetters.reverseNodePosition ?? undefined,
-      });
-      supervisor.start();
-      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor, getPositions }));
-    }
-  }
-});
+  },
+);
 
 export const restartLastLayout = asyncAction(async () => {
   // Get the algo and its parameters
@@ -257,9 +331,11 @@ gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
 layoutStateAtom.bindEffect((state) => {
   if (state.type !== "running") return;
 
-  const fnHandleDraggin = debounce(restartLastLayout, 100, { leading: true, trailing: true, maxWait: 100 });
-  emitter.on(EVENTS.nodesDragged, fnHandleDraggin);
+  const fnRestart = debounce(restartLastLayout, 100, { leading: true, trailing: true, maxWait: 100 });
+  emitter.on(EVENTS.nodesDragged, fnRestart);
+  emitter.on(EVENTS.graphImported, fnRestart);
   return () => {
-    emitter.off(EVENTS.nodesDragged, fnHandleDraggin);
+    emitter.off(EVENTS.nodesDragged, fnRestart);
+    emitter.off(EVENTS.graphImported, fnRestart);
   };
 });
