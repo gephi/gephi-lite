@@ -86,9 +86,9 @@ export interface LayoutButton<P = unknown> {
 export type LayoutMapping = { [node: string]: Coordinates };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface SyncLayout<P = any> {
+export interface OneShotLayout<P = any> {
   id: string;
-  type: "sync";
+  type: "oneshot";
   description?: boolean;
   hideReset?: boolean;
   buttons?: Array<LayoutButton<P>>;
@@ -97,29 +97,29 @@ export interface SyncLayout<P = any> {
   run: (graph: DataGraph, options?: { settings: P }) => LayoutMapping | Promise<LayoutMapping>;
 }
 
-export interface WorkerSupervisorInterface {
+export interface ContinuousLayoutSupervisorInterface {
   start: () => void;
   stop: () => void;
   kill: () => void;
   isRunning: () => boolean;
 }
-export interface WorkerSupervisorConstructor<P = unknown> {
-  new (graph: Graph, options?: P): WorkerSupervisorInterface;
+export interface ContinuousLayoutSupervisorConstructor<P = unknown> {
+  new (graph: Graph, options?: P): ContinuousLayoutSupervisorInterface;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface WorkerLayout<P = any> {
+export interface ContinuousLayout<P = any> {
   id: string;
-  type: "worker";
+  type: "continuous";
   description?: boolean;
   hideReset?: boolean;
   buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
   inferSettings?: (dataGraph: DataGraph) => Partial<P>;
-  supervisor: WorkerSupervisorConstructor;
+  supervisor: ContinuousLayoutSupervisorConstructor;
 }
 
-export type Layout = WorkerLayout | SyncLayout;
+export type Layout = ContinuousLayout | OneShotLayout;
 export interface LayoutQuality {
   showGrid: boolean;
   enabled: boolean;
@@ -128,5 +128,10 @@ export interface LayoutQuality {
 export type LayoutState = { quality: LayoutQuality } & (
   | { type: "idle" }
   | { type: "computing"; layoutId: string; aborted?: boolean }
-  | { type: "running"; layoutId: string; supervisor: WorkerSupervisorInterface; getPositions: () => LayoutMapping }
+  | {
+      type: "running";
+      layoutId: string;
+      supervisor: ContinuousLayoutSupervisorInterface;
+      getPositions: () => LayoutMapping;
+    }
 );

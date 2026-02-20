@@ -25,8 +25,8 @@ import {
   LayoutMapping,
   LayoutQuality,
   LayoutState,
-  WorkerSupervisorConstructor,
-  WorkerSupervisorInterface,
+  ContinuousLayoutSupervisorConstructor,
+  ContinuousLayoutSupervisorInterface,
 } from "./types";
 
 /**
@@ -107,12 +107,12 @@ export function buildLayoutGraph({
  * positions back to the sigma graph on each tick.
  */
 export function createLayoutSupervisor(
-  SupervisorClass: WorkerSupervisorConstructor,
+  SupervisorClass: ContinuousLayoutSupervisorConstructor,
   layoutGraph: MultiGraph,
   sigmaGraph: Graph,
   options: unknown,
   toSigma?: CoordinateGetter,
-): { supervisor: WorkerSupervisorInterface; getPositions: () => LayoutMapping } {
+): { supervisor: ContinuousLayoutSupervisorInterface; getPositions: () => LayoutMapping } {
   const syncToSigma = () => {
     sigmaGraph.updateEachNodeAttributes((node, attrs) => {
       if (!layoutGraph.hasNode(node)) return attrs;
@@ -208,7 +208,7 @@ export const startLayout = asyncAction(
 
     if (layout) {
       // Sync layout
-      if (layout.type === "sync") {
+      if (layout.type === "oneshot") {
         layoutStateAtom.set((prev) => ({ ...prev, type: "computing", layoutId: id }));
 
         // Generate positions
@@ -233,7 +233,7 @@ export const startLayout = asyncAction(
       }
 
       // Async layout
-      if (layout.type === "worker") {
+      if (layout.type === "continuous") {
         const sigmaGraph = sigmaGraphAtom.get();
         const visualGetters = visualGettersAtom.get();
         const filteredGraph = filteredGraphAtom.get();

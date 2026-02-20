@@ -5,7 +5,7 @@ import { isNil, isObject } from "lodash";
 import { codeToFunction } from "../../../utils/functions";
 import { graphDatasetAtom } from "../../graph";
 import { dataGraphToFullGraph } from "../../graph/utils";
-import { LayoutMapping, LayoutScriptFunction, SyncLayout } from "../types";
+import { LayoutMapping, LayoutScriptFunction, OneShotLayout } from "../types";
 
 // definition of a custom layout function
 const nodeCoordinatesCustomFn =
@@ -18,7 +18,7 @@ const nodeCoordinatesCustomFn =
 
 export const ScriptLayout = {
   id: "script",
-  type: "sync",
+  type: "oneshot",
   description: true,
   parameters: [
     {
@@ -63,6 +63,6 @@ export const ScriptLayout = {
     });
     return res;
   },
-} as SyncLayout<{
+} as OneShotLayout<{
   script?: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
 }>;

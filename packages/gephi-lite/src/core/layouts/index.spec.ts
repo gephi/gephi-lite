@@ -20,7 +20,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DynamicItemData, GraphDataset, SigmaGraph } from "../graph/types";
 import { buildLayoutGraph, createLayoutSupervisor, layoutStateAtom, startLayout } from "./index";
-import { Layout, WorkerSupervisorConstructor, WorkerSupervisorInterface } from "./types";
+import { ContinuousLayoutSupervisorConstructor, ContinuousLayoutSupervisorInterface, Layout } from "./types";
 
 const {
   testEmitter,
@@ -187,7 +187,7 @@ function MockSupervisorClass(graph: MultiGraph) {
     isRunning: vi.fn(() => true),
   };
   supervisorInstances.push(inst);
-  return inst as unknown as WorkerSupervisorInterface;
+  return inst as unknown as ContinuousLayoutSupervisorInterface;
 }
 
 // Mock transforms (2x scale)
@@ -216,7 +216,7 @@ afterEach(() => {
 // Tests
 // -----
 describe("Layout orchestration", () => {
-  it("sync layout saves positions from run() directly", async () => {
+  it("one-shot layout saves positions from run() directly", async () => {
     const dataset = makeDataset({ a: { x: 1, y: 2 } });
     mockGraphDatasetAtom.get.mockReturnValue(dataset);
 
@@ -224,17 +224,17 @@ describe("Layout orchestration", () => {
     fullGraph.addNode("a", { x: 1, y: 2 });
     mockDataGraphToFullGraph.mockReturnValue(fullGraph);
 
-    const syncPositions = { a: { x: 10, y: 20 } };
+    const positions = { a: { x: 10, y: 20 } };
     MOCK_LAYOUTS.push({
-      id: "test-sync",
-      type: "sync",
+      id: "test-oneshot",
+      type: "oneshot",
       parameters: [],
-      run: () => syncPositions,
+      run: () => positions,
     });
 
-    await startLayout("test-sync", {});
+    await startLayout("test-oneshot", {});
 
-    expect(mockSetNodePositions).toHaveBeenCalledWith(syncPositions);
+    expect(mockSetNodePositions).toHaveBeenCalledWith(positions);
   });
 
   it("on restart, dragged node is reverse-transformed from sigma", async () => {
@@ -252,20 +252,20 @@ describe("Layout orchestration", () => {
     });
 
     MOCK_LAYOUTS.push({
-      id: "test-worker",
-      type: "worker",
+      id: "test-continuous",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-worker", {}, true);
+    await startLayout("test-continuous", {}, true);
 
     expect(supervisorInstances).toHaveLength(1);
     const shadow = supervisorInstances[0].graph;
     expect(shadow.getNodeAttributes("a")).toEqual(expect.objectContaining({ x: 10, y: 20, fixed: true }));
   });
 
-  it("worker shadow graph in graph space; syncToSigma transforms to rendering space", async () => {
+  it("continuous layout graph in graph space; syncToSigma transforms to rendering space", async () => {
     const dataset = makeDataset({ a: { x: 5, y: 10 } });
     const sigmaGraph = makeSigmaGraph({ a: { x: 0, y: 0 } });
     const filteredGraph = makeFilteredGraph(["a"]);
@@ -279,13 +279,13 @@ describe("Layout orchestration", () => {
     });
 
     MOCK_LAYOUTS.push({
-      id: "test-worker",
-      type: "worker",
+      id: "test-continuous",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-worker", {});
+    await startLayout("test-continuous", {});
 
     const shadow = supervisorInstances[0].graph;
     // Shadow built from dataset (graph space)
@@ -301,7 +301,7 @@ describe("Layout orchestration", () => {
     expect(sigmaGraph.getNodeAttribute("a", "y")).toBe(50);
   });
 
-  it("dataset change (graphImported) restarts worker layout", async () => {
+  it("dataset change (graphImported) restarts continuous layout", async () => {
     const dataset = makeDataset({ a: { x: 1, y: 2 } });
     const sigmaGraph = makeSigmaGraph({ a: { x: 1, y: 2 } });
     const filteredGraph = makeFilteredGraph(["a"]);
@@ -311,20 +311,20 @@ describe("Layout orchestration", () => {
     mockFilteredGraphAtom.get.mockReturnValue(filteredGraph);
 
     MOCK_LAYOUTS.push({
-      id: "test-worker",
-      type: "worker",
+      id: "test-continuous",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-worker", {});
+    await startLayout("test-continuous", {});
     expect(supervisorInstances).toHaveLength(1);
     const supA = supervisorInstances[0];
 
     // Simulate session storing last layout
     mockSessionAtom.get.mockReturnValue({
-      lastLayout: "test-worker",
-      layoutsParameters: { "test-worker": {} },
+      lastLayout: "test-continuous",
+      layoutsParameters: { "test-continuous": {} },
     });
 
     // Emit graphImported — debounce fires leading edge synchronously
@@ -347,20 +347,20 @@ describe("Layout orchestration", () => {
     mockFilteredGraphAtom.get.mockReturnValue(filteredGraph);
 
     MOCK_LAYOUTS.push({
-      id: "test-worker",
-      type: "worker",
+      id: "test-continuous",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-worker", {});
+    await startLayout("test-continuous", {});
 
     // First layout graph has both nodes
     expect(supervisorInstances[0].graph.nodes()).toEqual(["a", "b"]);
 
     mockSessionAtom.get.mockReturnValue({
-      lastLayout: "test-worker",
-      layoutsParameters: { "test-worker": {} },
+      lastLayout: "test-continuous",
+      layoutsParameters: { "test-continuous": {} },
     });
 
     // Simulate a filter that removes node "b"
@@ -373,7 +373,7 @@ describe("Layout orchestration", () => {
     expect(supervisorInstances[1].graph.nodes()).toEqual(["a"]);
   });
 
-  it("starting another worker stops the previous one", async () => {
+  it("starting another continuous stops the previous one", async () => {
     const dataset = makeDataset({ a: { x: 1, y: 2 } });
     const sigmaGraph = makeSigmaGraph({ a: { x: 1, y: 2 } });
     const filteredGraph = makeFilteredGraph(["a"]);
@@ -383,22 +383,22 @@ describe("Layout orchestration", () => {
     mockFilteredGraphAtom.get.mockReturnValue(filteredGraph);
 
     MOCK_LAYOUTS.push({
-      id: "worker-a",
-      type: "worker",
+      id: "continuous-a",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
     MOCK_LAYOUTS.push({
-      id: "worker-b",
-      type: "worker",
+      id: "continuous-b",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("worker-a", {});
+    await startLayout("continuous-a", {});
     const supA = supervisorInstances[0];
 
-    await startLayout("worker-b", {});
+    await startLayout("continuous-b", {});
 
     expect(supA.stop).toHaveBeenCalled();
     expect(supA.kill).toHaveBeenCalled();
@@ -406,7 +406,7 @@ describe("Layout orchestration", () => {
     expect(supervisorInstances[1].start).toHaveBeenCalled();
   });
 
-  it("sync layout during worker: saves positions, worker restarts via graphImported", async () => {
+  it("one-shot layout during continuous: saves positions, continuous restarts via graphImported", async () => {
     const dataset = makeDataset({ a: { x: 1, y: 2 } });
     const sigmaGraph = makeSigmaGraph({ a: { x: 1, y: 2 } });
     const filteredGraph = makeFilteredGraph(["a"]);
@@ -420,32 +420,32 @@ describe("Layout orchestration", () => {
     mockDataGraphToFullGraph.mockReturnValue(fullGraph);
 
     MOCK_LAYOUTS.push({
-      id: "test-worker",
-      type: "worker",
+      id: "test-continuous",
+      type: "continuous",
       parameters: [],
       supervisor: MockSupervisorClass as never,
     });
     MOCK_LAYOUTS.push({
-      id: "test-sync",
-      type: "sync",
+      id: "test-oneshot",
+      type: "oneshot",
       parameters: [],
       run: () => ({ a: { x: 99, y: 99 } }),
     });
 
-    // Start worker
-    await startLayout("test-worker", {});
+    // Start continuous
+    await startLayout("test-continuous", {});
     const supA = supervisorInstances[0];
 
-    // Run sync layout — stops the worker
-    await startLayout("test-sync", {});
+    // Run one-shot layout — stops the continuous
+    await startLayout("test-oneshot", {});
     expect(supA.stop).toHaveBeenCalled();
     expect(supA.kill).toHaveBeenCalled();
     expect(mockSetNodePositions).toHaveBeenCalledWith({ a: { x: 99, y: 99 } });
 
     // Simulate restart via graphImported
     mockSessionAtom.get.mockReturnValue({
-      lastLayout: "test-worker",
-      layoutsParameters: { "test-worker": {} },
+      lastLayout: "test-continuous",
+      layoutsParameters: { "test-continuous": {} },
     });
     testEmitter.emit(EVENTS.graphImported);
     await vi.advanceTimersByTimeAsync(0);
@@ -632,7 +632,7 @@ describe("createLayoutSupervisor", () => {
     const sigmaGraph = makeSigmaGraph({ a: { x: 0, y: 0 }, b: { x: 0, y: 0 } });
 
     const { getPositions } = createLayoutSupervisor(
-      MockSupervisorClass as unknown as WorkerSupervisorConstructor,
+      MockSupervisorClass as unknown as ContinuousLayoutSupervisorConstructor,
       layoutGraph,
       sigmaGraph,
       {},
@@ -645,7 +645,12 @@ describe("createLayoutSupervisor", () => {
     layoutGraph.addNode("a", { x: 5, y: 10 });
     const sigmaGraph = makeSigmaGraph({ a: { x: 0, y: 0 } });
 
-    createLayoutSupervisor(MockSupervisorClass as unknown as WorkerSupervisorConstructor, layoutGraph, sigmaGraph, {});
+    createLayoutSupervisor(
+      MockSupervisorClass as unknown as ContinuousLayoutSupervisorConstructor,
+      layoutGraph,
+      sigmaGraph,
+      {},
+    );
     layoutGraph.emit("eachNodeAttributesUpdated", { hints: {} });
 
     expect(sigmaGraph.getNodeAttribute("a", "x")).toBe(5);
@@ -658,7 +663,7 @@ describe("createLayoutSupervisor", () => {
     const sigmaGraph = makeSigmaGraph({ a: { x: 0, y: 0 } });
 
     createLayoutSupervisor(
-      MockSupervisorClass as unknown as WorkerSupervisorConstructor,
+      MockSupervisorClass as unknown as ContinuousLayoutSupervisorConstructor,
       layoutGraph,
       sigmaGraph,
       {},
@@ -675,7 +680,12 @@ describe("createLayoutSupervisor", () => {
     layoutGraph.addNode("a", { x: 5, y: 10 });
     const sigmaGraph = makeSigmaGraph({ a: { x: 0, y: 0 }, b: { x: 77, y: 88 } });
 
-    createLayoutSupervisor(MockSupervisorClass as unknown as WorkerSupervisorConstructor, layoutGraph, sigmaGraph, {});
+    createLayoutSupervisor(
+      MockSupervisorClass as unknown as ContinuousLayoutSupervisorConstructor,
+      layoutGraph,
+      sigmaGraph,
+      {},
+    );
     layoutGraph.emit("eachNodeAttributesUpdated", { hints: {} });
 
     expect(sigmaGraph.getNodeAttribute("b", "x")).toBe(77);
@@ -688,7 +698,7 @@ describe("createLayoutSupervisor", () => {
     const sigmaGraph = makeSigmaGraph({ a: { x: 0, y: 0 } });
 
     const { supervisor } = createLayoutSupervisor(
-      MockSupervisorClass as unknown as WorkerSupervisorConstructor,
+      MockSupervisorClass as unknown as ContinuousLayoutSupervisorConstructor,
       layoutGraph,
       sigmaGraph,
       {},

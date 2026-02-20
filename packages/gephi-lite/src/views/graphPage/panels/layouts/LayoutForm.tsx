@@ -83,7 +83,7 @@ export const LayoutForm: FC<{
     const hasError = Object.keys(errors).length > 0;
     setErrors(hasError ? errors : null);
 
-    if (layout.type === "worker" && !hasError && status === "running") {
+    if (layout.type === "continuous" && !hasError && status === "running") {
       onStart({ params: layoutParameters, restart: true });
     }
     // I don't want to trigger this useEffect when the status value changed
@@ -166,7 +166,7 @@ export const LayoutForm: FC<{
         const latestSession = sessionAtom.get();
         const latestLayoutParameters = latestSession.layoutsParameters[layout.id] || {};
         onStart({ params: latestLayoutParameters });
-        if (layout.type === "sync")
+        if (layout.type === "oneshot")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
       } catch (e) {
         console.error(e);
@@ -359,7 +359,7 @@ export const LayoutForm: FC<{
                     instructions.before?.();
                     const params = (instructions.setSettings ?? layoutParameters) as Record<string, unknown>;
                     onStart({ params, then: instructions.then });
-                    if (layout.type === "sync")
+                    if (layout.type === "oneshot")
                       setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
                   } else {
                     instructions.before?.();
@@ -394,8 +394,8 @@ export const LayoutForm: FC<{
                 {t("common.cancel")}
               </>
             )}
-            {status === "idle" && layout.type === "sync" && <>{t("common.apply")}</>}
-            {status === "idle" && layout.type === "worker" && (
+            {status === "idle" && layout.type === "oneshot" && <>{t("common.apply")}</>}
+            {status === "idle" && layout.type === "continuous" && (
               <>
                 <PlayIconFill />
                 {t("common.start")}
