@@ -4,7 +4,7 @@ import { MapIcon } from "../../../components/common-icons";
 import { GeoProjectionType, applyGeoProjection } from "../../../utils/geo-projections";
 import { appearanceActions } from "../../appearance";
 import { EVENTS, emitter } from "../../context/eventsContext";
-import { LayoutMapping, SyncLayout } from "../types";
+import { LayoutMapping, OneShotLayout } from "../types";
 
 const LAT_RE = /^(lat|latitude|y_?coord)$/i;
 const LNG_RE = /^(lng|lon|long|longitude|x_?coord)$/i;
@@ -120,7 +120,7 @@ function inferGeographicSettings(dataGraph: DataGraph): Partial<GeographicLayout
 
 export const GeographicLayout = {
   id: "geographic",
-  type: "sync",
+  type: "oneshot",
   description: true,
   hideReset: true,
   inferSettings: inferGeographicSettings,
@@ -176,4 +176,4 @@ export const GeographicLayout = {
     },
   ],
   run: runGeographic,
-} as SyncLayout<GeographicLayoutSettings>;
+} as OneShotLayout<GeographicLayoutSettings>;

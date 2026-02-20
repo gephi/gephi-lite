@@ -1,10 +1,10 @@
 import circular, { CircularLayoutOptions } from "graphology-layout/circular";
 
-import { LayoutMapping, SyncLayout } from "../types";
+import { LayoutMapping, OneShotLayout } from "../types";
 
 export const CircularLayout = {
   id: "circular",
-  type: "sync",
+  type: "oneshot",
   description: true,
   parameters: [
     {
@@ -22,4 +22,4 @@ export const CircularLayout = {
     },
   ],
   run: (graph, options) => circular(graph, options?.settings) as unknown as LayoutMapping,
-} as SyncLayout<CircularLayoutOptions>;
+} as OneShotLayout<CircularLayoutOptions>;

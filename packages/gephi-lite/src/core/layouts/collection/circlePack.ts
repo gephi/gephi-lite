@@ -1,11 +1,11 @@
 import Graph from "graphology";
 import circlepack from "graphology-layout/circlepack";
 
-import { SyncLayout } from "../types";
+import { OneShotLayout } from "../types";
 
 export const CirclePackLayout = {
   id: "circlePack",
-  type: "sync",
+  type: "oneshot",
   description: true,
   parameters: [
     {
@@ -37,4 +37,4 @@ export const CirclePackLayout = {
       hierarchyAttributes: groupingField ? [groupingField] : [],
     });
   },
-} as SyncLayout<{ scale?: number; groupingField?: string; center?: number }>;
+} as OneShotLayout<{ scale?: number; groupingField?: string; center?: number }>;

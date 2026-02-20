@@ -6,13 +6,13 @@ import RAW_FA2_DEFAULT_SETTINGS from "graphology-layout-forceatlas2/defaults";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
 
 import { GuessSettingsIcon } from "../../../components/common-icons";
-import { WorkerLayout } from "../types";
+import { ContinuousLayout } from "../types";
 
 const FA2_DEFAULT_SETTINGS = RAW_FA2_DEFAULT_SETTINGS as Required<ForceAtlas2Settings>;
 
 export const ForceAtlas2Layout = {
   id: "fa2",
-  type: "worker",
+  type: "continuous",
   supervisor: FA2Layout,
   buttons: [
     {
@@ -88,4 +88,4 @@ export const ForceAtlas2Layout = {
       required: false,
     },
   ],
-} as WorkerLayout<ForceAtlas2LayoutParameters>;
+} as ContinuousLayout<ForceAtlas2LayoutParameters>;

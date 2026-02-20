@@ -1,10 +1,10 @@
 import NoverlapLayoutSUpervisor, { NoverlapLayoutSupervisorParameters } from "graphology-layout-noverlap/worker";
 
-import { WorkerLayout } from "../types";
+import { ContinuousLayout } from "../types";
 
 export const NoverlapLayout = {
   id: "noverlap",
-  type: "worker",
+  type: "continuous",
   description: true,
   supervisor: NoverlapLayoutSUpervisor,
   parameters: [
@@ -14,4 +14,4 @@ export const NoverlapLayout = {
     { id: "ratio", type: "number", description: true, defaultValue: 1 },
     { id: "speed", type: "number", description: true, defaultValue: 3 },
   ],
-} as WorkerLayout<NoverlapLayoutSupervisorParameters>;
+} as ContinuousLayout<NoverlapLayoutSupervisorParameters>;

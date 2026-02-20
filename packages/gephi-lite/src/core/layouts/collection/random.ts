@@ -1,10 +1,10 @@
 import random, { RandomLayoutOptions } from "graphology-layout/random";
 
-import { LayoutMapping, SyncLayout } from "../types";
+import { LayoutMapping, OneShotLayout } from "../types";
 
 export const RandomLayout = {
   id: "random",
-  type: "sync",
+  type: "oneshot",
   description: true,
   parameters: [
     {
@@ -21,4 +21,4 @@ export const RandomLayout = {
     },
   ],
   run: (graph, options) => random(graph, options?.settings) as unknown as LayoutMapping,
-} as SyncLayout<RandomLayoutOptions>;
+} as OneShotLayout<RandomLayoutOptions>;
