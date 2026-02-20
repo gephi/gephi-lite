@@ -1,12 +1,22 @@
 import cx from "classnames";
 import { CSSProperties, FC } from "react";
 import { useTranslation } from "react-i18next";
+import { IconType } from "react-icons";
 
 export const Spinner: FC<{ className?: string; style?: CSSProperties }> = ({ className, style }) => {
   const { t } = useTranslation();
   return (
     <div className={cx("spinner-border", className)} style={style} role="status">
       <span className="visually-hidden">{t("common.loading").toString()}...</span>
+    </div>
+  );
+};
+
+export const SpinnerIcon: FC<{ icon: IconType }> = ({ icon: Icon }) => {
+  return (
+    <div className="spinner-pause-icon">
+      <div className="spinner-border" />
+      <Icon className="icon" />
     </div>
   );
 };

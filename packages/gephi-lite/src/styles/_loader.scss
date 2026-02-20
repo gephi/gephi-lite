@@ -27,3 +27,38 @@
 .z-over-loader {
   z-index: 10;
 }
+
+.spinner-pause-icon {
+  position: relative;
+
+  // Mimicks icons size:
+  width: 1.125rem;
+  height: 1.125rem;
+
+  .spinner-border {
+    $spinner-size: 1.5rem;
+
+    width: $spinner-size;
+    height: $spinner-size;
+    border-width: 2px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$spinner-size / 2;
+    margin-left: -$spinner-size / 2;
+  }
+
+  .icon {
+    $icon-size: 0.9rem;
+
+    width: $icon-size;
+    height: $icon-size;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$icon-size / 2;
+    margin-left: -$icon-size / 2;
+  }
+}

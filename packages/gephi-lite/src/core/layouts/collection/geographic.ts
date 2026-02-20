@@ -40,7 +40,7 @@ function computeGridPositions(
   return result;
 }
 
-function runGeographic(graph: DataGraph, options?: { settings: GeographicLayoutSettings }): LayoutMapping {
+export function runGeographic(graph: DataGraph, options?: { settings: GeographicLayoutSettings }): LayoutMapping {
   const {
     projection = "webmercator",
     latitudeField,

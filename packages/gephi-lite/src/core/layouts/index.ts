@@ -179,7 +179,9 @@ export const stopLayout = asyncAction(async (isForRestart = false) => {
   const { setNodePositions } = graphDatasetActions;
   const layoutState = layoutStateAtom.get();
 
-  if (layoutState.type === "running" && layoutState.supervisor) {
+  if (layoutState.type === "computing") {
+    layoutStateAtom.set({ ...layoutState, aborted: true });
+  } else if (layoutState.type === "running") {
     layoutState.supervisor.stop();
     layoutState.supervisor.kill();
 
@@ -207,19 +209,25 @@ export const startLayout = asyncAction(
     if (layout) {
       // Sync layout
       if (layout.type === "sync") {
-        layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor: undefined }));
+        layoutStateAtom.set((prev) => ({ ...prev, type: "computing", layoutId: id }));
 
-        // generate positions
-        const fullGraph = dataGraphToFullGraph(dataset);
-        const positions = layout.run(fullGraph, { settings: params });
+        // Generate positions
+        const filteredGraph = filteredGraphAtom.get();
+        const fullGraph = dataGraphToFullGraph(dataset, filteredGraph);
+        const positionsOrPromise = layout.run(fullGraph, { settings: params });
+        const positions = positionsOrPromise instanceof Promise ? await positionsOrPromise : positionsOrPromise;
 
-        // Save it
+        // Check if layout has changed or has been aborted
+        const currentState = layoutStateAtom.get();
+        if (currentState.type !== "computing" || currentState.layoutId !== id || currentState.aborted) return;
+
+        // Save positions
         setNodePositions(positions);
+        layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
 
         // To prevent resetting the camera before sigma receives new data, we
         // need to wait a frame, and also wait for it to trigger a refresh:
         setTimeout(() => {
-          layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
           resetCamera({ forceRefresh: true });
         }, 0);
       }

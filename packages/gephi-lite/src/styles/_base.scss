@@ -84,6 +84,13 @@
   padding: 0;
   background-color: $gray-400;
 }
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -50%;
+  margin-left: -50%;
+}
 
 .hoverable:hover {
   &:not(.disabled):not(disabled) {

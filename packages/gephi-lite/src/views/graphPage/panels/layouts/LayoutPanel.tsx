@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import { type FC, useCallback, useEffect } from "react";
+import { type FC, useCallback, useEffect, useMemo } from "react";
 
 import { useLayoutActions, useLayoutState, useSessionActions } from "../../../../core/context/dataContexts";
 import type { Layout } from "../../../../core/layouts/types";
@@ -48,13 +48,10 @@ export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
     [startLayout, layout.id, notify],
   );
 
-  return (
-    <LayoutForm
-      layout={layout}
-      onStart={onStart}
-      onStop={stopLayout}
-      isRunning={layoutState.type === "running" && layoutState.layoutId === layout.id}
-      onCancel={stopLayout}
-    />
-  );
+  const status = useMemo(() => {
+    if ("layoutId" in layoutState && layoutState.layoutId !== layout.id) return "idle";
+    return layoutState.type;
+  }, [layout.id, layoutState]);
+
+  return <LayoutForm layout={layout} onStart={onStart} onStop={stopLayout} status={status} onCancel={stopLayout} />;
 };

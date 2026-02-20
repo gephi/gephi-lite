@@ -94,7 +94,7 @@ export interface SyncLayout<P = any> {
   buttons?: Array<LayoutButton<P>>;
   parameters: Array<LayoutParameter>;
   inferSettings?: (dataGraph: DataGraph) => Partial<P>;
-  run: (graph: DataGraph, options?: { settings: P }) => LayoutMapping;
+  run: (graph: DataGraph, options?: { settings: P }) => LayoutMapping | Promise<LayoutMapping>;
 }
 
 export interface WorkerSupervisorInterface {
@@ -127,5 +127,6 @@ export interface LayoutQuality {
 }
 export type LayoutState = { quality: LayoutQuality } & (
   | { type: "idle" }
-  | { type: "running"; layoutId: string; supervisor?: WorkerSupervisorInterface; getPositions?: () => LayoutMapping }
+  | { type: "computing"; layoutId: string; aborted?: boolean }
+  | { type: "running"; layoutId: string; supervisor: WorkerSupervisorInterface; getPositions: () => LayoutMapping }
 );
