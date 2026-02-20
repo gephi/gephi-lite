@@ -2,13 +2,13 @@ import { DataGraph, ItemData } from "@gephi/gephi-lite-sdk";
 import { MultiGraph } from "graphology";
 import { describe, expect, it, vi } from "vitest";
 
+import { GeographicLayout, runGeographic } from "./geographic";
+
 vi.mock("../../appearance", () => ({ appearanceActions: { setBackgroundLayer: vi.fn() } }));
 vi.mock("../../context/eventsContext", () => ({
   EVENTS: { openPanel: "openPanel" },
   emitter: { emit: vi.fn() },
 }));
-
-import { GeographicLayout } from "./geographic";
 
 function makeGraph(
   nodes: Record<string, Record<string, unknown>>,
@@ -24,8 +24,8 @@ describe("Geographic layout", () => {
   describe("run", () => {
     it("should return empty mapping when fields are not specified", () => {
       const graph = makeGraph({ a: { lat: 48, lng: 2 } });
-      expect(GeographicLayout.run(graph)).toEqual({});
-      expect(GeographicLayout.run(graph, { settings: { missingStrategy: "keep" } } as never)).toEqual({});
+      expect(runGeographic(graph)).toEqual({});
+      expect(runGeographic(graph, { settings: { missingStrategy: "keep" } } as never)).toEqual({});
     });
 
     it("should assign x=lng, y=lat with equirectangular projection", () => {
@@ -33,7 +33,7 @@ describe("Geographic layout", () => {
         paris: { lat: 48.85, lng: 2.35 },
         london: { lat: 51.5, lng: -0.12 },
       });
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: {
           projection: "equirectangular",
           latitudeField: "lat",
@@ -49,7 +49,7 @@ describe("Geographic layout", () => {
 
     it("should apply Mercator projection with default (webmercator)", () => {
       const graph = makeGraph({ a: { lat: 45, lng: 10 } });
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep" },
       });
       // x unchanged, y is Mercator-projected (y > lat for positive latitudes)
@@ -65,7 +65,7 @@ describe("Geographic layout", () => {
         c: { lat: 48, lng: NaN },
         d: {},
       });
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep" },
       });
       expect(Object.keys(result)).toEqual(["a"]);
@@ -76,7 +76,7 @@ describe("Geographic layout", () => {
         a: { lat: 48, lng: 2 },
         b: {},
       });
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: {
           projection: "equirectangular",
           latitudeField: "lat",
@@ -94,7 +94,7 @@ describe("Geographic layout", () => {
         c: {},
         d: {},
       });
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: {
           projection: "equirectangular",
           latitudeField: "lat",
@@ -124,7 +124,7 @@ describe("Geographic layout", () => {
           { source: "c", target: "b" },
         ],
       );
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: {
           projection: "equirectangular",
           latitudeField: "lat",
@@ -141,7 +141,7 @@ describe("Geographic layout", () => {
 
     it("should return only valid nodes when all missing nodes have no valid neighbors and missingStrategy is not grid", () => {
       const graph = makeGraph({ a: { lat: 48, lng: 2 }, b: {} });
-      const resultKeep = GeographicLayout.run(graph, {
+      const resultKeep = runGeographic(graph, {
         settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep" },
       });
       expect(Object.keys(resultKeep)).toEqual(["a"]);
@@ -149,7 +149,7 @@ describe("Geographic layout", () => {
 
     it("should return empty mapping when no nodes have valid coords (even with grid strategy)", () => {
       const graph = makeGraph({ a: {}, b: {} });
-      const result = GeographicLayout.run(graph, {
+      const result = runGeographic(graph, {
         settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "grid" },
       });
       expect(result).toEqual({});

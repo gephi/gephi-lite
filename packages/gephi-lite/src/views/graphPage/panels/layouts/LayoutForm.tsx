@@ -7,6 +7,7 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
+import { SpinnerIcon } from "../../../../components/Loader";
 import MessageAlert from "../../../../components/MessageAlert";
 import {
   CodeEditorIcon,
@@ -14,12 +15,13 @@ import {
   PauseIconFill,
   PlayIconFill,
   ResetIcon,
+  StopIconFill,
 } from "../../../../components/common-icons";
 import { BooleanInput, EnumInput, NumberInput } from "../../../../components/forms/TypedInputs";
 import { FunctionEditorModal } from "../../../../components/modals/FunctionEditor";
 import { useGraphDataset, useSigmaGraph } from "../../../../core/context/dataContexts";
 import { getFilteredDataGraph } from "../../../../core/graph/utils";
-import { Layout, LayoutScriptParameter } from "../../../../core/layouts/types";
+import { Layout, LayoutScriptParameter, LayoutState } from "../../../../core/layouts/types";
 import { useModal } from "../../../../core/modals";
 import { sessionAtom } from "../../../../core/session";
 
@@ -28,8 +30,8 @@ export const LayoutForm: FC<{
   onCancel: () => void;
   onStart: (input: { params: Record<string, unknown>; then?: () => void; restart?: boolean }) => void;
   onStop: () => void;
-  isRunning: boolean;
-}> = ({ layout, onStart, onStop, isRunning }) => {
+  status: LayoutState["type"];
+}> = ({ layout, onStart, onStop, status }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const dataset = useGraphDataset();
@@ -81,16 +83,16 @@ export const LayoutForm: FC<{
     const hasError = Object.keys(errors).length > 0;
     setErrors(hasError ? errors : null);
 
-    if (layout.type === "worker" && !hasError && isRunning) {
+    if (layout.type === "worker" && !hasError && status === "running") {
       onStart({ params: layoutParameters, restart: true });
     }
-    // I don't want to trigger this useeffect when the isRunning value changed
+    // I don't want to trigger this useEffect when the status value changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layout, layoutParameters, t, onStart]);
 
   /**
    * When the layout change
-   * => we load the layout paramaters
+   * => we load the layout parameters
    */
   useEffect(() => {
     setSession((prev) => ({
@@ -156,7 +158,7 @@ export const LayoutForm: FC<{
       return;
     }
 
-    if (isRunning) onStop();
+    if (status !== "idle") onStop();
     else {
       try {
         // Read the latest layout parameters from the atom directly,
@@ -170,7 +172,7 @@ export const LayoutForm: FC<{
         console.error(e);
       }
     }
-  }, [isRunning, layout.id, layout.type, onStart, onStop, setSuccessMessage, t, errors]);
+  }, [status, layout.id, layout.type, onStart, onStop, setSuccessMessage, t, errors]);
 
   return (
     <form
@@ -245,7 +247,7 @@ export const LayoutForm: FC<{
                       param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                     }
                     value={(value as string) ?? param.defaultValue}
-                    disabled={isRunning}
+                    disabled={status === "running"}
                     onChange={(v) => changeParameter(param.id, v)}
                     options={param.options.map((opt) => ({
                       value: opt.id,
@@ -341,7 +343,7 @@ export const LayoutForm: FC<{
               ? t(`layouts.${layout.id}.buttons.${id}.description`)
               : t(`layouts.${layout.id}.buttons.${id}.title`);
             const graph = getFilteredDataGraph(dataset, sigmaGraph);
-            const isButtonDisabled = isRunning || errors !== null || !!disabled?.(layoutParameters, graph);
+            const isButtonDisabled = errors !== null || !!disabled?.(layoutParameters, graph);
             return (
               <button
                 key={id}
@@ -353,7 +355,7 @@ export const LayoutForm: FC<{
                   const instructions = onClick(layoutParameters, graph);
                   if (instructions.setSettings) setParameters(instructions.setSettings as Record<string, unknown>);
                   if (instructions.applyLayout) {
-                    if (errors || isRunning) return;
+                    if (errors || status !== "idle") return;
                     instructions.before?.();
                     const params = (instructions.setSettings ?? layoutParameters) as Record<string, unknown>;
                     onStart({ params, then: instructions.then });
@@ -380,14 +382,20 @@ export const LayoutForm: FC<{
             </button>
           )}
           <button type="submit" className="gl-btn gl-btn-fill" disabled={errors !== null}>
-            {isRunning && (
+            {status === "running" && (
               <>
-                <PauseIconFill />
+                <SpinnerIcon icon={PauseIconFill} />
                 {t("common.stop")}
               </>
             )}
-            {!isRunning && layout.type === "sync" && <>{t("common.apply")}</>}
-            {!isRunning && layout.type === "worker" && (
+            {status === "computing" && (
+              <>
+                <SpinnerIcon icon={StopIconFill} />
+                {t("common.cancel")}
+              </>
+            )}
+            {status === "idle" && layout.type === "sync" && <>{t("common.apply")}</>}
+            {status === "idle" && layout.type === "worker" && (
               <>
                 <PlayIconFill />
                 {t("common.start")}

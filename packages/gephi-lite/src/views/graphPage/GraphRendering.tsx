@@ -6,7 +6,9 @@ import { useTranslation } from "react-i18next";
 import { Settings } from "sigma/settings";
 
 import GraphCaption from "../../components/GraphCaption";
+import { SpinnerIcon } from "../../components/Loader";
 import {
+  CancelIcon,
   ExitFullScreenIcon,
   FullScreenIcon,
   GraphSelectionModeIcon,
@@ -120,15 +122,22 @@ const InteractionsController: FC = () => {
       className: "gl-btn gl-btn-icon gl-btn-outline",
     };
     if (lastLayoutActive) {
-      if (isLayoutRunning) {
+      if (layoutState.type === "running") {
         result = {
           title: t("graph.control.layout-stop-latest", { name: lastLayoutActive.name }),
-          icon: <PauseIconFill />,
+          icon: <SpinnerIcon icon={PauseIconFill} />,
+          disabled: false,
+          className: "gl-btn gl-btn-icon gl-btn-fill",
+        };
+      } else if (layoutState.type === "computing") {
+        result = {
+          title: t("graph.control.layout-stop-latest", { name: lastLayoutActive.name }),
+          icon: <SpinnerIcon icon={CancelIcon} />,
           disabled: false,
           className: "gl-btn gl-btn-icon gl-btn-fill",
         };
       } else {
-        if (lastLayoutActive.type === "sync") {
+        if (lastLayoutActive.type === "oneshot") {
           result = {
             title: t("graph.control.layout-run-latest", { name: lastLayoutActive.name }),
             icon: <PlaySyncIcon />,
@@ -153,7 +162,7 @@ const InteractionsController: FC = () => {
       }
     }
     return result;
-  }, [lastLayoutActive, isLayoutRunning, t]);
+  }, [t, lastLayoutActive, layoutState.type]);
 
   // Start / stop action for the layout button
   const startStopLayout = useCallback(() => {
