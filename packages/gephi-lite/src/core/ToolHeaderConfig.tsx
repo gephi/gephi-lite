@@ -3,6 +3,7 @@ import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ExportPNGModal } from "../components/modals/export/ExportPNGModal";
 import { SaveAsModal } from "../components/modals/save/SaveAsModal";
+import { OpenLocalFileModal } from "../components/modals/open/LocalFileModal";
 import { OpenModal } from "../components/modals/open/OpenModal";
 import { useFile, useFileActions } from "./context/dataContexts";
 import { getFilename } from "./file/utils";
@@ -32,6 +33,11 @@ export const ToolHeaderConfig: FC = () => {
                     buttons: [
                         {
                             label: 'データファイルの読込',
+                            action: () => openModal({ component: OpenLocalFileModal, arguments: {} }),
+                            align: 'left'
+                        },
+                        {
+                            label: 'サンプルプロジェクトの読込',
                             type: 'dropdown',
                             align: 'left',
                             items: SAMPLES.map(sample => ({
