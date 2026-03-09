@@ -32,12 +32,12 @@ export const ToolHeaderConfig: FC = () => {
                     },
                     buttons: [
                         {
-                            label: 'データファイルの読込',
+                            label: t("header.open_data_file"),
                             action: () => openModal({ component: OpenLocalFileModal, arguments: {} }),
                             align: 'left'
                         },
                         {
-                            label: 'サンプルプロジェクトの読込',
+                            label: t("header.open_sample"),
                             type: 'dropdown',
                             align: 'left',
                             items: SAMPLES.map(sample => ({
@@ -66,26 +66,26 @@ export const ToolHeaderConfig: FC = () => {
                             }))
                         },
                         {
-                            label: 'プロジェクトの読込',
+                            label: t("header.open_project"),
                             action: () => openModal({ component: OpenModal, arguments: {} }),
                             align: 'right'
                         },
                         {
-                            label: 'プロジェクトの保存',
+                            label: t("header.save_project"),
                             action: () => openModal({ component: SaveAsModal, arguments: {} }),
                             align: 'right'
                         },
                         {
-                            label: 'エクスポート',
+                            label: t("header.export"),
                             type: 'dropdown',
                             align: 'right',
                             items: [
                                 {
-                                    label: '画像 (png)',
+                                    label: t("header.export_png"),
                                     action: () => openModal({ component: ExportPNGModal, arguments: {} })
                                 },
                                 {
-                                    label: 'グラフ (gexf)',
+                                    label: t("header.export_gexf"),
                                     action: async () => {
                                         try {
                                             await exportAsGexf((content) => {

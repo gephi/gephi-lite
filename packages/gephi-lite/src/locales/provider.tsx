@@ -21,7 +21,10 @@ i18n
     detection: {
       order: ["querystring", "navigator"],
       lookupQuerystring: "lang",
-      convertDetectedLanguage: (lng) => (lng in LOCALES ? lng : DEFAULT_LOCALE),
+      convertDetectedLanguage: (lng) => {
+        const base = lng.split("-")[0];
+        return base in LOCALES ? base : DEFAULT_LOCALE;
+      },
     },
     interpolation: {
       format: (value, format) => {

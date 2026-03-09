@@ -32,4 +32,4 @@ export const LOCALES = {
   }
 };
 
-export const DEFAULT_LOCALE = "ja";
+export const DEFAULT_LOCALE = "en";

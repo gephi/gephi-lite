@@ -127,7 +127,8 @@
     "start": "Start",
     "stop": "Stop",
     "submit": "Submit",
-    "updated": "Updated"
+    "updated": "Updated",
+    "download": "Download"
   },
   "context": {
     "title": "Data overview"
@@ -194,6 +195,8 @@
     "title": "Filters",
     "topological": "Topology",
     "using": "Using",
+    "booleanTrueOption": "true",
+    "booleanFalseOption": "false",
     "topology": {
       "ego": {
         "core": "depth: maximum distance to ego",
@@ -219,8 +222,19 @@
     "missingValues": "Missing values",
     "noValueOption": "No value"
   },
+  "header": {
+    "open_data_file": "Open Data File",
+    "open_sample": "Open Sample",
+    "open_project": "Open Project",
+    "save_project": "Save Project",
+    "export": "Export",
+    "export_png": "Image (png)",
+    "export_gexf": "Graph (gexf)"
+  },
   "gephi-lite": {
     "info": "More info on Gephi Lite",
+    "open_welcome_modal": "Open welcome screen",
+    "report_issue": "Report an issue",
     "title": "Gephi Lite"
   },
   "github": {
@@ -324,6 +338,7 @@
         "title": "Open a file from GitHub"
       },
       "local": {
+        "button_text": "Select a local file",
         "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML or Graphology JSON file ",
         "error": "An error occurred while opening the file. Please check that the file is a valid.",
         "success": "File {{filename}} has been successfully loaded",
@@ -364,6 +379,7 @@
         "title": "Save on GitHub as..."
       },
       "local": {
+        "description": "Click the button below to download the workspace JSON file",
         "error": "Failed to save the graph locally",
         "success": "Graph has been saved locally",
         "title": "Save graph locally"
@@ -759,6 +775,22 @@
     "open_graph": "Open graph file",
     "open_recent": "Open recent",
     "samples": "Samples",
-    "title": "Welcome to Gephi Lite"
+    "title": "Welcome to Gephi Lite",
+    "documentation": "Documentation",
+    "website": "Website"
+  },
+  "workspace": {
+    "title": "Workspace",
+    "menu": {
+      "duplicate": "Clone workspace",
+      "export_graph_file": "Export graph (gexf)",
+      "export_image": "Export image (png)",
+      "github_signin": "Sign in to GitHub",
+      "github_signout": "Sign out from GitHub",
+      "new": "New workspace",
+      "open": "Open...",
+      "save": "Save",
+      "save_as": "Save as..."
+    }
   }
 }

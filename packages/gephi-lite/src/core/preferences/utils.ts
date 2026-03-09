@@ -1,14 +1,20 @@
 import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
-// import { i18n } from "../../locales/provider";
 import { Preferences } from "./types";
+
+const SUPPORTED_LOCALES = ["ja", "en", "fr", "ko", "hu"];
+
+function detectBrowserLocale(): string {
+  const browserLang = navigator.language?.split("-")[0] || "en";
+  return SUPPORTED_LOCALES.includes(browserLang) ? browserLang : "en";
+}
 
 export function getEmptyPreferences(): Preferences {
   return {
     layoutsParameters: {},
     metrics: {},
-    // default is the local detected by i18n
-    locale: "ja",
+    // detect browser language, fallback to "en"
+    locale: detectBrowserLocale(),
     theme: "auto",
   };
 }
@@ -17,7 +23,10 @@ export function getCurrentPreferences(): Preferences {
   try {
     const rawPreferences = localStorage.getItem("preferences");
     const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
-    return { ...getEmptyPreferences(), ...preferences };
+    const merged = { ...getEmptyPreferences(), ...preferences };
+    // Always use browser language detection for locale
+    merged.locale = detectBrowserLocale();
+    return merged;
   } catch (e) {
     console.error(e);
     return getEmptyPreferences();

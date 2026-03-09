@@ -220,6 +220,15 @@
     "missingValues": "欠損値",
     "noValueOption": "値なし"
   },
+  "header": {
+    "open_data_file": "データファイルの読込",
+    "open_sample": "サンプルプロジェクトの読込",
+    "open_project": "プロジェクトの読込",
+    "save_project": "プロジェクトの保存",
+    "export": "エクスポート",
+    "export_png": "画像 (png)",
+    "export_gexf": "グラフ (gexf)"
+  },
   "gephi-lite": {
     "info": "Gephi Lite について詳しく見る",
     "open_welcome_modal": "ウェルカム画面を開く",
@@ -771,6 +780,7 @@
 
   },
   "workspace": {
+    "title": "ワークスペース",
     "menu": {
       "duplicate": "ワークスペースをクローン",
       "export_graph_file": "グラフ（gexf）ファイルをエクスポート",
