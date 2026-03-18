@@ -8,6 +8,19 @@ import { parseEdgeListCSV } from "./csv-utils";
 import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
 
 /**
+ * Decodes an ArrayBuffer as text, trying UTF-8 first and falling back to Shift_JIS.
+ */
+function decodeTextContent(buffer: ArrayBuffer): string {
+  try {
+    const utf8Decoder = new TextDecoder("utf-8", { fatal: true });
+    return utf8Decoder.decode(buffer);
+  } catch {
+    const sjisDecoder = new TextDecoder("shift_jis");
+    return sjisDecoder.decode(buffer);
+  }
+}
+
+/**
  * Returns the content of the given file.
  * If no content has been found, an exception raised.
  */
@@ -15,9 +28,11 @@ async function getFileContent(file: FileTypeWithoutFormat): Promise<string> {
   // Get file content
   let content: string | null = null;
   switch (file.type) {
-    case "local":
-      content = await file.source.text();
+    case "local": {
+      const buffer = await file.source.arrayBuffer();
+      content = decodeTextContent(buffer);
       break;
+    }
     case "remote": {
       const response = await fetch(file.url);
       content = await response.text();
