@@ -66,7 +66,7 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
         value={file}
         onChange={(file) => setFile(file)}
         helpText={t("graph.open.local.dragndrop_text")}
-        accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
+        accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"], "text/csv": [".csv"] }}
       >
         {!file && (
           <button className="gl-btn gl-btn-outline mb-2">

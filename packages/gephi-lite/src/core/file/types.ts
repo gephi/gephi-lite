@@ -19,12 +19,13 @@ export type GephiLiteFileFormat = {
   appearance: AppearanceState;
 };
 
-export type FileFormat = "gexf" | "gephi-lite" | "graphology" | "graphml";
+export type FileFormat = "gexf" | "gephi-lite" | "graphology" | "graphml" | "csv";
 export const fileFormatExt: Record<FileFormat, string> = {
   gexf: "gexf",
   "gephi-lite": "json",
   graphology: "json",
   graphml: "graphml",
+  csv: "csv",
 };
 
 export interface AbstractFile {

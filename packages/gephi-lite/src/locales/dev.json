@@ -423,7 +423,7 @@
       },
       "local": {
         "button_text": "Select a local file",
-        "dragndrop_text": "GEXF, GRAPHML or Graphology JSON are supported. You can also directly drop a file here.",
+        "dragndrop_text": "GEXF, GRAPHML, Graphology JSON, or CSV are supported. You can also directly drop a file here.",
         "error": "An error occurred while opening the file. Please check that the file is a valid.",
         "success": "File {{filename}} has been successfully loaded",
         "title": "Open a local file"

@@ -4,6 +4,7 @@ import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
 
 import { userAtom } from "../user";
+import { parseEdgeListCSV } from "./csv-utils";
 import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
 
 /**
@@ -44,7 +45,7 @@ export async function extractGraphFromFile(
   fileName: string,
 ): Promise<
   | {
-      format: "gexf" | "graphml" | "graphology";
+      format: "gexf" | "graphml" | "graphology" | "csv";
       data: Graph;
       metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
     }
@@ -99,6 +100,11 @@ export async function extractGraphFromFile(
         };
       }
     }
+    case "csv":
+      return {
+        format: "csv",
+        data: parseEdgeListCSV(fileContent),
+      };
   }
   throw new Error(`Extension ${extension} for file ${fileName} is not recognized`);
 }
@@ -108,7 +114,7 @@ export async function extractGraphFromFile(
  */
 export async function openAndParseFile(file: FileTypeWithoutFormat): Promise<
   | {
-      format: "gexf" | "graphml" | "graphology";
+      format: "gexf" | "graphml" | "graphology" | "csv";
       data: Graph;
       metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
     }
