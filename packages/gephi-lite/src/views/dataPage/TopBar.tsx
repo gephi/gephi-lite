@@ -120,7 +120,6 @@ export const TopBar: FC = () => {
               <Trans i18nKey={`selection.hidden`} count={hidden.length} />)
             </>
           )}
-          {visible.length > 0 && t("common.colon")}
         </span>
         {selectionType === type && items.size > 0 && (
           <>

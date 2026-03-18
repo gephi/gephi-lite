@@ -63,6 +63,12 @@
       "size_all_items": "すべての{{items}}のサイズ",
       "title": "サイズ"
     },
+    "menu": {
+      "nodes": "ノード",
+      "edges": "エッジ",
+      "labels": "ラベル",
+      "background": "背景"
+    },
     "title": "外観",
     "transformation_methods": {
       "linear": "線形",
@@ -90,6 +96,33 @@
       },
       "title": "GitHub 連携"
     }
+  },
+  "datatable": {
+    "protected_columns": {
+      "id": "ID",
+      "preview": "プレビュー",
+      "sourceId": "ソース",
+      "targetId": "ターゲット"
+    },
+    "modify_column": "列を編集",
+    "duplicate_column": "列を複製",
+    "move_left": "左へ移動",
+    "move_right": "右へ移動",
+    "insert_left": "左に挿入",
+    "insert_right": "右に挿入",
+    "sort_asc": "昇順で並べ替え",
+    "sort_desc": "降順で並べ替え",
+    "save_cell": "保存",
+    "create_column": "列を作成",
+    "save_and_create_column": "保存して列を作成",
+    "nodes_matching": "<0>{{count}}</0> 件のノードが一致",
+    "nodes_matching_other": "<0>{{count}}</0> 件のノードが一致",
+    "nodes_not_matching": "<0>{{count}}</0> 件のその他ノード",
+    "nodes_not_matching_other": "<0>{{count}}</0> 件のその他ノード",
+    "edges_matching": "<0>{{count}}</0> 件のエッジが一致",
+    "edges_matching_other": "<0>{{count}}</0> 件のエッジが一致",
+    "edges_not_matching": "<0>{{count}}</0> 件のその他エッジ",
+    "edges_not_matching_other": "<0>{{count}}</0> 件のその他エッジ"
   },
   "common": {
     "add": "追加",
@@ -156,7 +189,25 @@
     "update_nodes": "既存のノードを編集",
     "update_nodes_success": "ノードを更新しました。",
     "update_this_edges": "このエッジを編集",
-    "update_this_nodes": "このノードを編集"
+    "update_this_nodes": "このノードを編集",
+    "edit_selected_nodes": "選択中のノードを編集",
+    "edit_selected_edges": "選択中のエッジを編集",
+    "delete_selected_nodes": "選択中のノードを削除",
+    "delete_selected_edges": "選択中のエッジを削除",
+    "data_creation": "データ作成",
+    "create_nodes_field": "ノード属性を作成",
+    "create_nodes_field_success": "ノード属性を作成しました。",
+    "create_edges_field": "エッジ属性を作成",
+    "create_edges_field_success": "エッジ属性を作成しました。",
+    "create_nodes_scripted_field": "ノードのスクリプト属性を作成",
+    "create_nodes_scripted_field_success": "ノードのスクリプト属性を作成しました。",
+    "create_edges_scripted_field": "エッジのスクリプト属性を作成",
+    "create_edges_scripted_field_success": "エッジのスクリプト属性を作成しました。",
+    "delete_attribute": "属性を削除",
+    "delete_nodes_attributes": "ノード属性「{{name}}」を削除",
+    "delete_edges_attributes": "エッジ属性「{{name}}」を削除",
+    "confirm_delete_attributes": "属性「{{name}}」を削除すると、{{nbValues}} 件のデータから値が消去されます。",
+    "delete_attributes_success": "属性「{{name}}」を削除しました。"
   },
   "error": {
     "form": {
@@ -322,6 +373,9 @@
       "nodes_zero": "ノード",
       "title": "属性モデル",
       "undirected": "無向",
+      "directed_graph": "有向グラフ",
+      "undirected_graph": "無向グラフ",
+      "mixed_graph": "混合グラフ",
       "dynamic": "ダイナミック",
       "selfLoop": "自己ループ",
       "degree": "次数"
@@ -543,6 +597,14 @@
       "description": "各ノードに {x,y} を返す関数を記述して独自レイアウトを作成します",
       "title": "カスタムレイアウト"
     },
+    "quality": {
+      "title": "レイアウト品質",
+      "description": "Connected Closeness指標を使用して、現在のレイアウトの品質を評価します。",
+      "enable": "レイアウト品質評価を有効にする",
+      "showGrid": "評価グリッドを表示",
+      "caption_CMax": "Connected Closeness（最大）",
+      "caption_deltaMax": "デルタ（最大）"
+    },
     "title": "レイアウト"
   },
   "metrics": {
@@ -685,11 +747,39 @@
         "title": "PageRank 指標"
       }
     },
+    "mixed": {
+      "louvainEdgeAmbiguity": {
+        "title": "Louvain エッジ曖昧性",
+        "description": "Louvain コミュニティ検出アルゴリズムを複数回実行し、エッジの曖昧性スコアを算出します。",
+        "attributes": {
+          "coMembershipScore": "共所属スコア属性名",
+          "bridgeNessEdgeScore": "ブリッジネススコア属性名",
+          "ambiguityScore": "曖昧性スコア属性名",
+          "sourceCommunityId": "ソースコミュニティID属性名",
+          "meanAmbiguityScore": "平均曖昧性スコア属性名"
+        },
+        "parameters": {
+          "runs": {
+            "title": "実行回数"
+          },
+          "getEdgeWeight": {
+            "title": "エッジ重み属性"
+          },
+          "resolution": {
+            "title": "解像度"
+          }
+        }
+      }
+    },
     "nodes_attribute_already_exists": "\"{{field}}\" というノード属性は既に存在します。値は上書きされます。",
     "placeholder": "アルゴリズムを選択",
     "success": "{{items}} メトリクス「{{metrics}}」をデータに追加しました。",
     "success_one": "{{items}} メトリクス「{{metrics}}」をデータに追加しました。",
     "title": "メトリクス"
+  },
+  "pages": {
+    "graph": "グラフ",
+    "data": "データ"
   },
   "providers": {
     "github": "GitHub 連携"
@@ -718,8 +808,8 @@
   },
   "selection": {
     "edge_no_label": "(ラベルなし)",
-    "edges": "選択中のエッジ {{count, number}} 件",
-    "edges_one": "エッジ 1 件を選択中",
+    "edges": "選択中のエッジ：{{count, number}}",
+    "edges_one": "選択中のエッジ：1",
     "edges_zero": "選択中のエッジはありません",
     "empty_edges": "このエッジには属性がありません",
     "empty_nodes": "このノードには属性がありません",
@@ -730,9 +820,10 @@
     "hidden_nodes": "非表示の選択ノード {{count, number}} 件",
     "hidden_nodes_one": "非表示の選択ノード 1 件",
     "locate_on_graph": "グラフ上で表示",
+    "open_in_graph": "グラフ画面で表示",
     "node_no_label": "(ラベルなし)",
-    "nodes": "選択中のノード {{count, number}} 件",
-    "nodes_one": "ノード 1 件を選択中",
+    "nodes": "選択中のノード：{{count, number}}",
+    "nodes_one": "選択中のノード：1",
     "nodes_zero": "選択中のノードはありません",
     "select_all": "すべて選択",
     "unselect_all": "すべて選択解除",

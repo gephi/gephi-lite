@@ -2,7 +2,7 @@ import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
 import { Preferences } from "./types";
 
-const SUPPORTED_LOCALES = ["ja", "en", "fr", "ko", "hu"];
+const SUPPORTED_LOCALES = ["ja", "en"];
 
 function detectBrowserLocale(): string {
   const browserLang = navigator.language?.split("-")[0] || "en";

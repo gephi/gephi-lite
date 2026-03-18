@@ -63,6 +63,12 @@
       "size_all_items": "Size for all {{items}}",
       "title": "Size"
     },
+    "menu": {
+      "nodes": "Nodes",
+      "edges": "Edges",
+      "labels": "Labels",
+      "background": "Background"
+    },
     "title": "Appearance",
     "transformation_methods": {
       "linear": "linear",
@@ -90,6 +96,33 @@
       },
       "title": "GitHub"
     }
+  },
+  "datatable": {
+    "protected_columns": {
+      "id": "ID",
+      "preview": "Preview",
+      "sourceId": "Source",
+      "targetId": "Target"
+    },
+    "modify_column": "Modify column",
+    "duplicate_column": "Duplicate column",
+    "move_left": "Move left",
+    "move_right": "Move right",
+    "insert_left": "Insert left",
+    "insert_right": "Insert right",
+    "sort_asc": "Sort ascending",
+    "sort_desc": "Sort descending",
+    "save_cell": "Save",
+    "create_column": "Create column",
+    "save_and_create_column": "Save and create column",
+    "nodes_matching": "<0>{{count}}</0> matching node",
+    "nodes_matching_other": "<0>{{count}}</0> matching nodes",
+    "nodes_not_matching": "<0>{{count}}</0> other node",
+    "nodes_not_matching_other": "<0>{{count}}</0> other nodes",
+    "edges_matching": "<0>{{count}}</0> matching edge",
+    "edges_matching_other": "<0>{{count}}</0> matching edges",
+    "edges_not_matching": "<0>{{count}}</0> other edge",
+    "edges_not_matching_other": "<0>{{count}}</0> other edges"
   },
   "common": {
     "add": "Add",
@@ -156,10 +189,31 @@
     "update_nodes": "Edit existing node",
     "update_nodes_success": "The node has successfully been updated.",
     "update_this_edges": "Edit this edge",
-    "update_this_nodes": "Edit this node"
+    "update_this_nodes": "Edit this node",
+    "edit_selected_nodes": "Edit selected nodes",
+    "edit_selected_edges": "Edit selected edges",
+    "delete_selected_nodes": "Delete selected nodes",
+    "delete_selected_edges": "Delete selected edges",
+    "data_creation": "Data creation",
+    "create_nodes_field": "Create node attribute",
+    "create_nodes_field_success": "Node attribute has been created.",
+    "create_edges_field": "Create edge attribute",
+    "create_edges_field_success": "Edge attribute has been created.",
+    "create_nodes_scripted_field": "Create scripted node attribute",
+    "create_nodes_scripted_field_success": "Scripted node attribute has been created.",
+    "create_edges_scripted_field": "Create scripted edge attribute",
+    "create_edges_scripted_field_success": "Scripted edge attribute has been created.",
+    "delete_attribute": "Delete attribute",
+    "delete_nodes_attributes": "Delete node attribute \"{{name}}\"",
+    "delete_edges_attributes": "Delete edge attribute \"{{name}}\"",
+    "confirm_delete_attributes": "Deleting attribute \"{{name}}\" will remove values from {{nbValues}} items.",
+    "delete_attributes_success": "Attribute \"{{name}}\" has been deleted."
   },
   "error": {
     "form": {
+      "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
+      "max": "Field {{name}} should be less than or equal to {{max}}",
+      "min": "Field {{name}} should be greater than or equal to {{min}}",
       "required": "Field is required",
       "unique": "Value must be unique, and a data with the same value already exist"
     },
@@ -188,15 +242,14 @@
     "full_graph": "Full graph",
     "inapplicable": "Filter disabled: only one value available",
     "keepMissingValues": "Keep missing values",
+    "missingValues": "Missing values",
+    "noValueOption": "No value",
     "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
     "range": "range",
     "script": "Custom filter",
     "terms": "exact values",
     "title": "Filters",
     "topological": "Topology",
-    "using": "Using",
-    "booleanTrueOption": "true",
-    "booleanFalseOption": "false",
     "topology": {
       "ego": {
         "core": "depth: maximum distance to ego",
@@ -211,31 +264,23 @@
       },
       "kCore": {
         "core": "k: minimum degree nodes should have",
-        "label": "K-Core",
-        "keepSelfLoop": "Keep self-loops"
+        "keepSelfLoop": "Keep self-loops",
+        "label": "K-Core"
       },
       "largestConnectedComponent": {
         "label": "Connected component",
         "number": "Number of largest components to keep"
       }
     },
-    "missingValues": "Missing values",
-    "noValueOption": "No value"
-  },
-  "header": {
-    "open_data_file": "Open Data File",
-    "open_sample": "Open Sample",
-    "open_project": "Open Project",
-    "save_project": "Save Project",
-    "export": "Export",
-    "export_png": "Image (png)",
-    "export_gexf": "Graph (gexf)"
+    "booleanTrueOption": "true",
+    "booleanFalseOption": "false",
+    "using": "Using"
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",
+    "title": "Gephi Lite",
     "open_welcome_modal": "Open welcome screen",
-    "report_issue": "Report an issue",
-    "title": "Gephi Lite"
+    "report_issue": "Report an issue"
   },
   "github": {
     "description": "You can log into GitHub from Gephi Lite, to save and load graph files directly as GitHub Gists.",
@@ -288,7 +333,9 @@
       "title": "Graph metadata"
     },
     "model": {
+      "degree": "Degree",
       "directed": "Directed",
+      "dynamic": "dynamic",
       "edges": "edges",
       "edges-data": {
         "attribute-name": "Attribute name",
@@ -322,11 +369,12 @@
       },
       "nodes_one": "node",
       "nodes_zero": "node",
+      "selfLoop": "Self-loop?",
       "title": "Attributes' Model",
       "undirected": "Undirected",
-      "dynamic": "dynamic",
-      "selfLoop": "Self-loop?",
-      "degree": "Degree"
+      "directed_graph": "Directed graph",
+      "undirected_graph": "Undirected graph",
+      "mixed_graph": "Mixed graph"
     },
     "open": {
       "github": {
@@ -338,11 +386,11 @@
         "title": "Open a file from GitHub"
       },
       "local": {
-        "button_text": "Select a local file",
         "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML, Graphology JSON, or CSV file ",
         "error": "An error occurred while opening the file. Please check that the file is a valid.",
         "success": "File {{filename}} has been successfully loaded",
-        "title": "Open a local file"
+        "title": "Open a local file",
+        "button_text": "Select a local file"
       },
       "new": {
         "message": "Current graph will be cleared, are you sure you want to continue ?",
@@ -379,10 +427,10 @@
         "title": "Save on GitHub as..."
       },
       "local": {
-        "description": "Click the button below to download the workspace JSON file",
         "error": "Failed to save the graph locally",
         "success": "Graph has been saved locally",
-        "title": "Save graph locally"
+        "title": "Save graph locally",
+        "description": "Click the button below to download the workspace JSON file"
       },
       "name": "Save",
       "title": "Save graph"
@@ -545,6 +593,14 @@
       "description": "Write your own layout by creating a function that returns a {x,y} object for each node",
       "title": "Custom layout"
     },
+    "quality": {
+      "title": "Layout quality",
+      "description": "Evaluate the quality of the current layout using the Connected Closeness metric.",
+      "enable": "Enable layout quality evaluation",
+      "showGrid": "Show evaluation grid",
+      "caption_CMax": "Connected Closeness (max)",
+      "caption_deltaMax": "Delta (max)"
+    },
     "title": "Layout"
   },
   "metrics": {
@@ -687,11 +743,39 @@
         "title": "PageRank"
       }
     },
+    "mixed": {
+      "louvainEdgeAmbiguity": {
+        "title": "Louvain edge ambiguity",
+        "description": "Computes edge ambiguity scores based on multiple runs of the Louvain community detection algorithm.",
+        "attributes": {
+          "coMembershipScore": "Co-membership score attribute name",
+          "bridgeNessEdgeScore": "Bridgeness edge score attribute name",
+          "ambiguityScore": "Ambiguity score attribute name",
+          "sourceCommunityId": "Source community ID attribute name",
+          "meanAmbiguityScore": "Mean ambiguity score attribute name"
+        },
+        "parameters": {
+          "runs": {
+            "title": "Number of runs"
+          },
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          },
+          "resolution": {
+            "title": "Resolution"
+          }
+        }
+      }
+    },
     "nodes_attribute_already_exists": "A node attribute named \"{{field}}\" already exists. Its values will be overridden.",
     "placeholder": "Select an algorithm",
     "success": "The {{items}} metrics \"{{metrics}}\" have been added to the data.",
     "success_one": "The {{items}} metric \"{{metrics}}\" has been added to the data.",
     "title": "Metrics"
+  },
+  "pages": {
+    "graph": "Graph",
+    "data": "Data"
   },
   "providers": {
     "github": "GitHub"
@@ -720,8 +804,8 @@
   },
   "selection": {
     "edge_no_label": "(Empty label)",
-    "edges": "{{count, number}} selected edges",
-    "edges_one": "One selected edge",
+    "edges": "{{count, number}} selected edges:",
+    "edges_one": "One selected edge:",
     "edges_zero": "No selected edge",
     "empty_edges": "This edge has no attribute",
     "empty_nodes": "This node has no attribute",
@@ -732,9 +816,10 @@
     "hidden_nodes": "{{count, number}} hidden selected nodes",
     "hidden_nodes_one": "One hidden selected node",
     "locate_on_graph": "Locate on the graph",
+    "open_in_graph": "Open in graph view",
     "node_no_label": "(Empty label)",
-    "nodes": "{{count, number}} selected nodes",
-    "nodes_one": "One selected node",
+    "nodes": "{{count, number}} selected nodes:",
+    "nodes_one": "One selected node:",
     "nodes_zero": "No selected node",
     "select_all": "Select all",
     "unselect_all": "Unselect all",
@@ -778,6 +863,15 @@
     "title": "Welcome to Gephi Lite",
     "documentation": "Documentation",
     "website": "Website"
+  },
+  "header": {
+    "open_data_file": "Open Data File",
+    "open_sample": "Open Sample",
+    "open_project": "Open Project",
+    "save_project": "Save Project",
+    "export": "Export",
+    "export_png": "Image (png)",
+    "export_gexf": "Graph (gexf)"
   },
   "workspace": {
     "title": "Workspace",
