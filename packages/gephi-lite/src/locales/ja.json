@@ -284,7 +284,7 @@
     "info": "Gephi Lite について詳しく見る",
     "open_welcome_modal": "ウェルカム画面を開く",
     "report_issue": "Report an issue",
-    "title": "Gephi Lite（ジェフィー・ライト）"
+    "title": "Gephi Lite"
   },
   "github": {
     "description": "Gephi Lite から GitHub にログインして、グラフファイルを GitHub Gist として保存・読み込めます。",
