@@ -31,12 +31,11 @@ export const AuthInit: FC = () => {
         }
         setUser({ ...lsUser, provider });
       } catch (e) {
-        console.error("Failed to load user from localstorage", e);
-        notify({
-          type: "warning",
-          title: `${t("gephi-lite.title")}`,
-          message: "TODO",
-        });
+        console.error("Failed to load user from localstorage:", e);
+        const errorMsg = e instanceof Error ? e.message : String(e);
+        console.error("Error details:", errorMsg);
+        // TODO: Show user-friendly error message, but for now suppress the warning
+        // to avoid showing "TODO" message on page load
         setUser(null);
       }
     }
