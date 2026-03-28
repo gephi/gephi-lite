@@ -29,8 +29,13 @@ export const userActions = {
  */
 userAtom.bind((user) => {
   if (!isNil(user)) {
-    const providerStr = user.provider ? user.provider.serialize() : undefined;
-    localStorage.setItem(LS_USER_KEY, JSON.stringify({ ...user, provider: providerStr }));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userData: any = { ...user };
+    // Only include provider if it exists and can be serialized
+    if (user.provider) {
+      userData.provider = user.provider.serialize();
+    }
+    localStorage.setItem(LS_USER_KEY, JSON.stringify(userData));
   } else {
     localStorage.removeItem(LS_USER_KEY);
   }

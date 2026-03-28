@@ -21,13 +21,16 @@ export const AuthInit: FC = () => {
       try {
         const lsUser = JSON.parse(lsUserString);
         let provider;
-        const providerData = JSON.parse(lsUser.provider);
-        // Dataviz provider is no longer managed here (handled by dataviz-tool-header API)
-        if (providerData.type === "dataviz") {
-          // Skip provider for dataviz users
-          provider = undefined;
-        } else {
-          provider = ghProviderDeserialize(lsUser.provider);
+        // Only deserialize provider if it exists in localStorage
+        if (lsUser.provider) {
+          const providerData = JSON.parse(lsUser.provider);
+          // Dataviz provider is no longer managed here (handled by dataviz-tool-header API)
+          if (providerData.type === "dataviz") {
+            // Skip provider for dataviz users
+            provider = undefined;
+          } else {
+            provider = ghProviderDeserialize(lsUser.provider);
+          }
         }
         setUser({ ...lsUser, provider });
       } catch (e) {
