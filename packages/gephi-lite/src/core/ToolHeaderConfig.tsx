@@ -187,18 +187,18 @@ export const ToolHeaderConfig: FC = () => {
                     onProjectLoad: async (projectData: object) => {
                         try {
                             // Open the project data as a graph
-                            const projectName = currentLoadedProjectName.current || "Loaded Project";
+                            const projectName = currentLoadedProjectName.current || "";
                             const projectId = currentLoadedProjectId.current || "";
                             await openFromData(projectData, projectName, projectId);
                             notify({
                                 type: "success",
-                                message: t("graph.open.github.success", { filename: projectName }).toString(),
+                                message: "プロジェクトを読み込みました",
                             });
                         } catch (e) {
                             console.error(e);
                             notify({
                                 type: "error",
-                                message: t("graph.open.github.error").toString(),
+                                message: "プロジェクトの読み込みに失敗しました",
                             });
                         }
                     },

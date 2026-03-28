@@ -230,7 +230,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           notify({
             type: "success",
             title: t("gephi-lite.title"),
-            message: t("graph.open.github.success", { filename: projectName }).toString(),
+            message: "プロジェクトを読み込みました",
           });
         } catch (e) {
           console.error("Failed to load cloud project:", e);
