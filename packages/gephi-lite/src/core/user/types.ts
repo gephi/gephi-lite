@@ -4,5 +4,5 @@ export interface User {
   id: string;
   name: string;
   avatar?: string;
-  provider: CloudProvider;
+  provider?: CloudProvider;
 }

@@ -4,6 +4,9 @@ import { CloudFile } from "../cloud/types";
 import { FiltersState } from "../filters/types";
 import { GraphDataset } from "../graph/types";
 
+// Re-export CloudFile for convenience
+export type { CloudFile } from "../cloud/types";
+
 /**
  * A serializable structure, to allow Gephi Lite to load and save graphs, with their surrounding context.
  * This includes:

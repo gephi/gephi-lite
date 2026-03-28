@@ -1,53 +1,15 @@
-import { keyBy } from "lodash";
-import { type ComponentType, type FC, useEffect, useMemo, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { ModalProps } from "../../../core/modals/types";
-import { useConnectedUser } from "../../../core/user";
 import type { AsyncStatus } from "../../../utils/promises";
-import { type MenuItem, SideMenu } from "../../SideMenu";
 import { Modal } from "../../modals";
-import { OpenCloudFileForm } from "./CloudFileModal";
 import { OpenLocalFileForm } from "./LocalFileModal";
-
-type OpenCollectionMenuItem = MenuItem<{
-  component: ComponentType<{
-    id?: string;
-    onStatusChange: (status: AsyncStatus) => void;
-  }>;
-}>;
 
 export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
   cancel,
-  arguments: { initialOpenedTab },
 }) => {
   const { t } = useTranslation();
-  const [user] = useConnectedUser();
-
-  const menu = useMemo<OpenCollectionMenuItem[]>(() => {
-    let cloudLabel: string = t("graph.open.github.title");
-    if (user?.provider?.type === "dataviz") {
-      cloudLabel = "サーバから開く";
-    }
-    return [
-      {
-        id: "github",
-        label: cloudLabel,
-        component: OpenCloudFileForm,
-      },
-      {
-        id: "local",
-        i18nKey: "graph.open.local.title",
-        component: OpenLocalFileForm,
-      },
-    ];
-  }, [t, user]);
-
-  const menuDict = useMemo(() => keyBy(menu, "id"), [menu]);
-
-  const [selectedOpen, setSelectedOpen] = useState<OpenCollectionMenuItem>(
-    () => menuDict[initialOpenedTab || ""] || menu[0],
-  );
   const [status, setStatus] = useState<AsyncStatus>({ type: "idle" });
 
   useEffect(() => {
@@ -64,13 +26,8 @@ export const OpenModal: FC<ModalProps<{ initialOpenedTab?: string }>> = ({
       doNotPreserveData
     >
       <>
-        <SideMenu
-          menu={menu}
-          selected={selectedOpen?.id}
-          onSelectedChange={(item) => setSelectedOpen(item)}
-        />
         <div className="selected-component-wrapper">
-          <selectedOpen.component id="openForm" onStatusChange={setStatus} />
+          <OpenLocalFileForm id="openForm" onStatusChange={setStatus} />
         </div>
       </>
       <div className="gl-gap-2 d-flex">

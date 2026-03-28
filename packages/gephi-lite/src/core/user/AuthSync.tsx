@@ -1,6 +1,5 @@
 import { FC, useEffect, useRef } from "react";
 
-import { DatavizCloudProvider } from "../cloud/dataviz/provider";
 import { useConnectedUser } from "./index";
 
 export const AuthSync: FC = () => {
@@ -21,12 +20,11 @@ export const AuthSync: FC = () => {
                 event === "INITIAL_SESSION"
             ) {
                 if (session) {
-                    const provider = new DatavizCloudProvider();
                     setUser({
                         id: session.user.id,
                         name: session.user.email || "No Name",
                         avatar: undefined,
-                        provider,
+                        // provider is no longer used - managed by dataviz-tool-header API
                     });
                 }
             } else if (event === "SIGNED_OUT") {

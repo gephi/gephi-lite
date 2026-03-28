@@ -28,6 +28,10 @@ export const userActions = {
  * Sync. user atom in the localstorage
  */
 userAtom.bind((user) => {
-  if (!isNil(user)) localStorage.setItem(LS_USER_KEY, JSON.stringify({ ...user, provider: user.provider.serialize() }));
-  else localStorage.removeItem(LS_USER_KEY);
+  if (!isNil(user)) {
+    const providerStr = user.provider ? user.provider.serialize() : undefined;
+    localStorage.setItem(LS_USER_KEY, JSON.stringify({ ...user, provider: providerStr }));
+  } else {
+    localStorage.removeItem(LS_USER_KEY);
+  }
 });

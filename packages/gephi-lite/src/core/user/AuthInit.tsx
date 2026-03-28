@@ -2,7 +2,6 @@ import { isNil } from "lodash";
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { datavizProviderDeserialize } from "../cloud/dataviz/provider";
 import { ghProviderDeserialize } from "../cloud/github/provider";
 import { useNotifications } from "../notifications";
 import { LS_USER_KEY, useConnectedUser } from "./index";
@@ -23,8 +22,10 @@ export const AuthInit: FC = () => {
         const lsUser = JSON.parse(lsUserString);
         let provider;
         const providerData = JSON.parse(lsUser.provider);
+        // Dataviz provider is no longer managed here (handled by dataviz-tool-header API)
         if (providerData.type === "dataviz") {
-          provider = datavizProviderDeserialize(lsUser.provider);
+          // Skip provider for dataviz users
+          provider = undefined;
         } else {
           provider = ghProviderDeserialize(lsUser.provider);
         }

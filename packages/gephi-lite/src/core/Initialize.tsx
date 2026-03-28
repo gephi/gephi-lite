@@ -198,6 +198,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
   // Load project from cloud if project_id is in URL and user is connected
   const [user] = useConnectedUser();
+  const { openFromData } = useFileActions();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -209,24 +210,27 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         isCloudLoadingStarted = true;
         reset(true);
         try {
-          await open({
-            type: "cloud",
-            id: projectId,
-            // Dummy metadata, provider will fetch content using id
-            filename: "Loading.json",
-            description: "",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            isPublic: false,
-            size: 0,
-            format: "gephi-lite"
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } as any);
+          const headerEl = document.querySelector('dataviz-tool-header');
+          if (!headerEl) {
+            throw new Error("dataviz-tool-header component not found");
+          }
+
+          // Use the new header API to load project
+          // @ts-expect-error - loadProject method not in type definitions
+          const projectData = await headerEl.loadProject(projectId);
+          if (projectData) {
+            await openFromData(projectData, "Loaded Project", projectId);
+          }
 
           // Success! Clean up URL.
           url.searchParams.delete("project_id");
           window.history.pushState({}, "", url);
 
+          notify({
+            type: "success",
+            title: t("gephi-lite.title"),
+            message: "Project loaded successfully",
+          });
         } catch (e) {
           console.error("Failed to load cloud project:", e);
           notify({
@@ -249,7 +253,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       loadCloudProject();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]); // Depends on user authentication status
+  }, [user, openFromData]); // Depends on user authentication status and openFromData
 
   /**
    * Update document title:

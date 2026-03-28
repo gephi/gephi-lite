@@ -19,33 +19,22 @@ import ConfirmModal from "../../components/modals/ConfirmModal";
 
 
 import { openInNewTab } from "../../core/broadcast/utils";
-import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import {
-  useAppearance,
   useDataTable,
-  useFile,
   useGraphDatasetActions,
-  useSigmaAtom,
 } from "../../core/context/dataContexts";
 // import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
-import { useConnectedUser } from "../../core/user";
-import { getGraphSnapshot } from "../../utils/sigma";
 
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const { t } = useTranslation();
-  const [user] = useConnectedUser();
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
   const { resetGraph } = useGraphDatasetActions();
-  const { saveFile } = useCloudProvider();
   // const { exportAsGexf } = useFileActions();
-  const { current: currentFile } = useFile();
-  const sigma = useSigmaAtom();
-  const { backgroundColor } = useAppearance();
 
   // For mobile burger menu:
   const [expanded, setExpanded] = useState(false);
@@ -81,43 +70,8 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           },
         },
 
-        ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
-          ? [
-            {
-              label: t("workspace.menu.save"),
-              onClick: async () => {
-                try {
-                  const thumbnail = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
-                    width: 800,
-                    height: 600,
-                    backgroundColor,
-                    cameraState: sigma.getCamera().getState(),
-                    ratio: 1,
-                  });
-
-                  if (thumbnail) {
-                    console.log(`[Header] Thumbnail generated for save. Size: ${thumbnail.size}, Type: ${thumbnail.type}`);
-                  } else {
-                    console.error("[Header] Thumbnail generation returned null/undefined.");
-                  }
-
-                  await saveFile(thumbnail || undefined);
-                  notify({
-                    type: "success",
-                    message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
-                  });
-                } catch (e) {
-                  console.error(e);
-                  notify({ type: "error", message: t("graph.save.github.error").toString() });
-                }
-              },
-            },
-          ]
-          : []),
-
-
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, currentFile, saveFile, backgroundColor, sigma],
+    [t, openModal, notify, resetGraph],
   );
 
 

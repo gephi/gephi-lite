@@ -18,8 +18,8 @@ import {
 } from "../graph";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
 import { resetCamera } from "../sigma";
-import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
-import { openAndParseFile } from "./utils";
+import { CloudFile, FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
+import { extractGraphFromFile, openAndParseFile } from "./utils";
 
 function getEmptyFileState(): FileState {
   return { current: null, recentFiles: [], status: { type: "idle" } };
@@ -163,8 +163,62 @@ export const exportAsGexf = asyncAction(async (callback: (content: string) => vo
   }
 });
 
+/**
+ * Open a project from JSON data (typically from dataviz-tool-header API).
+ * Used by onProjectLoad callback from the new header API.
+ */
+export const openFromData = asyncAction(async (projectData: object, name: string, projectId: string) => {
+  if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");
+  fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
+
+  try {
+    const content = JSON.stringify(projectData);
+    const filename = name.endsWith(".json") ? name : `${name}.json`;
+    const { data, format } = await extractGraphFromFile(content, filename);
+
+    resetStates(false);
+    if (format === "gephi-lite") {
+      const { graphDataset, appearance, filters } = data as GephiLiteFileFormat;
+      const { setGraphDataset } = graphDatasetActions;
+      setGraphDataset(graphDataset);
+      const { setFullState } = appearanceActions;
+      setFullState(appearance);
+      const { setFilters } = filtersActions;
+      setFilters(filters);
+    } else {
+      const { setGraphDataset } = graphDatasetActions;
+      const { mergeState } = appearanceActions;
+      (data as Graph).setAttribute("title", name);
+      const graphDataset = initializeGraphDataset(data as Graph, undefined);
+      setGraphDataset(graphDataset);
+      const appearanceState = inferAppearanceState(graphDataset);
+      if (!isEmpty(appearanceState)) mergeState(appearanceState);
+    }
+
+    fileActions.setCurrentFile({
+      type: "cloud",
+      id: projectId,
+      filename: name,
+      description: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isPublic: false,
+      size: 0,
+      format,
+    } as CloudFile);
+
+    resetCamera({ forceRefresh: true });
+  } catch (e) {
+    fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
+    throw e;
+  } finally {
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+  }
+});
+
 export const fileActions = {
   open,
+  openFromData,
   exportAsGephiLite,
   exportAsGexf,
   reset: producerToAction(reset, fileAtom),

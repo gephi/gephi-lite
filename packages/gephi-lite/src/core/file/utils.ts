@@ -41,6 +41,7 @@ async function getFileContent(file: FileTypeWithoutFormat): Promise<string> {
     case "cloud": {
       const user = userAtom.get();
       if (!user) throw new Error("Cannot open a cloud file without to be connected");
+      if (!user.provider) throw new Error("Cloud provider not available");
       content = await user.provider.getFileContent(file.id);
       break;
     }
