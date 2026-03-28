@@ -218,8 +218,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           // Use the new header API to load project
           // @ts-expect-error - loadProject method not in type definitions
           const projectData = await headerEl.loadProject(projectId);
+          const projectName = "Loaded Project";
           if (projectData) {
-            await openFromData(projectData, "Loaded Project", projectId);
+            await openFromData(projectData, projectName, projectId);
           }
 
           // Success! Clean up URL.
@@ -229,7 +230,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           notify({
             type: "success",
             title: t("gephi-lite.title"),
-            message: "Project loaded successfully",
+            message: t("graph.open.github.success", { filename: projectName }).toString(),
           });
         } catch (e) {
           console.error("Failed to load cloud project:", e);

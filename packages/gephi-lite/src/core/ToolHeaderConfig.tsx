@@ -192,13 +192,13 @@ export const ToolHeaderConfig: FC = () => {
                             await openFromData(projectData, projectName, projectId);
                             notify({
                                 type: "success",
-                                message: t("graph.open.success", { filename: projectName }).toString(),
+                                message: t("graph.open.github.success", { filename: projectName }).toString(),
                             });
                         } catch (e) {
                             console.error(e);
                             notify({
                                 type: "error",
-                                message: t("graph.open.error").toString(),
+                                message: t("graph.open.github.error").toString(),
                             });
                         }
                     },
@@ -219,7 +219,7 @@ export const ToolHeaderConfig: FC = () => {
                         });
                         notify({
                             type: "success",
-                            message: t("graph.save.success", { filename: meta.name }).toString(),
+                            message: t("graph.save.github.success", { filename: meta.name }).toString(),
                         });
                     },
                 });
