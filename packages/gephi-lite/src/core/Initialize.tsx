@@ -111,6 +111,28 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       // showWelcomeModal = false;
     }
 
+    // If query params has data_url, treat as file parameter
+    if (!graphFound && url.searchParams.has("data_url")) {
+      const dataUrl = url.searchParams.get("data_url") || "";
+      try {
+        await open({
+          type: "remote",
+          filename: dataUrl.split("/").pop() || "data",
+          url: dataUrl,
+        });
+        graphFound = true;
+        url.searchParams.delete("data_url");
+        window.history.pushState({}, "", url);
+      } catch (e) {
+        console.error(e);
+        notify({
+          type: "error",
+          message: t("graph.open.remote.error"),
+          title: t("gephi-lite.title"),
+        });
+      }
+    }
+
     // If query params has file (or GEXF, although it's deprecated)
     // => try to load the file
     if (!graphFound && (url.searchParams.has("file") || url.searchParams.has("gexf"))) {
