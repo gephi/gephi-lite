@@ -223,6 +223,33 @@ export const ToolHeaderConfig: FC = () => {
                         });
                     },
                 });
+
+                // Sample data picker integration
+                // @ts-expect-error - setSampleConfig method not in type definitions
+                header.setSampleConfig({
+                    toolId: 'gephi-lite',
+                    onSampleSelect: async (detail: { url: string; format: string; name: string }) => {
+                        try {
+                            await open({
+                                type: "remote",
+                                url: detail.url,
+                                filename: detail.name + (detail.format === 'graphml' ? '.graphml' : '.gexf'),
+                            });
+                            notify({
+                                type: "success",
+                                message: t("graph.open.remote.success", { filename: detail.name }),
+                                title: t("gephi-lite.title"),
+                            });
+                        } catch (e) {
+                            console.error(e);
+                            notify({
+                                type: "error",
+                                message: t("graph.open.remote.error"),
+                                title: t("gephi-lite.title"),
+                            });
+                        }
+                    }
+                });
             }
         });
     }, [openModal, open, notify, t, currentFile, exportAsGexf, exportAsGephiLite, openFromData, setCurrentFile, sigma, backgroundColor]);
