@@ -416,6 +416,7 @@
       "warning_nbMissing": "{{nbMissingValues}} {{items}} don't have a value for this attribute."
     },
     "save": {
+      "error": "An error occurred while saving your graph. Please check your connectivity or try later.",
       "github": {
         "error": "An error occurred while saving your graph. Please check your connectivity or try later.",
         "field": {

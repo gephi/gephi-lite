@@ -85,23 +85,6 @@
       "title": "Depth"
     }
   },
-  "cloud": {
-    "github": {
-      "auth": {
-        "asking_for_device_code": "Asking GitHub for device code",
-        "copy_code": "Copy the code below, and click on \"Open GitHub\" button. It will opened a new tab, on which GitHub will ask you the code",
-        "copy_success": "Code saved in clipboard",
-        "title": "GitHub authentification",
-        "waiting_validation": "Waiting validation"
-      },
-      "disconnect": {
-        "action": "Disconnect",
-        "message": "Are you sure you want to disconnect gephi-lite from GitHub?",
-        "success": "You have been disconnected fom GitHub",
-        "title": "Disconnect from GitHub?"
-      }
-    }
-  },
   "common": {
     "add": "Add",
     "all": "All",
@@ -328,8 +311,6 @@
     "noValueOption": "No value"
   },
   "gephi-lite": {
-    "open_welcome_modal": "Open welcome modal",
-    "report_issue": "Report an issue",
     "title": "Gephi Lite"
   },
   "graph": {
@@ -413,14 +394,6 @@
       "degree": "Degree"
     },
     "open": {
-      "github": {
-        "error": "A technical error occurred. Please check your connectivity or try later.",
-        "file-open-external": "Open {{filename}} on Gist",
-        "must-be-signed": "This feature requires to be connected on GitHub",
-        "no-data": "You have no GEXF, GRAPHML or Graphology JSON file saved on GitHub",
-        "success": "File {{filename}} has been successfully loaded",
-        "title": "Open a file from GitHub"
-      },
       "local": {
         "button_text": "Select a local file",
         "dragndrop_text": "GEXF, GRAPHML, Graphology JSON, or CSV are supported. You can also directly drop a file here.",
@@ -439,16 +412,7 @@
       }
     },
     "save": {
-      "github": {
-        "error": "An error occurred while saving your graph. Please check your connectivity or try later.",
-        "field": {
-          "description": "Description",
-          "filename": "Filename",
-          "isPublic": "Create a public Gist"
-        },
-        "success": "File '{{filename}}' has been successfully saved",
-        "title": "Save on GitHub"
-      },
+      "error": "An error occurred while saving your graph. Please check your connectivity or try later.",
       "local": {
         "description": "Click below to download the workspace as a JSON file",
         "error": "Failed to save the graph locally",
@@ -791,9 +755,6 @@
     "data": "Data",
     "graph": "Graph"
   },
-  "providers": {
-    "github": "GitHub"
-  },
   "search": {
     "edges": {
       "help": "Type something to find an edge",
@@ -869,27 +830,21 @@
       "light": "Light"
     }
   },
-  "user": {
-    "avatar_alt": "{{name}}'s avatar"
-  },
-  "welcome": {
-    "documentation": "documentation",
-    "open_graph": "Open a graph file",
-    "samples": "Samples",
-    "title": "Welcome to Gephi Lite",
-    "website": "website"
+  "header": {
+    "open_data_file": "Open Data File",
+    "open_sample": "Open Sample",
+    "open_project": "Open Project",
+    "save_project": "Save Project",
+    "export": "Export",
+    "export_png": "Image (png)",
+    "export_gexf": "Graph (gexf)"
   },
   "workspace": {
+    "title": "Workspace",
     "menu": {
       "duplicate": "Clone workspace",
-      "export_graph_file": "Export graph file",
-      "export_image": "Export image",
-      "github_signin": "Sign-in to GitHub",
-      "github_signout": "Disconnect from GitHub",
       "new": "Create a new workspace",
-      "open": "Open...",
-      "save": "Save",
-      "save_as": "Save as..."
+      "open": "Open..."
     }
   }
 }

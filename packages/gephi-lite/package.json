@@ -10,7 +10,7 @@
     "test": "vitest run src",
     "test:e2e": "playwright test",
     "generate-json-schema": "typescript-json-schema src/core/file/types.ts GephiLiteFileFormat -o build/gephi-lite-format.schema.json",
-    "i18n-checker": "tsx ./scripts/i18n-checker.ts"
+    "i18n-checker": "node --import tsx ./scripts/i18n-checker.ts"
   },
   "preconstruct": {
     "ignore": true
