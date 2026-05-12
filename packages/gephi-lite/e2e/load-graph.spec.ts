@@ -6,13 +6,19 @@ const FILES = ["Java.gexf", "Les Miserables.gexf", "Power Grid.gexf", "airlines.
 
 FILES.forEach((file) => {
   test(`Loading '${file}' should work`, async ({ page }) => {
-    // Load gephi-lite with the given gexf file
-    await page.goto(`/?file=${BASE_URL}/samples/${file}`);
+    const params = new URLSearchParams({
+      lang: "en",
+      file: `${BASE_URL}/samples/${file}`,
+    });
+
+    // Use auth_debug to avoid auth redirects and keep snapshots locale-stable.
+    await page.goto(`/?auth_debug&${params.toString()}`);
 
     // Wait for the graph to be fully loaded
     await expect(page).toHaveTitle(`Gephi Lite - ${file}`, { timeout: 30000 });
+    await expect(page.locator("#graph-page .react-sigma")).toBeVisible();
 
-    // Check the screenshot
-    await expect(page).toHaveScreenshot(`${file}.png`, { maxDiffPixelRatio: 0.01 });
+    // Only compare the graph area so shared shell/header changes do not break this test.
+    await expect(page.locator("#graph-page .filler")).toHaveScreenshot(`${file}.png`, { maxDiffPixelRatio: 0.01 });
   });
 });
