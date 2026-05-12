@@ -127,15 +127,7 @@ npm install && npx preconstruct build && npm run build --workspace=@gephi/gephi-
 
 #### 環境変数
 
-GitHub との連携が必要な場合、以下の環境変数を Vercel のダッシュボードで設定してください：
-
-```
-VITE_GITHUB_PROXY=https://your-domain.com
-```
-
-**注**: 詳細は [デプロイメント](#デプロイメント) セクションを参照してください。
-
-Netlify でデプロイする場合は `/.netlify/functions/github-proxy` がデフォルトで利用されるため、追加の設定は不要です（独自のプロキシを使いたい場合のみ `VITE_GITHUB_PROXY` を上書きしてください）。
+必要に応じて `BASE_URL` や Matomo 関連の環境変数を Vercel のダッシュボードで設定してください。
 
 ### ローカルビルドとリモートデプロイの最新状況
 
@@ -153,7 +145,7 @@ Netlify でデプロイする場合は `/.netlify/functions/github-proxy` がデ
    - プレビュー: `netlify deploy --build --dir=packages/gephi-lite/build`
    - 本番: `netlify deploy --prod --dir=packages/gephi-lite/build`
 
-Netlify 側で追加の設定は不要ですが、必要に応じてダッシュボードから `BASE_URL` や `VITE_GITHUB_PROXY` を環境変数として上書きしてください。
+Netlify 側で追加の設定は不要ですが、必要に応じてダッシュボードから `BASE_URL` を環境変数として上書きしてください。
 
 ## Docker
 
@@ -217,57 +209,16 @@ docker compose run --entrypoint sh gephi-lite
 
 ## デプロイメント
 
-ユーザーが GitHub にデータを同期できるようにするため、Gephi Lite は CORS の問題を回避するためにリバースプロキシが必要です。ローカル開発では、[`http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/vite.config.js) を使用しています。
-
-### デプロイ手順
-
-1. ビルド前に環境変数を設定：
+1. アプリケーションをビルド：
 
 ```bash
-export VITE_GITHUB_PROXY=mydomain.for.github.auth.proxy.com
 npm install
-npm run build
+npm run build --workspace=@gephi/gephi-lite
 ```
 
-2. `build` ディレクトリをサーバーにデプロイ
+2. `packages/gephi-lite/build` を静的ホスティング先に配置
 
-#### Gephi.org での設定例
-
-[gephi.org/gephi-lite](https://gephi.org/gephi-lite) では、以下の設定を使用しています：
-
-```
-VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
-```
-
-NGINX リバースプロキシ設定例：
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name githubapi.gephi.org;
-
-    ssl_certificate /etc/letsencrypt/live/githubapi.gephi.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/githubapi.gephi.org/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-   location /login {
-     add_header Access-Control-Allow-Origin "https://gephi.org";
-     add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
-     add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, user-agent";
-     if ($request_method = OPTIONS) {
-        return 204;
-     }
-     proxy_pass https://github.com/login;
-   }
-
-   location / {
-     return 404;
-   }
-}
-```
-
-**注**: `server_name` と SSL 設定、`Access-Control-Allow-Origin` の値を環境に合わせて変更してください。
+3. nginx を使う場合は、このリポジトリの `nginx.conf` のように SPA fallback を有効化
 
 ## トラブルシューティング
 

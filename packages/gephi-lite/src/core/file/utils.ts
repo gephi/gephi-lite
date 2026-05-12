@@ -3,7 +3,6 @@ import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
 
-import { userAtom } from "../user";
 import { parseEdgeListCSV } from "./csv-utils";
 import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
 
@@ -36,13 +35,6 @@ async function getFileContent(file: FileTypeWithoutFormat): Promise<string> {
     case "remote": {
       const response = await fetch(file.url);
       content = await response.text();
-      break;
-    }
-    case "cloud": {
-      const user = userAtom.get();
-      if (!user) throw new Error("Cannot open a cloud file without to be connected");
-      if (!user.provider) throw new Error("Cloud provider not available");
-      content = await user.provider.getFileContent(file.id);
       break;
     }
     default:

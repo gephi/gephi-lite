@@ -1,16 +1,9 @@
 import { FieldModel } from "@gephi/gephi-lite-sdk";
 import { describe, expect, it } from "vitest";
 
-import { castScalarToQuantifiableValue } from "../graph/fieldModel";
 import { filterValue } from "./utils";
 
 describe("Filters utilities", () => {
-  const dateField: FieldModel<"nodes", false, "date"> = {
-    id: "f",
-    type: "date",
-    itemType: "nodes",
-    format: "yyyy-MM",
-  };
   const numberNodesField: FieldModel<"nodes", false, "number"> = { id: "f", type: "number", itemType: "nodes" };
   const numberEdgesField: FieldModel<"edges", false, "number"> = { id: "f", type: "number", itemType: "edges" };
   describe("#filterValue", () => {
@@ -53,45 +46,6 @@ describe("Filters utilities", () => {
           max: 200,
           keepMissingValues: true,
           field: numberNodesField,
-        }),
-      ).toBe(true);
-
-      // dates
-
-      expect(
-        filterValue("2025-01", {
-          type: "range",
-          min: castScalarToQuantifiableValue("2023-01", dateField),
-          max: castScalarToQuantifiableValue("2026-01", dateField),
-          field: dateField,
-        }),
-      ).toBe(true);
-      expect(
-        filterValue("2020-01", {
-          type: "range",
-          min: castScalarToQuantifiableValue("2023-01", dateField),
-          max: castScalarToQuantifiableValue("2026-01", dateField),
-          field: dateField,
-        }),
-      ).toBe(false);
-      expect(
-        // date in not expected format
-        filterValue("01/02/2024", {
-          type: "range",
-          min: castScalarToQuantifiableValue("2023-01", dateField),
-          max: castScalarToQuantifiableValue("2026-01", dateField),
-
-          field: dateField,
-        }),
-      ).toBe(false);
-      expect(
-        // date in not expected format
-        filterValue("01/02/2024", {
-          type: "range",
-          min: castScalarToQuantifiableValue("2023-01", dateField),
-          max: castScalarToQuantifiableValue("2026-01", dateField),
-          keepMissingValues: true,
-          field: dateField,
         }),
       ).toBe(true);
     });

@@ -102,44 +102,26 @@ Run `docker compose run --entrypoint sh gephi-lite` and you'll get into the shel
 
 ## Deploy the application
 
-To allow users to synchronize their data with GitHub, Gephi Lite needs a reverse proxy to avoid CORS issues. When working locally in development, [we use `http-proxy-middleware`](https://github.com/gephi/gephi-lite/blob/main/vite.config.js) to make that work.
+Deploy the static build output from `packages/gephi-lite/build`.
 
-To deploy the application, you need to define the env variable `VITE_GITHUB_PROXY` before building it, by following those steps:
+Build the application:
 
 ```
-$> VITE_GITHUB_PROXY=mydomain.for.github.auth.proxy.com
 $> npm install
-$> npm run build
+$> npm run build --workspace=@gephi/gephi-lite
 ```
 
-On [gephi.org/gephi-lite](https://gephi.org/gephi-lite) we use this setting : `VITE_GITHUB_PROXY: "https://githubapi.gephi.org"`.
-
-Then on our server, we configured NGINX with this following settings:
+If you serve the app with NGINX, configure SPA fallback:
 
 ```nginx
 server {
-    listen 443 ssl;
-    server_name githubapi.gephi.org;
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  root /var/www/html;
+  server_name _;
 
-    ssl_certificate /etc/letsencrypt/live/githubapi.gephi.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/githubapi.gephi.org/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-   location /login {
-     add_header Access-Control-Allow-Origin "https://gephi.org";
-     add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
-     add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, user-agent";
-     if ($request_method = OPTIONS) {
-        return 204;
-     }
-     proxy_pass https://github.com/login;
-   }
-
-   location / {
-     return 404;
-   }
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
 }
 ```
-
-PS: On this configuration you should change the `server_name` with its ssl configuration, as well as the `add_header Access-Control-Allow-Origin` value.

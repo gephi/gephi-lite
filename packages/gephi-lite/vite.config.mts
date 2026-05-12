@@ -43,12 +43,5 @@ export default defineConfig({
     open: false,
     host: process.env.VITE_HOST || true,
     allowedHosts: process.env.VITE_ALLOWED_HOSTS?.split(","),
-    proxy: {
-      "^/_github/*": {
-        target: "https://github.com",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/_github/, ""),
-      },
-    },
   },
 });

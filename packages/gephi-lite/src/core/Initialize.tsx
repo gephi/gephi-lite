@@ -21,9 +21,6 @@ import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
 import { ToolHeaderConfig } from "./ToolHeaderConfig";
-import { AuthInit } from "./user/AuthInit";
-import { AuthSync } from "./user/AuthSync";
-import { useConnectedUser } from "./user";
 
 // This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
@@ -31,11 +28,16 @@ import { useConnectedUser } from "./user";
 let isInitialized = false;
 let isCloudLoadingStarted = false;
 
+function getProjectIdFromLocation(): string | null {
+  const url = new URL(window.location.href);
+  return url.searchParams.get("project_id") || window.GEPHI_LITE_PROJECT_ID || null;
+}
+
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   // const { openModal } = useModal();
-  const { open, reset } = useFileActions();
+  const { open, openFromData, reset } = useFileActions();
   const { metadata } = useGraphDataset();
   const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
@@ -79,7 +81,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     // If loading from cloud (project_id), skip all local initialization
     const url = new URL(window.location.href);
-    if (url.searchParams.has("project_id")) {
+    if (getProjectIdFromLocation()) {
       return;
     }
 
@@ -218,65 +220,55 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialize]);
 
-  // Load project from cloud if project_id is in URL and user is connected
-  const [user] = useConnectedUser();
-  const { openFromData } = useFileActions();
-
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const projectId = url.searchParams.get("project_id");
-
     const loadCloudProject = async () => {
       // Ensure we only load once globally (even across re-renders in Strict Mode)
-      if (user && projectId && !isCloudLoadingStarted) {
-        isCloudLoadingStarted = true;
-        reset(true);
-        try {
-          const headerEl = document.querySelector('dataviz-tool-header');
-          if (!headerEl) {
-            throw new Error("dataviz-tool-header component not found");
-          }
+      const projectId = getProjectIdFromLocation();
+      if (!projectId || isCloudLoadingStarted) return;
 
-          // Use the new header API to load project
-          // @ts-expect-error - loadProject method not in type definitions
-          const projectData = await headerEl.loadProject(projectId);
-          const projectName = "Loaded Project";
-          if (projectData) {
-            await openFromData(projectData, projectName, projectId);
-          }
+      isCloudLoadingStarted = true;
+      reset(true);
 
-          // Success! Clean up URL.
-          url.searchParams.delete("project_id");
-          window.history.pushState({}, "", url);
+      try {
+        await customElements.whenDefined("dataviz-tool-header");
+        const headerEl = document.querySelector("dataviz-tool-header");
+        if (!headerEl) {
+          throw new Error("dataviz-tool-header component not found");
+        }
 
-          notify({
-            type: "success",
-            title: t("gephi-lite.title"),
-            message: "プロジェクトを読み込みました",
-          });
-        } catch (e) {
-          console.error("Failed to load cloud project:", e);
-          notify({
-            type: "error",
-            title: t("gephi-lite.title"),
-            message: "Failed to load project from cloud",
-          });
-          // On error, we might want to allow retry?
-          // But 'Already being loaded' means it IS loading.
-          // So let's NOT reset the flag here if the error is "Already being loaded".
-          const errMsg = (e instanceof Error) ? e.message : String(e);
-          if (!errMsg.includes("already being loaded")) {
-            isCloudLoadingStarted = false; // Allow retry for other errors
-          }
+        // @ts-expect-error - loadProject method not in type definitions
+        const projectData = await headerEl.loadProject(projectId);
+        if (projectData) {
+          await openFromData(projectData, "Loaded Project", projectId);
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete("project_id");
+        window.history.pushState({}, "", url);
+        window.GEPHI_LITE_PROJECT_ID = undefined;
+
+        notify({
+          type: "success",
+          title: t("gephi-lite.title"),
+          message: "プロジェクトを読み込みました",
+        });
+      } catch (e) {
+        console.error("Failed to load cloud project:", e);
+        notify({
+          type: "error",
+          title: t("gephi-lite.title"),
+          message: "Failed to load project from cloud",
+        });
+        const errMsg = e instanceof Error ? e.message : String(e);
+        if (!errMsg.includes("already being loaded")) {
+          isCloudLoadingStarted = false;
         }
       }
     };
 
-    if (user && projectId) {
-      loadCloudProject();
-    }
+    loadCloudProject();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, openFromData]); // Depends on user authentication status and openFromData
+  }, [openFromData, reset]);
 
   /**
    * Update document title:
@@ -287,8 +279,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
   return (
     <I18n>
-      <AuthInit />
-      <AuthSync />
       <ToolHeaderConfig />
       {children}
     </I18n>

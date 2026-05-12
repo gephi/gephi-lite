@@ -1,5 +1,4 @@
 import cx from "classnames";
-// import FileSaver from "file-saver";
 import { type FC, PropsWithChildren, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
@@ -15,15 +14,8 @@ import {
   GraphIconFill,
 } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
-// import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
-
-
 import { openInNewTab } from "../../core/broadcast/utils";
-import {
-  useDataTable,
-  useGraphDatasetActions,
-} from "../../core/context/dataContexts";
-// import { getFilename } from "../../core/file/utils";
+import { useDataTable, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 
@@ -69,12 +61,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             });
           },
         },
-
       ] as Option[],
     [t, openModal, notify, resetGraph],
   );
-
-
 
   return (
     <header className="gl-container-high-bg container-fluid border-bottom">
@@ -86,7 +75,6 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
                 <button className="gl-btn">{t("workspace.title")}</button>
               </Dropdown>
             </div>
-
           </section>
         </div>
       </AnimateHeight>
@@ -113,9 +101,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}
-          <div className="d-none d-sm-flex">
-
-          </div>
+          <div className="d-none d-sm-flex" />
           {/* Mobile display: */}
           <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
             {expanded ? <PiX /> : <PiList />}

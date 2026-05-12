@@ -1,20 +1,12 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig, mergeConfig } from "vitest/config";
 
-export default defineConfig({
-  test: {
-    globals: true,
-    browser: {
-      provider: "playwright",
-      instances: [
-        {
-          browser: "chromium",
-        },
-      ],
-      enabled: true,
-      headless: true,
+import viteConfig from "./vite.config.mts";
+
+export default mergeConfig(
+  viteConfig,
+  defineConfig({
+    test: {
+      setupFiles: ["src/test/setup.ts"],
     },
-  },
-  optimizeDeps: {
-    exclude: ["chromium-bidi"],
-  },
-});
+  }),
+);

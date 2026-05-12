@@ -1,11 +1,7 @@
 import { AppearanceState } from "@gephi/gephi-lite-sdk";
 
-import { CloudFile } from "../cloud/types";
 import { FiltersState } from "../filters/types";
 import { GraphDataset } from "../graph/types";
-
-// Re-export CloudFile for convenience
-export type { CloudFile } from "../cloud/types";
 
 /**
  * A serializable structure, to allow Gephi Lite to load and save graphs, with their surrounding context.
@@ -46,9 +42,20 @@ export interface LocalFile extends AbstractFile {
   size: number;
   source: File;
 }
+export interface CloudFile extends AbstractFile {
+  type: "cloud";
+  id: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isPublic: boolean;
+  size: number;
+  webUrl?: string;
+  thumbnailUrl?: string;
+}
 
 export type FileType = CloudFile | RemoteFile | LocalFile;
-export type FileTypeWithoutFormat = Omit<CloudFile, "format"> | Omit<RemoteFile, "format"> | Omit<LocalFile, "format">;
+export type FileTypeWithoutFormat = Omit<RemoteFile, "format"> | Omit<LocalFile, "format">;
 
 export type FileState = {
   current: FileType | null;

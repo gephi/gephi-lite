@@ -21,16 +21,71 @@ import { resetCamera } from "../sigma";
 import { CloudFile, FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
 import { extractGraphFromFile, openAndParseFile } from "./utils";
 
+const DATAVIZ_PROJECT_ID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 function getEmptyFileState(): FileState {
   return { current: null, recentFiles: [], status: { type: "idle" } };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function parseDateValue(value: unknown): Date {
+  if (value instanceof Date) return value;
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.valueOf())) return parsed;
+  }
+  return new Date();
+}
+
+function isFileFormat(value: unknown): value is CloudFile["format"] {
+  return value === "gexf" || value === "gephi-lite" || value === "graphology" || value === "graphml" || value === "csv";
+}
+
+function sanitizeCloudFile(file: unknown): CloudFile | null {
+  if (!isRecord(file)) return null;
+  if (file.type !== "cloud" || typeof file.id !== "string" || !DATAVIZ_PROJECT_ID_PATTERN.test(file.id)) return null;
+  if (typeof file.filename !== "string") return null;
+
+  return {
+    type: "cloud",
+    id: file.id,
+    filename: file.filename,
+    description: typeof file.description === "string" ? file.description : "",
+    createdAt: parseDateValue(file.createdAt),
+    updatedAt: parseDateValue(file.updatedAt),
+    isPublic: Boolean(file.isPublic),
+    size: typeof file.size === "number" ? file.size : 0,
+    format: isFileFormat(file.format) ? file.format : "gephi-lite",
+    webUrl: typeof file.webUrl === "string" ? file.webUrl : undefined,
+    thumbnailUrl: typeof file.thumbnailUrl === "string" ? file.thumbnailUrl : undefined,
+  };
+}
+
+function sanitizeStoredFile(file: unknown): FileType | null {
+  if (!isRecord(file) || typeof file.type !== "string") return null;
+  if (file.type === "cloud") return sanitizeCloudFile(file);
+  return file as unknown as FileType;
 }
 
 function getLocalStorageFileState(): FileState {
   const raw = localStorage.getItem("file");
   const state = raw ? JSON.parse(raw) : null;
+  const current = sanitizeStoredFile(state?.current);
+  const recentFiles = Array.isArray(state?.recentFiles)
+    ? state.recentFiles
+        .map((file: unknown) => sanitizeStoredFile(file))
+        .filter((file: FileType | null): file is FileType => file !== null)
+    : [];
+
   return {
     ...getEmptyFileState(),
     ...state,
+    current,
+    recentFiles,
     status: { type: "idle" },
   };
 }
@@ -172,8 +227,9 @@ export const openFromData = asyncAction(async (projectData: object, name: string
   fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
 
   try {
+    const displayName = name || "Gephi Lite Project";
     const content = JSON.stringify(projectData);
-    const filename = name.endsWith(".json") ? name : `${name}.json`;
+    const filename = displayName.endsWith(".json") ? displayName : `${displayName}.json`;
     const { data, format } = await extractGraphFromFile(content, filename);
 
     resetStates(false);
@@ -188,7 +244,7 @@ export const openFromData = asyncAction(async (projectData: object, name: string
     } else {
       const { setGraphDataset } = graphDatasetActions;
       const { mergeState } = appearanceActions;
-      (data as Graph).setAttribute("title", name);
+      (data as Graph).setAttribute("title", displayName);
       const graphDataset = initializeGraphDataset(data as Graph, undefined);
       setGraphDataset(graphDataset);
       const appearanceState = inferAppearanceState(graphDataset);
@@ -198,7 +254,7 @@ export const openFromData = asyncAction(async (projectData: object, name: string
     fileActions.setCurrentFile({
       type: "cloud",
       id: projectId,
-      filename: name,
+      filename: displayName,
       description: "",
       createdAt: new Date(),
       updatedAt: new Date(),

@@ -21,7 +21,6 @@ import { searchActions, searchAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
 import { sessionActions, sessionAtom } from "../session";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
-import { userActions, userAtom } from "../user";
 
 /**
  * Helpers:
@@ -64,7 +63,6 @@ const ATOMS = {
   search: searchAtom,
   layoutState: layoutStateAtom,
   session: sessionAtom,
-  user: userAtom,
   dynamicItemData: dynamicItemDataAtom,
 };
 type AtomName = keyof typeof ATOMS;
@@ -86,7 +84,6 @@ const CONTEXTS = {
   sigma: createContext(ATOMS.sigma),
   sigmaState: createContext(ATOMS.sigmaState),
   sigmaGraph: createContext(ATOMS.sigmaGraph),
-  user: createContext(ATOMS.user),
   dynamicItemData: createContext(ATOMS.dynamicItemData),
 };
 
@@ -124,7 +121,6 @@ export const resetStates: Action<[boolean]> = (full = false) => {
   layoutActions.stopLayout();
 
   if (full) {
-    userActions.reset();
     sessionActions.reset();
   }
 };
@@ -145,7 +141,6 @@ export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useTopologicalFilters = makeUseAtom(CONTEXTS.topologicalFilters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
-export const useUser = makeUseAtom(CONTEXTS.user);
 export const useDynamicItemData = makeUseAtom(CONTEXTS.dynamicItemData);
 
 export const useSigmaActions = makeUseActions(sigmaActions);
@@ -158,7 +153,6 @@ export const usePreferencesActions = makeUseActions(preferencesActions);
 export const useSearchActions = makeUseActions(searchActions);
 export const useFileActions = makeUseActions(fileActions);
 export const useLayoutActions = makeUseActions(layoutActions);
-export const useUserActions = makeUseActions(userActions);
 
 export const useResetStates = () => {
   return resetStates;

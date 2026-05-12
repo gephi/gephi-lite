@@ -41,6 +41,16 @@
     -->
   <!-- Global Auth Header & Supabase -->
   <script src="https://app.dataviz.jp/lib/supabase.js"></script>
+  <script>
+    (function () {
+      if (window.location.search) {
+        var projectId = new URLSearchParams(window.location.search).get("project_id");
+        if (projectId) {
+          window.GEPHI_LITE_PROJECT_ID = projectId;
+        }
+      }
+    })();
+  </script>
   <script src="https://app.dataviz.jp/lib/dataviz-auth-client.js"></script>
   <script src="https://app.dataviz.jp/lib/dataviz-tool-header.js" defer></script>
   <script type="module" src="/src/index.tsx"></script>
