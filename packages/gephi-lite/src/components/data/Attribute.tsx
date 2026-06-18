@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   FieldModel,
   FieldModelAbstraction,
@@ -26,6 +25,20 @@ import { FieldModelIcon, InvalidDataIcon } from "../common-icons";
 import { Checkbox } from "../forms/Checkbox";
 import { BaseOption, CreatableSelect, optionize } from "../forms/Select";
 
+type AttributeRendererProps<K extends keyof FieldModelAbstraction> = {
+  value?: FieldModelAbstraction[K]["expectedOutput"];
+} & FieldModelAbstraction[K]["options"];
+
+type AttributeEditorProps<K extends FieldModelType> = {
+  value?: FieldModelAbstraction[K]["expectedOutput"];
+  onChange: (value?: FieldModelAbstraction[K]["expectedOutput"]) => void;
+  field: FieldModel<ItemType, boolean, K>;
+  autoFocus?: boolean;
+  id?: string;
+  placeholder?: string;
+  inTooltip?: boolean;
+};
+
 /**
  * Render values:
  * **************
@@ -46,6 +59,52 @@ export const InvalidAttributeRenderer: FC<{ value: Scalar; expectedType: FieldMo
     </span>
   );
 };
+
+const TextAttributeRenderer: FC<AttributeRendererProps<"text">> = ({ value }) =>
+  !isNil(value) ? <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify> : null;
+
+const URLAttributeRenderer: FC<AttributeRendererProps<"url">> = ({ value }) =>
+  !isNil(value) ? (
+    <a href={value} target="_blank" rel="noreferrer" title={value}>
+      {prettifyURL(value)}
+    </a>
+  ) : null;
+
+const NumberAttributeRenderer: FC<AttributeRendererProps<"number">> = ({ value }) => {
+  const { i18n } = useTranslation();
+  return !isNil(value) ? <>{value.toLocaleString(i18n.language)}</> : null;
+};
+
+const BooleanAttributeRenderer: FC<AttributeRendererProps<"boolean">> = ({ value }) => (
+  <div className="form-check h-100 ">
+    <Checkbox className="form-check-input disabled" checked={value} />
+  </div>
+);
+
+const CategoryAttributeRenderer: FC<AttributeRendererProps<"category">> = ({ value }) =>
+  !isNil(value) ? <span className="badge rounded-pill text-bg-dark">{value}</span> : null;
+
+const KeywordsAttributeRenderer: FC<AttributeRendererProps<"keywords">> = ({ value }) =>
+  value?.length ? (
+    <span className="d-inline-flex gl-gap-1">
+      {value.map((keyword, i) => (
+        <span key={i} className="badge rounded-pill text-bg-dark">
+          {keyword}
+        </span>
+      ))}
+    </span>
+  ) : null;
+
+const DateAttributeRenderer: FC<AttributeRendererProps<"date">> = ({ value, format }) =>
+  !isNil(value) ? value.toFormat(format) : null;
+
+const ColorAttributeRenderer: FC<AttributeRendererProps<"color">> = ({ value }) =>
+  !isNil(value) ? (
+    <span className="d-inline-flex align-items-center gl-gap-1">
+      <span className="square border border-black border-2" style={{ background: value }} /> {value}
+    </span>
+  ) : null;
+
 export const AttributeRenderers: {
   [K in keyof FieldModelAbstraction]: FC<
     {
@@ -53,40 +112,14 @@ export const AttributeRenderers: {
     } & FieldModelAbstraction[K]["options"]
   >;
 } = {
-  text: ({ value }) => (!isNil(value) ? <ReactLinkify {...DEFAULT_LINKIFY_PROPS}>{value}</ReactLinkify> : null),
-  url: ({ value }) =>
-    !isNil(value) ? (
-      <a href={value} target="_blank" rel="noreferrer" title={value}>
-        {prettifyURL(value)}
-      </a>
-    ) : null,
-  number: ({ value }) => {
-    const { i18n } = useTranslation();
-    return !isNil(value) ? <>{value.toLocaleString(i18n.language)}</> : null;
-  },
-  boolean: ({ value }) => (
-    <div className="form-check h-100 ">
-      <Checkbox className="form-check-input disabled" checked={value} />
-    </div>
-  ),
-  category: ({ value }) => (!isNil(value) ? <span className="badge rounded-pill text-bg-dark">{value}</span> : null),
-  keywords: ({ value }) =>
-    value?.length ? (
-      <span className="d-inline-flex gl-gap-1">
-        {value.map((keyword, i) => (
-          <span key={i} className="badge rounded-pill text-bg-dark">
-            {keyword}
-          </span>
-        ))}
-      </span>
-    ) : null,
-  date: ({ value, format }) => (!isNil(value) ? value.toFormat(format) : null),
-  color: ({ value }) =>
-    !isNil(value) ? (
-      <span className="d-inline-flex align-items-center gl-gap-1">
-        <span className="square border border-black border-2" style={{ background: value }} /> {value}
-      </span>
-    ) : null,
+  text: TextAttributeRenderer,
+  url: URLAttributeRenderer,
+  number: NumberAttributeRenderer,
+  boolean: BooleanAttributeRenderer,
+  category: CategoryAttributeRenderer,
+  keywords: KeywordsAttributeRenderer,
+  date: DateAttributeRenderer,
+  color: ColorAttributeRenderer,
 };
 export const RenderText = AttributeRenderers.text;
 export const RenderNumber = AttributeRenderers.number;
@@ -139,6 +172,196 @@ const StringEditor = ({
   );
 };
 
+const NumberEditor: FC<AttributeEditorProps<"number">> = ({ value, onChange, id, autoFocus, placeholder }) => {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current && autoFocus) ref.current.focus();
+  }, [autoFocus]);
+
+  return (
+    <input
+      id={id}
+      ref={ref}
+      className="form-control"
+      type="number"
+      value={value ?? ""}
+      step="any"
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
+    />
+  );
+};
+
+const BooleanEditor: FC<AttributeEditorProps<"boolean">> = ({ value, onChange, id, autoFocus }) => (
+  <div className="form-check h-100 ">
+    <Checkbox
+      className="form-check-input"
+      id={id}
+      autoFocus={autoFocus}
+      checked={value}
+      onChange={(e) => onChange(e.target.checked)}
+    />
+  </div>
+);
+
+const CategoryEditor: FC<AttributeEditorProps<"category">> = ({
+  value,
+  onChange,
+  field,
+  id,
+  autoFocus,
+  placeholder,
+}) => {
+  const values = useDataCollection(field);
+  const options = useMemo(
+    () =>
+      Array.from(values)
+        .sort()
+        .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
+    [values],
+  );
+  const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
+    const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
+    return (
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <Option {...props}>
+          <RenderCategory value={props.data.value} />
+        </Option>
+      </div>
+    );
+  }, []);
+  const SingleValueComponent = useCallback((props: SingleValueProps<BaseOption, false>) => {
+    const SingleValue = components.SingleValue<BaseOption, false, GroupBase<BaseOption>>;
+    return (
+      <SingleValue {...props}>
+        <RenderCategory value={props.data.value} />
+      </SingleValue>
+    );
+  }, []);
+
+  return (
+    <CreatableSelect<BaseOption>
+      id={id}
+      autoFocus={autoFocus}
+      menuPosition="absolute"
+      placeholder={placeholder}
+      value={!isNil(value) ? optionize(value) : undefined}
+      onChange={(newValue) => onChange(newValue?.value)}
+      options={options}
+      isClearable
+      components={{
+        Option: OptionComponent,
+        SingleValue: SingleValueComponent,
+      }}
+    />
+  );
+};
+
+const KeywordsEditor: FC<AttributeEditorProps<"keywords">> = ({
+  value,
+  onChange,
+  field,
+  id,
+  autoFocus,
+  placeholder,
+}) => {
+  const values = useDataCollection(field);
+  const options = useMemo(
+    () =>
+      Array.from(values)
+        .sort()
+        .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
+    [values],
+  );
+  const OptionComponent = useCallback(
+    (props: OptionProps<BaseOption, true>) => {
+      const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;
+      return (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Option {...props}>
+            <RenderKeywords value={[props.data.value]} separator={field.separator} />
+          </Option>
+        </div>
+      );
+    },
+    [field.separator],
+  );
+  const MultiValueContainerComponent = useCallback(
+    (props: MultiValueProps<BaseOption, true>) => {
+      const MultiValueContainer = components.MultiValueContainer<BaseOption, true, GroupBase<BaseOption>>;
+      return (
+        <MultiValueContainer {...props}>
+          <RenderKeywords value={[props.data.value]} separator={field.separator} />
+        </MultiValueContainer>
+      );
+    },
+    [field.separator],
+  );
+
+  return (
+    <CreatableSelect<BaseOption, true>
+      isMulti
+      id={id}
+      autoFocus={autoFocus}
+      menuPosition="absolute"
+      placeholder={placeholder}
+      value={value?.map(optionize)}
+      onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
+      options={options}
+      isClearable
+      components={{
+        Option: OptionComponent,
+        MultiValueContainer: MultiValueContainerComponent,
+      }}
+    />
+  );
+};
+
+const DateEditor: FC<AttributeEditorProps<"date">> = ({ value, onChange, id, autoFocus, field, placeholder }) => {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current && autoFocus) ref.current.focus();
+  }, [autoFocus]);
+
+  // TODO: use an more advanced date time input which allow partial date input to respect requested format
+  const inputType = field.format.includes("h") ? "datetime-local" : "date";
+  const inputDateFormat = field.format.includes("h") ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd";
+  return (
+    <input
+      id={id}
+      ref={ref}
+      className="form-control"
+      type={inputType}
+      value={value?.toFormat(inputDateFormat) ?? ""}
+      placeholder={placeholder}
+      onChange={(e) => {
+        const date = e.target.value ? DateTime.fromFormat(e.target.value, inputDateFormat) : undefined;
+        onChange(date?.isValid ? date : undefined);
+      }}
+    />
+  );
+};
+
+const ColorEditor: FC<AttributeEditorProps<"color">> = ({ value, onChange, inTooltip }) => {
+  return inTooltip ? (
+    <div className="custom-color-picker">
+      <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
+    </div>
+  ) : (
+    <div className="d-flex">
+      <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
+    </div>
+  );
+};
+
 export const AttributeEditors: {
   [K in FieldModelType]: FC<{
     value?: FieldModelAbstraction[K]["expectedOutput"];
@@ -152,176 +375,12 @@ export const AttributeEditors: {
 } = {
   text: StringEditor,
   url: StringEditor,
-  number: ({ value, onChange, id, autoFocus, placeholder }) => {
-    const ref = useRef<HTMLInputElement>(null);
-    useEffect(() => {
-      if (ref.current && autoFocus) ref.current.focus();
-    }, [autoFocus]);
-
-    return (
-      <input
-        id={id}
-        ref={ref}
-        className="form-control"
-        type="number"
-        value={value ?? ""}
-        step="any"
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
-      />
-    );
-  },
-  boolean: ({ value, onChange, id, autoFocus }) => (
-    <div className="form-check h-100 ">
-      <Checkbox
-        className="form-check-input"
-        id={id}
-        autoFocus={autoFocus}
-        checked={value}
-        onChange={(e) => onChange(e.target.checked)}
-      />
-    </div>
-  ),
-  category: ({ value, onChange, field, id, autoFocus, placeholder }) => {
-    const values = useDataCollection(field);
-    const options = useMemo(
-      () =>
-        Array.from(values)
-          .sort()
-          .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
-      [values],
-    );
-    const OptionComponent = useCallback((props: OptionProps<BaseOption, false>) => {
-      const Option = components.Option<BaseOption, false, GroupBase<BaseOption>>;
-      return (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <Option {...props}>
-            <RenderCategory value={props.data.value} />
-          </Option>
-        </div>
-      );
-    }, []);
-    const SingleValueComponent = useCallback((props: SingleValueProps<BaseOption, false>) => {
-      const SingleValue = components.SingleValue<BaseOption, false, GroupBase<BaseOption>>;
-      return (
-        <SingleValue {...props}>
-          <RenderCategory value={props.data.value} />
-        </SingleValue>
-      );
-    }, []);
-
-    return (
-      <CreatableSelect<BaseOption>
-        id={id}
-        autoFocus={autoFocus}
-        menuPosition="absolute"
-        placeholder={placeholder}
-        value={!isNil(value) ? optionize(value) : undefined}
-        onChange={(newValue) => onChange(newValue?.value)}
-        options={options}
-        isClearable
-        components={{
-          Option: OptionComponent,
-          SingleValue: SingleValueComponent,
-        }}
-      />
-    );
-  },
-  keywords: ({ value, onChange, field, id, autoFocus, placeholder }) => {
-    const values = useDataCollection(field);
-    const options = useMemo(
-      () =>
-        Array.from(values)
-          .sort()
-          .flatMap((v) => (isNil(v) ? [] : [optionize(v)])),
-      [values],
-    );
-    const OptionComponent = useCallback(
-      (props: OptionProps<BaseOption, true>) => {
-        const Option = components.Option<BaseOption, true, GroupBase<BaseOption>>;
-        return (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Option {...props}>
-              <RenderKeywords value={[props.data.value]} separator={field.separator} />
-            </Option>
-          </div>
-        );
-      },
-      [field.separator],
-    );
-    const MultiValueContainerComponent = useCallback(
-      (props: MultiValueProps<BaseOption, true>) => {
-        const MultiValueContainer = components.MultiValueContainer<BaseOption, true, GroupBase<BaseOption>>;
-        return (
-          <MultiValueContainer {...props}>
-            <RenderKeywords value={[props.data.value]} separator={field.separator} />
-          </MultiValueContainer>
-        );
-      },
-      [field.separator],
-    );
-
-    return (
-      <CreatableSelect<BaseOption, true>
-        isMulti
-        id={id}
-        autoFocus={autoFocus}
-        menuPosition="absolute"
-        placeholder={placeholder}
-        value={value?.map(optionize)}
-        onChange={(newValue) => onChange(newValue.length ? newValue.map((o) => o.value) : undefined)}
-        options={options}
-        isClearable
-        components={{
-          Option: OptionComponent,
-          MultiValueContainer: MultiValueContainerComponent,
-        }}
-      />
-    );
-  },
-  date: ({ value, onChange, id, autoFocus, field, placeholder }) => {
-    const ref = useRef<HTMLInputElement>(null);
-    useEffect(() => {
-      if (ref.current && autoFocus) ref.current.focus();
-    }, [autoFocus]);
-
-    // TODO: use an more advanced date time input which allow partial date input to respect requested format
-    const inputType = field.format.includes("h") ? "datetime-local" : "date";
-    const inputDateFormat = field.format.includes("h") ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd";
-    return (
-      <input
-        id={id}
-        ref={ref}
-        className="form-control"
-        type={inputType}
-        value={value?.toFormat(inputDateFormat) ?? ""}
-        placeholder={placeholder}
-        onChange={(e) => {
-          const date = e.target.value ? DateTime.fromFormat(e.target.value, inputDateFormat) : undefined;
-          onChange(date?.isValid ? date : undefined);
-        }}
-      />
-    );
-  },
-  color: ({ value, onChange, inTooltip }) => {
-    return inTooltip ? (
-      <div className="custom-color-picker">
-        <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
-      </div>
-    ) : (
-      <div className="d-flex">
-        <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
-      </div>
-    );
-  },
+  number: NumberEditor,
+  boolean: BooleanEditor,
+  category: CategoryEditor,
+  keywords: KeywordsEditor,
+  date: DateEditor,
+  color: ColorEditor,
 };
 export const EditText = AttributeEditors.text;
 export const EditNumber = AttributeEditors.number;
