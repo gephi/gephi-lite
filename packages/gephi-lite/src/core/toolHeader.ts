@@ -17,12 +17,12 @@ export interface ToolHeaderProjectMeta {
   isPublic?: boolean;
 }
 
-interface ToolHeaderDropdownItem {
+export interface ToolHeaderDropdownItem {
   label: string;
   action: () => MaybePromise<void>;
 }
 
-type ToolHeaderButton =
+export type ToolHeaderButton =
   | {
       label: string;
       action: () => MaybePromise<void>;
@@ -36,7 +36,7 @@ type ToolHeaderButton =
       items: ToolHeaderDropdownItem[];
     };
 
-interface ToolHeaderConfig {
+export interface ToolHeaderUiConfig {
   logo?: {
     type: "text";
     text: string;
@@ -45,14 +45,14 @@ interface ToolHeaderConfig {
   buttons?: ToolHeaderButton[];
 }
 
-interface ToolHeaderSaveModalOptions {
+export interface ToolHeaderSaveModalOptions {
   name?: string;
   data: object;
   thumbnailDataUri?: string | null;
   existingProjectId?: string | null;
 }
 
-interface ToolHeaderProjectConfig {
+export interface ToolHeaderProjectConfig {
   appName: string;
   apiBaseUrl?: string;
   onProjectLoad: (projectData: object) => MaybePromise<void>;
@@ -60,7 +60,7 @@ interface ToolHeaderProjectConfig {
   onProjectDelete?: (projectId: string) => void;
 }
 
-interface ToolHeaderSampleConfig {
+export interface ToolHeaderSampleConfig {
   toolId: string;
   onSampleSelect: (detail: { url: string; format: string; name: string }) => MaybePromise<void>;
 }
@@ -73,7 +73,7 @@ export type ToolHeaderElement = HTMLElement & {
   showSaveModal?: (options: ToolHeaderSaveModalOptions) => unknown;
   loadProject?: (projectId: string) => MaybePromise<object | null>;
   saveProject?: (payload: ToolHeaderSaveModalOptions) => MaybePromise<ToolHeaderProjectMeta>;
-  setConfig?: (config: ToolHeaderConfig) => void;
+  setConfig?: (config: ToolHeaderUiConfig) => void;
   setProjectConfig?: (config: ToolHeaderProjectConfig) => void;
   setSampleConfig?: (config: ToolHeaderSampleConfig) => void;
 };
