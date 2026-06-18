@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import Editor, { Monaco } from "@monaco-editor/react";
 import { useCallback, useState } from "react";
 import Highlight from "react-highlight";
@@ -8,11 +7,11 @@ import { usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { getAppliedTheme } from "../../core/preferences/utils";
-import { codeToFunction } from "../../utils/functions";
+import { type CallableFunction, codeToFunction, stripFunctionJsDoc } from "../../utils/functions";
 import { CodeEditorIcon } from "../common-icons";
 import { Modal } from "../modals";
 
-export interface FunctionEditorProps<T extends Function> {
+export interface FunctionEditorProps<T extends CallableFunction> {
   editorName?: string;
   fullEditor?: boolean;
   functionJsDoc: string;
@@ -22,7 +21,7 @@ export interface FunctionEditorProps<T extends Function> {
   saveAndRunI18nKey?: string;
 }
 
-export function useFunctionEditor<T extends Function>({
+export function useFunctionEditor<T extends CallableFunction>({
   editorName,
   fullEditor,
   checkFunction,
@@ -114,7 +113,7 @@ export function useFunctionEditor<T extends Function>({
           value={`${functionJsDoc}\n${code}`}
           onChange={(e) => {
             setError(null);
-            setCode(codeToFunction(e || "").toString());
+            setCode(stripFunctionJsDoc(e || "", functionJsDoc));
           }}
           onMount={(editor, monaco: Monaco) => {
             // Making read only the header & footer of the function
@@ -146,7 +145,7 @@ export function useFunctionEditor<T extends Function>({
   };
 }
 
-export function FunctionEditorModal<T extends Function>(
+export function FunctionEditorModal<T extends CallableFunction>(
   props: ModalProps<
     Omit<FunctionEditorProps<T>, "fullEditor"> & {
       title: string;
