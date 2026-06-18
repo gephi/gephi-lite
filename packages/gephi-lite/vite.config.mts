@@ -7,21 +7,25 @@ import { defineConfig } from "vitest/config";
 
 import { BASE_URL } from "../../config";
 
+const enableChecker = process.env.VITEST !== "true";
+
 export default defineConfig({
   base: BASE_URL,
   plugins: [
     mdx() as unknown as PluginOption,
     react(),
     svgr(),
-    checker({
-      typescript: {
-        buildMode: true,
-      },
-      eslint: {
-        useFlatConfig: true,
-        lintCommand: "eslint src --max-warnings=0",
-      },
-    }),
+    enableChecker
+      ? checker({
+          typescript: {
+            buildMode: true,
+          },
+          eslint: {
+            useFlatConfig: true,
+            lintCommand: "eslint src --max-warnings=0",
+          },
+        })
+      : false,
   ],
   resolve: {
     alias: {
