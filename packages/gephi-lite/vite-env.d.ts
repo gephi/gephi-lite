@@ -1,4 +1,7 @@
 /// <reference types="vite/client" />
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
+
+import type { ToolHeaderElement } from "./src/core/toolHeader";
 
 declare global {
   interface Window {
@@ -7,9 +10,9 @@ declare global {
 
   namespace JSX {
     interface IntrinsicElements {
-      "dataviz-tool-header": any;
+      "dataviz-tool-header": DetailedHTMLProps<HTMLAttributes<ToolHeaderElement>, ToolHeaderElement>;
     }
   }
 }
 
-export { };
+export {};

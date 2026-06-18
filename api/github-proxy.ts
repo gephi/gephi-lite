@@ -1,6 +1,24 @@
-export default async (req: any, res: any) => {
+type HeaderValue = string | string[] | undefined;
+
+interface GithubProxyRequest {
+  query: {
+    path?: string | string[];
+  };
+  method?: string;
+  headers: Record<string, HeaderValue>;
+  body?: unknown;
+}
+
+interface GithubProxyResponse {
+  setHeader(name: string, value: string): void;
+  status(code: number): GithubProxyResponse;
+  json(body: unknown): unknown;
+  end(): unknown;
+}
+
+export default async (req: GithubProxyRequest, res: GithubProxyResponse) => {
   // リクエストされたパスを抽出
-  const pathArray = (req.query.path as string[]) || [];
+  const pathArray = req.query.path || [];
   const path = Array.isArray(pathArray) ? pathArray.join("/") : pathArray;
 
   if (!path) {
@@ -14,33 +32,20 @@ export default async (req: any, res: any) => {
     const response = await fetch(targetUrl, {
       method: req.method,
       headers: {
-        "user-agent":
-          req.headers["user-agent"] ||
-          "Gephi-Lite/1.0 (+https://gephi.org/gephi-lite)",
+        "user-agent": req.headers["user-agent"] || "Gephi-Lite/1.0 (+https://gephi.org/gephi-lite)",
         "content-type": req.headers["content-type"] || "application/json",
       },
-      body:
-        req.method !== "GET" && req.method !== "HEAD"
-          ? JSON.stringify(req.body)
-          : undefined,
+      body: req.method !== "GET" && req.method !== "HEAD" ? JSON.stringify(req.body) : undefined,
     });
 
     const contentType = response.headers.get("content-type");
     const body =
-      contentType && contentType.includes("application/json")
-        ? await response.json()
-        : await response.text();
+      contentType && contentType.includes("application/json") ? await response.json() : await response.text();
 
     // CORS ヘッダーを設定
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, User-Agent"
-    );
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, User-Agent");
 
     // プリフライトリクエスト対応
     if (req.method === "OPTIONS") {
