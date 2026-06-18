@@ -6,6 +6,7 @@ import useKonami from "react-use-konami";
 // import { WelcomeModal } from "../components/modals/WelcomeModal";
 import { I18n } from "../locales/provider";
 import { extractFilename } from "../utils/url";
+import { ToolHeaderConfig } from "./ToolHeaderConfig";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
 import { useFileActions, useGraphDataset, useGraphDatasetActions } from "./context/dataContexts";
@@ -20,7 +21,7 @@ import { getCurrentPreferences } from "./preferences/utils";
 import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { resetCamera } from "./sigma";
-import { ToolHeaderConfig } from "./ToolHeaderConfig";
+import { getToolHeader, installHeaderProcessingToasts } from "./toolHeader";
 
 // This awful flag helps to deal with the double rendering caused from
 // React.StrictMode:
@@ -231,12 +232,12 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
       try {
         await customElements.whenDefined("dataviz-tool-header");
-        const headerEl = document.querySelector("dataviz-tool-header");
-        if (!headerEl) {
+        const headerEl = getToolHeader();
+        if (!headerEl || typeof headerEl.loadProject !== "function") {
           throw new Error("dataviz-tool-header component not found");
         }
+        installHeaderProcessingToasts(headerEl, t);
 
-        // @ts-expect-error - loadProject method not in type definitions
         const projectData = await headerEl.loadProject(projectId);
         if (projectData) {
           await openFromData(projectData, "Loaded Project", projectId);

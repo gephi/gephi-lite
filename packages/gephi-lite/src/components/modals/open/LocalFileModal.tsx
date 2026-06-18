@@ -5,6 +5,7 @@ import { PiFolderOpen } from "react-icons/pi";
 import { useFile, useFileActions } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
+import { showProcessingToast } from "../../../core/toolHeader";
 import type { AsyncStatus } from "../../../utils/promises";
 import { DropInput } from "../../DropInput";
 import { Loader } from "../../Loader";
@@ -26,6 +27,7 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
   const onSubmit = useCallback(
     async (file: File) => {
       onStatusChange({ type: "loading" });
+      showProcessingToast(t("processing.file"));
       try {
         await open({
           type: "local",

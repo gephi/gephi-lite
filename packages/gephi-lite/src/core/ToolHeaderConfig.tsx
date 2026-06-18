@@ -1,15 +1,22 @@
 import FileSaver from "file-saver";
 import { FC, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+
 import { ExportPNGModal } from "../components/modals/export/ExportPNGModal";
 import { OpenLocalFileModal } from "../components/modals/open/LocalFileModal";
+import { getGraphSnapshot } from "../utils/sigma";
 import { useFile, useFileActions } from "./context/dataContexts";
+import { useSigmaAtom } from "./context/dataContexts";
+import { useAppearance } from "./context/dataContexts";
 import { getFilename } from "./file/utils";
 import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
-import { getGraphSnapshot } from "../utils/sigma";
-import { useSigmaAtom } from "./context/dataContexts";
-import { useAppearance } from "./context/dataContexts";
+import {
+  type ToolHeaderProjectMeta,
+  getToolHeader,
+  installHeaderProcessingToasts,
+  showProcessingToast,
+} from "./toolHeader";
 
 const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf"];
 
@@ -23,22 +30,6 @@ function blobToDataUrl(blob: Blob): Promise<string> {
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
-}
-
-/**
- * Project metadata returned from dataviz-tool-header API
- */
-interface ProjectMeta {
-  id: string;
-  name: string;
-  app_name: string;
-  created_at?: string;
-  updated_at?: string;
-  user_id?: string;
-  storage_path?: string;
-  thumbnail_path?: string | null;
-  description?: string;
-  isPublic?: boolean;
 }
 
 export const ToolHeaderConfig: FC = () => {
@@ -56,9 +47,10 @@ export const ToolHeaderConfig: FC = () => {
 
   useEffect(() => {
     customElements.whenDefined("dataviz-tool-header").then(() => {
-      const header = document.querySelector("dataviz-tool-header");
-      if (header) {
-        // @ts-expect-error - setConfig method not in type definitions
+      const header = getToolHeader();
+      if (header?.setConfig && header.setProjectConfig && header.setSampleConfig) {
+        installHeaderProcessingToasts(header, t);
+
         header.setConfig({
           logo: {
             type: "text",
@@ -79,6 +71,7 @@ export const ToolHeaderConfig: FC = () => {
                 label: sample,
                 action: async () => {
                   try {
+                    showProcessingToast(t("processing.sample"));
                     await open({
                       type: "remote",
                       url: `${import.meta.env.BASE_URL}samples/${sample}`,
@@ -103,8 +96,7 @@ export const ToolHeaderConfig: FC = () => {
             {
               label: t("header.open_project"),
               action: () => {
-                // @ts-expect-error - showLoadModal method not in type definitions
-                header.showLoadModal();
+                header.showLoadModal?.();
               },
               align: "right",
             },
@@ -112,6 +104,7 @@ export const ToolHeaderConfig: FC = () => {
               label: t("header.save_project"),
               action: async () => {
                 try {
+                  showProcessingToast(t("processing.savePrep"));
                   const thumbnail = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
                     width: 800,
                     height: 600,
@@ -130,8 +123,7 @@ export const ToolHeaderConfig: FC = () => {
                     thumbnailDataUri = await blobToDataUrl(thumbnail);
                   }
 
-                  // @ts-expect-error - showSaveModal method not in type definitions
-                  header.showSaveModal({
+                  header.showSaveModal?.({
                     name: currentFile?.filename || "Gephi Lite Project",
                     data: projectData,
                     thumbnailDataUri,
@@ -160,6 +152,7 @@ export const ToolHeaderConfig: FC = () => {
                   label: t("header.export_gexf"),
                   action: async () => {
                     try {
+                      showProcessingToast(t("processing.export"));
                       await exportAsGexf((content) => {
                         FileSaver(new Blob([content]), getFilename(currentFile?.filename || "gephi-lite", "gexf"));
                       });
@@ -175,12 +168,10 @@ export const ToolHeaderConfig: FC = () => {
           ],
         });
 
-        // @ts-expect-error - setProjectConfig method not in type definitions
         header.setProjectConfig({
           appName: "gephi-lite",
           onProjectLoad: async (projectData: object) => {
             try {
-              // @ts-expect-error - _currentSelectedProjectId is undocumented behavior from the shared header
               const selectedProjectId = header._currentSelectedProjectId;
               const projectName = currentLoadedProjectName.current || "Gephi Lite Project";
               const projectId = selectedProjectId || currentLoadedProjectId.current || "";
@@ -200,7 +191,7 @@ export const ToolHeaderConfig: FC = () => {
               });
             }
           },
-          onProjectSave: (meta: ProjectMeta) => {
+          onProjectSave: (meta: ToolHeaderProjectMeta) => {
             currentLoadedProjectId.current = meta.id;
             currentLoadedProjectName.current = meta.name;
             setCurrentFile({
@@ -221,11 +212,11 @@ export const ToolHeaderConfig: FC = () => {
           },
         });
 
-        // @ts-expect-error - setSampleConfig method not in type definitions
         header.setSampleConfig({
           toolId: "gephi-lite",
           onSampleSelect: async (detail: { url: string; format: string; name: string }) => {
             try {
+              showProcessingToast(t("processing.sample"));
               await open({
                 type: "remote",
                 url: detail.url,
@@ -248,7 +239,19 @@ export const ToolHeaderConfig: FC = () => {
         });
       }
     });
-  }, [openModal, open, notify, t, currentFile, exportAsGexf, exportAsGephiLite, openFromData, setCurrentFile, sigma, backgroundColor]);
+  }, [
+    openModal,
+    open,
+    notify,
+    t,
+    currentFile,
+    exportAsGexf,
+    exportAsGephiLite,
+    openFromData,
+    setCurrentFile,
+    sigma,
+    backgroundColor,
+  ]);
 
   return null;
 };

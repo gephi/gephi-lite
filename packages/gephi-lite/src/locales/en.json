@@ -874,6 +874,15 @@
     "export_png": "Image (png)",
     "export_gexf": "Graph (gexf)"
   },
+  "processing": {
+    "projectList": "Loading project list...",
+    "projectLoad": "Loading project...",
+    "projectSave": "Saving project...",
+    "savePrep": "Preparing save...",
+    "sample": "Loading sample data...",
+    "file": "Reading file...",
+    "export": "Exporting..."
+  },
   "workspace": {
     "title": "Workspace",
     "menu": {

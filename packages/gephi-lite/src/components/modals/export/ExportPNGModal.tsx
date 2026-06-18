@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useAppearance, useSigmaAtom } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
+import { showProcessingToast } from "../../../core/toolHeader";
 import { getGraphSnapshot } from "../../../utils/sigma";
 import { Modal } from "../../modals";
 
@@ -27,6 +28,7 @@ export const ExportPNGModal: FC<ModalProps<unknown>> = ({ cancel }) => {
   });
 
   const handleSubmit = useCallback(async () => {
+    showProcessingToast(t("processing.export"));
     const blob = await getGraphSnapshot(sigma.getGraph(), sigma.getSettings(), {
       width: data.width,
       height: data.height,
