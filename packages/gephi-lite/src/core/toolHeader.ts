@@ -62,7 +62,7 @@ export interface ToolHeaderProjectConfig {
 
 export interface ToolHeaderSampleConfig {
   toolId: string;
-  onSampleSelect: (detail: { url: string; format: string; name: string }) => MaybePromise<void>;
+  onSampleSelect: (detail: { url: string; format: string; name: string; nameEn?: string }) => MaybePromise<void>;
 }
 
 export type ToolHeaderElement = HTMLElement & {

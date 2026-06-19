@@ -9,6 +9,7 @@ import { useAppearance, useFile, useFileActions, useSigmaAtom } from "./context/
 import { getFilename } from "./file/utils";
 import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
+import { installGephiLiteSamplePicker } from "./samplePicker";
 import {
   type ToolHeaderButton,
   type ToolHeaderElement,
@@ -21,6 +22,11 @@ import {
 } from "./toolHeader";
 
 const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf"];
+const SAMPLE_FORMAT_EXTENSIONS: Record<string, string> = {
+  gexf: "gexf",
+  graphml: "graphml",
+  json: "json",
+};
 
 function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -29,6 +35,18 @@ function blobToDataUrl(blob: Blob): Promise<string> {
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
+}
+
+function getSampleFilename(detail: { url: string; format: string; name: string }): string {
+  try {
+    const file = decodeURIComponent(new URL(detail.url, window.location.href).pathname.split("/").pop() || "");
+    if (file.includes(".")) return file;
+  } catch (_e) {
+    // Fallback to name + format below.
+  }
+
+  const extension = SAMPLE_FORMAT_EXTENSIONS[detail.format] || detail.format || "gexf";
+  return detail.name.endsWith(`.${extension}`) ? detail.name : `${detail.name}.${extension}`;
 }
 
 function useToolHeaderElement(): ToolHeaderElement | null {
@@ -231,13 +249,13 @@ function useToolHeaderSampleConfig(): ToolHeaderSampleConfig {
   return useMemo(
     () => ({
       toolId: "gephi-lite",
-      onSampleSelect: async (detail: { url: string; format: string; name: string }) => {
+      onSampleSelect: async (detail: { url: string; format: string; name: string; nameEn?: string }) => {
         try {
           showProcessingToast(t("processing.sample"));
           await open({
             type: "remote",
             url: detail.url,
-            filename: detail.name + (detail.format === "graphml" ? ".graphml" : ".gexf"),
+            filename: getSampleFilename(detail),
           });
           notify({
             type: "success",
@@ -270,6 +288,7 @@ export const ToolHeaderConfig: FC = () => {
   useEffect(() => {
     if (!header?.setConfig || !header.setProjectConfig || !header.setSampleConfig) return;
 
+    installGephiLiteSamplePicker();
     installHeaderProcessingToasts(header, t);
     header.setConfig({
       logo: {
