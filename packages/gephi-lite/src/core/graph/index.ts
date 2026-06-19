@@ -1,5 +1,4 @@
 import {
-  APPEARANCE_ITEM_TYPES,
   AppearanceState,
   DatalessGraph,
   FilteredGraph,
@@ -19,10 +18,9 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, isNil, keyBy, last, map, mapValues, omit } from "lodash";
 import { Coordinates } from "sigma/types";
 
-import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { useGraphDataset } from "../context/dataContexts";
@@ -37,6 +35,7 @@ import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
+import { syncAppearanceStateWithGraphFields } from "./appearanceSync";
 import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes } from "./dynamicAttributes";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
@@ -46,7 +45,6 @@ import {
   datasetToString,
   getEmptyGraphDataset,
   newItemModel,
-  uniqFieldValuesAsStrings,
 } from "./utils";
 
 const GRAPH_TRANSFORMATION_METHODS: Record<GraphType, (g: DatalessGraph) => DatalessGraph> = {
@@ -543,63 +541,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
       filters: filtersState.filters.filter(filterFilters),
     });
     // appearance
-    const appearanceState = appearanceAtom.get();
-    const initialState = getEmptyAppearanceState();
-
-    const newState = {
-      ...initialState,
-      ...omitBy(appearanceState, (appearanceElement, key: keyof AppearanceState) => {
-        if (
-          appearanceElement &&
-          !isString(appearanceElement) &&
-          appearanceElement.field &&
-          // here we test only static field
-          !appearanceElement.field.dynamic &&
-          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field.id)) ||
-            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field.id)))
-        ) {
-          // this appearance element is based on a field which is not in the model anymore
-          // let's reset it
-          return true;
-        }
-
-        // this appearance is not based on a field or on a field existing in the model
-        return false;
-      }),
-    };
-
-    // to keep appearance state in sync we must check at least partitions
-    forEach(newState, (appearanceElement, key: keyof AppearanceState) => {
-      if (!appearanceElement || isString(appearanceElement) || !("type" in appearanceElement)) return appearanceElement;
-      // TODO
-      // - check if data field quali/quanti is still the good one
-
-      // utils variables
-      const itemsData = graphDataset[APPEARANCE_ITEM_TYPES[key] === "nodes" ? "nodeData" : "edgeData"];
-      let values: string[] = [];
-
-      switch (appearanceElement.type) {
-        // - if partitions palette are still in sync with the field values
-        case "partition":
-          // check if deprecated appearance state
-          values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
-
-          // checking with the actual palette miss some values. It's ok if it has more available.
-          if (
-            keys(appearanceElement.colorPalette).length < values.length ||
-            values.some((v) => appearanceElement.colorPalette[v] === undefined)
-          ) {
-            // new palette
-            // TODO: merge existing palette with the new values, i.e. keep existing colors
-            appearanceElement.colorPalette = getPalette(values);
-          }
-          break;
-        // nothing to do for other cases
-        // TODO: check if other cases need edits.
-      }
-    });
-
-    appearanceAtom.set(newState);
+    appearanceAtom.set(syncAppearanceStateWithGraphFields(graphDataset, appearanceAtom.get()));
   }
 
   // Only "small enough" graphs are stored in the sessionStorage, because this
