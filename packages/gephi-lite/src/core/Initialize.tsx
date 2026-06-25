@@ -80,7 +80,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     }
     isInitialized = true;
 
-    // If loading from cloud (project_id), skip all local initialization
+    // If loading from cloud (projectId), skip all local initialization
     const url = new URL(window.location.href);
     if (getProjectIdFromLocation()) {
       return;
