@@ -31,7 +31,7 @@ let isCloudLoadingStarted = false;
 
 function getProjectIdFromLocation(): string | null {
   const url = new URL(window.location.href);
-  return url.searchParams.get("project_id") || window.GEPHI_LITE_PROJECT_ID || null;
+  return url.searchParams.get("projectId") || window.GEPHI_LITE_PROJECT_ID || null;
 }
 
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
@@ -244,7 +244,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         }
 
         const url = new URL(window.location.href);
-        url.searchParams.delete("project_id");
+        url.searchParams.delete("projectId");
         window.history.pushState({}, "", url);
         window.GEPHI_LITE_PROJECT_ID = undefined;
 
