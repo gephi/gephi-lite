@@ -66,6 +66,7 @@ export interface ToolHeaderSampleConfig {
 }
 
 export type ToolHeaderElement = HTMLElement & {
+  __dvzNativeProjectProcessingToasts?: "1";
   __dvzProcessingToastsInstalled?: "1";
   _currentSelectedProjectId?: string;
   showMessage?: (message: string, type?: ToolHeaderToastType, duration?: number) => void;
@@ -95,7 +96,7 @@ export function showProcessingToast(message: string): void {
 }
 
 export function installHeaderProcessingToasts(header: ToolHeaderElement, t: TFunction): void {
-  if (header.__dvzProcessingToastsInstalled === "1") return;
+  if (header.__dvzNativeProjectProcessingToasts === "1" || header.__dvzProcessingToastsInstalled === "1") return;
 
   if (typeof header.showLoadModal === "function") {
     const originalShowLoadModal = header.showLoadModal.bind(header);
