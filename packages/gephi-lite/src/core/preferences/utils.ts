@@ -1,20 +1,13 @@
 import { gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
+import { resolveDatavizLocale } from "../datavizLocale";
 import { Preferences } from "./types";
-
-const SUPPORTED_LOCALES = ["ja", "en"];
-
-function detectBrowserLocale(): string {
-  const browserLang = navigator.language?.split("-")[0] || "en";
-  return SUPPORTED_LOCALES.includes(browserLang) ? browserLang : "en";
-}
 
 export function getEmptyPreferences(): Preferences {
   return {
     layoutsParameters: {},
     metrics: {},
-    // detect browser language, fallback to "en"
-    locale: detectBrowserLocale(),
+    locale: resolveDatavizLocale(),
     theme: "auto",
   };
 }
@@ -24,8 +17,8 @@ export function getCurrentPreferences(): Preferences {
     const rawPreferences = localStorage.getItem("preferences");
     const preferences = rawPreferences ? parsePreferences(rawPreferences) : null;
     const merged = { ...getEmptyPreferences(), ...preferences };
-    // Always use browser language detection for locale
-    merged.locale = detectBrowserLocale();
+    // Keep UI language aligned with the portal/header locale on every load.
+    merged.locale = resolveDatavizLocale();
     return merged;
   } catch (e) {
     console.error(e);

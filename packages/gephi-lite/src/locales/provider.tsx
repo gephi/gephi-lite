@@ -1,30 +1,23 @@
 import i18next from "i18next";
-import LngDetector from "i18next-browser-languagedetector";
 import { capitalize } from "lodash";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 
 import { usePreferences } from "../core/context/dataContexts";
+import { resolveDatavizLocale } from "../core/datavizLocale";
 import { DEFAULT_LOCALE, LOCALES } from "./LOCALES";
 
-const i18n = i18next.use(initReactI18next).use(LngDetector);
+const i18n = i18next.use(initReactI18next);
 
 i18n
   .init({
     debug: import.meta.env.MODE !== "production",
+    lng: resolveDatavizLocale(),
     fallbackLng: DEFAULT_LOCALE,
     resources: LOCALES,
     react: {
       transSupportBasicHtmlNodes: true,
       transKeepBasicHtmlNodesFor: ["br", "strong", "i"],
-    },
-    detection: {
-      order: ["querystring", "navigator"],
-      lookupQuerystring: "lang",
-      convertDetectedLanguage: (lng) => {
-        const base = lng.split("-")[0];
-        return base in LOCALES ? base : DEFAULT_LOCALE;
-      },
     },
     interpolation: {
       format: (value, format) => {
@@ -52,6 +45,7 @@ export const I18n: FC<PropsWithChildren<unknown>> = ({ children }) => {
   useEffect(() => {
     if (locale) {
       i18n.changeLanguage(locale);
+      document.documentElement.lang = locale;
     }
   }, [locale]);
 

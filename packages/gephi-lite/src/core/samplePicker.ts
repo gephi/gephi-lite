@@ -1,3 +1,5 @@
+import { resolveDatavizLocale } from "./datavizLocale";
+
 const SAMPLE_PICKER_TAG_NAME = "dataviz-sample-picker";
 const SAMPLE_CATALOG_URL = "https://app.dataviz.jp/catalog.json";
 
@@ -78,27 +80,7 @@ export interface SampleSelectDetail {
 }
 
 function getLocale(): "ja" | "en" {
-  try {
-    const url = new URL(window.location.href);
-    const langParam = url.searchParams.get("lang")?.toLowerCase();
-    if (langParam === "ja" || langParam === "en") return langParam;
-  } catch (_e) {
-    // ignore
-  }
-
-  const localeCookie = document.cookie
-    .split(";")
-    .map((cookie) => cookie.trim())
-    .find((cookie) => cookie.startsWith("locale="));
-  const cookieLocale = localeCookie ? decodeURIComponent(localeCookie.slice("locale=".length)).toLowerCase() : null;
-  if (cookieLocale === "ja" || cookieLocale === "en") return cookieLocale;
-
-  const browserLocale = navigator.language.toLowerCase();
-  if (browserLocale.startsWith("ja")) return "ja";
-  if (browserLocale.startsWith("en")) return "en";
-
-  const htmlLang = document.documentElement.lang.toLowerCase();
-  return htmlLang.startsWith("ja") ? "ja" : "en";
+  return resolveDatavizLocale();
 }
 
 function escapeHtml(value: string): string {
