@@ -171,34 +171,6 @@ const useEditNodeForm = ({
           </div>
         </div>
 
-        {/* Rendering attributes */}
-        <div className="panel-block">
-          <div>
-            <label htmlFor="updateNode-x" className="form-label">
-              {t("graph.model.nodes-data.x")}
-            </label>
-            <input
-              type="number"
-              id="updateNode-x"
-              className={cx("form-control", errors.x && "is-invalid")}
-              step="any"
-              {...register("x")}
-            />
-          </div>
-          <div>
-            <label htmlFor="updateNode-y" className="form-label">
-              {t("graph.model.nodes-data.y")}
-            </label>
-            <input
-              type="number"
-              id="updateNode-y"
-              className={cx("form-control", errors.y && "is-invalid")}
-              step="any"
-              {...register("y")}
-            />
-          </div>
-        </div>
-
         {/* Other attributes */}
         <div className="panel-block">
           {attributes.map((field, i) => (
@@ -231,6 +203,34 @@ const useEditNodeForm = ({
               )}
             </div>
           ))}
+        </div>
+
+        {/* Position */}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateNode-x" className="form-label">
+              {t("graph.model.nodes-data.x")}
+            </label>
+            <input
+              type="number"
+              id="updateNode-x"
+              className={cx("form-control", errors.x && "is-invalid")}
+              step="any"
+              {...register("x")}
+            />
+          </div>
+          <div>
+            <label htmlFor="updateNode-y" className="form-label">
+              {t("graph.model.nodes-data.y")}
+            </label>
+            <input
+              type="number"
+              id="updateNode-y"
+              className={cx("form-control", errors.y && "is-invalid")}
+              step="any"
+              {...register("y")}
+            />
+          </div>
         </div>
       </>
     ),
