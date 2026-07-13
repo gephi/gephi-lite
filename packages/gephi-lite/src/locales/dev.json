@@ -239,6 +239,7 @@
     "search_nodes": "Search on node labels...",
     "selected_edges": "Selected edges only",
     "selected_nodes": "Selected nodes only",
+    "swap_extremities": "Swap source and target",
     "update_edges": "Edit existing edge",
     "update_edges_field": "Edit edges attribute",
     "update_edges_field_success": "The edge attribute has successfully been updated.",
