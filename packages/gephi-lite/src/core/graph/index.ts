@@ -517,8 +517,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     ),
   );
 
-  // When the fullGraph ref changes, reindex everything:
-  if (updatedKeys.has("fullGraph") || updatedKeys.has("layout")) {
+  // When the graph content changes, reindex everything:
+  // (note: fullGraph is mutated in place by most producers, so its reference rarely
+  // changes; nodeData/edgeData always get a fresh reference on every edit, so we rely
+  // on those too, to avoid the filtered graph cache going stale after edits.)
+  if (
+    updatedKeys.has("fullGraph") ||
+    updatedKeys.has("layout") ||
+    updatedKeys.has("nodeData") ||
+    updatedKeys.has("edgeData")
+  ) {
     const filtersState = filtersAtom.get();
     const newCache = applyFilters(graphDataset, filtersState.filters, [], topologicalFiltersAtom.get());
     filteredGraphsAtom.set(newCache);
