@@ -13,6 +13,8 @@ import {
   AppearanceIcon,
   AppearanceIconFill,
   CloseIcon,
+  DataCreationIcon,
+  DataCreationIconFill,
   FiltersIcon,
   FiltersIconFill,
   LayoutsIcon,
@@ -23,6 +25,10 @@ import {
   MetricsIcon,
   MetricsIconFill,
 } from "../../components/common-icons";
+import { CreateScriptedFieldModelForm } from "../../components/data/CreateScriptedFieldModel";
+import { EditEdgeForm } from "../../components/data/EditEdge";
+import { EditFieldModelForm } from "../../components/data/EditFieldModel";
+import { EditNodeForm } from "../../components/data/EditNode";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
@@ -36,7 +42,46 @@ import { LabelsPanel } from "./panels/LabelsPanel";
 import { MetricsPanel } from "./panels/MetricsPanel";
 import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
-const MENU: MenuItem<{ panel?: ComponentType }>[] = [
+type Panel = ComponentType<{ close: () => void }>;
+
+const MENU: MenuItem<{ panel?: Panel }>[] = [
+  {
+    id: "data-creation",
+    i18nKey: "edition.data_creation",
+    icon: { normal: DataCreationIcon, fill: DataCreationIconFill },
+    children: [
+      {
+        id: "data-creation-node",
+        i18nKey: "edition.create_nodes",
+        panel: ({ close }) => <EditNodeForm onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-edge",
+        i18nKey: "edition.create_edges",
+        panel: ({ close }) => <EditEdgeForm onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-node-field",
+        i18nKey: "edition.create_nodes_field",
+        panel: ({ close }) => <EditFieldModelForm type="nodes" onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-edge-field",
+        i18nKey: "edition.create_edges_field",
+        panel: ({ close }) => <EditFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-node-scripted-field",
+        i18nKey: "edition.create_nodes_scripted_field",
+        panel: ({ close }) => <CreateScriptedFieldModelForm type="nodes" onCancel={close} onSubmitted={close} />,
+      },
+      {
+        id: "data-creation-edge-scripted-field",
+        i18nKey: "edition.create_edges_scripted_field",
+        panel: ({ close }) => <CreateScriptedFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
+      },
+    ],
+  },
   {
     id: "layout",
     i18nKey: "layouts.title",
@@ -109,7 +154,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
 ];
 
 export const GraphPage: FC = () => {
-  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
+  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
   const { items } = useSelection();
   const { emptySelection } = useSelectionActions();
   const { t } = useTranslation();
@@ -193,7 +238,7 @@ export const GraphPage: FC = () => {
               >
                 <CloseIcon />
               </button>
-              <selectedTool.panel />
+              <selectedTool.panel close={() => setSelectedTool(undefined)} />
             </>
           )}
         </div>
