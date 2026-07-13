@@ -11,7 +11,7 @@ import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { Scalar } from "../../core/types";
 import { GraphSearch } from "../GraphSearch";
-import { CancelIcon, FieldModelIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon, SwapIcon } from "../common-icons";
 import { Select } from "../forms/Select";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
@@ -73,6 +73,7 @@ const useEditEdgeForm = ({
     handleSubmit,
     control,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = useForm<UpdatedEdgeState>({
@@ -134,7 +135,7 @@ const useEditEdgeForm = ({
         // Update existing edge:
         else {
           try {
-            updateEdge(id, allAttributes, { directed: data.isDirected });
+            updateEdge(id, allAttributes, { directed: data.isDirected, source: data.source, target: data.target });
             select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
@@ -207,6 +208,21 @@ const useEditEdgeForm = ({
               )}
             />
             {errors.source && <div className="invalid-feedback">{t(`error.form.${errors.source.type}`)}</div>}
+          </div>
+          <div className="d-flex justify-content-center">
+            <button
+              type="button"
+              className="gl-btn gl-btn-icon gl-btn-outline"
+              title={t("edition.swap_extremities")}
+              aria-label={t("edition.swap_extremities")}
+              onClick={() => {
+                const { source, target } = getValues();
+                setValue("source", target);
+                setValue("target", source);
+              }}
+            >
+              <SwapIcon />
+            </button>
           </div>
           <div>
             <label htmlFor="updateEdge-target" className="form-label">

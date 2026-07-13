@@ -70,7 +70,7 @@ function SelectedItem<
 
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
-  const { deleteItems } = useGraphDatasetActions();
+  const { deleteItems, updateEdge } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
@@ -104,9 +104,13 @@ function SelectedItem<
     const mergedStaticDynamicNodeData =
       !item.hidden && sigmaGraph.hasEdge(id) ? {} : mergeStaticDynamicData(nodeData, dynamicNodeData);
 
+    // Node identity is always read from fullGraph (the source of truth, which gets a fresh
+    // reference on every edit and re-renders this panel); the rendered attributes come from
+    // sigmaGraph when the edge is visible. Reading identity from sigmaGraph would leave the
+    // panel stale after an edge edit, since sigmaGraph keeps a stable reference.
     const source =
       !item.hidden && sigmaGraph.hasEdge(id)
-        ? sigmaGraph.getNodeAttributes(sigmaGraph.source(id))
+        ? sigmaGraph.getNodeAttributes(fullGraph.source(id))
         : getItemAttributes(
             "nodes",
             fullGraph.source(id),
@@ -117,7 +121,7 @@ function SelectedItem<
           );
     const target =
       !item.hidden && sigmaGraph.hasEdge(id)
-        ? sigmaGraph.getNodeAttributes(sigmaGraph.target(id))
+        ? sigmaGraph.getNodeAttributes(fullGraph.target(id))
         : getItemAttributes(
             "nodes",
             fullGraph.target(id),
@@ -188,6 +192,17 @@ function SelectedItem<
                   ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
                   : openModal({ component: EditEdgeModal, arguments: { edgeId: id } }),
             },
+            ...(type === "edges"
+              ? [
+                  {
+                    label: t("edition.invert_edge_direction"),
+                    onClick: () => {
+                      updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
+                    },
+                  },
+                ]
+              : []),
+            { type: "divider" },
             {
               label: t(`edition.delete_this_${type}`),
               onClick: () => {
