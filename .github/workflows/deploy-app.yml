@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       CI: false
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
