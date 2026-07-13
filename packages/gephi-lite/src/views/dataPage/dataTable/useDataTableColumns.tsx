@@ -14,22 +14,27 @@ import ConfirmModal from "../../../components/modals/ConfirmModal";
 import {
   useDataTable,
   useDataTableActions,
+  useDynamicItemData,
   useGraphDataset,
   useGraphDatasetActions,
   useSelectionActions,
+  useVisualGetters,
 } from "../../../core/context/dataContexts";
-import { DYNAMIC_ATTRIBUTES } from "../../../core/graph/dynamicAttributes";
+import { DYNAMIC_ATTRIBUTES, mergeStaticDynamicData } from "../../../core/graph/dynamicAttributes";
 import { useModal } from "../../../core/modals";
 import { useMobile } from "../../../hooks/useMobile";
 import { DataCell } from "./DataCell";
-import { Arrow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
+import { Arrow, EdgeItemRow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
 
 export const useDataTableColumns = (itemIDs: string[]) => {
   const { t } = useTranslation();
   const { type } = useDataTable();
   const { openModal } = useModal();
   const { nodeFields, edgeFields, nodeData, edgeData, fullGraph } = useGraphDataset();
+  const { dynamicNodeData } = useDynamicItemData();
+  const { getNodeLabel } = useVisualGetters();
   const isMobile = useMobile();
+  const nodeAllData = useMemo(() => mergeStaticDynamicData(nodeData, dynamicNodeData), [nodeData, dynamicNodeData]);
 
   const { setSort } = useDataTableActions();
   const { toggle, select, unselect } = useSelectionActions();
@@ -108,6 +113,41 @@ export const useDataTableColumns = (itemIDs: string[]) => {
     },
     [t, type],
   );
+  const getExtremityLabelColumn = useCallback(
+    (extremity: "sourceId" | "targetId", field: "sourceLabel" | "targetLabel"): ColumnDef<ItemRow> => {
+      return {
+        id: field,
+        accessorFn: (row) => {
+          const nodeId = (row as EdgeItemRow)[extremity];
+          return (getNodeLabel && getNodeLabel(nodeAllData[nodeId])) || nodeId;
+        },
+        cell: (props) => <span className="text-ellipsis">{props.row.getValue(field)}</span>,
+        meta: {
+          protected: true,
+        },
+        header: ({ header }) => (
+          <>
+            <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
+              {t(`datatable.protected_columns.${field}`)}
+            </span>
+
+            <Arrow
+              arrow={header.column.getIsSorted() || null}
+              wrapper={({ children }) => (
+                <div>
+                  <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
+                    {children}
+                  </button>
+                </div>
+              )}
+            />
+          </>
+        ),
+        size: 180,
+      };
+    },
+    [t, getNodeLabel, nodeAllData],
+  );
   const columns = useMemo<ColumnDef<ItemRow>[]>(
     () => [
       // Agnostic columns;
@@ -181,17 +221,17 @@ export const useDataTableColumns = (itemIDs: string[]) => {
           ),
       }),
 
+      // Source/target node labels, right after the preview column:
+      ...(type === "edges"
+        ? [getExtremityLabelColumn("sourceId", "sourceLabel"), getExtremityLabelColumn("targetId", "targetLabel")]
+        : []),
+
       // Type specific dynamic / read-only columns:
-      getSpecificRow("id"),
       ...(type === "nodes"
-        ? values(DYNAMIC_ATTRIBUTES.nodes).map((f) => getDynamicColumn(f))
-        : [
-            getSpecificRow(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
-            getSpecificRow(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
-            ...values(DYNAMIC_ATTRIBUTES.edges)
-              .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
-              .map((f) => getDynamicColumn(f)),
-          ]),
+        ? [getSpecificRow("id"), ...values(DYNAMIC_ATTRIBUTES.nodes).map((f) => getDynamicColumn(f))]
+        : values(DYNAMIC_ATTRIBUTES.edges)
+            .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
+            .map((f) => getDynamicColumn(f))),
 
       // Dataset-specific columns;
       ...fields.map<ColumnDef<ItemRow>>((field, i, a) => ({
@@ -316,11 +356,21 @@ export const useDataTableColumns = (itemIDs: string[]) => {
           />
         ),
       })),
+
+      // For edges, id/source/target are pushed to the very end:
+      ...(type === "edges"
+        ? [
+            getSpecificRow("id"),
+            getSpecificRow(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
+            getSpecificRow(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
+          ]
+        : []),
     ],
     [
       columnHelper,
       isMobile,
       getSpecificRow,
+      getExtremityLabelColumn,
       type,
       fields,
       select,
