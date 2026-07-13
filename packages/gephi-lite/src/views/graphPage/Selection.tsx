@@ -11,7 +11,11 @@ import { InfiniteScroll } from "../../components/InfiniteScroll";
 import {
   CaretDownIcon,
   CaretUpIcon,
+  EditIcon,
   FieldModelIcon,
+  OpenInGraphIcon,
+  SelectNeighborsIcon,
+  SwapIcon,
   ThreeDotsVerticalIcon,
   TrashIcon,
 } from "../../components/common-icons";
@@ -70,12 +74,11 @@ function SelectedItem<
 
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
-  const { deleteItems } = useGraphDatasetActions();
+  const { deleteItems, updateEdge } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
     () => [
-      { label: t(`graph.model.${type}-data.id`), value: id },
       ...fields.map((field) => ({
         label: staticDynamicAttributeLabel(field),
         field,
@@ -91,6 +94,7 @@ function SelectedItem<
         value,
         field: { type: "number", id: key, itemType: type } as FieldModel,
       })),
+      { label: t(`graph.model.${type}-data.id`), value: id },
     ],
     [data.dynamic, data.static, fields, id, renderingData, t, type],
   );
@@ -104,9 +108,13 @@ function SelectedItem<
     const mergedStaticDynamicNodeData =
       !item.hidden && sigmaGraph.hasEdge(id) ? {} : mergeStaticDynamicData(nodeData, dynamicNodeData);
 
+    // Node identity is always read from fullGraph (the source of truth, which gets a fresh
+    // reference on every edit and re-renders this panel); the rendered attributes come from
+    // sigmaGraph when the edge is visible. Reading identity from sigmaGraph would leave the
+    // panel stale after an edge edit, since sigmaGraph keeps a stable reference.
     const source =
       !item.hidden && sigmaGraph.hasEdge(id)
-        ? sigmaGraph.getNodeAttributes(sigmaGraph.source(id))
+        ? sigmaGraph.getNodeAttributes(fullGraph.source(id))
         : getItemAttributes(
             "nodes",
             fullGraph.source(id),
@@ -117,7 +125,7 @@ function SelectedItem<
           );
     const target =
       !item.hidden && sigmaGraph.hasEdge(id)
-        ? sigmaGraph.getNodeAttributes(sigmaGraph.target(id))
+        ? sigmaGraph.getNodeAttributes(fullGraph.target(id))
         : getItemAttributes(
             "nodes",
             fullGraph.target(id),
@@ -157,51 +165,13 @@ function SelectedItem<
         <Dropdown
           options={[
             {
-              label: t(`selection.locate_on_graph`),
-              onClick: () => {
-                if (type === "nodes") focusCameraOnNode(id);
-                else focusCameraOnEdge(id);
-              },
-              disabled: item.hidden,
-            },
-            {
               label: t(`selection.unselect_${type}`),
               onClick: () => unselect({ type, items: new Set([id]) }),
-            },
-            {
-              label: t(`selection.select_node_neighbors`),
-              onClick: () => {
-                select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
-              },
-              disabled: item.hidden,
             },
             {
               label: t(`selection.focus_${type}`),
               onClick: () => select({ type, items: new Set([id]), replace: true }),
               disabled: item.hidden || selectionSize === 1,
-            },
-            { type: "divider" },
-            {
-              label: t(`edition.update_this_${type}`),
-              onClick: () =>
-                type === "nodes"
-                  ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
-                  : openModal({ component: EditEdgeModal, arguments: { edgeId: id } }),
-            },
-            {
-              label: t(`edition.delete_this_${type}`),
-              onClick: () => {
-                openModal({
-                  component: ConfirmModal,
-                  arguments: {
-                    title: t(`edition.delete_${type}`, { count: 0 }),
-                    message: t(`edition.confirm_delete_${type}`, { count: 1 }),
-                  },
-                  afterSubmit: () => {
-                    deleteItems(type, [id]);
-                  },
-                });
-              },
             },
           ]}
         >
@@ -210,6 +180,73 @@ function SelectedItem<
           </button>
         </Dropdown>
       </h4>
+
+      <div className="d-flex flex-row align-items-center gl-gap-1 pb-2 mb-2 border-bottom">
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`selection.locate_on_graph`)}
+          disabled={item.hidden}
+          onClick={() => {
+            if (type === "nodes") focusCameraOnNode(id);
+            else focusCameraOnEdge(id);
+          }}
+        >
+          <OpenInGraphIcon />
+        </button>
+        {type === "nodes" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t(`selection.select_node_neighbors`)}
+            disabled={item.hidden}
+            onClick={() => {
+              select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
+            }}
+          >
+            <SelectNeighborsIcon />
+          </button>
+        )}
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`edition.update_this_${type}`)}
+          onClick={() =>
+            type === "nodes"
+              ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
+              : openModal({ component: EditEdgeModal, arguments: { edgeId: id } })
+          }
+        >
+          <EditIcon />
+        </button>
+        {type === "edges" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t("edition.invert_edge_direction")}
+            onClick={() => {
+              updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
+            }}
+          >
+            <SwapIcon />
+          </button>
+        )}
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`edition.delete_this_${type}`)}
+          onClick={() => {
+            openModal({
+              component: ConfirmModal,
+              arguments: {
+                title: t(`edition.delete_${type}`, { count: 0 }),
+                message: t(`edition.confirm_delete_${type}`, { count: 1 }),
+              },
+              afterSubmit: () => {
+                deleteItems(type, [id]);
+              },
+            });
+          }}
+        >
+          <TrashIcon />
+        </button>
+      </div>
+
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
         <ul className="attributes-list list-unstyled small">
           {attributes.map((attribute, i) => (

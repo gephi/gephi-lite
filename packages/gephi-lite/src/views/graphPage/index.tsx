@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { type ComponentType, FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
 
@@ -23,6 +23,7 @@ import {
   MetricsIcon,
   MetricsIconFill,
 } from "../../components/common-icons";
+import { DATA_CREATION_MENU_ITEM, type Panel } from "../../components/data/DataCreationMenu";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
 import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
 import { LAYOUTS } from "../../core/layouts/collection";
@@ -36,7 +37,8 @@ import { LabelsPanel } from "./panels/LabelsPanel";
 import { MetricsPanel } from "./panels/MetricsPanel";
 import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
-const MENU: MenuItem<{ panel?: ComponentType }>[] = [
+const MENU: MenuItem<{ panel?: Panel }>[] = [
+  DATA_CREATION_MENU_ITEM,
   {
     id: "layout",
     i18nKey: "layouts.title",
@@ -109,7 +111,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
 ];
 
 export const GraphPage: FC = () => {
-  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
+  const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
   const { items } = useSelection();
   const { emptySelection } = useSelectionActions();
   const { t } = useTranslation();
@@ -193,7 +195,7 @@ export const GraphPage: FC = () => {
               >
                 <CloseIcon />
               </button>
-              <selectedTool.panel />
+              <selectedTool.panel close={() => setSelectedTool(undefined)} />
             </>
           )}
         </div>

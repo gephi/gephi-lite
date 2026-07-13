@@ -176,7 +176,9 @@
       "preview": "Preview",
       "selected": "Selected?",
       "sourceId": "Source ID",
-      "targetId": "Target ID"
+      "sourceLabel": "Source label",
+      "targetId": "Target ID",
+      "targetLabel": "Target label"
     },
     "save_and_create_column": "Save and create column",
     "save_cell": "Save cell",
@@ -231,6 +233,7 @@
     "edit_selected_nodes_one": "Edit selected node",
     "filtered_edges": "Filtered edges only",
     "filtered_nodes": "Filtered nodes only",
+    "invert_edge_direction": "Invert arrow's direction",
     "merge_selected_nodes": "Merge selected nodes",
     "multi": {
       "select_attribute": "Select the attribute to edit for the selection",
@@ -239,6 +242,7 @@
     "search_nodes": "Search on node labels...",
     "selected_edges": "Selected edges only",
     "selected_nodes": "Selected nodes only",
+    "swap_extremities": "Swap source and target",
     "update_edges": "Edit existing edge",
     "update_edges_field": "Edit edges attribute",
     "update_edges_field_success": "The edge attribute has successfully been updated.",

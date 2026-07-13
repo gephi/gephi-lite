@@ -348,26 +348,32 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
 };
 const updateEdge: MultiProducer<
   [GraphDataset, SearchState],
-  [string, Attributes, { merge?: boolean; directed?: boolean }?]
-> = (edge, attributes, { merge, directed } = {}) => {
+  [string, Attributes, { merge?: boolean; directed?: boolean; source?: string; target?: string }?]
+> = (edge, attributes, { merge, directed, source, target } = {}) => {
   return [
     (state) => {
       const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
 
-      // Validate new edge direction:
+      // Validate new edge direction and extremities:
       let fullGraph = state.fullGraph;
       const graphType = fullGraph.type;
       const newDirected = graphType === "mixed" ? directed : graphType === "directed";
+      const newSource = source ?? fullGraph.source(edge);
+      const newTarget = target ?? fullGraph.target(edge);
+      const directionChanges = !isNil(newDirected) && fullGraph.isDirected(edge) !== directed;
+      const extremitiesChange = newSource !== fullGraph.source(edge) || newTarget !== fullGraph.target(edge);
 
-      if (!isNil(newDirected) && fullGraph.isDirected(edge) !== directed) {
+      if (directionChanges || extremitiesChange) {
         const newFullGraph = fullGraph.emptyCopy();
-        fullGraph.forEachEdge((e, _, source, target) => {
-          const isEdgeDirected = e === edge ? newDirected : fullGraph.isDirected(e);
+        fullGraph.forEachEdge((e, _, edgeSource, edgeTarget) => {
+          const isCurrentEdge = e === edge;
+          const isEdgeDirected = isCurrentEdge && directionChanges ? newDirected : fullGraph.isDirected(e);
+          const [s, t] = isCurrentEdge ? [newSource, newTarget] : [edgeSource, edgeTarget];
           if (isEdgeDirected) {
-            newFullGraph.addDirectedEdgeWithKey(e, source, target);
+            newFullGraph.addDirectedEdgeWithKey(e, s, t);
           } else {
-            newFullGraph.addUndirectedEdgeWithKey(e, source, target);
+            newFullGraph.addUndirectedEdgeWithKey(e, s, t);
           }
         });
         fullGraph = newFullGraph;
@@ -433,7 +439,11 @@ export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
 export const filteredGraphAtom = derivedAtom(
   [filteredGraphsAtom, graphDatasetAtom],
   (filteredGraphCache, graphDataset) => last(filteredGraphCache)?.graph || graphDataset.fullGraph,
-  { checkInput: false },
+  // checkOutput must stay disabled: the output is a mutable graphology graph, and a deep
+  // isEqual comparison can wrongly report "no change" (e.g. after an edge source/target
+  // swap, where nodes and edge keys are unchanged), leaving downstream atoms — and the
+  // Sigma rendering — stuck on a stale graph.
+  { checkInput: false, checkOutput: false },
 );
 export const useFilteredGraphAt = (index: number) => {
   const graphDataset = useGraphDataset();
@@ -517,8 +527,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     ),
   );
 
-  // When the fullGraph ref changes, reindex everything:
-  if (updatedKeys.has("fullGraph") || updatedKeys.has("layout")) {
+  // When the graph content changes, reindex everything:
+  // (note: fullGraph is mutated in place by most producers, so its reference rarely
+  // changes; nodeData/edgeData always get a fresh reference on every edit, so we rely
+  // on those too, to avoid the filtered graph cache going stale after edits.)
+  if (
+    updatedKeys.has("fullGraph") ||
+    updatedKeys.has("layout") ||
+    updatedKeys.has("nodeData") ||
+    updatedKeys.has("edgeData")
+  ) {
     const filtersState = filtersAtom.get();
     const newCache = applyFilters(graphDataset, filtersState.filters, [], topologicalFiltersAtom.get());
     filteredGraphsAtom.set(newCache);
