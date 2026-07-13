@@ -9,6 +9,7 @@ import {
   PiArrowSquareOut,
   PiArrowsClockwise,
   PiArrowsInSimple,
+  PiArrowsLeftRight,
   PiBinary,
   PiBinaryBold,
   PiBug,
@@ -156,6 +157,7 @@ export const SearchIcon = PiMagnifyingGlass;
 export const SettingsIcon = PiGear;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
+export const SwapIcon = PiArrowsLeftRight;
 export const SyncIcon = PiArrowsClockwise;
 export const ThreeDotsVerticalIcon = PiDotsThreeVerticalBold;
 export const TrashIcon = PiTrash;
