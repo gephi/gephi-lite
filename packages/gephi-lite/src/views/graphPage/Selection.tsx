@@ -75,7 +75,6 @@ function SelectedItem<
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
     () => [
-      { label: t(`graph.model.${type}-data.id`), value: id },
       ...fields.map((field) => ({
         label: staticDynamicAttributeLabel(field),
         field,
@@ -91,6 +90,7 @@ function SelectedItem<
         value,
         field: { type: "number", id: key, itemType: type } as FieldModel,
       })),
+      { label: t(`graph.model.${type}-data.id`), value: id },
     ],
     [data.dynamic, data.static, fields, id, renderingData, t, type],
   );
