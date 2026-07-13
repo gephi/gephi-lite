@@ -2,7 +2,7 @@ name: deploy-app
 on:
   push:
     branches:
-      - main
+      - main_jg
   workflow_dispatch:
 
 jobs:
@@ -41,9 +41,6 @@ jobs:
       - name: Copy gephi lite files
         run: cp -rf packages/gephi-lite/build/* website/v${{ env.PACKAGE_VERSION }}
 
-      - name: Copy CNAME files
-        run: cp CNAME website/CNAME
-
       - name: Create index page with redirection
         run: |
           cat <<EOF > website/index.html
@@ -56,16 +53,15 @@ jobs:
               <meta property="og:title" content="Gephi Lite" />
               <meta property="og:description" content="Gephi Lite is an open-source web application dedicated to visual network analysis" />
               <meta property="og:image" content="https://gephi.org/icons/gephi-lite-logo-inverted.svg" />
-              <meta property="og:url" content="https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/" />
               <noscript>
-              <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
+              <meta http-equiv="refresh" content="0; url=v${{ env.PACKAGE_VERSION }}/">
               </noscript>
               <script type="text/javascript">
-                window.location.href = "https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
+                window.location.href = "v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
               </script>
             </head>
             <body>
-                If you are not redirected automatically, follow this <a href='https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/'>link</a>.
+                If you are not redirected automatically, follow this <a href='v${{ env.PACKAGE_VERSION }}/'>link</a>.
             </body>
           </html>
           EOF
