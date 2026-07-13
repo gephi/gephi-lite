@@ -123,10 +123,14 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
     const allData = mergeStaticDynamicData(data, dynamicData);
     const getLabel = type === "nodes" ? getNodeLabel : getEdgeLabel;
     const fields = type === "nodes" ? nodeFields : edgeFields;
+    const nodeAllData = type === "edges" ? mergeStaticDynamicData(nodeData, dynamicNodeData) : null;
     if (search) {
       allIDs.forEach((id) => {
         const label = getLabel?.(allData[id]);
-        if (doesItemMatch(id, label, data[id], fields, search)) {
+        const extremityLabels = nodeAllData
+          ? [getNodeLabel?.(nodeAllData[graph.source(id)]), getNodeLabel?.(nodeAllData[graph.target(id)])]
+          : [];
+        if (doesItemMatch(id, label, data[id], fields, search, extremityLabels)) {
           matchingItems.push(id);
         } else {
           otherItems.push(id);
