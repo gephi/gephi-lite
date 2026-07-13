@@ -11,7 +11,11 @@ import { InfiniteScroll } from "../../components/InfiniteScroll";
 import {
   CaretDownIcon,
   CaretUpIcon,
+  EditIcon,
   FieldModelIcon,
+  OpenInGraphIcon,
+  SelectNeighborsIcon,
+  SwapIcon,
   ThreeDotsVerticalIcon,
   TrashIcon,
 } from "../../components/common-icons";
@@ -161,62 +165,13 @@ function SelectedItem<
         <Dropdown
           options={[
             {
-              label: t(`selection.locate_on_graph`),
-              onClick: () => {
-                if (type === "nodes") focusCameraOnNode(id);
-                else focusCameraOnEdge(id);
-              },
-              disabled: item.hidden,
-            },
-            {
               label: t(`selection.unselect_${type}`),
               onClick: () => unselect({ type, items: new Set([id]) }),
-            },
-            {
-              label: t(`selection.select_node_neighbors`),
-              onClick: () => {
-                select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
-              },
-              disabled: item.hidden,
             },
             {
               label: t(`selection.focus_${type}`),
               onClick: () => select({ type, items: new Set([id]), replace: true }),
               disabled: item.hidden || selectionSize === 1,
-            },
-            { type: "divider" },
-            {
-              label: t(`edition.update_this_${type}`),
-              onClick: () =>
-                type === "nodes"
-                  ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
-                  : openModal({ component: EditEdgeModal, arguments: { edgeId: id } }),
-            },
-            ...(type === "edges"
-              ? [
-                  {
-                    label: t("edition.invert_edge_direction"),
-                    onClick: () => {
-                      updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
-                    },
-                  },
-                ]
-              : []),
-            { type: "divider" },
-            {
-              label: t(`edition.delete_this_${type}`),
-              onClick: () => {
-                openModal({
-                  component: ConfirmModal,
-                  arguments: {
-                    title: t(`edition.delete_${type}`, { count: 0 }),
-                    message: t(`edition.confirm_delete_${type}`, { count: 1 }),
-                  },
-                  afterSubmit: () => {
-                    deleteItems(type, [id]);
-                  },
-                });
-              },
             },
           ]}
         >
@@ -225,6 +180,73 @@ function SelectedItem<
           </button>
         </Dropdown>
       </h4>
+
+      <div className="d-flex flex-row align-items-center gl-gap-1 pb-2 mb-2 border-bottom">
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`selection.locate_on_graph`)}
+          disabled={item.hidden}
+          onClick={() => {
+            if (type === "nodes") focusCameraOnNode(id);
+            else focusCameraOnEdge(id);
+          }}
+        >
+          <OpenInGraphIcon />
+        </button>
+        {type === "nodes" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t(`selection.select_node_neighbors`)}
+            disabled={item.hidden}
+            onClick={() => {
+              select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
+            }}
+          >
+            <SelectNeighborsIcon />
+          </button>
+        )}
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`edition.update_this_${type}`)}
+          onClick={() =>
+            type === "nodes"
+              ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
+              : openModal({ component: EditEdgeModal, arguments: { edgeId: id } })
+          }
+        >
+          <EditIcon />
+        </button>
+        {type === "edges" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t("edition.invert_edge_direction")}
+            onClick={() => {
+              updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
+            }}
+          >
+            <SwapIcon />
+          </button>
+        )}
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`edition.delete_this_${type}`)}
+          onClick={() => {
+            openModal({
+              component: ConfirmModal,
+              arguments: {
+                title: t(`edition.delete_${type}`, { count: 0 }),
+                message: t(`edition.confirm_delete_${type}`, { count: 1 }),
+              },
+              afterSubmit: () => {
+                deleteItems(type, [id]);
+              },
+            });
+          }}
+        >
+          <TrashIcon />
+        </button>
+      </div>
+
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
         <ul className="attributes-list list-unstyled small">
           {attributes.map((attribute, i) => (

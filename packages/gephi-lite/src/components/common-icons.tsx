@@ -70,6 +70,7 @@ import {
   PiQuestion,
   PiSelection,
   PiSelectionBold,
+  PiShareNetwork,
   PiSignIn,
   PiSpinner,
   PiSquare,
@@ -154,6 +155,7 @@ export const PlayIconFill = PiPlayFill;
 export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
 export const SearchIcon = PiMagnifyingGlass;
+export const SelectNeighborsIcon = PiShareNetwork;
 export const SettingsIcon = PiGear;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
