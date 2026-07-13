@@ -228,7 +228,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
 
       // Type specific dynamic / read-only columns:
       ...(type === "nodes"
-        ? [getSpecificRow("id"), ...values(DYNAMIC_ATTRIBUTES.nodes).map((f) => getDynamicColumn(f))]
+        ? values(DYNAMIC_ATTRIBUTES.nodes).map((f) => getDynamicColumn(f))
         : values(DYNAMIC_ATTRIBUTES.edges)
             .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
             .map((f) => getDynamicColumn(f))),
@@ -357,14 +357,14 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         ),
       })),
 
-      // For edges, id/source/target are pushed to the very end:
-      ...(type === "edges"
-        ? [
+      // ID (and, for edges, source/target) are pushed to the very end:
+      ...(type === "nodes"
+        ? [getSpecificRow("id")]
+        : [
             getSpecificRow("id"),
             getSpecificRow(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
             getSpecificRow(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
-          ]
-        : []),
+          ]),
     ],
     [
       columnHelper,
