@@ -159,29 +159,6 @@ const useEditEdgeForm = ({
     submit,
     main: (
       <>
-        <div className="panel-block">
-          <div>
-            <label htmlFor="updateEdge-id" className="form-label">
-              {t("graph.model.edges-data.id")}
-            </label>
-            <input
-              type="text"
-              id="updateEdge-id"
-              className={cx("form-control", errors.id && "is-invalid")}
-              disabled={!isNew}
-              {...register("id", {
-                required: !isNew,
-                validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
-              })}
-            />
-            {errors.id && (
-              <div className="invalid-feedback">
-                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Extremities */}
         <div className="panel-block">
           <div>
@@ -314,6 +291,30 @@ const useEditEdgeForm = ({
               </div>
             </div>
           ))}
+        </div>
+
+        {/* ID */}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateEdge-id" className="form-label">
+              {t("graph.model.edges-data.id")}
+            </label>
+            <input
+              type="text"
+              id="updateEdge-id"
+              className={cx("form-control", errors.id && "is-invalid")}
+              disabled={!isNew}
+              {...register("id", {
+                required: !isNew,
+                validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
+              })}
+            />
+            {errors.id && (
+              <div className="invalid-feedback">
+                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+              </div>
+            )}
+          </div>
         </div>
       </>
     ),

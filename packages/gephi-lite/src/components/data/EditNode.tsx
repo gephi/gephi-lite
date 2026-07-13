@@ -148,29 +148,6 @@ const useEditNodeForm = ({
     submit,
     main: (
       <>
-        <div className="panel-block">
-          <div>
-            <label htmlFor="updateNode-id" className="form-label">
-              {t("graph.model.nodes-data.id")}
-            </label>
-            <input
-              type="text"
-              id="updateNode-id"
-              className={cx("form-control", errors.id && "is-invalid")}
-              disabled={!isNew}
-              {...register("id", {
-                required: !isNew,
-                validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
-              })}
-            />
-            {errors.id && (
-              <div className="invalid-feedback">
-                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Other attributes */}
         <div className="panel-block">
           {attributes.map((field, i) => (
@@ -230,6 +207,30 @@ const useEditNodeForm = ({
               step="any"
               {...register("y")}
             />
+          </div>
+        </div>
+
+        {/* ID */}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateNode-id" className="form-label">
+              {t("graph.model.nodes-data.id")}
+            </label>
+            <input
+              type="text"
+              id="updateNode-id"
+              className={cx("form-control", errors.id && "is-invalid")}
+              disabled={!isNew}
+              {...register("id", {
+                required: !isNew,
+                validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
+              })}
+            />
+            {errors.id && (
+              <div className="invalid-feedback">
+                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+              </div>
+            )}
           </div>
         </div>
       </>
