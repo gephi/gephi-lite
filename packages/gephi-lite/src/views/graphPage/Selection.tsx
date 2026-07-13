@@ -70,7 +70,7 @@ function SelectedItem<
 
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
-  const { deleteItems } = useGraphDatasetActions();
+  const { deleteItems, updateEdge } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
@@ -192,6 +192,17 @@ function SelectedItem<
                   ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
                   : openModal({ component: EditEdgeModal, arguments: { edgeId: id } }),
             },
+            ...(type === "edges"
+              ? [
+                  {
+                    label: t("edition.invert_edge_direction"),
+                    onClick: () => {
+                      updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
+                    },
+                  },
+                ]
+              : []),
+            { type: "divider" },
             {
               label: t(`edition.delete_this_${type}`),
               onClick: () => {

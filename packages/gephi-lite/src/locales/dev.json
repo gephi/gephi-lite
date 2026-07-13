@@ -231,6 +231,7 @@
     "edit_selected_nodes_one": "Edit selected node",
     "filtered_edges": "Filtered edges only",
     "filtered_nodes": "Filtered nodes only",
+    "invert_edge_direction": "Invert arrow's direction",
     "merge_selected_nodes": "Merge selected nodes",
     "multi": {
       "select_attribute": "Select the attribute to edit for the selection",
