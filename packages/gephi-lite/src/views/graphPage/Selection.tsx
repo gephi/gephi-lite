@@ -368,6 +368,7 @@ export const Selection: FC = () => {
     <>
       {/* Selection main list */}
       <div className="panel-body gap-1">
+        <h2>{t(`selection.selected_${type}`)}</h2>
         {!!hidden.length && (
           <div>
             <Trans i18nKey={`selection.visible_${type}`} count={visible.length} />

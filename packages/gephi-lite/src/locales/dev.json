@@ -859,6 +859,8 @@
     "select_all": "Select all",
     "select_node_edges": "Select node's edges",
     "select_node_neighbors": "Select node's neighbors",
+    "selected_edges": "Selected edges",
+    "selected_nodes": "Selected nodes",
     "unselect_all": "Unselect all",
     "unselect_all_hidden_edges": "Unselect all hidden edges",
     "unselect_all_hidden_nodes": "Unselect all hidden edges",
