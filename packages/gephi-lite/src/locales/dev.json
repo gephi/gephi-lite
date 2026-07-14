@@ -829,6 +829,7 @@
     }
   },
   "selection": {
+    "create_edge_from_node": "Create an edge from this node",
     "cursor": "Simple selection",
     "edge_no_label": "(Empty label)",
     "edges": "<strong>{{count, number}}</strong> selected edges",

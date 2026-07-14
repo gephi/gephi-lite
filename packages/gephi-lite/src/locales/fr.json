@@ -915,6 +915,7 @@
     }
   },
   "selection": {
+    "create_edge_from_node": "Créer un lien depuis ce nœud",
     "cursor": "Sélection simple",
     "edge_no_label": "(libellé vide)",
     "edges": "<strong>{{count, number}}</strong> liens sélectionnés",
