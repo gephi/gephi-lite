@@ -668,6 +668,7 @@
     "nodes_one": "1개의 선택된 노드",
     "nodes_zero": "선택된 노드 없음",
     "select_all": "전체 선택",
+    "select_node_edges": "노드의 엣지 선택",
     "unselect_all": "전체 선택 해제",
     "unselect_all_hidden_edges": "전체 숨김 엣지 선택 해제",
     "unselect_all_hidden_nodes": "전체 숨김 엣지 선택 해제",

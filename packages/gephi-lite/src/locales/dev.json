@@ -856,6 +856,7 @@
     "open_in_data": "Show in Data",
     "open_in_graph": "Show in Graph",
     "select_all": "Select all",
+    "select_node_edges": "Select node's edges",
     "select_node_neighbors": "Select node's neighbors",
     "unselect_all": "Unselect all",
     "unselect_all_hidden_edges": "Unselect all hidden edges",

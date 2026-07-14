@@ -155,6 +155,7 @@ export const PlayIconFill = PiPlayFill;
 export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
 export const SearchIcon = PiMagnifyingGlass;
+export const SelectEdgesIcon = PiLineSegment;
 export const SelectNeighborsIcon = PiShareNetwork;
 export const SettingsIcon = PiGear;
 export const StopIcon = PiStop;
