@@ -39,10 +39,6 @@ export const AppearanceController: FC = () => {
     //    the hover node plus its neighbor
     const allEmphasizedNodes =
       emphasizedNodes ||
-      // While an item is being located (highlighted), focus the emphasis on it alone so that
-      // only its label(s) show. E.g. locating one edge among several selected ones dims the
-      // labels of every other node, including the endpoints of the other selected edges.
-      highlightedNodes ||
       new Set([
         ...(selection.type === "nodes" ? Array.from(selection.items) : []),
         // When edges are selected, emphasize their source and target nodes so that only

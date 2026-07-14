@@ -184,13 +184,28 @@ function SelectedItem<
       </h4>
 
       <div className="d-flex flex-row align-items-center gl-gap-1 pb-2 mb-2 border-bottom">
+        {type === "edges" && (
+          <input
+            type="checkbox"
+            className="form-check-input mt-0 flex-shrink-0"
+            checked
+            title={t(`selection.unselect_edges`)}
+            aria-label={t(`selection.unselect_edges`)}
+            onChange={() => unselect({ type, items: new Set([id]) })}
+          />
+        )}
         <button
           className="gl-btn gl-btn-icon"
           title={t(`selection.locate_on_graph`)}
           disabled={item.hidden}
           onClick={() => {
             if (type === "nodes") focusCameraOnNode(id);
-            else focusCameraOnEdge(id);
+            else {
+              // Focus on this single edge: keep only it selected (so only its source and
+              // target labels remain shown) then center the camera on it.
+              select({ type: "edges", items: new Set([id]), replace: true });
+              focusCameraOnEdge(id);
+            }
           }}
         >
           <OpenInGraphIcon />
