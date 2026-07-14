@@ -14,6 +14,7 @@ import {
   EditIcon,
   FieldModelIcon,
   OpenInGraphIcon,
+  SelectEdgesIcon,
   SelectNeighborsIcon,
   SwapIcon,
   ThreeDotsVerticalIcon,
@@ -203,6 +204,18 @@ function SelectedItem<
             }}
           >
             <SelectNeighborsIcon />
+          </button>
+        )}
+        {type === "nodes" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t(`selection.select_node_edges`)}
+            disabled={item.hidden}
+            onClick={() => {
+              select({ type: "edges", items: new Set(filteredGraph.edges(id)), replace: false });
+            }}
+          >
+            <SelectEdgesIcon />
           </button>
         )}
         <button
