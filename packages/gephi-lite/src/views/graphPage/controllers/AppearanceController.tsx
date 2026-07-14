@@ -41,6 +41,13 @@ export const AppearanceController: FC = () => {
       emphasizedNodes ||
       new Set([
         ...(selection.type === "nodes" ? Array.from(selection.items) : []),
+        // When edges are selected, emphasize their source and target nodes so that only
+        // those node labels are shown (same treatment as selecting the nodes directly).
+        ...(selection.type === "edges"
+          ? Array.from(selection.items).flatMap((edge) =>
+              graph.hasEdge(edge) ? [graph.source(edge), graph.target(edge)] : [],
+            )
+          : []),
         ...(hoveredNode ? [hoveredNode, ...graph.neighbors(hoveredNode)] : []),
       ]);
 
