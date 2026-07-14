@@ -650,6 +650,7 @@
     }
   },
   "selection": {
+    "create_edge_from_node": "Él létrehozása ebből a csomópontból",
     "edge_no_label": "(Üres címke)",
     "edges": "{{count, number}} kiválasztott él",
     "edges_one": "Egy kiválasztott él",

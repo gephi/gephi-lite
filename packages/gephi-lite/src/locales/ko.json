@@ -650,6 +650,7 @@
     }
   },
   "selection": {
+    "create_edge_from_node": "이 노드에서 엣지 만들기",
     "edge_no_label": "(빈 라벨)",
     "edges": "{{count, number}} 개의 선택된 엣지",
     "edges_one": "1개의 선택된 엣지",

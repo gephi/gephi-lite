@@ -831,6 +831,7 @@
     }
   },
   "selection": {
+    "create_edge_from_node": "Створити ребро з цього вузла",
     "cursor": "Простий вибір",
     "edge_no_label": "(Порожня етикетка)",
     "edges": "<strong>{{count, number}}</strong> вибрані краї",
