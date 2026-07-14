@@ -26,10 +26,12 @@ interface UpdatedEdgeState {
 
 const useEditEdgeForm = ({
   edgeId,
+  source: initialSource,
   onSubmitted,
   onCancel,
 }: {
   edgeId?: string;
+  source?: string;
   onSubmitted: () => void;
   onCancel: () => void;
 }) => {
@@ -46,6 +48,7 @@ const useEditEdgeForm = ({
     if (isNew)
       return {
         weight: 1,
+        source: initialSource,
         isDirected: fullGraph.type !== "undirected",
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
@@ -67,7 +70,7 @@ const useEditEdgeForm = ({
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [edgeData, edgeId, fullGraph, isNew, edgeFields]);
+  }, [edgeData, edgeId, fullGraph, isNew, edgeFields, initialSource]);
   const {
     register,
     handleSubmit,
@@ -221,6 +224,7 @@ const useEditEdgeForm = ({
                   }}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
+                  autoFocus={isNew && !!initialSource}
                 />
               )}
             />
@@ -332,7 +336,11 @@ const useEditEdgeForm = ({
   };
 };
 
-export const EditEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, arguments: { edgeId } }) => {
+export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string }>> = ({
+  cancel,
+  submit,
+  arguments: { edgeId, source },
+}) => {
   const { t } = useTranslation();
   const isNew = typeof edgeId === "undefined";
   const {
@@ -341,6 +349,7 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, sub
     submit: submitForm,
   } = useEditEdgeForm({
     edgeId,
+    source,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
   });

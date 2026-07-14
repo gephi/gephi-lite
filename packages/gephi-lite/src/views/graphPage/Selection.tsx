@@ -1,6 +1,6 @@
 import { DEFAULT_NODE_COLOR, FieldModel, NodeCoordinates, Scalar, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import { groupBy, isNil, toPairs, values } from "lodash";
-import { FC, ReactNode, useEffect, useMemo, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { Trans, useTranslation } from "react-i18next";
 import { PiChecks } from "react-icons/pi";
@@ -11,6 +11,7 @@ import { InfiniteScroll } from "../../components/InfiniteScroll";
 import {
   CaretDownIcon,
   CaretUpIcon,
+  CreateEdgeIcon,
   EditIcon,
   FieldModelIcon,
   OpenInGraphIcon,
@@ -218,6 +219,18 @@ function SelectedItem<
             <SelectEdgesIcon />
           </button>
         )}
+        {type === "nodes" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t(`selection.create_edge_from_node`)}
+            disabled={item.hidden}
+            onClick={() => {
+              openModal({ component: EditEdgeModal, arguments: { source: id } });
+            }}
+          >
+            <CreateEdgeIcon />
+          </button>
+        )}
         <button
           className="gl-btn gl-btn-icon"
           title={t(`edition.update_this_${type}`)}
@@ -315,6 +328,27 @@ export const Selection: FC = () => {
     return groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
   }, [filteredGraph, items, type]);
 
+  const renderSelectedItem = useCallback(
+    (item: string) => {
+      const itemData = mergedStaticDynamicItemData[item];
+      // itemData can be transiently undefined right after an item is created and selected:
+      // the selection atom may reference the new item before the graph dataset atom has caught
+      // up. Skip rendering for that frame to avoid crashing; it self-heals on the next render.
+      if (!itemData) return null;
+      return (
+        <SelectedItem
+          id={item}
+          key={item}
+          type={type}
+          selectionSize={items.size}
+          data={itemData}
+          renderingData={type === "nodes" ? layout[item] : {}}
+        />
+      );
+    },
+    [mergedStaticDynamicItemData, type, items.size, layout],
+  );
+
   return (
     <>
       {/* Selection main list */}
@@ -329,16 +363,7 @@ export const Selection: FC = () => {
             pageSize={50}
             data={visible}
             scrollableTarget={"selection"}
-            renderItem={(item) => (
-              <SelectedItem
-                id={item}
-                key={item}
-                type={type}
-                selectionSize={items.size}
-                data={mergedStaticDynamicItemData[item]}
-                renderingData={type === "nodes" ? layout[item] : {}}
-              />
-            )}
+            renderItem={renderSelectedItem}
           />
         </ul>
 
@@ -354,16 +379,7 @@ export const Selection: FC = () => {
                 scrollableTarget={"selection"}
                 pageSize={50}
                 data={hidden}
-                renderItem={(item) => (
-                  <SelectedItem
-                    id={item}
-                    key={item}
-                    type={type}
-                    selectionSize={items.size}
-                    data={mergedStaticDynamicItemData[item]}
-                    renderingData={type === "nodes" ? layout[item] : {}}
-                  />
-                )}
+                renderItem={renderSelectedItem}
               />
             </ul>
           </>

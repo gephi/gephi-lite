@@ -66,6 +66,10 @@ interface GraphSearchProps {
    */
   type?: ItemType;
   /**
+   * If true, the search input grabs focus as soon as it is mounted.
+   */
+  autoFocus?: boolean;
+  /**
    * What we do when user select an item
    */
   onChange: (e: Option | null) => void;
@@ -79,7 +83,14 @@ interface GraphSearchProps {
 /**
  * Search a node/edge
  */
-export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postProcessOptions, type, value }) => {
+export const GraphSearch: FC<GraphSearchProps> = ({
+  className,
+  onChange,
+  postProcessOptions,
+  type,
+  value,
+  autoFocus,
+}) => {
   const { t } = useTranslation();
   const { index } = useSearch();
   const { nodesLabel, edgesLabel } = useAppearance();
@@ -110,6 +121,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
   return (
     <AsyncSelect<Option>
       className={className}
+      autoFocus={autoFocus}
       isClearable
       controlShouldRenderValue={!!value}
       placeholder={t(`search.${type || "graph"}.placeholder`)}

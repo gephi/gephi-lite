@@ -108,6 +108,7 @@ export const CheckedIcon = PiCheck;
 export const ClipboardIcon = PiClipboard;
 export const CloseIcon = PiX;
 export const CodeEditorIcon = PiCode;
+export const CreateEdgeIcon = PiPlusCircle;
 export const DarkThemeIcon = PiMoonStars;
 export const DarkThemeSelectedIcon = PiMoonStarsFill;
 export const DataCreationIcon = PiPlusCircle;
