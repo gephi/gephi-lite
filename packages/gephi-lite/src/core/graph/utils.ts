@@ -4,6 +4,7 @@ import { Attributes } from "graphology-types";
 import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, sortBy, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
+import { CREATION_DATE_FIELD_ID, UPDATE_DATE_FIELD_ID, ensureSystemDateFields, stampCreationDates } from "./dates";
 import { inferFieldType } from "./fieldModel";
 import {
   DataGraph,
@@ -60,7 +61,11 @@ export function initializeGraphDataset(
 
   const nodeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachNode((node, attributes) => {
-    const { data, position } = cleanNode(node, attributes);
+    const { data: cleanedData, position } = cleanNode(node, attributes);
+    const data =
+      cleanedData[CREATION_DATE_FIELD_ID] && cleanedData[UPDATE_DATE_FIELD_ID]
+        ? cleanedData
+        : stampCreationDates(cleanedData);
 
     for (const key in data) {
       nodeAttributeValues[key] = nodeAttributeValues[key] || [];
@@ -74,7 +79,11 @@ export function initializeGraphDataset(
 
   const edgeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachEdge((edge, attributes, source, target) => {
-    const { data } = cleanEdge(edge, attributes);
+    const { data: cleanedData } = cleanEdge(edge, attributes);
+    const data =
+      cleanedData[CREATION_DATE_FIELD_ID] && cleanedData[UPDATE_DATE_FIELD_ID]
+        ? cleanedData
+        : stampCreationDates(cleanedData);
 
     for (const key in data) {
       edgeAttributeValues[key] = edgeAttributeValues[key] || [];
@@ -116,6 +125,16 @@ export function initializeGraphDataset(
   };
   dataset.nodeFields = sortBy(dataset.nodeFields, getFieldScore) as typeof dataset.nodeFields;
   dataset.edgeFields = sortBy(dataset.edgeFields, getFieldScore) as typeof dataset.edgeFields;
+
+  // Enforce the canonical, read-only field models for the system date fields (always last):
+  dataset.nodeFields = ensureSystemDateFields(
+    "nodes",
+    dataset.nodeFields.filter((f) => f.id !== CREATION_DATE_FIELD_ID && f.id !== UPDATE_DATE_FIELD_ID),
+  );
+  dataset.edgeFields = ensureSystemDateFields(
+    "edges",
+    dataset.edgeFields.filter((f) => f.id !== CREATION_DATE_FIELD_ID && f.id !== UPDATE_DATE_FIELD_ID),
+  );
 
   return dataset;
 }

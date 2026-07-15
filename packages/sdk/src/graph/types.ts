@@ -116,6 +116,8 @@ export type FieldModel<
   dynamic?: Dynamic;
   // Value used to initialize this attribute's field when creating a new node/edge:
   defaultValue?: Scalar;
+  // When true, this field is managed automatically by the app and cannot be edited, moved or deleted by the user:
+  readOnly?: boolean;
 } & FieldModelTypeSpecCollection[K];
 
 export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {
