@@ -848,6 +848,7 @@
     "hidden_zero": "no hidden",
     "lasso": "Lasso selection",
     "locate_on_graph": "Locate on the graph",
+    "locate_selected_edges": "Zoom on all selected edges",
     "marquee": "Rectangle selection",
     "no_value": "No value",
     "node_no_label": "(Empty label)",
