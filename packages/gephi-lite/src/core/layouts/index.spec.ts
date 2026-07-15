@@ -369,7 +369,7 @@ describe("Layout orchestration", () => {
     await vi.advanceTimersByTimeAsync(0);
 
     // Restarted layout graph only has the filtered node
-    expect(supervisorInstances).toHaveLength(1);
+    expect(supervisorInstances).toHaveLength(2);
     expect(supervisorInstances[1].graph.nodes()).toEqual(["a"]);
   });
 
