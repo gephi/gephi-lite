@@ -3,6 +3,7 @@ import Graph from "graphology";
 import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
 import Sigma from "sigma";
+import { CameraState } from "sigma/types";
 
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaState } from "./types";
@@ -181,6 +182,108 @@ export const sigmaActions = {
 const ANIMATION_DURATION = 500;
 const HIGHLIGHT_DURATION = 2000;
 let focusTimeOutId: number | null = null;
+
+/**
+ * Computes a camera state that frames the given nodes so that their disks AND their labels
+ * fit entirely inside the *visible* part of the graph.
+ *
+ * The sigma canvas spans more than what the user sees: the header and the left/right panels
+ * are drawn on top of it. The ".filler" element is exactly the graph rectangle left visible
+ * between them, whatever panels happen to be open or closed, so we frame the nodes inside it.
+ *
+ * Node sizes are expressed in position units (itemSizesReference: "positions"), so the disks
+ * scale with the zoom, whereas labels are drawn at a fixed pixel size. We therefore reason in
+ * viewport pixels: for each node we split its footprint into the part that scales with the
+ * zoom (the disk) and the fixed part (its label), then solve for the zoom factor that keeps
+ * everything within the visible band (minus some padding), and finally pan so the nodes are
+ * centered inside that band rather than inside the whole canvas.
+ */
+function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraState {
+  const graph = sigma.getGraph();
+  const camera = sigma.getCamera();
+  const ids = Array.from(new Set(nodeIds)).filter((id) => graph.hasNode(id) && !!sigma.getNodeDisplayData(id));
+  if (!ids.length) return camera.getState();
+
+  const { width, height } = sigma.getDimensions();
+  const currentRatio = camera.ratio || 1;
+  const PADDING = 28; // px of breathing room kept on each side of the visible band
+
+  // Visible band, in viewport coordinates (0,0 = canvas top-left). ".filler" is the graph
+  // area left uncovered by the panels/header; fall back to the whole canvas if absent.
+  const containerRect = sigma.getContainer().getBoundingClientRect();
+  const fillerRect = document.querySelector(".filler")?.getBoundingClientRect();
+  const bandLeft = fillerRect ? fillerRect.left - containerRect.left : 0;
+  const bandTop = fillerRect ? fillerRect.top - containerRect.top : 0;
+  const bandWidth = fillerRect ? fillerRect.width : width;
+  const bandHeight = fillerRect ? fillerRect.height : height;
+  const bandCenterX = bandLeft + bandWidth / 2;
+  const bandCenterY = bandTop + bandHeight / 2;
+
+  // Labels are rendered at a fixed pixel size: prepare a canvas to measure their width.
+  const ctx = document.createElement("canvas").getContext("2d");
+  const labelSize = (sigma.getSetting("labelSize") as number) || 14;
+  const labelFont = (sigma.getSetting("labelFont") as string) || "sans-serif";
+  const labelWeight = (sigma.getSetting("labelWeight") as string) || "normal";
+  if (ctx) ctx.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+
+  // Node coordinates: framed (what camera.x/y use) and raw (what graphToViewport projects).
+  const framed = ids.map((id) => sigma.getNodeDisplayData(id) as { x: number; y: number });
+  const raws = ids.map((id) => graph.getNodeAttributes(id) as { x: number; y: number; size?: number });
+  const midFramedX = (Math.min(...framed.map((d) => d.x)) + Math.max(...framed.map((d) => d.x))) / 2;
+  const midFramedY = (Math.min(...framed.map((d) => d.y)) + Math.max(...framed.map((d) => d.y))) / 2;
+  const midRawX = (Math.min(...raws.map((a) => a.x)) + Math.max(...raws.map((a) => a.x))) / 2;
+  const midRawY = (Math.min(...raws.map((a) => a.y)) + Math.max(...raws.map((a) => a.y))) / 2;
+  const centerVp = sigma.graphToViewport({ x: midRawX, y: midRawY });
+
+  const availHalfW = Math.max(1, bandWidth / 2 - PADDING);
+  const availHalfH = Math.max(1, bandHeight / 2 - PADDING);
+
+  // Zoom factor relative to the current zoom (> 1 zooms in). We keep the most constraining node.
+  let factor = Infinity;
+  ids.forEach((id, i) => {
+    const a = raws[i];
+    const nodeVp = sigma.graphToViewport({ x: a.x, y: a.y });
+    const border = sigma.graphToViewport({ x: a.x + (a.size || 0), y: a.y });
+    const radiusPx = Math.abs(border.x - nodeVp.x);
+    const labelPx = ctx ? ctx.measureText(sigma.getNodeDisplayData(id)?.label || "").width : 0;
+
+    // Half-extent (px) from the target center that scales with the zoom (the disk):
+    const scalingX = Math.abs(nodeVp.x - centerVp.x) + radiusPx;
+    const scalingY = Math.abs(nodeVp.y - centerVp.y) + radiusPx;
+    // The label (right of the node) and the label height do not scale: reserve them as fixed px.
+    if (scalingX > 0) factor = Math.min(factor, Math.max(availHalfW - labelPx, 1) / scalingX);
+    if (scalingY > 0) factor = Math.min(factor, Math.max(availHalfH - labelSize / 2, 1) / scalingY);
+  });
+  if (!isFinite(factor) || factor <= 0) factor = 1;
+
+  // Pan so the nodes are centered inside the visible band (and not the whole canvas). We
+  // convert the pixel offset (band center vs canvas center) into framed units. The framed
+  // distance per viewport pixel is derived from two distinct nodes and scaled to the new zoom.
+  let camX = midFramedX;
+  let camY = midFramedY;
+  if (ids.length >= 2) {
+    const vp0 = sigma.graphToViewport({ x: raws[0].x, y: raws[0].y });
+    let far = 1;
+    let farDist = -1;
+    for (let i = 1; i < ids.length; i++) {
+      const v = sigma.graphToViewport({ x: raws[i].x, y: raws[i].y });
+      const d = Math.hypot(v.x - vp0.x, v.y - vp0.y);
+      if (d > farDist) [farDist, far] = [d, i];
+    }
+    const vpFar = sigma.graphToViewport({ x: raws[far].x, y: raws[far].y });
+    const dvx = vpFar.x - vp0.x;
+    const dvy = vpFar.y - vp0.y;
+    const magnitude = farDist > 1e-6 ? Math.hypot(framed[far].x - framed[0].x, framed[far].y - framed[0].y) / farDist : 0;
+    // Per-axis signed framed-units-per-pixel (same magnitude on both axes; sigma flips Y).
+    const framedPerPxX = Math.abs(dvx) > 1e-6 ? (framed[far].x - framed[0].x) / dvx : magnitude;
+    const framedPerPxY = Math.abs(dvy) > 1e-6 ? (framed[far].y - framed[0].y) / dvy : -magnitude;
+    camX = midFramedX - ((bandCenterX - width / 2) * framedPerPxX) / factor;
+    camY = midFramedY - ((bandCenterY - height / 2) * framedPerPxY) / factor;
+  }
+
+  return { ...camera.getState(), angle: 0, x: camX, y: camY, ratio: currentRatio / factor };
+}
+
 export function focusCameraOnNode(id: string) {
   if (focusTimeOutId) clearTimeout(focusTimeOutId);
   sigmaActions.resetHighlightedNodes();
@@ -217,33 +320,14 @@ export function focusCameraOnEdge(id: string) {
 
   const sigma = sigmaAtom.get();
   const sourceId = sigma.getGraph().source(id);
-  const sourceDisplayData = sigma.getNodeDisplayData(sourceId);
-  const sourceData = sigma.getGraph().getNodeAttributes(sourceId);
-
   const targetId = sigma.getGraph().target(id);
-  const targetDisplayData = sigma.getNodeDisplayData(targetId);
-  const targetData = sigma.getGraph().getNodeAttributes(targetId);
 
-  if (sourceData && targetData && targetDisplayData && sourceDisplayData) {
-    // margin is the size of the biggest node;
-    const margin = max([sourceDisplayData?.size, targetDisplayData?.size, 10]) as number;
-
-    // we compute the width/height of the edge (with margin) in  the graph referencial
-    const focusWidth = Math.abs(targetData.x - sourceData.x) + margin * 2;
-    const focusHeight = Math.abs(targetData.y - sourceData.y) + margin * 2;
-
-    // we compute the zoom ratio (in the graph ref, which should be the same in the viewport)
-    const graphDimensions = sigma.getGraphDimensions();
-    const focusRatio = max([focusHeight / graphDimensions.height, focusWidth / graphDimensions.width]) as number;
-
-    sigma.getCamera().animate(
-      {
-        x: (sourceDisplayData.x + targetDisplayData.x) / 2,
-        y: (sourceDisplayData.y + targetDisplayData.y) / 2,
-        ratio: focusRatio,
-      },
-      { duration: ANIMATION_DURATION },
-    );
+  if (sigma.getNodeDisplayData(sourceId) && sigma.getNodeDisplayData(targetId)) {
+    // Frame the edge so that both endpoints' disks and labels fit entirely within the
+    // viewport visible between the panels.
+    sigma
+      .getCamera()
+      .animate(getCameraStateToFrameNodes(sigma, [sourceId, targetId]), { duration: ANIMATION_DURATION });
   }
 
   // Higlight nodes during X seconds
