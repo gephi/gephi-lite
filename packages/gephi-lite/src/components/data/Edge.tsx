@@ -19,12 +19,22 @@ export const EdgeComponent: FC<{
   hidden?: boolean;
   directed?: boolean;
   className?: string;
-}> = ({ label, color, source, target, hidden, directed, className }) => {
+  onSourceClick?: () => void;
+  onTargetClick?: () => void;
+  nodeButtonTitle?: string;
+}> = ({ label, color, source, target, hidden, directed, className, onSourceClick, onTargetClick, nodeButtonTitle }) => {
+  const renderNode = (node: { label: ReactNode; color: string; hidden?: boolean }, onClick?: () => void) =>
+    onClick ? (
+      <button type="button" className="edge-node-button" title={nodeButtonTitle} onClick={onClick}>
+        <NodeComponent {...node} />
+      </button>
+    ) : (
+      <NodeComponent {...node} />
+    );
+
   return (
     <div className={cx("edge-component", className)}>
-      <div className="edge-source">
-        <NodeComponent {...source} />
-      </div>
+      <div className="edge-source">{renderNode(source, onSourceClick)}</div>
       <div className="edge-wrapper">
         <div className="edge">
           <span className={cx(hidden ? "dotted" : "dash", "edge-body")} style={{ borderColor: color }} />{" "}
@@ -36,9 +46,7 @@ export const EdgeComponent: FC<{
           </span>
         )}
       </div>
-      <div className="edge-target">
-        <NodeComponent {...target} />
-      </div>
+      <div className="edge-target">{renderNode(target, onTargetClick)}</div>
     </div>
   );
 };
