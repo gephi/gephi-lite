@@ -79,6 +79,7 @@ function SelectedItem<
   const filteredGraph = useFilteredGraph();
   const { deleteItems, updateEdge } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
+  const { items: selectionItems } = useSelection();
 
   // Locate a single node: replace the selection with it, then center the camera on it.
   // Used when clicking a node inside an edge card (equivalent to a node's "locate" action).
@@ -267,7 +268,11 @@ function SelectedItem<
             title={t(`selection.create_edge_from_node`)}
             disabled={item.hidden}
             onClick={() => {
-              openModal({ component: EditEdgeModal, arguments: { source: id } });
+              // When exactly two nodes are selected, pre-fill the edge target with the other
+              // one (source being this node), so only the attributes remain to fill in.
+              const others = Array.from(selectionItems).filter((n) => n !== id);
+              const target = selectionItems.size === 2 && others.length === 1 ? others[0] : undefined;
+              openModal({ component: EditEdgeModal, arguments: { source: id, target } });
             }}
           >
             <CreateEdgeIcon />
