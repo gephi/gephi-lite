@@ -2,7 +2,7 @@ import { useSigma } from "@react-sigma/core";
 import { LngLatBounds, Map, MercatorCoordinate, StyleSpecification } from "maplibre-gl";
 import { FC, useCallback, useEffect, useRef } from "react";
 
-import { useAppearance } from "../../../core/context/dataContexts";
+import { useAppearance, usePreferences } from "../../../core/context/dataContexts";
 import { getDefaultMapStyle } from "../../../utils/map-style";
 
 // Convert graph coordinates (with Y-flip) to geo coordinates
@@ -13,6 +13,7 @@ function graphToLatlng(coords: { x: number; y: number }) {
 
 export const MapLayerController: FC = () => {
   const sigma = useSigma();
+  const { theme } = usePreferences();
   const { backgroundLayer } = useAppearance();
 
   const mapRef = useRef<Map | null>(null);
@@ -22,7 +23,7 @@ export const MapLayerController: FC = () => {
   sigmaRef.current = sigma;
 
   const mapConfig = backgroundLayer?.type === "map" ? backgroundLayer.map : null;
-  const mapStyle = (mapConfig?.style || getDefaultMapStyle()) as StyleSpecification;
+  const mapStyle = (mapConfig?.style || getDefaultMapStyle(theme)) as StyleSpecification;
   const styleKey = JSON.stringify(mapStyle);
 
   // Sync map bounds to match sigma's viewport (skips if camera hasn't moved)
