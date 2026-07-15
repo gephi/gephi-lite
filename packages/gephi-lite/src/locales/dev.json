@@ -6,6 +6,8 @@
       "map": {
         "label": "Map",
         "title": "Map background",
+        "position_warning": "To display the map correctly, apply a Geographic layout to convert node coordinates to geographic ones.",
+        "open_geo_layout": "Open Geographical layout settings",
         "maplibre": {
           "custom_style": "Custom style",
           "edit_style": "Edit map style",
