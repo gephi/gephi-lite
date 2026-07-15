@@ -38,7 +38,8 @@ const useEditEdgeForm = ({
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createEdge, updateEdge } = useGraphDatasetActions();
-  const { edgeData, layout, fullGraph, edgeFields } = useGraphDataset();
+  const { edgeData, layout, fullGraph, edgeFields: allEdgeFields } = useGraphDataset();
+  const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.readOnly), [allEdgeFields]);
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
 
   const isNew = typeof edgeId === "undefined";

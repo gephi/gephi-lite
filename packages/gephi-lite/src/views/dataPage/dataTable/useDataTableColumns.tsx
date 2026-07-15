@@ -212,99 +212,101 @@ export const useDataTableColumns = (itemIDs: string[]) => {
               )}
             />
 
-            <Dropdown
-              options={[
-                {
-                  label: t("datatable.modify_column"),
-                  onClick: () => {
-                    openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
+            {!field.readOnly && (
+              <Dropdown
+                options={[
+                  {
+                    label: t("datatable.modify_column"),
+                    onClick: () => {
+                      openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
+                    },
                   },
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: t("datatable.duplicate_column"),
-                  onClick: () => duplicateFieldModel(field),
-                },
-                {
-                  label: t("datatable.move_left"),
-                  disabled: !i,
-                  onClick: () => moveFieldModel(type, field.id, -1),
-                },
-                {
-                  label: t("datatable.move_right"),
-                  disabled: i === a.length - 1,
-                  onClick: () => moveFieldModel(type, field.id, +1),
-                },
-                {
-                  label: t("datatable.insert_left"),
-                  onClick: () =>
-                    openModal({
-                      component: EditFieldModelModal,
-                      arguments: { insertAt: { pos: "before", id: field.id }, type },
-                    }),
-                },
-                {
-                  label: t("datatable.insert_right"),
-                  onClick: () =>
-                    openModal({
-                      component: EditFieldModelModal,
-                      arguments: { insertAt: { pos: "after", id: field.id }, type },
-                    }),
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: t("datatable.sort_asc"),
-                  onClick: () => {
-                    setSort([
-                      {
-                        id: header.id,
-                        desc: false,
-                      },
-                    ]);
+                  {
+                    type: "divider",
                   },
-                },
-                {
-                  label: t("datatable.sort_desc"),
-                  onClick: () => {
-                    setSort([
-                      {
-                        id: header.id,
-                        desc: true,
-                      },
-                    ]);
+                  {
+                    label: t("datatable.duplicate_column"),
+                    onClick: () => duplicateFieldModel(field),
                   },
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: t("edition.delete_attribute"),
-                  onClick: () =>
-                    openModal({
-                      component: ConfirmModal,
-                      arguments: {
-                        title: t(`edition.delete_${type}_attributes`, { name: field.id }),
-                        message: t("edition.confirm_delete_attributes", {
-                          nbValues: size(type === "nodes" ? nodeData : edgeData),
-                          name: field.id,
-                        }),
-                        successMsg: t(`edition.delete_attributes_success`, { name: field.id }),
-                      },
-                      afterSubmit: () => {
-                        deleteFieldModel(field);
-                      },
-                    }),
-                },
-              ]}
-            >
-              <button className="btn p-0">
-                <ThreeDotsVerticalIcon />
-              </button>
-            </Dropdown>
+                  {
+                    label: t("datatable.move_left"),
+                    disabled: !i,
+                    onClick: () => moveFieldModel(type, field.id, -1),
+                  },
+                  {
+                    label: t("datatable.move_right"),
+                    disabled: i === a.length - 1 || !!a[i + 1]?.readOnly,
+                    onClick: () => moveFieldModel(type, field.id, +1),
+                  },
+                  {
+                    label: t("datatable.insert_left"),
+                    onClick: () =>
+                      openModal({
+                        component: EditFieldModelModal,
+                        arguments: { insertAt: { pos: "before", id: field.id }, type },
+                      }),
+                  },
+                  {
+                    label: t("datatable.insert_right"),
+                    onClick: () =>
+                      openModal({
+                        component: EditFieldModelModal,
+                        arguments: { insertAt: { pos: "after", id: field.id }, type },
+                      }),
+                  },
+                  {
+                    type: "divider",
+                  },
+                  {
+                    label: t("datatable.sort_asc"),
+                    onClick: () => {
+                      setSort([
+                        {
+                          id: header.id,
+                          desc: false,
+                        },
+                      ]);
+                    },
+                  },
+                  {
+                    label: t("datatable.sort_desc"),
+                    onClick: () => {
+                      setSort([
+                        {
+                          id: header.id,
+                          desc: true,
+                        },
+                      ]);
+                    },
+                  },
+                  {
+                    type: "divider",
+                  },
+                  {
+                    label: t("edition.delete_attribute"),
+                    onClick: () =>
+                      openModal({
+                        component: ConfirmModal,
+                        arguments: {
+                          title: t(`edition.delete_${type}_attributes`, { name: field.id }),
+                          message: t("edition.confirm_delete_attributes", {
+                            nbValues: size(type === "nodes" ? nodeData : edgeData),
+                            name: field.id,
+                          }),
+                          successMsg: t(`edition.delete_attributes_success`, { name: field.id }),
+                        },
+                        afterSubmit: () => {
+                          deleteFieldModel(field);
+                        },
+                      }),
+                  },
+                ]}
+              >
+                <button className="btn p-0">
+                  <ThreeDotsVerticalIcon />
+                </button>
+              </Dropdown>
+            )}
           </>
         ),
         cell: (props) => (
@@ -313,6 +315,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             id={props.row.getValue("id")}
             field={field}
             value={props.row.getValue(`field::${field.id}`)}
+            readOnly={field.readOnly}
           />
         ),
       })),
