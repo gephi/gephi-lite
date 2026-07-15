@@ -1,5 +1,6 @@
-import { FieldModel, ItemData, ItemType } from "@gephi/gephi-lite-sdk";
+import { FieldModel, GraphDataset, ItemData, ItemType } from "@gephi/gephi-lite-sdk";
 import { DateTime } from "luxon";
+import { mapValues } from "lodash";
 
 /**
  * Automatic "creation date" / "update date" fields, set on every node and
@@ -57,5 +58,20 @@ export function stampUpdateDate(previousData: ItemData | undefined, data: ItemDa
     ...data,
     [CREATION_DATE_FIELD_ID]: previousData?.[CREATION_DATE_FIELD_ID],
     [UPDATE_DATE_FIELD_ID]: nowAsSystemDateScalar(),
+  };
+}
+
+// Backfills the system date fields (and field models) on a dataset that predates this feature, eg. one
+// restored from local storage or an older saved project. Items that already have both dates are left untouched:
+export function ensureSystemDatesInDataset(dataset: GraphDataset): GraphDataset {
+  const stampIfMissing = (data: ItemData) =>
+    data[CREATION_DATE_FIELD_ID] && data[UPDATE_DATE_FIELD_ID] ? data : stampCreationDates(data);
+
+  return {
+    ...dataset,
+    nodeFields: ensureSystemDateFields("nodes", dataset.nodeFields),
+    edgeFields: ensureSystemDateFields("edges", dataset.edgeFields),
+    nodeData: mapValues(dataset.nodeData, stampIfMissing),
+    edgeData: mapValues(dataset.edgeData, stampIfMissing),
   };
 }
