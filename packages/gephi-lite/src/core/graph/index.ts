@@ -38,6 +38,7 @@ import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
+import { ensureSystemDateFields, stampCreationDates, stampUpdateDate } from "./dates";
 import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes } from "./dynamicAttributes";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
@@ -156,7 +157,11 @@ const createFieldModel: Producer<GraphDataset, [FieldModel, { index?: number; va
     const dataKey = fieldModel.itemType === "nodes" ? "nodeData" : "edgeData";
     const fieldsKey = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
     const newFields: FieldModel[] = state[fieldsKey].slice(0);
-    const newIndex = index !== undefined ? clamp(index, 0, newFields.length) : newFields.length;
+    // New fields are appended at the end by default, but always before the trailing read-only fields (eg. system date fields):
+    let trailingReadOnlyFieldsCount = 0;
+    while (newFields[newFields.length - 1 - trailingReadOnlyFieldsCount]?.readOnly) trailingReadOnlyFieldsCount++;
+    const defaultIndex = newFields.length - trailingReadOnlyFieldsCount;
+    const newIndex = index !== undefined ? clamp(index, 0, newFields.length) : defaultIndex;
 
     // Insert it at the wanted position:
     newFields.splice(newIndex, 0, fieldModel);
@@ -285,11 +290,11 @@ const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
     (state) => {
       const { data, position } = cleanNode(node, attributes);
       state.fullGraph.addNode(node);
-      const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
+      const newNodeFieldModel = ensureSystemDateFields("nodes", newItemModel<"nodes">("nodes", data, state.nodeFields));
       return {
         ...state,
         nodeFields: newNodeFieldModel,
-        nodeData: { ...state.nodeData, [node]: data },
+        nodeData: { ...state.nodeData, [node]: stampCreationDates(data) },
         layout: { ...state.layout, [node]: position },
       };
     },
@@ -314,14 +319,14 @@ const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes
         state.fullGraph.addUndirectedEdgeWithKey(edge, source, target);
       }
 
-      const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      const newEdgeFieldModel = ensureSystemDateFields("edges", newItemModel<"edges">("edges", data, state.edgeFields));
 
       // Index the edge
       searchActions.edgeIndex(edge);
       return {
         ...state,
         edgeFields: newEdgeFieldModel,
-        edgeData: { ...state.edgeData, [edge]: data },
+        edgeData: { ...state.edgeData, [edge]: stampCreationDates(data) },
       };
     },
     edgeIndex(edge),
@@ -335,11 +340,11 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   return [
     (state) => {
       const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
-      const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
+      const newNodeFieldModel = ensureSystemDateFields("nodes", newItemModel<"nodes">("nodes", data, state.nodeFields));
       return {
         ...state,
         nodeFields: newNodeFieldModel,
-        nodeData: { ...state.nodeData, [node]: data },
+        nodeData: { ...state.nodeData, [node]: stampUpdateDate(state.nodeData[node], data) },
         layout: { ...state.layout, [node]: position },
       };
     },
@@ -353,7 +358,7 @@ const updateEdge: MultiProducer<
   return [
     (state) => {
       const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
-      const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      const newEdgeFieldModel = ensureSystemDateFields("edges", newItemModel<"edges">("edges", data, state.edgeFields));
 
       // Validate new edge direction and extremities:
       let fullGraph = state.fullGraph;
@@ -385,7 +390,7 @@ const updateEdge: MultiProducer<
         ...state,
         fullGraph,
         edgeFields: newEdgeFieldModel,
-        edgeData: { ...state.edgeData, [edge]: data },
+        edgeData: { ...state.edgeData, [edge]: stampUpdateDate(state.edgeData[edge], data) },
       };
     },
     edgeIndex(edge),
@@ -406,7 +411,7 @@ const updateItems: MultiProducer<[GraphDataset, SearchState], [ItemType, Set<str
       const data = state[dataKey];
       const updatedItems = Array.from(itemIds).reduce((acc, itemId) => {
         if (!data[itemId]) throw new Error(`The ${type} collection does not have any item with "${itemId}" id.`);
-        return { ...acc, [itemId]: { ...data[itemId], [fieldId]: value } };
+        return { ...acc, [itemId]: stampUpdateDate(data[itemId], { ...data[itemId], [fieldId]: value }) };
       }, {});
 
       return {

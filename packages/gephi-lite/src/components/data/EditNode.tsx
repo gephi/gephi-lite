@@ -32,7 +32,8 @@ const useEditNodeForm = ({
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createNode, updateNode } = useGraphDatasetActions();
-  const { nodeData, layout, nodeFields } = useGraphDataset();
+  const { nodeData, layout, nodeFields: allNodeFields } = useGraphDataset();
+  const nodeFields = useMemo(() => allNodeFields.filter((nf) => !nf.readOnly), [allNodeFields]);
   const nodeFieldsIndex = useMemo(() => keyBy(nodeFields, "id"), [nodeFields]);
 
   const isNew = typeof nodeId === "undefined";
