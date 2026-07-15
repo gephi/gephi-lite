@@ -80,6 +80,16 @@ function SelectedItem<
   const { deleteItems, updateEdge } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
 
+  // Locate a single node: replace the selection with it, then center the camera on it.
+  // Used when clicking a node inside an edge card (equivalent to a node's "locate" action).
+  const focusNode = useCallback(
+    (nodeId: string) => {
+      select({ type: "nodes", items: new Set([nodeId]), replace: true });
+      focusCameraOnNode(nodeId);
+    },
+    [select],
+  );
+
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
     () => [
       ...fields.map((field) => ({
@@ -144,6 +154,9 @@ function SelectedItem<
         source={{ ...source, label: source.label ?? null, color: source.color ?? DEFAULT_NODE_COLOR }}
         target={{ ...target, label: target.label ?? null, color: target.color ?? DEFAULT_NODE_COLOR }}
         className="mb-2"
+        nodeButtonTitle={t("selection.locate_on_graph")}
+        onSourceClick={() => focusNode(fullGraph.source(id))}
+        onTargetClick={() => focusNode(fullGraph.target(id))}
       />
     );
   }
@@ -237,6 +250,17 @@ function SelectedItem<
             <SelectNeighborsIcon />
           </button>
         )}
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`edition.update_this_${type}`)}
+          onClick={() =>
+            type === "nodes"
+              ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
+              : openModal({ component: EditEdgeModal, arguments: { edgeId: id } })
+          }
+        >
+          <EditIcon />
+        </button>
         {type === "nodes" && (
           <button
             className="gl-btn gl-btn-icon"
@@ -249,17 +273,6 @@ function SelectedItem<
             <CreateEdgeIcon />
           </button>
         )}
-        <button
-          className="gl-btn gl-btn-icon"
-          title={t(`edition.update_this_${type}`)}
-          onClick={() =>
-            type === "nodes"
-              ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
-              : openModal({ component: EditEdgeModal, arguments: { edgeId: id } })
-          }
-        >
-          <EditIcon />
-        </button>
         {type === "edges" && (
           <button
             className="gl-btn gl-btn-icon"
@@ -272,7 +285,7 @@ function SelectedItem<
           </button>
         )}
         <button
-          className="gl-btn gl-btn-icon"
+          className={`gl-btn gl-btn-icon${type === "nodes" ? " ms-3" : ""}`}
           title={t(`edition.delete_this_${type}`)}
           onClick={() => {
             openModal({
