@@ -30,22 +30,6 @@ export const MapBackgroundLayerForm: FC = () => {
 
   return (
     <>
-      {/* TODO : this message can be visible only if no geo layout have been executed on the graph. */}
-      <MessageAlert
-        message={
-          <>
-            <p>{t("appearance.background.map.position_warning")}</p>
-            <button
-              className="gl-btn gl-btn-outline gl-btn-sm"
-              onClick={() => emitter.emit(EVENTS.openMenu, { menuId: `layout-geographic` })}
-            >
-              {t("appearance.background.map.open_geo_layout")}
-            </button>
-          </>
-        }
-        type="success"
-      />
-
       <div className="panel-block">
         <h3>{t("appearance.background.map.title")}</h3>
 
@@ -84,6 +68,22 @@ export const MapBackgroundLayerForm: FC = () => {
             )}
           </div>
         </div>
+      </div>
+      <div className="flex-grow-1 d-flex align-items-end">
+        <MessageAlert
+          message={
+            <>
+              <p className="text-center">{t("appearance.background.map.position_warning")}</p>
+              <button
+                className="gl-btn gl-btn-outline gl-btn-sm"
+                onClick={() => emitter.emit(EVENTS.openMenu, { menuId: `layout-geographic` })}
+              >
+                {t("appearance.background.map.open_geo_layout")}
+              </button>
+            </>
+          }
+          type="success"
+        />
       </div>
     </>
   );
