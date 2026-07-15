@@ -54,7 +54,7 @@ const useEditEdgeForm = ({
         isDirected: fullGraph.type !== "undirected",
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
-          value: undefined,
+          value: nf.defaultValue,
           ...pick(nf, ["type", "format", "separator"]),
         })),
       };

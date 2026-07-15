@@ -114,6 +114,8 @@ export type FieldModel<
   itemType: T;
   label?: string;
   dynamic?: Dynamic;
+  // Value used to initialize this attribute's field when creating a new node/edge:
+  defaultValue?: Scalar;
 } & FieldModelTypeSpecCollection[K];
 
 export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {

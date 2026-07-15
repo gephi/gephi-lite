@@ -397,6 +397,7 @@
       "edges_zero": "edge",
       "field": {
         "date-format": "Date format",
+        "default_value": "Default value",
         "id": "Identifier",
         "label": "Label",
         "separator": "Keywords separator",

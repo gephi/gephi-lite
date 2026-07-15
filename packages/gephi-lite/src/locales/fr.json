@@ -443,6 +443,7 @@
       "edges_zero": "lien",
       "field": {
         "date-format": "Format de date",
+        "default_value": "Valeur par défaut",
         "id": "Identifiant",
         "label": "Label",
         "separator": "Séparateur de mots-clefs",
