@@ -11,7 +11,7 @@
           "edit_style": "Edit map style",
           "reset_style": "Reset to default style",
           "style": "Map style",
-          "style_description": "For proper alignment with the map, apply the Geographic layout with Web Mercator projection. The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
+          "style_description": "The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
           "style_default": "Default",
           "style_editor_title": "Edit map style"
         }
