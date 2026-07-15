@@ -11,6 +11,7 @@ import { InfiniteScroll } from "../../components/InfiniteScroll";
 import {
   CaretDownIcon,
   CaretUpIcon,
+  CloseIcon,
   CreateEdgeIcon,
   EditIcon,
   FieldModelIcon,
@@ -156,11 +157,23 @@ function SelectedItem<
   return (
     <li className={`selected-${type}-item`}>
       <h4 className="fs-6 d-flex flex-row align-items-center mb-0">
+        <button
+          className="gl-btn gl-btn-icon flex-shrink-0"
+          title={t(`selection.unselect_${type}`)}
+          aria-label={t(`selection.unselect_${type}`)}
+          onClick={() => unselect({ type, items: new Set([id]) })}
+        >
+          <CloseIcon />
+        </button>
         <div className="flex-grow-1 flex-shrink-1 text-ellipsis" title={item.label}>
           {content}
         </div>
 
-        <button className="gl-btn gl-btn-icon" onClick={() => setExpanded(!expanded)}>
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(expanded ? "common.collapse" : "common.expand")}
+          onClick={() => setExpanded(!expanded)}
+        >
           {expanded ? <CaretUpIcon /> : <CaretDownIcon />}
         </button>
 
@@ -177,23 +190,13 @@ function SelectedItem<
             },
           ]}
         >
-          <button className="gl-btn gl-btn-icon">
+          <button className="gl-btn gl-btn-icon" title={t("common.show_more")}>
             <ThreeDotsVerticalIcon />
           </button>
         </Dropdown>
       </h4>
 
       <div className="d-flex flex-row align-items-center gl-gap-1 pb-2 mb-2 border-bottom">
-        {type === "edges" && (
-          <input
-            type="checkbox"
-            className="form-check-input mt-0 flex-shrink-0"
-            checked
-            title={t(`selection.unselect_edges`)}
-            aria-label={t(`selection.unselect_edges`)}
-            onChange={() => unselect({ type, items: new Set([id]) })}
-          />
-        )}
         <button
           className="gl-btn gl-btn-icon"
           title={t(`selection.locate_on_graph`)}
@@ -213,18 +216,6 @@ function SelectedItem<
         {type === "nodes" && (
           <button
             className="gl-btn gl-btn-icon"
-            title={t(`selection.select_node_neighbors`)}
-            disabled={item.hidden}
-            onClick={() => {
-              select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
-            }}
-          >
-            <SelectNeighborsIcon />
-          </button>
-        )}
-        {type === "nodes" && (
-          <button
-            className="gl-btn gl-btn-icon"
             title={t(`selection.select_node_edges`)}
             disabled={item.hidden}
             onClick={() => {
@@ -232,6 +223,18 @@ function SelectedItem<
             }}
           >
             <SelectEdgesIcon />
+          </button>
+        )}
+        {type === "nodes" && (
+          <button
+            className="gl-btn gl-btn-icon"
+            title={t(`selection.select_node_neighbors`)}
+            disabled={item.hidden}
+            onClick={() => {
+              select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
+            }}
+          >
+            <SelectNeighborsIcon />
           </button>
         )}
         {type === "nodes" && (
@@ -369,6 +372,7 @@ export const Selection: FC = () => {
       {/* Selection main list */}
       <div className="panel-body gap-1">
         <h2>{t(`selection.selected_${type}`)}</h2>
+        <hr className="gl-m-0" />
         {!!hidden.length && (
           <div>
             <Trans i18nKey={`selection.visible_${type}`} count={visible.length} />
