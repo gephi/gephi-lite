@@ -13,6 +13,7 @@ import { useFileActions, useGraphDataset, useGraphDatasetActions } from "./conte
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
+import { ensureSystemDatesInDataset } from "./graph/dates";
 import { parseDataset } from "./graph/utils";
 import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
@@ -142,7 +143,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           const appearance = rawAppearance ? parseAppearanceState(rawAppearance) : null;
           const filters = rawFilters ? parseFiltersState(rawFilters) : null;
 
-          graphDatasetAtom.set(dataset);
+          graphDatasetAtom.set(ensureSystemDatesInDataset(dataset));
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
