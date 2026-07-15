@@ -16,7 +16,7 @@ const DesignSystemPage: FC = () => {
   const { page } = useParams();
 
   return (
-    <div className="container gl-ds-container design-system-page d-flex flex-column gap-4">
+    <div id="design-system" className="container gl-ds-container design-system-page d-flex flex-column gap-4">
       <h1>Gephi Lite Design System</h1>
 
       <ul className="d-flex flex-column">
