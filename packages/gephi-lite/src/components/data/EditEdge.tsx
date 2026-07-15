@@ -45,7 +45,6 @@ const useEditEdgeForm = ({
   const defaultValues = useMemo(() => {
     if (isNew)
       return {
-        weight: 1,
         isDirected: fullGraph.type !== "undirected",
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
@@ -96,19 +95,16 @@ const useEditEdgeForm = ({
           return;
         }
 
-        const allAttributes = {
-          ...fromPairs(
-            data.attributes
-              .filter(({ value }) => value !== "" || value === undefined)
-              .map(({ key, value }) => {
-                // value are all string because input are all text whatever the data model
-                // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-                const valueAsNumber = toNumber(value);
-                return [key, valueAsNumber ? valueAsNumber : value];
-              }),
-          ),
-          ...pick(data, "label", "color", "weight"),
-        };
+        const allAttributes = fromPairs(
+          data.attributes
+            .filter(({ value }) => value !== "" || value === undefined)
+            .map(({ key, value }) => {
+              // value are all string because input are all text whatever the data model
+              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+              const valueAsNumber = toNumber(value);
+              return [key, valueAsNumber ? valueAsNumber : value];
+            }),
+        );
 
         // Create new edge:
         if (isNew) {
