@@ -1,6 +1,6 @@
 import { MapBackgroundLayer } from "@gephi/gephi-lite-sdk";
 import { FC } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { useAppearance, useAppearanceActions } from "../../../core/context/dataContexts";
 import { useModal } from "../../../core/modals";
@@ -29,21 +29,6 @@ export const MapBackgroundLayerForm: FC = () => {
       <h3>{t("appearance.background.map.title")}</h3>
 
       <div className="panel-block">
-        <p className="form-text small text-muted">
-          <Trans
-            i18nKey={"appearance.background.map.maplibre.style_description"}
-            components={{
-              maplibreLink: <a href="https://maplibre.org/" target="_blank" rel="noreferrer" />,
-              maplibreStyleLink: (
-                <a href="https://maplibre.org/maplibre-style-spec/" target="_blank" rel="noreferrer" />
-              ),
-              gephiLiteDocLink: (
-                <a href="https://docs.gephi.org/lite/user-manual/map" target="_blank" rel="noreferrer" />
-              ),
-            }}
-          />
-        </p>
-
         <label className="form-label">{t("appearance.background.map.maplibre.style")}</label>
         <div className="d-flex align-items-center gl-gap-2">
           <span className="flex-grow-1 text-ellipsis">

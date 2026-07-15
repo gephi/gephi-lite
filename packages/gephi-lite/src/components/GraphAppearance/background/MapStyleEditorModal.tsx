@@ -1,15 +1,17 @@
 import Editor from "@monaco-editor/react";
 import { FC, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { usePreferences } from "../../../core/context/dataContexts";
 import { ModalProps } from "../../../core/modals/types";
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { Modal } from "../../modals";
 
-export const MapStyleEditorModal: FC<
-  ModalProps<{ initialStyle: string }, { style: Record<string, unknown> }>
-> = ({ arguments: { initialStyle }, cancel, submit }) => {
+export const MapStyleEditorModal: FC<ModalProps<{ initialStyle: string }, { style: Record<string, unknown> }>> = ({
+  arguments: { initialStyle },
+  cancel,
+  submit,
+}) => {
   const { t } = useTranslation();
   const { theme } = usePreferences();
   const [value, setValue] = useState(initialStyle);
@@ -42,6 +44,21 @@ export const MapStyleEditorModal: FC<
             <p className="mb-0">{error}</p>
           </div>
         )}
+
+        <p className="gl-mx-3 my-3">
+          <Trans
+            i18nKey={"appearance.background.map.maplibre.style_description"}
+            components={{
+              maplibreLink: <a href="https://maplibre.org/" target="_blank" rel="noreferrer" />,
+              maplibreStyleLink: (
+                <a href="https://maplibre.org/maplibre-style-spec/" target="_blank" rel="noreferrer" />
+              ),
+              gephiLiteDocLink: (
+                <a href="https://docs.gephi.org/lite/user-manual/map" target="_blank" rel="noreferrer" />
+              ),
+            }}
+          />
+        </p>
         <Editor
           height="60vh"
           theme={getAppliedTheme(theme) === "light" ? "light" : "vs-dark"}
