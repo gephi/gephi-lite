@@ -395,6 +395,7 @@
       "edges_zero": "край",
       "field": {
         "date-format": "Формат дати",
+        "default_value": "Значення за замовчуванням",
         "dates_formats_link_message": "Дізнайтеся більше про парсинг токенів Luxon",
         "dates_formats_message": "Дати аналізуються за допомогою бібліотеки JavaScript з відкритим кодом Luxon.",
         "id": "Ідентифікатор",
