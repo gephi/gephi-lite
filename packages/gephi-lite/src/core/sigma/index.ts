@@ -315,23 +315,37 @@ export function focusCameraOnNode(id: string) {
 }
 
 export function focusCameraOnEdge(id: string) {
+  focusCameraOnEdges([id]);
+}
+
+export function focusCameraOnEdges(ids: string[]) {
   if (focusTimeOutId) clearTimeout(focusTimeOutId);
   sigmaActions.resetHighlightedNodes();
 
   const sigma = sigmaAtom.get();
-  const sourceId = sigma.getGraph().source(id);
-  const targetId = sigma.getGraph().target(id);
+  const graph = sigma.getGraph();
 
-  if (sigma.getNodeDisplayData(sourceId) && sigma.getNodeDisplayData(targetId)) {
-    // Frame the edge so that both endpoints' disks and labels fit entirely within the
-    // viewport visible between the panels.
-    sigma
-      .getCamera()
-      .animate(getCameraStateToFrameNodes(sigma, [sourceId, targetId]), { duration: ANIMATION_DURATION });
-  }
+  // Collect every endpoint of the given edges that is actually rendered.
+  const endpoints = new Set<string>();
+  ids.forEach((id) => {
+    if (!graph.hasEdge(id)) return;
+    const sourceId = graph.source(id);
+    const targetId = graph.target(id);
+    if (sigma.getNodeDisplayData(sourceId) && sigma.getNodeDisplayData(targetId)) {
+      endpoints.add(sourceId);
+      endpoints.add(targetId);
+    }
+  });
+  if (!endpoints.size) return;
+
+  // Frame all the edges so that their endpoints' disks and labels fit entirely within the
+  // viewport visible between the panels.
+  sigma
+    .getCamera()
+    .animate(getCameraStateToFrameNodes(sigma, Array.from(endpoints)), { duration: ANIMATION_DURATION });
 
   // Higlight nodes during X seconds
-  sigmaActions.setHighlightedNodes(new Set([sourceId, targetId]));
+  sigmaActions.setHighlightedNodes(endpoints);
   focusTimeOutId = window.setTimeout(() => {
     sigmaActions.resetHighlightedNodes();
     focusTimeOutId = null;

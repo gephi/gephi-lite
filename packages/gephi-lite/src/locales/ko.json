@@ -664,6 +664,7 @@
     "hidden_nodes": "{{count, number}} 개의 선택된 숨김 노드",
     "hidden_nodes_one": "1개의 선택된 숨김 노드",
     "locate_on_graph": "그래프에서 찾기",
+    "locate_selected_edges": "선택한 모든 엣지로 확대",
     "node_no_label": "(빈 라벨)",
     "nodes": "{{count, number}} 개의 선택된 노드",
     "nodes_one": "1개의 선택된 노드",
