@@ -46,7 +46,7 @@ import {
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
 import { useModal } from "../../core/modals";
-import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
+import { focusCameraOnEdge, focusCameraOnEdges, focusCameraOnNode } from "../../core/sigma";
 
 function SelectedItem<
   // eslint-disable-next-line
@@ -384,7 +384,18 @@ export const Selection: FC = () => {
     <>
       {/* Selection main list */}
       <div className="panel-body gap-1">
-        <h2>{t(`selection.selected_${type}`)}</h2>
+        <div className="d-flex flex-row align-items-center justify-content-between gl-gap-1">
+          <h2 className="mb-0">{t(`selection.selected_${type}`)}</h2>
+          {type === "edges" && visible.length > 0 && (
+            <button
+              className="gl-btn gl-btn-icon flex-shrink-0"
+              title={t("selection.locate_selected_edges")}
+              onClick={() => focusCameraOnEdges(visible)}
+            >
+              <OpenInGraphIcon />
+            </button>
+          )}
+        </div>
         <hr className="gl-m-0" />
         {!!hidden.length && (
           <div>

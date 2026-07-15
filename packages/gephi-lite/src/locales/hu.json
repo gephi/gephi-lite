@@ -664,6 +664,7 @@
     "hidden_nodes": "{{count, number}} rejtett kiválasztott csomópont",
     "hidden_nodes_one": "Egy rejtett kiválasztott csomópont",
     "locate_on_graph": "Keresse meg a grafikonon",
+    "locate_selected_edges": "Nagyítás az összes kijelölt élre",
     "node_no_label": "(Üres címke)",
     "nodes": "{{count, number}} kiválasztott csomópont",
     "nodes_one": "Egy kiválasztott csomópont",
