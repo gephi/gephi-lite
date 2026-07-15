@@ -861,6 +861,8 @@
     "select_all": "Вибрати все",
     "select_node_edges": "Вибрати ребра вузла",
     "select_node_neighbors": "Вибрати сусідів вузла",
+    "selected_edges": "Вибрані ребра",
+    "selected_nodes": "Вибрані вузли",
     "unselect_all": "Зняти вибір усіх",
     "unselect_all_hidden_edges": "Зняти вибір із усіх прихованих країв",
     "unselect_all_hidden_nodes": "Зняти вибір із усіх прихованих країв",
