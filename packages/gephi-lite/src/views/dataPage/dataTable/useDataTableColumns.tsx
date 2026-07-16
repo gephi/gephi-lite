@@ -215,9 +215,9 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         },
         cell: (props) =>
           type === "nodes" ? (
-            <NodeComponentById id={props.row.getValue("id")} />
+            <NodeComponentById id={props.row.getValue("id")} locatable />
           ) : (
-            <EdgeComponentById id={props.row.getValue("id")} />
+            <EdgeComponentById id={props.row.getValue("id")} locatable />
           ),
       }),
 

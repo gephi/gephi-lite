@@ -6,7 +6,7 @@ import { DEFAULT_SETTINGS, Settings } from "sigma/settings";
 import { getDrawEdgeLabel, getDrawNodeLabel } from "../../../core/appearance/utils";
 import { useAppearance, useGraphDataset, usePreferences } from "../../../core/context/dataContexts";
 import { getAppliedTheme } from "../../../core/preferences/utils";
-import { GephiLiteSigma, resetCamera, sigmaAtom } from "../../../core/sigma";
+import { GephiLiteSigma, consumePendingFocus, resetCamera, sigmaAtom } from "../../../core/sigma";
 import { drawDiscNodeHover } from "../../../core/sigma/utils";
 import { inputToStateThreshold } from "../../../utils/labels";
 
@@ -19,6 +19,9 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
   useEffect(() => {
     sigmaAtom.set(sigma);
     resetCamera({ forceRefresh: true });
+    // If we arrived here from a "locate" action on another page (e.g. the data table), replay the
+    // pending focus now that sigma is mounted and the graph has been framed.
+    consumePendingFocus();
   }, [sigma]);
 
   useEffect(() => {
