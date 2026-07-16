@@ -19,7 +19,7 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy, pickBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -578,9 +578,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     searchActions.indexAll();
   }
 
-  // When fields changed, check if filter or appearance use it
+  // When fields or data changed, check if filter or appearance use it
+  // (data changes are included because a partition's set of values can change
+  // without the field model itself changing, e.g. adding/removing an item)
   // here we test only static field
-  if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
+  if (
+    updatedKeys.has("edgeFields") ||
+    updatedKeys.has("nodeFields") ||
+    updatedKeys.has("nodeData") ||
+    updatedKeys.has("edgeData")
+  ) {
     const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
     const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
 
@@ -630,20 +637,23 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
       switch (appearanceElement.type) {
         // - if partitions palette are still in sync with the field values
-        case "partition":
+        case "partition": {
           // check if deprecated appearance state
           values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
 
-          // checking with the actual palette miss some values. It's ok if it has more available.
-          if (
-            keys(appearanceElement.colorPalette).length < values.length ||
-            values.some((v) => appearanceElement.colorPalette[v] === undefined)
-          ) {
-            // new palette
-            // TODO: merge existing palette with the new values, i.e. keep existing colors
-            appearanceElement.colorPalette = getPalette(values);
+          // keep existing (and possibly user-customized) colors untouched: drop
+          // categories no longer present in the data, and only generate colors
+          // for categories missing from the palette
+          const prunedPalette = pickBy(appearanceElement.colorPalette, (_c, v) => values.includes(v));
+          const missingValues = values.filter((v) => prunedPalette[v] === undefined);
+          if (missingValues.length > 0 || keys(prunedPalette).length !== keys(appearanceElement.colorPalette).length) {
+            appearanceElement.colorPalette = {
+              ...prunedPalette,
+              ...getPalette(missingValues),
+            };
           }
           break;
+        }
         // nothing to do for other cases
         // TODO: check if other cases need edits.
       }

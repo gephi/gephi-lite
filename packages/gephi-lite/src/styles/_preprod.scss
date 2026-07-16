@@ -1,0 +1,26 @@
+// Pre-production badge (shown only when the app is built with VITE_PREPRODUCTION).
+.preprod-banner {
+  position: fixed;
+  z-index: 3000;
+  left: 50%;
+  bottom: 0.5rem;
+  transform: translateX(-50%);
+  pointer-events: none; // purely informative: never intercept clicks/taps
+
+  padding: 0.15rem 0.85rem;
+  border-radius: 999px;
+  background: #e67e22;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 35%);
+}
+
+// On mobile, lift it above the bottom navigation bar.
+@media (max-width: 575.98px) {
+  .preprod-banner {
+    bottom: 4.25rem;
+  }
+}

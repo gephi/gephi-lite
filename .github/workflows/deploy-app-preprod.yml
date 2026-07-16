@@ -1,0 +1,83 @@
+name: deploy-app-preprod
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+# Pre-production deployment. Triggered on every push to `develop`, it deploys the app to the same
+# GitHub Pages site as production, but under the `/preprod/` sub-path, so it never touches the
+# production files (which live at the site root and are deployed from `main_jg`).
+#
+# URLs:
+#   - production:      https://jeangarf.github.io/gephi-lite/
+#   - pre-production:  https://jeangarf.github.io/gephi-lite/preprod/
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      CI: false
+      VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
+      # Enables the "PRÉ-PRODUCTION" badge in the app (see PreproductionBanner):
+      VITE_PREPRODUCTION: "true"
+      # No Matomo analytics on pre-production, so dev testing does not pollute production stats.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install
+        run: npm install
+
+      - uses: nyaa8/package-version@v1
+        with:
+          path: "packages/gephi-lite/package.json"
+
+      - name: Build
+        run: npm run build
+        env:
+          BASE_URL: ./
+
+      - name: Create site folder
+        run: mkdir -p website/v${{ env.PACKAGE_VERSION }}
+
+      - name: Copy gephi lite files
+        run: cp -rf packages/gephi-lite/build/* website/v${{ env.PACKAGE_VERSION }}
+
+      - name: Create index page with redirection
+        run: |
+          cat <<EOF > website/index.html
+          <!DOCTYPE HTML>
+          <html lang="en-US" prefix="og: https://ogp.me/ns#">
+            <head>
+              <meta charset="UTF-8">
+              <title>Gephi Lite (pre-production)</title>
+              <meta name="description" content="Gephi Lite pre-production instance" />
+              <meta name="robots" content="noindex, nofollow" />
+              <noscript>
+              <meta http-equiv="refresh" content="0; url=v${{ env.PACKAGE_VERSION }}/">
+              </noscript>
+              <script type="text/javascript">
+                window.location.href = "v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
+              </script>
+            </head>
+            <body>
+                If you are not redirected automatically, follow this <a href='v${{ env.PACKAGE_VERSION }}/'>link</a>.
+            </body>
+          </html>
+          EOF
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: website # The folder the action should deploy.
+          branch: gh-pages # The branch the action should deploy to.
+          target-folder: preprod # Deploy inside the /preprod/ sub-path, next to production.
+          clean: false # keep the production files (and anything else already on the branch)

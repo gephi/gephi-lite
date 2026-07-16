@@ -10,6 +10,7 @@ import {
   useVisualGetters,
 } from "../../core/context/dataContexts";
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
+import { useLocateInGraph } from "../../hooks/useLocateInGraph";
 
 export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boolean }> = ({ label, color, hidden }) => {
   const { t } = useTranslation();
@@ -26,11 +27,13 @@ export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boole
   );
 };
 
-export const NodeComponentById: FC<{ id: string }> = ({ id }) => {
+export const NodeComponentById: FC<{ id: string; locatable?: boolean }> = ({ id, locatable }) => {
+  const { t } = useTranslation();
   const graphDataset = useGraphDataset();
   const dynamicItemData = useDynamicItemData();
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
+  const { locateNode } = useLocateInGraph();
 
   const data = useMemo(
     () =>
@@ -47,9 +50,19 @@ export const NodeComponentById: FC<{ id: string }> = ({ id }) => {
     [id, graphDataset, visualGetters, dynamicItemData, filteredGraph],
   );
 
-  return data ? (
-    <NodeComponent {...data} />
+  if (!data) return <NodeComponent label={<span className="fst-italic">?</span>} color="lightgrey" />;
+
+  // When locatable, clicking the node locates it: navigate to the graph and center the camera on it.
+  return locatable ? (
+    <button
+      type="button"
+      className="node-locate-button gl-locate-button"
+      title={t("selection.locate_on_graph")}
+      onClick={() => locateNode(id, { navigateToGraph: true })}
+    >
+      <NodeComponent {...data} />
+    </button>
   ) : (
-    <NodeComponent label={<span className="fst-italic">?</span>} color="lightgrey" />
+    <NodeComponent {...data} />
   );
 };

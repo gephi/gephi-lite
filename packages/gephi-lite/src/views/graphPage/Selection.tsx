@@ -46,7 +46,8 @@ import {
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
 import { useModal } from "../../core/modals";
-import { focusCameraOnEdge, focusCameraOnEdges, focusCameraOnNode } from "../../core/sigma";
+import { focusCameraOnEdges, focusCameraOnNode } from "../../core/sigma";
+import { useLocateInGraph } from "../../hooks/useLocateInGraph";
 
 function SelectedItem<
   // eslint-disable-next-line
@@ -80,16 +81,7 @@ function SelectedItem<
   const { deleteItems, updateEdge } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
   const { items: selectionItems } = useSelection();
-
-  // Locate a single node: replace the selection with it, then center the camera on it.
-  // Used when clicking a node inside an edge card (equivalent to a node's "locate" action).
-  const focusNode = useCallback(
-    (nodeId: string) => {
-      select({ type: "nodes", items: new Set([nodeId]), replace: true });
-      focusCameraOnNode(nodeId);
-    },
-    [select],
-  );
+  const { locateNode, locateEdge } = useLocateInGraph();
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
     () => [
@@ -156,8 +148,8 @@ function SelectedItem<
         target={{ ...target, label: target.label ?? null, color: target.color ?? DEFAULT_NODE_COLOR }}
         className="mb-2"
         nodeButtonTitle={t("selection.locate_on_graph")}
-        onSourceClick={() => focusNode(fullGraph.source(id))}
-        onTargetClick={() => focusNode(fullGraph.target(id))}
+        onSourceClick={() => locateNode(fullGraph.source(id))}
+        onTargetClick={() => locateNode(fullGraph.target(id))}
       />
     );
   }
@@ -217,12 +209,9 @@ function SelectedItem<
           disabled={item.hidden}
           onClick={() => {
             if (type === "nodes") focusCameraOnNode(id);
-            else {
-              // Focus on this single edge: keep only it selected (so only its source and
-              // target labels remain shown) then center the camera on it.
-              select({ type: "edges", items: new Set([id]), replace: true });
-              focusCameraOnEdge(id);
-            }
+            // Focus on this single edge: keep only it selected (so only its source and target
+            // labels remain shown) then center the camera on it.
+            else locateEdge(id);
           }}
         >
           <OpenInGraphIcon />
