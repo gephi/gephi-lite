@@ -19,7 +19,7 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy, pickBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -603,12 +603,14 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
           // check if deprecated appearance state
           values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
 
-          // only generate colors for values missing from the palette, so existing
-          // (and possibly user-customized) colors are kept untouched
-          const missingValues = values.filter((v) => appearanceElement.colorPalette[v] === undefined);
-          if (missingValues.length > 0) {
+          // keep existing (and possibly user-customized) colors untouched: drop
+          // categories no longer present in the data, and only generate colors
+          // for categories missing from the palette
+          const prunedPalette = pickBy(appearanceElement.colorPalette, (_c, v) => values.includes(v));
+          const missingValues = values.filter((v) => prunedPalette[v] === undefined);
+          if (missingValues.length > 0 || keys(prunedPalette).length !== keys(appearanceElement.colorPalette).length) {
             appearanceElement.colorPalette = {
-              ...appearanceElement.colorPalette,
+              ...prunedPalette,
               ...getPalette(missingValues),
             };
           }
