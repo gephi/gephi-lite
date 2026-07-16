@@ -33,7 +33,9 @@ const useEditNodeForm = ({
   const { select } = useSelectionActions();
   const { createNode, updateNode } = useGraphDatasetActions();
   const { nodeData, layout, nodeFields: allNodeFields } = useGraphDataset();
-  const nodeFields = useMemo(() => allNodeFields.filter((nf) => !nf.readOnly), [allNodeFields]);
+  // Read-only (eg. system date) and formula (scripted) fields are managed automatically, so they
+  // are not editable through this form:
+  const nodeFields = useMemo(() => allNodeFields.filter((nf) => !nf.readOnly && !nf.script), [allNodeFields]);
   const nodeFieldsIndex = useMemo(() => keyBy(nodeFields, "id"), [nodeFields]);
 
   const isNew = typeof nodeId === "undefined";

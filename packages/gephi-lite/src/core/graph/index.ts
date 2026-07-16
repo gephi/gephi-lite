@@ -39,11 +39,12 @@ import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
 import { ensureSystemDateFields, stampCreationDates, stampUpdateDate } from "./dates";
-import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes } from "./dynamicAttributes";
+import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes, computeScriptFieldsData } from "./dynamicAttributes";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
   cleanNode,
+  dataGraphToFullGraph,
   dataGraphToSigmaGraph,
   datasetToString,
   getEmptyGraphDataset,
@@ -457,12 +458,37 @@ export const useFilteredGraphAt = (index: number) => {
 };
 export const dynamicItemDataAtom = derivedAtom(
   [filteredGraphAtom, graphDatasetAtom],
-  (filteredGraphCache) => ({
-    dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
-    dynamicNodeFields: map(DYNAMIC_ATTRIBUTES.nodes, ({ field }) => field) || [],
-    dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
-    dynamicEdgeFields: map(DYNAMIC_ATTRIBUTES.edges, ({ field }) => field) || [],
-  }),
+  (filteredGraphCache, graphDataset) => {
+    // Full graph (topology + attributes) used to evaluate the formula (scripted) fields:
+    const hasScriptFields =
+      graphDataset.nodeFields.some((f) => f.script) || graphDataset.edgeFields.some((f) => f.script);
+    const fullGraph = hasScriptFields ? dataGraphToFullGraph(graphDataset, filteredGraphCache) : undefined;
+
+    const mergeScripts = <T extends ItemType>(
+      itemType: T,
+      dynamicData: Record<string, ItemData>,
+      fields: FieldModel<T>[],
+    ): Record<string, ItemData> => {
+      if (!fullGraph || !fields.some((f) => f.script)) return dynamicData;
+      const scriptData = computeScriptFieldsData(itemType, fields, fullGraph);
+      return mapValues(dynamicData, (data, id) => ({ ...data, ...scriptData[id] }));
+    };
+
+    return {
+      dynamicNodeData: mergeScripts(
+        "nodes",
+        computeAllDynamicAttributes("nodes", filteredGraphCache),
+        graphDataset.nodeFields,
+      ),
+      dynamicNodeFields: map(DYNAMIC_ATTRIBUTES.nodes, ({ field }) => field) || [],
+      dynamicEdgeData: mergeScripts(
+        "edges",
+        computeAllDynamicAttributes("edges", filteredGraphCache),
+        graphDataset.edgeFields,
+      ),
+      dynamicEdgeFields: map(DYNAMIC_ATTRIBUTES.edges, ({ field }) => field) || [],
+    };
+  },
   { checkInput: false },
 );
 export const visualGettersAtom = derivedAtom(
