@@ -42,7 +42,9 @@ const useEditEdgeForm = ({
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createEdge, updateEdge } = useGraphDatasetActions();
-  const { edgeData, layout, fullGraph, edgeFields } = useGraphDataset();
+  const { edgeData, layout, fullGraph, edgeFields: allEdgeFields } = useGraphDataset();
+  // Formula (scripted) fields are computed, so they are not editable through this form:
+  const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.script), [allEdgeFields]);
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
 
   const isNew = typeof edgeId === "undefined";

@@ -201,6 +201,7 @@
       "targetId": "Cible ID"
     },
     "save_and_create_column": "Enregistrer et créer la colonne",
+    "save_and_update_column": "Enregistrer et mettre à jour la colonne",
     "save_cell": "Enregistrer la cellule",
     "sort_asc": "Tri A→Z (0→9)",
     "sort_desc": "Tri Z→A (9→0)"
@@ -264,6 +265,8 @@
     "update_edges": "Éditer le lien existant",
     "update_edges_field": "Éditer l'attribut de liens",
     "update_edges_field_success": "L'attribut de lien a bien été mis à jour.",
+    "update_edges_scripted_field": "Éditer l'attribut de lien scripté",
+    "update_edges_scripted_field_success": "L'attribut de lien scripté a été mis à jour.",
     "update_edges_success": "Le lien a été mis à jour avec succès.",
     "update_multiple_edges": "Éditer les liens existants",
     "update_multiple_edges_success": "Les {{count,number}} liens ont bien été mis à jour.",
@@ -272,6 +275,8 @@
     "update_nodes": "Éditer le nœud existant",
     "update_nodes_field": "Éditer l'attribut des nœuds",
     "update_nodes_field_success": "L'attribut de nœud a bien été mis à jour.",
+    "update_nodes_scripted_field": "Éditer l'attribut de nœud scripté",
+    "update_nodes_scripted_field_success": "L'attribut de nœud scripté a été mis à jour.",
     "update_nodes_success": "Le nœud a été mis à jour avec succès.",
     "update_this_edges": "Éditer ce lien",
     "update_this_nodes": "Éditer ce nœud"

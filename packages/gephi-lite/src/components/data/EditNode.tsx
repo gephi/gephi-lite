@@ -32,7 +32,9 @@ const useEditNodeForm = ({
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createNode, updateNode } = useGraphDatasetActions();
-  const { nodeData, layout, nodeFields } = useGraphDataset();
+  const { nodeData, layout, nodeFields: allNodeFields } = useGraphDataset();
+  // Formula (scripted) fields are computed, so they are not editable through this form:
+  const nodeFields = useMemo(() => allNodeFields.filter((nf) => !nf.script), [allNodeFields]);
   const nodeFieldsIndex = useMemo(() => keyBy(nodeFields, "id"), [nodeFields]);
 
   const isNew = typeof nodeId === "undefined";

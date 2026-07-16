@@ -31,15 +31,18 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
 
   const fieldOptions = useMemo<FieldOption[]>(
     () =>
-      (type === "nodes" ? nodeFields : edgeFields).map((field) => ({
-        field,
-        value: field.id,
-        label: (
-          <>
-            <FieldModelIcon type={field.type} /> {field.label || field.id}
-          </>
-        ),
-      })),
+      (type === "nodes" ? nodeFields : edgeFields)
+        // Formula (scripted) fields are computed, so they cannot be bulk-edited:
+        .filter((field) => !field.script)
+        .map((field) => ({
+          field,
+          value: field.id,
+          label: (
+            <>
+              <FieldModelIcon type={field.type} /> {field.label || field.id}
+            </>
+          ),
+        })),
     [edgeFields, nodeFields, type],
   );
 

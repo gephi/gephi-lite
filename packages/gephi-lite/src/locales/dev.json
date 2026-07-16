@@ -181,6 +181,7 @@
       "targetLabel": "Target label"
     },
     "save_and_create_column": "Save and create column",
+    "save_and_update_column": "Save and update column",
     "save_cell": "Save cell",
     "sort_asc": "Sort A→Z (0→9)",
     "sort_desc": "Sort Z→A (9→0)"
@@ -246,6 +247,8 @@
     "update_edges": "Edit existing edge",
     "update_edges_field": "Edit edges attribute",
     "update_edges_field_success": "The edge attribute has successfully been updated.",
+    "update_edges_scripted_field": "Edit edges scripted attribute",
+    "update_edges_scripted_field_success": "The scripted edge attribute has successfully been updated.",
     "update_edges_success": "The edge has successfully been updated.",
     "update_multiple_edges": "Edit existing edges",
     "update_multiple_edges_success": "The {{count, number}} edges have successfully been updated.",
@@ -254,6 +257,8 @@
     "update_nodes": "Edit existing node",
     "update_nodes_field": "Edit nodes attribute",
     "update_nodes_field_success": "The node attribute has successfully been updated.",
+    "update_nodes_scripted_field": "Edit nodes scripted attribute",
+    "update_nodes_scripted_field_success": "The scripted node attribute has successfully been updated.",
     "update_nodes_success": "The node has successfully been updated.",
     "update_this_edges": "Edit this edge",
     "update_this_nodes": "Edit this node"
