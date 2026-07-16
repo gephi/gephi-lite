@@ -184,6 +184,31 @@ const HIGHLIGHT_DURATION = 2000;
 let focusTimeOutId: number | null = null;
 
 /**
+ * Runs `run` once the graph area (".filler") has stopped resizing.
+ *
+ * On mobile, selecting an item deploys a panel that takes half of the height, and the ".filler"
+ * (the visible graph band) shrinks over a CSS transition. Since selecting + focusing happen
+ * synchronously, the framing would otherwise be computed against the *pre-transition* band (full
+ * height) and end up hidden behind the panel / zoomed for the wrong area. We therefore wait for the
+ * band to settle before framing. On desktop nothing is transitioning, so it runs almost immediately.
+ */
+function runWhenGraphBandSettled(run: () => void) {
+  const getHeight = () => document.querySelector(".filler")?.getBoundingClientRect().height ?? 0;
+  const start = performance.now();
+  let lastHeight = getHeight();
+  let stableFrames = 0;
+  const tick = () => {
+    const height = getHeight();
+    stableFrames = Math.abs(height - lastHeight) < 0.5 ? stableFrames + 1 : 0;
+    lastHeight = height;
+    // Settled once the height held steady for a couple of frames, or give up after ~500ms:
+    if (stableFrames >= 2 || performance.now() - start > 500) run();
+    else requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/**
  * Computes a camera state that frames the given nodes so that their disks AND their labels
  * fit entirely inside the *visible* part of the graph.
  *
@@ -339,10 +364,13 @@ export function focusCameraOnEdges(ids: string[]) {
   if (!endpoints.size) return;
 
   // Frame all the edges so that their endpoints' disks and labels fit entirely within the
-  // viewport visible between the panels.
-  sigma
-    .getCamera()
-    .animate(getCameraStateToFrameNodes(sigma, Array.from(endpoints)), { duration: ANIMATION_DURATION });
+  // viewport visible between the panels. We wait for the graph band to settle first, so on mobile
+  // the framing accounts for the selection panel that just opened (and halved the visible height).
+  runWhenGraphBandSettled(() =>
+    sigma
+      .getCamera()
+      .animate(getCameraStateToFrameNodes(sigma, Array.from(endpoints)), { duration: ANIMATION_DURATION }),
+  );
 
   // Higlight nodes during X seconds
   sigmaActions.setHighlightedNodes(endpoints);
