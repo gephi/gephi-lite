@@ -547,9 +547,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     searchActions.indexAll();
   }
 
-  // When fields changed, check if filter or appearance use it
+  // When fields or data changed, check if filter or appearance use it
+  // (data changes are included because a partition's set of values can change
+  // without the field model itself changing, e.g. adding/removing an item)
   // here we test only static field
-  if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
+  if (
+    updatedKeys.has("edgeFields") ||
+    updatedKeys.has("nodeFields") ||
+    updatedKeys.has("nodeData") ||
+    updatedKeys.has("edgeData")
+  ) {
     const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
     const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
 
