@@ -4,6 +4,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { ErrorComponent } from "../components/Error";
 import { MatomoProvider } from "../components/Matomo";
+import { PreproductionBanner } from "../components/PreproductionBanner";
 import DesignSystemPage from "../designSystem";
 import { NotFoundPage } from "../views/NotFoundPage";
 import { DataPage } from "../views/dataPage";
@@ -23,6 +24,7 @@ export const Root: FC = () => {
         console.debug(details);
       }}
     >
+      <PreproductionBanner />
       <HashRouter>
         <MatomoProvider>
           <UIContext.Provider
