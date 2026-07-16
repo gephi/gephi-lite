@@ -24,6 +24,7 @@ import ColorPicker, { InlineColorPicker } from "../ColorPicker";
 import MessageTooltip from "../MessageTooltip";
 import { FieldModelIcon, InvalidDataIcon } from "../common-icons";
 import { Checkbox } from "../forms/Checkbox";
+import { NumberInput } from "../forms/NumberInput";
 import { CreatableSelect, StringOption, optionize } from "../forms/Select";
 
 /**
@@ -152,25 +153,9 @@ export const AttributeEditors: {
 } = {
   text: StringEditor,
   url: StringEditor,
-  number: ({ value, onChange, id, autoFocus, placeholder }) => {
-    const ref = useRef<HTMLInputElement>(null);
-    useEffect(() => {
-      if (ref.current && autoFocus) ref.current.focus();
-    }, [autoFocus]);
-
-    return (
-      <input
-        id={id}
-        ref={ref}
-        className="form-control"
-        type="number"
-        value={value ?? ""}
-        step="any"
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
-      />
-    );
-  },
+  number: ({ value, onChange, id, autoFocus, placeholder }) => (
+    <NumberInput id={id} value={value} onChange={onChange} autoFocus={autoFocus} placeholder={placeholder} />
+  ),
   boolean: ({ value, onChange, id, autoFocus }) => (
     <div className="form-check h-100 ">
       <Checkbox
