@@ -43,7 +43,9 @@ const useEditEdgeForm = ({
   const { select } = useSelectionActions();
   const { createEdge, updateEdge } = useGraphDatasetActions();
   const { edgeData, layout, fullGraph, edgeFields: allEdgeFields } = useGraphDataset();
-  const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.readOnly), [allEdgeFields]);
+  // Read-only (eg. system date) and formula (scripted) fields are managed automatically, so they
+  // are not editable through this form:
+  const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.readOnly && !ef.script), [allEdgeFields]);
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
 
   const isNew = typeof edgeId === "undefined";

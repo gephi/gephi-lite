@@ -1,4 +1,4 @@
-import { DynamicItemDataSpec, ItemType } from "@gephi/gephi-lite-sdk";
+import { DynamicItemDataSpec, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { isBoolean, size, values } from "lodash";
 import { useCallback, useMemo } from "react";
@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import Dropdown from "../../../components/Dropdown";
 import { ThreeDotsVerticalIcon } from "../../../components/common-icons";
 import { AttributeLabel } from "../../../components/data/Attribute";
+import { CreateScriptedFieldModelModal } from "../../../components/data/CreateScriptedFieldModel";
 import { EdgeComponentById } from "../../../components/data/Edge";
 import { EditFieldModelModal } from "../../../components/data/EditFieldModel";
 import { NodeComponentById } from "../../../components/data/Node";
@@ -236,7 +237,10 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       // Dataset-specific columns;
       ...fields.map<ColumnDef<ItemRow>>((field, i, a) => ({
         id: `field::${field.id}`,
-        accessorFn: ({ data }: ItemRow) => data[field.id],
+        // Formula (scripted) fields are computed on the fly and live in the dynamic data channel
+        // (spread at the row's top level), while regular fields are stored in `data`:
+        accessorFn: (row: ItemRow) =>
+          field.script ? (row as unknown as Record<string, Scalar>)[field.id] : row.data[field.id],
         header: ({ header }) => (
           <>
             <AttributeLabel field={field} className="column-title" onClick={header.column.getToggleSortingHandler()} />
@@ -258,7 +262,12 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                   {
                     label: t("datatable.modify_column"),
                     onClick: () => {
-                      openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
+                      if (field.script)
+                        openModal({
+                          component: CreateScriptedFieldModelModal,
+                          arguments: { type, fieldModelId: field.id },
+                        });
+                      else openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
                     },
                   },
                   {
@@ -355,7 +364,8 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             id={props.row.getValue("id")}
             field={field}
             value={props.row.getValue(`field::${field.id}`)}
-            readOnly={field.readOnly}
+            // Read-only (system date) and formula (scripted) fields are not editable in the table:
+            readOnly={field.readOnly || !!field.script}
           />
         ),
       })),

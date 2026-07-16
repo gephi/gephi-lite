@@ -32,7 +32,8 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
   const fieldOptions = useMemo<FieldOption[]>(
     () =>
       (type === "nodes" ? nodeFields : edgeFields)
-        .filter((field) => !field.readOnly)
+        // Read-only (eg. system date) and formula (scripted) fields are computed, so they cannot be bulk-edited:
+        .filter((field) => !field.readOnly && !field.script)
         .map((field) => ({
           field,
           value: field.id,
