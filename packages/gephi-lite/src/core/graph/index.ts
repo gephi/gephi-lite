@@ -19,7 +19,7 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, last, map, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -599,20 +599,21 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
       switch (appearanceElement.type) {
         // - if partitions palette are still in sync with the field values
-        case "partition":
+        case "partition": {
           // check if deprecated appearance state
           values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
 
-          // checking with the actual palette miss some values. It's ok if it has more available.
-          if (
-            keys(appearanceElement.colorPalette).length < values.length ||
-            values.some((v) => appearanceElement.colorPalette[v] === undefined)
-          ) {
-            // new palette
-            // TODO: merge existing palette with the new values, i.e. keep existing colors
-            appearanceElement.colorPalette = getPalette(values);
+          // only generate colors for values missing from the palette, so existing
+          // (and possibly user-customized) colors are kept untouched
+          const missingValues = values.filter((v) => appearanceElement.colorPalette[v] === undefined);
+          if (missingValues.length > 0) {
+            appearanceElement.colorPalette = {
+              ...appearanceElement.colorPalette,
+              ...getPalette(missingValues),
+            };
           }
           break;
+        }
         // nothing to do for other cases
         // TODO: check if other cases need edits.
       }
