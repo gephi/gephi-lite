@@ -1,4 +1,4 @@
-import iwanthue from "iwanthue/npm";
+import iwanthue from "iwanthue";
 import { every, values as getValues, reverse } from "lodash";
 
 export function isColor(strColor: string): boolean {
