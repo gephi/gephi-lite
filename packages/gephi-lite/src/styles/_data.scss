@@ -20,6 +20,24 @@
   }
 }
 
+// Shared style for "locate" buttons that wrap a node/edge preview (data table, edge cards…):
+// resets the native button styling so only the preview shows, and hints clickability on hover.
+.gl-locate-button {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover span:last-child {
+    text-decoration: underline;
+  }
+}
+
 .edge-component {
   display: flex;
   flex-direction: column;
@@ -30,22 +48,6 @@
     line-height: normal;
     @extend .small;
     @extend .text-ellipsis;
-  }
-
-  .edge-node-button {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
-    border: none;
-    background: none;
-    text-align: left;
-    color: inherit;
-    cursor: pointer;
-
-    &:hover span:last-child {
-      text-decoration: underline;
-    }
   }
 
   .edge-wrapper {

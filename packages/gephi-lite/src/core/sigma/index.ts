@@ -183,6 +183,11 @@ const ANIMATION_DURATION = 500;
 const HIGHLIGHT_DURATION = 2000;
 let focusTimeOutId: number | null = null;
 
+// A focus request that must be replayed once the graph page (and its sigma instance) is mounted
+// and ready. Used when "locating" an item from another page (e.g. the data table): we navigate to
+// the graph, and the graph page consumes this pending focus once ready (see consumePendingFocus).
+let pendingFocus: { type: "nodes" | "edges"; id: string } | null = null;
+
 /**
  * Computes a camera state that frames the given nodes so that their disks AND their labels
  * fit entirely inside the *visible* part of the graph.
@@ -350,4 +355,50 @@ export function focusCameraOnEdges(ids: string[]) {
     sigmaActions.resetHighlightedNodes();
     focusTimeOutId = null;
   }, HIGHLIGHT_DURATION);
+}
+
+// Register a focus to be replayed once the graph page's sigma instance is mounted and ready.
+// Used to "locate" an item from a page where sigma is not mounted (e.g. the data table).
+export function requestFocusOnReady(type: "nodes" | "edges", id: string) {
+  pendingFocus = { type, id };
+}
+
+// True once sigma has rendered/normalized the graph on its current instance: the node's display
+// (framed) coordinates then differ from its raw layout coordinates. Right after navigation, sigma
+// briefly reports raw coordinates as display data; focusing then would frame against unnormalized
+// coordinates and send the camera into empty space. (When the graph is already normalized the two
+// coincide, in which case focusing on the raw coordinates is correct anyway.)
+function isNodeFramed(sigma: GephiLiteSigma, nodeId: string): boolean {
+  const graph = sigma.getGraph();
+  if (!graph.hasNode(nodeId)) return false;
+  const dd = sigma.getNodeDisplayData(nodeId);
+  if (!dd) return false;
+  return dd.x !== graph.getNodeAttribute(nodeId, "x") || dd.y !== graph.getNodeAttribute(nodeId, "y");
+}
+
+// Replay any pending focus request. Called by the graph page once its sigma instance is ready.
+// The focus is deferred (via animation frames) until the container has real pixel dimensions and
+// sigma has framed the target item, so the camera animates to the right place.
+export function consumePendingFocus() {
+  if (!pendingFocus) return;
+  const focus = pendingFocus;
+  pendingFocus = null;
+
+  let attempts = 0;
+  const tryFocus = () => {
+    const sigma = sigmaAtom.get();
+    const graph = sigma.getGraph();
+    const { width, height } = sigma.getDimensions();
+    const anchorNode = focus.type === "nodes" ? focus.id : graph.hasEdge(focus.id) ? graph.source(focus.id) : null;
+    const ready = width > 0 && height > 0 && anchorNode !== null && isNodeFramed(sigma, anchorNode);
+
+    // Give up gracefully after ~1s (60 frames): focus best-effort rather than never.
+    if (ready || attempts++ >= 60) {
+      if (focus.type === "nodes") focusCameraOnNode(focus.id);
+      else focusCameraOnEdge(focus.id);
+    } else {
+      requestAnimationFrame(tryFocus);
+    }
+  };
+  requestAnimationFrame(tryFocus);
 }
