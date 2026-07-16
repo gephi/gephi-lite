@@ -1,4 +1,4 @@
-import { gephiLiteStringify } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ItemData, ItemType, Scalar, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { Producer, asyncAction, atom, producerToAction } from "@ouestware/atoms";
 import Graph from "graphology";
 import { write } from "graphology-gexf";
@@ -40,12 +40,34 @@ function geFullDataGraph(): Graph {
   // get the full graph
   const graphDataset = graphDatasetAtom.get();
   const filteredGraph = filteredGraphAtom.get();
-  const dynamicNodeData = dynamicItemDataAtom.get();
+  const dynamicItemData = dynamicItemDataAtom.get();
   const fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
 
   // apply current appearance on the graph
   const visualGetters = visualGettersAtom.get();
-  applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
+  applyVisualProperties(fullDataGraph, graphDataset, dynamicItemData, visualGetters);
+
+  // Materialize the computed values of "formula" (scripted) fields as static attributes on the
+  // exported graph. This makes them part of exports (eg. GEXF), while only mutating this freshly
+  // built export graph — the dataset (and thus the formula definitions and the native gephi-lite
+  // save) are left untouched.
+  const materializeScriptFields = (itemType: ItemType, fields: FieldModel[], dynamicData: Record<string, ItemData>) => {
+    const scriptFields = fields.filter((f) => f.script);
+    if (!scriptFields.length) return;
+    const itemIds = itemType === "nodes" ? fullDataGraph.nodes() : fullDataGraph.edges();
+    const setAttribute = (id: string, key: string, value: Scalar) =>
+      itemType === "nodes"
+        ? fullDataGraph.setNodeAttribute(id, key, value)
+        : fullDataGraph.setEdgeAttribute(id, key, value);
+    itemIds.forEach((id) => {
+      scriptFields.forEach((field) => {
+        const value = dynamicData[id]?.[field.id];
+        if (value !== undefined && value !== null) setAttribute(id, field.id, value);
+      });
+    });
+  };
+  materializeScriptFields("nodes", graphDataset.nodeFields, dynamicItemData.dynamicNodeData);
+  materializeScriptFields("edges", graphDataset.edgeFields, dynamicItemData.dynamicEdgeData);
 
   return fullDataGraph;
 }
