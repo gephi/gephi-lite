@@ -288,11 +288,39 @@ function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraStat
     // Half-extent (px) from the target center that scales with the zoom (the disk):
     const scalingX = Math.abs(nodeVp.x - centerVp.x) + radiusPx;
     const scalingY = Math.abs(nodeVp.y - centerVp.y) + radiusPx;
-    // The label (right of the node) and the label height do not scale: reserve them as fixed px.
-    if (scalingX > 0) factor = Math.min(factor, Math.max(availHalfW - labelPx, 1) / scalingX);
+    // Labels are drawn to the RIGHT of the node, so only nodes on the right half push against the
+    // right edge of the band. Reserving their (fixed, non-scaling) width for *every* node — including
+    // far-left ones whose label extends inward — would over-constrain the zoom and dezoom far too much
+    // on a narrow (mobile) band. Cap the reservation so a very long label cannot collapse the zoom.
+    const labelReserve = nodeVp.x >= centerVp.x ? Math.min(labelPx, availHalfW * 0.6) : 0;
+    if (scalingX > 0) factor = Math.min(factor, Math.max(availHalfW - labelReserve, 1) / scalingX);
     if (scalingY > 0) factor = Math.min(factor, Math.max(availHalfH - labelSize / 2, 1) / scalingY);
   });
   if (!isFinite(factor) || factor <= 0) factor = 1;
+
+  // Safety floor: framing a subset of nodes must never zoom out further than showing the whole
+  // rendered graph — otherwise a bad measurement (or a very spread selection) could leave the graph
+  // barely visible. Compute the zoom that fits every rendered node in the band and never zoom out
+  // beyond it.
+  let allMinX = Infinity;
+  let allMaxX = -Infinity;
+  let allMinY = Infinity;
+  let allMaxY = -Infinity;
+  graph.forEachNode((n) => {
+    if (!sigma.getNodeDisplayData(n)) return;
+    const attrs = graph.getNodeAttributes(n) as { x: number; y: number };
+    const v = sigma.graphToViewport({ x: attrs.x, y: attrs.y });
+    allMinX = Math.min(allMinX, v.x);
+    allMaxX = Math.max(allMaxX, v.x);
+    allMinY = Math.min(allMinY, v.y);
+    allMaxY = Math.max(allMaxY, v.y);
+  });
+  if (isFinite(allMinX)) {
+    const allHalfW = Math.max((allMaxX - allMinX) / 2, 1);
+    const allHalfH = Math.max((allMaxY - allMinY) / 2, 1);
+    const factorFitAll = Math.min(availHalfW / allHalfW, availHalfH / allHalfH);
+    factor = Math.max(factor, factorFitAll);
+  }
 
   // Pan so the nodes are centered inside the visible band (and not the whole canvas). We
   // convert the pixel offset (band center vs canvas center) into framed units. The framed
