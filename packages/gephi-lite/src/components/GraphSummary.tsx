@@ -6,7 +6,9 @@ import { useTranslation } from "react-i18next";
 
 import { useFilteredGraph, useFilters, useGraphDataset, usePreferences } from "../core/context/dataContexts";
 import { useModal } from "../core/modals";
-import { EditIcon, FiltersIconFill } from "./common-icons";
+import { EditEdgeModal } from "./data/EditEdge";
+import { EditNodeModal } from "./data/EditNode";
+import { CreateEdgeIcon, CreateNodeIcon, EditIcon, FiltersIconFill } from "./common-icons";
 import { GraphMetadataModal } from "./modals/GraphMetadataModal";
 
 const GraphStat: FC<{ className?: string; type: ItemType; current: number; total: number }> = ({
@@ -17,12 +19,27 @@ const GraphStat: FC<{ className?: string; type: ItemType; current: number; total
 }) => {
   const { locale } = usePreferences();
   const { t } = useTranslation();
+  const { openModal } = useModal();
 
   const isFiltered = useMemo(() => current !== total, [current, total]);
 
   return (
     <div className={cx("d-flex flex-column", className)}>
-      <div>{capitalize(t(`graph.model.${type}`))}</div>
+      <div className="d-flex flex-row align-items-center gl-gap-1">
+        <span>{capitalize(t(`graph.model.${type}`))}</span>
+        <button
+          className="gl-btn gl-btn-icon"
+          title={t(`edition.create_${type}`)}
+          aria-label={t(`edition.create_${type}`)}
+          onClick={() =>
+            type === "nodes"
+              ? openModal({ component: EditNodeModal, arguments: {} })
+              : openModal({ component: EditEdgeModal, arguments: {} })
+          }
+        >
+          {type === "nodes" ? <CreateNodeIcon /> : <CreateEdgeIcon />}
+        </button>
+      </div>
       <div>
         <span>
           {current.toLocaleString(locale)}
