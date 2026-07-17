@@ -50,6 +50,8 @@ export type FileState = {
   current: FileType | null;
   recentFiles: Array<FileType>;
   status: { type: "idle" } | { type: "loading" } | { type: "error"; message?: string };
+  // Whether the graph dataset, appearance or filters have changed since the current file was opened/saved:
+  isDirty: boolean;
 };
 
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };

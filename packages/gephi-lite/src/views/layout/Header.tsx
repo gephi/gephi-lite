@@ -1,6 +1,6 @@
 import cx from "classnames";
 import FileSaver from "file-saver";
-import { type FC, PropsWithChildren, useMemo, useState } from "react";
+import { type FC, PropsWithChildren, useCallback, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { PiList, PiX } from "react-icons/pi";
@@ -18,6 +18,7 @@ import {
   GraphIcon,
   GraphIconFill,
   HomeIcon,
+  SaveIcon,
 } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
@@ -43,10 +44,32 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { resetGraph } = useGraphDatasetActions();
   const { saveFile } = useCloudProvider();
   const { exportAsGexf } = useFileActions();
-  const { current: currentFile } = useFile();
+  const { current: currentFile, isDirty } = useFile();
 
   // For mobile burger menu:
   const [expanded, setExpanded] = useState(false);
+
+  // The classic "Save" action only makes sense for an already-opened GitHub file:
+  const canSaveToCloud = currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && !!user;
+
+  const handleSave = useCallback(async () => {
+    try {
+      await saveFile();
+      notify({
+        type: "success",
+        message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
+      });
+    } catch (e) {
+      console.error(e);
+      notify({ type: "error", message: t("graph.save.github.error").toString() });
+    }
+  }, [saveFile, notify, t, currentFile]);
+
+  const saveButton = canSaveToCloud && (
+    <button className="gl-btn gl-btn-icon" onClick={handleSave} disabled={!isDirty} title={t("workspace.menu.save")}>
+      <SaveIcon />
+    </button>
+  );
 
   const workspaceMenuList = useMemo(
     () =>
@@ -83,22 +106,11 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           },
         },
         { type: "divider" },
-        ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
+        ...(canSaveToCloud
           ? [
               {
                 label: t("workspace.menu.save"),
-                onClick: async () => {
-                  try {
-                    await saveFile();
-                    notify({
-                      type: "success",
-                      message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    notify({ type: "error", message: t("graph.save.github.error").toString() });
-                  }
-                },
+                onClick: handleSave,
               },
             ]
           : []),
@@ -152,7 +164,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               },
             ]),
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile],
+    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, canSaveToCloud, handleSave],
   );
 
   const logoMenuList = useMemo(
@@ -181,6 +193,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
                 <button className="gl-btn">Workspace</button>
               </Dropdown>
             </div>
+            {saveButton}
             <ThemeSwitcher />
             <LocalSwitcher />
             {logoMenuList.map(({ label, icon, onClick, url }, i) =>
@@ -204,6 +217,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           <Dropdown options={workspaceMenuList} className="d-none d-sm-block">
             <button className="gl-btn dropdown-toggle">Workspace</button>
           </Dropdown>
+          <span className="d-none d-sm-block">{saveButton}</span>
           {/* Mobile display: */}
           {children}
         </div>
