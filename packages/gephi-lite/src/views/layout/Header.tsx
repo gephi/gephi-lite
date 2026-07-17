@@ -34,6 +34,11 @@ import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { useConnectedUser } from "../../core/user";
 
+// Persist the mobile header menu (burger) open/closed state across page navigations: each page
+// mounts its own <Header>, so a plain useState would reset the bar every time the user switches
+// between the Graph and Data views.
+let mobileMenuExpanded = false;
+
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const { t } = useTranslation();
@@ -46,8 +51,12 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { exportAsGexf } = useFileActions();
   const { current: currentFile, isDirty } = useFile();
 
-  // For mobile burger menu:
-  const [expanded, setExpanded] = useState(false);
+  // For mobile burger menu (initialised from the persisted value so it survives view changes):
+  const [expanded, setExpanded] = useState(mobileMenuExpanded);
+  const toggleExpanded = useCallback(() => {
+    mobileMenuExpanded = !mobileMenuExpanded;
+    setExpanded(mobileMenuExpanded);
+  }, []);
 
   // The classic "Save" action only makes sense for an already-opened GitHub file:
   const canSaveToCloud = currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && !!user;
@@ -187,13 +196,12 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     <header className="gl-container-high-bg container-fluid border-bottom">
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative d-sm-none" duration={400}>
         <div className="d-flex flex-column align-items-stretch">
-          <section className="d-flex flex-row">
-            <div className="flex-grow-1">
-              <Dropdown options={workspaceMenuList}>
-                <button className="gl-btn">Workspace</button>
-              </Dropdown>
-            </div>
+          <section className="d-flex flex-row align-items-center">
+            <Dropdown options={workspaceMenuList}>
+              <button className="gl-btn">Workspace</button>
+            </Dropdown>
             {saveButton}
+            <div className="flex-grow-1" />
             <ThemeSwitcher />
             <LocalSwitcher />
             {logoMenuList.map(({ label, icon, onClick, url }, i) =>
@@ -244,7 +252,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             </Dropdown>
           </div>
           {/* Mobile display: */}
-          <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
+          <button className="gl-btn gl-btn-icon d-sm-none" onClick={toggleExpanded}>
             {expanded ? <PiX /> : <PiList />}
           </button>
         </section>
