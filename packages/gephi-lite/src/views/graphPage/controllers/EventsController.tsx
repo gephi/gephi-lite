@@ -1,5 +1,4 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
-import { fitViewportToNodes } from "@sigma/utils";
 import { mapValues, pick } from "lodash";
 import { FC, useEffect, useRef } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
@@ -13,6 +12,7 @@ import {
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { GephiLiteSigma } from "../../../core/graph/types";
 import { LayoutMapping } from "../../../core/layouts/types";
+import { focusCameraOnNodes } from "../../../core/sigma";
 import { bindUpHandler } from "../../../utils/events";
 
 const DRAG_EVENTS_TOLERANCE = 3;
@@ -198,11 +198,11 @@ export const EventsController: FC = () => {
 
   // Custom Gephi Lite events:
   useEffect(() => {
-    // Handle focus events:
-    const focusNodesHandle = async ({ nodes }: { nodes: Set<string> }) => {
-      await fitViewportToNodes(sigma, Array.from(nodes), {
-        animate: true,
-      });
+    // Handle focus events: frame the given nodes using the same band-aware focus as the selection
+    // panel, so "open in graph" from the data table and "locate" from the panel behave identically
+    // (and account for the mobile selection panel).
+    const focusNodesHandle = ({ nodes }: { nodes: Set<string> }) => {
+      focusCameraOnNodes(Array.from(nodes));
     };
 
     globalEmitter.on(EVENTS.focusNodes, focusNodesHandle);

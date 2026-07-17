@@ -189,25 +189,33 @@ let focusTimeOutId: number | null = null;
 let pendingFocus: { type: "nodes" | "edges"; id: string } | null = null;
 
 /**
- * Runs `run` once the graph area (".filler") has stopped resizing.
+ * Runs `run` once the graph is ready to be framed on the given nodes, i.e. once BOTH:
+ *  - the graph area (".filler") has stopped resizing, and
+ *  - sigma has framed the nodes (their display coordinates are normalized, not raw).
  *
  * On mobile, selecting an item deploys a panel that takes half of the height, and the ".filler"
- * (the visible graph band) shrinks over a CSS transition. Since selecting + focusing happen
- * synchronously, the framing would otherwise be computed against the *pre-transition* band (full
- * height) and end up hidden behind the panel / zoomed for the wrong area. We therefore wait for the
- * band to settle before framing. On desktop nothing is transitioning, so it runs almost immediately.
+ * (the visible graph band) shrinks over a CSS transition. Framing synchronously would then be
+ * computed against the *pre-transition* band (full height) and end up hidden behind the panel /
+ * zoomed for the wrong area, so we wait for the band to settle. And when arriving from another page
+ * (e.g. the data table), the sigma instance has just mounted and briefly reports raw coordinates as
+ * display data, so we also wait until the nodes are actually framed. On desktop, already mounted,
+ * both conditions hold within a couple of frames. Gives up after ~1s so a focus always happens.
  */
-function runWhenGraphBandSettled(run: () => void) {
+function runWhenReadyToFrame(nodeIds: string[], run: () => void) {
   const getHeight = () => document.querySelector(".filler")?.getBoundingClientRect().height ?? 0;
   const start = performance.now();
   let lastHeight = getHeight();
   let stableFrames = 0;
   const tick = () => {
+    // Read the live sigma each frame: when arriving from another page the atom may still point to
+    // the previous instance for a frame or two while the graph page mounts.
+    const sigma = sigmaAtom.get();
     const height = getHeight();
     stableFrames = Math.abs(height - lastHeight) < 0.5 ? stableFrames + 1 : 0;
     lastHeight = height;
-    // Settled once the height held steady for a couple of frames, or give up after ~500ms:
-    if (stableFrames >= 2 || performance.now() - start > 500) run();
+    const bandSettled = stableFrames >= 2;
+    const framed = nodeIds.some((id) => isNodeFramed(sigma, id));
+    if ((bandSettled && framed) || performance.now() - start > 1000) run();
     else requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -344,45 +352,46 @@ export function focusCameraOnNode(id: string) {
   }, HIGHLIGHT_DURATION);
 }
 
+// Frames the camera on a set of nodes so their disks and labels fit within the *visible* graph
+// band (between the panels), highlighting them for a short while. Used to "locate" a multi-item
+// selection, whether triggered from the graph (selection panel) or from the data table. The framing
+// is band-aware (accounts for the mobile selection panel) and waits for the graph to be ready, so
+// it behaves the same regardless of the entry point.
+export function focusCameraOnNodes(ids: string[]) {
+  if (focusTimeOutId) clearTimeout(focusTimeOutId);
+  sigmaActions.resetHighlightedNodes();
+  if (!ids.length) return;
+
+  runWhenReadyToFrame(ids, () => {
+    const sigma = sigmaAtom.get();
+    // Keep only the nodes actually rendered right now, and frame them within the visible band.
+    const list = ids.filter((id) => sigma.getGraph().hasNode(id) && !!sigma.getNodeDisplayData(id));
+    if (!list.length) return;
+    sigma.getCamera().animate(getCameraStateToFrameNodes(sigma, list), { duration: ANIMATION_DURATION });
+  });
+
+  // Higlight nodes during X seconds
+  sigmaActions.setHighlightedNodes(new Set(ids));
+  focusTimeOutId = window.setTimeout(() => {
+    sigmaActions.resetHighlightedNodes();
+    focusTimeOutId = null;
+  }, HIGHLIGHT_DURATION);
+}
+
 export function focusCameraOnEdge(id: string) {
   focusCameraOnEdges([id]);
 }
 
 export function focusCameraOnEdges(ids: string[]) {
-  if (focusTimeOutId) clearTimeout(focusTimeOutId);
-  sigmaActions.resetHighlightedNodes();
+  const graph = sigmaAtom.get().getGraph();
 
-  const sigma = sigmaAtom.get();
-  const graph = sigma.getGraph();
-
-  // Collect every endpoint of the given edges that is actually rendered.
-  const endpoints = new Set<string>();
+  // Frame every endpoint of the given edges (framing readiness is handled downstream).
+  const endpoints: string[] = [];
   ids.forEach((id) => {
     if (!graph.hasEdge(id)) return;
-    const sourceId = graph.source(id);
-    const targetId = graph.target(id);
-    if (sigma.getNodeDisplayData(sourceId) && sigma.getNodeDisplayData(targetId)) {
-      endpoints.add(sourceId);
-      endpoints.add(targetId);
-    }
+    endpoints.push(graph.source(id), graph.target(id));
   });
-  if (!endpoints.size) return;
-
-  // Frame all the edges so that their endpoints' disks and labels fit entirely within the
-  // viewport visible between the panels. We wait for the graph band to settle first, so on mobile
-  // the framing accounts for the selection panel that just opened (and halved the visible height).
-  runWhenGraphBandSettled(() =>
-    sigma
-      .getCamera()
-      .animate(getCameraStateToFrameNodes(sigma, Array.from(endpoints)), { duration: ANIMATION_DURATION }),
-  );
-
-  // Higlight nodes during X seconds
-  sigmaActions.setHighlightedNodes(endpoints);
-  focusTimeOutId = window.setTimeout(() => {
-    sigmaActions.resetHighlightedNodes();
-    focusTimeOutId = null;
-  }, HIGHLIGHT_DURATION);
+  focusCameraOnNodes(endpoints);
 }
 
 // Register a focus to be replayed once the graph page's sigma instance is mounted and ready.
