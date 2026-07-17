@@ -36,6 +36,7 @@ import {
   PiCursorFill,
   PiDotsThreeVerticalBold,
   PiDownload,
+  PiFloppyDisk,
   PiFunnel,
   PiFunnelFill,
   PiGear,
@@ -155,6 +156,7 @@ export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
 export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
+export const SaveIcon = PiFloppyDisk;
 export const SearchIcon = PiMagnifyingGlass;
 export const SelectEdgesIcon = PiLineSegment;
 export const SelectNeighborsIcon = PiShareNetwork;

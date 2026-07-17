@@ -23,7 +23,7 @@ import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from 
 import { openAndParseFile } from "./utils";
 
 function getEmptyFileState(): FileState {
-  return { current: null, recentFiles: [], status: { type: "idle" } };
+  return { current: null, recentFiles: [], status: { type: "idle" }, isDirty: false };
 }
 
 function getLocalStorageFileState(): FileState {
@@ -33,6 +33,7 @@ function getLocalStorageFileState(): FileState {
     ...getEmptyFileState(),
     ...state,
     status: { type: "idle" },
+    isDirty: false,
   };
 }
 
@@ -142,7 +143,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
 
     // Reset the camera
     resetCamera({ forceRefresh: true });
-    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" }, isDirty: false }));
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
     throw e;
@@ -162,8 +163,8 @@ export const exportAsGephiLite = asyncAction(async (callback: (data: string) => 
     };
     const content = gephiLiteStringify(data);
     await callback(content);
-    // idle state
-    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+    // idle state, and the current file now matches what was just exported
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" }, isDirty: false }));
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
   }
@@ -197,6 +198,13 @@ export const fileActions = {
  * Bindings:
  * *********
  */
+
+// Mark the current file as dirty as soon as the graph dataset, appearance or filters change:
+const markDirty = () => fileAtom.set((prev) => (prev.isDirty ? prev : { ...prev, isDirty: true }));
+graphDatasetAtom.bind(markDirty);
+appearanceAtom.bind(markDirty);
+filtersAtom.bind(markDirty);
+
 fileAtom.bind((file) => {
   localStorage.setItem("file", gephiLiteStringify(file));
 });
