@@ -338,7 +338,8 @@ export const Selection: FC = () => {
   const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
-  const { nodeData, edgeData, layout } = useGraphDataset();
+  const { fullGraph, nodeData, edgeData, layout } = useGraphDataset();
+  const { getNodeLabel, getEdgeLabel } = useVisualGetters();
 
   const mergedStaticDynamicItemData = useMemo(() => {
     return mergeStaticDynamicData(
@@ -347,11 +348,38 @@ export const Selection: FC = () => {
     );
   }, [nodeData, dynamicNodeData, dynamicEdgeData, edgeData, type]);
 
+  const nodeAllData = useMemo(() => mergeStaticDynamicData(nodeData, dynamicNodeData), [nodeData, dynamicNodeData]);
+
+  // For edges, sort the selection by source label, then target label, then edge label, so a
+  // multi-edge selection is easy to scan through instead of appearing in arbitrary (Set) order.
+  const getEdgeSortKey = useCallback(
+    (id: string): [string, string, string] => {
+      const sourceLabel = getNodeLabel?.(nodeAllData[fullGraph.source(id)]) || fullGraph.source(id);
+      const targetLabel = getNodeLabel?.(nodeAllData[fullGraph.target(id)]) || fullGraph.target(id);
+      const edgeLabel = getEdgeLabel?.(mergedStaticDynamicItemData[id]) || "";
+      return [sourceLabel, targetLabel, edgeLabel];
+    },
+    [fullGraph, nodeAllData, getNodeLabel, getEdgeLabel, mergedStaticDynamicItemData],
+  );
+  const compareEdges = useCallback(
+    (a: string, b: string) => {
+      const keyA = getEdgeSortKey(a);
+      const keyB = getEdgeSortKey(b);
+      return keyA[0].localeCompare(keyB[0]) || keyA[1].localeCompare(keyB[1]) || keyA[2].localeCompare(keyB[2]);
+    },
+    [getEdgeSortKey],
+  );
+
   const { visible = [], hidden = [] } = useMemo(() => {
     const isVisible =
       type === "nodes" ? filteredGraph.hasNode.bind(filteredGraph) : filteredGraph.hasEdge.bind(filteredGraph);
-    return groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
-  }, [filteredGraph, items, type]);
+    const grouped = groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
+    if (type === "edges") {
+      grouped.visible?.sort(compareEdges);
+      grouped.hidden?.sort(compareEdges);
+    }
+    return grouped;
+  }, [filteredGraph, items, type, compareEdges]);
 
   const renderSelectedItem = useCallback(
     (item: string) => {
