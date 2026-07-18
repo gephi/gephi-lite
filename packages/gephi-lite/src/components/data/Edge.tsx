@@ -40,15 +40,6 @@ export const EdgeComponent: FC<{
   nodeButtonTitle,
   edgeButtonTitle,
 }) => {
-  const renderNode = (node: { label: ReactNode; color: string; hidden?: boolean }, onClick?: () => void) =>
-    onClick ? (
-      <button type="button" className="edge-node-button gl-locate-button" title={nodeButtonTitle} onClick={onClick}>
-        <NodeComponent {...node} />
-      </button>
-    ) : (
-      <NodeComponent {...node} />
-    );
-
   const middle = (
     <div className="edge-wrapper">
       <div className="edge">
@@ -65,7 +56,9 @@ export const EdgeComponent: FC<{
 
   return (
     <div className={cx("edge-component", className)}>
-      <div className="edge-source">{renderNode(source, onSourceClick)}</div>
+      <div className="edge-source">
+        <NodeComponent {...source} onClick={onSourceClick} buttonTitle={nodeButtonTitle} />
+      </div>
       {onEdgeClick ? (
         <button type="button" className="edge-locate-button gl-locate-button" title={edgeButtonTitle} onClick={onEdgeClick}>
           {middle}
@@ -73,7 +66,9 @@ export const EdgeComponent: FC<{
       ) : (
         middle
       )}
-      <div className="edge-target">{renderNode(target, onTargetClick)}</div>
+      <div className="edge-target">
+        <NodeComponent {...target} onClick={onTargetClick} buttonTitle={nodeButtonTitle} />
+      </div>
     </div>
   );
 };

@@ -108,7 +108,15 @@ function SelectedItem<
   const item = getItemAttributes(type, id, filteredGraph, data, graphDataset, visualGetters);
   let content: ReactNode;
   if (type === "nodes") {
-    content = <NodeComponent label={item.label} color={item.color} hidden={item.hidden} />;
+    content = (
+      <NodeComponent
+        label={item.label}
+        color={item.color}
+        hidden={item.hidden}
+        onClick={() => locateNode(id)}
+        buttonTitle={t("selection.locate_on_graph")}
+      />
+    );
   } else {
     //if edge is filtered out, use nodeData to compute rendering data and not sigmaGraph
     const mergedStaticDynamicNodeData =
