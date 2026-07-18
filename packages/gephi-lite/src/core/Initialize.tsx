@@ -9,7 +9,7 @@ import { sessionStorage } from "../utils/storage";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
-import { useFileActions, useGraphDataset, useGraphDatasetActions } from "./context/dataContexts";
+import { resetStates, useFileActions, useGraphDataset } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
@@ -35,7 +35,6 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { openModal } = useModal();
   const { open } = useFileActions();
   const { metadata } = useGraphDataset();
-  const { resetGraph } = useGraphDatasetActions();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
 
@@ -94,7 +93,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // If query params has new
     // => empty graph & open welcome modal
     if (url.searchParams.has("new") || broadcastID) {
-      resetGraph();
+      // Full workspace reset (file pointer included), so a fresh/broadcast tab never inherits and
+      // overwrites a file left over from a previous session.
+      resetStates(false);
       graphFound = true;
       url.searchParams.delete("new");
       window.history.pushState({}, "", url);
