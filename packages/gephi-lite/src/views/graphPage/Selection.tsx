@@ -148,8 +148,10 @@ function SelectedItem<
         target={{ ...target, label: target.label ?? null, color: target.color ?? DEFAULT_NODE_COLOR }}
         className="mb-2"
         nodeButtonTitle={t("selection.locate_on_graph")}
+        edgeButtonTitle={t("selection.locate_on_graph")}
         onSourceClick={() => locateNode(fullGraph.source(id))}
         onTargetClick={() => locateNode(fullGraph.target(id))}
+        onEdgeClick={() => locateEdge(id)}
       />
     );
   }
