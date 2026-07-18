@@ -151,7 +151,7 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
 
 export type NumberGetter = (data: StaticDynamicItemData) => number;
 export type ColorGetter = (data: StaticDynamicItemData, edgeId?: string) => string;
-export type StringAttrGetter = (data: StaticDynamicItemData) => string | null;
+export type StringAttrGetter = (data: StaticDynamicItemData, id?: string) => string | null;
 
 /**
  * This state contains the visual getters, i.e. the functions to get a node or
