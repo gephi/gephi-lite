@@ -7,3 +7,8 @@
 
 - **Pré-production** (branche `develop`, déployée sur `https://jeangarf.github.io/gephi-lite/preprod/`) : je peux merger dans `develop` et pousser **sans demander**.
 - **Production** (branche `main_jg`, déployée sur `https://jeangarf.github.io/gephi-lite/`) : je dois **toujours demander** avant de merger `develop` dans `main_jg` et de pousser.
+
+## Synchronisation des branches
+
+- Si une branche de feature est en retard sur `develop`, la mettre à jour avec un **merge `--no-ff`** de `develop` dans la branche de feature (jamais de fast-forward), pour conserver la visualisation parallèle des branches dans l'historique.
+- Le fast-forward est réservé aux **pull** (synchronisation d'une branche locale avec son remote) — ce n'est pas un merge de feature.
