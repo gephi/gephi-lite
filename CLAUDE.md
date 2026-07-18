@@ -1,7 +1,7 @@
 # Instructions pour Claude Code
 
 - Lors des commits, ne jamais ajouter de ligne "Co-Authored-By:".
-- Éviter la duplication de code : factoriser dans des fonctions ou des constantes partagées plutôt que copier-coller entre fichiers.
+- Éviter la duplication de code : toujours factoriser dans des constantes, des fonctions ou des méthodes partagées plutôt que copier-coller entre fichiers, pour que le code reste maintenable et qu'une même fonctionnalité n'ait jamais deux comportements différents selon l'endroit où elle est appelée.
 
 ## Flux de déploiement
 
