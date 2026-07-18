@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { version } from "../../../package.json";
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
-import { useFile, useFileActions, useGraphDatasetActions, usePreferences } from "../../core/context/dataContexts";
+import { resetStates, useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
@@ -21,7 +21,6 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { theme } = usePreferences();
-  const { resetGraph } = useGraphDatasetActions();
   const {
     status: { type: fileStateType },
   } = useFile();
@@ -100,7 +99,9 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="gl-btn text-start"
                 title={t(`graph.open.github.title`)}
                 onClick={() => {
-                  resetGraph();
+                  // Blank the whole workspace, current file pointer included (see resetStates),
+                  // so a later save does not overwrite the previously opened file.
+                  resetStates(false);
                   submit({});
                 }}
               >

@@ -29,7 +29,7 @@ import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useDataTable, useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { resetStates, useDataTable, useFile, useFileActions } from "../../core/context/dataContexts";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
@@ -48,7 +48,6 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
-  const { resetGraph } = useGraphDatasetActions();
   const { saveFile } = useCloudProvider();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile, isDirty } = useFile();
@@ -119,7 +118,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
                 message: t(`graph.open.new.message`),
                 successMsg: t(`graph.open.new.success`),
               },
-              beforeSubmit: () => resetGraph(),
+              // Reset the whole workspace, including the current file pointer: otherwise the save
+              // button would keep targeting the previously opened GitHub file and overwrite it.
+              beforeSubmit: () => resetStates(false),
             }),
         },
         {
@@ -195,7 +196,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               },
             ]),
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, canSaveToCloud, handleSave],
+    [t, user, openModal, notify, setUser, exportAsGexf, currentFile, canSaveToCloud, handleSave],
   );
 
   const logoMenuList = useMemo(
