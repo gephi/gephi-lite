@@ -47,7 +47,7 @@
       "fixed_size": "Fixed size",
       "id": "Id",
       "none": "No label",
-      "none_description": "All {{items}} have their id displayed as label.",
+      "none_description": "All {{items}} have no displayed label.",
       "set_labels_from": "Set label from...",
       "set_labels_size_from": "Set label sizes from...",
       "size": "{{items}} size",

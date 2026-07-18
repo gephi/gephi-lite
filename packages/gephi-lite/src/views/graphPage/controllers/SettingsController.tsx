@@ -29,9 +29,7 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     sigma.setSetting("labelColor", { color: mode === "dark" ? "#FFF" : "#000" });
     sigma.setSetting("edgeLabelColor", { color: mode === "dark" ? "#495057" : "#CCC" });
     sigma.setSetting("nodeHoverBackgroundColor" as keyof Settings, mode === "dark" ? "#000" : "#FFF");
-    // Edge labels are always rendered: even with no field selected, the edge id is displayed
-    // (see makeGetStringAttr), so there is no "no label" case left to skip rendering for.
-    sigma.setSetting("renderEdgeLabels", true);
+    sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
     sigma.setSetting("zIndex", graphAppearance.edgesZIndex.type !== "none");
     sigma.setSetting("defaultDrawNodeLabel", getDrawNodeLabel(graphAppearance, drawDiscNodeLabel));
     sigma.setSetting("defaultDrawNodeHover", getDrawNodeLabel(graphAppearance, drawDiscNodeHover));
