@@ -275,13 +275,17 @@ export function makeGetStringAttr<
   switch (stringAttrDef.type) {
     case "none":
       // using "" instead of null to workaround adge-node labels dependency see https://github.com/jacomyal/sigma.js/issues/1527
-      getLabel = itemKey === "images" ? null : () => "";
+      // For labels (not images), fall back to the item's own id rather than showing nothing.
+      getLabel = itemKey === "images" ? null : (_, id) => id || "";
       break;
     case "fixed":
       getLabel = () => stringAttrDef.value;
       break;
     case "field":
-      getLabel = (data) => {
+      getLabel = (data, id) => {
+        // "id" is a reserved virtual field (see StringAttrItem): it is not stored in the item's
+        // data, it always resolves to the item's own id.
+        if (stringAttrDef.field.id === "id") return id || "";
         const label = toString(
           stringAttrDef.field.dynamic ? data.dynamic[stringAttrDef.field.id] : data.static[stringAttrDef.field.id],
         );
@@ -335,7 +339,7 @@ export function applyVisualProperties(
       attr.rawSize = attr.size;
     }
     if (getters.getNodeColor) attr.color = getters.getNodeColor(nodeData);
-    if (getters.getNodeLabel) attr.label = getters.getNodeLabel(nodeData);
+    if (getters.getNodeLabel) attr.label = getters.getNodeLabel(nodeData, node);
     if (getters.getNodeImage) attr.image = getters.getNodeImage(nodeData);
     graph.mergeNodeAttributes(node, attr);
   });
@@ -352,7 +356,7 @@ export function applyVisualProperties(
       attr.rawWeight = attr.weight;
     }
     if (getters.getEdgeColor) attr.color = getters.getEdgeColor(edgeData, edge);
-    if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(edgeData);
+    if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(edgeData, edge);
     if (getters.getEdgeZIndex) attr.zIndex = getters.getEdgeZIndex(edgeData);
     graph.mergeEdgeAttributes(edge, attr);
   });
@@ -429,7 +433,7 @@ export function getItemAttributes(
   const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
 
   return {
-    label: (getLabel && getLabel(itemData)) || undefined,
+    label: (getLabel && getLabel(itemData, id)) || undefined,
     color: (getColor && getColor(itemData, id)) || defaultColor,
     hidden,
     directed: type === "edges" ? graphDataset.fullGraph.isDirected(id) : undefined,

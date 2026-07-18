@@ -120,7 +120,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         id: field,
         accessorFn: (row) => {
           const nodeId = (row as EdgeItemRow)[extremity];
-          return (getNodeLabel && getNodeLabel(nodeAllData[nodeId])) || nodeId;
+          return (getNodeLabel && getNodeLabel(nodeAllData[nodeId], nodeId)) || nodeId;
         },
         cell: (props) => <span className="text-ellipsis">{props.row.getValue(field)}</span>,
         meta: {
