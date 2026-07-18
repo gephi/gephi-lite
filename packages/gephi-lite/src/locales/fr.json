@@ -53,6 +53,7 @@
       "fixed_label": "Libellé pour chaque {{items}}",
       "fixed_label_size": "Taille du libellé pour chaque {{items}}",
       "fixed_size": "Taille fixe",
+      "id": "Identifiant",
       "none": "Pas de libellé",
       "none_description": "Tous les {{items}} n'ont pas de libellé affiché.",
       "set_labels_from": "Définir le libellé à partir de...",
