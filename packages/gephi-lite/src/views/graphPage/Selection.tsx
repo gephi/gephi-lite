@@ -1,6 +1,6 @@
 import { DEFAULT_NODE_COLOR, FieldModel, NodeCoordinates, Scalar, StaticDynamicItemData } from "@gephi/gephi-lite-sdk";
 import { groupBy, isNil, toPairs, values } from "lodash";
-import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { Trans, useTranslation } from "react-i18next";
 import { PiChecks } from "react-icons/pi";
@@ -412,10 +412,25 @@ export const Selection: FC = () => {
     [mergedStaticDynamicItemData, type, items.size, layout],
   );
 
+  // Scroll the panel back to top whenever the selection is fully replaced by an unrelated one (e.g.
+  // locating a node/edge from within another item's card, or jumping to a fresh item on the graph),
+  // so the newly shown item's header is visible instead of leaving the scroll position of the
+  // previous (longer) list stuck near its own bottom. A partial change (unselecting/toggling one
+  // item within the same list) keeps the scroll position, since the list is still the same one.
+  const panelBodyRef = useRef<HTMLDivElement>(null);
+  const previousSelectionRef = useRef<{ type: typeof type; items: typeof items }>({ type, items });
+  useEffect(() => {
+    const previous = previousSelectionRef.current;
+    const isUnrelatedSelection =
+      previous.type !== type || (items.size > 0 && Array.from(items).every((id) => !previous.items.has(id)));
+    if (isUnrelatedSelection) panelBodyRef.current?.scrollTo({ top: 0 });
+    previousSelectionRef.current = { type, items };
+  }, [type, items]);
+
   return (
     <>
       {/* Selection main list */}
-      <div className="panel-body gap-1">
+      <div className="panel-body gap-1" ref={panelBodyRef}>
         <div className="d-flex flex-row align-items-center justify-content-between gl-gap-1">
           <h2 className="mb-0">
             {t(`selection.selected_${type}`)} ({items.size})
