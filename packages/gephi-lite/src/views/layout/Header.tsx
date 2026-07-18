@@ -37,8 +37,9 @@ import { useConnectedUser } from "../../core/user";
 
 // Persist the mobile header menu (burger) open/closed state across page navigations: each page
 // mounts its own <Header>, so a plain useState would reset the bar every time the user switches
-// between the Graph and Data views.
-let mobileMenuExpanded = false;
+// between the Graph and Data views. Starts expanded, so the toolbar (Workspace, save, theme...)
+// is visible right away on page load, without the user having to tap the burger icon first.
+let mobileMenuExpanded = true;
 
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
