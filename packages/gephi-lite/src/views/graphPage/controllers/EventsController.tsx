@@ -1,6 +1,6 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 import { mapValues, pick } from "lodash";
-import { FC, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import { Coordinates, MouseCoords } from "sigma/types";
 
 import {
@@ -12,7 +12,7 @@ import {
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { GephiLiteSigma } from "../../../core/graph/types";
 import { LayoutMapping } from "../../../core/layouts/types";
-import { focusCameraOnNodes } from "../../../core/sigma";
+import { findNodeAtLabel, focusCameraOnNodes } from "../../../core/sigma";
 import { bindUpHandler } from "../../../utils/events";
 
 const DRAG_EVENTS_TOLERANCE = 3;
@@ -37,6 +37,22 @@ export const EventsController: FC = () => {
   >({ type: "idle" });
   const dragEventsCountRef = useRef(0);
 
+  // Shared by clickNode and by clicking a node's label (see clickStage below), so both behave
+  // identically: select it (replacing the selection), toggle it with ctrl, or unselect it if it
+  // was the only item already selected.
+  const selectOrToggleNode = useCallback(
+    (node: string, ctrlKey: boolean) => {
+      if (ctrlKey) {
+        toggle({ type: "nodes", item: node });
+      } else if (selection.type === "nodes" && selection.items.has(node) && selection.items.size === 1) {
+        emptySelection();
+      } else {
+        select({ type: "nodes", items: new Set([node]), replace: true });
+      }
+    },
+    [selection, toggle, emptySelection, select],
+  );
+
   /**
    * Handle interaction events:
    */
@@ -60,17 +76,7 @@ export const EventsController: FC = () => {
       },
       clickNode({ node, event }) {
         if (dragEventsCountRef.current >= DRAG_EVENTS_TOLERANCE) return;
-
-        if (event.original.ctrlKey) {
-          toggle({
-            type: "nodes",
-            item: node,
-          });
-        } else if (selection.type === "nodes" && selection.items.has(node) && selection.items.size === 1) {
-          emptySelection();
-        } else {
-          select({ type: "nodes", items: new Set([node]), replace: true });
-        }
+        selectOrToggleNode(node, event.original.ctrlKey);
       },
       clickEdge({ edge, event }) {
         if (event.original.ctrlKey) {
@@ -108,9 +114,17 @@ export const EventsController: FC = () => {
         };
       },
       clickStage(e) {
-        // Reset the selection when clicking on the stage
-        // except when ctrl is pressed to add node in selection
-        // with the marquee selector
+        // Sigma only hit-tests a node's disk, not its label (drawn on a separate canvas and
+        // otherwise unclickable): a click that misses every node/edge falls through to here, so
+        // check whether it actually landed on a rendered label, and if so behave like clickNode.
+        const labelNode = findNodeAtLabel(sigma, e.event.x, e.event.y);
+        if (labelNode) {
+          selectOrToggleNode(labelNode, e.event.original.ctrlKey);
+          return;
+        }
+
+        // Otherwise, reset the selection when clicking on the stage, except when ctrl is pressed
+        // to add node in selection with the marquee selector
         if (!e.event.original.ctrlKey) emptySelection();
       },
       moveBody: (e) => {
@@ -172,6 +186,7 @@ export const EventsController: FC = () => {
     resetHoveredNode,
     select,
     selection,
+    selectOrToggleNode,
     setHoveredEdge,
     setHoveredNode,
     sigma,

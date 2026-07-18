@@ -350,6 +350,55 @@ function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraStat
   return { ...camera.getState(), angle: 0, x: camX, y: camY, ratio: currentRatio / factor };
 }
 
+/**
+ * Finds the node whose rendered label is under the given viewport position, if any.
+ *
+ * Sigma only hit-tests the node's disk when detecting clicks (clickNode); its label is drawn on a
+ * separate canvas and is otherwise unclickable, even though it often extends well beyond the disk.
+ * We replicate here the same geometry sigma itself uses to draw labels (drawDiscNodeLabel: text
+ * starts at `nodeRadiusPx + 3` to the right of the node, vertically centered near it), so that
+ * clicking a label behaves exactly like clicking its node.
+ */
+export function findNodeAtLabel(sigma: Sigma, viewportX: number, viewportY: number): string | null {
+  const graph = sigma.getGraph();
+  // Only test labels sigma actually rendered this frame (respects the density/size-threshold
+  // culling), falling back to every visible node if that internal, undocumented set is absent.
+  // Note: this set is populated regardless of the app's own custom "hideLabel" appearance flag
+  // (e.g. every non-emphasized node's label while another item is selected) — that flag is only
+  // applied afterwards, inside the wrapped draw function — so it must be re-checked below.
+  const displayedLabels = (sigma as unknown as { displayedNodeLabels?: Set<string> }).displayedNodeLabels;
+  const candidates = displayedLabels ? Array.from(displayedLabels) : graph.nodes();
+
+  const labelSize = (sigma.getSetting("labelSize") as number) || 14;
+  const labelFont = (sigma.getSetting("labelFont") as string) || "sans-serif";
+  const labelWeight = (sigma.getSetting("labelWeight") as string) || "normal";
+  const ctx = document.createElement("canvas").getContext("2d");
+  if (ctx) ctx.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+
+  // Candidates are in draw order (earliest-drawn first): keep the LAST match, since a later-drawn
+  // label visually overlaps/wins over an earlier one at the same pixel.
+  let found: string | null = null;
+  for (const id of candidates) {
+    const displayData = sigma.getNodeDisplayData(id) as { hideLabel?: boolean; hidden?: boolean; label?: string };
+    if (!displayData || displayData.hidden || displayData.hideLabel || !displayData.label) continue;
+
+    const raw = graph.getNodeAttributes(id) as { x: number; y: number; size?: number };
+    const nodeVp = sigma.graphToViewport({ x: raw.x, y: raw.y });
+    const border = sigma.graphToViewport({ x: raw.x + (raw.size || 0), y: raw.y });
+    const radiusPx = Math.abs(border.x - nodeVp.x);
+    const textWidth = ctx ? ctx.measureText(displayData.label).width : 0;
+
+    const left = nodeVp.x + radiusPx + 3;
+    const right = left + textWidth;
+    const baselineY = nodeVp.y + labelSize / 3;
+    const top = baselineY - labelSize * 0.8;
+    const bottom = baselineY + labelSize * 0.3;
+
+    if (viewportX >= left && viewportX <= right && viewportY >= top && viewportY <= bottom) found = id;
+  }
+  return found;
+}
+
 export function focusCameraOnNode(id: string) {
   if (focusTimeOutId) clearTimeout(focusTimeOutId);
   sigmaActions.resetHighlightedNodes();
