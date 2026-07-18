@@ -941,6 +941,7 @@
     "lasso": "Sélection par lasso",
     "locate_on_graph": "Localiser sur le graphe",
     "locate_selected_edges": "Zoomer sur tous les liens sélectionnés",
+    "locate_selected_nodes": "Zoomer sur tous les nœuds sélectionnés",
     "marquee": "Sélection par rectangle",
     "no_value": "Pas de valeur",
     "node_no_label": "(libellé vide)",
