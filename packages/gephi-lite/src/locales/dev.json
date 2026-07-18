@@ -910,7 +910,8 @@
       "new": "Create a new workspace",
       "open": "Open...",
       "save": "Save",
-      "save_as": "Save as..."
+      "save_as": "Save as...",
+      "unsaved_changes": "Unsaved changes"
     }
   }
 }
