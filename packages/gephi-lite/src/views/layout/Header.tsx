@@ -19,6 +19,7 @@ import {
   GraphIconFill,
   HomeIcon,
   SaveIcon,
+  UnsavedChangesIcon,
 } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
@@ -58,7 +59,8 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     setExpanded(mobileMenuExpanded);
   }, []);
 
-  // The classic "Save" action only makes sense for an already-opened GitHub file:
+  // The classic "Save" action (silently re-saving the same file) only makes sense for an
+  // already-opened GitHub file; otherwise the save button falls back to "Save as...".
   const canSaveToCloud = currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && !!user;
 
   const handleSave = useCallback(async () => {
@@ -74,10 +76,29 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [saveFile, notify, t, currentFile]);
 
-  const saveButton = canSaveToCloud && (
-    <button className="gl-btn gl-btn-icon" onClick={handleSave} disabled={!isDirty} title={t("workspace.menu.save")}>
-      <SaveIcon />
-    </button>
+  const handleSaveClick = useCallback(() => {
+    if (canSaveToCloud) handleSave();
+    else openModal({ component: SaveAsModal, arguments: {} });
+  }, [canSaveToCloud, handleSave, openModal]);
+
+  // The save button is always available (it falls back to "Save as..." when there is no GitHub
+  // file to save back to); a star next to it flags unsaved changes, and disappears once saved.
+  const saveButton = (
+    <span className="d-inline-flex align-items-center gl-gap-1">
+      <button
+        className="gl-btn gl-btn-icon"
+        onClick={handleSaveClick}
+        disabled={canSaveToCloud && !isDirty}
+        title={t(canSaveToCloud ? "workspace.menu.save" : "workspace.menu.save_as")}
+      >
+        <SaveIcon />
+      </button>
+      {isDirty && (
+        <span className="gl-unsaved-changes-star" title={t("workspace.menu.unsaved_changes")}>
+          <UnsavedChangesIcon />
+        </span>
+      )}
+    </span>
   );
 
   const workspaceMenuList = useMemo(
@@ -196,7 +217,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     <header className="gl-container-high-bg container-fluid border-bottom">
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative d-sm-none" duration={400}>
         <div className="d-flex flex-column align-items-stretch">
-          <section className="d-flex flex-row align-items-center">
+          <section className="d-flex flex-row align-items-center gl-gap-2">
             <Dropdown options={workspaceMenuList}>
               <button className="gl-btn">Workspace</button>
             </Dropdown>
@@ -220,7 +241,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       </AnimateHeight>
 
       <section className="row gx-0">
-        <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center">
+        <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center gl-gap-2">
           {/* Tablet and desktop display: */}
           <Dropdown options={workspaceMenuList} className="d-none d-sm-block">
             <button className="gl-btn dropdown-toggle">Workspace</button>
