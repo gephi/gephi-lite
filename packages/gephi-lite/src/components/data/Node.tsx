@@ -12,9 +12,20 @@ import {
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
 
-export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boolean }> = ({ label, color, hidden }) => {
+export const NodeComponent: FC<{
+  label: ReactNode;
+  color: string;
+  hidden?: boolean;
+  /**
+   * When provided, the node is rendered as a button that locates it (see useLocateInGraph):
+   * shared by every place a node is displayed (data table, edge source/target, selection panel),
+   * so "clicking a node locates it" always behaves identically wherever it's used.
+   */
+  onClick?: () => void;
+  buttonTitle?: string;
+}> = ({ label, color, hidden, onClick, buttonTitle }) => {
   const { t } = useTranslation();
-  return (
+  const content = (
     <div className="d-flex align-items-center mw-100">
       <span
         className={cx(hidden ? "circle" : "disc gl-border", "me-1 flex-shrink-0 ")}
@@ -24,6 +35,14 @@ export const NodeComponent: FC<{ label: ReactNode; color: string; hidden?: boole
         {label || t("selection.node_no_label")}
       </span>
     </div>
+  );
+
+  return onClick ? (
+    <button type="button" className="node-locate-button gl-locate-button" title={buttonTitle} onClick={onClick}>
+      {content}
+    </button>
+  ) : (
+    content
   );
 };
 
@@ -53,16 +72,11 @@ export const NodeComponentById: FC<{ id: string; locatable?: boolean }> = ({ id,
   if (!data) return <NodeComponent label={<span className="fst-italic">?</span>} color="lightgrey" />;
 
   // When locatable, clicking the node locates it: navigate to the graph and center the camera on it.
-  return locatable ? (
-    <button
-      type="button"
-      className="node-locate-button gl-locate-button"
-      title={t("selection.locate_on_graph")}
-      onClick={() => locateNode(id, { navigateToGraph: true })}
-    >
-      <NodeComponent {...data} />
-    </button>
-  ) : (
-    <NodeComponent {...data} />
+  return (
+    <NodeComponent
+      {...data}
+      onClick={locatable ? () => locateNode(id, { navigateToGraph: true }) : undefined}
+      buttonTitle={locatable ? t("selection.locate_on_graph") : undefined}
+    />
   );
 };
