@@ -46,7 +46,7 @@ import {
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
 import { useModal } from "../../core/modals";
-import { focusCameraOnEdges, focusCameraOnNode } from "../../core/sigma";
+import { focusCameraOnEdges, focusCameraOnNode, focusCameraOnNodes } from "../../core/sigma";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
 
 function SelectedItem<
@@ -435,11 +435,11 @@ export const Selection: FC = () => {
           <h2 className="mb-0">
             {t(`selection.selected_${type}`)} ({items.size})
           </h2>
-          {type === "edges" && visible.length > 0 && (
+          {visible.length > 0 && (
             <button
               className="gl-btn gl-btn-icon flex-shrink-0"
-              title={t("selection.locate_selected_edges")}
-              onClick={() => focusCameraOnEdges(visible)}
+              title={t(`selection.locate_selected_${type}`)}
+              onClick={() => (type === "nodes" ? focusCameraOnNodes(visible) : focusCameraOnEdges(visible))}
             >
               <OpenInGraphIcon />
             </button>
