@@ -75,6 +75,7 @@ import {
   PiSignIn,
   PiSpinner,
   PiSquare,
+  PiStarFill,
   PiStop,
   PiStopFill,
   PiSun,
@@ -161,6 +162,7 @@ export const SaveIcon = PiFloppyDisk;
 export const SearchIcon = PiMagnifyingGlass;
 export const SelectEdgesIcon = PiLineSegment;
 export const SelectNeighborsIcon = PiShareNetwork;
+export const UnsavedChangesIcon = PiStarFill;
 export const SettingsIcon = PiGear;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;

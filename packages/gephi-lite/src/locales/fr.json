@@ -1014,7 +1014,8 @@
       "new": "Créer un nouvel espace de travail",
       "open": "Ouvrir ...",
       "save": "Enregistrer",
-      "save_as": "Enregistrer sous..."
+      "save_as": "Enregistrer sous...",
+      "unsaved_changes": "Modifications non enregistrées"
     }
   }
 }
