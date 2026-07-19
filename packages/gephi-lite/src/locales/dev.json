@@ -250,7 +250,6 @@
       "select_value": "Select a value to apply for the selection"
     },
     "search_nodes": "Search on node labels...",
-    "scripted_field_display_label": "Current display label (Appearance): \"{{label}}\"",
     "selected_edges": "Selected edges only",
     "selected_nodes": "Selected nodes only",
     "similar_nodes_warning": "Nodes with a similar name already exist:",
@@ -414,7 +413,7 @@
       "field": {
         "date-format": "Date format",
         "default_value": "Default value",
-        "id": "Identifier",
+        "id": "ID",
         "label": "Label",
         "separator": "Keywords separator",
         "type": "Type",
