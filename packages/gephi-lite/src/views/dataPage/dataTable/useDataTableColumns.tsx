@@ -289,26 +289,6 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                       else openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
                     },
                   },
-                  // Formula (scripted) fields only: freeze the computed values into a plain, static
-                  // attribute (the script is dropped and values can no longer be recomputed).
-                  ...(field.script
-                    ? [
-                        {
-                          label: t("datatable.freeze_values"),
-                          onClick: () =>
-                            openModal({
-                              component: ConfirmModal,
-                              arguments: {
-                                title: t("datatable.freeze_values_title", { name: field.label || field.id }),
-                                message: t("datatable.freeze_values_message"),
-                                confirmMsg: t("datatable.freeze_values_confirm"),
-                                successMsg: t("datatable.freeze_values_success", { name: field.label || field.id }),
-                              },
-                              afterSubmit: () => freezeScriptedField(field),
-                            }),
-                        },
-                      ]
-                    : []),
                   {
                     type: "divider",
                   },
@@ -370,6 +350,26 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                   {
                     type: "divider",
                   },
+                  // Formula (scripted) fields only: freeze the computed values into a plain, static
+                  // attribute (the script is dropped and values can no longer be recomputed).
+                  ...(field.script
+                    ? [
+                        {
+                          label: t("datatable.freeze_values"),
+                          onClick: () =>
+                            openModal({
+                              component: ConfirmModal,
+                              arguments: {
+                                title: t("datatable.freeze_values_title", { name: field.label || field.id }),
+                                message: t("datatable.freeze_values_message"),
+                                confirmMsg: t("datatable.freeze_values_confirm"),
+                                successMsg: t("datatable.freeze_values_success", { name: field.label || field.id }),
+                              },
+                              afterSubmit: () => freezeScriptedField(field),
+                            }),
+                        },
+                      ]
+                    : []),
                   {
                     label: t("edition.delete_attribute"),
                     onClick: () =>
