@@ -103,7 +103,7 @@ export const TopBar: FC = () => {
           <button
             key={itemType}
             className={cx("gl-btn", type === itemType && "gl-btn-fill")}
-            onClick={() => navigate(`/data/${itemType}`)}
+            onClick={() => navigate(`/data/${itemType}`, { replace: true })}
           >
             {capitalize(t(`graph.model.${itemType}`))}
           </button>
@@ -129,7 +129,7 @@ export const TopBar: FC = () => {
               disabled={selectionActionDisabled}
               title={t("selection.open_in_graph")}
               onClick={() => {
-                navigate(`/`);
+                navigate(`/`, { replace: true });
                 emitter.once(EVENTS.sigmaMounted, () => {
                   emitter.emit(EVENTS.focusNodes, {
                     nodes:
