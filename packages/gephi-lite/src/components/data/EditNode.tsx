@@ -17,7 +17,7 @@ import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { CancelIcon, FieldModelIcon, WarningIcon } from "../common-icons";
 import { Modal } from "../modals";
-import { EditItemAttribute } from "./Attribute";
+import { EditItemAttribute, getFirstEmptyValueIndex } from "./Attribute";
 import { NodeComponentById } from "./Node";
 
 // Existing nodes whose name (the current label field, or the id as a fallback) fuzzy-matches what
@@ -124,6 +124,13 @@ const useEditNodeForm = ({
       .map((result) => result.id as string);
   }, [nameQuery, index]);
 
+  // Autofocus the first empty field on mount, in render order (attributes, then position, then
+  // id): computed once from the initial values, so filling a field never steals focus elsewhere.
+  const autoFocusIndex = useMemo(() => {
+    const { attributes: defaultAttributes, x, y, id } = defaultValues as UpdatedNodeState;
+    return getFirstEmptyValueIndex([...defaultAttributes.map((a) => a.value), x, y, id]);
+  }, [defaultValues]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -219,6 +226,7 @@ const useEditNodeForm = ({
                     field={nodeFieldsIndex[field.key]}
                     scalar={props.field.value}
                     onChange={(v) => props.field.onChange(v)}
+                    autoFocus={i === autoFocusIndex}
                   />
                 )}
               />
@@ -251,6 +259,7 @@ const useEditNodeForm = ({
               id="updateNode-x"
               className={cx("form-control", errors.x && "is-invalid")}
               step="any"
+              autoFocus={attributes.length === autoFocusIndex}
               {...register("x")}
             />
           </div>
@@ -263,6 +272,7 @@ const useEditNodeForm = ({
               id="updateNode-y"
               className={cx("form-control", errors.y && "is-invalid")}
               step="any"
+              autoFocus={attributes.length + 1 === autoFocusIndex}
               {...register("y")}
             />
           </div>
@@ -279,6 +289,7 @@ const useEditNodeForm = ({
               id="updateNode-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoFocus={attributes.length + 2 === autoFocusIndex}
               {...register("id", {
                 required: !isNew,
                 validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),

@@ -16,7 +16,7 @@ import { GraphSearch } from "../GraphSearch";
 import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
 import { Modal } from "../modals";
-import { EditItemAttribute } from "./Attribute";
+import { EditItemAttribute, getFirstEmptyValueIndex } from "./Attribute";
 import { EdgeComponentById } from "./Edge";
 
 interface UpdatedEdgeState {
@@ -145,6 +145,18 @@ const useEditEdgeForm = ({
     onCancel();
   }, [select, existingEdgeIds, location.pathname, navigate, onCancel]);
 
+  // Autofocus the first empty field on mount, in render order (source, target, attributes, then
+  // id): computed once from the initial values, so filling a field never steals focus elsewhere.
+  const autoFocusIndex = useMemo(() => {
+    const {
+      source: defaultSource,
+      target: defaultTarget,
+      attributes: defaultAttributes,
+      id,
+    } = defaultValues as UpdatedEdgeState;
+    return getFirstEmptyValueIndex([defaultSource, defaultTarget, ...defaultAttributes.map((a) => a.value), id]);
+  }, [defaultValues]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -243,6 +255,7 @@ const useEditEdgeForm = ({
                   }}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
+                  autoFocus={autoFocusIndex === 0}
                 />
               )}
             />
@@ -283,7 +296,7 @@ const useEditEdgeForm = ({
                   }}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
-                  autoFocus={isNew && !!initialSource && !initialTarget}
+                  autoFocus={autoFocusIndex === 1}
                 />
               )}
             />
@@ -342,9 +355,7 @@ const useEditEdgeForm = ({
                       field={edgeFieldsIndex[field.key]}
                       scalar={props.field.value}
                       onChange={(v) => props.field.onChange(v)}
-                      // When creating an edge with both extremities pre-filled (e.g. from two
-                      // selected nodes), focus the first attribute field, right after target.
-                      autoFocus={isNew && !!initialSource && !!initialTarget && i === 0}
+                      autoFocus={2 + i === autoFocusIndex}
                     />
                   )}
                 />
@@ -375,6 +386,7 @@ const useEditEdgeForm = ({
               id="updateEdge-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoFocus={2 + attributes.length === autoFocusIndex}
               {...register("id", {
                 required: !isNew,
                 validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
