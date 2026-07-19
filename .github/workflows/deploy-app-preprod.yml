@@ -20,8 +20,6 @@ jobs:
     env:
       CI: false
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
-      # The "PRÉ-PRODUCTION" badge (see PreproductionBanner) is enabled via the checked-in
-      # packages/gephi-lite/.env file on this branch, not here, so it also works for local dev.
       # No Matomo analytics on pre-production, so dev testing does not pollute production stats.
     steps:
       - name: Checkout
