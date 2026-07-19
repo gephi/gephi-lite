@@ -30,6 +30,7 @@ import {
   PiClipboard,
   PiCode,
   PiCornersIn,
+  PiCornersOut,
   PiCrosshair,
   PiCursor,
   PiCursorFill,
@@ -40,7 +41,6 @@ import {
   PiFunnelFill,
   PiGear,
   PiGithubLogo,
-  PiGps,
   PiGraph,
   PiGraphFill,
   PiHouseLine,
@@ -128,10 +128,7 @@ export const FilterEnabledIcon = PiCheckSquare;
 export const FilterDisabledIcon = PiSquare;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
-// Reuses the same glyph as OpenInGraphIcon (the "Locate on the graph" icon), for visual
-// consistency between the graph controls and the locate buttons elsewhere in the app. The button's
-// function is unchanged: it still toggles fullscreen.
-export const FullScreenIcon = PiCrosshair;
+export const FullScreenIcon = PiCornersOut;
 export const GitHubIcon = PiGithubLogo;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
@@ -176,7 +173,10 @@ export const UnselectAllIcon = PiSpinner;
 export const UserIcon = PiUser;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
-export const ZoomResetIcon = PiGps;
+// Reuses the same glyph as OpenInGraphIcon (the "Locate on the graph" icon), for visual
+// consistency between the graph controls and the locate buttons elsewhere in the app. The button's
+// function is unchanged: it still resets/fits the camera.
+export const ZoomResetIcon = PiCrosshair;
 export const MissingValueFilterIcon = PiSpinner;
 
 export const GraphSelectionModeIcons: Record<GraphSelectionMode, { normal: IconType; fill: IconType }> = {
