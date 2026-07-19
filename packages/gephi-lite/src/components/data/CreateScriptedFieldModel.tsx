@@ -3,8 +3,9 @@ import cx from "classnames";
 import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { useAppearance, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { graphDatasetAtom } from "../../core/graph";
+import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { inferFieldType } from "../../core/graph/fieldModel";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { ModalProps } from "../../core/modals/types";
@@ -85,9 +86,20 @@ export const useCreateScriptedFieldModelForm = ({
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const dataset = useGraphDataset();
+  const { nodesLabel, edgesLabel } = useAppearance();
   const { createFieldModel, setFieldModel } = useGraphDatasetActions();
   const { nodeFields, edgeFields } = dataset;
   const fields = type === "nodes" ? nodeFields : edgeFields;
+
+  // Which attribute currently drives the node/edge display label (Appearance "Set label from..."):
+  // surfaced above the label input, read-only, so the user sees how this field's label relates to
+  // what is actually displayed on the graph.
+  const currentDisplayLabel = useMemo(() => {
+    const attr = type === "nodes" ? nodesLabel : edgesLabel;
+    if (attr.type === "field") return staticDynamicAttributeLabel(attr.field);
+    if (attr.type === "fixed") return attr.value;
+    return t("appearance.labels.none");
+  }, [type, nodesLabel, edgesLabel, t]);
 
   // Edit mode: we are changing the script of an existing formula field.
   const editedField = useMemo(() => fields.find((f) => f.id === fieldModelId), [fields, fieldModelId]);
@@ -107,6 +119,7 @@ export const useCreateScriptedFieldModelForm = ({
   );
 
   const [newId, setNewId] = useState<string>(editedField?.id ?? "");
+  const [newLabel, setNewLabel] = useState<string>(editedField?.label ?? "");
 
   const existingField = useMemo(
     () => (isEditing ? undefined : fields.find((f) => f.id === newId)),
@@ -130,7 +143,7 @@ export const useCreateScriptedFieldModelForm = ({
         const fieldModel: FieldModel = {
           id: newId,
           itemType: type,
-          label: editedField?.label,
+          label: newLabel || undefined,
           script,
           ...inferFieldType(newId, sampleValues, sampleValues.length),
         };
@@ -160,11 +173,11 @@ export const useCreateScriptedFieldModelForm = ({
     [
       createFieldModel,
       dataset,
-      editedField,
       fields,
       insertAt,
       isEditing,
       newId,
+      newLabel,
       notify,
       onSubmitted,
       setFieldModel,
@@ -211,6 +224,19 @@ export const useCreateScriptedFieldModelForm = ({
               })}
             </div>
           )}
+        </div>
+
+        <div className="panel-block">
+          <label htmlFor="column-label" className="form-label">
+            {currentDisplayLabel}
+          </label>
+          <input
+            type="text"
+            id="column-label"
+            className="form-control"
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+          />
         </div>
 
         {editorContent}
