@@ -154,6 +154,11 @@
   "datatable": {
     "create_column": "Create column",
     "duplicate_column": "Duplicate column",
+    "freeze_values": "Freeze values",
+    "freeze_values_confirm": "Freeze values",
+    "freeze_values_message": "This will delete the script and freeze the current computed values into a regular attribute. The values will no longer be recomputed. Do you want to continue?",
+    "freeze_values_success": "The values of \"{{name}}\" have been frozen.",
+    "freeze_values_title": "Freeze the values of \"{{name}}\"?",
     "edges_matching": "<strong>{{count, number}}</strong> edges matching the search query",
     "edges_matching_one": "<strong>{{count, number}}</strong> edge matching the search query",
     "edges_matching_zero": "<strong>No edge</strong> matching the search query",
@@ -245,6 +250,7 @@
       "select_value": "Select a value to apply for the selection"
     },
     "search_nodes": "Search on node labels...",
+    "scripted_field_display_label": "Current display label (Appearance): \"{{label}}\"",
     "selected_edges": "Selected edges only",
     "selected_nodes": "Selected nodes only",
     "similar_nodes_warning": "Nodes with a similar name already exist:",

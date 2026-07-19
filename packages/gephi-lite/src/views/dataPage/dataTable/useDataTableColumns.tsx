@@ -1,6 +1,6 @@
-import { DynamicItemDataSpec, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
+import { DynamicItemDataSpec, FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { isBoolean, size, values } from "lodash";
+import { isBoolean, mapValues, size, values } from "lodash";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -21,7 +21,12 @@ import {
   useSelectionActions,
   useVisualGetters,
 } from "../../../core/context/dataContexts";
-import { DYNAMIC_ATTRIBUTES, mergeStaticDynamicData } from "../../../core/graph/dynamicAttributes";
+import {
+  DYNAMIC_ATTRIBUTES,
+  computeScriptFieldsData,
+  mergeStaticDynamicData,
+} from "../../../core/graph/dynamicAttributes";
+import { dataGraphToFullGraph } from "../../../core/graph/utils";
 import { useModal } from "../../../core/modals";
 import { useMobile } from "../../../hooks/useMobile";
 import { DataCell } from "./DataCell";
@@ -31,7 +36,8 @@ export const useDataTableColumns = (itemIDs: string[]) => {
   const { t } = useTranslation();
   const { type } = useDataTable();
   const { openModal } = useModal();
-  const { nodeFields, edgeFields, nodeData, edgeData, fullGraph } = useGraphDataset();
+  const dataset = useGraphDataset();
+  const { nodeFields, edgeFields, nodeData, edgeData, fullGraph } = dataset;
   const { dynamicNodeData } = useDynamicItemData();
   const { getNodeLabel } = useVisualGetters();
   const isMobile = useMobile();
@@ -39,7 +45,20 @@ export const useDataTableColumns = (itemIDs: string[]) => {
 
   const { setSort } = useDataTableActions();
   const { toggle, select, unselect } = useSelectionActions();
-  const { moveFieldModel, deleteFieldModel, duplicateFieldModel } = useGraphDatasetActions();
+  const { moveFieldModel, deleteFieldModel, duplicateFieldModel, setFieldModel } = useGraphDatasetActions();
+
+  // "Freeze" a formula (scripted) field: recompute its current values over the whole graph, then
+  // replace it by a static (non-scripted) field carrying those values. It becomes a normal,
+  // editable attribute whose values will no longer be recomputed.
+  const freezeScriptedField = useCallback(
+    (field: FieldModel<ItemType>) => {
+      const graph = dataGraphToFullGraph(dataset);
+      const computed = computeScriptFieldsData(field.itemType, [field], graph);
+      const frozenValues: Record<string, Scalar> = mapValues(computed, (fieldValues) => fieldValues[field.id]);
+      setFieldModel({ ...field, script: undefined }, frozenValues);
+    },
+    [dataset, setFieldModel],
+  );
 
   const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
   const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
@@ -270,6 +289,26 @@ export const useDataTableColumns = (itemIDs: string[]) => {
                       else openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
                     },
                   },
+                  // Formula (scripted) fields only: freeze the computed values into a plain, static
+                  // attribute (the script is dropped and values can no longer be recomputed).
+                  ...(field.script
+                    ? [
+                        {
+                          label: t("datatable.freeze_values"),
+                          onClick: () =>
+                            openModal({
+                              component: ConfirmModal,
+                              arguments: {
+                                title: t("datatable.freeze_values_title", { name: field.label || field.id }),
+                                message: t("datatable.freeze_values_message"),
+                                confirmMsg: t("datatable.freeze_values_confirm"),
+                                successMsg: t("datatable.freeze_values_success", { name: field.label || field.id }),
+                              },
+                              afterSubmit: () => freezeScriptedField(field),
+                            }),
+                        },
+                      ]
+                    : []),
                   {
                     type: "divider",
                   },
@@ -400,6 +439,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       nodeData,
       edgeData,
       deleteFieldModel,
+      freezeScriptedField,
     ],
   );
 
