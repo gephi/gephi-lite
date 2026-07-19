@@ -61,12 +61,16 @@ const useEditEdgeForm = ({
   target: initialTarget,
   onSubmitted,
   onCancel,
+  hideFooterSubmit,
 }: {
   edgeId?: string;
   source?: string;
   target?: string;
   onSubmitted: () => void;
   onCancel: () => void;
+  // The modal usage shows the submit button in its header instead (see EditEdgeModal), since on
+  // mobile the on-screen keyboard can cover the footer while a field is focused.
+  hideFooterSubmit?: boolean;
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
@@ -407,9 +411,11 @@ const useEditEdgeForm = ({
           <CancelIcon />
         </button>
 
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("edition.create_edges") : t("edition.update_edges")}
-        </button>
+        {!hideFooterSubmit && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {isNew ? t("edition.create_edges") : t("edition.update_edges")}
+          </button>
+        )}
       </div>
     ),
   };
@@ -432,6 +438,7 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
     target,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
+    hideFooterSubmit: true,
   });
 
   return (
@@ -440,6 +447,7 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
       onClose={() => cancel()}
       className="modal-lg edit-edge"
       onSubmit={submitForm}
+      submitLabel={t("common.ok")}
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 

@@ -13,6 +13,10 @@ interface Props {
   doNotPreserveData?: boolean; // if set, even if a onSubmit is set it's possible to close the modal by escape/click outside to cancel
   showHeader?: boolean;
   footerAlignLeft?: boolean;
+  // When set (together with onSubmit), a submit button with this label is shown in the header,
+  // left of the close button: on mobile, the on-screen keyboard can cover the footer's own submit
+  // button while a field is focused, so this copy always stays reachable.
+  submitLabel?: ReactNode;
   className?: string;
   bodyClassName?: string;
   contentClassName?: string;
@@ -27,6 +31,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   children,
   showHeader = true,
   footerAlignLeft = false,
+  submitLabel,
   className,
   bodyClassName,
   contentClassName,
@@ -50,16 +55,23 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
       {showHeader && (
         <div className="modal-header">
           {title && <h5 className="gl-heading-2 d-flex align-items-center flex-grow-1 gl-my-0">{title}</h5>}
-          <button
-            type="button"
-            title={t("common.close").toString()}
-            className="gl-btn gl-btn-icon"
-            aria-label="Close"
-            onClick={() => onClose && onClose()}
-            disabled={!onClose}
-          >
-            <CloseIcon />
-          </button>
+          <div className="d-flex align-items-center gl-gap-2">
+            {submitLabel && onSubmit && (
+              <button type="submit" className="gl-btn gl-btn-fill">
+                {submitLabel}
+              </button>
+            )}
+            <button
+              type="button"
+              title={t("common.close").toString()}
+              className="gl-btn gl-btn-icon"
+              aria-label="Close"
+              onClick={() => onClose && onClose()}
+              disabled={!onClose}
+            >
+              <CloseIcon />
+            </button>
+          </div>
         </div>
       )}
       {body && (

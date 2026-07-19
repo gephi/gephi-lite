@@ -151,6 +151,7 @@
     "max": "Max",
     "min": "Min",
     "none": "Aucun",
+    "ok": "OK",
     "open": "Ouvrir",
     "open_code_editor": "Ouvrir l'éditeur de code",
     "open_file": "Ouvrir {{filename}}",
