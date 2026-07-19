@@ -176,6 +176,11 @@
   "datatable": {
     "create_column": "Créer la colonne",
     "duplicate_column": "Dupliquer la colonne",
+    "freeze_values": "Figer les valeurs",
+    "freeze_values_confirm": "Figer les valeurs",
+    "freeze_values_message": "Cela va supprimer le script et figer les valeurs calculées actuelles dans un attribut normal. Les valeurs ne pourront plus être recalculées. Voulez-vous continuer ?",
+    "freeze_values_success": "Les valeurs de « {{name}} » ont été figées.",
+    "freeze_values_title": "Figer les valeurs de « {{name}} » ?",
     "edges_matching": "<strong>{{count, number}}</strong> liens correspondent à la recherche",
     "edges_matching_one": "<strong>{{count, number}}</strong> lien correspond à la recherche",
     "edges_matching_zero": "<strong>Aucun</strong> lien correspond à la recherche",
@@ -263,6 +268,7 @@
       "select_attribute": "Sélectionner l'attribut à éditer pour la sélection",
       "select_value": "Sélectionner une valeur à appliquer à la sélection"
     },
+    "scripted_field_display_label": "Label d'affichage actuel (Appearance) : « {{label}} »",
     "search_nodes": "Rechercher par libellé de nœud...",
     "selected_edges": "Liens sélectionnés seulement",
     "selected_nodes": "Nœuds sélectionnées seulement",
