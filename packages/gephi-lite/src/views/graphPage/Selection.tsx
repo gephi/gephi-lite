@@ -486,7 +486,7 @@ export const Selection: FC = () => {
             className="gl-btn gl-btn-icon gl-btn-fill"
             onClick={() => {
               showSelection(type);
-              navigate(`/data/${type}`);
+              navigate(`/data/${type}`, { replace: true });
             }}
           >
             {t("selection.open_in_data")}
