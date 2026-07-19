@@ -97,6 +97,13 @@ export const RenderKeywords = AttributeRenderers.keywords;
 export const RenderDate = AttributeRenderers.date;
 export const RenderColor = AttributeRenderers.color;
 
+// Order-sensitive "first empty field" autofocus: a value is considered empty when it's the
+// field's own no-value state (unset, blank, or an empty list) - 0 and false are real values, not emptiness.
+export const isEmptyFieldValue = (value: unknown): boolean =>
+  value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
+
+export const getFirstEmptyValueIndex = (values: unknown[]): number => values.findIndex(isEmptyFieldValue);
+
 export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar }> = ({ field, value }) => {
   const castValue = castScalarToModelValue(value, field);
   const AttributeRenderer = AttributeRenderers[field.type] as FC<{ value?: ModelValueType }>;
@@ -296,14 +303,14 @@ export const AttributeEditors: {
       />
     );
   },
-  color: ({ value, onChange, inTooltip }) => {
+  color: ({ value, onChange, inTooltip, autoFocus }) => {
     return inTooltip ? (
       <div className="custom-color-picker">
         <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
       </div>
     ) : (
       <div className="d-flex">
-        <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
+        <ColorPicker clearable color={value} onChange={(v) => onChange(v)} autoFocus={autoFocus} />
       </div>
     );
   },

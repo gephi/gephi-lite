@@ -233,3 +233,4 @@ export const STATUS_ICONS = {
   warning: PiWarning,
   error: PiWarningOctagon,
 } as const;
+export const WarningIcon = PiWarning;

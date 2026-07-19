@@ -106,6 +106,7 @@ export const useEditMultipleItemsForm = ({ onSubmitted, onCancel, type, items }:
                 scalar={state.value}
                 onChange={(value) => setState((state) => ({ ...state, value }))}
                 id="multi-edit-value"
+                autoFocus
               />
             </div>
           )}

@@ -5,13 +5,43 @@ import { FC, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import {
+  useAppearance,
+  useGraphDataset,
+  useGraphDatasetActions,
+  useSearch,
+  useSelectionActions,
+} from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
-import { CancelIcon, FieldModelIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon, WarningIcon } from "../common-icons";
 import { Modal } from "../modals";
-import { EditItemAttribute } from "./Attribute";
+import { EditItemAttribute, getFirstEmptyValueIndex } from "./Attribute";
+import { NodeComponentById } from "./Node";
+
+// Existing nodes whose name (the current label field, or the id as a fallback) fuzzy-matches what
+// is being typed for a new node: surfaced so the user notices before creating an accidental
+// duplicate. Clicking one cancels the creation and locates that existing node instead, exactly
+// like picking a result from the main fuzzy search box.
+const SimilarNodesWarning: FC<{ nodeIds: string[]; onPick: () => void }> = ({ nodeIds, onPick }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="gl-alert-warning rounded gl-p-2 mt-1" role="alert">
+      <div className="d-flex align-items-center gl-gap-1 mb-1">
+        <WarningIcon />
+        <span>{t("edition.similar_nodes_warning")}</span>
+      </div>
+      <ul className="list-unstyled mb-0 d-flex flex-column gl-gap-1" onClick={onPick}>
+        {nodeIds.map((id) => (
+          <li key={id}>
+            <NodeComponentById id={id} locatable />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 interface UpdatedNodeState extends NodeCoordinates {
   id?: string;
@@ -72,6 +102,38 @@ const useEditNodeForm = ({
     defaultValues,
   });
   const attributes = watch("attributes");
+  const idValue = watch("id");
+
+  // Fuzzy-match existing nodes' names against what is being typed for this new node, using the
+  // same search index (and settings) as the main search box: reuses the field currently used as
+  // the node label (falling back to the id, when there is no label field configured).
+  const { nodesLabel } = useAppearance();
+  const { index } = useSearch();
+  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
+  // Extracted as a scalar (rather than depending on the whole `attributes` array below) because
+  // react-hook-form's `watch("attributes")` can mutate the same array reference in place instead
+  // of returning a fresh one, which would make the memo below miss the update.
+  const labelAttrValue = attributes.find((a) => a.key === labelFieldId)?.value;
+  const nameQuery = useMemo(() => {
+    if (!isNew) return "";
+    if (labelFieldId === "id") return idValue || "";
+    return labelAttrValue != null ? String(labelAttrValue) : "";
+  }, [isNew, labelFieldId, idValue, labelAttrValue]);
+  const similarNodeIds = useMemo(() => {
+    if (nameQuery.trim().length < 2) return [];
+    return index
+      .search(nameQuery, { prefix: true, fuzzy: 0.2, filter: (result) => result.type === "nodes" })
+      .slice(0, 5)
+      .map((result) => result.id as string);
+  }, [nameQuery, index]);
+
+  // Autofocus the first empty field on mount, in render order (attributes, then position, then
+  // id): computed once from the initial values, so filling a field never steals focus elsewhere.
+  const autoFocusIndex = useMemo(() => {
+    const { attributes: defaultAttributes, x, y, id } = defaultValues as UpdatedNodeState;
+    return getFirstEmptyValueIndex([...defaultAttributes.map((a) => a.value), x, y, id]);
+  }, [defaultValues]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -167,6 +229,7 @@ const useEditNodeForm = ({
                     field={nodeFieldsIndex[field.key]}
                     scalar={props.field.value}
                     onChange={(v) => props.field.onChange(v)}
+                    autoFocus={i === autoFocusIndex}
                   />
                 )}
               />
@@ -180,6 +243,9 @@ const useEditNodeForm = ({
                     }`,
                   )}
                 </div>
+              )}
+              {isNew && field.key === labelFieldId && similarNodeIds.length > 0 && (
+                <SimilarNodesWarning nodeIds={similarNodeIds} onPick={onCancel} />
               )}
             </div>
           ))}
@@ -196,6 +262,7 @@ const useEditNodeForm = ({
               id="updateNode-x"
               className={cx("form-control", errors.x && "is-invalid")}
               step="any"
+              autoFocus={attributes.length === autoFocusIndex}
               {...register("x")}
             />
           </div>
@@ -208,6 +275,7 @@ const useEditNodeForm = ({
               id="updateNode-y"
               className={cx("form-control", errors.y && "is-invalid")}
               step="any"
+              autoFocus={attributes.length + 1 === autoFocusIndex}
               {...register("y")}
             />
           </div>
@@ -224,6 +292,7 @@ const useEditNodeForm = ({
               id="updateNode-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoFocus={attributes.length + 2 === autoFocusIndex}
               {...register("id", {
                 required: !isNew,
                 validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
@@ -233,6 +302,9 @@ const useEditNodeForm = ({
               <div className="invalid-feedback">
                 {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
               </div>
+            )}
+            {isNew && labelFieldId === "id" && similarNodeIds.length > 0 && (
+              <SimilarNodesWarning nodeIds={similarNodeIds} onPick={onCancel} />
             )}
           </div>
         </div>

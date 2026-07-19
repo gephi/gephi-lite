@@ -1,20 +1,23 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, keyBy, pick } from "lodash";
-import { FC, useMemo } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router";
 
 import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
+import { focusCameraOnEdges, requestFocusOnReady } from "../../core/sigma";
 import { Scalar } from "../../core/types";
 import { GraphSearch } from "../GraphSearch";
-import { CancelIcon, FieldModelIcon, SwapIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
 import { Modal } from "../modals";
-import { EditItemAttribute } from "./Attribute";
+import { EditItemAttribute, getFirstEmptyValueIndex } from "./Attribute";
+import { EdgeComponentById } from "./Edge";
 
 interface UpdatedEdgeState {
   id: string;
@@ -23,6 +26,34 @@ interface UpdatedEdgeState {
   isDirected: boolean;
   attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
+
+// One or more edges already connect the selected source & target (in either direction): surfaced
+// so the user notices before creating an accidental duplicate. Clicking cancels the creation and
+// selects/locates the existing edge(s) instead.
+const DuplicateEdgeWarning: FC<{ edgeIds: string[]; onClick: () => void }> = ({ edgeIds, onClick }) => {
+  const { t } = useTranslation();
+  return (
+    <div
+      className="gl-alert-warning rounded gl-p-2 mt-1"
+      role="button"
+      tabIndex={0}
+      style={{ cursor: "pointer" }}
+      onClick={onClick}
+    >
+      <div className="d-flex align-items-center gl-gap-1 mb-1">
+        <WarningIcon />
+        <span>{t("edition.duplicate_edge_warning", { count: edgeIds.length })}</span>
+      </div>
+      <ul className="list-unstyled mb-0 d-flex flex-column gl-gap-1">
+        {edgeIds.map((id) => (
+          <li key={id}>
+            <EdgeComponentById id={id} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 const useEditEdgeForm = ({
   edgeId,
@@ -88,6 +119,44 @@ const useEditEdgeForm = ({
     defaultValues,
   });
   const attributes = watch("attributes");
+  const source = watch("source");
+  const target = watch("target");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Any edge already connecting these two nodes, in either direction (graphology's `edges(a, b)`
+  // already checks both, see its `in`/`out` adjacencies):
+  const existingEdgeIds = useMemo(() => {
+    if (!isNew || !source || !target || !fullGraph.hasNode(source) || !fullGraph.hasNode(target)) return [];
+    return fullGraph.edges(source, target);
+  }, [isNew, source, target, fullGraph]);
+
+  const selectExistingEdges = useCallback(() => {
+    select({ type: "edges", items: new Set(existingEdgeIds), replace: true });
+    // Only focus right away if already on the graph page: navigating there (even by "replace",
+    // see useLocateInGraph) only remounts sigma - and thus replays a pending focus - when it
+    // wasn't already mounted.
+    if (location.pathname === "/") {
+      focusCameraOnEdges(existingEdgeIds);
+    } else {
+      requestFocusOnReady("edges", existingEdgeIds[0]);
+      navigate("/", { replace: true });
+    }
+    onCancel();
+  }, [select, existingEdgeIds, location.pathname, navigate, onCancel]);
+
+  // Autofocus the first empty field on mount, in render order (source, target, attributes, then
+  // id): computed once from the initial values, so filling a field never steals focus elsewhere.
+  const autoFocusIndex = useMemo(() => {
+    const {
+      source: defaultSource,
+      target: defaultTarget,
+      attributes: defaultAttributes,
+      id,
+    } = defaultValues as UpdatedEdgeState;
+    return getFirstEmptyValueIndex([defaultSource, defaultTarget, ...defaultAttributes.map((a) => a.value), id]);
+  }, [defaultValues]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -186,6 +255,7 @@ const useEditEdgeForm = ({
                   }}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
+                  autoFocus={autoFocusIndex === 0}
                 />
               )}
             />
@@ -226,13 +296,18 @@ const useEditEdgeForm = ({
                   }}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
-                  autoFocus={isNew && !!initialSource && !initialTarget}
+                  autoFocus={autoFocusIndex === 1}
                 />
               )}
             />
             {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
           </div>
         </div>
+
+        {isNew && existingEdgeIds.length > 0 && (
+          <DuplicateEdgeWarning edgeIds={existingEdgeIds} onClick={selectExistingEdges} />
+        )}
+
         {fullGraph.type === "mixed" && (
           <div>
             <Controller
@@ -280,9 +355,7 @@ const useEditEdgeForm = ({
                       field={edgeFieldsIndex[field.key]}
                       scalar={props.field.value}
                       onChange={(v) => props.field.onChange(v)}
-                      // When creating an edge with both extremities pre-filled (e.g. from two
-                      // selected nodes), focus the first attribute field, right after target.
-                      autoFocus={isNew && !!initialSource && !!initialTarget && i === 0}
+                      autoFocus={2 + i === autoFocusIndex}
                     />
                   )}
                 />
@@ -313,6 +386,7 @@ const useEditEdgeForm = ({
               id="updateEdge-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoFocus={2 + attributes.length === autoFocusIndex}
               {...register("id", {
                 required: !isNew,
                 validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
