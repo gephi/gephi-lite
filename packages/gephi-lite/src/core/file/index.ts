@@ -94,10 +94,19 @@ const setCurrentFile: Producer<FileState, [FileType | null]> = (file) => {
   };
 };
 
+// Clears isDirty without touching the current file pointer: used after the graph dataset,
+// appearance or filters atoms get bulk-replaced by something other than an actual user edit (e.g.
+// the sessionStorage rehydration on page reload), which would otherwise flip isDirty back to true
+// through the markDirty bindings below, even though nothing was actually modified.
+export const clearDirty: Producer<FileState, []> = () => (prev) => (prev.isDirty ? { ...prev, isDirty: false } : prev);
+
 export const reset: Producer<FileState, [boolean]> = (full) => {
   return (prev) => {
     if (full) return getEmptyFileState();
-    return { ...prev, current: null };
+    // A blank workspace has nothing unsaved yet: isDirty must be cleared here, since it runs
+    // after the graph/appearance/filters atoms were just reset to their own blank state, which
+    // (being a new value reference) already flipped it back to true via the markDirty bindings.
+    return { ...prev, current: null, isDirty: false };
   };
 };
 
@@ -192,6 +201,7 @@ export const fileActions = {
   exportAsGexf,
   reset: producerToAction(reset, fileAtom),
   setCurrentFile: producerToAction(setCurrentFile, fileAtom),
+  clearDirty: producerToAction(clearDirty, fileAtom),
 };
 
 /**

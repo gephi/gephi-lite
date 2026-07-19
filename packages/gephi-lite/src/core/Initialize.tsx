@@ -33,7 +33,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { modal, openModal, closeModal } = useModal();
-  const { open } = useFileActions();
+  const { open, clearDirty } = useFileActions();
   const { metadata } = useGraphDataset();
   const { isDirty } = useFile();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
@@ -214,6 +214,10 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
+          // Restoring the previous session's state (e.g. after a page reload) is not a user edit:
+          // the atom updates above just flipped isDirty back to true through the markDirty
+          // bindings (new object references), so it must be cleared again here.
+          clearDirty();
 
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }
