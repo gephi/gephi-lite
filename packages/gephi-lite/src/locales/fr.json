@@ -462,6 +462,7 @@
       "graph": "graph",
       "mixed": "Mixte",
       "mixed_graph": "Réseau mixte",
+      "most_recently_updated": "Modifié le plus récemment",
       "no_attributes": "Il n'y a pas encore d'attribut dans le modèle.",
       "nodes": "nœuds",
       "nodes-data": {
