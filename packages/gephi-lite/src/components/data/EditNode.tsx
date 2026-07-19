@@ -1,7 +1,7 @@
 import { FieldModelTypeSpec, NodeCoordinates, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, keyBy, pick } from "lodash";
-import { FC, useMemo } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -52,14 +52,18 @@ const useEditNodeForm = ({
   nodeId,
   onSubmitted,
   onCancel,
-  hideFooterSubmit,
+  submitLabel,
+  submitFirst,
 }: {
   nodeId?: string;
   onSubmitted: () => void;
   onCancel: () => void;
-  // The modal usage shows the submit button in its header instead (see EditNodeModal), since on
-  // mobile the on-screen keyboard can cover the footer while a field is focused.
-  hideFooterSubmit?: boolean;
+  // The modal usage (see EditNodeModal) also shows a copy of this same submit button in its
+  // header, since on mobile the on-screen keyboard can cover the footer while a field is focused;
+  // there, it overrides the label to a short "OK" and is placed before the cancel button, to match
+  // the header's [submit, close] order.
+  submitLabel?: ReactNode;
+  submitFirst?: boolean;
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
@@ -316,13 +320,17 @@ const useEditNodeForm = ({
     ),
     footer: (
       <div className="gl-actions">
+        {submitFirst && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {submitLabel ?? (isNew ? t("edition.create_nodes") : t("edition.update_nodes"))}
+          </button>
+        )}
         <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
           <CancelIcon />
         </button>
-
-        {!hideFooterSubmit && (
+        {!submitFirst && (
           <button type="submit" className="gl-btn gl-btn-fill">
-            {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
+            {submitLabel ?? (isNew ? t("edition.create_nodes") : t("edition.update_nodes"))}
           </button>
         )}
       </div>
@@ -341,7 +349,8 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
     nodeId,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
-    hideFooterSubmit: true,
+    submitLabel: t("common.ok"),
+    submitFirst: true,
   });
 
   return (
