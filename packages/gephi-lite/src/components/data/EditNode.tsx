@@ -52,10 +52,14 @@ const useEditNodeForm = ({
   nodeId,
   onSubmitted,
   onCancel,
+  hideFooterSubmit,
 }: {
   nodeId?: string;
   onSubmitted: () => void;
   onCancel: () => void;
+  // The modal usage shows the submit button in its header instead (see EditNodeModal), since on
+  // mobile the on-screen keyboard can cover the footer while a field is focused.
+  hideFooterSubmit?: boolean;
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
@@ -316,9 +320,11 @@ const useEditNodeForm = ({
           <CancelIcon />
         </button>
 
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
-        </button>
+        {!hideFooterSubmit && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
+          </button>
+        )}
       </div>
     ),
   };
@@ -335,6 +341,7 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
     nodeId,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
+    hideFooterSubmit: true,
   });
 
   return (
@@ -343,6 +350,7 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
       onClose={() => cancel()}
       className="modal-lg edit-node"
       onSubmit={submitForm}
+      submitLabel={t("common.ok")}
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 

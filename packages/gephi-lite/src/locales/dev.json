@@ -130,6 +130,7 @@
     "max": "Max",
     "min": "Min",
     "none": "None",
+    "ok": "OK",
     "open": "Open",
     "open_code_editor": "Open code editor",
     "open_file": "Open {{filename}}",
