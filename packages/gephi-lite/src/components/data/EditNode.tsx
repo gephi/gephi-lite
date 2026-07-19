@@ -110,12 +110,15 @@ const useEditNodeForm = ({
   const { nodesLabel } = useAppearance();
   const { index } = useSearch();
   const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
+  // Extracted as a scalar (rather than depending on the whole `attributes` array below) because
+  // react-hook-form's `watch("attributes")` can mutate the same array reference in place instead
+  // of returning a fresh one, which would make the memo below miss the update.
+  const labelAttrValue = attributes.find((a) => a.key === labelFieldId)?.value;
   const nameQuery = useMemo(() => {
     if (!isNew) return "";
     if (labelFieldId === "id") return idValue || "";
-    const attr = attributes.find((a) => a.key === labelFieldId);
-    return attr && attr.value != null ? String(attr.value) : "";
-  }, [isNew, labelFieldId, idValue, attributes]);
+    return labelAttrValue != null ? String(labelAttrValue) : "";
+  }, [isNew, labelFieldId, idValue, labelAttrValue]);
   const similarNodeIds = useMemo(() => {
     if (nameQuery.trim().length < 2) return [];
     return index
