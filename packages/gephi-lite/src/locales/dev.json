@@ -215,7 +215,7 @@
     "create_nodes_scripted_field_success": "The scripted node attribute has successfully been created.",
     "create_nodes_success": "The node has successfully been created.",
     "data_creation": "Data creation",
-    "delete_attribute": "Delete attribute",
+    "delete_attribute": "Delete column",
     "delete_attributes_success": "The '{{name}}' attribute has been deleted.",
     "delete_edges": "Delete {{count, number}} edges",
     "delete_edges_attributes": "Delete the '{{name}}' edge attribute",
