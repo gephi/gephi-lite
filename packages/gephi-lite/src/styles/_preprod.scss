@@ -1,9 +1,13 @@
 // Pre-production badge (shown only when the app is built with VITE_PREPRODUCTION).
+// Anchored to the top: on mobile, the header/toolbar is pinned to the bottom of the viewport
+// (#root uses flex-direction: column-reverse there, see _base.scss), so the graph fills the top
+// and a bottom-anchored badge used to collide with the zoom/selection controls (bottom-right of
+// the graph canvas). The top of the graph has nothing else on it, on mobile or desktop.
 .preprod-banner {
   position: fixed;
   z-index: 3000;
   left: 50%;
-  bottom: 0.5rem;
+  top: 0.5rem;
   transform: translateX(-50%);
   pointer-events: none; // purely informative: never intercept clicks/taps
 
@@ -18,9 +22,10 @@
   box-shadow: 0 1px 4px rgb(0 0 0 / 35%);
 }
 
-// On mobile, lift it above the bottom navigation bar.
-@media (max-width: 575.98px) {
+// On tablet/desktop, the header sits at the top of the viewport instead (normal flex order):
+// push the banner below it so it doesn't overlap the Workspace/Graph/Data toolbar.
+@include media-breakpoint-up(sm) {
   .preprod-banner {
-    bottom: 4.25rem;
+    top: 3rem;
   }
 }
