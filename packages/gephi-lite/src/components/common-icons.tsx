@@ -30,7 +30,6 @@ import {
   PiClipboard,
   PiCode,
   PiCornersIn,
-  PiCornersOut,
   PiCrosshair,
   PiCursor,
   PiCursorFill,
@@ -129,7 +128,10 @@ export const FilterEnabledIcon = PiCheckSquare;
 export const FilterDisabledIcon = PiSquare;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
-export const FullScreenIcon = PiCornersOut;
+// Reuses the same glyph as OpenInGraphIcon (the "Locate on the graph" icon), for visual
+// consistency between the graph controls and the locate buttons elsewhere in the app. The button's
+// function is unchanged: it still toggles fullscreen.
+export const FullScreenIcon = PiCrosshair;
 export const GitHubIcon = PiGithubLogo;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;

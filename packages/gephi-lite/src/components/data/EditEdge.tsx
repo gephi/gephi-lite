@@ -1,7 +1,7 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, keyBy, pick } from "lodash";
-import { FC, useCallback, useMemo } from "react";
+import { FC, ReactNode, useCallback, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
@@ -61,16 +61,20 @@ const useEditEdgeForm = ({
   target: initialTarget,
   onSubmitted,
   onCancel,
-  hideFooterSubmit,
+  submitLabel,
+  submitFirst,
 }: {
   edgeId?: string;
   source?: string;
   target?: string;
   onSubmitted: () => void;
   onCancel: () => void;
-  // The modal usage shows the submit button in its header instead (see EditEdgeModal), since on
-  // mobile the on-screen keyboard can cover the footer while a field is focused.
-  hideFooterSubmit?: boolean;
+  // The modal usage (see EditEdgeModal) also shows a copy of this same submit button in its
+  // header, since on mobile the on-screen keyboard can cover the footer while a field is focused;
+  // there, it overrides the label to a short "OK" and is placed before the cancel button, to match
+  // the header's [submit, close] order.
+  submitLabel?: ReactNode;
+  submitFirst?: boolean;
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
@@ -407,13 +411,17 @@ const useEditEdgeForm = ({
     ),
     footer: (
       <div className="gl-actions">
+        {submitFirst && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
+          </button>
+        )}
         <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
           <CancelIcon />
         </button>
-
-        {!hideFooterSubmit && (
+        {!submitFirst && (
           <button type="submit" className="gl-btn gl-btn-fill">
-            {isNew ? t("edition.create_edges") : t("edition.update_edges")}
+            {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
           </button>
         )}
       </div>
@@ -438,7 +446,8 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
     target,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
-    hideFooterSubmit: true,
+    submitLabel: t("common.ok"),
+    submitFirst: true,
   });
 
   return (
