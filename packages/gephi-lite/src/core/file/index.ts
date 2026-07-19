@@ -18,6 +18,7 @@ import {
   visualGettersAtom,
 } from "../graph";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
+import { sessionActions, sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
 import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
 import { openAndParseFile } from "./utils";
@@ -125,7 +126,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
     // Do the import
     resetStates(false);
     if (format === "gephi-lite") {
-      const { graphDataset, appearance, filters } = data;
+      const { graphDataset, appearance, filters, session } = data;
       // Load the graph
       const { setGraphDataset } = graphDatasetActions;
       setGraphDataset(graphDataset);
@@ -135,6 +136,9 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       // Load filters
       const { setFilters } = filtersActions;
       setFilters(filters);
+      // Load the session (layouts & metrics parameters), when the file carries one. Older files
+      // predate this field: their session is left as-is (the current tab's one).
+      if (session) sessionActions.setFullState(session);
     } else {
       const { setGraphDataset } = graphDatasetActions;
       const { mergeState } = appearanceActions;
@@ -169,6 +173,7 @@ export const exportAsGephiLite = asyncAction(async (callback: (data: string) => 
       graphDataset: graphDatasetAtom.get(),
       filters: filtersAtom.get(),
       appearance: appearanceAtom.get(),
+      session: sessionAtom.get(),
     };
     const content = gephiLiteStringify(data);
     await callback(content);

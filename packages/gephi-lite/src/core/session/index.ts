@@ -19,8 +19,13 @@ export const reset: Producer<Session, []> = () => {
   return () => getEmptySession();
 };
 
+const setFullState: Producer<Session, [Session]> = (newState) => {
+  return () => newState;
+};
+
 export const sessionActions = {
   reset: producerToAction(reset, sessionAtom),
+  setFullState: producerToAction(setFullState, sessionAtom),
 };
 
 /**

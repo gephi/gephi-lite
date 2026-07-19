@@ -3,6 +3,7 @@ import { AppearanceState } from "@gephi/gephi-lite-sdk";
 import { CloudFile } from "../cloud/types";
 import { FiltersState } from "../filters/types";
 import { GraphDataset } from "../graph/types";
+import { Session } from "../session/types";
 
 /**
  * A serializable structure, to allow Gephi Lite to load and save graphs, with their surrounding context.
@@ -10,6 +11,7 @@ import { GraphDataset } from "../graph/types";
  * - The full graph dataset
  * - The filters state
  * - The appearance state
+ * - The session (layouts & metrics parameters)
  */
 export type GephiLiteFileFormat = {
   type: "gephi-lite";
@@ -17,6 +19,8 @@ export type GephiLiteFileFormat = {
   graphDataset: GraphDataset;
   filters: FiltersState;
   appearance: AppearanceState;
+  // Optional: files exported before this field existed simply don't carry it (backward compatible).
+  session?: Session;
 };
 
 export type FileFormat = "gexf" | "gephi-lite" | "graphology" | "graphml";
