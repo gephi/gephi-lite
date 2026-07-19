@@ -32,11 +32,38 @@ let isInitialized = false;
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { openModal } = useModal();
+  const { modal, openModal, closeModal } = useModal();
   const { open } = useFileActions();
   const { metadata } = useGraphDataset();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
+
+  /**
+   * Make the Android/browser back button close the currently open modal instead of navigating
+   * the underlying page: neither modals nor the router have any history entry of their own for
+   * "a dialog is open", so back would otherwise fall through to the router and step back and
+   * forth between the Graph and Data pages. Push a throwaway history entry while a modal is open,
+   * and consume it if the modal ends up closing some other way (Cancel, submit, click outside...),
+   * so the entry doesn't linger for a later, real, back press.
+   */
+  useEffect(() => {
+    if (!modal) return;
+
+    window.history.pushState({ gephiLiteModal: true }, "");
+    let closedFromPopState = false;
+    const handlePopState = () => {
+      closedFromPopState = true;
+      closeModal();
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      if (!closedFromPopState) window.history.back();
+    };
+    // Only the "a modal is open" transition matters here, not which modal it is exactly:
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!modal]);
 
   useKonami(
     () => {
