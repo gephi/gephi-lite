@@ -5,13 +5,43 @@ import { FC, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import {
+  useAppearance,
+  useGraphDataset,
+  useGraphDatasetActions,
+  useSearch,
+  useSelectionActions,
+} from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
-import { CancelIcon, FieldModelIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon, WarningIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { EditItemAttribute } from "./Attribute";
+import { NodeComponentById } from "./Node";
+
+// Existing nodes whose name (the current label field, or the id as a fallback) fuzzy-matches what
+// is being typed for a new node: surfaced so the user notices before creating an accidental
+// duplicate. Clicking one cancels the creation and locates that existing node instead, exactly
+// like picking a result from the main fuzzy search box.
+const SimilarNodesWarning: FC<{ nodeIds: string[]; onPick: () => void }> = ({ nodeIds, onPick }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="gl-alert-warning rounded gl-p-2 mt-1" role="alert">
+      <div className="d-flex align-items-center gl-gap-1 mb-1">
+        <WarningIcon />
+        <span>{t("edition.similar_nodes_warning")}</span>
+      </div>
+      <ul className="list-unstyled mb-0 d-flex flex-column gl-gap-1" onClick={onPick}>
+        {nodeIds.map((id) => (
+          <li key={id}>
+            <NodeComponentById id={id} locatable />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 interface UpdatedNodeState extends NodeCoordinates {
   id?: string;
@@ -72,6 +102,28 @@ const useEditNodeForm = ({
     defaultValues,
   });
   const attributes = watch("attributes");
+  const idValue = watch("id");
+
+  // Fuzzy-match existing nodes' names against what is being typed for this new node, using the
+  // same search index (and settings) as the main search box: reuses the field currently used as
+  // the node label (falling back to the id, when there is no label field configured).
+  const { nodesLabel } = useAppearance();
+  const { index } = useSearch();
+  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
+  const nameQuery = useMemo(() => {
+    if (!isNew) return "";
+    if (labelFieldId === "id") return idValue || "";
+    const attr = attributes.find((a) => a.key === labelFieldId);
+    return attr && attr.value != null ? String(attr.value) : "";
+  }, [isNew, labelFieldId, idValue, attributes]);
+  const similarNodeIds = useMemo(() => {
+    if (nameQuery.trim().length < 2) return [];
+    return index
+      .search(nameQuery, { prefix: true, fuzzy: 0.2, filter: (result) => result.type === "nodes" })
+      .slice(0, 5)
+      .map((result) => result.id as string);
+  }, [nameQuery, index]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -181,6 +233,9 @@ const useEditNodeForm = ({
                   )}
                 </div>
               )}
+              {isNew && field.key === labelFieldId && similarNodeIds.length > 0 && (
+                <SimilarNodesWarning nodeIds={similarNodeIds} onPick={onCancel} />
+              )}
             </div>
           ))}
         </div>
@@ -233,6 +288,9 @@ const useEditNodeForm = ({
               <div className="invalid-feedback">
                 {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
               </div>
+            )}
+            {isNew && labelFieldId === "id" && similarNodeIds.length > 0 && (
+              <SimilarNodesWarning nodeIds={similarNodeIds} onPick={onCancel} />
             )}
           </div>
         </div>
