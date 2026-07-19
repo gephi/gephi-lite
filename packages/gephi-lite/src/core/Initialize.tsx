@@ -9,7 +9,7 @@ import { sessionStorage } from "../utils/storage";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
-import { resetStates, useFileActions, useGraphDataset } from "./context/dataContexts";
+import { resetStates, useFile, useFileActions, useGraphDataset } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
@@ -35,8 +35,27 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { modal, openModal, closeModal } = useModal();
   const { open } = useFileActions();
   const { metadata } = useGraphDataset();
+  const { isDirty } = useFile();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
+
+  /**
+   * Guard against losing unsaved work when leaving the app (Android/browser back that exits, tab
+   * close, reload...): while there are unsaved changes, ask the browser to show its native
+   * "leave site?" confirmation. It only triggers when actually leaving the document, so it never
+   * interferes with in-app navigation between the Graph and Data views.
+   */
+  useEffect(() => {
+    if (!isDirty) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      // Legacy browsers require returnValue to be set for the prompt to show:
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
 
   /**
    * Make the Android/browser back button close the currently open modal instead of navigating
