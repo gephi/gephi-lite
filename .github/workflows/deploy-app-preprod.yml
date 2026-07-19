@@ -20,8 +20,6 @@ jobs:
     env:
       CI: false
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
-      # Enables the "PRÉ-PRODUCTION" badge in the app (see PreproductionBanner):
-      VITE_PREPRODUCTION: "true"
       # No Matomo analytics on pre-production, so dev testing does not pollute production stats.
     steps:
       - name: Checkout
