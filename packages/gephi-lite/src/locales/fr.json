@@ -235,7 +235,7 @@
     "create_nodes_scripted_field_success": "L'attribut de nœud scripté a été créé.",
     "create_nodes_success": "Le nœud a été créé avec succès.",
     "data_creation": "Création de données",
-    "delete_attribute": "Supprimer l'attribut",
+    "delete_attribute": "Supprimer la colonne",
     "delete_attributes_success": "L'attribut '{{name}}' a bien été supprimé.",
     "delete_edges": "Supprimer {{count, number}} liens",
     "delete_edges_attributes": "Supprimer l'attribut '{{name}}' des liens",
