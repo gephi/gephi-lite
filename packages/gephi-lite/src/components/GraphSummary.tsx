@@ -5,18 +5,24 @@ import { type FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useFilteredGraph, useFilters, useGraphDataset, usePreferences } from "../core/context/dataContexts";
+import { getMostRecentlyUpdatedItem } from "../core/graph/dates";
 import { useModal } from "../core/modals";
+import { CreateEdgeIcon, CreateNodeIcon, EditIcon, FiltersIconFill } from "./common-icons";
+import { EdgeComponentById } from "./data/Edge";
 import { EditEdgeModal } from "./data/EditEdge";
 import { EditNodeModal } from "./data/EditNode";
-import { CreateEdgeIcon, CreateNodeIcon, EditIcon, FiltersIconFill } from "./common-icons";
+import { NodeComponentById } from "./data/Node";
 import { GraphMetadataModal } from "./modals/GraphMetadataModal";
 
-const GraphStat: FC<{ className?: string; type: ItemType; current: number; total: number }> = ({
-  className,
-  type,
-  current,
-  total,
-}) => {
+const GraphStat: FC<{
+  className?: string;
+  type: ItemType;
+  current: number;
+  total: number;
+  // The item of this type whose update date is the most recent, if any: shown (locatable) with its
+  // date under the count, so the last edited node/edge is always one click away from the summary.
+  mostRecent: { id: string; date: string } | null;
+}> = ({ className, type, current, total, mostRecent }) => {
   const { locale } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
@@ -24,7 +30,7 @@ const GraphStat: FC<{ className?: string; type: ItemType; current: number; total
   const isFiltered = useMemo(() => current !== total, [current, total]);
 
   return (
-    <div className={cx("d-flex flex-column", className)}>
+    <div className={cx("d-flex flex-column", className)} style={{ minWidth: "8rem" }}>
       <div className="d-flex flex-row align-items-center gl-gap-1">
         <span>{capitalize(t(`graph.model.${type}`))}</span>
         <button
@@ -47,6 +53,16 @@ const GraphStat: FC<{ className?: string; type: ItemType; current: number; total
         </span>
         {isFiltered && <div className="text-muted">of {total.toLocaleString(locale)}</div>}
       </div>
+      {mostRecent && (
+        <div className="mt-1 mw-100" title={t("graph.model.most_recently_updated")}>
+          {type === "nodes" ? (
+            <NodeComponentById id={mostRecent.id} locatable />
+          ) : (
+            <EdgeComponentById id={mostRecent.id} locatable />
+          )}
+          <div className="text-muted small">{mostRecent.date}</div>
+        </div>
+      )}
     </div>
   );
 };
@@ -75,19 +91,21 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
   const { t } = useTranslation();
   const filterState = useFilters();
   const filteredGraph = useFilteredGraph();
-  const { metadata, fullGraph } = useGraphDataset();
+  const { metadata, fullGraph, nodeData, edgeData } = useGraphDataset();
 
   const hasFilters = useMemo(() => !!filterState.filters.length, [filterState.filters]);
+  const mostRecentNode = useMemo(() => getMostRecentlyUpdatedItem(nodeData), [nodeData]);
+  const mostRecentEdge = useMemo(() => getMostRecentlyUpdatedItem(edgeData), [edgeData]);
 
   return (
     <div className={cx("graph-summary d-flex flex-column gl-gap-2", className)}>
       <GraphTitle title={metadata.title} />
       <div className="gl-px-2 gl-gap-x-2 d-flex flex-column position-relative">
-        <div className="d-flex flex-row flex-wrap gl-gap-x-3 gl-gap-y-3" style={{ lineHeight: 1.2 }}>
-          <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} />
-          <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} />
-        </div>
         <span>{t(`graph.model.${fullGraph.type}_graph`)}</span>
+        <div className="d-flex flex-row flex-wrap gl-gap-x-3 gl-gap-y-3" style={{ lineHeight: 1.2 }}>
+          <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} mostRecent={mostRecentNode} />
+          <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} mostRecent={mostRecentEdge} />
+        </div>
 
         {hasFilters && <FiltersIconFill style={{ left: "calc(100% - 1.5em)", top: 0, position: "absolute" }} />}
       </div>

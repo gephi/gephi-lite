@@ -1,6 +1,6 @@
 import { FieldModel, GraphDataset, ItemData, ItemType } from "@gephi/gephi-lite-sdk";
-import { DateTime } from "luxon";
 import { mapValues } from "lodash";
+import { DateTime } from "luxon";
 
 /**
  * Automatic "creation date" / "update date" fields, set on every node and
@@ -59,6 +59,21 @@ export function stampUpdateDate(previousData: ItemData | undefined, data: ItemDa
     [CREATION_DATE_FIELD_ID]: previousData?.[CREATION_DATE_FIELD_ID],
     [UPDATE_DATE_FIELD_ID]: nowAsSystemDateScalar(),
   };
+}
+
+// Finds the item (node or edge) whose update date is the most recent, among the given item data.
+// Update dates are stored in the fixed SYSTEM_DATE_FORMAT ("yyyy-MM-dd HH:mm:ss"), which sorts
+// lexicographically, so a plain string comparison is enough to order them. Returns null when no
+// item carries an update date (eg. an empty graph).
+export function getMostRecentlyUpdatedItem(itemData: Record<string, ItemData>): { id: string; date: string } | null {
+  let mostRecent: { id: string; date: string } | null = null;
+  for (const [id, data] of Object.entries(itemData)) {
+    const date = data[UPDATE_DATE_FIELD_ID];
+    if (typeof date === "string" && (mostRecent === null || date > mostRecent.date)) {
+      mostRecent = { id, date };
+    }
+  }
+  return mostRecent;
 }
 
 // Backfills the system date fields (and field models) on a dataset that predates this feature, eg. one
