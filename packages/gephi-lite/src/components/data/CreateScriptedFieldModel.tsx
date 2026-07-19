@@ -227,11 +227,8 @@ export const useCreateScriptedFieldModelForm = ({
         </div>
 
         <div className="panel-block">
-          <div className="text-muted gl-mb-1">
-            {t("edition.scripted_field_display_label", { label: currentDisplayLabel })}
-          </div>
           <label htmlFor="column-label" className="form-label">
-            {t("graph.model.field.label")}
+            {currentDisplayLabel}
           </label>
           <input
             type="text"

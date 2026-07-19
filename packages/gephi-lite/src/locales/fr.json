@@ -268,7 +268,6 @@
       "select_attribute": "Sélectionner l'attribut à éditer pour la sélection",
       "select_value": "Sélectionner une valeur à appliquer à la sélection"
     },
-    "scripted_field_display_label": "Label d'affichage actuel (Appearance) : « {{label}} »",
     "search_nodes": "Rechercher par libellé de nœud...",
     "selected_edges": "Liens sélectionnés seulement",
     "selected_nodes": "Nœuds sélectionnées seulement",
@@ -460,7 +459,7 @@
       "field": {
         "date-format": "Format de date",
         "default_value": "Valeur par défaut",
-        "id": "Identifiant",
+        "id": "ID",
         "label": "Label",
         "separator": "Séparateur de mots-clefs",
         "type": "Type",
