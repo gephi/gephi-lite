@@ -1007,6 +1007,7 @@
     "website": "Site internet"
   },
   "workspace": {
+    "confirm_leave_unsaved": "Votre graphe a des modifications non enregistrées. Quitter sans enregistrer ?",
     "menu": {
       "duplicate": "Dupliquer dans un nouvel onglet",
       "export_graph_file": "Exporter en fichier graph",

@@ -253,11 +253,12 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           {children}
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
-          <Link to="/" className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
+          <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
             {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
           <Link
             to={`/data/${dataTableItemType}`}
+            replace
             className={cx("gl-btn", location.pathname.startsWith("/data") && "gl-btn-fill")}
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}

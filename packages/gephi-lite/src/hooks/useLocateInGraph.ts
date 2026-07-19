@@ -22,7 +22,7 @@ export function useLocateInGraph() {
       select({ type: "nodes", items: new Set([id]), replace: true });
       if (options?.navigateToGraph) {
         requestFocusOnReady("nodes", id);
-        navigate("/");
+        navigate("/", { replace: true });
       } else {
         focusCameraOnNode(id);
       }
@@ -35,7 +35,7 @@ export function useLocateInGraph() {
       select({ type: "edges", items: new Set([id]), replace: true });
       if (options?.navigateToGraph) {
         requestFocusOnReady("edges", id);
-        navigate("/");
+        navigate("/", { replace: true });
       } else {
         focusCameraOnEdge(id);
       }

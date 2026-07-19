@@ -903,6 +903,7 @@
     "website": "website"
   },
   "workspace": {
+    "confirm_leave_unsaved": "Your graph has unsaved changes. Leave without saving?",
     "menu": {
       "duplicate": "Clone workspace",
       "export_graph_file": "Export graph file",
