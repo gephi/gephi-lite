@@ -38,7 +38,7 @@ import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
-import { ensureSystemDateFields, stampCreationDates, stampUpdateDate } from "./dates";
+import { ensureSystemDateFields, ensureSystemDatesInDataset, stampCreationDates, stampUpdateDate } from "./dates";
 import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes, computeScriptFieldsData } from "./dynamicAttributes";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
@@ -82,7 +82,10 @@ const GRAPH_TRANSFORMATION_METHODS: Record<GraphType, (g: DatalessGraph) => Data
  * **********
  */
 const setGraphDataset: Producer<GraphDataset, [GraphDataset]> = (dataset) => {
-  return () => dataset;
+  // Guarantee the system creation/update date fields on every full-dataset replacement, so all load
+  // paths (native file open, graphology import, broadcast) behave identically. Idempotent: datasets
+  // whose items already carry both dates are left untouched.
+  return () => ensureSystemDatesInDataset(dataset);
 };
 const setGraphMeta: Producer<GraphDataset, [GraphDataset["metadata"]]> = (metadata) => {
   return (state) => ({

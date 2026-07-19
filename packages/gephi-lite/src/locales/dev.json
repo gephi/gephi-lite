@@ -416,6 +416,7 @@
         "dates_formats_link_message": "Read more about Luxon's parsing tokens"
       },
       "mixed_graph": "Mixed graph",
+      "most_recently_updated": "Most recently updated",
       "nodes": "nodes",
       "nodes-data": {
         "id": "Node ID",
