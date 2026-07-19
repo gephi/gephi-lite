@@ -1,7 +1,7 @@
 import type { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { capitalize } from "lodash";
-import { type FC, useMemo } from "react";
+import { type FC, type ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useFilteredGraph, useFilters, useGraphDataset, usePreferences } from "../core/context/dataContexts";
@@ -22,7 +22,10 @@ const GraphStat: FC<{
   // The item of this type whose update date is the most recent, if any: shown (locatable) with its
   // date under the count, so the last edited node/edge is always one click away from the summary.
   mostRecent: { id: string; date: string } | null;
-}> = ({ className, type, current, total, mostRecent }) => {
+  // Extra content shown below the most-recent item's date (used to slot the graph type under the
+  // nodes column, roughly level with the edge's 3-line source/target preview in the edges column).
+  footer?: ReactNode;
+}> = ({ className, type, current, total, mostRecent, footer }) => {
   const { locale } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
@@ -30,7 +33,7 @@ const GraphStat: FC<{
   const isFiltered = useMemo(() => current !== total, [current, total]);
 
   return (
-    <div className={cx("d-flex flex-column", className)} style={{ minWidth: "8rem" }}>
+    <div className={cx("d-flex flex-column", className)} style={{ flex: "1 1 0", minWidth: 0 }}>
       <div className="d-flex flex-row align-items-center gl-gap-1">
         <span>{capitalize(t(`graph.model.${type}`))}</span>
         <button
@@ -63,6 +66,7 @@ const GraphStat: FC<{
           <div className="text-muted small">{mostRecent.date}</div>
         </div>
       )}
+      {footer}
     </div>
   );
 };
@@ -101,9 +105,14 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
     <div className={cx("graph-summary d-flex flex-column gl-gap-2", className)}>
       <GraphTitle title={metadata.title} />
       <div className="gl-px-2 gl-gap-x-2 d-flex flex-column position-relative">
-        <span>{t(`graph.model.${fullGraph.type}_graph`)}</span>
-        <div className="d-flex flex-row flex-wrap gl-gap-x-3 gl-gap-y-3" style={{ lineHeight: 1.2 }}>
-          <GraphStat type="nodes" current={filteredGraph.order} total={fullGraph.order} mostRecent={mostRecentNode} />
+        <div className="d-flex flex-row gl-gap-x-3" style={{ lineHeight: 1.2 }}>
+          <GraphStat
+            type="nodes"
+            current={filteredGraph.order}
+            total={fullGraph.order}
+            mostRecent={mostRecentNode}
+            footer={<span>{t(`graph.model.${fullGraph.type}_graph`)}</span>}
+          />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} mostRecent={mostRecentEdge} />
         </div>
 
