@@ -6,7 +6,12 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import {
+  useGraphDataset,
+  useGraphDatasetActions,
+  useSearchQuery,
+  useSelectionActions,
+} from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
@@ -86,6 +91,7 @@ const useEditEdgeForm = ({
   // are not editable through this form:
   const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.readOnly && !ef.script), [allEdgeFields]);
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
+  const searchQuery = useSearchQuery();
 
   const isNew = typeof edgeId === "undefined";
   const defaultValues = useMemo(() => {
@@ -264,6 +270,7 @@ const useEditEdgeForm = ({
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
                   autoFocus={autoFocusIndex === 0}
+                  defaultInputValue={isNew && !initialSource ? searchQuery : undefined}
                 />
               )}
             />
