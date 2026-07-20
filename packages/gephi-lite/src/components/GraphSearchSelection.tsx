@@ -1,6 +1,6 @@
 import { type FC, useCallback } from "react";
 
-import { useSelectionActions } from "../core/context/dataContexts";
+import { useSearchActions, useSelectionActions } from "../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../core/context/eventsContext";
 import { GraphSearch, type Option, type OptionItem } from "./GraphSearch";
 
@@ -9,6 +9,7 @@ const RESULT_MAX_SIZE = 25;
 export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) => {
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
+  const { setQuery } = useSearchActions();
 
   const onChange = useCallback(
     (option: Option | null) => {
@@ -84,5 +85,13 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
     [emitter, select],
   );
 
-  return <GraphSearch className={className} value={null} onChange={onChange} postProcessOptions={postProcessOptions} />;
+  return (
+    <GraphSearch
+      className={className}
+      value={null}
+      onChange={onChange}
+      postProcessOptions={postProcessOptions}
+      onInputChange={setQuery}
+    />
+  );
 };

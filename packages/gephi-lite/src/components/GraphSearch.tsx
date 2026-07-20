@@ -78,6 +78,16 @@ interface GraphSearchProps {
    * This can be useful to add action / messages or limit the number of result
    */
   postProcessOptions?: (options: Option[]) => Option[];
+  /**
+   * Text shown in the input as soon as it is mounted, without selecting any item (unlike `value`).
+   * Used to carry over text typed in another search field into this one.
+   */
+  defaultInputValue?: string;
+  /**
+   * Called with the raw text typed in the input, as opposed to `onChange` which only fires when an
+   * item gets selected.
+   */
+  onInputChange?: (value: string) => void;
 }
 
 /**
@@ -90,6 +100,8 @@ export const GraphSearch: FC<GraphSearchProps> = ({
   type,
   value,
   autoFocus,
+  defaultInputValue,
+  onInputChange,
 }) => {
   const { t } = useTranslation();
   const { index } = useSearch();
@@ -126,8 +138,12 @@ export const GraphSearch: FC<GraphSearchProps> = ({
       controlShouldRenderValue={!!value}
       placeholder={t(`search.${type || "graph"}.placeholder`)}
       value={value || null}
+      defaultInputValue={defaultInputValue}
       loadOptions={debounce(loadOptions, 200)}
       onChange={onChange}
+      onInputChange={(newValue, meta) => {
+        if (onInputChange && meta.action === "input-change") onInputChange(newValue);
+      }}
       components={{
         SingleValue,
         Option: OptionComponent,
