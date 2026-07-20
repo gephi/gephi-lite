@@ -10,6 +10,7 @@ import {
   useGraphDataset,
   useGraphDatasetActions,
   useSearch,
+  useSearchQuery,
   useSelectionActions,
 } from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
@@ -76,15 +77,23 @@ const useEditNodeForm = ({
   const nodeFields = useMemo(() => allNodeFields.filter((nf) => !nf.readOnly && !nf.script), [allNodeFields]);
   const nodeFieldsIndex = useMemo(() => keyBy(nodeFields, "id"), [nodeFields]);
 
+  // Which field currently drives the node label (falling back to the id, when there is no label
+  // field configured): used both to fuzzy-match similar existing nodes below, and to pre-fill a
+  // new node's label with whatever was typed in the main fuzzy search box before hitting "+".
+  const { nodesLabel } = useAppearance();
+  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
+  const searchQuery = useSearchQuery();
+
   const isNew = typeof nodeId === "undefined";
   const defaultValues = useMemo(() => {
     if (isNew)
       return {
         x: 0,
         y: 0,
+        id: labelFieldId === "id" ? searchQuery || undefined : undefined,
         attributes: nodeFields.map((nf) => ({
           key: nf.id,
-          value: nf.defaultValue,
+          value: nf.id === labelFieldId && searchQuery ? searchQuery : nf.defaultValue,
           ...pick(nf, ["type", "format", "separator"]),
         })),
       };
@@ -98,7 +107,7 @@ const useEditNodeForm = ({
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [isNew, nodeId, layout, nodeData, nodeFields]);
+  }, [isNew, nodeId, layout, nodeData, nodeFields, labelFieldId, searchQuery]);
   const {
     register,
     handleSubmit,
@@ -113,11 +122,8 @@ const useEditNodeForm = ({
   const idValue = watch("id");
 
   // Fuzzy-match existing nodes' names against what is being typed for this new node, using the
-  // same search index (and settings) as the main search box: reuses the field currently used as
-  // the node label (falling back to the id, when there is no label field configured).
-  const { nodesLabel } = useAppearance();
+  // same search index (and settings) as the main search box.
   const { index } = useSearch();
-  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
   // Extracted as a scalar (rather than depending on the whole `attributes` array below) because
   // react-hook-form's `watch("attributes")` can mutate the same array reference in place instead
   // of returning a fresh one, which would make the memo below miss the update.
