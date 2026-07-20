@@ -366,6 +366,7 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
       className="modal-lg edit-node"
       onSubmit={submitForm}
       submitLabel={t("common.ok")}
+      doNotPreserveData
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 
