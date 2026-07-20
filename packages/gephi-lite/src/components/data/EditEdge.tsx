@@ -464,6 +464,7 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
       className="modal-lg edit-edge"
       onSubmit={submitForm}
       submitLabel={t("common.ok")}
+      doNotPreserveData
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 
