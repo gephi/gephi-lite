@@ -49,7 +49,16 @@ export function useRemoteFileFreshnessCheck() {
   const reload = useCallback(
     async (file: FileType) => {
       try {
-        await open(file);
+        // Reload with the FRESH remote metadata, not the stale `file` we still hold: `open` memorizes
+        // the passed file's updatedAt as the new reference date, so opening the stale one would keep
+        // that date behind the remote and make the guard warn again in a loop right after each reload.
+        let fileToOpen = file;
+        const provider = userRef.current?.provider;
+        if (file.type === "cloud" && provider) {
+          const remote = await provider.getFile(file.id);
+          if (remote) fileToOpen = { ...remote, format: file.format };
+        }
+        await open(fileToOpen);
         notify({ type: "success", message: t("graph.remote_changed.reload_success", { filename: file.filename }) });
       } catch (e) {
         console.error(e);
