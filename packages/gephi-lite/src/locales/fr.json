@@ -528,9 +528,10 @@
       "keep": "Conserver mes modifications",
       "message": "Le fichier « {{filename}} » a été modifié sur GitHub (par un autre utilisateur ou une autre session) depuis que vous l'avez ouvert. Si vous continuez à l'éditer puis l'enregistrez, vous écraserez ces modifications. Voulez-vous recharger la version à jour ? Vos modifications locales seront perdues.",
       "reload": "Recharger depuis GitHub",
+      "overwrite": "Écraser",
       "reload_error": "Une erreur s'est produite lors du rechargement du fichier depuis GitHub.",
       "reload_success": "Le fichier « {{filename}} » a été rechargé depuis GitHub.",
-      "save_conflict_message": "Le fichier « {{filename}} » a été modifié sur GitHub (par un autre utilisateur ou une autre session) depuis que vous l'avez ouvert. L'enregistrer maintenant écraserait ces modifications. Voulez-vous recharger la version à jour (vos modifications locales seront perdues), ou annuler pour conserver vos modifications sans enregistrer ?",
+      "save_conflict_message": "Le fichier « {{filename}} » a été modifié sur GitHub (par un autre utilisateur ou une autre session) depuis que vous l'avez ouvert. Vous pouvez recharger la version à jour (vos modifications locales seront perdues), l'écraser avec votre version, ou conserver vos modifications sans enregistrer.",
       "title": "Ce graphe a changé sur GitHub"
     },
     "partitioning": {

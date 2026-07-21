@@ -23,6 +23,7 @@ import {
 } from "../../components/common-icons";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
+import RemoteSaveConflictModal from "../../components/modals/RemoteSaveConflictModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
 import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
 import { OpenModal } from "../../components/modals/open/OpenModal";
@@ -50,7 +51,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
   const { saveFile } = useCloudProvider();
-  const { checkBeforeSave } = useRemoteFileFreshnessCheck();
+  const { probeRemoteIsNewer, reloadFile } = useRemoteFileFreshnessCheck();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile, isDirty } = useFile();
 
@@ -65,13 +66,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   // already-opened GitHub file; otherwise the save button falls back to "Save as...".
   const canSaveToCloud = currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && !!user;
 
-  const handleSave = useCallback(async () => {
-    // Freshness pre-check: never overwrite a remote version that was updated (by another user or
-    // session) since we opened/last saved it. On conflict the reload/keep warning is shown and the
-    // save is aborted; on error/offline the check lets the save proceed (it fails on its own if the
-    // network is down).
-    const safeToSave = await checkBeforeSave();
-    if (!safeToSave) return;
+  // The actual write to GitHub. On success `saveFile` refreshes the current file (and thus the
+  // reference date used by the freshness guard), so a subsequent save no longer sees a conflict.
+  const doSave = useCallback(async () => {
     try {
       await saveFile();
       notify({
@@ -82,7 +79,27 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       console.error(e);
       notify({ type: "error", message: t("graph.save.github.error").toString() });
     }
-  }, [checkBeforeSave, saveFile, notify, t, currentFile]);
+  }, [saveFile, notify, t, currentFile]);
+
+  const handleSave = useCallback(async () => {
+    // Freshness pre-check: never silently overwrite a remote version that was updated (by another
+    // user or session) since we opened/last saved it. On conflict, let the user choose to reload
+    // (discard local changes), overwrite anyway, or keep editing without saving. On error/offline
+    // the probe returns null and the save proceeds (it fails on its own if the network is down).
+    const conflictFile = await probeRemoteIsNewer();
+    if (conflictFile) {
+      openModal({
+        component: RemoteSaveConflictModal,
+        arguments: { filename: conflictFile.filename },
+        afterSubmit: ({ action }) => {
+          if (action === "reload") reloadFile(conflictFile);
+          else if (action === "overwrite") doSave();
+        },
+      });
+      return;
+    }
+    await doSave();
+  }, [probeRemoteIsNewer, openModal, reloadFile, doSave]);
 
   const handleSaveClick = useCallback(() => {
     if (canSaveToCloud) handleSave();
