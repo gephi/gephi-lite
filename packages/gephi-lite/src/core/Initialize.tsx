@@ -9,6 +9,7 @@ import { sessionStorage } from "../utils/storage";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
+import { useRemoteFileGuard } from "./cloud/useRemoteFileGuard";
 import { resetStates, useFile, useFileActions, useGraphDataset } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
@@ -38,6 +39,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { isDirty } = useFile();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
+
+  // Warn when starting to edit a GitHub graph whose remote version has changed since it was opened:
+  useRemoteFileGuard();
 
   // The back-button guard below is set up once on mount; it reads the always-current modal /
   // dirty / t through refs instead of re-subscribing on every change.
