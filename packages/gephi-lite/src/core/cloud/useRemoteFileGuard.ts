@@ -26,12 +26,11 @@ function isRemoteNewer(remoteUpdatedAt: Date | string, knownUpdatedAt: Date | st
  * Hook exposing the remote-freshness guards for the currently open GitHub file:
  * - `check()`: passive, fire-and-forget probe (popup open / first modification / periodic tick).
  *   Deduped to at most one network round-trip per RECHECK_INTERVAL, never blocks nor delays editing,
- *   and silently ignores errors (offline...).
- * - `checkBeforeSave()`: awaited pre-save probe, run right before overwriting the remote to make
- *   sure a newer version is not about to be lost.
- *
- * When the remote version has been updated (by another user or session) since it was opened here,
- * both surface the same warning, offering to reload the up-to-date version or to keep editing.
+ *   silently ignores errors (offline...), and on a newer remote shows a reload/keep warning.
+ * - `probeRemoteIsNewer()`: awaited pre-save probe returning the current file when the remote is
+ *   strictly newer (so the save flow can offer reload/overwrite/keep), else null. It shows no modal
+ *   itself and never throws (returns null on error/offline, so the save can proceed).
+ * - `reloadFile(file)`: reload the given file (discarding local changes for the up-to-date remote).
  */
 export function useRemoteFileFreshnessCheck() {
   const { t } = useTranslation();
@@ -102,27 +101,23 @@ export function useRemoteFileFreshnessCheck() {
       });
   }, [warnRemoteChanged]);
 
-  const checkBeforeSave = useCallback(async (): Promise<boolean> => {
+  const probeRemoteIsNewer = useCallback(async (): Promise<FileType | null> => {
     const file = currentRef.current;
     const provider = userRef.current?.provider;
-    if (!provider || !file || file.type !== "cloud") return true;
+    if (!provider || !file || file.type !== "cloud") return null;
     try {
       const remote = await provider.getFile(file.id);
       lastCheckedAt = Date.now();
-      if (remote && isRemoteNewer(remote.updatedAt, file.updatedAt)) {
-        warnRemoteChanged(file, "graph.remote_changed.save_conflict_message");
-        return false;
-      }
-      return true;
+      return remote && isRemoteNewer(remote.updatedAt, file.updatedAt) ? file : null;
     } catch (e) {
-      // Freshness can't be confirmed (offline...): let the save proceed, it will fail on its own if
-      // the network is really down. Never block saving because of a failed pre-check.
+      // Freshness can't be confirmed (offline...): treat as "not newer" so the save proceeds (it
+      // fails on its own if the network is really down). Never block saving on a failed pre-check.
       console.error(e);
-      return true;
+      return null;
     }
-  }, [warnRemoteChanged]);
+  }, []);
 
-  return { check, checkBeforeSave };
+  return { check, probeRemoteIsNewer, reloadFile: reload };
 }
 
 /**
