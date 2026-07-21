@@ -465,6 +465,14 @@
         "success": "File {{filename}} has been successfully loaded"
       }
     },
+    "remote_changed": {
+      "keep": "Keep my changes",
+      "message": "The file \"{{filename}}\" has been modified on GitHub (by another user or session) since you opened it. If you keep editing and save, you will overwrite those changes. Do you want to reload the up-to-date version? Your local changes will be lost.",
+      "reload": "Reload from GitHub",
+      "reload_error": "An error occurred while reloading the file from GitHub.",
+      "reload_success": "File \"{{filename}}\" has been reloaded from GitHub.",
+      "title": "This graph has changed on GitHub"
+    },
     "save": {
       "github": {
         "error": "An error occurred while saving your graph. Please check your connectivity or try later.",
