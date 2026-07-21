@@ -29,6 +29,7 @@ import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
+import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
 import { resetStates, useDataTable, useFile, useFileActions } from "../../core/context/dataContexts";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
@@ -49,6 +50,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
   const { saveFile } = useCloudProvider();
+  const { checkBeforeSave } = useRemoteFileFreshnessCheck();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile, isDirty } = useFile();
 
@@ -64,6 +66,12 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const canSaveToCloud = currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && !!user;
 
   const handleSave = useCallback(async () => {
+    // Freshness pre-check: never overwrite a remote version that was updated (by another user or
+    // session) since we opened/last saved it. On conflict the reload/keep warning is shown and the
+    // save is aborted; on error/offline the check lets the save proceed (it fails on its own if the
+    // network is down).
+    const safeToSave = await checkBeforeSave();
+    if (!safeToSave) return;
     try {
       await saveFile();
       notify({
@@ -74,7 +82,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       console.error(e);
       notify({ type: "error", message: t("graph.save.github.error").toString() });
     }
-  }, [saveFile, notify, t, currentFile]);
+  }, [checkBeforeSave, saveFile, notify, t, currentFile]);
 
   const handleSaveClick = useCallback(() => {
     if (canSaveToCloud) handleSave();

@@ -351,7 +351,7 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
 
   // Probe the remote GitHub version as soon as the popup opens, so the user is warned before
   // filling it in (rather than only when validating), avoiding losing their input on a reload.
-  const checkRemoteFreshness = useRemoteFileFreshnessCheck();
+  const { check: checkRemoteFreshness } = useRemoteFileFreshnessCheck();
   useEffect(() => checkRemoteFreshness(), [checkRemoteFreshness]);
 
   const {
