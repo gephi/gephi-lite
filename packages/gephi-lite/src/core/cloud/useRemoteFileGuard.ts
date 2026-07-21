@@ -11,7 +11,7 @@ import { useConnectedUser } from "../user";
 // The passive freshness check (popup open / first modification / periodic tick) probes GitHub at
 // most once per this window; after it, the next trigger probes again. It is also the period of the
 // background re-check, so a long editing session keeps catching remote updates.
-const RECHECK_INTERVAL = 5 * 60 * 1000; // ~5 minutes
+const RECHECK_INTERVAL = 60 * 1000; // ~1 minute
 
 // Timestamp (ms) of the last probe for the current file, or null when it must be (re)checked. Reset
 // whenever the current file changes (open/save/reload). Shared across every hook instance.
