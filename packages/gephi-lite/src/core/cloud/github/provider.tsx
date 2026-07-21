@@ -63,11 +63,29 @@ export class GithubProvider implements CloudProvider {
   }
 
   /**
+   * Request options forcing a fresh read of the gist, bypassing any HTTP cache. GitHub serves gists
+   * with a short-lived cache, so without this a change made seconds ago from another tab/session
+   * would be hidden behind a stale response — which would defeat the whole remote-freshness guard
+   * (stale updatedAt / stale content). The unique query param defeats the URL-keyed browser cache;
+   * the header asks any cache to revalidate with the origin.
+   */
+  private noCacheRequestOptions() {
+    return {
+      // A unique query param defeats the URL-keyed HTTP cache (fetch ignores a Cache-Control request
+      // header for its own cache decisions, so that alone would not help), and request.cache tells
+      // fetch itself not to reuse a cached response.
+      _bust: Date.now(),
+      request: { cache: "no-store" as RequestCache },
+    };
+  }
+
+  /**
    * Get a file by id (without content)
    */
   async getFile(id: string): Promise<Omit<CloudFile, "format"> | null> {
     const response = await this.octokit.request("GET /gists/{gist_id}", {
       gist_id: id,
+      ...this.noCacheRequestOptions(),
     });
 
     if (response.data) {
@@ -84,6 +102,7 @@ export class GithubProvider implements CloudProvider {
   async getFileContent(id: string): Promise<string> {
     const response = await this.octokit.request("GET /gists/{gist_id}", {
       gist_id: id,
+      ...this.noCacheRequestOptions(),
     });
 
     if (response.data && response.data.files) {
