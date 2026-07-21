@@ -8,21 +8,30 @@ import { useModal } from "../modals";
 import { useNotifications } from "../notifications";
 import { useConnectedUser } from "../user";
 
-// We probe GitHub at most once per "clean baseline" — i.e. once between two moments where the
-// current file becomes clean again (open / save / reload). This covers both triggers (opening a
-// create/edit popup, and the first actual modification) without doing a network round-trip on
-// every popup open and then again on the following save. It is re-armed whenever the current file
-// changes (see useRemoteFileGuard).
-let hasCheckedSinceCleanBaseline = false;
+// The passive freshness check (popup open / first modification / periodic tick) probes GitHub at
+// most once per this window; after it, the next trigger probes again. It is also the period of the
+// background re-check, so a long editing session keeps catching remote updates.
+const RECHECK_INTERVAL = 5 * 60 * 1000; // ~5 minutes
+
+// Timestamp (ms) of the last probe for the current file, or null when it must be (re)checked. Reset
+// whenever the current file changes (open/save/reload). Shared across every hook instance.
+let lastCheckedAt: number | null = null;
+
+function isRemoteNewer(remoteUpdatedAt: Date | string, knownUpdatedAt: Date | string): boolean {
+  // Dates may be plain strings after a localStorage rehydration, hence the new Date() on both sides.
+  return new Date(remoteUpdatedAt).getTime() > new Date(knownUpdatedAt).getTime();
+}
 
 /**
- * Hook exposing a `check()` that, the first time it is called for the current clean baseline,
- * probes the remote GitHub version of the currently open file and, if that version has been
- * updated (by another user or another session) since it was opened here, warns the user and
- * offers to reload the up-to-date version (discarding local changes) or to keep editing.
+ * Hook exposing the remote-freshness guards for the currently open GitHub file:
+ * - `check()`: passive, fire-and-forget probe (popup open / first modification / periodic tick).
+ *   Deduped to at most one network round-trip per RECHECK_INTERVAL, never blocks nor delays editing,
+ *   and silently ignores errors (offline...).
+ * - `checkBeforeSave()`: awaited pre-save probe, run right before overwriting the remote to make
+ *   sure a newer version is not about to be lost.
  *
- * The check is fire-and-forget: it never blocks nor delays editing. If GitHub is unreachable
- * (airplane mode, network error...), it silently does nothing and lets the user work normally.
+ * When the remote version has been updated (by another user or session) since it was opened here,
+ * both surface the same warning, offering to reload the up-to-date version or to keep editing.
  */
 export function useRemoteFileFreshnessCheck() {
   const { t } = useTranslation();
@@ -32,7 +41,7 @@ export function useRemoteFileFreshnessCheck() {
   const { openModal } = useModal();
   const [user] = useConnectedUser();
 
-  // Read the always-current file/user through refs, so the returned callback stays stable.
+  // Read the always-current file/user through refs, so the returned callbacks stay stable.
   const currentRef = useRef(current);
   currentRef.current = current;
   const userRef = useRef(user);
@@ -51,8 +60,25 @@ export function useRemoteFileFreshnessCheck() {
     [open, notify, t],
   );
 
-  return useCallback(() => {
-    if (hasCheckedSinceCleanBaseline) return;
+  const warnRemoteChanged = useCallback(
+    (file: FileType, messageKey: string) => {
+      openModal({
+        component: ConfirmModal,
+        arguments: {
+          title: t("graph.remote_changed.title"),
+          message: t(messageKey, { filename: file.filename }),
+          confirmMsg: t("graph.remote_changed.reload"),
+          cancelMsg: t("graph.remote_changed.keep"),
+        },
+        afterSubmit: () => reload(file),
+      });
+    },
+    [openModal, reload, t],
+  );
+
+  const check = useCallback(() => {
+    const now = Date.now();
+    if (lastCheckedAt !== null && now - lastCheckedAt < RECHECK_INTERVAL) return;
 
     const file = currentRef.current;
     const provider = userRef.current?.provider;
@@ -60,34 +86,43 @@ export function useRemoteFileFreshnessCheck() {
     if (!provider || !file || file.type !== "cloud") return;
 
     // Mark as checked right away, so concurrent triggers (popup open, then first edit) don't each
-    // fire a request. The memorized date may be a string after a localStorage rehydration, hence
-    // the new Date() normalization on both sides.
-    hasCheckedSinceCleanBaseline = true;
-    const knownUpdatedAt = new Date(file.updatedAt).getTime();
-
+    // fire a request within the window.
+    lastCheckedAt = now;
     provider
       .getFile(file.id)
       .then((remote) => {
-        if (!remote) return;
-        if (new Date(remote.updatedAt).getTime() <= knownUpdatedAt) return;
-        openModal({
-          component: ConfirmModal,
-          arguments: {
-            title: t("graph.remote_changed.title"),
-            message: t("graph.remote_changed.message", { filename: file.filename }),
-            confirmMsg: t("graph.remote_changed.reload"),
-            cancelMsg: t("graph.remote_changed.keep"),
-          },
-          afterSubmit: () => reload(file),
-        });
+        if (remote && isRemoteNewer(remote.updatedAt, file.updatedAt))
+          warnRemoteChanged(file, "graph.remote_changed.message");
       })
       .catch((e) => {
-        // GitHub unreachable (offline...) or any error: never hinder editing, and allow a later
-        // retry by re-arming the check.
-        hasCheckedSinceCleanBaseline = false;
+        // GitHub unreachable (offline...) or any error: never hinder editing, and re-arm so a later
+        // trigger can retry.
+        lastCheckedAt = null;
         console.error(e);
       });
-  }, [openModal, reload, t]);
+  }, [warnRemoteChanged]);
+
+  const checkBeforeSave = useCallback(async (): Promise<boolean> => {
+    const file = currentRef.current;
+    const provider = userRef.current?.provider;
+    if (!provider || !file || file.type !== "cloud") return true;
+    try {
+      const remote = await provider.getFile(file.id);
+      lastCheckedAt = Date.now();
+      if (remote && isRemoteNewer(remote.updatedAt, file.updatedAt)) {
+        warnRemoteChanged(file, "graph.remote_changed.save_conflict_message");
+        return false;
+      }
+      return true;
+    } catch (e) {
+      // Freshness can't be confirmed (offline...): let the save proceed, it will fail on its own if
+      // the network is really down. Never block saving because of a failed pre-check.
+      console.error(e);
+      return true;
+    }
+  }, [warnRemoteChanged]);
+
+  return { check, checkBeforeSave };
 }
 
 /**
@@ -95,18 +130,22 @@ export function useRemoteFileFreshnessCheck() {
  * - re-arms the freshness check whenever a new file becomes the current one (open / save / reload
  *   all replace the `current` object reference),
  * - probes on the first modification that did not go through a create/edit popup (layout, metric,
- *   appearance, filter, direct table edit, delete...). Popups probe on their own opening, see
- *   useRemoteFileFreshnessCheck used in EditNodeModal / EditEdgeModal.
+ *   appearance, filter, direct table edit, delete...),
+ * - re-checks periodically (every RECHECK_INTERVAL), so a long editing session still catches a
+ *   remote update even without any further user action.
+ *
+ * The create/edit popups probe on their own opening, see useRemoteFileFreshnessCheck used in
+ * EditNodeModal / EditEdgeModal; the save flow probes before overwriting, see the Header.
  */
 export function useRemoteFileGuard() {
-  const check = useRemoteFileFreshnessCheck();
+  const { check } = useRemoteFileFreshnessCheck();
   const { current, isDirty } = useFile();
 
   const prevCurrent = useRef(current);
   useEffect(() => {
     if (current !== prevCurrent.current) {
       prevCurrent.current = current;
-      hasCheckedSinceCleanBaseline = false;
+      lastCheckedAt = null;
     }
   }, [current]);
 
@@ -117,4 +156,9 @@ export function useRemoteFileGuard() {
     // Only react to the clean -> dirty transition (the moment the "unsaved changes" star appears):
     if (isDirty && !previouslyDirty) check();
   }, [isDirty, check]);
+
+  useEffect(() => {
+    const id = window.setInterval(() => check(), RECHECK_INTERVAL);
+    return () => window.clearInterval(id);
+  }, [check]);
 }
