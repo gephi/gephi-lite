@@ -1,11 +1,12 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, keyBy, pick } from "lodash";
-import { FC, ReactNode, useCallback, useMemo } from "react";
+import { FC, ReactNode, useCallback, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
+import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
 import {
   useGraphDataset,
   useGraphDatasetActions,
@@ -443,6 +444,12 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
 }) => {
   const { t } = useTranslation();
   const isNew = typeof edgeId === "undefined";
+
+  // Probe the remote GitHub version as soon as the popup opens, so the user is warned before
+  // filling it in (rather than only when validating), avoiding losing their input on a reload.
+  const checkRemoteFreshness = useRemoteFileFreshnessCheck();
+  useEffect(() => checkRemoteFreshness(), [checkRemoteFreshness]);
+
   const {
     main,
     footer,
