@@ -152,6 +152,7 @@
     "updated": "Updated"
   },
   "datatable": {
+    "cancel_cell": "Cancel cell edition",
     "create_column": "Create column",
     "duplicate_column": "Duplicate column",
     "freeze_values": "Freeze values",
