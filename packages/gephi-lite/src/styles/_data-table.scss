@@ -183,6 +183,15 @@ $table-editable-columns-cell-hover-bg: color-mix(
       gap: $gl-spacers-2;
     }
   }
+
+  // Save (top) and cancel (bottom) buttons, stacked with extra gap so the cancel button - a
+  // destructive-ish action that discards the edit - isn't at risk of being clicked by mistake right
+  // after the save button.
+  .data-cell-edition-actions {
+    display: flex;
+    flex-direction: column;
+    gap: $gl-spacers-3;
+  }
 }
 
 .data-cell {

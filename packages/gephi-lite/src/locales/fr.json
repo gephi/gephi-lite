@@ -174,6 +174,7 @@
     "title": "Aperçu des données"
   },
   "datatable": {
+    "cancel_cell": "Annuler la saisie",
     "create_column": "Créer la colonne",
     "duplicate_column": "Dupliquer la colonne",
     "freeze_values": "Figer les valeurs",

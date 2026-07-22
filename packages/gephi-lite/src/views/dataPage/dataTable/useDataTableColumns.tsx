@@ -61,6 +61,27 @@ export const useDataTableColumns = (itemIDs: string[]) => {
   );
 
   const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
+
+  // Ordered (left-to-right, matching the `columns` below) ids of the columns arrow-key navigation
+  // can land on: editable dataset fields and editable dynamic attributes, excluding boolean ones
+  // (edited inline via a checkbox, with no separate edit session to navigate in/out of - see
+  // DataCell). Non-editable/protected columns (id, preview, selected...) are deliberately excluded
+  // too, so left/right silently hops over them instead of getting stuck.
+  const editableColumnIds = useMemo(() => {
+    const dynamicSpecs =
+      type === "nodes"
+        ? values(DYNAMIC_ATTRIBUTES.nodes)
+        : values(DYNAMIC_ATTRIBUTES.edges).filter((f) =>
+            isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph),
+          );
+    const dynamicIds = dynamicSpecs
+      .filter((f) => f.editable && f.field.type !== "boolean")
+      .map((f) => `dynamic::${f.field.id}`);
+    const fieldIds = fields
+      .filter((f) => !f.readOnly && !f.script && f.type !== "boolean")
+      .map((f) => `field::${f.id}`);
+    return [...dynamicIds, ...fieldIds];
+  }, [type, fields, fullGraph]);
   const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
   const getSpecificRow = useCallback(
     (field: keyof ItemRow, options?: { size?: number; label?: string }): ColumnDef<ItemRow> => {
@@ -105,6 +126,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             field={dynamicField.field}
             value={props.row.getValue(`dynamic::${dynamicField.field.id}`)}
             readOnly={!dynamicField.editable}
+            columnId={`dynamic::${dynamicField.field.id}`}
           />
         ),
         meta: {
@@ -405,6 +427,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             value={props.row.getValue(`field::${field.id}`)}
             // Read-only (system date) and formula (scripted) fields are not editable in the table:
             readOnly={field.readOnly || !!field.script}
+            columnId={`field::${field.id}`}
           />
         ),
       })),
@@ -450,5 +473,6 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         left: isMobile ? [] : [SPECIFIC_COLUMNS.selected, SPECIFIC_COLUMNS.preview],
       },
     },
+    editableColumnIds,
   };
 };
