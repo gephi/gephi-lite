@@ -1,10 +1,11 @@
 import { FieldModelTypeSpec, NodeCoordinates, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, keyBy, pick } from "lodash";
-import { FC, ReactNode, useMemo } from "react";
+import { FC, ReactNode, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
 import {
   useAppearance,
   useGraphDataset,
@@ -347,6 +348,12 @@ const useEditNodeForm = ({
 export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, arguments: { nodeId } }) => {
   const { t } = useTranslation();
   const isNew = typeof nodeId === "undefined";
+
+  // Probe the remote GitHub version as soon as the popup opens, so the user is warned before
+  // filling it in (rather than only when validating), avoiding losing their input on a reload.
+  const { check: checkRemoteFreshness } = useRemoteFileFreshnessCheck();
+  useEffect(() => checkRemoteFreshness(), [checkRemoteFreshness]);
+
   const {
     main,
     footer,

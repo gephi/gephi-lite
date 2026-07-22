@@ -57,7 +57,11 @@ export function useCloudProvider() {
       if (isNil(user)) throw new Error("You must be logged !");
       if (!currentFile || currentFile.type !== "cloud") throw new Error("Not a cloud graph");
       await exportAsGephiLite(async (content) => {
-        await user.provider.saveFile(currentFile as CloudFile, content);
+        // Keep the current file pointer in sync with the freshly saved remote version: its new
+        // updatedAt becomes the reference date for the remote-change guard (see useRemoteFileGuard),
+        // otherwise the very next edit would compare against a stale date and warn about our own save.
+        const saved = await user.provider.saveFile(currentFile as CloudFile, content);
+        setCurrentFile(saved);
       });
     } catch (e) {
       setError(e as Error);
@@ -65,7 +69,7 @@ export function useCloudProvider() {
     } finally {
       setLoading(false);
     }
-  }, [user, exportAsGephiLite, currentFile]);
+  }, [user, exportAsGephiLite, currentFile, setCurrentFile]);
 
   /**
    * Save the current graph in the provider.
