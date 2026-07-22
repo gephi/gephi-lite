@@ -17,9 +17,17 @@ const RECHECK_INTERVAL = 60 * 1000; // ~1 minute
 // whenever the current file changes (open/save/reload). Shared across every hook instance.
 let lastCheckedAt: number | null = null;
 
+// Ignore a remote that is newer by at most this margin. GitHub's gist `updated_at` has second-level
+// precision, and even after normalizing every read on the same "detail" endpoint a transient
+// inconsistency could report a one-second-off timestamp for the same version; this absorbs it so no
+// spurious "remote changed" warning appears. Trade-off: a genuine concurrent change that is only
+// within this margin of our reference is not detected — kept small on purpose, and acceptable since
+// the reference is refreshed on every open/save/reload/periodic check anyway.
+const FRESHNESS_TOLERANCE = 1000; // ms
+
 function isRemoteNewer(remoteUpdatedAt: Date | string, knownUpdatedAt: Date | string): boolean {
   // Dates may be plain strings after a localStorage rehydration, hence the new Date() on both sides.
-  return new Date(remoteUpdatedAt).getTime() > new Date(knownUpdatedAt).getTime();
+  return new Date(remoteUpdatedAt).getTime() - new Date(knownUpdatedAt).getTime() > FRESHNESS_TOLERANCE;
 }
 
 /**
