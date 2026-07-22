@@ -20,6 +20,7 @@ import {
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
 import { sessionActions, sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
+import { userAtom } from "../user";
 import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
 import { openAndParseFile } from "./utils";
 
@@ -151,8 +152,20 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       if (!isEmpty(appearanceState)) mergeState(appearanceState);
     }
 
-    // Add the new file in the history list
-    fileActions.setCurrentFile({ ...file, format });
+    // Add the new file in the history list.
+    // For a cloud (GitHub) file, memorize the metadata (esp. updatedAt) read from the SAME "detail"
+    // endpoint the freshness guard uses (getFile → GET /gists/{id}), not the one that brought us here
+    // (the "list" endpoint GET /gists, used by getFiles, or a stale localStorage entry). The two can
+    // report a slightly different updated_at for the very same gist version; memorizing the list one
+    // then comparing against the detail one would make the guard warn "remote is newer" on every tick
+    // without any real change. Falls back to the passed file if the detail read is unavailable.
+    let fileToMemorize: FileTypeWithoutFormat = file;
+    if (file.type === "cloud") {
+      const user = userAtom.get();
+      const fresh = user ? await user.provider.getFile(file.id) : null;
+      if (fresh) fileToMemorize = { ...file, ...fresh };
+    }
+    fileActions.setCurrentFile({ ...fileToMemorize, format });
 
     // Reset the camera
     resetCamera({ forceRefresh: true });

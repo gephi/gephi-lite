@@ -17,9 +17,17 @@ const RECHECK_INTERVAL = 60 * 1000; // ~1 minute
 // whenever the current file changes (open/save/reload). Shared across every hook instance.
 let lastCheckedAt: number | null = null;
 
+// Ignore a remote that is newer by at most this margin. GitHub's gist `updated_at` has second-level
+// precision, and even after normalizing every read on the same "detail" endpoint a transient
+// inconsistency could report a one-second-off timestamp for the same version; this absorbs it so no
+// spurious "remote changed" warning appears. Trade-off: a genuine concurrent change that is only
+// within this margin of our reference is not detected — kept small on purpose, and acceptable since
+// the reference is refreshed on every open/save/reload/periodic check anyway.
+const FRESHNESS_TOLERANCE = 1000; // ms
+
 function isRemoteNewer(remoteUpdatedAt: Date | string, knownUpdatedAt: Date | string): boolean {
   // Dates may be plain strings after a localStorage rehydration, hence the new Date() on both sides.
-  return new Date(remoteUpdatedAt).getTime() > new Date(knownUpdatedAt).getTime();
+  return new Date(remoteUpdatedAt).getTime() - new Date(knownUpdatedAt).getTime() > FRESHNESS_TOLERANCE;
 }
 
 /**
@@ -49,16 +57,11 @@ export function useRemoteFileFreshnessCheck() {
   const reload = useCallback(
     async (file: FileType) => {
       try {
-        // Reload with the FRESH remote metadata, not the stale `file` we still hold: `open` memorizes
-        // the passed file's updatedAt as the new reference date, so opening the stale one would keep
-        // that date behind the remote and make the guard warn again in a loop right after each reload.
-        let fileToOpen = file;
-        const provider = userRef.current?.provider;
-        if (file.type === "cloud" && provider) {
-          const remote = await provider.getFile(file.id);
-          if (remote) fileToOpen = { ...remote, format: file.format };
-        }
-        await open(fileToOpen);
+        // `open` re-reads the fresh remote metadata (detail endpoint) and memorizes THAT as the new
+        // reference date, so we can pass the file we hold as-is: no need to pre-fetch here, and the
+        // memorized date won't stay behind the remote (which would otherwise re-trigger the warning
+        // in a loop right after each reload).
+        await open(file);
         notify({ type: "success", message: t("graph.remote_changed.reload_success", { filename: file.filename }) });
       } catch (e) {
         console.error(e);
