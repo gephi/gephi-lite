@@ -28,6 +28,12 @@ interface RangeMetric {
   step: number;
   min: number;
   max: number;
+  // Actual min/max found in the data, as opposed to `min`/`max` above: those are the outer edges of
+  // the histogram's bins, rounded to the nearest `unit` for a readable chart, so they usually don't
+  // match a real data point (eg. a real max of 30 can fall inside a last bin of [30, 32)). Used only
+  // to display the "from"/"to" placeholders, so they show a value that actually exists in the data.
+  dataMin: number;
+  dataMax: number;
   maxCount: number;
   ranges: RangeValue[];
 }
@@ -71,6 +77,8 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
       setRangeMetric({
         min: ranges[0][0],
         max: (last(ranges) || ranges[0])[1],
+        dataMin: minValue,
+        dataMax: maxValue,
         step,
         unit,
         ranges: rangeValues,
@@ -166,11 +174,11 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
               id={`filter-${filterIndex}-min`}
               type="number"
               disabled={rangeMetric.min === rangeMetric.max}
-              min={rangeMetric?.min}
-              max={filter.max ?? rangeMetric.max}
+              min={rangeMetric?.dataMin}
+              max={filter.max ?? rangeMetric.dataMax}
               step={rangeMetric?.step}
               value={filter.min ?? ""}
-              placeholder={"" + rangeMetric?.min}
+              placeholder={"" + rangeMetric?.dataMin}
               onChange={(e) => {
                 updateFilter(filterIndex, { ...filter, min: e.target.value ? +e.target.value : undefined });
               }}
@@ -202,12 +210,10 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
               id={`filter-${filterIndex}-max`}
               type="number"
               disabled={rangeMetric.min === rangeMetric.max}
-              min={filter.min ?? rangeMetric.min}
-              // max is shifted - step as slider exclude upper bound
-              max={rangeMetric?.max - rangeMetric.step}
+              min={filter.min ?? rangeMetric.dataMin}
+              max={rangeMetric?.dataMax}
               step={rangeMetric?.step}
-              // max is shifted - step as slider exclude upper bound
-              placeholder={"" + (rangeMetric?.max - rangeMetric.step)}
+              placeholder={"" + rangeMetric?.dataMax}
               value={filter.max ?? ""}
               onChange={(e) => {
                 updateFilter(filterIndex, { ...filter, max: e.target.value ? +e.target.value : undefined });
