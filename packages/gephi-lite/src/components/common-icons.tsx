@@ -6,7 +6,9 @@ import { IconBaseProps } from "react-icons/lib/iconBase";
 import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
+  PiArrowDown,
   PiArrowSquareOut,
+  PiArrowUp,
   PiArrowsClockwise,
   PiArrowsInSimple,
   PiArrowsLeftRight,
@@ -126,6 +128,8 @@ export const FilterAddIcon = PiPlusCircle;
 export const FilterDeleteIcon = PiTrash;
 export const FilterEnabledIcon = PiCheckSquare;
 export const FilterDisabledIcon = PiSquare;
+export const FilterMoveUpIcon = PiArrowUp;
+export const FilterMoveDownIcon = PiArrowDown;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiCornersOut;

@@ -4,11 +4,9 @@ import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFiltersActions } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
-import { useFilteredGraphAt } from "../../core/graph";
-import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import {
   castScalarToQuantifiableValue,
   getFieldValueForQuantification,
@@ -16,6 +14,7 @@ import {
   serializeModelValueToScalar,
 } from "../../core/graph/fieldModel";
 import { EditItemAttribute } from "../data/Attribute";
+import { useFilterItemData } from "./useFilterItemData";
 import { findRanges, shortenNumber } from "./utils";
 
 interface RangeValue {
@@ -41,9 +40,7 @@ const RANGE_STYLE = {
 };
 
 export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> = ({ filter, filterIndex }) => {
-  const parentGraph = useFilteredGraphAt(filterIndex - 1);
-
-  const { nodeData, edgeData } = useGraphDataset();
+  const { parentGraph, itemData } = useFilterItemData(filter.itemType, filterIndex);
 
   const { t } = useTranslation();
   const { updateFilter } = useFiltersActions();
@@ -51,14 +48,6 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
   const [rangeMetric, setRangeMetric] = useState<RangeMetric>();
 
   useEffect(() => {
-    const itemData = mergeStaticDynamicData(
-      filter.itemType === "nodes" ? nodeData : edgeData,
-      // dynamic field should be calculated from parent graph and not from the useDynamicItemData which provide data in the current graph
-      filter.itemType === "nodes"
-        ? computeAllDynamicAttributes("nodes", parentGraph)
-        : computeAllDynamicAttributes("edges", parentGraph),
-    );
-
     const values = flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
       const v = getFieldValueForQuantification(itemData[itemId], filter.field);
       if (v && (typeof v === "number" || !isNaN(+v))) return [v];
@@ -88,7 +77,7 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
         maxCount: Math.max(...rangeValues.map((r) => r.values.length)),
       });
     }
-  }, [filter.itemType, filter.field, parentGraph, nodeData, edgeData]);
+  }, [filter.itemType, filter.field, parentGraph, itemData]);
 
   const marks: SliderProps["marks"] = rangeMetric
     ? mapValues(
