@@ -1,6 +1,6 @@
 import { type FC, useCallback } from "react";
 
-import { useSearchActions, useSelectionActions } from "../core/context/dataContexts";
+import { useSearchActions, useSearchQuery, useSelectionActions } from "../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../core/context/eventsContext";
 import { GraphSearch, type Option, type OptionItem } from "./GraphSearch";
 
@@ -10,6 +10,10 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { setQuery } = useSearchActions();
+  // Controlled input text, kept in an atom rather than inside react-select: the left panel unmounts
+  // whenever it is collapsed (or a tool takes its place), so an internal value would be lost every
+  // time. Restoring it also brings its results back, see GraphSearch.
+  const searchQuery = useSearchQuery();
 
   const onChange = useCallback(
     (option: Option | null) => {
@@ -91,6 +95,7 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
       value={null}
       onChange={onChange}
       postProcessOptions={postProcessOptions}
+      inputValue={searchQuery}
       onInputChange={setQuery}
     />
   );
