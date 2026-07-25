@@ -166,6 +166,9 @@ const StringEditor = ({
       ref={ref}
       className="form-control"
       type="string"
+      // The browser's own "previously typed values" dropdown would cover the suggestions this form
+      // shows underneath (similar nodes, matching edges...), hiding the very thing the user needs.
+      autoComplete="off"
       value={value ?? ""}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value || undefined)}
@@ -320,6 +323,7 @@ export const AttributeEditors: {
         ref={ref}
         className="form-control"
         type={inputType}
+        autoComplete="off"
         value={value?.toFormat(inputDateFormat) ?? ""}
         placeholder={placeholder}
         onChange={(e) => {

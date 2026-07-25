@@ -419,6 +419,7 @@ const useEditEdgeForm = ({
               id="updateEdge-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoComplete="off"
               autoFocus={2 + attributes.length === autoFocusIndex}
               {...register("id", {
                 required: !isNew,

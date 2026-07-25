@@ -294,6 +294,7 @@ const useEditNodeForm = ({
               id="updateNode-x"
               className={cx("form-control", errors.x && "is-invalid")}
               step="any"
+              autoComplete="off"
               autoFocus={attributes.length === autoFocusIndex}
               {...register("x")}
             />
@@ -307,6 +308,7 @@ const useEditNodeForm = ({
               id="updateNode-y"
               className={cx("form-control", errors.y && "is-invalid")}
               step="any"
+              autoComplete="off"
               autoFocus={attributes.length + 1 === autoFocusIndex}
               {...register("y")}
             />
@@ -324,6 +326,7 @@ const useEditNodeForm = ({
               id="updateNode-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoComplete="off"
               autoFocus={attributes.length + 2 === autoFocusIndex}
               {...register("id", {
                 required: !isNew,

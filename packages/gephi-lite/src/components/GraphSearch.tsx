@@ -126,6 +126,8 @@ export const GraphSearch: FC<GraphSearchProps> = ({
   // Whether the caller handed us text to restore right when we mounted: that text deserves its
   // results on screen immediately (see `restoredOptions` below and `defaultMenuIsOpen`).
   const restoredOnMount = useRef(!!inputValue).current;
+  // Controlled mode = the search box whose text must survive everything (see `inputValue` above).
+  const isControlled = inputValue !== undefined;
 
   /**
    * Loading the options while the user is typing.
@@ -181,6 +183,12 @@ export const GraphSearch: FC<GraphSearchProps> = ({
       inputValue={inputValue}
       defaultOptions={restoredOptions}
       defaultMenuIsOpen={restoredOnMount}
+      // Picking a result locates the item, it does not "consume" the search: react-select otherwise
+      // hides the input text *and* closes the menu on select (both are gated on this single prop),
+      // leaving a box that looks empty until it is clicked again. Keeping them lets the query and
+      // its results stay on screen, so several results can be visited in a row. Only for the main
+      // search box: in the edge editor, picking a source/target really does end that search.
+      closeMenuOnSelect={!isControlled}
       loadOptions={debounce(loadOptions, 200)}
       onChange={(option) => {
         onChange(option);
@@ -212,9 +220,24 @@ export const GraphSearch: FC<GraphSearchProps> = ({
                 title={t("search.clear")}
                 aria-label={t("search.clear")}
                 disabled={!props.selectProps.inputValue}
+                // Clearing happens on pointer down, not on click: react-select's own touchend
+                // handler calls preventDefault() for any target that is not the input, which on
+                // touch devices swallows the compatibility click - the button then did nothing at
+                // all on Android. stopPropagation keeps that same handler from treating the press
+                // as a click on the control (which would toggle the menu).
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onInputChange("");
+                }}
                 // Keep the focus (and the on-screen keyboard) where it is: a blur would close the
                 // menu and, on mobile, make the panel jump.
-                onMouseDown={(e) => e.preventDefault()}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                // Keyboard activation (Enter/Space) fires no pointer event; clearing twice is a
+                // no-op anyway, and the button is disabled as soon as there is nothing left.
                 onClick={() => onInputChange("")}
               >
                 <CancelIcon />

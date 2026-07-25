@@ -40,6 +40,7 @@ export const NumberInput: FC<{
         ref={ref}
         className="form-control text-center"
         type="number"
+        autoComplete="off"
         value={value ?? ""}
         step="any"
         placeholder={placeholder}
