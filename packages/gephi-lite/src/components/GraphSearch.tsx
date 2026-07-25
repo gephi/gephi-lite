@@ -200,15 +200,18 @@ export const GraphSearch: FC<GraphSearchProps> = ({
         DropdownIndicator: IndicatorComponent,
         // react-select only renders its own clear indicator when an item is *selected*, so a search
         // box that just holds typed text (no selection) would have no way to be emptied but the
-        // keyboard - painful on mobile. Add our own, shown as soon as there is text to clear.
+        // keyboard - painful on mobile. Add our own, left of the magnifier and always there but
+        // disabled when there is nothing to clear, like the data view's search box (see its
+        // SearchForm), so both search fields look and behave the same.
         IndicatorsContainer: (props: IndicatorsContainerProps<Option, false>) => (
           <components.IndicatorsContainer {...props}>
-            {!!onInputChange && !!props.selectProps.inputValue && (
+            {!!onInputChange && (
               <button
                 type="button"
                 className="gl-btn gl-btn-icon"
                 title={t("search.clear")}
                 aria-label={t("search.clear")}
+                disabled={!props.selectProps.inputValue}
                 // Keep the focus (and the on-screen keyboard) where it is: a blur would close the
                 // menu and, on mobile, make the panel jump.
                 onMouseDown={(e) => e.preventDefault()}

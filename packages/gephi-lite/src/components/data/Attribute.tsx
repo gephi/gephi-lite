@@ -369,6 +369,7 @@ export const EditItemAttribute: FC<{
   clearable?: boolean;
 }> = ({ field, scalar, onChange, id, autoFocus, inTooltip, placeholder, clearable }) => {
   const { t } = useTranslation();
+  const editorWrapper = useRef<HTMLDivElement>(null);
   const EditComponent = AttributeEditors[field.type] as FC<{
     field: FieldModel<ItemType, boolean>;
     onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
@@ -396,7 +397,7 @@ export const EditItemAttribute: FC<{
   return (
     <div className="d-flex align-items-center gl-gap-1">
       {/* min-width:0 lets the editor shrink inside the flex row instead of overflowing it. */}
-      <div className="flex-grow-1" style={{ minWidth: 0 }}>
+      <div ref={editorWrapper} className="flex-grow-1" style={{ minWidth: 0 }}>
         {editor}
       </div>
       <button
@@ -405,7 +406,14 @@ export const EditItemAttribute: FC<{
         title={t("common.clear")}
         aria-label={t("common.clear")}
         disabled={isEmptyFieldValue(scalar)}
-        onClick={() => onChange(EMPTY_FIELD_VALUE)}
+        // Emptying a field is a step in retyping it, so the caret must stay where the user is going
+        // to type: don't take the focus on press, and hand it back to the field afterwards (it may
+        // not have had it, and the button gets disabled right after clearing anyway).
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => {
+          onChange(EMPTY_FIELD_VALUE);
+          editorWrapper.current?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input, textarea")?.focus();
+        }}
       >
         <CancelIcon />
       </button>
