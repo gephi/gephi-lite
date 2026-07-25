@@ -9,11 +9,11 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity, isNil, keyBy } from "lodash";
+import { forEach, identity, isNil, keyBy, pick } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
+import { isComputedField, mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
   DatalessGraph,
@@ -23,6 +23,7 @@ import {
   NodeRenderingData,
   SigmaGraph,
 } from "../graph/types";
+import { computeAllComputedAttributes } from "../graph/utils";
 import { ItemType } from "../types";
 import {
   AppearanceState,
@@ -72,10 +73,11 @@ export function makeGetNumberAttr<
 >(
   itemType: T["itemType"],
   itemKey: "size" | "zIndex",
-  { nodeData, edgeData }: GraphDataset,
+  dataset: GraphDataset,
   { dynamicNodeData, dynamicEdgeData }: DynamicItemData,
   { nodesSize, edgesSize, edgesZIndex }: AppearanceState,
 ): null | NumberGetter {
+  const { nodeData, edgeData } = dataset;
   const numberAttrDef = itemKey === "zIndex" ? edgesZIndex : itemType === "nodes" ? nodesSize : edgesSize;
   const itemsValues =
     itemType === "nodes"
@@ -94,10 +96,27 @@ export function makeGetNumberAttr<
         const minSize = numberAttrDef.minSize as number;
         const maxSize = numberAttrDef.maxSize as number;
 
+        // The min/max SCALE used to interpolate sizes is scanned from a different item set than
+        // `itemsValues` above (which always reflects each item's own current value, used by the
+        // getter below): filtered-out items must not silently become the extremum of the scale.
+        // - filterAware (checked): restricted to the items currently kept by the filters - the
+        //   dynamic data channel is itself already scoped to those, so its keys give that set.
+        // - default (unchecked): the whole dataset, recomputing computed fields (dynamic
+        //   attributes, formula columns) over the full graph, since the passed-in dynamic data is
+        //   itself filtered-scoped and would otherwise silently apply the same restriction.
+        const scaleItemsValues = numberAttrDef.filterAware
+          ? pick(itemsValues, itemType === "nodes" ? Object.keys(dynamicNodeData) : Object.keys(dynamicEdgeData))
+          : isComputedField(numberAttrDef.field)
+            ? mergeStaticDynamicData(
+                itemType === "nodes" ? nodeData : edgeData,
+                computeAllComputedAttributes(itemType, dataset),
+              )
+            : itemsValues;
+
         const transformValue = makeTransformValue(numberAttrDef.transformationMethod);
         let min = Infinity,
           max = -Infinity;
-        forEach(itemsValues, (data) => {
+        forEach(scaleItemsValues, (data) => {
           const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
           const transformedValue = transformValue(valueAsNumber);
           if (typeof transformedValue === "number") {

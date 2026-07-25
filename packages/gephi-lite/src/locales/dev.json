@@ -62,6 +62,7 @@
     "show_edges": "Show edges",
     "size": {
       "default_value": "Size for {{items}} with no valid value",
+      "filter_aware": "Based on filtered values",
       "fixed": "A constant size",
       "interpolate": "Interpolate between custom min and max values",
       "set_size_from": "Set size from...",
