@@ -6,6 +6,7 @@ import {
   type DropdownIndicatorProps,
   type IndicatorsContainerProps,
   OptionProps,
+  type SelectInstance,
   SingleValueProps,
   components,
 } from "react-select";
@@ -123,11 +124,17 @@ export const GraphSearch: FC<GraphSearchProps> = ({
   const { index } = useSearch();
   const { nodesLabel, edgesLabel } = useAppearance();
 
-  // Whether the caller handed us text to restore right when we mounted: that text deserves its
-  // results on screen immediately (see `restoredOptions` below and `defaultMenuIsOpen`).
+  // Whether the caller handed us text to restore right when we mounted: used below to reload that
+  // query's results once (see `restoredOptions`), for the cases that are real remounts (eg.
+  // switching between the Graph and Data views, each with its own GraphSearch instance).
   const restoredOnMount = useRef(!!inputValue).current;
   // Controlled mode = the search box whose text must survive everything (see `inputValue` above).
   const isControlled = inputValue !== undefined;
+  // Keep the results open whenever the controlled box holds a query, independently of react-select's
+  // own open/close bookkeeping (see `forceMenuOpen` in Select.tsx): a parent panel getting hidden via
+  // CSS while this field has focus makes the browser blur it, which would otherwise close the menu
+  // until the user clicks back into the field - this is what actually makes it reopen by itself.
+  const forceMenuOpen = isControlled && !!inputValue;
 
   /**
    * Loading the options while the user is typing.
@@ -171,8 +178,22 @@ export const GraphSearch: FC<GraphSearchProps> = ({
     if (restoredOnMount) refreshOnMount.current();
   }, [restoredOnMount]);
 
+  // Emptying the search from the button bypasses react-select entirely (it never sees an
+  // input-change), so the results it is showing have to be taken down by hand: drop the ones we
+  // kept, and close the menu - which would otherwise stay open, still listing the nodes and edges
+  // of a query that no longer exists. Blurring is what closes it; the focus is handed straight back
+  // so a new search can be typed right away (focusing alone does not reopen the menu).
+  const selectRef = useRef<SelectInstance<Option, false>>(null);
+  const clearSearch = useCallback(() => {
+    setRestoredOptions(undefined);
+    onInputChange?.("");
+    selectRef.current?.blur();
+    selectRef.current?.focus();
+  }, [onInputChange]);
+
   return (
     <AsyncSelect<Option>
+      ref={selectRef}
       className={className}
       autoFocus={autoFocus}
       isClearable
@@ -183,6 +204,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({
       inputValue={inputValue}
       defaultOptions={restoredOptions}
       defaultMenuIsOpen={restoredOnMount}
+      forceMenuOpen={forceMenuOpen}
       // Picking a result locates the item, it does not "consume" the search: react-select otherwise
       // hides the input text *and* closes the menu on select (both are gated on this single prop),
       // leaving a box that looks empty until it is clicked again. Keeping them lets the query and
@@ -228,7 +250,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({
                 onPointerDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  onInputChange("");
+                  clearSearch();
                 }}
                 // Keep the focus (and the on-screen keyboard) where it is: a blur would close the
                 // menu and, on mobile, make the panel jump.
@@ -238,7 +260,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({
                 }}
                 // Keyboard activation (Enter/Space) fires no pointer event; clearing twice is a
                 // no-op anyway, and the button is disabled as soon as there is nothing left.
-                onClick={() => onInputChange("")}
+                onClick={() => clearSearch()}
               >
                 <CancelIcon />
               </button>
