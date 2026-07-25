@@ -9,8 +9,11 @@ import { GroupBase } from "react-select/dist/declarations/src/types";
 import { UIContext } from "../../core/context/uiContext";
 import { CaretDownIcon } from "../common-icons";
 
-const useDefaultSelectProps = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+// `menuIsOpen` is kept controlled here (so Escape can be swallowed while the menu is open, see
+// onKeyDown below), which means react-select's own `defaultMenuIsOpen` would be ignored. Seed the
+// initial state from it instead, so that prop keeps its standard meaning for our callers.
+const useDefaultSelectProps = (defaultMenuIsOpen?: boolean) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(!!defaultMenuIsOpen);
 
   return {
     classNamePrefix: "react-select",
@@ -46,7 +49,7 @@ export function Select<BO, IsMulti extends boolean = false>({
   ...props
 }: Props<BO, IsMulti> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
-  const defaultProps = useDefaultSelectProps();
+  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen);
   return (
     <ReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
@@ -66,7 +69,7 @@ export function AsyncSelect<BO, IsMulti extends boolean = false>({
   ...props
 }: AsyncProps<BO, IsMulti, GroupBase<BO>> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
-  const defaultProps = useDefaultSelectProps();
+  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen);
   return (
     <AsyncReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
@@ -86,7 +89,7 @@ export function CreatableSelect<BO, IsMulti extends boolean = false>({
   ...props
 }: CreatableProps<BO, IsMulti, GroupBase<BO>> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
-  const defaultProps = useDefaultSelectProps();
+  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen);
   return (
     <CreatableReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
@@ -106,7 +109,7 @@ export function AsyncCreatableSelect<BO, IsMulti extends boolean = false>({
   ...props
 }: AsyncCreatableProps<BO, IsMulti, GroupBase<BO>> & { ref?: LegacyRef<SelectInstance<BO, IsMulti>> }) {
   const { portalTarget } = useContext(UIContext);
-  const defaultProps = useDefaultSelectProps();
+  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen);
   return (
     <AsyncCreatableReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}

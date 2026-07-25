@@ -1,12 +1,18 @@
 import cx from "classnames";
 import { debounce } from "lodash";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { type DropdownIndicatorProps, OptionProps, SingleValueProps, components } from "react-select";
+import {
+  type DropdownIndicatorProps,
+  type IndicatorsContainerProps,
+  OptionProps,
+  SingleValueProps,
+  components,
+} from "react-select";
 
 import { useAppearance, useSearch } from "../core/context/dataContexts";
 import { ItemType } from "../core/types";
-import { SearchIcon } from "./common-icons";
+import { CancelIcon, SearchIcon } from "./common-icons";
 import { EdgeComponentById } from "./data/Edge";
 import { NodeComponentById } from "./data/Node";
 import { AsyncSelect } from "./forms/Select";
@@ -80,9 +86,18 @@ interface GraphSearchProps {
   postProcessOptions?: (options: Option[]) => Option[];
   /**
    * Text shown in the input as soon as it is mounted, without selecting any item (unlike `value`).
-   * Used to carry over text typed in another search field into this one.
+   * Used to carry over text typed in another search field into this one. react-select owns the text
+   * afterwards (it gets cleared on selection, blur...): for text that must survive those, and
+   * remounts, use the controlled `inputValue` below instead.
    */
   defaultInputValue?: string;
+  /**
+   * Controlled input text: the caller owns it, so it survives selection, blur and remounts (nothing
+   * clears it but the caller). When it is non-empty on mount, the matching results are loaded and
+   * the dropdown opens right away, so reopening a panel shows the previous search and its results.
+   * Pair it with `onInputChange` to keep the caller's state up to date.
+   */
+  inputValue?: string;
   /**
    * Called with the raw text typed in the input, as opposed to `onChange` which only fires when an
    * item gets selected.
@@ -101,11 +116,16 @@ export const GraphSearch: FC<GraphSearchProps> = ({
   value,
   autoFocus,
   defaultInputValue,
+  inputValue,
   onInputChange,
 }) => {
   const { t } = useTranslation();
   const { index } = useSearch();
   const { nodesLabel, edgesLabel } = useAppearance();
+
+  // Whether the caller handed us text to restore right when we mounted: that text deserves its
+  // results on screen immediately (see `restoredOptions` below and `defaultMenuIsOpen`).
+  const restoredOnMount = useRef(!!inputValue).current;
 
   /**
    * Loading the options while the user is typing.
@@ -130,6 +150,25 @@ export const GraphSearch: FC<GraphSearchProps> = ({
     [index, nodesLabel, edgesLabel, type, postProcessOptions],
   );
 
+  // react-select only keeps loaded options for text the user is *currently typing*: it drops them as
+  // soon as an item is picked, and never has any for text restored on mount. In both cases the
+  // dropdown would then claim "no result" for a query that does match. So we keep the results for
+  // that text ourselves, and hand them over as `defaultOptions` (which react-select falls back to
+  // exactly when its own async state is empty).
+  const [restoredOptions, setRestoredOptions] = useState<Option[] | undefined>(undefined);
+  // Refreshed on mount and after picking an item - never while typing, where react-select's own
+  // loading already runs (searching twice would also fire `postProcessOptions` side effects twice).
+  const refreshRestoredOptions = useCallback(() => {
+    if (inputValue) loadOptions(inputValue, setRestoredOptions);
+    else setRestoredOptions(undefined);
+  }, [inputValue, loadOptions]);
+
+  const refreshOnMount = useRef(refreshRestoredOptions);
+  refreshOnMount.current = refreshRestoredOptions;
+  useEffect(() => {
+    if (restoredOnMount) refreshOnMount.current();
+  }, [restoredOnMount]);
+
   return (
     <AsyncSelect<Option>
       className={className}
@@ -139,15 +178,48 @@ export const GraphSearch: FC<GraphSearchProps> = ({
       placeholder={t(`search.${type || "graph"}.placeholder`)}
       value={value || null}
       defaultInputValue={defaultInputValue}
+      inputValue={inputValue}
+      defaultOptions={restoredOptions}
+      defaultMenuIsOpen={restoredOnMount}
       loadOptions={debounce(loadOptions, 200)}
-      onChange={onChange}
+      onChange={(option) => {
+        onChange(option);
+        // Picking an item makes react-select drop its loaded options, while the text stays (in
+        // controlled mode): keep matching results ready for when the user comes back to the field.
+        refreshRestoredOptions();
+      }}
       onInputChange={(newValue, meta) => {
-        if (onInputChange && meta.action === "input-change") onInputChange(newValue);
+        if (meta.action !== "input-change") return;
+        // While typing, react-select's own loading is authoritative.
+        setRestoredOptions(undefined);
+        if (onInputChange) onInputChange(newValue);
       }}
       components={{
         SingleValue,
         Option: OptionComponent,
         DropdownIndicator: IndicatorComponent,
+        // react-select only renders its own clear indicator when an item is *selected*, so a search
+        // box that just holds typed text (no selection) would have no way to be emptied but the
+        // keyboard - painful on mobile. Add our own, shown as soon as there is text to clear.
+        IndicatorsContainer: (props: IndicatorsContainerProps<Option, false>) => (
+          <components.IndicatorsContainer {...props}>
+            {!!onInputChange && !!props.selectProps.inputValue && (
+              <button
+                type="button"
+                className="gl-btn gl-btn-icon"
+                title={t("search.clear")}
+                aria-label={t("search.clear")}
+                // Keep the focus (and the on-screen keyboard) where it is: a blur would close the
+                // menu and, on mobile, make the panel jump.
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => onInputChange("")}
+              >
+                <CancelIcon />
+              </button>
+            )}
+            {props.children}
+          </components.IndicatorsContainer>
+        ),
         NoOptionsMessage: (props) => {
           const { t } = useTranslation();
           return (
