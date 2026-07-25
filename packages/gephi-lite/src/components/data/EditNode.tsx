@@ -19,7 +19,13 @@ import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { CancelIcon, FieldModelIcon, WarningIcon } from "../common-icons";
 import { Modal } from "../modals";
-import { EditItemAttribute, getFirstEmptyValueIndex } from "./Attribute";
+import {
+  EditItemAttribute,
+  getFirstEmptyValueIndex,
+  isEmptyFieldValue,
+  isValidFieldValue,
+  toFormFieldValue,
+} from "./Attribute";
 import { NodeComponentById } from "./Node";
 
 // Existing nodes whose name (the current label field, or the id as a fallback) fuzzy-matches what
@@ -168,14 +174,16 @@ const useEditNodeForm = ({
 
         const allAttributes = {
           ...fromPairs(
-            data.attributes
-              .filter(({ value }) => value !== "" || value === undefined)
-              .map(({ key, value }) => {
-                // value are all string because input are all text whatever the data model
-                // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-                const valueAsNumber = toNumber(value);
-                return [key, valueAsNumber ? valueAsNumber : value];
-              }),
+            data.attributes.map(({ key, value }) => {
+              // An emptied field is written back as undefined rather than skipped: updateNode merges
+              // into the existing data, so dropping the key would silently keep the previous value
+              // and make clearing a field impossible to save.
+              if (isEmptyFieldValue(value)) return [key, undefined];
+              // value are all string because input are all text whatever the data model
+              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+              const valueAsNumber = toNumber(value);
+              return [key, valueAsNumber ? valueAsNumber : value];
+            }),
           ),
           ...pick(data, "x", "y"),
         };
@@ -238,16 +246,25 @@ const useEditNodeForm = ({
               <Controller
                 name={`attributes.${i}.value`}
                 control={control}
+                // Validity is only checked here, on submit: while typing, an incomplete entry (a URL
+                // half written...) must never be fought or wiped, see castScalarToEditableValue.
+                rules={{ validate: (value) => isValidFieldValue(value, nodeFieldsIndex[field.key]) }}
                 render={(props) => (
                   <EditItemAttribute
                     id={`node-${nodeId}-field-${i}`}
+                    clearable
                     field={nodeFieldsIndex[field.key]}
                     scalar={props.field.value}
-                    onChange={(v) => props.field.onChange(v)}
+                    onChange={(v) => props.field.onChange(toFormFieldValue(v))}
                     autoFocus={i === autoFocusIndex}
                   />
                 )}
               />
+              {(errors.attributes || [])[i]?.value && (
+                <div className="text-danger">
+                  {t("error.form.invalid_value", { type: nodeFieldsIndex[field.key].type })}
+                </div>
+              )}
               {(errors.attributes || [])[i]?.key && (
                 <div className="invalid-feedback">
                   {t(
@@ -277,6 +294,7 @@ const useEditNodeForm = ({
               id="updateNode-x"
               className={cx("form-control", errors.x && "is-invalid")}
               step="any"
+              autoComplete="off"
               autoFocus={attributes.length === autoFocusIndex}
               {...register("x")}
             />
@@ -290,6 +308,7 @@ const useEditNodeForm = ({
               id="updateNode-y"
               className={cx("form-control", errors.y && "is-invalid")}
               step="any"
+              autoComplete="off"
               autoFocus={attributes.length + 1 === autoFocusIndex}
               {...register("y")}
             />
@@ -307,6 +326,7 @@ const useEditNodeForm = ({
               id="updateNode-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoComplete="off"
               autoFocus={attributes.length + 2 === autoFocusIndex}
               {...register("id", {
                 required: !isNew,

@@ -22,7 +22,13 @@ import { GraphSearch } from "../GraphSearch";
 import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
 import { Modal } from "../modals";
-import { EditItemAttribute, getFirstEmptyValueIndex } from "./Attribute";
+import {
+  EditItemAttribute,
+  getFirstEmptyValueIndex,
+  isEmptyFieldValue,
+  isValidFieldValue,
+  toFormFieldValue,
+} from "./Attribute";
 import { EdgeComponentById } from "./Edge";
 
 interface UpdatedEdgeState {
@@ -190,14 +196,16 @@ const useEditEdgeForm = ({
         }
 
         const allAttributes = fromPairs(
-          data.attributes
-            .filter(({ value }) => value !== "" || value === undefined)
-            .map(({ key, value }) => {
-              // value are all string because input are all text whatever the data model
-              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-              const valueAsNumber = toNumber(value);
-              return [key, valueAsNumber ? valueAsNumber : value];
-            }),
+          data.attributes.map(({ key, value }) => {
+            // An emptied field is written back as undefined rather than skipped: updateEdge merges
+            // into the existing data, so dropping the key would silently keep the previous value and
+            // make clearing a field impossible to save.
+            if (isEmptyFieldValue(value)) return [key, undefined];
+            // value are all string because input are all text whatever the data model
+            // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+            const valueAsNumber = toNumber(value);
+            return [key, valueAsNumber ? valueAsNumber : value];
+          }),
         );
 
         // Create new edge:
@@ -365,16 +373,25 @@ const useEditEdgeForm = ({
                 <Controller
                   name={`attributes.${i}.value`}
                   control={control}
+                  // Validity is only checked here, on submit: while typing, an incomplete entry (a
+                  // URL half written...) must never be fought or wiped, see castScalarToEditableValue.
+                  rules={{ validate: (value) => isValidFieldValue(value, edgeFieldsIndex[field.key]) }}
                   render={(props) => (
                     <EditItemAttribute
                       id={`edge-${edgeId}-field-${i}`}
+                      clearable
                       field={edgeFieldsIndex[field.key]}
                       scalar={props.field.value}
-                      onChange={(v) => props.field.onChange(v)}
+                      onChange={(v) => props.field.onChange(toFormFieldValue(v))}
                       autoFocus={2 + i === autoFocusIndex}
                     />
                   )}
                 />
+                {(errors.attributes || [])[i]?.value && (
+                  <div className="text-danger">
+                    {t("error.form.invalid_value", { type: edgeFieldsIndex[field.key].type })}
+                  </div>
+                )}
                 {(errors.attributes || [])[i]?.key && (
                   <div className="invalid-feedback">
                     {t(
@@ -402,6 +419,7 @@ const useEditEdgeForm = ({
               id="updateEdge-id"
               className={cx("form-control", errors.id && "is-invalid")}
               disabled={!isNew}
+              autoComplete="off"
               autoFocus={2 + attributes.length === autoFocusIndex}
               {...register("id", {
                 required: !isNew,

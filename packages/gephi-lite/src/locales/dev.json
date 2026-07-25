@@ -282,6 +282,7 @@
     "IMPORT_BAD_VERSION": "Your file is from an older version of Gephi-Lite ({{version}}) which is not compatible with the actual version",
     "form": {
       "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
+      "invalid_value": "This value is not a valid {{type}}.",
       "max": "Field {{name}} should be less than or equal to {{max}}",
       "min": "Field {{name}} should be greater than or equal to {{min}}",
       "required": "Field {{name}} is required",
@@ -833,6 +834,7 @@
     "github": "GitHub"
   },
   "search": {
+    "clear": "Clear the search",
     "edges": {
       "help": "Type something to find an edge",
       "no_result": "No edge found",

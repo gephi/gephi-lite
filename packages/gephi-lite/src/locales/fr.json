@@ -300,6 +300,7 @@
     "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante",
     "form": {
       "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
+      "invalid_value": "Cette valeur n'est pas un « {{type}} » valide.",
       "max": "Le champ {{name}} doit être inférieur ou égal à {{max}}",
       "min": "Le champ {{name}} doit être supérieur ou égal à {{min}}",
       "required": "Le champ {{name}} est requis",
@@ -919,6 +920,7 @@
     "github": "GitHub"
   },
   "search": {
+    "clear": "Vider la recherche",
     "edges": {
       "help": "Écrire quelque chose pour trouver un lien",
       "no_result": "Aucun lien trouvée",
