@@ -1,5 +1,5 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
-import { dropRight, inRange } from "lodash";
+import { clamp, dropRight, inRange } from "lodash";
 
 import { sessionStorage } from "../../utils/storage";
 import { FilterType, FiltersState } from "./types";
@@ -55,6 +55,26 @@ export const deleteFilter: Producer<FiltersState, [number]> = (index) => {
   };
 };
 
+/**
+ * Moves a filter up (negative offset) or down (positive offset) in the stack. Filters apply in
+ * order, each one on the graph produced by the previous ones, so reordering them changes what the
+ * downstream filters see - hence a full recomputation, handled by the filters atom binding.
+ */
+export const moveFilter: Producer<FiltersState, [number, number]> = (index, offset) => {
+  return (state) => {
+    if (!inRange(index, 0, state.filters.length)) throw new Error(`moveFilter: Index ${index} is out of bounds.`);
+
+    const newIndex = clamp(index + offset, 0, state.filters.length - 1);
+    if (newIndex === index) return state;
+
+    const filters = state.filters.slice(0);
+    const [filter] = filters.splice(index, 1);
+    filters.splice(newIndex, 0, filter);
+
+    return { ...state, filters };
+  };
+};
+
 export const updateFilter: Producer<FiltersState, [number, FilterType]> = (index, newFilter) => {
   return (state) => ({
     ...state,
@@ -80,6 +100,7 @@ export const filtersActions = {
   addFilter: producerToAction(addFilter, filtersAtom),
   resetFilters: producerToAction(resetFilters, filtersAtom),
   updateFilter: producerToAction(updateFilter, filtersAtom),
+  moveFilter: producerToAction(moveFilter, filtersAtom),
   deleteFilter: producerToAction(deleteFilter, filtersAtom),
   disableFiltersFrom: producerToAction(disableFiltersFrom, filtersAtom),
 } as const;

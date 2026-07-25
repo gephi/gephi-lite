@@ -322,6 +322,8 @@
     "insert": "Insert filter",
     "intermediate_graph": "Intermediate graph",
     "keepMissingValues": "Keep missing values",
+    "move_down": "Move the filter down",
+    "move_up": "Move the filter up",
     "nodes_fields": "Nodes attributes",
     "script": "Custom filter",
     "title": "Filters",

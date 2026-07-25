@@ -5,6 +5,7 @@ import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, sortBy
 
 import { ItemType, Scalar } from "../types";
 import { CREATION_DATE_FIELD_ID, UPDATE_DATE_FIELD_ID, ensureSystemDateFields, stampCreationDates } from "./dates";
+import { computeAllDynamicAttributes, computeScriptFieldsData } from "./dynamicAttributes";
 import { inferFieldType } from "./fieldModel";
 import {
   DataGraph,
@@ -160,6 +161,31 @@ export function dataGraphToFullGraph(
   });
 
   return res;
+}
+
+/**
+ * Values of every attribute that is *not* stored in the item data but recomputed on the fly: the
+ * topology-based dynamic attributes (degree...) and the formula (scripted) fields. Both kinds live
+ * in the same "dynamic" data channel (see `isComputedField`), so anything that reads attribute
+ * values (filters, histograms, term lists...) must build that channel through this single helper:
+ * computing only the topology-based half leaves every formula field undefined, ie. indistinguishable
+ * from a missing value.
+ *
+ * The scripts are always taken from the dataset's *current* field models, so an edited formula is
+ * picked up even by a filter created before the edit (filters keep a snapshot of the field model).
+ */
+export function computeAllComputedAttributes<T extends ItemType>(
+  itemType: T,
+  dataset: GraphDataset,
+  graph: DatalessGraph = dataset.fullGraph,
+): Record<string, ItemData> {
+  const dynamicData = computeAllDynamicAttributes(itemType, graph);
+
+  const fields = (itemType === "nodes" ? dataset.nodeFields : dataset.edgeFields) as FieldModel<T>[];
+  if (!fields.some((field) => field.script)) return dynamicData;
+
+  const scriptData = computeScriptFieldsData(itemType, fields, dataGraphToFullGraph(dataset, graph));
+  return mapValues(dynamicData, (data, id) => ({ ...data, ...scriptData[id] }));
 }
 
 /**
