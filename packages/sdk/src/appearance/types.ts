@@ -27,11 +27,17 @@ export type RankingSize = AppearanceBaseElement & {
         minSize: number;
         maxSize: number;
         transformationMethod?: TransformationMethod;
+        // When true, the min/max used to interpolate sizes are scanned only from the items
+        // currently kept by the filters, so filtering out values can change what counts as the
+        // extremum. When false/undefined (the default), they are scanned from the whole dataset,
+        // matching the Data view regardless of the current filters.
+        filterAware?: boolean;
       }
     | {
         minSize?: number;
         maxSize?: number;
         transformationMethod?: undefined;
+        filterAware?: undefined;
       }
   );
 export type Size = RankingSize | FixedSize;

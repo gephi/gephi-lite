@@ -15,6 +15,7 @@ export const SizeRankingEditor: FC<{
 }> = ({ itemType, size, setSize }) => {
   const { t } = useTranslation();
   const toggleExtremaId = `${itemType}-rankingSizeInput-toggleExtrema`;
+  const filterAwareId = `${itemType}-rankingSizeInput-filterAware`;
   const minId = `${itemType}-rankingSizeInput-min`;
   const maxId = `${itemType}-rankingSizeInput-max`;
   const defaultId = `${itemType}-rankingSizeInput-default`;
@@ -42,7 +43,7 @@ export const SizeRankingEditor: FC<{
               setSize({ ...size, ...cachedSizes });
             } else {
               setCachedSizes(pick(size, "minSize", "maxSize") as Extrema);
-              setSize(omit(size, "minSize", "maxSize", "transformationMethod"));
+              setSize(omit(size, "minSize", "maxSize", "transformationMethod", "filterAware"));
             }
           }}
           id={toggleExtremaId}
@@ -53,6 +54,18 @@ export const SizeRankingEditor: FC<{
       </div>
       {hasExtrema && (
         <>
+          <div className="form-check d-flex align-items-center pt-2">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={!!size.filterAware}
+              onChange={(e) => setSize({ ...size, filterAware: e.target.checked || undefined } as RankingSize)}
+              id={filterAwareId}
+            />
+            <label className="form-check-label" htmlFor={filterAwareId}>
+              {t("appearance.size.filter_aware")}
+            </label>
+          </div>
           <div className="d-flex align-items-center">
             <input
               className="form-control form-control-sm w-5"

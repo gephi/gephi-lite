@@ -76,6 +76,7 @@
       "data": "Fichier de données",
       "data_description": "Toutes les tailles des {{items}} sont celles du fichier de données d'entrée.",
       "default_value": "Taille pour {{items}} sans valeur valide",
+      "filter_aware": "Basé sur les valeurs filtrées",
       "fixed": "Une taille constante",
       "interpolate": "Interpoler entre les valeurs personnalisées min et max",
       "set_size_from": "Définir la taille à partir de...",
