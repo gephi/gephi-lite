@@ -305,3 +305,49 @@ export function uniqFieldValuesAsStrings(items: Record<string, ItemData>, field:
     }),
   ) as string[];
 }
+
+/**
+ * All the edges linking two given nodes, whichever way they point (and however many there are, in
+ * a multigraph).
+ */
+export function getEdgesBetween(graph: DatalessGraph, source: string, target: string): string[] {
+  return graph.edges(source).filter((edge) => graph.opposite(source, edge) === target);
+}
+
+/**
+ * Edges of a shortest path between two nodes, or `null` when no path links them.
+ *
+ * Edge direction is ignored (graphology's `neighbors` yields both the inbound and the outbound
+ * ones): the point is to show *how* two nodes are connected, so a path that only exists against
+ * the arrows is still an answer worth showing. Every parallel edge of a hop is returned, since
+ * they are drawn one on top of the other anyway and picking one arbitrarily would hide the others.
+ */
+export function getShortestPathEdges(graph: DatalessGraph, source: string, target: string): string[] | null {
+  if (!graph.hasNode(source) || !graph.hasNode(target)) return null;
+  if (source === target) return getEdgesBetween(graph, source, source);
+
+  // Breadth-first search, level by level, keeping for each visited node the one it was reached
+  // from: the first time the target is visited it is through one of the shortest paths.
+  const previous: Record<string, string> = {};
+  const visited = new Set([source]);
+  let fringe = [source];
+  while (fringe.length && !visited.has(target)) {
+    const nextFringe: string[] = [];
+    fringe.forEach((node) =>
+      graph.neighbors(node).forEach((neighbor) => {
+        if (visited.has(neighbor)) return;
+        visited.add(neighbor);
+        previous[neighbor] = node;
+        nextFringe.push(neighbor);
+      }),
+    );
+    fringe = nextFringe;
+  }
+  if (!visited.has(target)) return null;
+
+  // Walk the path back from the target, collecting the edges of each hop.
+  const edges: string[] = [];
+  for (let node = target; node !== source; node = previous[node])
+    edges.unshift(...getEdgesBetween(graph, previous[node], node));
+  return edges;
+}

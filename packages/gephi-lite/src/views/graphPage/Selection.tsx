@@ -18,6 +18,7 @@ import {
   OpenInGraphIcon,
   SelectEdgesIcon,
   SelectNeighborsIcon,
+  SelectPathIcon,
   SwapIcon,
   ThreeDotsVerticalIcon,
   TrashIcon,
@@ -45,7 +46,9 @@ import {
   mergeStaticDynamicData,
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
+import { getShortestPathEdges } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
+import { useNotifications } from "../../core/notifications";
 import { focusCameraOnEdges, focusCameraOnNode, focusCameraOnNodes } from "../../core/sigma";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
 
@@ -348,6 +351,7 @@ export const Selection: FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { openModal } = useModal();
+  const { notify } = useNotifications();
   const { type, items } = useSelection();
   const { select } = useSelectionActions();
   const { showSelection } = useDataTableActions();
@@ -366,6 +370,21 @@ export const Selection: FC = () => {
   }, [nodeData, dynamicNodeData, dynamicEdgeData, edgeData, type]);
 
   const nodeAllData = useMemo(() => mergeStaticDynamicData(nodeData, dynamicNodeData), [nodeData, dynamicNodeData]);
+
+  // With exactly two nodes selected, show how they are connected: select the edges of a shortest
+  // path between them, which the graph rendering already emphasizes while dimming everything else,
+  // then frame the camera on them. The path is searched in the full graph, so an edge hidden by a
+  // filter still counts (and is then reported as filtered in the panel, like any other selection).
+  const selectPathBetweenNodes = useCallback(() => {
+    const [source, target] = Array.from(items);
+    const edges = getShortestPathEdges(fullGraph, source, target);
+    if (!edges?.length) {
+      notify({ message: t("selection.no_path_between_nodes"), type: "warning" });
+      return;
+    }
+    select({ type: "edges", items: new Set(edges), replace: true });
+    focusCameraOnEdges(edges);
+  }, [items, fullGraph, select, notify, t]);
 
   // For edges, sort the selection by source label, then target label, then edge label, so a
   // multi-edge selection is easy to scan through instead of appearing in arbitrary (Set) order.
@@ -452,6 +471,16 @@ export const Selection: FC = () => {
               <> ({items.size})</>
             )}
           </h2>
+          {type === "nodes" && items.size === 2 && (
+            <button
+              className="gl-btn gl-btn-icon flex-shrink-0"
+              title={t("selection.select_path_between_nodes")}
+              aria-label={t("selection.select_path_between_nodes")}
+              onClick={selectPathBetweenNodes}
+            >
+              <SelectPathIcon />
+            </button>
+          )}
           {visible.length > 0 && (
             <button
               className="gl-btn gl-btn-icon flex-shrink-0"
