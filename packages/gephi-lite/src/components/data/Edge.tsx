@@ -40,8 +40,9 @@ export const EdgeComponent: FC<{
   nodeButtonTitle,
   edgeButtonTitle,
 }) => {
-  // A filtered out edge is drawn dotted and grey (see FILTERED_ITEM_COLOR), like its filtered
-  // source/target nodes are drawn hollow and grey, rather than keeping its appearance color.
+  // A filtered out edge is drawn dotted and grey (see FILTERED_ITEM_COLOR) rather than keeping its
+  // appearance color, and so are both its extremities (see below), even when those nodes pass the
+  // filters themselves: the whole row is absent from the graph, so it reads as filtered as a whole.
   const strokeColor = hidden ? FILTERED_ITEM_COLOR : color;
   const middle = (
     <div className="edge-wrapper">
@@ -62,7 +63,12 @@ export const EdgeComponent: FC<{
   return (
     <div className={cx("edge-component", className)}>
       <div className="edge-source">
-        <NodeComponent {...source} onClick={onSourceClick} buttonTitle={nodeButtonTitle} />
+        <NodeComponent
+          {...source}
+          hidden={hidden || source.hidden}
+          onClick={onSourceClick}
+          buttonTitle={nodeButtonTitle}
+        />
       </div>
       {onEdgeClick ? (
         <button
@@ -77,7 +83,12 @@ export const EdgeComponent: FC<{
         middle
       )}
       <div className="edge-target">
-        <NodeComponent {...target} onClick={onTargetClick} buttonTitle={nodeButtonTitle} />
+        <NodeComponent
+          {...target}
+          hidden={hidden || target.hidden}
+          onClick={onTargetClick}
+          buttonTitle={nodeButtonTitle}
+        />
       </div>
     </div>
   );
