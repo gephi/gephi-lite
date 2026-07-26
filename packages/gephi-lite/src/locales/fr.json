@@ -966,6 +966,7 @@
     "filtered_one": "{{count, number}} filtré",
     "focus_edges": "Sélectionner uniquement ce lien",
     "focus_nodes": "Sélectionner uniquement ce nœud",
+    "hide_panel": "Masquer le volet de sélection (conserve la sélection)",
     "lasso": "Sélection par lasso",
     "locate_on_graph": "Localiser sur le graphe",
     "locate_selected_edges": "Zoomer sur tous les liens sélectionnés",

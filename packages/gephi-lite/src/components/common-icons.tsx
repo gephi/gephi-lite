@@ -158,6 +158,9 @@ export const MetricsIconFill = PiBinaryBold;
 export const MouseIcon = PiCursor;
 export const MouseIconFill = PiCursorFill;
 export const OpenInGraphIcon = PiCrosshair;
+// Same glyph as MenuCollapseIcon, and for the same reason: on a small screen both panels are
+// stacked at the bottom of the screen, so folding one back down is the same gesture.
+export const PanelCollapseIcon = PiCaretDown;
 export const SelectPathIcon = PiPath;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
