@@ -2,7 +2,7 @@ import { DEFAULT_NODE_COLOR, FieldModel, NodeCoordinates, Scalar, StaticDynamicI
 import { groupBy, isNil, toPairs, values } from "lodash";
 import { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AnimateHeight from "react-animate-height";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { PiChecks } from "react-icons/pi";
 import { useNavigate } from "react-router";
 
@@ -106,6 +106,12 @@ function SelectedItem<
   );
 
   const item = getItemAttributes(type, id, filteredGraph, data, graphDataset, visualGetters);
+
+  // Node's edges/neighbors are taken from the full graph, so the filtered out ones stay part of the
+  // resulting selection (reported as filtered) instead of being silently dropped. A node without
+  // any edge has nothing to select at all: keep both buttons disabled, so clicking them cannot
+  // replace this panel by an empty edges selection.
+  const isIsolated = type === "nodes" && fullGraph.hasNode(id) && !fullGraph.degree(id);
   let content: ReactNode;
   if (type === "nodes") {
     content = (
@@ -230,9 +236,9 @@ function SelectedItem<
           <button
             className="gl-btn gl-btn-icon"
             title={t(`selection.select_node_edges`)}
-            disabled={item.hidden}
+            disabled={item.hidden || isIsolated}
             onClick={() => {
-              select({ type: "edges", items: new Set(filteredGraph.edges(id)), replace: false });
+              select({ type: "edges", items: new Set(fullGraph.edges(id)), replace: false });
             }}
           >
             <SelectEdgesIcon />
@@ -242,9 +248,9 @@ function SelectedItem<
           <button
             className="gl-btn gl-btn-icon"
             title={t(`selection.select_node_neighbors`)}
-            disabled={item.hidden}
+            disabled={item.hidden || isIsolated}
             onClick={() => {
-              select({ type, items: new Set(filteredGraph.neighbors(id)), replace: false });
+              select({ type, items: new Set(fullGraph.neighbors(id)), replace: false });
             }}
           >
             <SelectNeighborsIcon />
@@ -350,6 +356,7 @@ export const Selection: FC = () => {
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const { fullGraph, nodeData, edgeData, layout } = useGraphDataset();
   const { getNodeLabel, getEdgeLabel } = useVisualGetters();
+  const [showFiltered, setShowFiltered] = useState(false);
 
   const mergedStaticDynamicItemData = useMemo(() => {
     return mergeStaticDynamicData(
@@ -431,13 +438,19 @@ export const Selection: FC = () => {
     <>
       {/* Selection main list */}
       <div className="panel-body gap-1" ref={panelBodyRef}>
-        <div className="d-flex flex-row align-items-center justify-content-between gl-gap-1">
+        <div className="d-flex flex-row align-items-start justify-content-between gl-gap-1">
           <h2 className="mb-0">
-            {t(`selection.selected_${type}`)} (
-            {hidden.length > 0
-              ? t("selection.count_with_filtered", { visible: visible.length, hidden: hidden.length })
-              : items.size}
-            )
+            {t(`selection.selected_${type}`)}
+            {hidden.length > 0 ? (
+              // Counts go on their own line, so the longer "(9, 10 filtered)" form is never
+              // truncated by the title next to it.
+              <span className="d-block">
+                ({visible.length},{" "}
+                <span className="text-danger">{t("selection.filtered", { count: hidden.length })}</span>)
+              </span>
+            ) : (
+              <> ({items.size})</>
+            )}
           </h2>
           {visible.length > 0 && (
             <button
@@ -454,21 +467,32 @@ export const Selection: FC = () => {
           <InfiniteScroll pageSize={50} data={visible} scrollableTarget={"selection"} renderItem={renderSelectedItem} />
         </ul>
 
-        {/* Selection hidden list (should actually never be visible) */}
+        {/* Selected items the filters exclude: collapsed by default, since they are not on the
+            graph, but announced by a heading as prominent as the panel's title. */}
         {!!hidden.length && (
           <>
-            <hr />
-            <div>
-              <Trans i18nKey={`selection.hidden_${type}`} count={hidden.length} />
+            <div className="d-flex flex-row align-items-center justify-content-between gl-gap-1 mt-3">
+              <h2 className="mb-0 text-danger">{t(`selection.filtered_${type}`, { count: hidden.length })}</h2>
+              <button
+                className="gl-btn gl-btn-icon flex-shrink-0"
+                title={t(showFiltered ? "common.collapse" : "common.expand")}
+                aria-expanded={showFiltered}
+                onClick={() => setShowFiltered((v) => !v)}
+              >
+                {showFiltered ? <CaretUpIcon /> : <CaretDownIcon />}
+              </button>
             </div>
-            <ul className="list-unstyled gl-m-0 gl-gap-1">
-              <InfiniteScroll
-                scrollableTarget={"selection"}
-                pageSize={50}
-                data={hidden}
-                renderItem={renderSelectedItem}
-              />
-            </ul>
+            <hr className="gl-m-0" />
+            {showFiltered && (
+              <ul className="list-unstyled gl-m-0 gl-gap-1">
+                <InfiniteScroll
+                  scrollableTarget={"selection"}
+                  pageSize={50}
+                  data={hidden}
+                  renderItem={renderSelectedItem}
+                />
+              </ul>
+            )}
           </>
         )}
       </div>
