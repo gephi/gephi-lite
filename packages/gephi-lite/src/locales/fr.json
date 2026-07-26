@@ -986,6 +986,10 @@
     "select_path_between_nodes": "Sélectionner les liens d'un plus court chemin entre les deux nœuds",
     "selected_edges": "Liens sélectionnés",
     "selected_nodes": "Nœuds sélectionnés",
+    "sort": {
+      "alphabetical": "Tri alphabétique - cliquer pour trier par taille décroissante",
+      "size": "Tri par taille décroissante - cliquer pour trier alphabétiquement"
+    },
     "unselect_all": "Tout désélectionner",
     "unselect_all_hidden_edges": "Tout désélectionner pour les liens masqués",
     "unselect_all_hidden_nodes": "Tout désélectionner pour les nœuds masqués",
