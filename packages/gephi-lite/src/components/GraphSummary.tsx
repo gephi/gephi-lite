@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useFilteredGraph, useFilters, useGraphDataset, usePreferences } from "../core/context/dataContexts";
 import { getMostRecentlyUpdatedItem } from "../core/graph/dates";
 import { useModal } from "../core/modals";
-import { CreateEdgeIcon, CreateNodeIcon, EditIcon, FiltersIconFill } from "./common-icons";
+import { CreateEdgeIcon, CreateNodeIcon, EditIcon, FiltersIcon, FiltersIconFill } from "./common-icons";
 import { EdgeComponentById } from "./data/Edge";
 import { EditEdgeModal } from "./data/EditEdge";
 import { EditNodeModal } from "./data/EditNode";
@@ -91,7 +91,7 @@ const GraphTitle: FC<{ title?: string }> = ({ title }) => {
   );
 };
 
-export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
+export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void }> = ({ className, onOpenFilters }) => {
   const { t } = useTranslation();
   const filterState = useFilters();
   const filteredGraph = useFilteredGraph();
@@ -116,7 +116,16 @@ export const GraphSummary: FC<{ className?: string }> = ({ className }) => {
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} mostRecent={mostRecentEdge} />
         </div>
 
-        {hasFilters && <FiltersIconFill style={{ left: "calc(100% - 1.5em)", top: 0, position: "absolute" }} />}
+        <button
+          type="button"
+          className="gl-btn gl-btn-icon"
+          style={{ left: "calc(100% - 1.5em)", top: 0, position: "absolute" }}
+          title={t(hasFilters ? "filters.active" : "filters.inactive")}
+          aria-label={t(hasFilters ? "filters.active" : "filters.inactive")}
+          onClick={onOpenFilters}
+        >
+          {hasFilters ? <FiltersIconFill /> : <FiltersIcon />}
+        </button>
       </div>
     </div>
   );

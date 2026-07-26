@@ -60,7 +60,12 @@ export const EdgeComponent: FC<{
         <NodeComponent {...source} onClick={onSourceClick} buttonTitle={nodeButtonTitle} />
       </div>
       {onEdgeClick ? (
-        <button type="button" className="edge-locate-button gl-locate-button" title={edgeButtonTitle} onClick={onEdgeClick}>
+        <button
+          type="button"
+          className="edge-locate-button gl-locate-button"
+          title={edgeButtonTitle}
+          onClick={onEdgeClick}
+        >
           {middle}
         </button>
       ) : (
@@ -131,10 +136,10 @@ export const EdgeComponentById: FC<{ id: string; locatable?: boolean }> = ({ id,
     <EdgeComponent {...data} {...locateProps} />
   ) : (
     <EdgeComponent
-      label={<span className="fst-italic">?</span>}
+      label={<span className="fst-italic">{t("common.filtered")}</span>}
       color="lightgrey"
-      source={{ label: <span className="fst-italic">?</span>, color: "lightgrey" }}
-      target={{ label: <span className="fst-italic">?</span>, color: "lightgrey" }}
+      source={{ label: <span className="fst-italic">{t("common.filtered")}</span>, color: "lightgrey" }}
+      target={{ label: <span className="fst-italic">{t("common.filtered")}</span>, color: "lightgrey" }}
     />
   );
 };

@@ -69,7 +69,8 @@ export const NodeComponentById: FC<{ id: string; locatable?: boolean }> = ({ id,
     [id, graphDataset, visualGetters, dynamicItemData, filteredGraph],
   );
 
-  if (!data) return <NodeComponent label={<span className="fst-italic">?</span>} color="lightgrey" />;
+  if (!data)
+    return <NodeComponent label={<span className="fst-italic">{t("common.filtered")}</span>} color="lightgrey" />;
 
   // When locatable, clicking the node locates it: navigate to the graph and center the camera on it.
   return (

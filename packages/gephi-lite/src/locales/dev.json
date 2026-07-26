@@ -124,6 +124,7 @@
     "expand": "Expand",
     "false": "False",
     "filename": "Filename",
+    "filtered": "Filtered",
     "from": "From",
     "hide": "Hide",
     "load-more": "Load more",
@@ -302,6 +303,7 @@
     "unknown": "An unknown error has occurred."
   },
   "filters": {
+    "active": "Filters are active - click to open the Filters panel",
     "add_filter": "Add filter",
     "create": {
       "custom_script_description": "These filters allow writing a JavaScript function that will tell for each node or edge if it should be kept.",
@@ -319,6 +321,7 @@
     "disable_following_subtitle": "eg. disable all filters after",
     "edges_fields": "Edges attributes",
     "full_graph": "Full graph",
+    "inactive": "No filter is active - click to open the Filters panel",
     "inapplicable": "Range is only displayed when there is at least two values to filter on.",
     "insert": "Insert filter",
     "intermediate_graph": "Intermediate graph",
@@ -862,6 +865,7 @@
     }
   },
   "selection": {
+    "count_with_filtered": "{{visible}}, {{hidden}} filtered",
     "create_edge_from_node": "Create an edge from this node",
     "cursor": "Simple selection",
     "edge_no_label": "(Empty label)",

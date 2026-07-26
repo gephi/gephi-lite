@@ -433,7 +433,11 @@ export const Selection: FC = () => {
       <div className="panel-body gap-1" ref={panelBodyRef}>
         <div className="d-flex flex-row align-items-center justify-content-between gl-gap-1">
           <h2 className="mb-0">
-            {t(`selection.selected_${type}`)} ({items.size})
+            {t(`selection.selected_${type}`)} (
+            {hidden.length > 0
+              ? t("selection.count_with_filtered", { visible: visible.length, hidden: hidden.length })
+              : items.size}
+            )
           </h2>
           {visible.length > 0 && (
             <button
@@ -446,18 +450,8 @@ export const Selection: FC = () => {
           )}
         </div>
         <hr className="gl-m-0" />
-        {!!hidden.length && (
-          <div>
-            <Trans i18nKey={`selection.visible_${type}`} count={visible.length} />
-          </div>
-        )}
         <ul className="list-unstyled gl-m-0 gl-gap-1">
-          <InfiniteScroll
-            pageSize={50}
-            data={visible}
-            scrollableTarget={"selection"}
-            renderItem={renderSelectedItem}
-          />
+          <InfiniteScroll pageSize={50} data={visible} scrollableTarget={"selection"} renderItem={renderSelectedItem} />
         </ul>
 
         {/* Selection hidden list (should actually never be visible) */}
