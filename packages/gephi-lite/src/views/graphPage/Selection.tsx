@@ -19,6 +19,8 @@ import {
   SelectEdgesIcon,
   SelectNeighborsIcon,
   SelectPathIcon,
+  SortAlphabeticalIcon,
+  SortBySizeIcon,
   SwapIcon,
   ThreeDotsVerticalIcon,
   TrashIcon,
@@ -36,6 +38,8 @@ import {
   useFilteredGraph,
   useGraphDataset,
   useGraphDatasetActions,
+  usePreferences,
+  usePreferencesActions,
   useSelection,
   useSelectionActions,
   useSigmaGraph,
@@ -359,7 +363,10 @@ export const Selection: FC = () => {
   const filteredGraph = useFilteredGraph();
   const { dynamicNodeData, dynamicEdgeData } = useDynamicItemData();
   const { fullGraph, nodeData, edgeData, layout } = useGraphDataset();
-  const { getNodeLabel, getEdgeLabel } = useVisualGetters();
+  const { getNodeLabel, getEdgeLabel, getNodeSize, getEdgeSize } = useVisualGetters();
+  const { selectionSort } = usePreferences();
+  const { changeSelectionSort } = usePreferencesActions();
+  const sortMode = selectionSort[type];
   const [showFiltered, setShowFiltered] = useState(false);
 
   const mergedStaticDynamicItemData = useMemo(() => {
@@ -386,36 +393,55 @@ export const Selection: FC = () => {
     focusCameraOnEdges(edges);
   }, [items, fullGraph, select, notify, t]);
 
-  // For edges, sort the selection by source label, then target label, then edge label, so a
-  // multi-edge selection is easy to scan through instead of appearing in arbitrary (Set) order.
-  const getEdgeSortKey = useCallback(
-    (id: string): [string, string, string] => {
-      const sourceLabel = getNodeLabel?.(nodeAllData[fullGraph.source(id)]) || fullGraph.source(id);
-      const targetLabel = getNodeLabel?.(nodeAllData[fullGraph.target(id)]) || fullGraph.target(id);
-      const edgeLabel = getEdgeLabel?.(mergedStaticDynamicItemData[id]) || "";
-      return [sourceLabel, targetLabel, edgeLabel];
+  // Alphabetical sort key of a selected item: a node's label, and for an edge its source label,
+  // then target label, then own label, so a multi-edge selection reads like a table instead of
+  // appearing in arbitrary (Set) order.
+  const getAlphabeticalKey = useCallback(
+    (id: string): string[] => {
+      if (type === "edges")
+        return [
+          getNodeLabel?.(nodeAllData[fullGraph.source(id)]) || fullGraph.source(id),
+          getNodeLabel?.(nodeAllData[fullGraph.target(id)]) || fullGraph.target(id),
+          getEdgeLabel?.(mergedStaticDynamicItemData[id]) || "",
+        ];
+      return [getNodeLabel?.(mergedStaticDynamicItemData[id]) || id];
     },
-    [fullGraph, nodeAllData, getNodeLabel, getEdgeLabel, mergedStaticDynamicItemData],
+    [type, fullGraph, nodeAllData, getNodeLabel, getEdgeLabel, mergedStaticDynamicItemData],
   );
-  const compareEdges = useCallback(
-    (a: string, b: string) => {
-      const keyA = getEdgeSortKey(a);
-      const keyB = getEdgeSortKey(b);
-      return keyA[0].localeCompare(keyB[0]) || keyA[1].localeCompare(keyB[1]) || keyA[2].localeCompare(keyB[2]);
+
+  // The size the item is actually drawn with (Appearance > Size), so the panel's order matches what
+  // the graph shows. Missing when no size ranking is configured: every item then scores 0 and the
+  // alphabetical tie-break below keeps the list in a readable order rather than an arbitrary one.
+  const getSize = useCallback(
+    (id: string) => {
+      const itemData = mergedStaticDynamicItemData[id];
+      const getter = type === "nodes" ? getNodeSize : getEdgeSize;
+      return (itemData && getter?.(itemData)) || 0;
     },
-    [getEdgeSortKey],
+    [type, getNodeSize, getEdgeSize, mergedStaticDynamicItemData],
+  );
+
+  const compareItems = useCallback(
+    (a: string, b: string) => {
+      if (sortMode === "size") {
+        const bySize = getSize(b) - getSize(a);
+        if (bySize) return bySize;
+      }
+      const keyA = getAlphabeticalKey(a);
+      const keyB = getAlphabeticalKey(b);
+      return keyA.reduce((order, part, i) => order || part.localeCompare(keyB[i]), 0);
+    },
+    [sortMode, getSize, getAlphabeticalKey],
   );
 
   const { visible = [], hidden = [] } = useMemo(() => {
     const isVisible =
       type === "nodes" ? filteredGraph.hasNode.bind(filteredGraph) : filteredGraph.hasEdge.bind(filteredGraph);
     const grouped = groupBy(Array.from(items), (item) => (isVisible(item) ? "visible" : "hidden"));
-    if (type === "edges") {
-      grouped.visible?.sort(compareEdges);
-      grouped.hidden?.sort(compareEdges);
-    }
+    grouped.visible?.sort(compareItems);
+    grouped.hidden?.sort(compareItems);
     return grouped;
-  }, [filteredGraph, items, type, compareEdges]);
+  }, [filteredGraph, items, type, compareItems]);
 
   const renderSelectedItem = useCallback(
     (item: string) => {
@@ -471,6 +497,14 @@ export const Selection: FC = () => {
               <> ({items.size})</>
             )}
           </h2>
+          <button
+            className="gl-btn gl-btn-icon flex-shrink-0"
+            title={t(`selection.sort.${sortMode}`)}
+            aria-label={t(`selection.sort.${sortMode}`)}
+            onClick={() => changeSelectionSort(type, sortMode === "size" ? "alphabetical" : "size")}
+          >
+            {sortMode === "size" ? <SortBySizeIcon /> : <SortAlphabeticalIcon />}
+          </button>
           {type === "nodes" && items.size === 2 && (
             <button
               className="gl-btn gl-btn-icon flex-shrink-0"
