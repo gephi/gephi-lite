@@ -32,6 +32,7 @@ export function useBroadcast(broadcastID?: string | null) {
 
     const _handlers: Omit<GephiLiteEvents, "newInstance"> = {
       // TODO
+      selectionUpdate: () => ({ nodeIds: [], edgeIds: [] }),
     };
     // TODO: Bind handlers
 
