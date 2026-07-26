@@ -1,7 +1,6 @@
 import cx from "classnames";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PiX } from "react-icons/pi";
 
 import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
@@ -22,6 +21,7 @@ import {
   MenuPreviousIcon,
   MetricsIcon,
   MetricsIconFill,
+  PanelCollapseIcon,
 } from "../../components/common-icons";
 import { DATA_CREATION_MENU_ITEM, type Panel } from "../../components/data/DataCreationMenu";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
@@ -119,6 +119,11 @@ export const GraphPage: FC = () => {
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
+  // On a small screen the selection panel and the menu panel are stacked and cannot both be open,
+  // so the selection panel has to be foldable without losing the selection - otherwise the search
+  // field underneath is only reachable by emptying the selection first. Any change of selection
+  // unfolds it again, which is the way back: there is no "reopen" button.
+  const [selectionCollapsed, setSelectionCollapsed] = useState(false);
 
   // Lets the filters badge in GraphSummary open the Filters panel directly, reusing the same id as
   // its entry in MENU so the side menu highlights it as selected, like clicking it there would.
@@ -126,8 +131,9 @@ export const GraphPage: FC = () => {
     setSelectedTool({ id: "filters", panel: () => <GraphFilters /> });
   }, []);
 
+  const isSelectionPanelDeployed = items.size > 0 && !selectionCollapsed;
   const selectionPanel = (
-    <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
+    <div className={cx("panel panel-right panel-expandable panel-selection", isSelectionPanelDeployed && "deployed")}>
       <button
         type="button"
         className="gl-btn-close gl-btn d-none d-sm-block"
@@ -136,26 +142,35 @@ export const GraphPage: FC = () => {
       >
         <CloseIcon />
       </button>
-      {items.size > 0 && <Selection />}
+      {isSelectionPanelDeployed && <Selection />}
     </div>
   );
 
   useEffect(() => {
     setExpanded(false);
+    setSelectionCollapsed(false);
   }, [items]);
 
   return (
     <>
       <Header>
         <div className="d-sm-none">
+          {/* Folds the selection panel back down first (the selection itself is emptied from the
+              panel's own button, so that reaching the panels underneath never loses it). */}
           <button
             className="gl-btn gl-btn-icon"
+            title={isSelectionPanelDeployed ? t("selection.hide_panel") : undefined}
+            aria-label={isSelectionPanelDeployed ? t("selection.hide_panel") : undefined}
             onClick={() =>
-              items.size ? emptySelection() : selectedTool ? setSelectedTool(undefined) : setExpanded((v) => !v)
+              isSelectionPanelDeployed
+                ? setSelectionCollapsed(true)
+                : selectedTool
+                  ? setSelectedTool(undefined)
+                  : setExpanded((v) => !v)
             }
           >
-            {items.size ? (
-              <PiX />
+            {isSelectionPanelDeployed ? (
+              <PanelCollapseIcon />
             ) : selectedTool ? (
               <MenuPreviousIcon />
             ) : expanded ? (

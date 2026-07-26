@@ -353,7 +353,7 @@ export const Selection: FC = () => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { type, items } = useSelection();
-  const { select } = useSelectionActions();
+  const { select, emptySelection } = useSelectionActions();
   const { showSelection } = useDataTableActions();
   const { deleteItems } = useGraphDatasetActions();
   const filteredGraph = useFilteredGraph();
@@ -490,6 +490,17 @@ export const Selection: FC = () => {
               <OpenInGraphIcon />
             </button>
           )}
+          {/* Small screens only: there, the panel's own close button folds it back down without
+              touching the selection (see GraphPage), so emptying the selection needs its own
+              button. Kept at arm's length from the one before it, to survive a fat finger. */}
+          <button
+            className="gl-btn gl-btn-icon flex-shrink-0 ms-3 d-sm-none"
+            title={t("selection.unselect_all")}
+            aria-label={t("selection.unselect_all")}
+            onClick={() => emptySelection()}
+          >
+            <CloseIcon />
+          </button>
         </div>
         <hr className="gl-m-0" />
         <ul className="list-unstyled gl-m-0 gl-gap-1">

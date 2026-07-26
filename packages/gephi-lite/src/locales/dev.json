@@ -880,6 +880,7 @@
     "filtered_one": "{{count, number}} filtered",
     "focus_edges": "Select only this edge",
     "focus_nodes": "Select only this node",
+    "hide_panel": "Hide the selection panel (keeps the selection)",
     "lasso": "Lasso selection",
     "locate_on_graph": "Locate on the graph",
     "locate_selected_edges": "Zoom on all selected edges",
