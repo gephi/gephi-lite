@@ -61,6 +61,7 @@ import {
   PiPaintBrush,
   PiPalette,
   PiPaletteFill,
+  PiPath,
   PiPencilSimpleLine,
   PiPencilSimpleLineFill,
   PiPlay,
@@ -157,6 +158,7 @@ export const MetricsIconFill = PiBinaryBold;
 export const MouseIcon = PiCursor;
 export const MouseIconFill = PiCursorFill;
 export const OpenInGraphIcon = PiCrosshair;
+export const SelectPathIcon = PiPath;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
 export const ResetIcon = PiArrowCounterClockwise;
