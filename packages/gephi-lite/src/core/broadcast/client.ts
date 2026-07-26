@@ -8,6 +8,7 @@ import {
   GephiLiteMethodBroadcastMessage,
   Message,
   MethodReplyMessage,
+  SerializedSelectionState,
 } from "@gephi/gephi-lite-broadcast";
 import { AppearanceState, SerializedGraphDataset, deserializeDataset, serializeDataset } from "@gephi/gephi-lite-sdk";
 import EventEmitter from "events";
@@ -23,6 +24,9 @@ import { filtersAtom } from "../filters";
 import { FiltersState } from "../filters/types";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
+import { selectionAtom } from "../selection";
+import { SelectionState } from "../selection/types";
+import { deserializeSelection, pruneSelectionToGraph, selectionStatesAreEqual, serializeSelection } from "../selection/utils";
 import { resetCamera } from "../sigma";
 
 /**
@@ -68,6 +72,12 @@ const BROADCAST_METHODS: {
   },
   setGraphDataset: async (appearance: SerializedGraphDataset) => {
     graphDatasetAtom.set(deserializeDataset(appearance));
+    // A dataset replacement can drop nodes/edges that were selected under the previous
+    // dataset. Keep whichever selected ids still exist, drop the rest, and empty the
+    // selection entirely if none remain -- selectionAtom.set() only notifies listeners
+    // when the value actually changes (see pruneSelectionToGraph), so this is a no-op
+    // when the selection was already empty or entirely unaffected.
+    selectionAtom.set(pruneSelectionToGraph(selectionAtom.get(), graphDatasetAtom.get().fullGraph));
     resetCamera({ forceRefresh: true });
   },
   mergeGraphDataset: async (appearance: Partial<SerializedGraphDataset>) => {
@@ -90,6 +100,16 @@ const BROADCAST_METHODS: {
   setFilters: async (filters: FiltersState) => {
     filtersAtom.set(filters);
   },
+
+  getSelection: async () => {
+    return serializeSelection(selectionAtom.get());
+  },
+  setSelection: async (selection: SerializedSelectionState) => {
+    const requested = deserializeSelection(selection, selectionAtom.get().graphSelectionMode);
+    // Unknown ids (not present in the current graph) must never pollute the internal
+    // state -- same pruning helper used after a dataset replacement.
+    selectionAtom.set(pruneSelectionToGraph(requested, graphDatasetAtom.get().fullGraph));
+  },
 };
 
 /**
@@ -98,6 +118,14 @@ const BROADCAST_METHODS: {
  */
 export class BroadcastClient extends EventEmitter {
   private channel: BroadcastChannel;
+  // Tracks the last selection actually broadcast, so a selectionUpdate is only ever sent
+  // when the *effective* selection changes -- atoms only notify listeners based on
+  // reference equality (see @ouestware/atoms' atom()), not value equality, and every
+  // select/toggle/setSelection call constructs a fresh SelectionState object regardless of
+  // whether its content differs from before. This also means a setSelection() call that
+  // requests the selection Gephi Lite already has produces no outgoing event, so external
+  // callers echoing back a selection they just received will not create a broadcast loop.
+  private lastBroadcastSelection: SerializedSelectionState;
 
   constructor(name: string) {
     super();
@@ -121,7 +149,18 @@ export class BroadcastClient extends EventEmitter {
         this.channel.postMessage(replyMessage);
       }
     };
+
+    this.lastBroadcastSelection = serializeSelection(selectionAtom.get());
+    selectionAtom.bind(this.handleSelectionChange);
   }
+
+  private handleSelectionChange = (state: SelectionState) => {
+    const serialized = serializeSelection(state);
+    if (selectionStatesAreEqual(serialized, this.lastBroadcastSelection)) return;
+
+    this.lastBroadcastSelection = serialized;
+    this.broadcastEvent("selectionUpdate", serialized);
+  };
 
   private callMethod<Method extends GephiLiteMethod>(
     method: Method["method"],
@@ -143,6 +182,8 @@ export class BroadcastClient extends EventEmitter {
   }
 
   destroy(): void {
+    selectionAtom.unbind(this.handleSelectionChange);
+
     this.channel.onmessage = null;
     this.channel.close();
 
