@@ -1,6 +1,6 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { FC, ReactNode, useEffect, useMemo, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { PiCaretDown, PiCaretRight } from "react-icons/pi";
 import { ScrollSync } from "react-scroll-sync";
@@ -160,6 +160,12 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
 
+  // Lets the filters badge in GraphSummary open the Filters panel directly, reusing the same id as
+  // its entry in MENU so the side menu highlights it as selected, like clicking it there would.
+  const openFilters = useCallback(() => {
+    setSelectedTool({ id: "filters", panel: () => <GraphFilters /> });
+  }, []);
+
   useEffect(() => {
     setType(inputType);
   }, [inputType, setType]);
@@ -184,7 +190,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
         {/* Menu panel on left*/}
         <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
-            <GraphSummary />
+            <GraphSummary onOpenFilters={openFilters} />
             <GraphSearchSelection />
             <SideMenu
               menu={MENU}

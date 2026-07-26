@@ -145,6 +145,7 @@
     "enabled": "Activé",
     "expand": "Agrandir",
     "filename": "Nom du fichier",
+    "filtered": "Filtré",
     "from": "De",
     "hide": "Masquer",
     "load-more": "Charger plus",
@@ -324,6 +325,7 @@
     "title": "Gestion des données"
   },
   "filters": {
+    "active": "Des filtres sont actifs - cliquer pour ouvrir le panneau Filtres",
     "activated": "Filtre activé",
     "add_filter": "Ajouter un filtre",
     "create": {
@@ -344,6 +346,7 @@
     "edges_fields": "Attributs des liens",
     "filter": "Filtre",
     "full_graph": "Graphe entier",
+    "inactive": "Aucun filtre actif - cliquer pour ouvrir le panneau Filtres",
     "inapplicable": "Filtre désactivé : une seule valeur disponible.",
     "insert": "Insérer un filtre",
     "intermediate_graph": "Réseau intermédiaire",
@@ -948,6 +951,7 @@
     }
   },
   "selection": {
+    "count_with_filtered": "{{visible}}, {{hidden}} filtrés",
     "create_edge_from_node": "Créer un lien depuis ce nœud",
     "cursor": "Sélection simple",
     "edge_no_label": "(libellé vide)",
