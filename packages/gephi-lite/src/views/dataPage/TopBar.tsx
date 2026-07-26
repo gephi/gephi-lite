@@ -117,7 +117,10 @@ export const TopBar: FC = () => {
               {" "}
               (
               <Trans i18nKey={`selection.visible`} count={visible.length} />,{" "}
-              <Trans i18nKey={`selection.hidden`} count={hidden.length} />)
+              <span className="text-danger">
+                <Trans i18nKey={`selection.filtered`} count={hidden.length} />
+              </span>
+              )
             </>
           )}
           {visible.length > 0 && t("common.colon")}

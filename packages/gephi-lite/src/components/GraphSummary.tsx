@@ -97,7 +97,9 @@ export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void }
   const filteredGraph = useFilteredGraph();
   const { metadata, fullGraph, nodeData, edgeData } = useGraphDataset();
 
-  const hasFilters = useMemo(() => !!filterState.filters.length, [filterState.filters]);
+  // A filter that has been switched off no longer restricts the graph, so it must not keep the
+  // badge filled: only the filters still applied count as "active".
+  const hasFilters = useMemo(() => filterState.filters.some((filter) => !filter.disabled), [filterState.filters]);
   const mostRecentNode = useMemo(() => getMostRecentlyUpdatedItem(nodeData), [nodeData]);
   const mostRecentEdge = useMemo(() => getMostRecentlyUpdatedItem(edgeData), [edgeData]);
 
