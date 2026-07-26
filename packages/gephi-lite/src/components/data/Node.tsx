@@ -12,6 +12,15 @@ import {
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
 
+/**
+ * Grey used to render an item the current filters exclude, wherever it still has to be shown
+ * (selection panel, graph summary, most recently updated item...). A filtered item keeps its real
+ * label - hiding it behind a placeholder would make it unidentifiable - but is always drawn hollow
+ * (nodes) or dotted (edges) in this grey, with a muted italic label, so "this is filtered out"
+ * reads identically everywhere.
+ */
+export const FILTERED_ITEM_COLOR = "#adb5bd";
+
 export const NodeComponent: FC<{
   label: ReactNode;
   color: string;
@@ -29,9 +38,9 @@ export const NodeComponent: FC<{
     <div className="d-flex align-items-center mw-100">
       <span
         className={cx(hidden ? "circle" : "disc gl-border", "me-1 flex-shrink-0 ")}
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: hidden ? FILTERED_ITEM_COLOR : color }}
       />
-      <span className={cx(hidden && "text-muted", !label && "fst-italic", "flex-shrink-1 text-truncate")}>
+      <span className={cx(hidden && "text-muted fst-italic", !label && "fst-italic", "flex-shrink-1 text-truncate")}>
         {label || t("selection.node_no_label")}
       </span>
     </div>
@@ -54,29 +63,25 @@ export const NodeComponentById: FC<{ id: string; locatable?: boolean }> = ({ id,
   const filteredGraph = useFilteredGraph();
   const { locateNode } = useLocateInGraph();
 
-  const data = useMemo(
-    () =>
-      filteredGraph.hasNode(id)
-        ? getItemAttributes(
-            "nodes",
-            id,
-            filteredGraph,
-            mergeStaticDynamicData(graphDataset.nodeData, dynamicItemData.dynamicNodeData)[id],
-            graphDataset,
-            visualGetters,
-          )
-        : null,
-    [id, graphDataset, visualGetters, dynamicItemData, filteredGraph],
-  );
+  // A filtered out node is rendered too (greyed out, see FILTERED_ITEM_COLOR): `getItemAttributes`
+  // flags it as `hidden`, and its data is read from the dataset, which holds every node whatever
+  // the filters. Only a node missing from the dataset entirely (just deleted) renders nothing.
+  const data = useMemo(() => {
+    const itemData = mergeStaticDynamicData(graphDataset.nodeData, dynamicItemData.dynamicNodeData)[id];
+    if (!itemData) return null;
+    return getItemAttributes("nodes", id, filteredGraph, itemData, graphDataset, visualGetters);
+  }, [id, graphDataset, visualGetters, dynamicItemData, filteredGraph]);
 
-  if (!data) return <NodeComponent label={<span className="fst-italic">?</span>} color="lightgrey" />;
+  if (!data) return null;
 
-  // When locatable, clicking the node locates it: navigate to the graph and center the camera on it.
+  // When locatable, clicking the node locates it: navigate to the graph and center the camera on
+  // it. A filtered out node is absent from the rendering, so there is nothing to locate.
+  const isLocatable = locatable && !data.hidden;
   return (
     <NodeComponent
       {...data}
-      onClick={locatable ? () => locateNode(id, { navigateToGraph: true }) : undefined}
-      buttonTitle={locatable ? t("selection.locate_on_graph") : undefined}
+      onClick={isLocatable ? () => locateNode(id, { navigateToGraph: true }) : undefined}
+      buttonTitle={isLocatable ? t("selection.locate_on_graph") : undefined}
     />
   );
 };

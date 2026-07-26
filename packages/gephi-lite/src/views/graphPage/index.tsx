@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
 
@@ -120,6 +120,12 @@ export const GraphPage: FC = () => {
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
 
+  // Lets the filters badge in GraphSummary open the Filters panel directly, reusing the same id as
+  // its entry in MENU so the side menu highlights it as selected, like clicking it there would.
+  const openFilters = useCallback(() => {
+    setSelectedTool({ id: "filters", panel: () => <GraphFilters /> });
+  }, []);
+
   const selectionPanel = (
     <div className={cx("panel panel-right panel-expandable panel-selection", items.size > 0 && "deployed")}>
       <button
@@ -164,7 +170,7 @@ export const GraphPage: FC = () => {
         {/* Menu panel on left*/}
         <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
-            <GraphSummary />
+            <GraphSummary onOpenFilters={openFilters} />
             <GraphSearchSelection />
             <SideMenu
               menu={MENU}
