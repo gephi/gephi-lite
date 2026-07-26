@@ -17,6 +17,20 @@ import { bindUpHandler } from "../../../utils/events";
 
 const DRAG_EVENTS_TOLERANCE = 3;
 
+/**
+ * How long an item has to be pressed for the press to count as "add to the selection".
+ *
+ * A touch screen has no Ctrl key, so tapping a second node could only ever replace the selection:
+ * pressing and holding it toggles it instead, which is what Ctrl+click does with a mouse.
+ * Deliberately restricted to touch input (see `isTouchEvent`): applying it to the mouse too would
+ * mean that merely pausing before dragging a node silently changes the selection.
+ */
+const LONG_PRESS_DURATION = 500;
+
+function isTouchEvent(event: MouseEvent | TouchEvent): boolean {
+  return "touches" in event;
+}
+
 export const EventsController: FC = () => {
   const sigma: GephiLiteSigma = useSigma();
   const registerEvents = useRegisterEvents();
@@ -37,12 +51,24 @@ export const EventsController: FC = () => {
   >({ type: "idle" });
   const dragEventsCountRef = useRef(0);
 
+  // When the current press started, to tell a long press from a tap. The duration is measured on
+  // release rather than with a timer: sigma only reports a click when the finger barely moved, so
+  // a long press that turned into a drag or a camera pan never reaches the handlers below.
+  const pressStartRef = useRef<number | null>(null);
+  const isLongPress = useCallback(
+    (event: { original: MouseEvent | TouchEvent }) =>
+      isTouchEvent(event.original) &&
+      pressStartRef.current !== null &&
+      Date.now() - pressStartRef.current >= LONG_PRESS_DURATION,
+    [],
+  );
+
   // Shared by clickNode and by clicking a node's label (see clickStage below), so both behave
-  // identically: select it (replacing the selection), toggle it with ctrl, or unselect it if it
-  // was the only item already selected.
+  // identically: select it (replacing the selection), add it to the selection (ctrl or long
+  // press), or unselect it if it was the only item already selected.
   const selectOrToggleNode = useCallback(
-    (node: string, ctrlKey: boolean) => {
-      if (ctrlKey) {
+    (node: string, addToSelection: boolean) => {
+      if (addToSelection) {
         toggle({ type: "nodes", item: node });
       } else if (selection.type === "nodes" && selection.items.has(node) && selection.items.size === 1) {
         emptySelection();
@@ -76,10 +102,10 @@ export const EventsController: FC = () => {
       },
       clickNode({ node, event }) {
         if (dragEventsCountRef.current >= DRAG_EVENTS_TOLERANCE) return;
-        selectOrToggleNode(node, event.original.ctrlKey);
+        selectOrToggleNode(node, event.original.ctrlKey || isLongPress(event));
       },
       clickEdge({ edge, event }) {
-        if (event.original.ctrlKey) {
+        if (event.original.ctrlKey || isLongPress(event)) {
           toggle({
             type: "edges",
             item: edge,
@@ -93,7 +119,16 @@ export const EventsController: FC = () => {
       doubleClick(event: MouseCoords) {
         event.preventSigmaDefault();
       },
+      // Whatever is pressed, remember when: only the click handlers above care, and only to tell
+      // a long press from a tap (an edge and the stage have nothing else to set up).
+      downEdge: () => {
+        pressStartRef.current = Date.now();
+      },
+      downStage: () => {
+        pressStartRef.current = Date.now();
+      },
       downNode: ({ node, event }) => {
+        pressStartRef.current = Date.now();
         const graph = sigma.getGraph();
         const nodes = selection.type === "nodes" && selection.items.has(node) ? Array.from(selection.items) : [node];
         const { x, y } = sigma.viewportToGraph(event);
@@ -119,7 +154,7 @@ export const EventsController: FC = () => {
         // check whether it actually landed on a rendered label, and if so behave like clickNode.
         const labelNode = findNodeAtLabel(sigma, e.event.x, e.event.y);
         if (labelNode) {
-          selectOrToggleNode(labelNode, e.event.original.ctrlKey);
+          selectOrToggleNode(labelNode, e.event.original.ctrlKey || isLongPress(e.event));
           return;
         }
 
@@ -173,6 +208,10 @@ export const EventsController: FC = () => {
         graph.forEachNode((node) => graph.setNodeAttribute(node, "fixed", false));
         dragStateRef.current = { type: "idle" };
       }
+      // Forget the press: sigma emits its click from the container's own touchend/click handler,
+      // hence before this window-level one, so the duration has already been read. Leaving a stale
+      // timestamp behind would make the next tap look like a long press.
+      pressStartRef.current = null;
     };
 
     const unbind = bindUpHandler(upHandler);
@@ -187,6 +226,7 @@ export const EventsController: FC = () => {
     select,
     selection,
     selectOrToggleNode,
+    isLongPress,
     setHoveredEdge,
     setHoveredNode,
     sigma,
