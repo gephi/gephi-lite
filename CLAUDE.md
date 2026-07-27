@@ -2,6 +2,7 @@
 
 - Lors des commits, ne jamais ajouter de ligne "Co-Authored-By:".
 - Éviter la duplication de code : toujours factoriser dans des constantes, des fonctions ou des méthodes partagées plutôt que copier-coller entre fichiers, pour que le code reste maintenable et qu'une même fonctionnalité n'ait jamais deux comportements différents selon l'endroit où elle est appelée.
+- Une même action déclenchable de plusieurs façons (touche du clavier, bouton, entrée de menu, geste tactile, bouton Retour du système…) doit passer par un seul et même code. Si je demande une modification en désignant un seul de ces modes de déclenchement, elle s'applique à tous les autres, sauf si je dis explicitement le contraire.
 
 ## Flux de déploiement
 
