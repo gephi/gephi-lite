@@ -118,6 +118,12 @@
     "created": "Created",
     "delete": "Delete",
     "disabled": "Disabled",
+    "discard_input": {
+      "title": "Discard your changes?",
+      "message": "You have started filling this form in. Closing it now will discard what you typed.",
+      "keep": "Keep editing",
+      "discard": "Discard"
+    },
     "download": "Download",
     "edit": "Edit",
     "enabled": "Enabled",
@@ -126,6 +132,7 @@
     "filename": "Filename",
     "from": "From",
     "hide": "Hide",
+    "indeterminate": "Indeterminate",
     "load-more": "Load more",
     "loading": "Loading",
     "max": "Max",
@@ -149,7 +156,6 @@
     "submit": "Submit",
     "to": "To",
     "true": "True",
-    "indeterminate": "Indeterminate",
     "updated": "Updated"
   },
   "datatable": {

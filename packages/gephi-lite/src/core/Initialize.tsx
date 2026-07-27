@@ -33,7 +33,7 @@ let isInitialized = false;
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { modal, openModal, closeModal } = useModal();
+  const { modal, openModal, requestCloseModal } = useModal();
   const { open, clearDirty } = useFileActions();
   const { metadata } = useGraphDataset();
   const { isDirty } = useFile();
@@ -49,8 +49,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   modalRef.current = modal;
   const isDirtyRef = useRef(isDirty);
   isDirtyRef.current = isDirty;
-  const closeModalRef = useRef(closeModal);
-  closeModalRef.current = closeModal;
+  const requestCloseModalRef = useRef(requestCloseModal);
+  requestCloseModalRef.current = requestCloseModal;
   const tRef = useRef(t);
   tRef.current = t;
 
@@ -58,7 +58,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    * Keep the browser/Android back button from leaving the app (and losing unsaved work):
    * - A "guard" history entry is kept on top of the stack, so a back press lands on a popstate we
    *   control instead of navigating away or stepping through the router's Graph/Data history.
-   * - When a modal is open, back closes it (and we keep guarding).
+   * - When a modal is open, back closes it (and we keep guarding) - unless it holds unsaved input,
+   *   in which case it raises its own confirmation instead (see `requestCloseModal`).
    * - Otherwise, back only leaves the app after a confirmation when there are unsaved changes;
    *   with nothing to save it leaves normally.
    * A beforeunload handler additionally covers reload / tab close (where mobile browsers, e.g.
@@ -73,7 +74,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
       // A back navigation just consumed our guard entry.
       if (modalRef.current) {
         // Priority: close an open modal, and keep guarding.
-        closeModalRef.current();
+        requestCloseModalRef.current();
         pushGuard();
         return;
       }

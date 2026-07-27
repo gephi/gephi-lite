@@ -1,6 +1,6 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, keyBy, pick } from "lodash";
+import { fromPairs, isEmpty, keyBy, pick } from "lodash";
 import { FC, ReactNode, useCallback, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -21,7 +21,7 @@ import { Scalar } from "../../core/types";
 import { GraphSearch } from "../GraphSearch";
 import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
-import { Modal } from "../modals";
+import { CloseModalButton, Modal } from "../modals";
 import {
   EditItemAttribute,
   getFirstEmptyValueIndex,
@@ -135,7 +135,7 @@ const useEditEdgeForm = ({
     setValue,
     getValues,
     watch,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<UpdatedEdgeState>({
     defaultValues,
   });
@@ -254,6 +254,11 @@ const useEditEdgeForm = ({
 
   return {
     submit,
+    // Whether the user actually changed something, so closing the form would throw it away (the
+    // modal usage below turns that into a confirmation rather than a silent loss). Read from
+    // `dirtyFields` and not `formState.isDirty`: the latter is already true on opening, because a
+    // field whose default is undefined reports "" as soon as its input is registered.
+    hasUserInput: !isEmpty(dirtyFields),
     main: (
       <>
         {/* Extremities */}
@@ -442,9 +447,11 @@ const useEditEdgeForm = ({
             {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
           </button>
         )}
-        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+        {/* Same close request as the modal's own cross, so both get the unsaved-input
+            confirmation; falls back to onCancel when this form is rendered in a side panel. */}
+        <CloseModalButton className="gl-btn gl-btn-icon gl-btn-outline" onCancel={onCancel}>
           <CancelIcon />
-        </button>
+        </CloseModalButton>
         {!submitFirst && (
           <button type="submit" className="gl-btn gl-btn-fill">
             {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
@@ -472,6 +479,7 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
     main,
     footer,
     submit: submitForm,
+    hasUserInput,
   } = useEditEdgeForm({
     edgeId,
     source,
@@ -490,6 +498,7 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; ta
       onSubmit={submitForm}
       submitLabel={t("common.ok")}
       doNotPreserveData
+      hasUnsavedInput={hasUserInput}
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 
