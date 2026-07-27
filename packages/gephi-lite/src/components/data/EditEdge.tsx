@@ -21,7 +21,7 @@ import { Scalar } from "../../core/types";
 import { GraphSearch } from "../GraphSearch";
 import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
-import { Modal } from "../modals";
+import { CloseModalButton, Modal } from "../modals";
 import {
   EditItemAttribute,
   getFirstEmptyValueIndex,
@@ -447,9 +447,11 @@ const useEditEdgeForm = ({
             {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
           </button>
         )}
-        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+        {/* Same close request as the modal's own cross, so both get the unsaved-input
+            confirmation; falls back to onCancel when this form is rendered in a side panel. */}
+        <CloseModalButton className="gl-btn gl-btn-icon gl-btn-outline" onCancel={onCancel}>
           <CancelIcon />
-        </button>
+        </CloseModalButton>
         {!submitFirst && (
           <button type="submit" className="gl-btn gl-btn-fill">
             {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}

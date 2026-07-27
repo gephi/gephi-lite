@@ -18,7 +18,7 @@ import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { CancelIcon, FieldModelIcon, WarningIcon } from "../common-icons";
-import { Modal } from "../modals";
+import { CloseModalButton, Modal } from "../modals";
 import {
   EditItemAttribute,
   getFirstEmptyValueIndex,
@@ -357,9 +357,11 @@ const useEditNodeForm = ({
             {submitLabel ?? (isNew ? t("edition.create_nodes") : t("edition.update_nodes"))}
           </button>
         )}
-        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+        {/* Same close request as the modal's own cross, so both get the unsaved-input
+            confirmation; falls back to onCancel when this form is rendered in a side panel. */}
+        <CloseModalButton className="gl-btn gl-btn-icon gl-btn-outline" onCancel={onCancel}>
           <CancelIcon />
-        </button>
+        </CloseModalButton>
         {!submitFirst && (
           <button type="submit" className="gl-btn gl-btn-fill">
             {submitLabel ?? (isNew ? t("edition.create_nodes") : t("edition.update_nodes"))}

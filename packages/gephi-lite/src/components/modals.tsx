@@ -1,10 +1,47 @@
 import cx from "classnames";
-import React, { FC, PropsWithChildren, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import { useModal } from "../core/modals";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { CloseIcon } from "./common-icons";
+
+/**
+ * The open modal's "please close" entry point, so that every way of closing it - the header cross,
+ * the form footer's cancel button, Escape, a click outside, the Android back button - goes through
+ * the very same code, and in particular through the unsaved-input confirmation below. Null outside
+ * of a modal: the node/edge forms are also rendered in a side panel, where there is nothing to
+ * close.
+ */
+const ModalCloseContext = createContext<(() => void) | null>(null);
+
+/**
+ * Button closing the modal it is rendered in, falling back to `onCancel` when there is no modal
+ * around (see ModalCloseContext).
+ */
+export const CloseModalButton: FC<PropsWithChildren<{ onCancel: () => void; className?: string; title?: string }>> = ({
+  onCancel,
+  className,
+  title,
+  children,
+}) => {
+  const requestClose = useContext(ModalCloseContext);
+  return (
+    <button type="button" className={className} title={title} onClick={() => (requestClose || onCancel)()}>
+      {children}
+    </button>
+  );
+};
 
 interface Props {
   title?: ReactNode;
@@ -87,7 +124,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   ]);
 
   const content = (
-    <>
+    <ModalCloseContext.Provider value={onClose ? requestClose : null}>
       {showHeader && (
         <div className="modal-header">
           {title && <h5 className="gl-heading-2 d-flex align-items-center flex-grow-1 gl-my-0">{title}</h5>}
@@ -102,7 +139,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
               title={t("common.close").toString()}
               className="gl-btn gl-btn-icon"
               aria-label="Close"
-              onClick={() => onClose && onClose()}
+              onClick={requestClose}
               disabled={!onClose}
             >
               <CloseIcon />
@@ -119,7 +156,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
                 title={t("common.close").toString()}
                 className="gl-btn gl-btn-icon d-inline-flex"
                 aria-label="Close"
-                onClick={() => onClose && onClose()}
+                onClick={requestClose}
                 disabled={!onClose}
               >
                 <CloseIcon />
@@ -139,7 +176,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
           {footer}
         </div>
       )}
-    </>
+    </ModalCloseContext.Provider>
   );
 
   return (
