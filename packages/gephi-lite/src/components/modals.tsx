@@ -1,5 +1,5 @@
 import cx from "classnames";
-import React, { FC, PropsWithChildren, ReactNode } from "react";
+import React, { FC, PropsWithChildren, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useModal } from "../core/modals";
@@ -17,6 +17,11 @@ interface Props {
   // left of the close button: on mobile, the on-screen keyboard can cover the footer's own submit
   // button while a field is focused, so this copy always stays reachable.
   submitLabel?: ReactNode;
+  // Set while the modal holds user input that closing would discard. Every close that is not an
+  // explicit click on the close/cancel buttons - the Android back button, Escape, a click outside -
+  // then goes through a confirmation whose default answer is to keep editing, so a stray press
+  // cannot wipe a form that was being filled in.
+  hasUnsavedInput?: boolean;
   className?: string;
   bodyClassName?: string;
   contentClassName?: string;
@@ -32,20 +37,51 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   showHeader = true,
   footerAlignLeft = false,
   submitLabel,
+  hasUnsavedInput,
   className,
   bodyClassName,
   contentClassName,
 }) => {
   const { t } = useTranslation();
+  const { closeRequestId, setUnsavedInput } = useModal();
   const childrenArray = Array.isArray(children) ? children : [children];
   const body = childrenArray[0];
   const footer = childrenArray[1];
+
+  // Let a close request coming from outside (the Android back button, see Initialize) know that
+  // this modal has something to lose. Cleared on unmount, so the next modal starts fresh.
+  useEffect(() => {
+    setUnsavedInput(!!hasUnsavedInput);
+  }, [hasUnsavedInput, setUnsavedInput]);
+  useEffect(() => () => setUnsavedInput(false), [setUnsavedInput]);
+
+  const [confirmingClose, setConfirmingClose] = useState(false);
+  const requestClose = useCallback(() => {
+    if (!onClose) return;
+    if (hasUnsavedInput) setConfirmingClose(true);
+    else onClose();
+  }, [onClose, hasUnsavedInput]);
+
+  // The back button asks through the modal state rather than closing directly, so the confirmation
+  // above can happen. The first render is not a request, hence the remembered token.
+  const lastCloseRequestId = useRef(closeRequestId);
+  useEffect(() => {
+    if (closeRequestId === lastCloseRequestId.current) return;
+    lastCloseRequestId.current = closeRequestId;
+    requestClose();
+  }, [closeRequestId, requestClose]);
+
   useKeyboardShortcuts([
     {
       code: "Escape",
       handler: () => {
+        // While confirming, Escape means "no, keep editing":
+        if (confirmingClose) {
+          setConfirmingClose(false);
+          return;
+        }
         // don't close the modal on click outside if there is a form in it to avoid data loss
-        if (onClose && (doNotPreserveData || !onSubmit)) onClose();
+        if (onClose && (doNotPreserveData || !onSubmit)) requestClose();
       },
     },
   ]);
@@ -115,7 +151,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
         onClick={(e) => {
           // don't close the modal on click outside if there is a form in it to avoid data loss
           // we could do better bu tracking changes but there are already a cancel AND a x icon to close the modal
-          if (onClose && (doNotPreserveData || !onSubmit) && e.target === e.currentTarget) onClose();
+          if (onClose && (doNotPreserveData || !onSubmit) && e.target === e.currentTarget) requestClose();
         }}
       >
         <div
@@ -138,6 +174,45 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
         </div>
       </div>
       <div className="modal-backdrop fade show"></div>
+
+      {confirmingClose && (
+        <>
+          <div role="dialog" className="modal fade show stacked-modal" style={{ display: "block" }}>
+            <div role="document" className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="gl-heading-2 gl-my-0">{t("common.discard_input.title")}</h5>
+                </div>
+                <div className="modal-body">{t("common.discard_input.message")}</div>
+                <div className="modal-footer">
+                  <div className="gl-actions">
+                    {/* Keeping the input is the default: first, filled, and focused. */}
+                    <button
+                      type="button"
+                      autoFocus
+                      className="gl-btn gl-btn-fill"
+                      onClick={() => setConfirmingClose(false)}
+                    >
+                      {t("common.discard_input.keep")}
+                    </button>
+                    <button
+                      type="button"
+                      className="gl-btn gl-btn-outline"
+                      onClick={() => {
+                        setConfirmingClose(false);
+                        if (onClose) onClose();
+                      }}
+                    >
+                      {t("common.discard_input.discard")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop fade show stacked-modal-backdrop"></div>
+        </>
+      )}
     </>
   );
 };

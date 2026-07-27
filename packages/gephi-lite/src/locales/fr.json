@@ -140,6 +140,12 @@
     "created": "Créé",
     "delete": "Supprimer",
     "disabled": "Désactivé",
+    "discard_input": {
+      "title": "Abandonner votre saisie ?",
+      "message": "Vous avez commencé à remplir ce formulaire. Le fermer maintenant effacera ce que vous avez saisi.",
+      "keep": "Continuer la saisie",
+      "discard": "Abandonner"
+    },
     "download": "Télécharger",
     "edit": "Modifier",
     "enabled": "Activé",
