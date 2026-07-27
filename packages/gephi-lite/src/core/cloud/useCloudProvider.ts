@@ -3,13 +3,14 @@ import { useCallback, useState } from "react";
 
 import { useFile, useFileActions } from "../context/dataContexts";
 import { useConnectedUser } from "../user";
+import { fingerprintContent } from "./remoteContent";
 import { CloudFile } from "./types";
 
 // TODO: need to be refacto by atom/action/producer pattern
 export function useCloudProvider() {
   const [user] = useConnectedUser();
   const { current: currentFile } = useFile();
-  const { open, exportAsGephiLite, setCurrentFile } = useFileActions();
+  const { open, exportAsGephiLite, setCurrentFile, setRemoteContentFingerprint } = useFileActions();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -62,6 +63,9 @@ export function useCloudProvider() {
         // otherwise the very next edit would compare against a stale date and warn about our own save.
         const saved = await user.provider.saveFile(currentFile as CloudFile, content);
         setCurrentFile(saved);
+        // Local and remote now hold exactly this content: it becomes the reference the freshness
+        // guard compares against (see core/cloud/remoteContent).
+        setRemoteContentFingerprint(fingerprintContent(content));
       });
     } catch (e) {
       setError(e as Error);
@@ -69,7 +73,7 @@ export function useCloudProvider() {
     } finally {
       setLoading(false);
     }
-  }, [user, exportAsGephiLite, currentFile, setCurrentFile]);
+  }, [user, exportAsGephiLite, currentFile, setCurrentFile, setRemoteContentFingerprint]);
 
   /**
    * Save the current graph in the provider.

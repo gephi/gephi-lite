@@ -56,6 +56,10 @@ export type FileState = {
   status: { type: "idle" } | { type: "loading" } | { type: "error"; message?: string };
   // Whether the graph dataset, appearance or filters have changed since the current file was opened/saved:
   isDirty: boolean;
+  // Fingerprint of the remote content as of the last open/save of the current cloud file, used by
+  // the freshness guard to tell a real remote change from a timestamp that merely moved (see
+  // core/cloud/remoteContent). Persisted with the rest of the file state, so it survives a reload.
+  remoteContentFingerprint: string | null;
 };
 
 export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
