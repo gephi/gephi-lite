@@ -1,6 +1,6 @@
 import { FieldModelTypeSpec, NodeCoordinates, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, keyBy, pick } from "lodash";
+import { fromPairs, isEmpty, keyBy, pick } from "lodash";
 import { FC, ReactNode, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -121,7 +121,7 @@ const useEditNodeForm = ({
     setValue,
     watch,
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<UpdatedNodeState>({
     defaultValues,
   });
@@ -234,6 +234,11 @@ const useEditNodeForm = ({
 
   return {
     submit,
+    // Whether the user actually changed something, so closing the form would throw it away (the
+    // modal usage below turns that into a confirmation rather than a silent loss). Read from
+    // `dirtyFields` and not `formState.isDirty`: the latter is already true on opening, because a
+    // field whose default is undefined reports "" as soon as its input is registered.
+    hasUserInput: !isEmpty(dirtyFields),
     main: (
       <>
         {/* Other attributes */}
@@ -378,6 +383,7 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
     main,
     footer,
     submit: submitForm,
+    hasUserInput,
   } = useEditNodeForm({
     nodeId,
     onSubmitted: () => submit({}),
@@ -394,6 +400,7 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
       onSubmit={submitForm}
       submitLabel={t("common.ok")}
       doNotPreserveData
+      hasUnsavedInput={hasUserInput}
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 
