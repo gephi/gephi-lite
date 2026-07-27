@@ -8,6 +8,7 @@ import { config } from "../../config";
 import { localStorage } from "../../utils/storage";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { applyVisualProperties, inferAppearanceState } from "../appearance/utils";
+import { fingerprintContent } from "../cloud/remoteContent";
 import { resetStates } from "../context/dataContexts";
 import { filtersActions, filtersAtom } from "../filters";
 import {
@@ -25,7 +26,7 @@ import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from 
 import { openAndParseFile } from "./utils";
 
 function getEmptyFileState(): FileState {
-  return { current: null, recentFiles: [], status: { type: "idle" }, isDirty: false };
+  return { current: null, recentFiles: [], status: { type: "idle" }, isDirty: false, remoteContentFingerprint: null };
 }
 
 function getLocalStorageFileState(): FileState {
@@ -96,6 +97,12 @@ const setCurrentFile: Producer<FileState, [FileType | null]> = (file) => {
   };
 };
 
+// Records the content the remote holds as of the last open/save, so the freshness guard can check
+// that an apparently newer remote really differs before warning (see core/cloud/remoteContent).
+export const setRemoteContentFingerprint: Producer<FileState, [string | null]> = (fingerprint) => {
+  return (prev) => ({ ...prev, remoteContentFingerprint: fingerprint });
+};
+
 // Clears isDirty without touching the current file pointer: used after the graph dataset,
 // appearance or filters atoms get bulk-replaced by something other than an actual user edit (e.g.
 // the sessionStorage rehydration on page reload), which would otherwise flip isDirty back to true
@@ -108,7 +115,7 @@ export const reset: Producer<FileState, [boolean]> = (full) => {
     // A blank workspace has nothing unsaved yet: isDirty must be cleared here, since it runs
     // after the graph/appearance/filters atoms were just reset to their own blank state, which
     // (being a new value reference) already flipped it back to true via the markDirty bindings.
-    return { ...prev, current: null, isDirty: false };
+    return { ...prev, current: null, isDirty: false, remoteContentFingerprint: null };
   };
 };
 
@@ -122,7 +129,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
 
   try {
     // Parse the file
-    const { data, metadata, format } = await openAndParseFile(file);
+    const { data, metadata, format, content } = await openAndParseFile(file);
 
     // Do the import
     resetStates(false);
@@ -165,6 +172,9 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       const fresh = user ? await user.provider.getFile(file.id) : null;
       if (fresh) fileToMemorize = { ...file, ...fresh };
     }
+    // Remember what the remote held when we opened it, so the freshness guard can tell a real
+    // remote change from a timestamp that merely moved (see core/cloud/remoteContent).
+    fileActions.setRemoteContentFingerprint(file.type === "cloud" ? fingerprintContent(content) : null);
     fileActions.setCurrentFile({ ...fileToMemorize, format });
 
     // Reset the camera
@@ -220,6 +230,7 @@ export const fileActions = {
   reset: producerToAction(reset, fileAtom),
   setCurrentFile: producerToAction(setCurrentFile, fileAtom),
   clearDirty: producerToAction(clearDirty, fileAtom),
+  setRemoteContentFingerprint: producerToAction(setRemoteContentFingerprint, fileAtom),
 };
 
 /**

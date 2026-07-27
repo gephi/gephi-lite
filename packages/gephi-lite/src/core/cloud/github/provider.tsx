@@ -156,7 +156,14 @@ export class GithubProvider implements CloudProvider {
       gist_id: file.id,
       ...body,
     });
-    return { ...this.gistToCloudFile(result.data), format: file.format };
+
+    // Read the metadata back from the same "detail" endpoint the freshness guard polls, rather than
+    // trusting the PATCH response: the two can report a different `updated_at` for the very version
+    // just written, and memorizing the write one would make every later check believe the remote
+    // moved on by itself. Same reasoning as the open path (see `open` in core/file). Falls back to
+    // the PATCH response when the re-read is unavailable (offline right after the write...).
+    const fresh = await this.getFile(file.id).catch(() => null);
+    return { ...this.gistToCloudFile(result.data), ...(fresh || {}), format: file.format };
   }
 
   /**

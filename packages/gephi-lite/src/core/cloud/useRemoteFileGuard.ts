@@ -7,6 +7,8 @@ import { FileType } from "../file/types";
 import { useModal } from "../modals";
 import { useNotifications } from "../notifications";
 import { useConnectedUser } from "../user";
+import { fingerprintContent } from "./remoteContent";
+import { CloudFile } from "./types";
 
 // The passive freshness check (popup open / first modification / periodic tick) probes GitHub at
 // most once per this window; after it, the next trigger probes again. It is also the period of the
@@ -43,8 +45,8 @@ function isRemoteNewer(remoteUpdatedAt: Date | string, knownUpdatedAt: Date | st
 export function useRemoteFileFreshnessCheck() {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { current } = useFile();
-  const { open } = useFileActions();
+  const { current, remoteContentFingerprint } = useFile();
+  const { open, setCurrentFile } = useFileActions();
   const { openModal } = useModal();
   const [user] = useConnectedUser();
 
@@ -53,6 +55,8 @@ export function useRemoteFileFreshnessCheck() {
   currentRef.current = current;
   const userRef = useRef(user);
   userRef.current = user;
+  const fingerprintRef = useRef(remoteContentFingerprint);
+  fingerprintRef.current = remoteContentFingerprint;
 
   const reload = useCallback(
     async (file: FileType) => {
@@ -87,6 +91,35 @@ export function useRemoteFileFreshnessCheck() {
     [openModal, reload, t],
   );
 
+  /**
+   * Second opinion on an apparently newer remote: download its content and check that it really
+   * differs from what we last synced. A gist's `updated_at` moves for reasons that leave the file
+   * untouched (a star, a fork, a comment, or two reads of the same version simply disagreeing), and
+   * those must not raise an alarm in the middle of an editing session.
+   *
+   * Returns true when the remote must be reported as changed - including when the check itself
+   * cannot be made (nothing to compare against, or the download failed): the guard exists to
+   * prevent silently overwriting someone else's work, so doubt has to fall on the warning side.
+   */
+  const isRemoteContentReallyDifferent = useCallback(
+    async (file: FileType, remote: Pick<CloudFile, "updatedAt">): Promise<boolean> => {
+      const provider = userRef.current?.provider;
+      const knownFingerprint = fingerprintRef.current;
+      if (!provider || file.type !== "cloud" || !knownFingerprint) return true;
+      try {
+        if (fingerprintContent(await provider.getFileContent(file.id)) !== knownFingerprint) return true;
+      } catch (e) {
+        console.error(e);
+        return true;
+      }
+      // Same bytes: adopt the new timestamp as our reference, so this bump is not re-examined (and
+      // the content re-downloaded) on every subsequent tick.
+      setCurrentFile({ ...file, updatedAt: remote.updatedAt });
+      return false;
+    },
+    [setCurrentFile],
+  );
+
   const check = useCallback(() => {
     const now = Date.now();
     if (lastCheckedAt !== null && now - lastCheckedAt < RECHECK_INTERVAL) return;
@@ -101,9 +134,9 @@ export function useRemoteFileFreshnessCheck() {
     lastCheckedAt = now;
     provider
       .getFile(file.id)
-      .then((remote) => {
-        if (remote && isRemoteNewer(remote.updatedAt, file.updatedAt))
-          warnRemoteChanged(file, "graph.remote_changed.message");
+      .then(async (remote) => {
+        if (!remote || !isRemoteNewer(remote.updatedAt, file.updatedAt)) return;
+        if (await isRemoteContentReallyDifferent(file, remote)) warnRemoteChanged(file, "graph.remote_changed.message");
       })
       .catch((e) => {
         // GitHub unreachable (offline...) or any error: never hinder editing, and re-arm so a later
@@ -111,7 +144,7 @@ export function useRemoteFileFreshnessCheck() {
         lastCheckedAt = null;
         console.error(e);
       });
-  }, [warnRemoteChanged]);
+  }, [warnRemoteChanged, isRemoteContentReallyDifferent]);
 
   const probeRemoteIsNewer = useCallback(async (): Promise<FileType | null> => {
     const file = currentRef.current;
@@ -120,14 +153,15 @@ export function useRemoteFileFreshnessCheck() {
     try {
       const remote = await provider.getFile(file.id);
       lastCheckedAt = Date.now();
-      return remote && isRemoteNewer(remote.updatedAt, file.updatedAt) ? file : null;
+      if (!remote || !isRemoteNewer(remote.updatedAt, file.updatedAt)) return null;
+      return (await isRemoteContentReallyDifferent(file, remote)) ? file : null;
     } catch (e) {
       // Freshness can't be confirmed (offline...): treat as "not newer" so the save proceeds (it
       // fails on its own if the network is really down). Never block saving on a failed pre-check.
       console.error(e);
       return null;
     }
-  }, []);
+  }, [isRemoteContentReallyDifferent]);
 
   return { check, probeRemoteIsNewer, reloadFile: reload };
 }
