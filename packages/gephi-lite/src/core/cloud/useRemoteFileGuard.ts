@@ -19,6 +19,12 @@ const RECHECK_INTERVAL = 60 * 1000; // ~1 minute
 // whenever the current file changes (open/save/reload). Shared across every hook instance.
 let lastCheckedAt: number | null = null;
 
+// The remote version (its `updated_at`) the user was warned about and explicitly chose to keep
+// their own changes over. Without this the passive check would raise the very same warning again
+// at the next tick, and every minute after that, since nothing about the remote has changed.
+// Only silences the passive warning: the pre-save probe still confirms before overwriting.
+let acknowledgedRemoteUpdatedAt: string | null = null;
+
 // Ignore a remote that is newer by at most this margin. GitHub's gist `updated_at` has second-level
 // precision, and even after normalizing every read on the same "detail" endpoint a transient
 // inconsistency could report a one-second-off timestamp for the same version; this absorbs it so no
@@ -46,7 +52,7 @@ export function useRemoteFileFreshnessCheck() {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { current, remoteContentFingerprint } = useFile();
-  const { open, setCurrentFile } = useFileActions();
+  const { open, setCurrentFile, setRemoteContentFingerprint } = useFileActions();
   const { openModal } = useModal();
   const [user] = useConnectedUser();
 
@@ -76,7 +82,7 @@ export function useRemoteFileFreshnessCheck() {
   );
 
   const warnRemoteChanged = useCallback(
-    (file: FileType, messageKey: string) => {
+    (file: FileType, messageKey: string, remoteUpdatedAt: Date | string) => {
       openModal({
         component: ConfirmModal,
         arguments: {
@@ -86,6 +92,11 @@ export function useRemoteFileFreshnessCheck() {
           cancelMsg: t("graph.remote_changed.keep"),
         },
         afterSubmit: () => reload(file),
+        // "Keep my changes": the user has seen this remote version and decided against it, so stop
+        // raising it again every minute. A later, genuinely different remote version still warns.
+        afterCancel: () => {
+          acknowledgedRemoteUpdatedAt = new Date(remoteUpdatedAt).toISOString();
+        },
       });
     },
     [openModal, reload, t],
@@ -105,19 +116,33 @@ export function useRemoteFileFreshnessCheck() {
     async (file: FileType, remote: Pick<CloudFile, "updatedAt">): Promise<boolean> => {
       const provider = userRef.current?.provider;
       const knownFingerprint = fingerprintRef.current;
-      if (!provider || file.type !== "cloud" || !knownFingerprint) return true;
+      if (!provider || file.type !== "cloud") return true;
+
+      let remoteFingerprint: string;
       try {
-        if (fingerprintContent(await provider.getFileContent(file.id)) !== knownFingerprint) return true;
+        remoteFingerprint = fingerprintContent(await provider.getFileContent(file.id));
       } catch (e) {
         console.error(e);
         return true;
       }
+
+      // Nothing to compare against (state saved by a version that did not record it yet, or a
+      // workspace restored from before this guard existed): the question cannot be answered, so
+      // warn - but memorize what the remote holds, so the next check can decide properly instead
+      // of asking again forever.
+      if (!knownFingerprint) {
+        setRemoteContentFingerprint(remoteFingerprint);
+        return true;
+      }
+
+      if (remoteFingerprint !== knownFingerprint) return true;
+
       // Same bytes: adopt the new timestamp as our reference, so this bump is not re-examined (and
       // the content re-downloaded) on every subsequent tick.
       setCurrentFile({ ...file, updatedAt: remote.updatedAt });
       return false;
     },
-    [setCurrentFile],
+    [setCurrentFile, setRemoteContentFingerprint],
   );
 
   const check = useCallback(() => {
@@ -136,7 +161,10 @@ export function useRemoteFileFreshnessCheck() {
       .getFile(file.id)
       .then(async (remote) => {
         if (!remote || !isRemoteNewer(remote.updatedAt, file.updatedAt)) return;
-        if (await isRemoteContentReallyDifferent(file, remote)) warnRemoteChanged(file, "graph.remote_changed.message");
+        // Already shown for this exact remote version, and dismissed with "keep my changes":
+        if (new Date(remote.updatedAt).toISOString() === acknowledgedRemoteUpdatedAt) return;
+        if (await isRemoteContentReallyDifferent(file, remote))
+          warnRemoteChanged(file, "graph.remote_changed.message", remote.updatedAt);
       })
       .catch((e) => {
         // GitHub unreachable (offline...) or any error: never hinder editing, and re-arm so a later
@@ -187,6 +215,7 @@ export function useRemoteFileGuard() {
     if (current !== prevCurrent.current) {
       prevCurrent.current = current;
       lastCheckedAt = null;
+      acknowledgedRemoteUpdatedAt = null;
     }
   }, [current]);
 

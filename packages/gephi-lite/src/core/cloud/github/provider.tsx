@@ -80,45 +80,44 @@ export class GithubProvider implements CloudProvider {
   }
 
   /**
-   * Get a file by id (without content)
+   * One read of the gist, returning both its metadata and the content of its graph file.
+   *
+   * Reading the two together matters for the freshness guard: it compares the remote content
+   * against a fingerprint taken alongside a reference date, and mixing a date from one read with
+   * a content from another would compare two potentially different versions. It also saves a
+   * round-trip where both are needed at once (right after a write, see saveFile).
    */
-  async getFile(id: string): Promise<Omit<CloudFile, "format"> | null> {
+  private async readGist(id: string): Promise<{ file: Omit<CloudFile, "format">; content: string } | null> {
     const response = await this.octokit.request("GET /gists/{gist_id}", {
       gist_id: id,
       ...this.noCacheRequestOptions(),
     });
+    if (!response.data) return null;
 
-    if (response.data) {
-      const file = this.getGraphFile(response.data);
-      if (file) return this.gistToCloudFile(response.data);
-    }
+    const gistFile = this.getGraphFile(response.data);
+    if (!gistFile) return null;
 
-    return null;
+    // Over ~1MB the API only sends a truncated content, the whole file being served by raw_url.
+    const file = response.data.files?.[gistFile.filename];
+    const content = file?.truncated && file?.raw_url ? await (await fetch(file.raw_url)).text() : file?.content || "";
+
+    return { file: this.gistToCloudFile(response.data), content };
+  }
+
+  /**
+   * Get a file by id (without content)
+   */
+  async getFile(id: string): Promise<Omit<CloudFile, "format"> | null> {
+    return (await this.readGist(id))?.file || null;
   }
 
   /**
    * Retrieve the content of file by its id.
    */
   async getFileContent(id: string): Promise<string> {
-    const response = await this.octokit.request("GET /gists/{gist_id}", {
-      gist_id: id,
-      ...this.noCacheRequestOptions(),
-    });
-
-    if (response.data && response.data.files) {
-      const gistFile = this.getGraphFile(response.data);
-      if (gistFile) {
-        const file = response.data.files[gistFile.filename];
-        if (file?.truncated && file?.raw_url) {
-          const response = await fetch(file?.raw_url);
-          const content = await response.text();
-          return content;
-        }
-        return file?.content || "";
-      }
-    }
-
-    throw new Error("not found");
+    const read = await this.readGist(id);
+    if (!read) throw new Error("not found");
+    return read.content;
   }
 
   /**
@@ -142,7 +141,7 @@ export class GithubProvider implements CloudProvider {
   /**
    * Save (ie.update) a file on github
    */
-  async saveFile(file: CloudFile, content: string): Promise<CloudFile> {
+  async saveFile(file: CloudFile, content: string): Promise<{ file: CloudFile; content: string }> {
     const body = {
       description: file.description,
       public: file.isPublic || false,
@@ -157,13 +156,21 @@ export class GithubProvider implements CloudProvider {
       ...body,
     });
 
-    // Read the metadata back from the same "detail" endpoint the freshness guard polls, rather than
-    // trusting the PATCH response: the two can report a different `updated_at` for the very version
-    // just written, and memorizing the write one would make every later check believe the remote
-    // moved on by itself. Same reasoning as the open path (see `open` in core/file). Falls back to
-    // the PATCH response when the re-read is unavailable (offline right after the write...).
-    const fresh = await this.getFile(file.id).catch(() => null);
-    return { ...this.gistToCloudFile(result.data), ...(fresh || {}), format: file.format };
+    // Read the gist back from the same "detail" endpoint the freshness guard polls, rather than
+    // trusting the PATCH response or the bytes we just sent:
+    // - the two endpoints can report a different `updated_at` for the very version just written,
+    //   and memorizing the write one makes every later check believe the remote moved on its own
+    //   (same reasoning as the open path, see `open` in core/file);
+    // - the content the gist ends up holding is what later checks will download and compare, so
+    //   that is what has to be fingerprinted - anything GitHub might do to the bytes on the way in
+    //   would otherwise make every comparison report a difference that does not exist.
+    // Falls back to the PATCH response and our own bytes when the re-read is unavailable (offline
+    // right after the write...), which is no worse than not re-reading at all.
+    const fresh = await this.readGist(file.id).catch(() => null);
+    return {
+      file: { ...this.gistToCloudFile(result.data), ...(fresh?.file || {}), format: file.format },
+      content: fresh?.content ?? content,
+    };
   }
 
   /**
