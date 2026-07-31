@@ -62,10 +62,11 @@ export function useCloudProvider() {
         // updatedAt becomes the reference date for the remote-change guard (see useRemoteFileGuard),
         // otherwise the very next edit would compare against a stale date and warn about our own save.
         const saved = await user.provider.saveFile(currentFile as CloudFile, content);
-        setCurrentFile(saved);
-        // Local and remote now hold exactly this content: it becomes the reference the freshness
-        // guard compares against (see core/cloud/remoteContent).
-        setRemoteContentFingerprint(fingerprintContent(content));
+        setCurrentFile(saved.file);
+        // Fingerprint what the remote reports holding, not the bytes we sent: the guard downloads
+        // the remote content to compare, so the reference has to be on the same side of the wire
+        // (see core/cloud/remoteContent).
+        setRemoteContentFingerprint(fingerprintContent(saved.content));
       });
     } catch (e) {
       setError(e as Error);
