@@ -4,11 +4,13 @@ import { useTranslation } from "react-i18next";
 import { version } from "../../../package.json";
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
+import { config } from "../../config";
 import { resetStates, useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { getAppliedTheme } from "../../core/preferences/utils";
+import { displayDateTime } from "../../utils/date";
 import { Loader } from "../Loader";
 import { GitHubIcon } from "../common-icons";
 import { Modal } from "../modals";
@@ -52,6 +54,13 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
               changelog
             </a>
           </div>
+          {/* Discreet on purpose (see text-muted): only useful to confirm which build is actually
+              running, not something that should draw the eye like the version number above. */}
+          {config.gitCommitHash && config.buildDate && (
+            <div className="text-muted small">
+              {config.gitCommitHash} - {displayDateTime(config.buildDate)}
+            </div>
+          )}
           <div className="d-flex flex-wrap align-items-center gl-gap-2 justify-content-center mt-3">
             <a rel="noreferrer" target="_blank" className="gl-btn gl-btn-outline" href="https://gephi.org/lite">
               {t("welcome.website")}
