@@ -2,14 +2,18 @@ import { type FC, useCallback } from "react";
 
 import { useSearchActions, useSearchQuery, useSelectionActions } from "../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../core/context/eventsContext";
+import { useModal } from "../core/modals";
 import { GraphSearch, type Option, type OptionItem } from "./GraphSearch";
 
 const RESULT_MAX_SIZE = 25;
 
-export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) => {
+export const GraphSearchSelection: FC<{ className?: string; visible?: boolean }> = ({ className, visible = true }) => {
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { setQuery } = useSearchActions();
+  // A modal (create node/edge, save as...) always covers the whole page: the portaled results
+  // dropdown must not keep floating on top of it - see the `visible` prop's doc on GraphSearch.
+  const { modal } = useModal();
   // Controlled input text, kept in an atom rather than inside react-select: the left panel unmounts
   // whenever it is collapsed (or a tool takes its place), so an internal value would be lost every
   // time. Restoring it also brings its results back, see GraphSearch.
@@ -97,6 +101,7 @@ export const GraphSearchSelection: FC<{ className?: string }> = ({ className }) 
       postProcessOptions={postProcessOptions}
       inputValue={searchQuery}
       onInputChange={setQuery}
+      visible={visible && !modal}
     />
   );
 };

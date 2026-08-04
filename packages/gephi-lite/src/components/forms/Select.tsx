@@ -19,9 +19,14 @@ import { CaretDownIcon } from "../common-icons";
 // search box (see GraphSearch) to keep its results visible even through an involuntary blur: hiding
 // a focused element via CSS (eg. collapsing a mobile panel) makes the browser blur it, which would
 // otherwise close the menu until the field is clicked again.
-const useDefaultSelectProps = (defaultMenuIsOpen?: boolean, forceMenuOpen?: boolean) => {
+//
+// `forceMenuClosed`, when true, overrides both `forceMenuOpen` and the internal open state: the menu
+// is portaled (see `menuPortalTarget` below), so it keeps floating on top of everything even while
+// its field is hidden via CSS - this is what lets the caller explicitly hide it in that case, as
+// opposed to the involuntary blur above which must NOT close it.
+const useDefaultSelectProps = (defaultMenuIsOpen?: boolean, forceMenuOpen?: boolean, forceMenuClosed?: boolean) => {
   const [isMenuOpen, setIsMenuOpen] = useState(!!defaultMenuIsOpen);
-  const menuIsOpen = !!forceMenuOpen || isMenuOpen;
+  const menuIsOpen = !forceMenuClosed && (!!forceMenuOpen || isMenuOpen);
 
   return {
     classNamePrefix: "react-select",
@@ -59,11 +64,15 @@ export function optionize<V>(value?: V): BaseOption<V> | undefined {
 // to a generic function signature to keep `<BO, IsMulti>` inference working at call sites.
 
 export const Select = forwardRef(function Select<BO, IsMulti extends boolean = false>(
-  { forceMenuOpen, ...props }: Props<BO, IsMulti> & { forceMenuOpen?: boolean },
+  {
+    forceMenuOpen,
+    forceMenuClosed,
+    ...props
+  }: Props<BO, IsMulti> & { forceMenuOpen?: boolean; forceMenuClosed?: boolean },
   ref: Ref<SelectInstance<BO, IsMulti>>,
 ) {
   const { portalTarget } = useContext(UIContext);
-  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen, forceMenuOpen);
+  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen, forceMenuOpen, forceMenuClosed);
   return (
     <ReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
@@ -77,15 +86,23 @@ export const Select = forwardRef(function Select<BO, IsMulti extends boolean = f
     />
   );
 }) as <BO, IsMulti extends boolean = false>(
-  props: Props<BO, IsMulti> & { forceMenuOpen?: boolean; ref?: Ref<SelectInstance<BO, IsMulti>> },
+  props: Props<BO, IsMulti> & {
+    forceMenuOpen?: boolean;
+    forceMenuClosed?: boolean;
+    ref?: Ref<SelectInstance<BO, IsMulti>>;
+  },
 ) => ReturnType<typeof ReactSelect>;
 
 export const AsyncSelect = forwardRef(function AsyncSelect<BO, IsMulti extends boolean = false>(
-  { forceMenuOpen, ...props }: AsyncProps<BO, IsMulti, GroupBase<BO>> & { forceMenuOpen?: boolean },
+  {
+    forceMenuOpen,
+    forceMenuClosed,
+    ...props
+  }: AsyncProps<BO, IsMulti, GroupBase<BO>> & { forceMenuOpen?: boolean; forceMenuClosed?: boolean },
   ref: Ref<SelectInstance<BO, IsMulti>>,
 ) {
   const { portalTarget } = useContext(UIContext);
-  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen, forceMenuOpen);
+  const defaultProps = useDefaultSelectProps(props.defaultMenuIsOpen, forceMenuOpen, forceMenuClosed);
   return (
     <AsyncReactSelect<BO, IsMulti>
       menuPortalTarget={portalTarget}
@@ -99,7 +116,11 @@ export const AsyncSelect = forwardRef(function AsyncSelect<BO, IsMulti extends b
     />
   );
 }) as <BO, IsMulti extends boolean = false>(
-  props: AsyncProps<BO, IsMulti, GroupBase<BO>> & { forceMenuOpen?: boolean; ref?: Ref<SelectInstance<BO, IsMulti>> },
+  props: AsyncProps<BO, IsMulti, GroupBase<BO>> & {
+    forceMenuOpen?: boolean;
+    forceMenuClosed?: boolean;
+    ref?: Ref<SelectInstance<BO, IsMulti>>;
+  },
 ) => ReturnType<typeof AsyncReactSelect>;
 
 export const CreatableSelect = forwardRef(function CreatableSelect<BO, IsMulti extends boolean = false>(
