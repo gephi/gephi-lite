@@ -132,6 +132,10 @@ export const GraphPage: FC = () => {
   }, []);
 
   const isSelectionPanelDeployed = items.size > 0 && !selectionCollapsed;
+  // The search box's panel (panel-main) only actually collapses on mobile (see the panel-collapsed
+  // rule in _panel.scss, scoped to that breakpoint) - on desktop it stays visible regardless of
+  // `expanded`/`selectedTool`, which only affect the extended panel next to it.
+  const isSearchPanelVisible = !isMobile || (expanded && !selectedTool);
   const selectionPanel = (
     <div className={cx("panel panel-right panel-expandable panel-selection", isSelectionPanelDeployed && "deployed")}>
       <button
@@ -186,7 +190,7 @@ export const GraphPage: FC = () => {
         <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
             <GraphSummary onOpenFilters={openFilters} />
-            <GraphSearchSelection />
+            <GraphSearchSelection visible={isSearchPanelVisible} />
             <SideMenu
               menu={MENU}
               selected={selectedTool?.id}

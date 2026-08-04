@@ -32,6 +32,7 @@ import {
 } from "../../core/context/dataContexts";
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
+import { useMobile } from "../../hooks/useMobile";
 import { doesItemMatch } from "../../utils/search";
 import { MetricsPanel } from "../graphPage/panels/MetricsPanel";
 import { Layout } from "../layout";
@@ -156,9 +157,14 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   ]);
 
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
+  const isMobile = useMobile();
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
+  // The search box's panel (panel-main) only actually collapses on mobile (see the panel-collapsed
+  // rule in _panel.scss, scoped to that breakpoint) - on desktop it stays visible regardless of
+  // `expanded`/`selectedTool`, which only affect the extended panel next to it.
+  const isSearchPanelVisible = !isMobile || (expanded && !selectedTool);
 
   // Lets the filters badge in GraphSummary open the Filters panel directly, reusing the same id as
   // its entry in MENU so the side menu highlights it as selected, like clicking it there would.
@@ -191,7 +197,7 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
         <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
             <GraphSummary onOpenFilters={openFilters} />
-            <GraphSearchSelection />
+            <GraphSearchSelection visible={isSearchPanelVisible} />
             <SideMenu
               menu={MENU}
               selected={selectedTool?.id}

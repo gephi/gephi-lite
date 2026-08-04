@@ -105,6 +105,14 @@ interface GraphSearchProps {
    * item gets selected.
    */
   onInputChange?: (value: string) => void;
+  /**
+   * Whether this field's panel is currently shown to the user. Only meaningful in controlled mode:
+   * defaults to true, and set to false when another panel takes its place (eg. opening the "create
+   * node/edge" or any other side-menu tool on mobile) so the results dropdown - portaled, so it would
+   * otherwise keep floating on top of that other panel - gets explicitly closed instead of surviving
+   * as it does through an involuntary blur (see `forceMenuOpen` below).
+   */
+  visible?: boolean;
 }
 
 /**
@@ -120,6 +128,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({
   defaultInputValue,
   inputValue,
   onInputChange,
+  visible = true,
 }) => {
   const { t } = useTranslation();
   const { index } = useSearch();
@@ -206,6 +215,9 @@ export const GraphSearch: FC<GraphSearchProps> = ({
     value: value || null,
     inputValue,
     forceMenuOpen,
+    // Only relevant in controlled mode, where `forceMenuOpen` above would otherwise keep the portaled
+    // dropdown floating on top of whatever panel replaced this one (see the `visible` prop's doc).
+    forceMenuClosed: isControlled && !visible,
     // Our own search index already filters (and orders) the options: react-select's default
     // client-side filterOption would try (and fail) to match them by a `label` string our Option
     // type doesn't have, hiding every result. The async wrapper avoids this the same way (it
