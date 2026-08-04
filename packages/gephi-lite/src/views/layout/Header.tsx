@@ -12,6 +12,7 @@ import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
 import {
   BugIcon,
+  CreateNodeIcon,
   DataIcon,
   DataIconFill,
   ExternalLinkIcon,
@@ -21,6 +22,7 @@ import {
   SaveIcon,
   UnsavedChangesIcon,
 } from "../../components/common-icons";
+import { EditNodeModal } from "../../components/data/EditNode";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
 import RemoteSaveConflictModal from "../../components/modals/RemoteSaveConflictModal";
@@ -276,6 +278,14 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           <span className="d-none d-sm-block">{saveButton}</span>
           {/* Mobile display: */}
           {children}
+          <button
+            className="gl-btn gl-btn-icon d-sm-none"
+            title={t("edition.create_nodes")}
+            aria-label={t("edition.create_nodes")}
+            onClick={() => openModal({ component: EditNodeModal, arguments: {} })}
+          >
+            <CreateNodeIcon />
+          </button>
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
           <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
