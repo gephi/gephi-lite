@@ -82,9 +82,11 @@ interface GraphSearchProps {
   onChange: (e: Option | null) => void;
   /**
    * With this function, you can filter/enhance the result displayed to the user.
-   * This can be useful to add action / messages or limit the number of result
+   * This can be useful to add action / messages or limit the number of result.
+   * Receives the raw typed query as well, for callers whose extra options depend on it (eg.
+   * offering to create an item named after text that matched nothing).
    */
-  postProcessOptions?: (options: Option[]) => Option[];
+  postProcessOptions?: (options: Option[], query: string) => Option[];
   /**
    * Text shown in the input as soon as it is mounted, without selecting any item (unlike `value`).
    * Used to carry over text typed in another search field into this one. react-select owns the text
@@ -152,7 +154,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({
         })
         .map((item) => ({ id: item.id, type: item.type }));
 
-      callback(postProcessOptions ? postProcessOptions(result) : result);
+      callback(postProcessOptions ? postProcessOptions(result, query) : result);
     },
     [index, nodesLabel, edgesLabel, type, postProcessOptions],
   );
