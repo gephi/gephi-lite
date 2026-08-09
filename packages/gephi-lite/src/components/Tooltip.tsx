@@ -2,6 +2,7 @@ import { ReactNode, forwardRef, useEffect, useRef, useState } from "react";
 import TetherComponent from "react-tether";
 import Tether from "tether";
 
+import { useMobile } from "../hooks/useMobile";
 import Transition from "./Transition";
 
 export type TooltipAPI = { close: () => void; open: () => void; isOpened: () => boolean };
@@ -20,6 +21,12 @@ const Tooltip = forwardRef<
     >
   >
 >(({ children: [target, content], targetClassName, hoverable, closeOnClickContent, ...tether }, ref) => {
+  // On touch devices, taps fire a "mouseenter" with no matching "mouseleave", which would
+  // otherwise leave this hover preview (meant for desktop only) stuck open indefinitely, floating
+  // (over-modal z-index) on top of whichever controls are displayed next - e.g. the header's
+  // Workspace dropdown covering the mobile "create node" button underneath (same bug already
+  // fixed once for SideMenu's own hover preview, see useMobile usage there).
+  const isMobile = useMobile();
   const lastCloseOnClickTime = useRef<number>(-Infinity);
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState<null | "click" | "hover">(null);
@@ -93,7 +100,7 @@ const Tooltip = forwardRef<
             e.preventDefault();
             setShowTooltip("click");
           }}
-          onMouseEnter={() => hoverable && setIsHovered(true)}
+          onMouseEnter={() => hoverable && !isMobile && setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className={targetClassName}
         >
@@ -106,7 +113,7 @@ const Tooltip = forwardRef<
           show={showTooltip}
           mountTransition="fade-in 0.2s forwards"
           unmountTransition="fade-out 0.2s forwards"
-          onMouseEnter={() => hoverable && setIsHovered(true)}
+          onMouseEnter={() => hoverable && !isMobile && setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <div ref={tooltipWrapper}>{content}</div>
