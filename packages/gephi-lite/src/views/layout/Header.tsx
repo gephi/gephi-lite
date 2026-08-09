@@ -8,6 +8,7 @@ import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
+import { openFeedbackWidget } from "../../components/FeedbackWidget";
 import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
 import {
@@ -16,6 +17,7 @@ import {
   DataIcon,
   DataIconFill,
   ExternalLinkIcon,
+  FeedbackIcon,
   GraphIcon,
   GraphIconFill,
   HomeIcon,
@@ -238,6 +240,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           }),
       },
       { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
+      { label: t("gephi-lite.report_issue_auto"), icon: <FeedbackIcon />, onClick: openFeedbackWidget },
     ],
     [t, openModal],
   );

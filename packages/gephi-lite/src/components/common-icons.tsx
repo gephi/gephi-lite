@@ -21,6 +21,7 @@ import {
   PiCaretRight,
   PiCaretUp,
   PiChartBar,
+  PiChatCircleDots,
   PiCheck,
   PiCheckCircle,
   PiCheckSquare,
@@ -127,6 +128,7 @@ export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const ExternalLinkIcon = PiArrowSquareOut;
+export const FeedbackIcon = PiChatCircleDots;
 export const FilterAddIcon = PiPlusCircle;
 export const FilterDeleteIcon = PiTrash;
 export const FilterEnabledIcon = PiCheckSquare;
