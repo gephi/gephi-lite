@@ -21,6 +21,11 @@ jobs:
       CI: false
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
       # No Matomo analytics on pre-production, so dev testing does not pollute production stats.
+      # feedback-widget-js / feedback-service (https://github.com/JeanGarf/feedback-widget-js).
+      # VITE_FEEDBACK_KEY is a public pk_live_... key, safe to commit here (gephi-lite is
+      # registered in feedback-service, see its README, "Enregistrer une application cliente").
+      VITE_FEEDBACK_ENDPOINT: "https://feedback-service-309423341322.europe-west3.run.app"
+      VITE_FEEDBACK_KEY: "pk_live_IyxD03XZA-7V0rZs6GR0zvhGGzA5ui7VM7tQ0maTIdM"
     steps:
       - name: Checkout
         uses: actions/checkout@v4

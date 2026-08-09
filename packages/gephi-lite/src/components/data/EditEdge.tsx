@@ -1,13 +1,14 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { fromPairs, isEmpty, keyBy, pick } from "lodash";
-import { FC, ReactNode, useCallback, useEffect, useMemo } from "react";
+import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 
 import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
 import {
+  useAppearance,
   useGraphDataset,
   useGraphDatasetActions,
   useSearchQuery,
@@ -18,7 +19,7 @@ import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { focusCameraOnEdges, requestFocusOnReady } from "../../core/sigma";
 import { Scalar } from "../../core/types";
-import { GraphSearch } from "../GraphSearch";
+import { GraphSearch, Option } from "../GraphSearch";
 import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
 import { CloseModalButton, Modal } from "../modals";
@@ -67,6 +68,45 @@ const DuplicateEdgeWarning: FC<{ edgeIds: string[]; onClick: () => void }> = ({ 
   );
 };
 
+// Confirmation for creating a node on the fly from the source/target search box below, once the
+// user picked the "create node «X»" option. Mirrors the "discard unsaved input" dialog stacked
+// over an already open modal (see the Modal component's `stacked-modal` classes): going through
+// the app's single-slot modal stack (`useModal`/`openModal`) instead would unmount this very form
+// - EditEdge can itself be rendered as that one open modal - discarding whatever the user already
+// filled in.
+const ConfirmCreateNodeDialog: FC<{ label: string; onConfirm: () => void; onCancel: () => void }> = ({
+  label,
+  onConfirm,
+  onCancel,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <div role="dialog" className="modal fade show stacked-modal" style={{ display: "block" }}>
+        <div role="document" className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="gl-heading-2 gl-my-0">{t("edition.create_nodes")}</h5>
+            </div>
+            <div className="modal-body">{t("edition.confirm_create_node", { label })}</div>
+            <div className="modal-footer">
+              <div className="gl-actions">
+                <button type="button" className="gl-btn gl-btn-outline" onClick={onCancel}>
+                  {t("common.cancel")}
+                </button>
+                <button type="button" autoFocus className="gl-btn gl-btn-fill" onClick={onConfirm}>
+                  {t("common.confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal-backdrop fade show stacked-modal-backdrop"></div>
+    </>
+  );
+};
+
 const useEditEdgeForm = ({
   edgeId,
   source: initialSource,
@@ -92,13 +132,19 @@ const useEditEdgeForm = ({
   const { notify } = useNotifications();
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
-  const { createEdge, updateEdge } = useGraphDatasetActions();
+  const { createEdge, updateEdge, createNode } = useGraphDatasetActions();
   const { edgeData, layout, fullGraph, edgeFields: allEdgeFields } = useGraphDataset();
   // Read-only (eg. system date) and formula (scripted) fields are managed automatically, so they
   // are not editable through this form:
   const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.readOnly && !ef.script), [allEdgeFields]);
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
   const searchQuery = useSearchQuery();
+
+  // Which field drives a new node's label (falling back to the id, when there is no label field
+  // configured): same logic as EditNode, used below to create a node on the fly from the
+  // source/target search boxes.
+  const { nodesLabel } = useAppearance();
+  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
 
   const isNew = typeof edgeId === "undefined";
   const defaultValues = useMemo(() => {
@@ -165,6 +211,64 @@ const useEditEdgeForm = ({
     }
     onCancel();
   }, [select, existingEdgeIds, location.pathname, navigate, onCancel]);
+
+  // Set when the user picked the "create node «X»" search option on the source or target field:
+  // holds off actually creating anything until confirmed (see the confirmation dialog below).
+  const [nodeToCreate, setNodeToCreate] = useState<{ field: "source" | "target"; label: string } | null>(null);
+
+  // Appended to the source/target search results when the typed text matches no existing node, so
+  // it can be created on the fly rather than forcing the user to cancel, create it from the node
+  // panel, then come back here. Kept local to this form rather than a generic GraphSearch feature,
+  // since it is meaningful only for a node search tied to an edge's extremity.
+  const makeNodeCreationOption = useCallback(
+    (field: "source" | "target") =>
+      (options: Option[], query: string): Option[] => {
+        const label = query.trim();
+        if (!label || fullGraph.hasNode(label)) return options;
+        return [
+          ...options,
+          {
+            type: "message" as const,
+            i18nCode: "nodes.create_option",
+            i18nParams: { label },
+            action: () => setNodeToCreate({ field, label }),
+          },
+        ];
+      },
+    [fullGraph],
+  );
+
+  // A "message" option (eg. the node-creation one above) carries its own `action` instead of a
+  // graph item: selecting it must run that action rather than being treated as picking a node.
+  const handleExtremityChange = useCallback((option: Option | null, onFieldChange: (id?: string) => void) => {
+    if (option === null) {
+      onFieldChange(undefined);
+    } else if (option.type === "message") {
+      option.action?.();
+    } else {
+      onFieldChange(option.id);
+    }
+  }, []);
+
+  const confirmNodeCreation = useCallback(() => {
+    if (!nodeToCreate) return;
+    const { field, label } = nodeToCreate;
+    // Below the label field, an id is only ever a free-form field, so re-using it is what makes
+    // the created node findable/mergeable with anything typed the same way later; otherwise the id
+    // is purely internal, so a random one avoids colliding with anything else.
+    const id = labelFieldId === "id" ? label : crypto.randomUUID();
+    try {
+      createNode(id, labelFieldId === "id" ? {} : { [labelFieldId]: label });
+      setValue(field, id, { shouldDirty: true });
+    } catch (e) {
+      notify({
+        type: "error",
+        title: t("edition.create_nodes"),
+        message: (e as Error).message || t("error.unknown"),
+      });
+    }
+    setNodeToCreate(null);
+  }, [nodeToCreate, labelFieldId, createNode, setValue, notify, t]);
 
   // Autofocus the first empty field on mount, in render order (source, target, attributes, then
   // id): computed once from the initial values, so filling a field never steals focus elsewhere.
@@ -276,11 +380,8 @@ const useEditEdgeForm = ({
               }}
               render={({ field: { onChange, value } }) => (
                 <GraphSearch
-                  onChange={(option) => {
-                    if (option === null || "id" in option) {
-                      onChange(option?.id);
-                    }
-                  }}
+                  onChange={(option) => handleExtremityChange(option, onChange)}
+                  postProcessOptions={makeNodeCreationOption("source")}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
                   autoFocus={autoFocusIndex === 0}
@@ -318,11 +419,8 @@ const useEditEdgeForm = ({
               }}
               render={({ field: { onChange, value } }) => (
                 <GraphSearch
-                  onChange={(option) => {
-                    if (option === null || "id" in option) {
-                      onChange(option?.id);
-                    }
-                  }}
+                  onChange={(option) => handleExtremityChange(option, onChange)}
+                  postProcessOptions={makeNodeCreationOption("target")}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
                   autoFocus={autoFocusIndex === 1}
@@ -335,6 +433,14 @@ const useEditEdgeForm = ({
 
         {isNew && existingEdgeIds.length > 0 && (
           <DuplicateEdgeWarning edgeIds={existingEdgeIds} onClick={selectExistingEdges} />
+        )}
+
+        {nodeToCreate && (
+          <ConfirmCreateNodeDialog
+            label={nodeToCreate.label}
+            onConfirm={confirmNodeCreation}
+            onCancel={() => setNodeToCreate(null)}
+          />
         )}
 
         {fullGraph.type === "mixed" && (

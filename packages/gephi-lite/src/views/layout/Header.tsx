@@ -8,6 +8,7 @@ import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
+import { openFeedbackWidget } from "../../components/FeedbackWidget";
 import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
 import {
@@ -16,6 +17,7 @@ import {
   DataIcon,
   DataIconFill,
   ExternalLinkIcon,
+  FeedbackIcon,
   GraphIcon,
   GraphIconFill,
   HomeIcon,
@@ -238,8 +240,19 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           }),
       },
       { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
+      { label: t("gephi-lite.report_issue_auto"), icon: <FeedbackIcon />, onClick: openFeedbackWidget },
     ],
     [t, openModal],
+  );
+
+  // Same trigger + menu on mobile and desktop: a single icon opening "Signaler" / "Signaler auto"
+  // (and Home), instead of duplicating that markup once per breakpoint.
+  const logoMenuButton = (
+    <Dropdown options={logoMenuList} side="right">
+      <button className="gl-btn dropdown-toggle">
+        <GephiLogo height="1em" width="1em" />
+      </button>
+    </Dropdown>
   );
 
   return (
@@ -254,17 +267,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             <div className="flex-grow-1" />
             <ThemeSwitcher />
             <LocalSwitcher />
-            {logoMenuList.map(({ label, icon, onClick, url }, i) =>
-              url ? (
-                <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
-                  {icon}
-                </a>
-              ) : (
-                <button key={i} className="gl-btn" onClick={onClick} title={label}>
-                  {icon}
-                </button>
-              ),
-            )}
+            {logoMenuButton}
           </section>
         </div>
       </AnimateHeight>
@@ -304,11 +307,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           <div className="d-none d-sm-flex">
             <ThemeSwitcher />
             <LocalSwitcher />
-            <Dropdown options={logoMenuList} side="right">
-              <button className="gl-btn dropdown-toggle">
-                <GephiLogo height="1em" width="1em" />
-              </button>
-            </Dropdown>
+            {logoMenuButton}
           </div>
           {/* Mobile display: */}
           <button className="gl-btn gl-btn-icon d-sm-none" onClick={toggleExpanded}>

@@ -21,6 +21,7 @@ import {
   PiCaretRight,
   PiCaretUp,
   PiChartBar,
+  PiChatCircleDots,
   PiCheck,
   PiCheckCircle,
   PiCheckSquare,
@@ -87,6 +88,7 @@ import {
   PiTable,
   PiTableFill,
   PiTextT,
+  PiTranslate,
   PiTrash,
   PiUser,
   PiWarning,
@@ -127,6 +129,7 @@ export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const ExternalLinkIcon = PiArrowSquareOut;
+export const FeedbackIcon = PiChatCircleDots;
 export const FilterAddIcon = PiPlusCircle;
 export const FilterDeleteIcon = PiTrash;
 export const FilterEnabledIcon = PiCheckSquare;
@@ -142,6 +145,7 @@ export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
 export const HomeIcon = PiHouseLine;
 export const InvalidDataIcon = PiWarningCircle;
+export const LanguageIcon = PiTranslate;
 export const LassoIcon = PiLasso;
 export const LassoIconFill = PiLassoBold;
 export const LayoutsIcon = PiPolygon;

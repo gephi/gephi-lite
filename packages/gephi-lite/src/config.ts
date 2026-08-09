@@ -36,4 +36,12 @@ export const config = {
       setRequestMethod: "POST",
     },
   },
+  feedbackWidget: {
+    // Public key for https://github.com/JeanGarf/feedback-widget-js, registered against
+    // https://github.com/JeanGarf/feedback-service (set via VITE_FEEDBACK_KEY in the deploy
+    // workflows). Locally, it stays undefined, so the widget is simply not loaded.
+    scriptUrl: "https://cdn.jsdelivr.net/gh/JeanGarf/feedback-widget-js@main/src/w.js",
+    endpoint: import.meta.env.VITE_FEEDBACK_ENDPOINT,
+    key: import.meta.env.VITE_FEEDBACK_KEY,
+  },
 };

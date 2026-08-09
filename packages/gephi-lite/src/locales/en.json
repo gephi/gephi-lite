@@ -133,6 +133,7 @@
     "title": "Data overview"
   },
   "edition": {
+    "confirm_create_node": "Create a new node named {{label}}?",
     "confirm_delete_edges": "Are you sure you want to delete {{count, number}} edges?",
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
     "confirm_delete_nodes": "Are you sure you want to delete {{count, number}} nodes?",
@@ -226,6 +227,9 @@
   },
   "gephi-lite": {
     "info": "More info on Gephi Lite",
+    "open_welcome_modal": "Open welcome modal",
+    "report_issue": "Report an issue",
+    "report_issue_auto": "Report an issue automatically",
     "title": "Gephi Lite"
   },
   "github": {
@@ -701,6 +705,7 @@
       "select_all_nodes": "Add {{count, number}} nodes in the selection"
     },
     "nodes": {
+      "create_option": "Create node {{label}}",
       "help": "Type something to find a node",
       "no_result": "No node found",
       "other_result": "... and {{count, number}} other nodes",

@@ -225,6 +225,7 @@
     "all_edges": "Tous les liens",
     "all_nodes": "Tous les nœuds",
     "code_editor": "Éditeur de code",
+    "confirm_create_node": "Créer un nouveau nœud nommé « {{label}} » ?",
     "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
     "confirm_delete_edges": "Êtes-vous sûr de vouloir supprimer {{count, number}} liens ?",
     "confirm_delete_edges_one": "Êtes-vous sûr de vouloir supprimer ce lien ?",
@@ -397,6 +398,7 @@
     "info": "Plus d'informations sur Gephi Lite",
     "open_welcome_modal": "Ouvrir la modale d'accueil",
     "report_issue": "Signaler un problème",
+    "report_issue_auto": "Signaler un problème auto",
     "title": "Gephi Lite"
   },
   "github": {
@@ -948,6 +950,7 @@
       "select_all_nodes": "Ajouter {{count, number}} nœuds à la sélection"
     },
     "nodes": {
+      "create_option": "Créer le nœud « {{label}} »",
       "help": "Écrire quelque chose pour trouver un nœud",
       "no_result": "Aucun nœud trouvé",
       "other_result": "... et {{count, number}} autres nœuds",
