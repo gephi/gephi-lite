@@ -88,6 +88,7 @@ import {
   PiTable,
   PiTableFill,
   PiTextT,
+  PiTranslate,
   PiTrash,
   PiUser,
   PiWarning,
@@ -144,6 +145,7 @@ export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
 export const HomeIcon = PiHouseLine;
 export const InvalidDataIcon = PiWarningCircle;
+export const LanguageIcon = PiTranslate;
 export const LassoIcon = PiLasso;
 export const LassoIconFill = PiLassoBold;
 export const LayoutsIcon = PiPolygon;
