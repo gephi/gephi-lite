@@ -369,7 +369,7 @@
   "gephi-lite": {
     "open_welcome_modal": "Open welcome modal",
     "report_issue": "Report an issue",
-    "report_issue_auto": "Report an issue automatically",
+    "report_issue_auto": "Report an issue using feedback-service",
     "title": "Gephi Lite"
   },
   "graph": {
