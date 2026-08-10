@@ -91,7 +91,11 @@ const GraphTitle: FC<{ title?: string }> = ({ title }) => {
   );
 };
 
-export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void }> = ({ className, onOpenFilters }) => {
+export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void; children?: ReactNode }> = ({
+  className,
+  onOpenFilters,
+  children,
+}) => {
   const { t } = useTranslation();
   const filterState = useFilters();
   const filteredGraph = useFilteredGraph();
@@ -106,6 +110,7 @@ export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void }
   return (
     <div className={cx("graph-summary d-flex flex-column gl-gap-2", className)}>
       <GraphTitle title={metadata.title} />
+      {children}
       <div className="gl-px-2 gl-gap-x-2 d-flex flex-column position-relative">
         <div className="d-flex flex-row gl-gap-x-3" style={{ lineHeight: 1.2 }}>
           <GraphStat

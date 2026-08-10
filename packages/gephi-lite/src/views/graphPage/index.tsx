@@ -189,8 +189,9 @@ export const GraphPage: FC = () => {
         {/* Menu panel on left*/}
         <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
-            <GraphSummary onOpenFilters={openFilters} />
-            <GraphSearchSelection visible={isSearchPanelVisible} />
+            <GraphSummary onOpenFilters={openFilters}>
+              <GraphSearchSelection visible={isSearchPanelVisible} />
+            </GraphSummary>
             <SideMenu
               menu={MENU}
               selected={selectedTool?.id}
