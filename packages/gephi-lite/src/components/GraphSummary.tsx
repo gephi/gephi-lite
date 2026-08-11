@@ -1,13 +1,31 @@
 import type { ItemType } from "@gephi/gephi-lite-sdk";
+import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import { capitalize } from "lodash";
 import { type FC, type ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFilteredGraph, useFilters, useGraphDataset, usePreferences } from "../core/context/dataContexts";
+import {
+  useFilteredGraph,
+  useFilters,
+  useGraphDataset,
+  useLayoutActions,
+  useLayoutState,
+  usePreferences,
+} from "../core/context/dataContexts";
 import { getMostRecentlyUpdatedItem } from "../core/graph/dates";
 import { useModal } from "../core/modals";
-import { CreateEdgeIcon, CreateNodeIcon, EditIcon, FiltersIcon, FiltersIconFill } from "./common-icons";
+import { useNotifications } from "../core/notifications";
+import { sessionAtom } from "../core/session";
+import {
+  CreateEdgeIcon,
+  CreateNodeIcon,
+  EditIcon,
+  FiltersIcon,
+  FiltersIconFill,
+  PlayIconFill,
+  StopIconFill,
+} from "./common-icons";
 import { EdgeComponentById } from "./data/Edge";
 import { EditEdgeModal } from "./data/EditEdge";
 import { EditNodeModal } from "./data/EditNode";
@@ -91,6 +109,43 @@ const GraphTitle: FC<{ title?: string }> = ({ title }) => {
   );
 };
 
+// Toggles the last layout algorithm used in this session on/off, so it can be restarted without
+// reopening the layouts panel.
+const LastLayoutToggle: FC = () => {
+  const { t } = useTranslation();
+  const { notify } = useNotifications();
+  const [session] = useAtom(sessionAtom);
+  const layoutState = useLayoutState();
+  const { startLayout, stopLayout } = useLayoutActions();
+
+  const lastLayoutId = session.lastLayoutId;
+  const isRunning = layoutState.type === "running" && layoutState.layoutId === lastLayoutId;
+
+  if (!lastLayoutId) return null;
+
+  const layoutTitle = t(`layouts.${lastLayoutId}.title`);
+  const label = t(isRunning ? "layouts.exec.stop_last" : "layouts.exec.rerun_last", { layout: layoutTitle });
+
+  return (
+    <button
+      type="button"
+      className="gl-btn gl-btn-icon"
+      title={label}
+      aria-label={label}
+      onClick={async () => {
+        try {
+          if (isRunning) await stopLayout();
+          else await startLayout(lastLayoutId, session.layoutsParameters[lastLayoutId] || {});
+        } catch (e) {
+          notify({ type: "error", message: (e as Error).message });
+        }
+      }}
+    >
+      {isRunning ? <StopIconFill /> : <PlayIconFill />}
+    </button>
+  );
+};
+
 export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void; children?: ReactNode }> = ({
   className,
   onOpenFilters,
@@ -118,7 +173,12 @@ export const GraphSummary: FC<{ className?: string; onOpenFilters?: () => void; 
             current={filteredGraph.order}
             total={fullGraph.order}
             mostRecent={mostRecentNode}
-            footer={<span>{t(`graph.model.${fullGraph.type}_graph`)}</span>}
+            footer={
+              <div className="d-flex flex-row align-items-center gl-gap-1">
+                <span>{t(`graph.model.${fullGraph.type}_graph`)}</span>
+                <LastLayoutToggle />
+              </div>
+            }
           />
           <GraphStat type="edges" current={filteredGraph.size} total={fullGraph.size} mostRecent={mostRecentEdge} />
         </div>
