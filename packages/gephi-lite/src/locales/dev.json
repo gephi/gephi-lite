@@ -369,7 +369,7 @@
   "gephi-lite": {
     "open_welcome_modal": "Open welcome modal",
     "report_issue": "Report an issue",
-    "report_issue_auto": "Report an issue automatically",
+    "report_issue_auto": "Report an issue using feedback-service",
     "title": "Gephi Lite"
   },
   "graph": {
@@ -545,7 +545,9 @@
     },
     "description": "This panel allows computing new coordinates to nodes of the graph. ",
     "exec": {
+      "rerun_last": "Restart the last used layout ({{layout}})",
       "started": "Layout {{layout}} is running",
+      "stop_last": "Stop the running layout ({{layout}})",
       "stopped": "Layout {{layout}} has been stopped",
       "success": "Layout \"{{layout}}\" has successfully been applied."
     },

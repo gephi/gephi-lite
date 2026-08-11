@@ -398,7 +398,7 @@
     "info": "Plus d'informations sur Gephi Lite",
     "open_welcome_modal": "Ouvrir la modale d'accueil",
     "report_issue": "Signaler un problème",
-    "report_issue_auto": "Signaler un problème auto",
+    "report_issue_auto": "Signaler un problème avec feedback-service",
     "title": "Gephi Lite"
   },
   "github": {
@@ -618,7 +618,9 @@
     },
     "description": "Ce panneau permet de calculer de nouvelles coordonnées pour les nœuds du graphe.",
     "exec": {
+      "rerun_last": "Relancer la dernière spatialisation utilisée ({{layout}})",
       "started": "La spatialisation {{layout}} est en cours d'exécution",
+      "stop_last": "Arrêter la spatialisation en cours ({{layout}})",
       "stopped": "La spatialisation {{layout}} a été arrêtée",
       "success": "La spatialisation \"{{layout}}\" a bien été appliquée."
     },
