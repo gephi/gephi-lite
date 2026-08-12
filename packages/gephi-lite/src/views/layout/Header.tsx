@@ -1,3 +1,4 @@
+import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import FileSaver from "file-saver";
 import { type FC, PropsWithChildren, useCallback, useMemo, useState } from "react";
@@ -21,7 +22,9 @@ import {
   GraphIcon,
   GraphIconFill,
   HomeIcon,
+  PlayIconFill,
   SaveIcon,
+  StopIconFill,
   UnsavedChangesIcon,
 } from "../../components/common-icons";
 import { EditNodeModal } from "../../components/data/EditNode";
@@ -35,11 +38,57 @@ import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
-import { resetStates, useDataTable, useFile, useFileActions } from "../../core/context/dataContexts";
+import {
+  resetStates,
+  useDataTable,
+  useFile,
+  useFileActions,
+  useLayoutActions,
+  useLayoutState,
+} from "../../core/context/dataContexts";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
+import { sessionAtom } from "../../core/session";
 import { useConnectedUser } from "../../core/user";
+
+// Toggles the last layout algorithm used in this session on/off, so it can be restarted without
+// reopening the layouts panel. Sits next to the "Data" nav link (rather than under the graph stats)
+// so it stays reachable on mobile without unfolding the left panel.
+const LastLayoutToggle: FC = () => {
+  const { t } = useTranslation();
+  const { notify } = useNotifications();
+  const [session] = useAtom(sessionAtom);
+  const layoutState = useLayoutState();
+  const { startLayout, stopLayout } = useLayoutActions();
+
+  const lastLayoutId = session.lastLayoutId;
+  const isRunning = layoutState.type === "running" && layoutState.layoutId === lastLayoutId;
+
+  if (!lastLayoutId) return null;
+
+  const layoutTitle = t(`layouts.${lastLayoutId}.title`);
+  const label = t(isRunning ? "layouts.exec.stop_last" : "layouts.exec.rerun_last", { layout: layoutTitle });
+
+  return (
+    <button
+      type="button"
+      className="gl-btn gl-btn-icon"
+      title={label}
+      aria-label={label}
+      onClick={async () => {
+        try {
+          if (isRunning) await stopLayout();
+          else await startLayout(lastLayoutId, session.layoutsParameters[lastLayoutId] || {});
+        } catch (e) {
+          notify({ type: "error", message: (e as Error).message });
+        }
+      }}
+    >
+      {isRunning ? <StopIconFill /> : <PlayIconFill />}
+    </button>
+  );
+};
 
 // Persist the mobile header menu (burger) open/closed state across page navigations: each page
 // mounts its own <Header>, so a plain useState would reset the bar every time the user switches
@@ -301,6 +350,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
+          <LastLayoutToggle />
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}
