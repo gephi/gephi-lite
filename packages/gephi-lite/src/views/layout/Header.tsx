@@ -314,6 +314,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             </Dropdown>
             {saveButton}
             <div className="flex-grow-1" />
+            <LastLayoutToggle />
             <ThemeSwitcher />
             <LocalSwitcher />
             {logoMenuButton}
@@ -350,11 +351,11 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
-          <LastLayoutToggle />
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}
           <div className="d-none d-sm-flex">
+            <LastLayoutToggle />
             <ThemeSwitcher />
             <LocalSwitcher />
             {logoMenuButton}
