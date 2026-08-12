@@ -928,8 +928,8 @@
     "title": "Métriques"
   },
   "pages": {
-    "data": "Données",
-    "graph": "Réseau"
+    "data": "Data",
+    "graph": "Graph"
   },
   "providers": {
     "github": "GitHub"
