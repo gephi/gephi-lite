@@ -40,11 +40,11 @@
       "title": "Images"
     },
     "labels": {
-      "adapts_to_zoom": "Dans quelle mesure les libellés doivent-ils augmenter avec le zoom",
+      "adapts_to_zoom": "Taille fixe ou zoomable",
       "data": "Fichier de données",
       "data_description": "Tous les libellés des {{items}} sont ceux du fichier de données d'entrée.",
       "default_value": "Libellé pour {{items}} sans valeur valide",
-      "density": "Combien de libellés doivent apparaître à tout moment",
+      "density": "Seuil d'affichage des libellés",
       "ellipsis": {
         "enabled": "Tronquer les labels",
         "max_length": "Taille maximale des labels"
@@ -59,7 +59,7 @@
       "set_labels_from": "Définir le libellé à partir de...",
       "set_labels_size_from": "Définir la taille du libellé à partir de...",
       "size": "Taille des {{items}}",
-      "size_coef": "Tailles des libellés (plus grand rend les libellés plus grands)",
+      "size_coef": "Taille des libellés (si fixe ou zoom = 1)",
       "title": "Libellés"
     },
     "menu": {

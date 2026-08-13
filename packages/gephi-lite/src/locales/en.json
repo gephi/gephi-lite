@@ -33,11 +33,11 @@
       "title": "Images"
     },
     "labels": {
-      "adapts_to_zoom": "How much labels should grow with zoom",
+      "adapts_to_zoom": "Fixed or Zoomable label size",
       "data": "Input data",
       "data_description": "All {{items}} labels are as they are in the input data file.",
       "default_value": "Label for {{items}} with no valid value",
-      "density": "How many labels should appear any time",
+      "density": "Label display threshold",
       "fixed": "A constant text",
       "fixed_label": "Label for every {{items}}",
       "fixed_label_size": "Label size for every {{items}}",
@@ -47,7 +47,7 @@
       "set_labels_from": "Set label from...",
       "set_labels_size_from": "Set label sizes from...",
       "size": "{{items}} size",
-      "size_coef": "Labels sizes (higher makes labels appear bigger)",
+      "size_coef": "Labels size (when fixed or zoom = 1)",
       "title": "Labels"
     },
     "no_caption": "(no caption)",
