@@ -4,6 +4,7 @@ import {
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
   DEFAULT_NODE_SIZE,
+  MIN_RENDERED_LABEL_SIZE,
   StaticDynamicItemData,
   toString,
 } from "@gephi/gephi-lite-sdk";
@@ -395,6 +396,8 @@ export function getDrawNodeLabel<N extends Attributes, E extends Attributes, G e
     if (nodesLabelSize.zoomCorrelation >= 1) labelSize = (labelSize * data.size) / data.rawSize;
     else if (nodesLabelSize.zoomCorrelation >= 0)
       labelSize = labelSize * Math.pow(data.size / data.rawSize, nodesLabelSize.zoomCorrelation);
+    // Small nodes must stay readable, typically the tiny neighbors of a hovered node:
+    labelSize = Math.max(labelSize, MIN_RENDERED_LABEL_SIZE);
 
     let nodeLabel = data.label;
     if (

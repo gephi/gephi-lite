@@ -1,8 +1,10 @@
+import { SigmaGraph } from "@gephi/gephi-lite-sdk";
 import { Attributes } from "graphology-types";
 import { drawDiscNodeLabel } from "sigma/rendering";
 import { Settings } from "sigma/settings";
 import { NodeDisplayData, PartialButFor } from "sigma/types";
 
+import { SelectionState } from "../selection/types";
 import { SigmaState } from "./types";
 
 /**
@@ -16,6 +18,35 @@ export function getEmptySigmaState(): SigmaState {
     hoveredEdge: null,
     highlightedNodes: null,
   };
+}
+
+/**
+ * Returns the nodes currently emphasized: the ones explicitly listed in the sigma state, or else
+ * the selected nodes (or the extremities of the selected edges), plus the hovered node and its
+ * neighbors. As soon as some nodes are emphasized, they are the only ones to be labelled.
+ */
+export function getEmphasizedNodes({
+  graph,
+  selection,
+  hoveredNode,
+  emphasizedNodes,
+}: {
+  graph: SigmaGraph;
+  selection: SelectionState;
+  hoveredNode: string | null;
+  emphasizedNodes: Set<string> | null;
+}): Set<string> {
+  if (emphasizedNodes) return emphasizedNodes;
+
+  return new Set([
+    ...(selection.type === "nodes" ? Array.from(selection.items) : []),
+    // When edges are selected, emphasize their source and target nodes so that only
+    // those node labels are shown (same treatment as selecting the nodes directly).
+    ...(selection.type === "edges"
+      ? Array.from(selection.items).flatMap((edge) => (graph.hasEdge(edge) ? [graph.source(edge), graph.target(edge)] : []))
+      : []),
+    ...(hoveredNode ? [hoveredNode, ...graph.neighbors(hoveredNode)] : []),
+  ]);
 }
 
 export function drawDiscNodeHover<

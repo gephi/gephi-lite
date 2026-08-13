@@ -361,8 +361,9 @@ function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraStat
  */
 export function findNodeAtLabel(sigma: Sigma, viewportX: number, viewportY: number): string | null {
   const graph = sigma.getGraph();
-  // Only test labels sigma actually rendered this frame (respects the density/size-threshold
-  // culling), falling back to every visible node if that internal, undocumented set is absent.
+  // Only test labels sigma actually rendered this frame (respects the labels budget, see
+  // applyNodeLabelsBudget), falling back to every visible node if that internal, undocumented set
+  // is absent.
   // Note: this set is populated regardless of the app's own custom "hideLabel" appearance flag
   // (e.g. every non-emphasized node's label while another item is selected) — that flag is only
   // applied afterwards, inside the wrapped draw function — so it must be re-checked below.

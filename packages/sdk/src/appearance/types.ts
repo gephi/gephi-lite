@@ -90,7 +90,15 @@ export interface FieldStringAttr extends AppearanceBaseElement {
 }
 export type StringAttr = NoStringAttr | FixedStringAttr | FieldStringAttr;
 
-export type BaseLabelSize = { density: number; zoomCorrelation: number };
+export type BaseLabelSize = {
+  /**
+   * How many node labels should be displayed at once, on a reference-sized screen (the actual
+   * budget is scaled to the viewport, see `getNodeLabelsBudget`). It is optional, since states
+   * saved before this setting existed don't have it: always read it through `getLabelsCount`.
+   */
+  labelsCount?: number;
+  zoomCorrelation: number;
+};
 export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: number };
 export type ItemLabelSize = NoFieldValue<"item"> & BaseLabelSize & { sizeCorrelation: number };
 export type LabelSize = FixedLabelSize | ItemLabelSize;
