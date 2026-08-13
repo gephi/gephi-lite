@@ -18,11 +18,11 @@
       "title": "색상"
     },
     "labels": {
-      "adapts_to_zoom": "줌 할 때 라벨이 얼마나 커져야 하는지",
+      "adapts_to_zoom": "고정 또는 확대 가능한 라벨 크기",
       "data": "데이터 입력",
       "data_description": "{{items}} 모든 라벨은 입력 데이터 파일에 있는 것과 같습니다.",
       "default_value": "유효값을 갖지 않는 {{items}}의 라벨",
-      "density": "얼마나 많은 라벨이 표시되어야 하는지",
+      "density": "라벨 표시 임계값",
       "fixed": "기본 텍스트",
       "fixed_label": "모든 {{items}} 라벨",
       "fixed_label_size": "모든 {{items}} 라벨 크기",
@@ -32,7 +32,7 @@
       "set_labels_from": "라벨 설정...",
       "set_labels_size_from": "라벨 크기 설정...",
       "size": "{{items}} 크기",
-      "size_coef": "라벨 크기 (높은 값이 크게 표시됨)",
+      "size_coef": "라벨 크기 (고정 또는 줌 = 1일 때)",
       "title": "라벨"
     },
     "no_caption": "(캡션 없음)",

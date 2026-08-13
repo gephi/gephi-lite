@@ -34,9 +34,9 @@
       "title": "Images"
     },
     "labels": {
-      "adapts_to_zoom": "How much labels should grow with zoom",
+      "adapts_to_zoom": "Fixed or Zoomable label size",
       "default_value": "Label for {{items}} with no valid value",
-      "density": "How many labels should appear any time",
+      "density": "Label display threshold",
       "ellipsis": {
         "enabled": "Shorten labels",
         "max_length": "Maximum labels length"
@@ -51,7 +51,7 @@
       "set_labels_from": "Set label from...",
       "set_labels_size_from": "Set label sizes from...",
       "size": "{{items}} size",
-      "size_coef": "Labels sizes (higher makes labels appear bigger)"
+      "size_coef": "Labels size (when fixed or zoom = 1)"
     },
     "menu": {
       "background": "Background",
