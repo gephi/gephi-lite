@@ -18,11 +18,11 @@
       "title": "Szín"
     },
     "labels": {
-      "adapts_to_zoom": "Mennyire nőjenek a címkék a nagyítással",
+      "adapts_to_zoom": "Rögzített vagy nagyítható címkeméret",
       "data": "Beviteli adat",
       "data_description": "Az összes {{items}} címke olyan, mint a bemeneti adatfájlban.",
       "default_value": "A {{items}} címke érvényes érték nélkül",
-      "density": "Hány címke jelenjen meg bármikor",
+      "density": "Címkék megjelenítési küszöbe",
       "fixed": "Állandó szöveg",
       "fixed_label": "Minden cimke {{items}}",
       "fixed_label_size": "Címkeméret minden {{items}} esetben",
@@ -32,7 +32,7 @@
       "set_labels_from": "Címke beállítása innen...",
       "set_labels_size_from": "Címkeméretek beállítása innen...",
       "size": "{{items}} méret",
-      "size_coef": "Címkeméretek (a nagyobb címkék nagyobbnak tűnnek)",
+      "size_coef": "Címkeméret (ha rögzített vagy zoom = 1)",
       "title": "Címkék"
     },
     "no_caption": "(nincs felirat)",
