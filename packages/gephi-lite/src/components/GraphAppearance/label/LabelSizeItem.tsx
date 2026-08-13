@@ -1,3 +1,4 @@
+import { DEFAULT_LABELS_COUNT, getLabelsCount } from "@gephi/gephi-lite-sdk";
 import { capitalize } from "lodash";
 import { FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,7 +7,7 @@ import { DEFAULT_EDGE_LABEL_SIZE, DEFAULT_NODE_LABEL_SIZE } from "../../../core/
 import { useAppearance, useAppearanceActions } from "../../../core/context/dataContexts";
 import { ItemType } from "../../../core/types";
 import { Select } from "../../forms/Select";
-import { SliderInput } from "../../forms/TypedInputs";
+import { NumberInput, SliderInput } from "../../forms/TypedInputs";
 
 export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { t } = useTranslation();
@@ -96,34 +97,24 @@ export const LabelSizeItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
         }
         label={t("appearance.labels.adapts_to_zoom")}
       />
-      <SliderInput
-        value={labelSizeDef.density}
-        min={0.1}
-        max={10}
-        step={0.1}
-        onChange={(v) =>
-          setLabelSizeAppearance(itemType, {
-            ...labelSizeDef,
-            density: v,
-          })
-        }
-        marks={{
-          0.1: {
-            label: "(less labels)",
-            style: {
-              transform: "translateX(0)",
-            },
-          },
-          10: {
-            label: "(more labels)",
-            style: {
-              whiteSpace: "nowrap",
-              transform: "translateX(-100%)",
-            },
-          },
-        }}
-        label={t("appearance.labels.density")}
-      />
+      {itemType === "nodes" && (
+        <div className="mt-1">
+          <NumberInput
+            id={`${itemType}-labelsCount`}
+            value={getLabelsCount(labelSizeDef)}
+            min={0}
+            step={1}
+            onChange={(v) =>
+              setLabelSizeAppearance(itemType, {
+                ...labelSizeDef,
+                labelsCount: Math.max(0, Math.round(v ?? DEFAULT_LABELS_COUNT)),
+              })
+            }
+            label={t("appearance.labels.labels_count")}
+            description={t("appearance.labels.labels_count_description")}
+          />
+        </div>
+      )}
     </div>
   );
 };
