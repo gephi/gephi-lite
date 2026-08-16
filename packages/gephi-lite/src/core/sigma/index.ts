@@ -7,7 +7,7 @@ import { CameraState } from "sigma/types";
 
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaState } from "./types";
-import { getEmptySigmaState } from "./utils";
+import { VISIBLE_BAND_SELECTOR, getEmptySigmaState, getVisibleBand } from "./utils";
 
 /**
  * Producers:
@@ -202,7 +202,7 @@ let pendingFocus: { type: "nodes" | "edges"; id: string } | null = null;
  * both conditions hold within a couple of frames. Gives up after ~1s so a focus always happens.
  */
 function runWhenReadyToFrame(nodeIds: string[], run: () => void) {
-  const getHeight = () => document.querySelector(".filler")?.getBoundingClientRect().height ?? 0;
+  const getHeight = () => document.querySelector(VISIBLE_BAND_SELECTOR)?.getBoundingClientRect().height ?? 0;
   const start = performance.now();
   let lastHeight = getHeight();
   let stableFrames = 0;
@@ -246,14 +246,7 @@ function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraStat
   const currentRatio = camera.ratio || 1;
   const PADDING = 28; // px of breathing room kept on each side of the visible band
 
-  // Visible band, in viewport coordinates (0,0 = canvas top-left). ".filler" is the graph
-  // area left uncovered by the panels/header; fall back to the whole canvas if absent.
-  const containerRect = sigma.getContainer().getBoundingClientRect();
-  const fillerRect = document.querySelector(".filler")?.getBoundingClientRect();
-  const bandLeft = fillerRect ? fillerRect.left - containerRect.left : 0;
-  const bandTop = fillerRect ? fillerRect.top - containerRect.top : 0;
-  const bandWidth = fillerRect ? fillerRect.width : width;
-  const bandHeight = fillerRect ? fillerRect.height : height;
+  const { left: bandLeft, top: bandTop, width: bandWidth, height: bandHeight } = getVisibleBand(sigma);
   const bandCenterX = bandLeft + bandWidth / 2;
   const bandCenterY = bandTop + bandHeight / 2;
 
@@ -361,8 +354,9 @@ function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraStat
  */
 export function findNodeAtLabel(sigma: Sigma, viewportX: number, viewportY: number): string | null {
   const graph = sigma.getGraph();
-  // Only test labels sigma actually rendered this frame (respects the density/size-threshold
-  // culling), falling back to every visible node if that internal, undocumented set is absent.
+  // Only test labels sigma actually rendered this frame (respects the labels budget, see
+  // applyNodeLabelsBudget), falling back to every visible node if that internal, undocumented set
+  // is absent.
   // Note: this set is populated regardless of the app's own custom "hideLabel" appearance flag
   // (e.g. every non-emphasized node's label while another item is selected) — that flag is only
   // applied afterwards, inside the wrapped draw function — so it must be re-checked below.

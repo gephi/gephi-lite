@@ -44,7 +44,6 @@
       "data": "Fichier de données",
       "data_description": "Tous les libellés des {{items}} sont ceux du fichier de données d'entrée.",
       "default_value": "Libellé pour {{items}} sans valeur valide",
-      "density": "Seuil d'affichage des libellés",
       "ellipsis": {
         "enabled": "Tronquer les labels",
         "max_length": "Taille maximale des labels"
@@ -54,6 +53,8 @@
       "fixed_label_size": "Taille du libellé pour chaque {{items}}",
       "fixed_size": "Taille fixe",
       "id": "Identifiant",
+      "labels_count": "Nombre de libellés affichés",
+      "labels_count_description": "Nombre de libellés de nœuds affichés simultanément. Les nœuds les plus gros de la zone visible sont libellés en priorité, en les répartissant sur l'écran.",
       "none": "Pas de libellé",
       "none_description": "Tous les {{items}} n'ont pas de libellé affiché.",
       "set_labels_from": "Définir le libellé à partir de...",
