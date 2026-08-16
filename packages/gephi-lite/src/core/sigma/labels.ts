@@ -3,6 +3,7 @@ import { clamp } from "lodash";
 import { Dimensions, NodeDisplayData } from "sigma/types";
 
 import { GephiLiteSigma } from "../graph/types";
+import { VISIBLE_BAND_SELECTOR, VisibleBand, getVisibleBand } from "./utils";
 
 /**
  * Node labels budget:
@@ -18,14 +19,17 @@ import { GephiLiteSigma } from "../graph/types";
  * nodes of the visible area, spread over the viewport, and have sigma render only those.
  */
 
-/** Viewport area (in px²) the configured labels count refers to: */
-const REFERENCE_VIEWPORT_AREA = 1280 * 800;
+/** Area (in px²) of the visible band the configured labels count refers to (a desktop screen): */
+const REFERENCE_BAND_AREA = 1100 * 750;
 /** A bigger screen displays more labels than configured, but not unboundedly: */
 const MAX_BUDGET_RATIO = 2;
 /** A small screen displays less labels than configured, but never less than that: */
-const MIN_LABELS_BUDGET = 3;
-/** Nodes slightly outside of the viewport are eligible, since labels are drawn on the right of their node: */
-const VIEWPORT_MARGIN = 50;
+const MIN_LABELS_BUDGET = 5;
+/**
+ * Nodes closer than that to the edge of the screen are skipped: their label, drawn on the right of
+ * the node, would be cut off, and would waste a slot of the budget for something barely readable.
+ */
+const VIEWPORT_INNER_MARGIN = 50;
 /** How many times the grid may be refined when the visible nodes are too clustered to fill the budget: */
 const MAX_GRID_PASSES = 3;
 
@@ -50,19 +54,21 @@ function compareLabelCandidates(a: LabelCandidate, b: LabelCandidate): number {
 }
 
 /**
- * Returns how many labels may be displayed at once on the given viewport: the configured count is
- * expressed for a reference-sized screen, and scaled to the actual area available, so that a phone
- * screen does not get as crowded as a desktop one.
+ * Returns how many labels may be displayed at once on the given visible band: the configured count
+ * is expressed for a desktop-sized band, and scaled to the space actually available, so that a
+ * phone screen does not get as crowded as a desktop one. That scaling follows the *linear* size of
+ * the band (hence the square root of the areas ratio): scaling on the areas themselves drops a
+ * phone to a fifth of the configured count, which is far too few.
  */
 export function getNodeLabelsBudget({ width, height }: Dimensions, labelsCount: number): number {
   if (labelsCount <= 0) return 0;
-  const scaled = Math.round((labelsCount * width * height) / REFERENCE_VIEWPORT_AREA);
+  const scaled = Math.round(labelsCount * Math.sqrt((width * height) / REFERENCE_BAND_AREA));
   return clamp(scaled, Math.min(labelsCount, MIN_LABELS_BUDGET), labelsCount * MAX_BUDGET_RATIO);
 }
 
 /**
- * Returns the nodes whose label should be displayed: the biggest ones among those on screen, and
- * spread over the viewport rather than piled up on its densest area.
+ * Returns the nodes whose label should be displayed: the biggest ones among those well inside the
+ * screen, and spread over the viewport rather than piled up on its densest area.
  *
  * The viewport is split in a grid of roughly `budget` square cells, and only the best candidate of
  * each cell is kept, which is what spreads the labels: when many nodes share the same size (the
@@ -72,15 +78,18 @@ export function getNodeLabelsBudget({ width, height }: Dimensions, labelsCount: 
  */
 export function selectNodeLabels(
   sigma: GephiLiteSigma,
+  band: VisibleBand,
   budget: number,
   previous: Pick<Set<string>, "has">,
 ): Set<string> {
   if (budget <= 0) return new Set();
 
   const graph = sigma.getGraph();
-  const { width, height } = sigma.getDimensions();
-  const topLeft = sigma.viewportToGraph({ x: -VIEWPORT_MARGIN, y: -VIEWPORT_MARGIN });
-  const bottomRight = sigma.viewportToGraph({ x: width + VIEWPORT_MARGIN, y: height + VIEWPORT_MARGIN });
+  const { left, top, width, height } = band;
+  // The margin is kept a fraction of the band, so that it stays sane on a small screen:
+  const margin = Math.min(VIEWPORT_INNER_MARGIN, width / 4, height / 4);
+  const topLeft = sigma.viewportToGraph({ x: left + margin, y: top + margin });
+  const bottomRight = sigma.viewportToGraph({ x: left + width - margin, y: top + height - margin });
   const xMin = Math.min(topLeft.x, bottomRight.x);
   const yMin = Math.min(topLeft.y, bottomRight.y);
   const spanX = Math.abs(bottomRight.x - topLeft.x) || 1;
@@ -181,8 +190,9 @@ export function applyNodeLabelsBudget(
     const { nodesWithForcedLabels: forcedLabels, nodeDataCache } = internals;
     if (!forcedLabels || !nodeDataCache) return;
 
-    const budget = enabled ? getNodeLabelsBudget(sigma.getDimensions(), labelsCount) : 0;
-    const labels = selectNodeLabels(sigma, budget, ownLabels);
+    const band = getVisibleBand(sigma);
+    const budget = enabled ? getNodeLabelsBudget(band, labelsCount) : 0;
+    const labels = selectNodeLabels(sigma, band, budget, ownLabels);
     release(labels);
 
     const applied = new Map<string, NodeDisplayData>();
@@ -199,8 +209,15 @@ export function applyNodeLabelsBudget(
   sigma.on("beforeRender", update);
   sigma.scheduleRender();
 
+  // Opening or closing a panel does not resize the canvas, only the band left visible, so sigma
+  // would not redraw by itself and labels would stay hidden behind that panel:
+  const bandElement = document.querySelector(VISIBLE_BAND_SELECTOR);
+  const bandObserver = bandElement ? new ResizeObserver(() => sigma.scheduleRender()) : null;
+  if (bandElement) bandObserver?.observe(bandElement);
+
   return () => {
     sigma.off("beforeRender", update);
+    bandObserver?.disconnect();
     release();
     ownLabels = new Map();
   };

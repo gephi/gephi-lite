@@ -1,11 +1,15 @@
 import { SigmaGraph } from "@gephi/gephi-lite-sdk";
 import { Attributes } from "graphology-types";
+import Sigma from "sigma";
 import { drawDiscNodeLabel } from "sigma/rendering";
 import { Settings } from "sigma/settings";
 import { NodeDisplayData, PartialButFor } from "sigma/types";
 
 import { SelectionState } from "../selection/types";
 import { SigmaState } from "./types";
+
+/** The graph area left uncovered by the header and the panels (see `getVisibleBand`): */
+export const VISIBLE_BAND_SELECTOR = ".filler";
 
 /**
  * Returns an empty sigma state:
@@ -17,6 +21,31 @@ export function getEmptySigmaState(): SigmaState {
     hoveredNode: null,
     hoveredEdge: null,
     highlightedNodes: null,
+  };
+}
+
+/**
+ * Returns the part of the sigma canvas the user actually sees, in viewport coordinates (0,0 = canvas
+ * top-left): the header and the left/right panels are drawn on top of the canvas, and ".filler" is
+ * exactly the graph rectangle left visible between them, whatever panels happen to be open or
+ * closed. Falls back to the whole canvas when that element is absent.
+ */
+export interface VisibleBand {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+export function getVisibleBand(sigma: Sigma): VisibleBand {
+  const { width, height } = sigma.getDimensions();
+  const containerRect = sigma.getContainer().getBoundingClientRect();
+  const fillerRect = document.querySelector(VISIBLE_BAND_SELECTOR)?.getBoundingClientRect();
+
+  return {
+    left: fillerRect ? fillerRect.left - containerRect.left : 0,
+    top: fillerRect ? fillerRect.top - containerRect.top : 0,
+    width: fillerRect ? fillerRect.width : width,
+    height: fillerRect ? fillerRect.height : height,
   };
 }
 
