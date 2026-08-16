@@ -8,6 +8,7 @@
 
 - **Pré-production** (branche `develop`, déployée sur `https://jeangarf.github.io/gephi-lite/preprod/`) : je peux merger dans `develop` et pousser **sans demander**.
 - **Production** (branche `main_jg`, déployée sur `https://jeangarf.github.io/gephi-lite/`) : je dois **toujours demander** avant de merger `develop` dans `main_jg` et de pousser.
+- Après avoir propagé en production, **toujours revenir sur `develop`**.
 
 ## Synchronisation des branches
 
