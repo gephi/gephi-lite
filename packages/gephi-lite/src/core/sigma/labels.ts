@@ -20,10 +20,13 @@ import { VISIBLE_BAND_SELECTOR, VisibleBand, getVisibleBand } from "./utils";
  */
 
 /**
- * Nodes closer than that to the edge of the screen are skipped: their label, drawn on the right of
- * the node, would be cut off, and would waste a slot of the budget for something barely readable.
+ * Nodes closer than that to an edge of the screen are skipped, as their label would be cut off and
+ * would waste a slot of the budget for something barely readable. Since labels are drawn on the
+ * right of their node, the sides are not equivalent: a node entering from the left shows its whole
+ * label as soon as it is on screen (hence no margin there), whereas one near the right edge sees
+ * its label run off screen.
  */
-const VIEWPORT_INNER_MARGIN = 50;
+const VIEWPORT_INNER_MARGINS = { left: 0, right: 25, vertical: 50 };
 /** How many times the grid may be refined when the visible nodes are too clustered to fill the budget: */
 const MAX_GRID_PASSES = 3;
 
@@ -67,10 +70,15 @@ export function selectNodeLabels(
 
   const graph = sigma.getGraph();
   const { left, top, width, height } = band;
-  // The margin is kept a fraction of the band, so that it stays sane on a small screen:
-  const margin = Math.min(VIEWPORT_INNER_MARGIN, width / 4, height / 4);
-  const topLeft = sigma.viewportToGraph({ x: left + margin, y: top + margin });
-  const bottomRight = sigma.viewportToGraph({ x: left + width - margin, y: top + height - margin });
+  // Margins are kept a fraction of the band, so that they stay sane on a small screen:
+  const marginLeft = Math.min(VIEWPORT_INNER_MARGINS.left, width / 4);
+  const marginRight = Math.min(VIEWPORT_INNER_MARGINS.right, width / 4);
+  const marginVertical = Math.min(VIEWPORT_INNER_MARGINS.vertical, height / 4);
+  const topLeft = sigma.viewportToGraph({ x: left + marginLeft, y: top + marginVertical });
+  const bottomRight = sigma.viewportToGraph({
+    x: left + width - marginRight,
+    y: top + height - marginVertical,
+  });
   const xMin = Math.min(topLeft.x, bottomRight.x);
   const yMin = Math.min(topLeft.y, bottomRight.y);
   const spanX = Math.abs(bottomRight.x - topLeft.x) || 1;
