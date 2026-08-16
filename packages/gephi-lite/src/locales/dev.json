@@ -46,7 +46,7 @@
       "fixed_size": "Fixed size",
       "id": "Id",
       "labels_count": "Number of displayed labels",
-      "labels_count_description": "How many node labels are displayed at once, for a standard-sized screen (adjusted to the actual window size). The biggest nodes of the visible area are labelled first, spread over the screen.",
+      "labels_count_description": "How many node labels are displayed at once. The biggest nodes of the visible area are labelled first, spread over the screen.",
       "none": "No label",
       "none_description": "All {{items}} have no displayed label.",
       "set_labels_from": "Set label from...",
