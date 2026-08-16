@@ -54,7 +54,7 @@
       "fixed_size": "Taille fixe",
       "id": "Identifiant",
       "labels_count": "Nombre de libellés affichés",
-      "labels_count_description": "Nombre de libellés de nœuds affichés simultanément, pour un écran de taille standard (adapté à la taille réelle de la fenêtre). Les nœuds les plus gros de la zone visible sont libellés en priorité, en les répartissant sur l'écran.",
+      "labels_count_description": "Nombre de libellés de nœuds affichés simultanément. Les nœuds les plus gros de la zone visible sont libellés en priorité, en les répartissant sur l'écran.",
       "none": "Pas de libellé",
       "none_description": "Tous les {{items}} n'ont pas de libellé affiché.",
       "set_labels_from": "Définir le libellé à partir de...",

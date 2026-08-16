@@ -1,6 +1,6 @@
 import { DEFAULT_NODE_SIZE } from "@gephi/gephi-lite-sdk";
 import { clamp } from "lodash";
-import { Dimensions, NodeDisplayData } from "sigma/types";
+import { NodeDisplayData } from "sigma/types";
 
 import { GephiLiteSigma } from "../graph/types";
 import { VISIBLE_BAND_SELECTOR, VisibleBand, getVisibleBand } from "./utils";
@@ -19,12 +19,6 @@ import { VISIBLE_BAND_SELECTOR, VisibleBand, getVisibleBand } from "./utils";
  * nodes of the visible area, spread over the viewport, and have sigma render only those.
  */
 
-/** Area (in px²) of the visible band the configured labels count refers to (a desktop screen): */
-const REFERENCE_BAND_AREA = 1100 * 750;
-/** A bigger screen displays more labels than configured, but not unboundedly: */
-const MAX_BUDGET_RATIO = 2;
-/** A small screen displays less labels than configured, but never less than that: */
-const MIN_LABELS_BUDGET = 5;
 /**
  * Nodes closer than that to the edge of the screen are skipped: their label, drawn on the right of
  * the node, would be cut off, and would waste a slot of the budget for something barely readable.
@@ -51,19 +45,6 @@ function compareLabelCandidates(a: LabelCandidate, b: LabelCandidate): number {
   if (a.kept !== b.kept) return a.kept ? -1 : 1;
   if (a.degree !== b.degree) return b.degree - a.degree;
   return a.key < b.key ? -1 : 1;
-}
-
-/**
- * Returns how many labels may be displayed at once on the given visible band: the configured count
- * is expressed for a desktop-sized band, and scaled to the space actually available, so that a
- * phone screen does not get as crowded as a desktop one. That scaling follows the *linear* size of
- * the band (hence the square root of the areas ratio): scaling on the areas themselves drops a
- * phone to a fifth of the configured count, which is far too few.
- */
-export function getNodeLabelsBudget({ width, height }: Dimensions, labelsCount: number): number {
-  if (labelsCount <= 0) return 0;
-  const scaled = Math.round(labelsCount * Math.sqrt((width * height) / REFERENCE_BAND_AREA));
-  return clamp(scaled, Math.min(labelsCount, MIN_LABELS_BUDGET), labelsCount * MAX_BUDGET_RATIO);
 }
 
 /**
@@ -191,8 +172,9 @@ export function applyNodeLabelsBudget(
     if (!forcedLabels || !nodeDataCache) return;
 
     const band = getVisibleBand(sigma);
-    const budget = enabled ? getNodeLabelsBudget(band, labelsCount) : 0;
-    const labels = selectNodeLabels(sigma, band, budget, ownLabels);
+    // The configured count is displayed as such on every device: a phone shows as many labels as a
+    // desktop screen, only more tightly packed, which is what one expects when setting a number.
+    const labels = selectNodeLabels(sigma, band, enabled ? labelsCount : 0, ownLabels);
     release(labels);
 
     const applied = new Map<string, NodeDisplayData>();

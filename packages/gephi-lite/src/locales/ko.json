@@ -27,7 +27,7 @@
       "fixed_label_size": "모든 {{items}} 라벨 크기",
       "fixed_size": "고정 크기",
       "labels_count": "표시되는 라벨 수",
-      "labels_count_description": "표준 크기 화면 기준으로 동시에 표시되는 노드 라벨의 수입니다(실제 창 크기에 맞게 조정됨). 보이는 영역에서 가장 큰 노드부터 화면에 고르게 분포되어 라벨이 표시됩니다.",
+      "labels_count_description": "동시에 표시되는 노드 라벨의 수입니다. 보이는 영역에서 가장 큰 노드부터 화면에 고르게 분포되어 라벨이 표시됩니다.",
       "none": "라벨 없음",
       "none_description": "{{items}} 모두 표시된 라벨이 없습니다.",
       "set_labels_from": "라벨 설정...",

@@ -27,7 +27,7 @@
       "fixed_label_size": "Címkeméret minden {{items}} esetben",
       "fixed_size": "Fix méret",
       "labels_count": "Megjelenített címkék száma",
-      "labels_count_description": "Hány csomópontcímke jelenik meg egyszerre, szabványos méretű képernyőn (az ablak tényleges méretéhez igazítva). A látható terület legnagyobb csomópontjai kapnak elsőként címkét, a képernyőn elosztva.",
+      "labels_count_description": "Hány csomópontcímke jelenik meg egyszerre. A látható terület legnagyobb csomópontjai kapnak elsőként címkét, a képernyőn elosztva.",
       "none": "Nincs cimke",
       "none_description": "Az összes {{items}} elemnek nincs megjelenített címkéje.",
       "set_labels_from": "Címke beállítása innen...",
