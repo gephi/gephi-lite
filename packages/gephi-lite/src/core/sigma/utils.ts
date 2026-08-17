@@ -12,6 +12,15 @@ import { SigmaState } from "./types";
 export const VISIBLE_BAND_SELECTOR = ".filler";
 
 /**
+ * Geometry of a node label as drawn by sigma (`drawDiscNodeLabel`), as ratios of its font size: the
+ * text baseline sits a third of that size below the center of the node, and the glyphs span from
+ * 0.8 above that baseline down to 0.3 below it.
+ */
+export const LABEL_BASELINE_RATIO = 1 / 3;
+export const LABEL_ASCENT_RATIO = 0.8;
+export const LABEL_DESCENT_RATIO = 0.3;
+
+/**
  * Returns an empty sigma state:
  */
 export function getEmptySigmaState(): SigmaState {
