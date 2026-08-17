@@ -3,7 +3,13 @@ import { clamp } from "lodash";
 import { NodeDisplayData } from "sigma/types";
 
 import { GephiLiteSigma } from "../graph/types";
-import { VISIBLE_BAND_SELECTOR, VisibleBand, getVisibleBand } from "./utils";
+import {
+  LABEL_BASELINE_RATIO,
+  LABEL_DESCENT_RATIO,
+  VISIBLE_BAND_SELECTOR,
+  VisibleBand,
+  getVisibleBand,
+} from "./utils";
 
 /**
  * Node labels budget:
@@ -20,13 +26,25 @@ import { VISIBLE_BAND_SELECTOR, VisibleBand, getVisibleBand } from "./utils";
  */
 
 /**
- * Nodes closer than that to an edge of the screen are skipped, as their label would be cut off and
- * would waste a slot of the budget for something barely readable. Since labels are drawn on the
- * right of their node, the sides are not equivalent: a node entering from the left shows its whole
- * label as soon as it is on screen (hence no margin there), whereas one near the right edge sees
- * its label run off screen.
+ * Biggest label font size (in px) the vertical margin below is meant to accommodate. Above that,
+ * the bottom of a label sitting right against the edge of the screen may be clipped.
  */
-const VIEWPORT_INNER_MARGINS = { left: 0, right: 25, vertical: 50 };
+const MAX_EXPECTED_LABEL_SIZE = 24;
+/**
+ * Nodes closer than that to an edge of the screen are skipped, as their label would be cut off and
+ * would waste a slot of the budget for something barely readable. The four sides are not
+ * equivalent:
+ *  - left: a label is drawn on the right of its node, so a node entering the screen shows its whole
+ *    label right away, and nothing needs to be skipped;
+ *  - right: the label runs off screen, and the margin buys back part of its width;
+ *  - top and bottom: only the height of the label matters, which is a fraction of its font size
+ *    (see LABEL_*_RATIO), hence a much smaller margin than on the right.
+ */
+const VIEWPORT_INNER_MARGINS = {
+  left: 0,
+  right: 25,
+  vertical: Math.ceil((LABEL_BASELINE_RATIO + LABEL_DESCENT_RATIO) * MAX_EXPECTED_LABEL_SIZE),
+};
 /** How many times the grid may be refined when the visible nodes are too clustered to fill the budget: */
 const MAX_GRID_PASSES = 3;
 
