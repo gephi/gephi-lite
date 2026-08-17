@@ -7,7 +7,14 @@ import { CameraState } from "sigma/types";
 
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaState } from "./types";
-import { VISIBLE_BAND_SELECTOR, getEmptySigmaState, getVisibleBand } from "./utils";
+import {
+  LABEL_ASCENT_RATIO,
+  LABEL_BASELINE_RATIO,
+  LABEL_DESCENT_RATIO,
+  VISIBLE_BAND_SELECTOR,
+  getEmptySigmaState,
+  getVisibleBand,
+} from "./utils";
 
 /**
  * Producers:
@@ -384,9 +391,9 @@ export function findNodeAtLabel(sigma: Sigma, viewportX: number, viewportY: numb
 
     const left = nodeVp.x + radiusPx + 3;
     const right = left + textWidth;
-    const baselineY = nodeVp.y + labelSize / 3;
-    const top = baselineY - labelSize * 0.8;
-    const bottom = baselineY + labelSize * 0.3;
+    const baselineY = nodeVp.y + labelSize * LABEL_BASELINE_RATIO;
+    const top = baselineY - labelSize * LABEL_ASCENT_RATIO;
+    const bottom = baselineY + labelSize * LABEL_DESCENT_RATIO;
 
     if (viewportX >= left && viewportX <= right && viewportY >= top && viewportY <= bottom) found = id;
   }
