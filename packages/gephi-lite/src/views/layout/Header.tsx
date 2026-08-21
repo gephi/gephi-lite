@@ -184,7 +184,12 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       [
         {
           label: t("workspace.menu.open"),
-          onClick: () => openModal({ component: OpenModal, arguments: {} }),
+          onClick: () => {
+            // Opening another graph discards the current one: warn first when there are unsaved
+            // changes, same wording as the back-button / beforeunload guards (Initialize.tsx).
+            if (isDirty && !window.confirm(t("workspace.confirm_leave_unsaved"))) return;
+            openModal({ component: OpenModal, arguments: {} });
+          },
         },
         {
           label: t("workspace.menu.new"),
@@ -274,7 +279,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               },
             ]),
       ] as Option[],
-    [t, user, openModal, notify, setUser, exportAsGexf, currentFile, canSaveToCloud, handleSave],
+    [t, user, openModal, notify, setUser, exportAsGexf, currentFile, canSaveToCloud, handleSave, isDirty],
   );
 
   const logoMenuList = useMemo(
