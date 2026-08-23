@@ -38,14 +38,9 @@ import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
-import {
-  resetStates,
-  useDataTable,
-  useFile,
-  useFileActions,
-  useLayoutActions,
-  useLayoutState,
-} from "../../core/context/dataContexts";
+import { useDataTable, useFile, useFileActions, useLayoutActions, useLayoutState } from "../../core/context/dataContexts";
+import { useConfirmLeaveUnsaved } from "../../core/file/useConfirmLeaveUnsaved";
+import { useNewGraph } from "../../core/file/useNewGraph";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
@@ -107,6 +102,8 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { probeRemoteIsNewer, reloadFile } = useRemoteFileFreshnessCheck();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile, isDirty } = useFile();
+  const confirmLeaveUnsaved = useConfirmLeaveUnsaved();
+  const openNewGraph = useNewGraph();
 
   // For mobile burger menu (initialised from the persisted value so it survives view changes):
   const [expanded, setExpanded] = useState(mobileMenuExpanded);
@@ -184,22 +181,14 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
       [
         {
           label: t("workspace.menu.open"),
-          onClick: () => openModal({ component: OpenModal, arguments: {} }),
+          onClick: () => {
+            if (!confirmLeaveUnsaved()) return;
+            openModal({ component: OpenModal, arguments: {} });
+          },
         },
         {
           label: t("workspace.menu.new"),
-          onClick: () =>
-            openModal({
-              component: ConfirmModal,
-              arguments: {
-                title: t(`graph.open.new.title`),
-                message: t(`graph.open.new.message`),
-                successMsg: t(`graph.open.new.success`),
-              },
-              // Reset the whole workspace, including the current file pointer: otherwise the save
-              // button would keep targeting the previously opened GitHub file and overwrite it.
-              beforeSubmit: () => resetStates(false),
-            }),
+          onClick: () => openNewGraph(),
         },
         {
           label: (
@@ -274,7 +263,19 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               },
             ]),
       ] as Option[],
-    [t, user, openModal, notify, setUser, exportAsGexf, currentFile, canSaveToCloud, handleSave],
+    [
+      t,
+      user,
+      openModal,
+      notify,
+      setUser,
+      exportAsGexf,
+      currentFile,
+      canSaveToCloud,
+      handleSave,
+      confirmLeaveUnsaved,
+      openNewGraph,
+    ],
   );
 
   const logoMenuList = useMemo(

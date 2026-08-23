@@ -5,7 +5,9 @@ import { version } from "../../../package.json";
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
 import { config } from "../../config";
-import { resetStates, useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
+import { useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
+import { useConfirmLeaveUnsaved } from "../../core/file/useConfirmLeaveUnsaved";
+import { useNewGraph } from "../../core/file/useNewGraph";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
@@ -27,6 +29,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     status: { type: fileStateType },
   } = useFile();
   const { open } = useFileActions();
+  const confirmLeaveUnsaved = useConfirmLeaveUnsaved();
+  const openNewGraph = useNewGraph();
 
   useEffect(() => {
     if (fileStateType === "error") {
@@ -86,6 +90,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="gl-btn text-start"
                 title={t(`graph.open.local.title`)}
                 onClick={() => {
+                  if (!confirmLeaveUnsaved()) return;
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "local" } });
                 }}
               >
@@ -97,6 +102,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="gl-btn text-start"
                 title={t(`graph.open.github.title`)}
                 onClick={() => {
+                  if (!confirmLeaveUnsaved()) return;
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "github" } });
                 }}
               >
@@ -106,13 +112,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             <li className="mb-1">
               <button
                 className="gl-btn text-start"
-                title={t(`graph.open.github.title`)}
-                onClick={() => {
-                  // Blank the whole workspace, current file pointer included (see resetStates),
-                  // so a later save does not overwrite the previously opened file.
-                  resetStates(false);
-                  submit({});
-                }}
+                title={t(`graph.open.new.title`)}
+                onClick={() => openNewGraph(() => submit({}))}
               >
                 {t(`graph.open.new.title`)}
               </button>
@@ -126,6 +127,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 <button
                   className="gl-btn text-start"
                   onClick={async () => {
+                    if (!confirmLeaveUnsaved()) return;
                     await open({
                       type: "remote",
                       url: `${import.meta.env.BASE_URL}samples/${sample}`,
