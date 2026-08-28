@@ -1,14 +1,16 @@
 import { FC, useRef } from "react";
 import { SketchPicker } from "react-color";
+import { PresetColor } from "react-color/lib/components/sketch/Sketch";
 import { useTranslation } from "react-i18next";
 
 import { hexToRgba, rgbaToHex } from "../utils/colors";
 import Tooltip, { TooltipAPI } from "./Tooltip";
 
-export const InlineColorPicker: FC<{ color: string | undefined; onChange: (color: string | undefined) => void }> = ({
-  color,
-  onChange,
-}) => {
+export const InlineColorPicker: FC<{
+  color: string | undefined;
+  presetColors?: PresetColor[];
+  onChange: (color: string | undefined) => void;
+}> = ({ color, onChange, presetColors }) => {
   return (
     <SketchPicker
       color={color ? hexToRgba(color) : undefined}
@@ -18,6 +20,7 @@ export const InlineColorPicker: FC<{ color: string | undefined; onChange: (color
         if (e.stopPropagation) e.stopPropagation();
         if (e.preventDefault) e.preventDefault();
       }}
+      presetColors={presetColors}
       styles={{
         default: {
           picker: {
@@ -34,8 +37,8 @@ const ColorPicker: FC<
   (
     | { color: string | undefined; onChange: (color: string | undefined) => void; clearable: true }
     | { color: string; onChange: (color: string) => void; clearable?: false }
-  ) & { className?: string }
-> = ({ color, onChange, clearable, className }) => {
+  ) & { className?: string; presetColors?: PresetColor[] }
+> = ({ color, onChange, clearable, className, presetColors }) => {
   const { t } = useTranslation();
   const tooltipRef = useRef<TooltipAPI>(null);
 
@@ -50,7 +53,7 @@ const ColorPicker: FC<
         <span className="icon-container"></span>
       </button>
       <div className="custom-color-picker gl-border">
-        <InlineColorPicker onChange={onChange} color={color} />
+        <InlineColorPicker onChange={onChange} color={color} presetColors={presetColors} />
         <div className="text-end gl-gap-1 d-flex justify-content-end">
           {clearable && (
             <button className="gl-btn gl-btn-outline" onClick={() => onChange(undefined)}>

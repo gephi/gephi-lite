@@ -1,5 +1,6 @@
 import { MISSING_PALETTE_COLOR, PartitionColor } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
+import iwanthue from "iwanthue";
 import { values as getValues, map } from "lodash";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import AnimateHeight from "react-animate-height";
@@ -9,6 +10,9 @@ import { useDynamicItemData, useGraphDataset } from "../../../core/context/dataC
 import { uniqFieldValuesAsStrings } from "../../../core/graph/utils";
 import { ItemType } from "../../../core/types";
 import ColorPicker from "../../ColorPicker";
+import Dropdown from "../../Dropdown";
+import { PaletteIcon } from "../../common-icons";
+import { defaultPalettes } from "./defaultPalettes";
 import { getPalette } from "./utils";
 
 const COLLAPSED_HEIGHT = 200;
@@ -25,12 +29,12 @@ export const ColorPartitionEditor: FC<{
 
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
-  const [shouldShowButton, setShouldShowButton] = useState(true);
+  const [shouldShowSeeMoreButton, setShouldShowSeeMoreButton] = useState(true);
 
   const checkIfButtonNeeded = () => {
     if (rootRef.current && contentRef.current) {
       const contentHeight = contentRef.current.scrollHeight;
-      setShouldShowButton(contentHeight > COLLAPSED_HEIGHT);
+      setShouldShowSeeMoreButton(contentHeight > COLLAPSED_HEIGHT);
     }
   };
 
@@ -57,40 +61,89 @@ export const ColorPartitionEditor: FC<{
     return values;
   }, [color.field, nodeData, edgeData, dynamicNodeData, dynamicEdgeData, itemType]);
 
+  const presetColors = useMemo(() => {
+    return color.colorPalette ? Object.values(color.colorPalette).filter((c) => c !== null) : undefined;
+  }, [color.colorPalette]);
+
   return (
     <div className="mt-1">
       <AnimateHeight
-        height={!shouldShowButton || expanded ? "auto" : COLLAPSED_HEIGHT}
+        height={!shouldShowSeeMoreButton || expanded ? "auto" : COLLAPSED_HEIGHT}
         className="position-relative"
         duration={400}
         ref={rootRef}
       >
-        <div className={cx(shouldShowButton && "pb-5")} ref={contentRef}>
-          {map(color.colorPalette, (c, value) =>
-            // palette can contain deprecated value, we hide those cases in the editor
-            values.includes(value) ? (
-              <div
-                key={value}
-                className="d-inline-block w-50 d-inline-flex align-items-baseline flex-nowrap"
-                title={value}
+        <div className={cx(shouldShowSeeMoreButton && "pb-5")} ref={contentRef}>
+          <div className="d-flex">
+            <div className="flex-grow-1">
+              {map(color.colorPalette, (c, value) =>
+                // palette can contain deprecated value, we hide those cases in the editor
+                values.includes(value) ? (
+                  <div
+                    key={value}
+                    className="d-inline-block w-50 d-inline-flex align-items-baseline flex-nowrap"
+                    title={value}
+                  >
+                    <ColorPicker
+                      color={c || MISSING_PALETTE_COLOR}
+                      className={c === null ? "missing-palette-color" : undefined}
+                      presetColors={presetColors}
+                      onChange={(v) =>
+                        setColor({
+                          ...color,
+                          colorPalette: {
+                            ...color.colorPalette,
+                            [value]: v,
+                          },
+                        })
+                      }
+                    />
+                    <label className="form-check-label small ms-1 flex-grow-1 flex-shrink-1 text-ellipsis">
+                      {value}
+                    </label>
+                  </div>
+                ) : null,
+              )}
+            </div>
+            <div>
+              <Dropdown
+                options={[
+                  {
+                    label: t(`appearance.color.palette.expand`),
+                    onClick: () => {
+                      const newPalette = getPalette(values, { originalPalette: color.colorPalette });
+                      setColor({ ...color, colorPalette: newPalette });
+                    },
+                    disabled: getValues(color.colorPalette).every((v) => v !== null),
+                  },
+                  ...defaultPalettes.map((p) => ({
+                    label: (
+                      <div className="d-flex gl-gap-1 justify-content-between">
+                        <div>{t(`appearance.color.palette.apply`, { paletteName: p })} </div>
+                        <div>
+                          {iwanthue(5, { colorSpace: p }).map((c) => (
+                            <div
+                              className="d-inline-block"
+                              key={c}
+                              style={{ backgroundColor: c, width: "8px", height: "20px" }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ),
+                    onClick: () => {
+                      const newPalette = getPalette(values, { colorSpace: p });
+                      setColor({ ...color, colorPalette: newPalette });
+                    },
+                  })),
+                ]}
               >
-                <ColorPicker
-                  color={c || MISSING_PALETTE_COLOR}
-                  className={c === null ? "missing-palette-color" : undefined}
-                  onChange={(v) =>
-                    setColor({
-                      ...color,
-                      colorPalette: {
-                        ...color.colorPalette,
-                        [value]: v,
-                      },
-                    })
-                  }
-                />
-                <label className="form-check-label small ms-1 flex-grow-1 flex-shrink-1 text-ellipsis">{value}</label>
-              </div>
-            ) : null,
-          )}
+                <button className="gl-btn gl-btn-icon p-0">
+                  <PaletteIcon />
+                </button>
+              </Dropdown>
+            </div>
+          </div>
 
           <div className="d-flex align-items-baseline mt-1">
             <ColorPicker color={color.missingColor} onChange={(v) => setColor({ ...color, missingColor: v })} />
@@ -98,23 +151,11 @@ export const ColorPartitionEditor: FC<{
               {t("appearance.color.default_value", { items: t(`graph.model.${itemType}`) })}
             </label>
           </div>
-          {getValues(color.colorPalette).some((v) => v === null) && (
-            <button
-              className="gl-btn gl-btn-outline"
-              onClick={() => {
-                const newPalette = getPalette(values, color.colorPalette);
-                setColor({ ...color, colorPalette: newPalette });
-              }}
-            >
-              {" "}
-              expand colors
-            </button>
-          )}
         </div>
 
-        {!expanded && shouldShowButton && <div className="filler-fade-out position-absolute bottom-0" />}
+        {!expanded && shouldShowSeeMoreButton && <div className="filler-fade-out position-absolute bottom-0" />}
 
-        {shouldShowButton && (
+        {shouldShowSeeMoreButton && (
           <div className="w-100 bottom-0 position-absolute text-center">
             <button className="gl-btn gl-btn-outline w-100" onClick={() => setExpanded(!expanded)}>
               {expanded ? <> {t("common.show_less")}</> : <> {t("common.show_more")}</>}
