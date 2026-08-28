@@ -32,7 +32,11 @@
       "source_description": "Each edge is colored as its source.",
       "target": "Target nodes",
       "target_description": "Each edge is colored as its target.",
-      "title": "Color"
+      "title": "Color",
+      "palette": {
+        "apply": "Apply {{paletteName}}",
+        "pastels": "Pastels"
+      }
     },
     "graph": {
       "background_color": "Background color",

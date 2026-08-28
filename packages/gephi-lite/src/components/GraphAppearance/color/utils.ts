@@ -1,4 +1,4 @@
-import iwanthue from "iwanthue";
+import iwanthue, { ColorSpace } from "iwanthue";
 import { every, values as getValues, reverse } from "lodash";
 
 export function isColor(strColor: string): boolean {
@@ -7,15 +7,28 @@ export function isColor(strColor: string): boolean {
   return s.color !== "";
 }
 
-export function getPalette(values: string[], originalPalette?: Record<string, string | null>): Record<string, string> {
+export function getPalette(
+  values: string[],
+  options?: { originalPalette?: Record<string, string | null>; colorSpace?: ColorSpace },
+): Record<string, string> {
   if (every(values, (v) => isColor(v))) {
     return values.reduce((iter, v) => ({ ...iter, [v]: v }), {});
   } else {
-    const currentColors = getValues(originalPalette).filter((c) => c !== null);
-    const palette = iwanthue(values.length, { originalColorsToExpand: currentColors });
-    const newColors = reverse(palette.filter((c) => !currentColors.includes(c)));
+    const currentColors = options?.originalPalette
+      ? getValues(options.originalPalette).filter((c) => c !== null)
+      : null;
+    const palette = iwanthue(values.length, {
+      // issue in iwanthue requires originColorsToExpand to be null not undefined
+      // TODO: remove cast once bug resolved upstream
+      originalColorsToExpand: currentColors as string[] | undefined,
+      colorSpace: options?.colorSpace,
+    });
+    const newColors = reverse(palette.filter((c) => !currentColors || !currentColors.includes(c)));
     return values.reduce(
-      (iter, v) => ({ ...iter, [v]: originalPalette && originalPalette[v] ? originalPalette[v] : newColors.pop() }),
+      (iter, v) => ({
+        ...iter,
+        [v]: options?.originalPalette && options?.originalPalette[v] ? options?.originalPalette[v] : newColors.pop(),
+      }),
       {},
     );
   }
