@@ -758,6 +758,7 @@
     "avatar_alt": "{{name}}'s avatar"
   },
   "welcome": {
+    "edge_date_sample": "Edge dates demo",
     "disclaimer-1": "Gephi Lite is currently a work in progress.",
     "disclaimer-2": "Feel free to check the GitHub project to see more about the upcoming features or to report bugs.",
     "logo": "Gephi logo",

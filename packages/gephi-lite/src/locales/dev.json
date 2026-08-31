@@ -878,6 +878,7 @@
     "avatar_alt": "{{name}}'s avatar"
   },
   "welcome": {
+    "edge_date_sample": "Edge dates demo",
     "documentation": "documentation",
     "open_graph": "Open a graph file",
     "samples": "Samples",
