@@ -94,7 +94,7 @@ const GraphFilters: FC = () => {
 
   return (
     <div className="panel-body px-0 pb-0 gap-0">
-      <h2 className="px-3 mb-4">Filters</h2>
+      <h2 className="px-3 mb-4">{t("filters.title")}</h2>
 
       <div className="panel-block flex-grow-1 gap-0">
         <FilteredGraphSummary />

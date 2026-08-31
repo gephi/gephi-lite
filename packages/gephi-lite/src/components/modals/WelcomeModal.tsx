@@ -14,7 +14,7 @@ import { GitHubIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { OpenModal } from "./open/OpenModal";
 
-const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf"];
+const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf", "edge-dates.gexf"];
 
 export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
@@ -111,25 +111,25 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
           <br />
           <h3 className="gl-px-2 gl-heading-3">{t("welcome.samples")}</h3>
           <ul className="list-unstyled mb-0 d-flex flex-column">
-            {SAMPLES.map((sample) => (
-              <li key={sample}>
+            {SAMPLES.map((filename) => (
+              <li key={filename}>
                 <button
                   className="gl-btn text-start"
                   onClick={async () => {
                     await open({
                       type: "remote",
-                      url: `${import.meta.env.BASE_URL}samples/${sample}`,
-                      filename: sample,
+                      url: `${import.meta.env.BASE_URL}samples/${filename}`,
+                      filename,
                     });
                     notify({
                       type: "success",
-                      message: t("graph.open.remote.success", { filename: sample }),
+                      message: t("graph.open.remote.success", { filename }),
                       title: t("gephi-lite.title"),
                     });
                     submit({});
                   }}
                 >
-                  {sample}
+                  {filename === "edge-dates.gexf" ? t("welcome.edge_date_sample") : filename}
                 </button>
               </li>
             ))}

@@ -8,6 +8,9 @@ export default defineConfig({
       instances: [
         {
           browser: "chromium",
+          launch: process.env.PLAYWRIGHT_EXECUTABLE_PATH
+            ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
+            : undefined,
         },
       ],
       enabled: true,

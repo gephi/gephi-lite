@@ -1,5 +1,39 @@
 // copied from https://gitlab.com/ouestware/retina/-/blob/main/src/utils/number.ts#L3-20
+import { FieldModel, FieldModelType, FilterType, ItemType } from "@gephi/gephi-lite-sdk";
 import { inRange, round } from "lodash";
+
+export const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | null> = {
+  date: "range",
+  number: "range",
+  keywords: "terms",
+  category: "terms",
+  boolean: null,
+  color: null,
+  text: null,
+  url: null,
+};
+
+export function createAttributeFilter(itemType: ItemType, field: FieldModel): FilterType | undefined {
+  const type = FILTER_TYPES_PER_FIELD_TYPES[field.type];
+  if (!type) return undefined;
+  return { itemType, type, field, keepMissingValues: true };
+}
+
+export interface RangeValue {
+  min: number;
+  max: number;
+  values: number[];
+}
+
+export interface RangeMetric {
+  unit: number;
+  step: number;
+  min: number;
+  max: number;
+  maxCount: number;
+  ranges: RangeValue[];
+  values: number[];
+}
 
 export function findRanges(min: number, max: number): { unit: number; ranges: [number, number][] } {
   if (max <= min) return { ranges: [[Math.min(min, max), Math.max(min, max)]], unit: Math.abs(max - min) };
@@ -18,6 +52,31 @@ export function findRanges(min: number, max: number): { unit: number; ranges: [n
   }
 
   return { unit, ranges };
+}
+
+export function buildRangeMetric(inputValues: number[]): RangeMetric | undefined {
+  const values = inputValues.filter(Number.isFinite).sort((a, b) => a - b);
+  if (!values.length) return undefined;
+
+  const minValue = values[0];
+  const maxValue = values[values.length - 1];
+  const { unit, ranges } = findRanges(minValue, maxValue);
+  const step = unit === 0 ? 1 : unit < 1 || unit >= 10 ? unit / 10 : 1;
+  const rangeValues = ranges.map(([min, max], index) => ({
+    min,
+    max,
+    values: values.filter((value) => min <= value && (index === ranges.length - 1 ? value <= max : value < max)),
+  }));
+
+  return {
+    min: ranges[0][0],
+    max: (ranges[ranges.length - 1] || ranges[0])[1],
+    step,
+    unit,
+    ranges: rangeValues,
+    values: Array.from(new Set(values)),
+    maxCount: Math.max(...rangeValues.map((range) => range.values.length)),
+  };
 }
 export function shortenNumber(n: number, extendSize?: number): string {
   if (n === 0) return "0";

@@ -18,6 +18,7 @@ import { GroupBase } from "react-select/dist/declarations/src/types";
 
 import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
 import { useDataCollection } from "../../hooks/useDataCollection";
+import { getDateInputSpec } from "../../utils/date";
 import { prettifyURL } from "../../utils/linkify";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import ColorPicker, { InlineColorPicker } from "../ColorPicker";
@@ -294,8 +295,7 @@ export const AttributeEditors: {
     }, [autoFocus]);
 
     // TODO: use an more advanced date time input which allow partial date input to respect requested format
-    const inputType = field.format.includes("h") ? "datetime-local" : "date";
-    const inputDateFormat = field.format.includes("h") ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd";
+    const { inputType, inputFormat: inputDateFormat } = getDateInputSpec(field.format);
     return (
       <input
         id={id}
