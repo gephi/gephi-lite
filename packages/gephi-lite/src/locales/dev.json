@@ -301,6 +301,7 @@
     "insert": "Insert filter",
     "intermediate_graph": "Intermediate graph",
     "keepMissingValues": "Keep missing values",
+    "noValidRangeValues": "No valid values are available for this range.",
     "nodes_fields": "Nodes attributes",
     "script": "Custom filter",
     "title": "Filters",

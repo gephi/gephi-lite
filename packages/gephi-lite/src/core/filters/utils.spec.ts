@@ -1,8 +1,10 @@
 import { FieldModel } from "@gephi/gephi-lite-sdk";
+import { MultiGraph } from "graphology";
 import { describe, expect, it } from "vitest";
 
 import { castScalarToQuantifiableValue } from "../graph/fieldModel";
-import { filterValue } from "./utils";
+import { initializeGraphDataset } from "../graph/utils";
+import { filterGraph, filterValue, inRangeIncluded } from "./utils";
 
 describe("Filters utilities", () => {
   const dateField: FieldModel<"nodes", false, "date"> = {
@@ -10,6 +12,12 @@ describe("Filters utilities", () => {
     type: "date",
     itemType: "nodes",
     format: "yyyy-MM",
+  };
+  const dateEdgesField: FieldModel<"edges", false, "date"> = {
+    id: "createdAt",
+    type: "date",
+    itemType: "edges",
+    format: "yyyy-MM-dd",
   };
   const numberNodesField: FieldModel<"nodes", false, "number"> = { id: "f", type: "number", itemType: "nodes" };
   const numberEdgesField: FieldModel<"edges", false, "number"> = { id: "f", type: "number", itemType: "edges" };
@@ -94,6 +102,35 @@ describe("Filters utilities", () => {
           field: dateField,
         }),
       ).toBe(true);
+
+      expect(
+        filterValue("2025-01-15", {
+          type: "range",
+          min: castScalarToQuantifiableValue("2025-01-15", dateEdgesField),
+          max: castScalarToQuantifiableValue("2025-01-15", dateEdgesField),
+          field: dateEdgesField,
+        }),
+      ).toBe(true);
+    });
+
+    it("should handle zero and negative range bounds", () => {
+      expect(inRangeIncluded(0, 0, 0)).toBe(true);
+      expect(inRangeIncluded(-1, 0, undefined)).toBe(false);
+      expect(inRangeIncluded(1, undefined, 0)).toBe(false);
+
+      const timestampZero = castScalarToQuantifiableValue("1970-01-01", dateEdgesField);
+      const beforeEpoch = castScalarToQuantifiableValue("1969-12-31", dateEdgesField);
+      expect(timestampZero).toBeDefined();
+      expect(
+        filterValue("1970-01-01", {
+          type: "range",
+          min: timestampZero,
+          max: timestampZero,
+          field: dateEdgesField,
+        }),
+      ).toBe(true);
+      expect(filterValue("1969-12-31", { type: "range", min: timestampZero, field: dateEdgesField })).toBe(false);
+      expect(beforeEpoch).toBeLessThan(0);
     });
 
     it("should work as expected with terms", () => {
@@ -120,6 +157,64 @@ describe("Filters utilities", () => {
           field: fieldCategory,
         }),
       ).toBe(true);
+    });
+  });
+
+  describe("#filterGraph", () => {
+    it("filters edge dates inclusively while preserving all nodes and edge topology", () => {
+      const graph = new MultiGraph({ type: "directed" });
+      ["n1", "n2", "n3", "n4", "n5"].forEach((node) => graph.addNode(node));
+      graph.addDirectedEdgeWithKey("before", "n1", "n2", { createdAt: "2024-12-31" });
+      graph.addDirectedEdgeWithKey("lower", "n2", "n3", { createdAt: "2025-01-01" });
+      graph.addDirectedEdgeWithKey("upper", "n3", "n4", { createdAt: "2025-01-31" });
+      graph.addDirectedEdgeWithKey("missing", "n4", "n5", {});
+      graph.addDirectedEdgeWithKey("invalid", "n1", "n5", { createdAt: "not-a-date" });
+      const dataset = initializeGraphDataset(graph, { edgeFields: [dateEdgesField] });
+
+      const filtered = filterGraph(
+        dataset.fullGraph,
+        dataset,
+        {
+          type: "range",
+          itemType: "edges",
+          field: dateEdgesField,
+          min: castScalarToQuantifiableValue("2025-01-01", dateEdgesField),
+          max: castScalarToQuantifiableValue("2025-01-31", dateEdgesField),
+        },
+        [],
+      );
+
+      expect(filtered.nodes()).toEqual(dataset.fullGraph.nodes());
+      expect(filtered.edges()).toEqual(["lower", "upper"]);
+      expect(filtered.source("lower")).toBe("n2");
+      expect(filtered.target("lower")).toBe("n3");
+      expect(filtered.isDirected("lower")).toBe(true);
+    });
+
+    it("optionally keeps missing and invalid edge dates", () => {
+      const graph = new MultiGraph();
+      graph.addNode("n1");
+      graph.addNode("n2");
+      graph.addEdgeWithKey("valid", "n1", "n2", { createdAt: "2025-01-15" });
+      graph.addEdgeWithKey("missing", "n1", "n2");
+      graph.addEdgeWithKey("invalid", "n1", "n2", { createdAt: "invalid" });
+      const dataset = initializeGraphDataset(graph, { edgeFields: [dateEdgesField] });
+
+      const filtered = filterGraph(
+        dataset.fullGraph,
+        dataset,
+        {
+          type: "range",
+          itemType: "edges",
+          field: dateEdgesField,
+          keepMissingValues: true,
+          min: castScalarToQuantifiableValue("2025-01-01", dateEdgesField),
+          max: castScalarToQuantifiableValue("2025-01-31", dateEdgesField),
+        },
+        [],
+      );
+
+      expect(new Set(filtered.edges())).toEqual(new Set(["valid", "missing", "invalid"]));
     });
   });
 });

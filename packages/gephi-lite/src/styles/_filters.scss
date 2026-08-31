@@ -116,6 +116,11 @@
     background-color: $gray-400 !important;
   }
 }
+.range-filter-date-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -$gl-spacers-2;
+}
 .range-inputs {
   display: flex;
   flex-direction: column;

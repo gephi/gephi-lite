@@ -106,6 +106,7 @@
     "edit": "Edit",
     "expand": "Expand",
     "filename": "Filename",
+    "from": "From",
     "hide": "Hide",
     "load-more": "Load more",
     "loading": "Loading",
@@ -127,6 +128,7 @@
     "start": "Start",
     "stop": "Stop",
     "submit": "Submit",
+    "to": "To",
     "updated": "Updated"
   },
   "context": {
@@ -190,6 +192,7 @@
     "full_graph": "Full graph",
     "inapplicable": "Filter disabled: only one value available",
     "keepMissingValues": "Keep missing values",
+    "noValidRangeValues": "No valid values are available for this range.",
     "no_concurrent_edit": "Only one filter can be edited at a time. Confirm current edition to edit this filter.",
     "range": "range",
     "script": "Custom filter",
