@@ -1,7 +1,7 @@
 import { SigmaContainer } from "@react-sigma/core";
 import { createNodeImageProgram } from "@sigma/node-image";
 import cx from "classnames";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Settings } from "sigma/settings";
 
@@ -125,6 +125,28 @@ const GraphCaptionLayer: FC = () => {
   );
 };
 
+const NodeImageProgram = createNodeImageProgram({
+  size: {
+    mode: "max",
+    value: 256,
+  },
+});
+const sigmaSettings: Partial<Settings> = {
+  labelFont: "'DM Sans', sans-serif",
+  edgeLabelFont: "'DM Sans', sans-serif",
+  enableEdgeEvents: true,
+  renderEdgeLabels: true,
+  zIndex: true,
+  minEdgeThickness: 0.3,
+  itemSizesReference: "positions",
+  zoomToSizeRatioFunction: (x) => x,
+  defaultNodeType: "image",
+  nodeProgramClasses: {
+    image: NodeImageProgram,
+    bordered: NodeProgramBorder,
+  },
+  allowInvalidContainer: true,
+};
 export const GraphRendering: FC = () => {
   const { backgroundColor, layoutGridColor } = useAppearance();
   const sigmaGraph = useSigmaGraph();
@@ -134,36 +156,6 @@ export const GraphRendering: FC = () => {
   const setReady = useCallback(() => {
     setIsReady(true);
   }, [setIsReady]);
-
-  const NodeImageProgram = useMemo(
-    () =>
-      createNodeImageProgram({
-        size: {
-          mode: "max",
-          value: 256,
-        },
-      }),
-    [],
-  );
-  const sigmaSettings: Partial<Settings> = useMemo(
-    () => ({
-      labelFont: "'DM Sans', sans-serif",
-      edgeLabelFont: "'DM Sans', sans-serif",
-      enableEdgeEvents: true,
-      renderEdgeLabels: true,
-      zIndex: true,
-      minEdgeThickness: 0.3,
-      itemSizesReference: "positions",
-      zoomToSizeRatioFunction: (x) => x,
-      defaultNodeType: "image",
-      nodeProgramClasses: {
-        image: NodeImageProgram,
-        bordered: NodeProgramBorder,
-      },
-      allowInvalidContainer: true,
-    }),
-    [NodeImageProgram],
-  );
 
   return (
     <>

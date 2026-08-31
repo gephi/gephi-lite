@@ -1,0 +1,14 @@
+{
+  "attributes": {
+    "name": "My Graph"
+  },
+  "nodes": [{ "key": "Thomas" }, { "key": "Eric" }],
+  "edges": [
+    {
+      "key": "T->E",
+      "source": "Thomas",
+      "target": "Eric",
+      "attributes": { "type": "KNOWS" }
+    }
+  ]
+}

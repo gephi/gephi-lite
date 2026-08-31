@@ -1,7 +1,7 @@
 {
   "name": "@gephi/gephi-lite-sdk",
   "description": "Gephi Lite core types and utils functions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/gephi-gephi-lite-sdk.cjs.js",
   "module": "dist/gephi-gephi-lite-sdk.esm.js",
   "files": [
@@ -12,10 +12,10 @@
   },
   "sideEffects": false,
   "homepage": "https://gephi.org/gephi-lite",
-  "bugs": "http://github.com/jacomyal/sigma.js/issues",
+  "bugs": "https://github.com/gephi/gephi-lite/issues",
   "repository": {
     "type": "git",
-    "url": "http://github.com/jacomyal/sigma.js.git",
+    "url": "https://github.com/gephi/gephi-lite.git",
     "directory": "packages/template"
   },
   "preconstruct": {

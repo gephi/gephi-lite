@@ -2,7 +2,7 @@
   "name": "@gephi/gephi-lite-root",
   "homepage": "https://github.com/gephi/gephi-lite",
   "license": "gpl-3.0",
-  "bugs": "http://github.com/jacomyal/sigma.js/issues",
+  "bugs": "https://github.com/gephi/gephi-lite/issues",
   "workspaces": [
     "packages/*"
   ],

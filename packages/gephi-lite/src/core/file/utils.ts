@@ -53,11 +53,27 @@ export async function extractGraphFromFile(
     }
   | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
 > {
-  const extension = (fileName.split(".").pop() || "").toLowerCase();
+  // Read the file content line by line
+  // so if file is heavy, we don't need to full parse/check it
+  let i = 0;
+  const len = fileContent.length;
+  function readNextLine(): string | null {
+    if (i >= len) return null;
+    const start = i;
+    while (i < len && fileContent[i] !== "\n") {
+      i++;
+    }
+    const line = fileContent.slice(start, i).replace(/\r$/, "");
+    i++;
+    return line;
+  }
 
-  // Based on file extension, parse it to build a graphology
-  switch (extension) {
-    case "gexf":
+  const firstLine = readNextLine();
+  if (firstLine?.startsWith("<?xml")) {
+    const secondLine = readNextLine();
+
+    // GEXF
+    if (firstLine?.includes("<gexf") || secondLine?.includes("<gexf")) {
       return {
         format: "gexf",
         data: gexf.parse(Graph, fileContent, { allowUndeclaredAttributes: true, addMissingNodes: true }),
@@ -83,33 +99,41 @@ export async function extractGraphFromFile(
           ],
         },
       };
-    case "graphml":
+    }
+
+    // GRAPHML
+    if (firstLine?.includes("<graphml") || secondLine?.includes("<graphml")) {
       return {
         format: "graphml",
         data: graphml.parse(Graph, fileContent, { addMissingNodes: true }),
       };
-    case "json": {
-      const jsonContent = gephiLiteParse(fileContent);
-      if ("type" in jsonContent && jsonContent.type === "gephi-lite") {
-        const version = parseVersion(jsonContent.version);
-        if (version) {
-          if (version.major !== config.version.major || version.minor !== config.version.minor) {
-            throw new GephiLiteError("IMPORT_BAD_VERSION", { version: version?.toString() });
-          }
-          return {
-            format: "gephi-lite",
-            data: jsonContent,
-          };
+    }
+  } else {
+    const jsonContent = gephiLiteParse(fileContent);
+
+    // Gephi lite
+    if ("type" in jsonContent && jsonContent.type === "gephi-lite") {
+      const version = parseVersion(jsonContent.version);
+      if (version) {
+        if (version.major !== config.version.major || version.minor !== config.version.minor) {
+          throw new GephiLiteError("IMPORT_BAD_VERSION", { version: version?.toString() });
         }
-      } else {
         return {
-          format: "graphology",
-          data: Graph.from(jsonContent),
+          format: "gephi-lite",
+          data: jsonContent,
         };
       }
     }
+
+    // Graphology
+    if (jsonContent.nodes && jsonContent.edges) {
+      return {
+        format: "graphology",
+        data: Graph.from(jsonContent),
+      };
+    }
   }
-  throw new GephiLiteError("IMPORT_BAD_FORMAT", { extension, fileName });
+  throw new GephiLiteError("IMPORT_BAD_FILE_FORMAT", { fileName });
 }
 
 /**

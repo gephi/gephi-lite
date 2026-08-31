@@ -1,4 +1,5 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
+import Graph from "graphology";
 import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
 import Sigma from "sigma";
@@ -91,7 +92,8 @@ export const setCursor: Producer<SigmaState, [SigmaState["customCursor"]]> = (cu
  * Public API:
  * ***********
  */
-const INITIAL_SIGMA_INSTANCE = new Sigma(sigmaGraphAtom.get(), document.createElement("div"), {
+// creating a dummy sigma instance to init the atom
+const INITIAL_SIGMA_INSTANCE = new Sigma(new Graph(), document.createElement("div"), {
   allowInvalidContainer: true,
 });
 export type GephiLiteSigma = typeof INITIAL_SIGMA_INSTANCE;

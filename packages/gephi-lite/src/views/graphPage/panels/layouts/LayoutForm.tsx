@@ -69,9 +69,10 @@ export const LayoutForm: FC<{
       if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
       else if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
         errors[param.id] = t(`error.form.min`, { ...param, name });
-      else if ("max" in param && param.max && !isNil(value) && (value as number) < param.max)
+      else if ("max" in param && param.max && !isNil(value) && (value as number) > param.max)
         errors[param.id] = t(`error.form.max`, { ...param, name });
     });
+
     setErrors(Object.keys(errors).length > 0 ? errors : null);
   }, [layout, layoutParameters, t]);
 
@@ -149,7 +150,6 @@ export const LayoutForm: FC<{
         // to ensure having up-to-date data:
         const latestSession = sessionAtom.get();
         const latestLayoutParameters = latestSession.layoutsParameters[layout.id] || {};
-        console.log(latestLayoutParameters);
         onStart(latestLayoutParameters);
         if (layout.type === "sync")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));

@@ -142,6 +142,7 @@ describe("Filters utilities", () => {
         itemType: "edges",
         separator: "|",
       };
+      const fieldBoolean: FieldModel<"nodes", false, "boolean"> = { id: "b", type: "boolean", itemType: "nodes" };
 
       expect(filterValue("toto", { type: "terms", terms, field: fieldCategory })).toBe(true);
       expect(filterValue("bidule|toto", { type: "terms", terms, field: fieldKeywords })).toBe(true);
@@ -153,10 +154,53 @@ describe("Filters utilities", () => {
         filterValue(null, {
           type: "terms",
           terms,
+          // keepMissingValues is ignored for category
           keepMissingValues: true,
           field: fieldCategory,
         }),
+      ).toBe(false);
+      expect(
+        filterValue(null, {
+          type: "terms",
+          terms: new Set(["toto", "tata", null]),
+          field: fieldCategory,
+        }),
       ).toBe(true);
+      expect(
+        filterValue(true, {
+          type: "terms",
+          terms: new Set([true]),
+          field: fieldBoolean,
+        }),
+      ).toBe(true);
+      expect(
+        filterValue(false, {
+          type: "terms",
+          terms: new Set([true]),
+          field: fieldBoolean,
+        }),
+      ).toBe(false);
+      expect(
+        filterValue(false, {
+          type: "terms",
+          terms: new Set([false]),
+          field: fieldBoolean,
+        }),
+      ).toBe(true);
+      expect(
+        filterValue(null, {
+          type: "terms",
+          terms: new Set([false, null]),
+          field: fieldBoolean,
+        }),
+      ).toBe(true);
+      expect(
+        filterValue(null, {
+          type: "terms",
+          terms: new Set([true, false]),
+          field: fieldBoolean,
+        }),
+      ).toBe(false);
     });
   });
 

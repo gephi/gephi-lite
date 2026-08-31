@@ -166,7 +166,7 @@ const createFieldModel: Producer<GraphDataset, [FieldModel, { index?: number; va
       [dataKey]: values
         ? mapValues(state[dataKey], (data, itemId) => ({
             ...data,
-            [fieldModel.id]: values[itemId] || data[fieldModel.id],
+            [fieldModel.id]: !isNil(values[itemId]) ? values[itemId] : data[fieldModel.id],
           }))
         : state[dataKey],
     };
