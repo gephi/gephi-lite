@@ -71,7 +71,7 @@
     "i18next-browser-languagedetector": "^8.0.2",
     "is-url": "^1.2.4",
     "isomorphic-fetch": "^3.0.0",
-    "iwanthue": "2.1.0",
+    "iwanthue": "2.1.1",
     "linkify-it": "^5.0.0",
     "lodash": "^4.17.21",
     "maplibre-gl": "^5.18.0",
