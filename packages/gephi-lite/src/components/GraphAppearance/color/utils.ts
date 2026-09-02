@@ -20,7 +20,7 @@ export function getPalette(
     const palette = iwanthue(values.length, {
       // issue in iwanthue requires originColorsToExpand to be null not undefined
       // TODO: remove cast once bug resolved upstream
-      originalColorsToExpand: currentColors as string[] | undefined,
+      originalColorsToExpand: currentColors || undefined,
       colorSpace: options?.colorSpace,
     });
     const newColors = reverse(palette.filter((c) => !currentColors || !currentColors.includes(c)));

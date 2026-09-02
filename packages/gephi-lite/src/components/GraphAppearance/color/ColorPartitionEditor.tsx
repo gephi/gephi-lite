@@ -1,6 +1,5 @@
 import { MISSING_PALETTE_COLOR, PartitionColor } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import iwanthue from "iwanthue";
 import { values as getValues, map } from "lodash";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import AnimateHeight from "react-animate-height";
@@ -119,9 +118,9 @@ export const ColorPartitionEditor: FC<{
                   ...defaultPalettes.map((p) => ({
                     label: (
                       <div className="d-flex gl-gap-1 justify-content-between">
-                        <div>{t(`appearance.color.palette.apply`, { paletteName: p })} </div>
+                        <div>{t(`appearance.color.palette.apply`, { paletteName: p.name })} </div>
                         <div>
-                          {iwanthue(5, { colorSpace: p }).map((c) => (
+                          {p.precomputed[5].map((c) => (
                             <div
                               className="d-inline-block"
                               key={c}
@@ -132,7 +131,7 @@ export const ColorPartitionEditor: FC<{
                       </div>
                     ),
                     onClick: () => {
-                      const newPalette = getPalette(values, { colorSpace: p });
+                      const newPalette = getPalette(values, { colorSpace: p.name });
                       setColor({ ...color, colorPalette: newPalette });
                     },
                   })),

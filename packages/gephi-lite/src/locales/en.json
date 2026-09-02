@@ -34,6 +34,7 @@
       "target_description": "Each edge is colored as its target.",
       "title": "Color",
       "palette": {
+        "expand": "Expand the palette",
         "apply": "Apply {{paletteName}}",
         "pastels": "Pastels"
       }
