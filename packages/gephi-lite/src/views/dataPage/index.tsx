@@ -1,6 +1,6 @@
 import { ItemType } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { type ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { PiCaretDown, PiCaretRight } from "react-icons/pi";
 import { ScrollSync } from "react-scroll-sync";
@@ -12,8 +12,6 @@ import { type MenuItem, SideMenu } from "../../components/SideMenu";
 import Transition from "../../components/Transition";
 import {
   CloseIcon,
-  DataCreationIcon,
-  DataCreationIconFill,
   FiltersIcon,
   FiltersIconFill,
   MenuCollapseIcon,
@@ -22,10 +20,7 @@ import {
   MetricsIcon,
   MetricsIconFill,
 } from "../../components/common-icons";
-import { CreateScriptedFieldModelForm } from "../../components/data/CreateScriptedFieldModel";
-import { EditEdgeForm } from "../../components/data/EditEdge";
-import { EditFieldModelForm } from "../../components/data/EditFieldModel";
-import { EditNodeForm } from "../../components/data/EditNode";
+import { DATA_CREATION_MENU_ITEM, type Panel } from "../../components/data/DataCreationMenu";
 import {
   useDataTable,
   useDataTableActions,
@@ -37,6 +32,7 @@ import {
 } from "../../core/context/dataContexts";
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
+import { useMobile } from "../../hooks/useMobile";
 import { doesItemMatch } from "../../utils/search";
 import { MetricsPanel } from "../graphPage/panels/MetricsPanel";
 import { Layout } from "../layout";
@@ -44,46 +40,8 @@ import { Header } from "../layout/Header";
 import { TopBar } from "./TopBar";
 import { DataTable } from "./dataTable/DataTable";
 
-type Panel = ComponentType<{ close: () => void }>;
-
 const MENU: MenuItem<{ panel?: Panel }>[] = [
-  {
-    id: "data-creation",
-    i18nKey: "edition.data_creation",
-    icon: { normal: DataCreationIcon, fill: DataCreationIconFill },
-    children: [
-      {
-        id: "data-creation-node",
-        i18nKey: "edition.create_nodes",
-        panel: ({ close }) => <EditNodeForm onCancel={close} onSubmitted={close} />,
-      },
-      {
-        id: "data-creation-edge",
-        i18nKey: "edition.create_edges",
-        panel: ({ close }) => <EditEdgeForm onCancel={close} onSubmitted={close} />,
-      },
-      {
-        id: "data-creation-node-field",
-        i18nKey: "edition.create_nodes_field",
-        panel: ({ close }) => <EditFieldModelForm type="nodes" onCancel={close} onSubmitted={close} />,
-      },
-      {
-        id: "data-creation-edge-field",
-        i18nKey: "edition.create_edges_field",
-        panel: ({ close }) => <EditFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
-      },
-      {
-        id: "data-creation-node-scripted-field",
-        i18nKey: "edition.create_nodes_scripted_field",
-        panel: ({ close }) => <CreateScriptedFieldModelForm type="nodes" onCancel={close} onSubmitted={close} />,
-      },
-      {
-        id: "data-creation-edge-scripted-field",
-        i18nKey: "edition.create_edges_scripted_field",
-        panel: ({ close }) => <CreateScriptedFieldModelForm type="edges" onCancel={close} onSubmitted={close} />,
-      },
-    ],
-  },
+  DATA_CREATION_MENU_ITEM,
   {
     id: "filters",
     i18nKey: "filters.title",
@@ -166,10 +124,14 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
     const allData = mergeStaticDynamicData(data, dynamicData);
     const getLabel = type === "nodes" ? getNodeLabel : getEdgeLabel;
     const fields = type === "nodes" ? nodeFields : edgeFields;
+    const nodeAllData = type === "edges" ? mergeStaticDynamicData(nodeData, dynamicNodeData) : null;
     if (search) {
       allIDs.forEach((id) => {
         const label = getLabel?.(allData[id]);
-        if (doesItemMatch(id, label, data[id], fields, search)) {
+        const extremityLabels = nodeAllData
+          ? [getNodeLabel?.(nodeAllData[graph.source(id)]), getNodeLabel?.(nodeAllData[graph.target(id)])]
+          : [];
+        if (doesItemMatch(id, label, data[id], fields, search, extremityLabels)) {
           matchingItems.push(id);
         } else {
           otherItems.push(id);
@@ -195,9 +157,20 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
   ]);
 
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: Panel }>(undefined);
+  const isMobile = useMobile();
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
+  // The search box's panel (panel-main) only actually collapses on mobile (see the panel-collapsed
+  // rule in _panel.scss, scoped to that breakpoint) - on desktop it stays visible regardless of
+  // `expanded`/`selectedTool`, which only affect the extended panel next to it.
+  const isSearchPanelVisible = !isMobile || (expanded && !selectedTool);
+
+  // Lets the filters badge in GraphSummary open the Filters panel directly, reusing the same id as
+  // its entry in MENU so the side menu highlights it as selected, like clicking it there would.
+  const openFilters = useCallback(() => {
+    setSelectedTool({ id: "filters", panel: () => <GraphFilters /> });
+  }, []);
 
   useEffect(() => {
     setType(inputType);
@@ -223,8 +196,9 @@ export const DataPage: FC<{ type: ItemType }> = ({ type: inputType }) => {
         {/* Menu panel on left*/}
         <div className={cx("panel panel-left panel-main", (!expanded || !!selectedTool) && "panel-collapsed")}>
           <div className="panel-body">
-            <GraphSummary />
-            <GraphSearchSelection />
+            <GraphSummary onOpenFilters={openFilters}>
+              <GraphSearchSelection visible={isSearchPanelVisible} />
+            </GraphSummary>
             <SideMenu
               menu={MENU}
               selected={selectedTool?.id}

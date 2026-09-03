@@ -1,12 +1,13 @@
-import { DynamicItemDataSpec, ItemType } from "@gephi/gephi-lite-sdk";
+import { DynamicItemDataSpec, FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { isBoolean, size, values } from "lodash";
+import { isBoolean, mapValues, size, values } from "lodash";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Dropdown from "../../../components/Dropdown";
 import { ThreeDotsVerticalIcon } from "../../../components/common-icons";
 import { AttributeLabel } from "../../../components/data/Attribute";
+import { CreateScriptedFieldModelModal } from "../../../components/data/CreateScriptedFieldModel";
 import { EdgeComponentById } from "../../../components/data/Edge";
 import { EditFieldModelModal } from "../../../components/data/EditFieldModel";
 import { NodeComponentById } from "../../../components/data/Node";
@@ -14,28 +15,73 @@ import ConfirmModal from "../../../components/modals/ConfirmModal";
 import {
   useDataTable,
   useDataTableActions,
+  useDynamicItemData,
   useGraphDataset,
   useGraphDatasetActions,
   useSelectionActions,
+  useVisualGetters,
 } from "../../../core/context/dataContexts";
-import { DYNAMIC_ATTRIBUTES } from "../../../core/graph/dynamicAttributes";
+import {
+  DYNAMIC_ATTRIBUTES,
+  computeScriptFieldsData,
+  mergeStaticDynamicData,
+} from "../../../core/graph/dynamicAttributes";
+import { dataGraphToFullGraph } from "../../../core/graph/utils";
 import { useModal } from "../../../core/modals";
 import { useMobile } from "../../../hooks/useMobile";
 import { DataCell } from "./DataCell";
-import { Arrow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
+import { Arrow, EdgeItemRow, ItemRow, SPECIFIC_COLUMNS } from "./consts";
 
 export const useDataTableColumns = (itemIDs: string[]) => {
   const { t } = useTranslation();
   const { type } = useDataTable();
   const { openModal } = useModal();
-  const { nodeFields, edgeFields, nodeData, edgeData, fullGraph } = useGraphDataset();
+  const dataset = useGraphDataset();
+  const { nodeFields, edgeFields, nodeData, edgeData, fullGraph } = dataset;
+  const { dynamicNodeData } = useDynamicItemData();
+  const { getNodeLabel } = useVisualGetters();
   const isMobile = useMobile();
+  const nodeAllData = useMemo(() => mergeStaticDynamicData(nodeData, dynamicNodeData), [nodeData, dynamicNodeData]);
 
   const { setSort } = useDataTableActions();
   const { toggle, select, unselect } = useSelectionActions();
-  const { moveFieldModel, deleteFieldModel, duplicateFieldModel } = useGraphDatasetActions();
+  const { moveFieldModel, deleteFieldModel, duplicateFieldModel, setFieldModel } = useGraphDatasetActions();
+
+  // "Freeze" a formula (scripted) field: recompute its current values over the whole graph, then
+  // replace it by a static (non-scripted) field carrying those values. It becomes a normal,
+  // editable attribute whose values will no longer be recomputed.
+  const freezeScriptedField = useCallback(
+    (field: FieldModel<ItemType>) => {
+      const graph = dataGraphToFullGraph(dataset);
+      const computed = computeScriptFieldsData(field.itemType, [field], graph);
+      const frozenValues: Record<string, Scalar> = mapValues(computed, (fieldValues) => fieldValues[field.id]);
+      setFieldModel({ ...field, script: undefined }, frozenValues);
+    },
+    [dataset, setFieldModel],
+  );
 
   const fields = useMemo(() => (type === "nodes" ? nodeFields : edgeFields), [edgeFields, nodeFields, type]);
+
+  // Ordered (left-to-right, matching the `columns` below) ids of the columns arrow-key navigation
+  // can land on: editable dataset fields and editable dynamic attributes, excluding boolean ones
+  // (edited inline via a checkbox, with no separate edit session to navigate in/out of - see
+  // DataCell). Non-editable/protected columns (id, preview, selected...) are deliberately excluded
+  // too, so left/right silently hops over them instead of getting stuck.
+  const editableColumnIds = useMemo(() => {
+    const dynamicSpecs =
+      type === "nodes"
+        ? values(DYNAMIC_ATTRIBUTES.nodes)
+        : values(DYNAMIC_ATTRIBUTES.edges).filter((f) =>
+            isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph),
+          );
+    const dynamicIds = dynamicSpecs
+      .filter((f) => f.editable && f.field.type !== "boolean")
+      .map((f) => `dynamic::${f.field.id}`);
+    const fieldIds = fields
+      .filter((f) => !f.readOnly && !f.script && f.type !== "boolean")
+      .map((f) => `field::${f.id}`);
+    return [...dynamicIds, ...fieldIds];
+  }, [type, fields, fullGraph]);
   const columnHelper = useMemo(() => createColumnHelper<ItemRow>(), []);
   const getSpecificRow = useCallback(
     (field: keyof ItemRow, options?: { size?: number; label?: string }): ColumnDef<ItemRow> => {
@@ -80,6 +126,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             field={dynamicField.field}
             value={props.row.getValue(`dynamic::${dynamicField.field.id}`)}
             readOnly={!dynamicField.editable}
+            columnId={`dynamic::${dynamicField.field.id}`}
           />
         ),
         meta: {
@@ -107,6 +154,41 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       };
     },
     [t, type],
+  );
+  const getExtremityLabelColumn = useCallback(
+    (extremity: "sourceId" | "targetId", field: "sourceLabel" | "targetLabel"): ColumnDef<ItemRow> => {
+      return {
+        id: field,
+        accessorFn: (row) => {
+          const nodeId = (row as EdgeItemRow)[extremity];
+          return (getNodeLabel && getNodeLabel(nodeAllData[nodeId], nodeId)) || nodeId;
+        },
+        cell: (props) => <span className="text-ellipsis">{props.row.getValue(field)}</span>,
+        meta: {
+          protected: true,
+        },
+        header: ({ header }) => (
+          <>
+            <span className="column-title" onClick={header.column.getToggleSortingHandler()}>
+              {t(`datatable.protected_columns.${field}`)}
+            </span>
+
+            <Arrow
+              arrow={header.column.getIsSorted() || null}
+              wrapper={({ children }) => (
+                <div>
+                  <button className="btn small p-0" onClick={header.column.getToggleSortingHandler()}>
+                    {children}
+                  </button>
+                </div>
+              )}
+            />
+          </>
+        ),
+        size: 180,
+      };
+    },
+    [t, getNodeLabel, nodeAllData],
   );
   const columns = useMemo<ColumnDef<ItemRow>[]>(
     () => [
@@ -175,28 +257,31 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         },
         cell: (props) =>
           type === "nodes" ? (
-            <NodeComponentById id={props.row.getValue("id")} />
+            <NodeComponentById id={props.row.getValue("id")} locatable />
           ) : (
-            <EdgeComponentById id={props.row.getValue("id")} />
+            <EdgeComponentById id={props.row.getValue("id")} locatable />
           ),
       }),
 
+      // Source/target node labels, right after the preview column:
+      ...(type === "edges"
+        ? [getExtremityLabelColumn("sourceId", "sourceLabel"), getExtremityLabelColumn("targetId", "targetLabel")]
+        : []),
+
       // Type specific dynamic / read-only columns:
-      getSpecificRow("id"),
       ...(type === "nodes"
         ? values(DYNAMIC_ATTRIBUTES.nodes).map((f) => getDynamicColumn(f))
-        : [
-            getSpecificRow(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
-            getSpecificRow(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
-            ...values(DYNAMIC_ATTRIBUTES.edges)
-              .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
-              .map((f) => getDynamicColumn(f)),
-          ]),
+        : values(DYNAMIC_ATTRIBUTES.edges)
+            .filter((f) => (isBoolean(f.showInDataTable) ? f.showInDataTable : f.showInDataTable(fullGraph)))
+            .map((f) => getDynamicColumn(f))),
 
       // Dataset-specific columns;
       ...fields.map<ColumnDef<ItemRow>>((field, i, a) => ({
         id: `field::${field.id}`,
-        accessorFn: ({ data }: ItemRow) => data[field.id],
+        // Formula (scripted) fields are computed on the fly and live in the dynamic data channel
+        // (spread at the row's top level), while regular fields are stored in `data`:
+        accessorFn: (row: ItemRow) =>
+          field.script ? (row as unknown as Record<string, Scalar>)[field.id] : row.data[field.id],
         header: ({ header }) => (
           <>
             <AttributeLabel field={field} className="column-title" onClick={header.column.getToggleSortingHandler()} />
@@ -212,99 +297,126 @@ export const useDataTableColumns = (itemIDs: string[]) => {
               )}
             />
 
-            <Dropdown
-              options={[
-                {
-                  label: t("datatable.modify_column"),
-                  onClick: () => {
-                    openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
+            {!field.readOnly && (
+              <Dropdown
+                options={[
+                  {
+                    label: t("datatable.modify_column"),
+                    onClick: () => {
+                      if (field.script)
+                        openModal({
+                          component: CreateScriptedFieldModelModal,
+                          arguments: { type, fieldModelId: field.id },
+                        });
+                      else openModal({ component: EditFieldModelModal, arguments: { fieldModelId: field.id, type } });
+                    },
                   },
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: t("datatable.duplicate_column"),
-                  onClick: () => duplicateFieldModel(field),
-                },
-                {
-                  label: t("datatable.move_left"),
-                  disabled: !i,
-                  onClick: () => moveFieldModel(type, field.id, -1),
-                },
-                {
-                  label: t("datatable.move_right"),
-                  disabled: i === a.length - 1,
-                  onClick: () => moveFieldModel(type, field.id, +1),
-                },
-                {
-                  label: t("datatable.insert_left"),
-                  onClick: () =>
-                    openModal({
-                      component: EditFieldModelModal,
-                      arguments: { insertAt: { pos: "before", id: field.id }, type },
-                    }),
-                },
-                {
-                  label: t("datatable.insert_right"),
-                  onClick: () =>
-                    openModal({
-                      component: EditFieldModelModal,
-                      arguments: { insertAt: { pos: "after", id: field.id }, type },
-                    }),
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: t("datatable.sort_asc"),
-                  onClick: () => {
-                    setSort([
-                      {
-                        id: header.id,
-                        desc: false,
-                      },
-                    ]);
+                  {
+                    type: "divider",
                   },
-                },
-                {
-                  label: t("datatable.sort_desc"),
-                  onClick: () => {
-                    setSort([
-                      {
-                        id: header.id,
-                        desc: true,
-                      },
-                    ]);
+                  {
+                    label: t("datatable.duplicate_column"),
+                    onClick: () => duplicateFieldModel(field),
                   },
-                },
-                {
-                  type: "divider",
-                },
-                {
-                  label: t("edition.delete_attribute"),
-                  onClick: () =>
-                    openModal({
-                      component: ConfirmModal,
-                      arguments: {
-                        title: t(`edition.delete_${type}_attributes`, { name: field.id }),
-                        message: t("edition.confirm_delete_attributes", {
-                          nbValues: size(type === "nodes" ? nodeData : edgeData),
-                          name: field.id,
-                        }),
-                        successMsg: t(`edition.delete_attributes_success`, { name: field.id }),
-                      },
-                      afterSubmit: () => {
-                        deleteFieldModel(field);
-                      },
-                    }),
-                },
-              ]}
-            >
-              <button className="btn p-0">
-                <ThreeDotsVerticalIcon />
-              </button>
-            </Dropdown>
+                  {
+                    label: t("datatable.move_left"),
+                    disabled: !i,
+                    onClick: () => moveFieldModel(type, field.id, -1),
+                  },
+                  {
+                    label: t("datatable.move_right"),
+                    disabled: i === a.length - 1 || !!a[i + 1]?.readOnly,
+                    onClick: () => moveFieldModel(type, field.id, +1),
+                  },
+                  {
+                    label: t("datatable.insert_left"),
+                    onClick: () =>
+                      openModal({
+                        component: EditFieldModelModal,
+                        arguments: { insertAt: { pos: "before", id: field.id }, type },
+                      }),
+                  },
+                  {
+                    label: t("datatable.insert_right"),
+                    onClick: () =>
+                      openModal({
+                        component: EditFieldModelModal,
+                        arguments: { insertAt: { pos: "after", id: field.id }, type },
+                      }),
+                  },
+                  {
+                    type: "divider",
+                  },
+                  {
+                    label: t("datatable.sort_asc"),
+                    onClick: () => {
+                      setSort([
+                        {
+                          id: header.id,
+                          desc: false,
+                        },
+                      ]);
+                    },
+                  },
+                  {
+                    label: t("datatable.sort_desc"),
+                    onClick: () => {
+                      setSort([
+                        {
+                          id: header.id,
+                          desc: true,
+                        },
+                      ]);
+                    },
+                  },
+                  {
+                    type: "divider",
+                  },
+                  // Formula (scripted) fields only: freeze the computed values into a plain, static
+                  // attribute (the script is dropped and values can no longer be recomputed).
+                  ...(field.script
+                    ? [
+                        {
+                          label: t("datatable.freeze_values"),
+                          onClick: () =>
+                            openModal({
+                              component: ConfirmModal,
+                              arguments: {
+                                title: t("datatable.freeze_values_title", { name: field.label || field.id }),
+                                message: t("datatable.freeze_values_message"),
+                                confirmMsg: t("datatable.freeze_values_confirm"),
+                                successMsg: t("datatable.freeze_values_success", { name: field.label || field.id }),
+                              },
+                              afterSubmit: () => freezeScriptedField(field),
+                            }),
+                        },
+                      ]
+                    : []),
+                  {
+                    label: t("edition.delete_attribute"),
+                    onClick: () =>
+                      openModal({
+                        component: ConfirmModal,
+                        arguments: {
+                          title: t(`edition.delete_${type}_attributes`, { name: field.id }),
+                          message: t("edition.confirm_delete_attributes", {
+                            nbValues: size(type === "nodes" ? nodeData : edgeData),
+                            name: field.id,
+                          }),
+                          successMsg: t(`edition.delete_attributes_success`, { name: field.id }),
+                        },
+                        afterSubmit: () => {
+                          deleteFieldModel(field);
+                        },
+                      }),
+                  },
+                ]}
+              >
+                <button className="btn p-0">
+                  <ThreeDotsVerticalIcon />
+                </button>
+              </Dropdown>
+            )}
           </>
         ),
         cell: (props) => (
@@ -313,14 +425,27 @@ export const useDataTableColumns = (itemIDs: string[]) => {
             id={props.row.getValue("id")}
             field={field}
             value={props.row.getValue(`field::${field.id}`)}
+            // Read-only (system date) and formula (scripted) fields are not editable in the table:
+            readOnly={field.readOnly || !!field.script}
+            columnId={`field::${field.id}`}
           />
         ),
       })),
+
+      // ID (and, for edges, source/target) are pushed to the very end:
+      ...(type === "nodes"
+        ? [getSpecificRow("id")]
+        : [
+            getSpecificRow("id"),
+            getSpecificRow(SPECIFIC_COLUMNS.sourceId as keyof ItemRow),
+            getSpecificRow(SPECIFIC_COLUMNS.targetId as keyof ItemRow),
+          ]),
     ],
     [
       columnHelper,
       isMobile,
       getSpecificRow,
+      getExtremityLabelColumn,
       type,
       fields,
       select,
@@ -337,6 +462,7 @@ export const useDataTableColumns = (itemIDs: string[]) => {
       nodeData,
       edgeData,
       deleteFieldModel,
+      freezeScriptedField,
     ],
   );
 
@@ -347,5 +473,6 @@ export const useDataTableColumns = (itemIDs: string[]) => {
         left: isMobile ? [] : [SPECIFIC_COLUMNS.selected, SPECIFIC_COLUMNS.preview],
       },
     },
+    editableColumnIds,
   };
 };

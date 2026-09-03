@@ -1,4 +1,4 @@
-import { gephiLiteStringify } from "@gephi/gephi-lite-sdk";
+import { FieldModel, ItemData, ItemType, Scalar, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { Producer, asyncAction, atom, producerToAction } from "@ouestware/atoms";
 import Graph from "graphology";
 import { write } from "graphology-gexf";
@@ -8,6 +8,7 @@ import { config } from "../../config";
 import { localStorage } from "../../utils/storage";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { applyVisualProperties, inferAppearanceState } from "../appearance/utils";
+import { fingerprintContent } from "../cloud/remoteContent";
 import { resetStates } from "../context/dataContexts";
 import { filtersActions, filtersAtom } from "../filters";
 import {
@@ -18,12 +19,14 @@ import {
   visualGettersAtom,
 } from "../graph";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
+import { sessionActions, sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
+import { userAtom } from "../user";
 import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
 import { openAndParseFile } from "./utils";
 
 function getEmptyFileState(): FileState {
-  return { current: null, recentFiles: [], status: { type: "idle" } };
+  return { current: null, recentFiles: [], status: { type: "idle" }, isDirty: false, remoteContentFingerprint: null };
 }
 
 function getLocalStorageFileState(): FileState {
@@ -33,6 +36,7 @@ function getLocalStorageFileState(): FileState {
     ...getEmptyFileState(),
     ...state,
     status: { type: "idle" },
+    isDirty: false,
   };
 }
 
@@ -40,12 +44,34 @@ function geFullDataGraph(): Graph {
   // get the full graph
   const graphDataset = graphDatasetAtom.get();
   const filteredGraph = filteredGraphAtom.get();
-  const dynamicNodeData = dynamicItemDataAtom.get();
+  const dynamicItemData = dynamicItemDataAtom.get();
   const fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
 
   // apply current appearance on the graph
   const visualGetters = visualGettersAtom.get();
-  applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
+  applyVisualProperties(fullDataGraph, graphDataset, dynamicItemData, visualGetters);
+
+  // Materialize the computed values of "formula" (scripted) fields as static attributes on the
+  // exported graph. This makes them part of exports (eg. GEXF), while only mutating this freshly
+  // built export graph — the dataset (and thus the formula definitions and the native gephi-lite
+  // save) are left untouched.
+  const materializeScriptFields = (itemType: ItemType, fields: FieldModel[], dynamicData: Record<string, ItemData>) => {
+    const scriptFields = fields.filter((f) => f.script);
+    if (!scriptFields.length) return;
+    const itemIds = itemType === "nodes" ? fullDataGraph.nodes() : fullDataGraph.edges();
+    const setAttribute = (id: string, key: string, value: Scalar) =>
+      itemType === "nodes"
+        ? fullDataGraph.setNodeAttribute(id, key, value)
+        : fullDataGraph.setEdgeAttribute(id, key, value);
+    itemIds.forEach((id) => {
+      scriptFields.forEach((field) => {
+        const value = dynamicData[id]?.[field.id];
+        if (value !== undefined && value !== null) setAttribute(id, field.id, value);
+      });
+    });
+  };
+  materializeScriptFields("nodes", graphDataset.nodeFields, dynamicItemData.dynamicNodeData);
+  materializeScriptFields("edges", graphDataset.edgeFields, dynamicItemData.dynamicEdgeData);
 
   return fullDataGraph;
 }
@@ -71,10 +97,25 @@ const setCurrentFile: Producer<FileState, [FileType | null]> = (file) => {
   };
 };
 
+// Records the content the remote holds as of the last open/save, so the freshness guard can check
+// that an apparently newer remote really differs before warning (see core/cloud/remoteContent).
+export const setRemoteContentFingerprint: Producer<FileState, [string | null]> = (fingerprint) => {
+  return (prev) => ({ ...prev, remoteContentFingerprint: fingerprint });
+};
+
+// Clears isDirty without touching the current file pointer: used after the graph dataset,
+// appearance or filters atoms get bulk-replaced by something other than an actual user edit (e.g.
+// the sessionStorage rehydration on page reload), which would otherwise flip isDirty back to true
+// through the markDirty bindings below, even though nothing was actually modified.
+export const clearDirty: Producer<FileState, []> = () => (prev) => (prev.isDirty ? { ...prev, isDirty: false } : prev);
+
 export const reset: Producer<FileState, [boolean]> = (full) => {
   return (prev) => {
     if (full) return getEmptyFileState();
-    return { ...prev, current: null };
+    // A blank workspace has nothing unsaved yet: isDirty must be cleared here, since it runs
+    // after the graph/appearance/filters atoms were just reset to their own blank state, which
+    // (being a new value reference) already flipped it back to true via the markDirty bindings.
+    return { ...prev, current: null, isDirty: false, remoteContentFingerprint: null };
   };
 };
 
@@ -88,12 +129,12 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
 
   try {
     // Parse the file
-    const { data, metadata, format } = await openAndParseFile(file);
+    const { data, metadata, format, content } = await openAndParseFile(file);
 
     // Do the import
     resetStates(false);
     if (format === "gephi-lite") {
-      const { graphDataset, appearance, filters } = data;
+      const { graphDataset, appearance, filters, session } = data;
       // Load the graph
       const { setGraphDataset } = graphDatasetActions;
       setGraphDataset(graphDataset);
@@ -103,6 +144,9 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       // Load filters
       const { setFilters } = filtersActions;
       setFilters(filters);
+      // Load the session (layouts & metrics parameters), when the file carries one. Older files
+      // predate this field: their session is left as-is (the current tab's one).
+      if (session) sessionActions.setFullState(session);
     } else {
       const { setGraphDataset } = graphDatasetActions;
       const { mergeState } = appearanceActions;
@@ -115,12 +159,27 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat) => {
       if (!isEmpty(appearanceState)) mergeState(appearanceState);
     }
 
-    // Add the new file in the history list
-    fileActions.setCurrentFile({ ...file, format });
+    // Add the new file in the history list.
+    // For a cloud (GitHub) file, memorize the metadata (esp. updatedAt) read from the SAME "detail"
+    // endpoint the freshness guard uses (getFile → GET /gists/{id}), not the one that brought us here
+    // (the "list" endpoint GET /gists, used by getFiles, or a stale localStorage entry). The two can
+    // report a slightly different updated_at for the very same gist version; memorizing the list one
+    // then comparing against the detail one would make the guard warn "remote is newer" on every tick
+    // without any real change. Falls back to the passed file if the detail read is unavailable.
+    let fileToMemorize: FileTypeWithoutFormat = file;
+    if (file.type === "cloud") {
+      const user = userAtom.get();
+      const fresh = user ? await user.provider.getFile(file.id) : null;
+      if (fresh) fileToMemorize = { ...file, ...fresh };
+    }
+    // Remember what the remote held when we opened it, so the freshness guard can tell a real
+    // remote change from a timestamp that merely moved (see core/cloud/remoteContent).
+    fileActions.setRemoteContentFingerprint(file.type === "cloud" ? fingerprintContent(content) : null);
+    fileActions.setCurrentFile({ ...fileToMemorize, format });
 
     // Reset the camera
     resetCamera({ forceRefresh: true });
-    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" }, isDirty: false }));
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
     throw e;
@@ -137,11 +196,12 @@ export const exportAsGephiLite = asyncAction(async (callback: (data: string) => 
       graphDataset: graphDatasetAtom.get(),
       filters: filtersAtom.get(),
       appearance: appearanceAtom.get(),
+      session: sessionAtom.get(),
     };
     const content = gephiLiteStringify(data);
     await callback(content);
-    // idle state
-    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+    // idle state, and the current file now matches what was just exported
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" }, isDirty: false }));
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
   }
@@ -169,12 +229,21 @@ export const fileActions = {
   exportAsGexf,
   reset: producerToAction(reset, fileAtom),
   setCurrentFile: producerToAction(setCurrentFile, fileAtom),
+  clearDirty: producerToAction(clearDirty, fileAtom),
+  setRemoteContentFingerprint: producerToAction(setRemoteContentFingerprint, fileAtom),
 };
 
 /**
  * Bindings:
  * *********
  */
+
+// Mark the current file as dirty as soon as the graph dataset, appearance or filters change:
+const markDirty = () => fileAtom.set((prev) => (prev.isDirty ? prev : { ...prev, isDirty: true }));
+graphDatasetAtom.bind(markDirty);
+appearanceAtom.bind(markDirty);
+filtersAtom.bind(markDirty);
+
 fileAtom.bind((file) => {
   localStorage.setItem("file", gephiLiteStringify(file));
 });

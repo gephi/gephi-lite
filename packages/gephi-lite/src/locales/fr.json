@@ -40,11 +40,10 @@
       "title": "Images"
     },
     "labels": {
-      "adapts_to_zoom": "Dans quelle mesure les libellés doivent-ils augmenter avec le zoom",
+      "adapts_to_zoom": "Taille fixe ou zoomable",
       "data": "Fichier de données",
       "data_description": "Tous les libellés des {{items}} sont ceux du fichier de données d'entrée.",
       "default_value": "Libellé pour {{items}} sans valeur valide",
-      "density": "Combien de libellés doivent apparaître à tout moment",
       "ellipsis": {
         "enabled": "Tronquer les labels",
         "max_length": "Taille maximale des labels"
@@ -53,12 +52,15 @@
       "fixed_label": "Libellé pour chaque {{items}}",
       "fixed_label_size": "Taille du libellé pour chaque {{items}}",
       "fixed_size": "Taille fixe",
+      "id": "Identifiant",
+      "labels_count": "Nombre de libellés affichés",
+      "labels_count_description": "Nombre de libellés de nœuds affichés simultanément. Les nœuds les plus gros de la zone visible sont libellés en priorité, en les répartissant sur l'écran.",
       "none": "Pas de libellé",
       "none_description": "Tous les {{items}} n'ont pas de libellé affiché.",
       "set_labels_from": "Définir le libellé à partir de...",
       "set_labels_size_from": "Définir la taille du libellé à partir de...",
       "size": "Taille des {{items}}",
-      "size_coef": "Tailles des libellés (plus grand rend les libellés plus grands)",
+      "size_coef": "Taille des libellés (si fixe ou zoom = 1)",
       "title": "Libellés"
     },
     "menu": {
@@ -75,6 +77,7 @@
       "data": "Fichier de données",
       "data_description": "Toutes les tailles des {{items}} sont celles du fichier de données d'entrée.",
       "default_value": "Taille pour {{items}} sans valeur valide",
+      "filter_aware": "Basé sur les valeurs filtrées",
       "fixed": "Une taille constante",
       "interpolate": "Interpoler entre les valeurs personnalisées min et max",
       "set_size_from": "Définir la taille à partir de...",
@@ -138,6 +141,12 @@
     "created": "Créé",
     "delete": "Supprimer",
     "disabled": "Désactivé",
+    "discard_input": {
+      "title": "Abandonner votre saisie ?",
+      "message": "Vous avez commencé à remplir ce formulaire. Le fermer maintenant effacera ce que vous avez saisi.",
+      "keep": "Continuer la saisie",
+      "discard": "Abandonner"
+    },
     "download": "Télécharger",
     "edit": "Modifier",
     "enabled": "Activé",
@@ -150,6 +159,7 @@
     "max": "Max",
     "min": "Min",
     "none": "Aucun",
+    "ok": "OK",
     "open": "Ouvrir",
     "open_code_editor": "Ouvrir l'éditeur de code",
     "open_file": "Ouvrir {{filename}}",
@@ -172,8 +182,14 @@
     "title": "Aperçu des données"
   },
   "datatable": {
+    "cancel_cell": "Annuler la saisie",
     "create_column": "Créer la colonne",
     "duplicate_column": "Dupliquer la colonne",
+    "freeze_values": "Figer les valeurs",
+    "freeze_values_confirm": "Figer les valeurs",
+    "freeze_values_message": "Cela va supprimer le script et figer les valeurs calculées actuelles dans un attribut normal. Les valeurs ne pourront plus être recalculées. Voulez-vous continuer ?",
+    "freeze_values_success": "Les valeurs de « {{name}} » ont été figées.",
+    "freeze_values_title": "Figer les valeurs de « {{name}} » ?",
     "edges_matching": "<strong>{{count, number}}</strong> liens correspondent à la recherche",
     "edges_matching_one": "<strong>{{count, number}}</strong> lien correspond à la recherche",
     "edges_matching_zero": "<strong>Aucun</strong> lien correspond à la recherche",
@@ -201,6 +217,7 @@
       "targetId": "Cible ID"
     },
     "save_and_create_column": "Enregistrer et créer la colonne",
+    "save_and_update_column": "Enregistrer et mettre à jour la colonne",
     "save_cell": "Enregistrer la cellule",
     "sort_asc": "Tri A→Z (0→9)",
     "sort_desc": "Tri Z→A (9→0)"
@@ -209,6 +226,7 @@
     "all_edges": "Tous les liens",
     "all_nodes": "Tous les nœuds",
     "code_editor": "Éditeur de code",
+    "confirm_create_node": "Créer un nouveau nœud nommé « {{label}} » ?",
     "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
     "confirm_delete_edges": "Êtes-vous sûr de vouloir supprimer {{count, number}} liens ?",
     "confirm_delete_edges_one": "Êtes-vous sûr de vouloir supprimer ce lien ?",
@@ -227,7 +245,7 @@
     "create_nodes_scripted_field_success": "L'attribut de nœud scripté a été créé.",
     "create_nodes_success": "Le nœud a été créé avec succès.",
     "data_creation": "Création de données",
-    "delete_attribute": "Supprimer l'attribut",
+    "delete_attribute": "Supprimer la colonne",
     "delete_attributes_success": "L'attribut '{{name}}' a bien été supprimé.",
     "delete_edges": "Supprimer {{count, number}} liens",
     "delete_edges_attributes": "Supprimer l'attribut '{{name}}' des liens",
@@ -247,6 +265,8 @@
     "delete_selected_nodes_one": "Supprimer le nœud sélectionné",
     "delete_this_edges": "Supprimer ce lien",
     "delete_this_nodes": "Supprimer ce nœud",
+    "duplicate_edge_warning": "{{count}} liens relient déjà ces deux nœuds :",
+    "duplicate_edge_warning_one": "Un lien relie déjà ces deux nœuds :",
     "edit_selected_edges": "Éditer les liens sélectionnés",
     "edit_selected_edges_one": "Éditer le lien sélectionné",
     "edit_selected_nodes": "Éditer les nœuds sélectionnés",
@@ -261,9 +281,12 @@
     "search_nodes": "Rechercher par libellé de nœud...",
     "selected_edges": "Liens sélectionnés seulement",
     "selected_nodes": "Nœuds sélectionnées seulement",
+    "similar_nodes_warning": "Des nœuds avec un nom similaire existent déjà :",
     "update_edges": "Éditer le lien existant",
     "update_edges_field": "Éditer l'attribut de liens",
     "update_edges_field_success": "L'attribut de lien a bien été mis à jour.",
+    "update_edges_scripted_field": "Éditer l'attribut de lien scripté",
+    "update_edges_scripted_field_success": "L'attribut de lien scripté a été mis à jour.",
     "update_edges_success": "Le lien a été mis à jour avec succès.",
     "update_multiple_edges": "Éditer les liens existants",
     "update_multiple_edges_success": "Les {{count,number}} liens ont bien été mis à jour.",
@@ -272,6 +295,8 @@
     "update_nodes": "Éditer le nœud existant",
     "update_nodes_field": "Éditer l'attribut des nœuds",
     "update_nodes_field_success": "L'attribut de nœud a bien été mis à jour.",
+    "update_nodes_scripted_field": "Éditer l'attribut de nœud scripté",
+    "update_nodes_scripted_field_success": "L'attribut de nœud scripté a été mis à jour.",
     "update_nodes_success": "Le nœud a été mis à jour avec succès.",
     "update_this_edges": "Éditer ce lien",
     "update_this_nodes": "Éditer ce nœud"
@@ -284,6 +309,7 @@
     "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante",
     "form": {
       "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
+      "invalid_value": "Cette valeur n'est pas un « {{type}} » valide.",
       "max": "Le champ {{name}} doit être inférieur ou égal à {{max}}",
       "min": "Le champ {{name}} doit être supérieur ou égal à {{min}}",
       "required": "Le champ {{name}} est requis",
@@ -306,6 +332,7 @@
     "title": "Gestion des données"
   },
   "filters": {
+    "active": "Des filtres sont actifs - cliquer pour ouvrir le panneau Filtres",
     "activated": "Filtre activé",
     "add_filter": "Ajouter un filtre",
     "create": {
@@ -326,10 +353,13 @@
     "edges_fields": "Attributs des liens",
     "filter": "Filtre",
     "full_graph": "Graphe entier",
+    "inactive": "Aucun filtre actif - cliquer pour ouvrir le panneau Filtres",
     "inapplicable": "Filtre désactivé : une seule valeur disponible.",
     "insert": "Insérer un filtre",
     "intermediate_graph": "Réseau intermédiaire",
     "keepMissingValues": "Conserver les valeurs manquantes",
+    "move_down": "Descendre le filtre",
+    "move_up": "Monter le filtre",
     "noValueOption": "Pas de valeur",
     "no_concurrent_edit": "Un seul filtre peut être modifié à la fois. Confirmez l'édition en cours pour modifier ce filtre.",
     "nodes_fields": "Attributs des nœuds",
@@ -369,6 +399,7 @@
     "info": "Plus d'informations sur Gephi Lite",
     "open_welcome_modal": "Ouvrir la modale d'accueil",
     "report_issue": "Signaler un problème",
+    "report_issue_auto": "Signaler un problème avec feedback-service",
     "title": "Gephi Lite"
   },
   "github": {
@@ -443,7 +474,8 @@
       "edges_zero": "lien",
       "field": {
         "date-format": "Format de date",
-        "id": "Identifiant",
+        "default_value": "Valeur par défaut",
+        "id": "ID",
         "label": "Label",
         "separator": "Séparateur de mots-clefs",
         "type": "Type",
@@ -452,6 +484,7 @@
       "graph": "graph",
       "mixed": "Mixte",
       "mixed_graph": "Réseau mixte",
+      "most_recently_updated": "Modifié le plus récemment",
       "no_attributes": "Il n'y a pas encore d'attribut dans le modèle.",
       "nodes": "nœuds",
       "nodes-data": {
@@ -506,6 +539,16 @@
         "success": "Le fichier {{filename}} a bien été ouvert"
       },
       "title": "Ouvrir un fichier de graphe"
+    },
+    "remote_changed": {
+      "keep": "Conserver mes modifications",
+      "message": "Le fichier « {{filename}} » a été modifié sur GitHub (par un autre utilisateur ou une autre session) depuis que vous l'avez ouvert. Si vous continuez à l'éditer puis l'enregistrez, vous écraserez ces modifications. Voulez-vous recharger la version à jour ? Vos modifications locales seront perdues.",
+      "reload": "Recharger depuis GitHub",
+      "overwrite": "Écraser",
+      "reload_error": "Une erreur s'est produite lors du rechargement du fichier depuis GitHub.",
+      "reload_success": "Le fichier « {{filename}} » a été rechargé depuis GitHub.",
+      "save_conflict_message": "Le fichier « {{filename}} » a été modifié sur GitHub (par un autre utilisateur ou une autre session) depuis que vous l'avez ouvert. Vous pouvez recharger la version à jour (vos modifications locales seront perdues), l'écraser avec votre version, ou conserver vos modifications sans enregistrer.",
+      "title": "Ce graphe a changé sur GitHub"
     },
     "partitioning": {
       "description": "Pour appliquer l'apparence ou les filtres différemment sur différents groupes de {{items}}, partitionnez votre graphe en utilisant n'importe quel attribut qualitatif des nœuds.",
@@ -576,7 +619,9 @@
     },
     "description": "Ce panneau permet de calculer de nouvelles coordonnées pour les nœuds du graphe.",
     "exec": {
+      "rerun_last": "Relancer la dernière spatialisation utilisée ({{layout}})",
       "started": "La spatialisation {{layout}} est en cours d'exécution",
+      "stop_last": "Arrêter la spatialisation en cours ({{layout}})",
       "stopped": "La spatialisation {{layout}} a été arrêtée",
       "success": "La spatialisation \"{{layout}}\" a bien été appliquée."
     },
@@ -884,13 +929,14 @@
     "title": "Métriques"
   },
   "pages": {
-    "data": "Données",
-    "graph": "Réseau"
+    "data": "Data",
+    "graph": "Graph"
   },
   "providers": {
     "github": "GitHub"
   },
   "search": {
+    "clear": "Vider la recherche",
     "edges": {
       "help": "Écrire quelque chose pour trouver un lien",
       "no_result": "Aucun lien trouvée",
@@ -907,6 +953,7 @@
       "select_all_nodes": "Ajouter {{count, number}} nœuds à la sélection"
     },
     "nodes": {
+      "create_option": "Créer le nœud « {{label}} »",
       "help": "Écrire quelque chose pour trouver un nœud",
       "no_result": "Aucun nœud trouvé",
       "other_result": "... et {{count, number}} autres nœuds",
@@ -915,6 +962,7 @@
     }
   },
   "selection": {
+    "create_edge_from_node": "Créer un lien depuis ce nœud",
     "cursor": "Sélection simple",
     "edge_no_label": "(libellé vide)",
     "edges": "<strong>{{count, number}}</strong> liens sélectionnés",
@@ -922,18 +970,21 @@
     "edges_zero": "<strong>Aucun</strong> lien sélectionné",
     "empty_edges": "Ce lien n'a pas d'attribut",
     "empty_nodes": "Ce nœud n'a pas d'attribut",
+    "filtered": "{{count, number}} filtrés",
+    "filtered_edges": "{{count, number}} liens filtrés",
+    "filtered_edges_one": "{{count, number}} lien filtré",
+    "filtered_nodes": "{{count, number}} nœuds filtrés",
+    "filtered_nodes_one": "{{count, number}} nœud filtré",
+    "filtered_one": "{{count, number}} filtré",
     "focus_edges": "Sélectionner uniquement ce lien",
     "focus_nodes": "Sélectionner uniquement ce nœud",
-    "hidden": "{{count, number}} cachés",
-    "hidden_edges": "<strong>{{count, number}}</strong> liens sélectionnés masqués",
-    "hidden_edges_one": "<strong>Un</strong> lien sélectionné masqué",
-    "hidden_nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés masqués",
-    "hidden_nodes_one": "<strong>Un</strong> nœud sélectionné masqué",
-    "hidden_one": "un caché",
-    "hidden_zero": "aucun caché",
+    "hide_panel": "Masquer le volet de sélection (conserve la sélection)",
     "lasso": "Sélection par lasso",
     "locate_on_graph": "Localiser sur le graphe",
+    "locate_selected_edges": "Zoomer sur tous les liens sélectionnés",
+    "locate_selected_nodes": "Zoomer sur tous les nœuds sélectionnés",
     "marquee": "Sélection par rectangle",
+    "no_path_between_nodes": "Aucun chemin ne relie ces deux nœuds",
     "no_value": "Pas de valeur",
     "node_no_label": "(libellé vide)",
     "nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés",
@@ -942,20 +993,22 @@
     "open_in_data": "Voir dans Données",
     "open_in_graph": "Voir dans le Réseau",
     "select_all": "Sélectionner tout",
+    "select_node_edges": "Sélectionner les liens du nœud",
     "select_node_neighbors": "Sélectionner les voisins du nœud",
+    "select_path_between_nodes": "Sélectionner les liens d'un plus court chemin entre les deux nœuds",
+    "selected_edges": "Liens sélectionnés",
+    "selected_nodes": "Nœuds sélectionnés",
+    "sort": {
+      "alphabetical": "Tri alphabétique - cliquer pour trier par taille décroissante",
+      "size": "Tri par taille décroissante - cliquer pour trier alphabétiquement"
+    },
     "unselect_all": "Tout désélectionner",
     "unselect_all_hidden_edges": "Tout désélectionner pour les liens masqués",
     "unselect_all_hidden_nodes": "Tout désélectionner pour les nœuds masqués",
     "unselect_edges": "Désélectionner ce lien",
     "unselect_nodes": "Désélectionner ce nœud",
     "visible": "{{count, number}} visibles",
-    "visible_edges": "<strong>{{count, number}}</strong> liens sélectionnés visibles",
-    "visible_edges_one": "<strong>Un</strong> lien sélectionné visible",
-    "visible_edges_zero": "<strong>Aucun</strong> lien sélectionné visible",
-    "visible_nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés visibles",
-    "visible_nodes_one": "<strong>Un</strong> nœud sélectionné visible",
-    "visible_nodes_zero": "<strong>Aucun</strong> nœud sélectionné visible",
-    "visible_one": "un visible",
+    "visible_one": "{{count, number}} visible",
     "visible_zero": "aucun visible"
   },
   "settings": {
@@ -994,6 +1047,7 @@
     "website": "Site internet"
   },
   "workspace": {
+    "confirm_leave_unsaved": "Votre graphe a des modifications non enregistrées. Quitter sans enregistrer ?",
     "menu": {
       "duplicate": "Dupliquer dans un nouvel onglet",
       "export_graph_file": "Exporter en fichier graph",
@@ -1003,7 +1057,8 @@
       "new": "Créer un nouvel espace de travail",
       "open": "Ouvrir ...",
       "save": "Enregistrer",
-      "save_as": "Enregistrer sous..."
+      "save_as": "Enregistrer sous...",
+      "unsaved_changes": "Modifications non enregistrées"
     }
   }
 }

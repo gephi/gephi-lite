@@ -1,5 +1,5 @@
 import { parseAppearanceState } from "@gephi/gephi-lite-sdk";
-import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
@@ -9,10 +9,12 @@ import { sessionStorage } from "../utils/storage";
 import { extractFilename } from "../utils/url";
 import { appearanceAtom } from "./appearance";
 import { useBroadcast } from "./broadcast/useBroadcast";
-import { useFileActions, useGraphDataset, useGraphDatasetActions } from "./context/dataContexts";
+import { useRemoteFileGuard } from "./cloud/useRemoteFileGuard";
+import { resetStates, useFile, useFileActions, useGraphDataset } from "./context/dataContexts";
 import { filtersAtom } from "./filters";
 import { parseFiltersState } from "./filters/utils";
 import { graphDatasetAtom } from "./graph";
+import { ensureSystemDatesInDataset } from "./graph/dates";
 import { parseDataset } from "./graph/utils";
 import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
@@ -31,12 +33,79 @@ let isInitialized = false;
 export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const { openModal } = useModal();
-  const { open } = useFileActions();
+  const { modal, openModal, requestCloseModal } = useModal();
+  const { open, clearDirty } = useFileActions();
   const { metadata } = useGraphDataset();
-  const { resetGraph } = useGraphDatasetActions();
+  const { isDirty } = useFile();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
   useBroadcast(broadcastID);
+
+  // Warn when starting to edit a GitHub graph whose remote version has changed since it was opened:
+  useRemoteFileGuard();
+
+  // The back-button guard below is set up once on mount; it reads the always-current modal /
+  // dirty / t through refs instead of re-subscribing on every change.
+  const modalRef = useRef(modal);
+  modalRef.current = modal;
+  const isDirtyRef = useRef(isDirty);
+  isDirtyRef.current = isDirty;
+  const requestCloseModalRef = useRef(requestCloseModal);
+  requestCloseModalRef.current = requestCloseModal;
+  const tRef = useRef(t);
+  tRef.current = t;
+
+  /**
+   * Keep the browser/Android back button from leaving the app (and losing unsaved work):
+   * - A "guard" history entry is kept on top of the stack, so a back press lands on a popstate we
+   *   control instead of navigating away or stepping through the router's Graph/Data history.
+   * - When a modal is open, back closes it (and we keep guarding) - unless it holds unsaved input,
+   *   in which case it raises its own confirmation instead (see `requestCloseModal`).
+   * - Otherwise, back only leaves the app after a confirmation when there are unsaved changes;
+   *   with nothing to save it leaves normally.
+   * A beforeunload handler additionally covers reload / tab close (where mobile browsers, e.g.
+   * Firefox Android, do not fire the back-button popstate at all).
+   */
+  useEffect(() => {
+    const pushGuard = () => window.history.pushState({ gephiLiteBackGuard: true }, "");
+    pushGuard();
+    let leaving = false;
+
+    const handlePopState = () => {
+      // A back navigation just consumed our guard entry.
+      if (modalRef.current) {
+        // Priority: close an open modal, and keep guarding.
+        requestCloseModalRef.current();
+        pushGuard();
+        return;
+      }
+      if (isDirtyRef.current && !window.confirm(tRef.current("workspace.confirm_leave_unsaved"))) {
+        // Unsaved changes and the user chose to stay: keep guarding.
+        pushGuard();
+        return;
+      }
+      // Let the app be left for real (nothing unsaved, or the user confirmed): stop guarding and
+      // replay the back so the browser actually leaves.
+      leaving = true;
+      window.removeEventListener("popstate", handlePopState);
+      window.history.back();
+    };
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Skipped when we are intentionally leaving (the popstate handler already confirmed):
+      if (leaving || !isDirtyRef.current) return;
+      e.preventDefault();
+      // Legacy browsers require returnValue to be set for the prompt to show:
+      e.returnValue = "";
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+    // Set up once; current values are read through refs.
+  }, []);
 
   useKonami(
     () => {
@@ -93,10 +162,14 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     // If query params has new
     // => empty graph & open welcome modal
     if (url.searchParams.has("new") || broadcastID) {
-      resetGraph();
+      // Full workspace reset (file pointer included), so a fresh/broadcast tab never inherits and
+      // overwrites a file left over from a previous session.
+      resetStates(false);
       graphFound = true;
       url.searchParams.delete("new");
-      window.history.pushState({}, "", url);
+      // replaceState (not pushState): just clean the URL, without adding a back-navigable entry
+      // that would also bury the back-button guard entry (see the guard effect above).
+      window.history.replaceState({}, "", url);
       showWelcomeModal = false;
     }
 
@@ -116,9 +189,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         });
         graphFound = true;
         showWelcomeModal = false;
-        // remove param in url
+        // remove param in url (replaceState, not pushState: see the "new" branch above)
         url.searchParams.delete("file");
-        window.history.pushState({}, "", url);
+        window.history.replaceState({}, "", url);
       } catch (e) {
         console.error(e);
         notify({
@@ -142,10 +215,14 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           const appearance = rawAppearance ? parseAppearanceState(rawAppearance) : null;
           const filters = rawFilters ? parseFiltersState(rawFilters) : null;
 
-          graphDatasetAtom.set(dataset);
+          graphDatasetAtom.set(ensureSystemDatesInDataset(dataset));
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
           resetCamera({ forceRefresh: true });
+          // Restoring the previous session's state (e.g. after a page reload) is not a user edit:
+          // the atom updates above just flipped isDirty back to true through the markDirty
+          // bindings (new object references), so it must be cleared again here.
+          clearDirty();
 
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }

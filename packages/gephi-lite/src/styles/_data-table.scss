@@ -167,7 +167,12 @@ $table-editable-columns-cell-hover-bg: color-mix(
     form {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      // Align to the top, not center: the actions column (check + cancel, stacked) is taller than
+      // the single-line field editor. Centering it would place the field's controls (eg. the number
+      // stepper's "+") level with the gap between check and cancel, right in the way of a misclick
+      // toward cancel. Top-aligning instead lines the field up with the check button, leaving cancel
+      // clearly below the whole field.
+      align-items: flex-start;
       gap: $gl-spacers-2;
 
       & > *:first-child {
@@ -182,6 +187,15 @@ $table-editable-columns-cell-hover-bg: color-mix(
       align-items: end;
       gap: $gl-spacers-2;
     }
+  }
+
+  // Save (top) and cancel (bottom) buttons, stacked with extra gap so the cancel button - a
+  // destructive-ish action that discards the edit - isn't at risk of being clicked by mistake right
+  // after the save button.
+  .data-cell-edition-actions {
+    display: flex;
+    flex-direction: column;
+    gap: $gl-spacers-3;
   }
 }
 

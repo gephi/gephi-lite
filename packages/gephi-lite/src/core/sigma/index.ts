@@ -3,10 +3,18 @@ import Graph from "graphology";
 import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
 import Sigma from "sigma";
+import { CameraState } from "sigma/types";
 
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaState } from "./types";
-import { getEmptySigmaState } from "./utils";
+import {
+  LABEL_ASCENT_RATIO,
+  LABEL_BASELINE_RATIO,
+  LABEL_DESCENT_RATIO,
+  VISIBLE_BAND_SELECTOR,
+  getEmptySigmaState,
+  getVisibleBand,
+} from "./utils";
 
 /**
  * Producers:
@@ -181,6 +189,217 @@ export const sigmaActions = {
 const ANIMATION_DURATION = 500;
 const HIGHLIGHT_DURATION = 2000;
 let focusTimeOutId: number | null = null;
+
+// A focus request that must be replayed once the graph page (and its sigma instance) is mounted
+// and ready. Used when "locating" an item from another page (e.g. the data table): we navigate to
+// the graph, and the graph page consumes this pending focus once ready (see consumePendingFocus).
+let pendingFocus: { type: "nodes" | "edges"; id: string } | null = null;
+
+/**
+ * Runs `run` once the graph is ready to be framed on the given nodes, i.e. once BOTH:
+ *  - the graph area (".filler") has stopped resizing, and
+ *  - sigma has framed the nodes (their display coordinates are normalized, not raw).
+ *
+ * On mobile, selecting an item deploys a panel that takes half of the height, and the ".filler"
+ * (the visible graph band) shrinks over a CSS transition. Framing synchronously would then be
+ * computed against the *pre-transition* band (full height) and end up hidden behind the panel /
+ * zoomed for the wrong area, so we wait for the band to settle. And when arriving from another page
+ * (e.g. the data table), the sigma instance has just mounted and briefly reports raw coordinates as
+ * display data, so we also wait until the nodes are actually framed. On desktop, already mounted,
+ * both conditions hold within a couple of frames. Gives up after ~1s so a focus always happens.
+ */
+function runWhenReadyToFrame(nodeIds: string[], run: () => void) {
+  const getHeight = () => document.querySelector(VISIBLE_BAND_SELECTOR)?.getBoundingClientRect().height ?? 0;
+  const start = performance.now();
+  let lastHeight = getHeight();
+  let stableFrames = 0;
+  const tick = () => {
+    // Read the live sigma each frame: when arriving from another page the atom may still point to
+    // the previous instance for a frame or two while the graph page mounts.
+    const sigma = sigmaAtom.get();
+    const height = getHeight();
+    stableFrames = Math.abs(height - lastHeight) < 0.5 ? stableFrames + 1 : 0;
+    lastHeight = height;
+    const bandSettled = stableFrames >= 2;
+    const framed = nodeIds.some((id) => isNodeFramed(sigma, id));
+    if ((bandSettled && framed) || performance.now() - start > 1000) run();
+    else requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/**
+ * Computes a camera state that frames the given nodes so that their disks AND their labels
+ * fit entirely inside the *visible* part of the graph.
+ *
+ * The sigma canvas spans more than what the user sees: the header and the left/right panels
+ * are drawn on top of it. The ".filler" element is exactly the graph rectangle left visible
+ * between them, whatever panels happen to be open or closed, so we frame the nodes inside it.
+ *
+ * Node sizes are expressed in position units (itemSizesReference: "positions"), so the disks
+ * scale with the zoom, whereas labels are drawn at a fixed pixel size. We therefore reason in
+ * viewport pixels: for each node we split its footprint into the part that scales with the
+ * zoom (the disk) and the fixed part (its label), then solve for the zoom factor that keeps
+ * everything within the visible band (minus some padding), and finally pan so the nodes are
+ * centered inside that band rather than inside the whole canvas.
+ */
+function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraState {
+  const graph = sigma.getGraph();
+  const camera = sigma.getCamera();
+  const ids = Array.from(new Set(nodeIds)).filter((id) => graph.hasNode(id) && !!sigma.getNodeDisplayData(id));
+  if (!ids.length) return camera.getState();
+
+  const { width, height } = sigma.getDimensions();
+  const currentRatio = camera.ratio || 1;
+  const PADDING = 28; // px of breathing room kept on each side of the visible band
+
+  const { left: bandLeft, top: bandTop, width: bandWidth, height: bandHeight } = getVisibleBand(sigma);
+  const bandCenterX = bandLeft + bandWidth / 2;
+  const bandCenterY = bandTop + bandHeight / 2;
+
+  // Labels are rendered at a fixed pixel size: prepare a canvas to measure their width.
+  const ctx = document.createElement("canvas").getContext("2d");
+  const labelSize = (sigma.getSetting("labelSize") as number) || 14;
+  const labelFont = (sigma.getSetting("labelFont") as string) || "sans-serif";
+  const labelWeight = (sigma.getSetting("labelWeight") as string) || "normal";
+  if (ctx) ctx.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+
+  // Node coordinates: framed (what camera.x/y use) and raw (what graphToViewport projects).
+  const framed = ids.map((id) => sigma.getNodeDisplayData(id) as { x: number; y: number });
+  const raws = ids.map((id) => graph.getNodeAttributes(id) as { x: number; y: number; size?: number });
+  const midFramedX = (Math.min(...framed.map((d) => d.x)) + Math.max(...framed.map((d) => d.x))) / 2;
+  const midFramedY = (Math.min(...framed.map((d) => d.y)) + Math.max(...framed.map((d) => d.y))) / 2;
+  const midRawX = (Math.min(...raws.map((a) => a.x)) + Math.max(...raws.map((a) => a.x))) / 2;
+  const midRawY = (Math.min(...raws.map((a) => a.y)) + Math.max(...raws.map((a) => a.y))) / 2;
+  const centerVp = sigma.graphToViewport({ x: midRawX, y: midRawY });
+
+  const availHalfW = Math.max(1, bandWidth / 2 - PADDING);
+  const availHalfH = Math.max(1, bandHeight / 2 - PADDING);
+
+  // Zoom factor relative to the current zoom (> 1 zooms in). We keep the most constraining node.
+  let factor = Infinity;
+  ids.forEach((id, i) => {
+    const a = raws[i];
+    const nodeVp = sigma.graphToViewport({ x: a.x, y: a.y });
+    const border = sigma.graphToViewport({ x: a.x + (a.size || 0), y: a.y });
+    const radiusPx = Math.abs(border.x - nodeVp.x);
+    const labelPx = ctx ? ctx.measureText(sigma.getNodeDisplayData(id)?.label || "").width : 0;
+
+    // Half-extent (px) from the target center that scales with the zoom (the disk):
+    const scalingX = Math.abs(nodeVp.x - centerVp.x) + radiusPx;
+    const scalingY = Math.abs(nodeVp.y - centerVp.y) + radiusPx;
+    // Labels are drawn to the RIGHT of the node, so only nodes on the right half push against the
+    // right edge of the band. Reserving their (fixed, non-scaling) width for *every* node — including
+    // far-left ones whose label extends inward — would over-constrain the zoom and dezoom far too much
+    // on a narrow (mobile) band. Cap the reservation so a very long label cannot collapse the zoom.
+    const labelReserve = nodeVp.x >= centerVp.x ? Math.min(labelPx, availHalfW * 0.6) : 0;
+    if (scalingX > 0) factor = Math.min(factor, Math.max(availHalfW - labelReserve, 1) / scalingX);
+    if (scalingY > 0) factor = Math.min(factor, Math.max(availHalfH - labelSize / 2, 1) / scalingY);
+  });
+  if (!isFinite(factor) || factor <= 0) factor = 1;
+
+  // Safety floor: framing a subset of nodes must never zoom out further than showing the whole
+  // rendered graph — otherwise a bad measurement (or a very spread selection) could leave the graph
+  // barely visible. Compute the zoom that fits every rendered node in the band and never zoom out
+  // beyond it.
+  let allMinX = Infinity;
+  let allMaxX = -Infinity;
+  let allMinY = Infinity;
+  let allMaxY = -Infinity;
+  graph.forEachNode((n) => {
+    if (!sigma.getNodeDisplayData(n)) return;
+    const attrs = graph.getNodeAttributes(n) as { x: number; y: number };
+    const v = sigma.graphToViewport({ x: attrs.x, y: attrs.y });
+    allMinX = Math.min(allMinX, v.x);
+    allMaxX = Math.max(allMaxX, v.x);
+    allMinY = Math.min(allMinY, v.y);
+    allMaxY = Math.max(allMaxY, v.y);
+  });
+  if (isFinite(allMinX)) {
+    const allHalfW = Math.max((allMaxX - allMinX) / 2, 1);
+    const allHalfH = Math.max((allMaxY - allMinY) / 2, 1);
+    const factorFitAll = Math.min(availHalfW / allHalfW, availHalfH / allHalfH);
+    factor = Math.max(factor, factorFitAll);
+  }
+
+  // Pan so the nodes are centered inside the visible band (and not the whole canvas). We
+  // convert the pixel offset (band center vs canvas center) into framed units. The framed
+  // distance per viewport pixel is derived from two distinct nodes and scaled to the new zoom.
+  let camX = midFramedX;
+  let camY = midFramedY;
+  if (ids.length >= 2) {
+    const vp0 = sigma.graphToViewport({ x: raws[0].x, y: raws[0].y });
+    let far = 1;
+    let farDist = -1;
+    for (let i = 1; i < ids.length; i++) {
+      const v = sigma.graphToViewport({ x: raws[i].x, y: raws[i].y });
+      const d = Math.hypot(v.x - vp0.x, v.y - vp0.y);
+      if (d > farDist) [farDist, far] = [d, i];
+    }
+    const vpFar = sigma.graphToViewport({ x: raws[far].x, y: raws[far].y });
+    const dvx = vpFar.x - vp0.x;
+    const dvy = vpFar.y - vp0.y;
+    const magnitude = farDist > 1e-6 ? Math.hypot(framed[far].x - framed[0].x, framed[far].y - framed[0].y) / farDist : 0;
+    // Per-axis signed framed-units-per-pixel (same magnitude on both axes; sigma flips Y).
+    const framedPerPxX = Math.abs(dvx) > 1e-6 ? (framed[far].x - framed[0].x) / dvx : magnitude;
+    const framedPerPxY = Math.abs(dvy) > 1e-6 ? (framed[far].y - framed[0].y) / dvy : -magnitude;
+    camX = midFramedX - ((bandCenterX - width / 2) * framedPerPxX) / factor;
+    camY = midFramedY - ((bandCenterY - height / 2) * framedPerPxY) / factor;
+  }
+
+  return { ...camera.getState(), angle: 0, x: camX, y: camY, ratio: currentRatio / factor };
+}
+
+/**
+ * Finds the node whose rendered label is under the given viewport position, if any.
+ *
+ * Sigma only hit-tests the node's disk when detecting clicks (clickNode); its label is drawn on a
+ * separate canvas and is otherwise unclickable, even though it often extends well beyond the disk.
+ * We replicate here the same geometry sigma itself uses to draw labels (drawDiscNodeLabel: text
+ * starts at `nodeRadiusPx + 3` to the right of the node, vertically centered near it), so that
+ * clicking a label behaves exactly like clicking its node.
+ */
+export function findNodeAtLabel(sigma: Sigma, viewportX: number, viewportY: number): string | null {
+  const graph = sigma.getGraph();
+  // Only test labels sigma actually rendered this frame (respects the labels budget, see
+  // applyNodeLabelsBudget), falling back to every visible node if that internal, undocumented set
+  // is absent.
+  // Note: this set is populated regardless of the app's own custom "hideLabel" appearance flag
+  // (e.g. every non-emphasized node's label while another item is selected) — that flag is only
+  // applied afterwards, inside the wrapped draw function — so it must be re-checked below.
+  const displayedLabels = (sigma as unknown as { displayedNodeLabels?: Set<string> }).displayedNodeLabels;
+  const candidates = displayedLabels ? Array.from(displayedLabels) : graph.nodes();
+
+  const labelSize = (sigma.getSetting("labelSize") as number) || 14;
+  const labelFont = (sigma.getSetting("labelFont") as string) || "sans-serif";
+  const labelWeight = (sigma.getSetting("labelWeight") as string) || "normal";
+  const ctx = document.createElement("canvas").getContext("2d");
+  if (ctx) ctx.font = `${labelWeight} ${labelSize}px ${labelFont}`;
+
+  // Candidates are in draw order (earliest-drawn first): keep the LAST match, since a later-drawn
+  // label visually overlaps/wins over an earlier one at the same pixel.
+  let found: string | null = null;
+  for (const id of candidates) {
+    const displayData = sigma.getNodeDisplayData(id) as { hideLabel?: boolean; hidden?: boolean; label?: string };
+    if (!displayData || displayData.hidden || displayData.hideLabel || !displayData.label) continue;
+
+    const raw = graph.getNodeAttributes(id) as { x: number; y: number; size?: number };
+    const nodeVp = sigma.graphToViewport({ x: raw.x, y: raw.y });
+    const border = sigma.graphToViewport({ x: raw.x + (raw.size || 0), y: raw.y });
+    const radiusPx = Math.abs(border.x - nodeVp.x);
+    const textWidth = ctx ? ctx.measureText(displayData.label).width : 0;
+
+    const left = nodeVp.x + radiusPx + 3;
+    const right = left + textWidth;
+    const baselineY = nodeVp.y + labelSize * LABEL_BASELINE_RATIO;
+    const top = baselineY - labelSize * LABEL_ASCENT_RATIO;
+    const bottom = baselineY + labelSize * LABEL_DESCENT_RATIO;
+
+    if (viewportX >= left && viewportX <= right && viewportY >= top && viewportY <= bottom) found = id;
+  }
+  return found;
+}
+
 export function focusCameraOnNode(id: string) {
   if (focusTimeOutId) clearTimeout(focusTimeOutId);
   sigmaActions.resetHighlightedNodes();
@@ -211,45 +430,99 @@ export function focusCameraOnNode(id: string) {
   }, HIGHLIGHT_DURATION);
 }
 
-export function focusCameraOnEdge(id: string) {
+// Frames the camera on a set of nodes so their disks and labels fit within the *visible* graph
+// band (between the panels), highlighting them for a short while. Used to "locate" a multi-item
+// selection, whether triggered from the graph (selection panel) or from the data table. The framing
+// is band-aware (accounts for the mobile selection panel) and waits for the graph to be ready, so
+// it behaves the same regardless of the entry point.
+export function focusCameraOnNodes(ids: string[]) {
   if (focusTimeOutId) clearTimeout(focusTimeOutId);
   sigmaActions.resetHighlightedNodes();
+  if (!ids.length) return;
 
-  const sigma = sigmaAtom.get();
-  const sourceId = sigma.getGraph().source(id);
-  const sourceDisplayData = sigma.getNodeDisplayData(sourceId);
-  const sourceData = sigma.getGraph().getNodeAttributes(sourceId);
-
-  const targetId = sigma.getGraph().target(id);
-  const targetDisplayData = sigma.getNodeDisplayData(targetId);
-  const targetData = sigma.getGraph().getNodeAttributes(targetId);
-
-  if (sourceData && targetData && targetDisplayData && sourceDisplayData) {
-    // margin is the size of the biggest node;
-    const margin = max([sourceDisplayData?.size, targetDisplayData?.size, 10]) as number;
-
-    // we compute the width/height of the edge (with margin) in  the graph referencial
-    const focusWidth = Math.abs(targetData.x - sourceData.x) + margin * 2;
-    const focusHeight = Math.abs(targetData.y - sourceData.y) + margin * 2;
-
-    // we compute the zoom ratio (in the graph ref, which should be the same in the viewport)
-    const graphDimensions = sigma.getGraphDimensions();
-    const focusRatio = max([focusHeight / graphDimensions.height, focusWidth / graphDimensions.width]) as number;
-
-    sigma.getCamera().animate(
-      {
-        x: (sourceDisplayData.x + targetDisplayData.x) / 2,
-        y: (sourceDisplayData.y + targetDisplayData.y) / 2,
-        ratio: focusRatio,
-      },
-      { duration: ANIMATION_DURATION },
-    );
-  }
+  runWhenReadyToFrame(ids, () => {
+    const sigma = sigmaAtom.get();
+    // Keep only the nodes actually rendered right now, and frame them within the visible band.
+    const list = ids.filter((id) => sigma.getGraph().hasNode(id) && !!sigma.getNodeDisplayData(id));
+    if (!list.length) return;
+    sigma.getCamera().animate(getCameraStateToFrameNodes(sigma, list), { duration: ANIMATION_DURATION });
+  });
 
   // Higlight nodes during X seconds
-  sigmaActions.setHighlightedNodes(new Set([sourceId, targetId]));
+  sigmaActions.setHighlightedNodes(new Set(ids));
   focusTimeOutId = window.setTimeout(() => {
     sigmaActions.resetHighlightedNodes();
     focusTimeOutId = null;
   }, HIGHLIGHT_DURATION);
+}
+
+export function focusCameraOnEdge(id: string) {
+  focusCameraOnEdges([id]);
+}
+
+export function focusCameraOnEdges(ids: string[]) {
+  if (!ids.length) return;
+
+  // sigmaGraphAtom rebuilds the render graph from the dataset on a debounce: a just-created edge
+  // (eg. from the "create edge" form) can still be missing from it right when this runs, since
+  // selecting the new edge isn't itself debounced. Retry resolving its endpoints for a bit rather
+  // than silently skipping the focus, the same way runWhenReadyToFrame retries below for framing.
+  let attempts = 0;
+  const tryResolveEndpoints = () => {
+    const graph = sigmaAtom.get().getGraph();
+    const endpoints: string[] = [];
+    ids.forEach((id) => {
+      if (!graph.hasEdge(id)) return;
+      endpoints.push(graph.source(id), graph.target(id));
+    });
+    if (endpoints.length || attempts++ >= 60) focusCameraOnNodes(endpoints);
+    else requestAnimationFrame(tryResolveEndpoints);
+  };
+  tryResolveEndpoints();
+}
+
+// Register a focus to be replayed once the graph page's sigma instance is mounted and ready.
+// Used to "locate" an item from a page where sigma is not mounted (e.g. the data table).
+export function requestFocusOnReady(type: "nodes" | "edges", id: string) {
+  pendingFocus = { type, id };
+}
+
+// True once sigma has rendered/normalized the graph on its current instance: the node's display
+// (framed) coordinates then differ from its raw layout coordinates. Right after navigation, sigma
+// briefly reports raw coordinates as display data; focusing then would frame against unnormalized
+// coordinates and send the camera into empty space. (When the graph is already normalized the two
+// coincide, in which case focusing on the raw coordinates is correct anyway.)
+function isNodeFramed(sigma: GephiLiteSigma, nodeId: string): boolean {
+  const graph = sigma.getGraph();
+  if (!graph.hasNode(nodeId)) return false;
+  const dd = sigma.getNodeDisplayData(nodeId);
+  if (!dd) return false;
+  return dd.x !== graph.getNodeAttribute(nodeId, "x") || dd.y !== graph.getNodeAttribute(nodeId, "y");
+}
+
+// Replay any pending focus request. Called by the graph page once its sigma instance is ready.
+// The focus is deferred (via animation frames) until the container has real pixel dimensions and
+// sigma has framed the target item, so the camera animates to the right place.
+export function consumePendingFocus() {
+  if (!pendingFocus) return;
+  const focus = pendingFocus;
+  pendingFocus = null;
+
+  let attempts = 0;
+  const tryFocus = () => {
+    const sigma = sigmaAtom.get();
+    const graph = sigma.getGraph();
+    const { width, height } = sigma.getDimensions();
+    const anchorNode = focus.type === "nodes" ? focus.id : graph.hasEdge(focus.id) ? graph.source(focus.id) : null;
+    const ready = width > 0 && height > 0 && anchorNode !== null && isNodeFramed(sigma, anchorNode);
+
+    // Give up gracefully after ~1s (60 frames): focus best-effort rather than never.
+    if (ready || attempts++ >= 60) {
+      if (focus.type === "nodes") focusCameraOnNode(focus.id);
+      else focusCameraOnEdge(focus.id);
+    } else {
+      requestAnimationFrame(tryFocus);
+    }
+  };
+  requestAnimationFrame(tryFocus);
 }

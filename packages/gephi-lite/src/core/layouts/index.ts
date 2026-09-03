@@ -7,6 +7,7 @@ import { localStorage } from "../../utils/storage";
 import { EVENTS, emitter } from "../context/eventsContext";
 import { graphDatasetActions, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
+import { sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
 import { LAYOUTS } from "./collection";
 import { LayoutMapping, LayoutQuality, LayoutState } from "./types";
@@ -40,6 +41,8 @@ export const startLayout = asyncAction(async (id: string, params: unknown) => {
 
   // search the layout
   const layout = LAYOUTS.find((l) => l.id === id);
+
+  if (layout) sessionAtom.set((prev) => ({ ...prev, lastLayoutId: id }));
 
   // Sync layout
   if (layout && layout.type === "sync") {

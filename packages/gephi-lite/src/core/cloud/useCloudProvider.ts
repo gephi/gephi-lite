@@ -3,13 +3,14 @@ import { useCallback, useState } from "react";
 
 import { useFile, useFileActions } from "../context/dataContexts";
 import { useConnectedUser } from "../user";
+import { fingerprintContent } from "./remoteContent";
 import { CloudFile } from "./types";
 
 // TODO: need to be refacto by atom/action/producer pattern
 export function useCloudProvider() {
   const [user] = useConnectedUser();
   const { current: currentFile } = useFile();
-  const { open, exportAsGephiLite, setCurrentFile } = useFileActions();
+  const { open, exportAsGephiLite, setCurrentFile, setRemoteContentFingerprint } = useFileActions();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -57,7 +58,15 @@ export function useCloudProvider() {
       if (isNil(user)) throw new Error("You must be logged !");
       if (!currentFile || currentFile.type !== "cloud") throw new Error("Not a cloud graph");
       await exportAsGephiLite(async (content) => {
-        await user.provider.saveFile(currentFile as CloudFile, content);
+        // Keep the current file pointer in sync with the freshly saved remote version: its new
+        // updatedAt becomes the reference date for the remote-change guard (see useRemoteFileGuard),
+        // otherwise the very next edit would compare against a stale date and warn about our own save.
+        const saved = await user.provider.saveFile(currentFile as CloudFile, content);
+        setCurrentFile(saved.file);
+        // Fingerprint what the remote reports holding, not the bytes we sent: the guard downloads
+        // the remote content to compare, so the reference has to be on the same side of the wire
+        // (see core/cloud/remoteContent).
+        setRemoteContentFingerprint(fingerprintContent(saved.content));
       });
     } catch (e) {
       setError(e as Error);
@@ -65,7 +74,7 @@ export function useCloudProvider() {
     } finally {
       setLoading(false);
     }
-  }, [user, exportAsGephiLite, currentFile]);
+  }, [user, exportAsGephiLite, currentFile, setCurrentFile, setRemoteContentFingerprint]);
 
   /**
    * Save the current graph in the provider.

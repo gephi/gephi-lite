@@ -19,7 +19,7 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy, pickBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
@@ -38,11 +38,13 @@ import { selectionAtom } from "../selection";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { ItemType } from "../types";
-import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes } from "./dynamicAttributes";
+import { ensureSystemDateFields, ensureSystemDatesInDataset, stampCreationDates, stampUpdateDate } from "./dates";
+import { DYNAMIC_ATTRIBUTES } from "./dynamicAttributes";
 import { FieldModel, GraphDataset, SigmaGraph } from "./types";
 import {
   cleanEdge,
   cleanNode,
+  computeAllComputedAttributes,
   dataGraphToSigmaGraph,
   datasetToString,
   getEmptyGraphDataset,
@@ -80,7 +82,10 @@ const GRAPH_TRANSFORMATION_METHODS: Record<GraphType, (g: DatalessGraph) => Data
  * **********
  */
 const setGraphDataset: Producer<GraphDataset, [GraphDataset]> = (dataset) => {
-  return () => dataset;
+  // Guarantee the system creation/update date fields on every full-dataset replacement, so all load
+  // paths (native file open, graphology import, broadcast) behave identically. Idempotent: datasets
+  // whose items already carry both dates are left untouched.
+  return () => ensureSystemDatesInDataset(dataset);
 };
 const setGraphMeta: Producer<GraphDataset, [GraphDataset["metadata"]]> = (metadata) => {
   return (state) => ({
@@ -156,7 +161,11 @@ const createFieldModel: Producer<GraphDataset, [FieldModel, { index?: number; va
     const dataKey = fieldModel.itemType === "nodes" ? "nodeData" : "edgeData";
     const fieldsKey = fieldModel.itemType === "nodes" ? "nodeFields" : "edgeFields";
     const newFields: FieldModel[] = state[fieldsKey].slice(0);
-    const newIndex = index !== undefined ? clamp(index, 0, newFields.length) : newFields.length;
+    // New fields are appended at the end by default, but always before the trailing read-only fields (eg. system date fields):
+    let trailingReadOnlyFieldsCount = 0;
+    while (newFields[newFields.length - 1 - trailingReadOnlyFieldsCount]?.readOnly) trailingReadOnlyFieldsCount++;
+    const defaultIndex = newFields.length - trailingReadOnlyFieldsCount;
+    const newIndex = index !== undefined ? clamp(index, 0, newFields.length) : defaultIndex;
 
     // Insert it at the wanted position:
     newFields.splice(newIndex, 0, fieldModel);
@@ -285,11 +294,11 @@ const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
     (state) => {
       const { data, position } = cleanNode(node, attributes);
       state.fullGraph.addNode(node);
-      const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
+      const newNodeFieldModel = ensureSystemDateFields("nodes", newItemModel<"nodes">("nodes", data, state.nodeFields));
       return {
         ...state,
         nodeFields: newNodeFieldModel,
-        nodeData: { ...state.nodeData, [node]: data },
+        nodeData: { ...state.nodeData, [node]: stampCreationDates(data) },
         layout: { ...state.layout, [node]: position },
       };
     },
@@ -314,14 +323,14 @@ const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes
         state.fullGraph.addUndirectedEdgeWithKey(edge, source, target);
       }
 
-      const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      const newEdgeFieldModel = ensureSystemDateFields("edges", newItemModel<"edges">("edges", data, state.edgeFields));
 
       // Index the edge
       searchActions.edgeIndex(edge);
       return {
         ...state,
         edgeFields: newEdgeFieldModel,
-        edgeData: { ...state.edgeData, [edge]: data },
+        edgeData: { ...state.edgeData, [edge]: stampCreationDates(data) },
       };
     },
     edgeIndex(edge),
@@ -335,11 +344,11 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   return [
     (state) => {
       const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
-      const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
+      const newNodeFieldModel = ensureSystemDateFields("nodes", newItemModel<"nodes">("nodes", data, state.nodeFields));
       return {
         ...state,
         nodeFields: newNodeFieldModel,
-        nodeData: { ...state.nodeData, [node]: data },
+        nodeData: { ...state.nodeData, [node]: stampUpdateDate(state.nodeData[node], data) },
         layout: { ...state.layout, [node]: position },
       };
     },
@@ -348,26 +357,32 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
 };
 const updateEdge: MultiProducer<
   [GraphDataset, SearchState],
-  [string, Attributes, { merge?: boolean; directed?: boolean }?]
-> = (edge, attributes, { merge, directed } = {}) => {
+  [string, Attributes, { merge?: boolean; directed?: boolean; source?: string; target?: string }?]
+> = (edge, attributes, { merge, directed, source, target } = {}) => {
   return [
     (state) => {
       const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
-      const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
+      const newEdgeFieldModel = ensureSystemDateFields("edges", newItemModel<"edges">("edges", data, state.edgeFields));
 
-      // Validate new edge direction:
+      // Validate new edge direction and extremities:
       let fullGraph = state.fullGraph;
       const graphType = fullGraph.type;
       const newDirected = graphType === "mixed" ? directed : graphType === "directed";
+      const newSource = source ?? fullGraph.source(edge);
+      const newTarget = target ?? fullGraph.target(edge);
+      const directionChanges = !isNil(newDirected) && fullGraph.isDirected(edge) !== directed;
+      const extremitiesChange = newSource !== fullGraph.source(edge) || newTarget !== fullGraph.target(edge);
 
-      if (!isNil(newDirected) && fullGraph.isDirected(edge) !== directed) {
+      if (directionChanges || extremitiesChange) {
         const newFullGraph = fullGraph.emptyCopy();
-        fullGraph.forEachEdge((e, _, source, target) => {
-          const isEdgeDirected = e === edge ? newDirected : fullGraph.isDirected(e);
+        fullGraph.forEachEdge((e, _, edgeSource, edgeTarget) => {
+          const isCurrentEdge = e === edge;
+          const isEdgeDirected = isCurrentEdge && directionChanges ? newDirected : fullGraph.isDirected(e);
+          const [s, t] = isCurrentEdge ? [newSource, newTarget] : [edgeSource, edgeTarget];
           if (isEdgeDirected) {
-            newFullGraph.addDirectedEdgeWithKey(e, source, target);
+            newFullGraph.addDirectedEdgeWithKey(e, s, t);
           } else {
-            newFullGraph.addUndirectedEdgeWithKey(e, source, target);
+            newFullGraph.addUndirectedEdgeWithKey(e, s, t);
           }
         });
         fullGraph = newFullGraph;
@@ -379,7 +394,7 @@ const updateEdge: MultiProducer<
         ...state,
         fullGraph,
         edgeFields: newEdgeFieldModel,
-        edgeData: { ...state.edgeData, [edge]: data },
+        edgeData: { ...state.edgeData, [edge]: stampUpdateDate(state.edgeData[edge], data) },
       };
     },
     edgeIndex(edge),
@@ -400,7 +415,7 @@ const updateItems: MultiProducer<[GraphDataset, SearchState], [ItemType, Set<str
       const data = state[dataKey];
       const updatedItems = Array.from(itemIds).reduce((acc, itemId) => {
         if (!data[itemId]) throw new Error(`The ${type} collection does not have any item with "${itemId}" id.`);
-        return { ...acc, [itemId]: { ...data[itemId], [fieldId]: value } };
+        return { ...acc, [itemId]: stampUpdateDate(data[itemId], { ...data[itemId], [fieldId]: value }) };
       }, {});
 
       return {
@@ -433,7 +448,11 @@ export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
 export const filteredGraphAtom = derivedAtom(
   [filteredGraphsAtom, graphDatasetAtom],
   (filteredGraphCache, graphDataset) => last(filteredGraphCache)?.graph || graphDataset.fullGraph,
-  { checkInput: false },
+  // checkOutput must stay disabled: the output is a mutable graphology graph, and a deep
+  // isEqual comparison can wrongly report "no change" (e.g. after an edge source/target
+  // swap, where nodes and edge keys are unchanged), leaving downstream atoms — and the
+  // Sigma rendering — stuck on a stale graph.
+  { checkInput: false, checkOutput: false },
 );
 export const useFilteredGraphAt = (index: number) => {
   const graphDataset = useGraphDataset();
@@ -442,10 +461,10 @@ export const useFilteredGraphAt = (index: number) => {
 };
 export const dynamicItemDataAtom = derivedAtom(
   [filteredGraphAtom, graphDatasetAtom],
-  (filteredGraphCache) => ({
-    dynamicNodeData: computeAllDynamicAttributes("nodes", filteredGraphCache),
+  (filteredGraphCache, graphDataset) => ({
+    dynamicNodeData: computeAllComputedAttributes("nodes", graphDataset, filteredGraphCache),
     dynamicNodeFields: map(DYNAMIC_ATTRIBUTES.nodes, ({ field }) => field) || [],
-    dynamicEdgeData: computeAllDynamicAttributes("edges", filteredGraphCache),
+    dynamicEdgeData: computeAllComputedAttributes("edges", graphDataset, filteredGraphCache),
     dynamicEdgeFields: map(DYNAMIC_ATTRIBUTES.edges, ({ field }) => field) || [],
   }),
   { checkInput: false },
@@ -517,8 +536,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     ),
   );
 
-  // When the fullGraph ref changes, reindex everything:
-  if (updatedKeys.has("fullGraph") || updatedKeys.has("layout")) {
+  // When the graph content changes, reindex everything:
+  // (note: fullGraph is mutated in place by most producers, so its reference rarely
+  // changes; nodeData/edgeData always get a fresh reference on every edit, so we rely
+  // on those too, to avoid the filtered graph cache going stale after edits.)
+  if (
+    updatedKeys.has("fullGraph") ||
+    updatedKeys.has("layout") ||
+    updatedKeys.has("nodeData") ||
+    updatedKeys.has("edgeData")
+  ) {
     const filtersState = filtersAtom.get();
     const newCache = applyFilters(graphDataset, filtersState.filters, [], topologicalFiltersAtom.get());
     filteredGraphsAtom.set(newCache);
@@ -529,9 +556,16 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     searchActions.indexAll();
   }
 
-  // When fields changed, check if filter or appearance use it
+  // When fields or data changed, check if filter or appearance use it
+  // (data changes are included because a partition's set of values can change
+  // without the field model itself changing, e.g. adding/removing an item)
   // here we test only static field
-  if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
+  if (
+    updatedKeys.has("edgeFields") ||
+    updatedKeys.has("nodeFields") ||
+    updatedKeys.has("nodeData") ||
+    updatedKeys.has("edgeData")
+  ) {
     const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
     const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
 
@@ -581,20 +615,23 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
       switch (appearanceElement.type) {
         // - if partitions palette are still in sync with the field values
-        case "partition":
+        case "partition": {
           // check if deprecated appearance state
           values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
 
-          // checking with the actual palette miss some values. It's ok if it has more available.
-          if (
-            keys(appearanceElement.colorPalette).length < values.length ||
-            values.some((v) => appearanceElement.colorPalette[v] === undefined)
-          ) {
-            // new palette
-            // TODO: merge existing palette with the new values, i.e. keep existing colors
-            appearanceElement.colorPalette = getPalette(values);
+          // keep existing (and possibly user-customized) colors untouched: drop
+          // categories no longer present in the data, and only generate colors
+          // for categories missing from the palette
+          const prunedPalette = pickBy(appearanceElement.colorPalette, (_c, v) => values.includes(v));
+          const missingValues = values.filter((v) => prunedPalette[v] === undefined);
+          if (missingValues.length > 0 || keys(prunedPalette).length !== keys(appearanceElement.colorPalette).length) {
+            appearanceElement.colorPalette = {
+              ...prunedPalette,
+              ...getPalette(missingValues),
+            };
           }
           break;
+        }
         // nothing to do for other cases
         // TODO: check if other cases need edits.
       }
