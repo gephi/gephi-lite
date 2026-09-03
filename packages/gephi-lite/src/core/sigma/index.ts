@@ -461,15 +461,24 @@ export function focusCameraOnEdge(id: string) {
 }
 
 export function focusCameraOnEdges(ids: string[]) {
-  const graph = sigmaAtom.get().getGraph();
+  if (!ids.length) return;
 
-  // Frame every endpoint of the given edges (framing readiness is handled downstream).
-  const endpoints: string[] = [];
-  ids.forEach((id) => {
-    if (!graph.hasEdge(id)) return;
-    endpoints.push(graph.source(id), graph.target(id));
-  });
-  focusCameraOnNodes(endpoints);
+  // sigmaGraphAtom rebuilds the render graph from the dataset on a debounce: a just-created edge
+  // (eg. from the "create edge" form) can still be missing from it right when this runs, since
+  // selecting the new edge isn't itself debounced. Retry resolving its endpoints for a bit rather
+  // than silently skipping the focus, the same way runWhenReadyToFrame retries below for framing.
+  let attempts = 0;
+  const tryResolveEndpoints = () => {
+    const graph = sigmaAtom.get().getGraph();
+    const endpoints: string[] = [];
+    ids.forEach((id) => {
+      if (!graph.hasEdge(id)) return;
+      endpoints.push(graph.source(id), graph.target(id));
+    });
+    if (endpoints.length || attempts++ >= 60) focusCameraOnNodes(endpoints);
+    else requestAnimationFrame(tryResolveEndpoints);
+  };
+  tryResolveEndpoints();
 }
 
 // Register a focus to be replayed once the graph page's sigma instance is mounted and ready.
