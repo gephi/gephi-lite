@@ -18,7 +18,7 @@ const MessageAlert: FC<{
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
       setOpen(false);
-    }, 3000);
+    }, 5000);
     setTimeout(timeoutID);
 
     return () => {
