@@ -6,8 +6,7 @@ import { useAppearance, useAppearanceActions, usePreferences } from "../../../co
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { useModal } from "../../../core/modals";
 import { getDefaultMapStyle } from "../../../utils/map-style";
-import MessageAlert from "../../MessageAlert";
-import { CodeEditorIcon } from "../../common-icons";
+import { CodeEditorIcon, ResetIcon } from "../../common-icons";
 import { MapStyleEditorModal } from "./MapStyleEditorModal";
 
 export const MapBackgroundLayerForm: FC = () => {
@@ -26,7 +25,6 @@ export const MapBackgroundLayerForm: FC = () => {
   };
 
   const currentStyle = mapLayer?.map.style;
-  const styleName = (currentStyle?.name as string) || t("appearance.background.map.maplibre.custom_style");
 
   return (
     <>
@@ -35,13 +33,20 @@ export const MapBackgroundLayerForm: FC = () => {
 
         <div className="panel-block">
           <label className="form-label">{t("appearance.background.map.maplibre.style")}</label>
-          <div className="d-flex align-items-center gl-gap-2">
-            <span className="flex-grow-1 text-ellipsis">
-              {currentStyle ? styleName : t("appearance.background.map.maplibre.style_default")}
-            </span>
+          <div className="w-100 d-flex gl-gap-1">
+            {currentStyle && (
+              <button
+                type="button"
+                className="gl-btn gl-btn-outline gl-btn-sm"
+                title={t("appearance.background.map.maplibre.reset_style")}
+                onClick={() => setMapLayer({ style: undefined })}
+              >
+                <ResetIcon />
+              </button>
+            )}
             <button
               type="button"
-              className="gl-btn gl-btn-outline gl-btn-sm"
+              className="gl-btn gl-btn-outline gl-btn-sm flex-grow-1"
               title={t("appearance.background.map.maplibre.edit_style")}
               onClick={() =>
                 openModal({
@@ -56,34 +61,18 @@ export const MapBackgroundLayerForm: FC = () => {
               <CodeEditorIcon className="me-1" />
               {t("common.edit")}
             </button>
-            {currentStyle && (
-              <button
-                type="button"
-                className="gl-btn gl-btn-outline gl-btn-sm"
-                title={t("appearance.background.map.maplibre.reset_style")}
-                onClick={() => setMapLayer({ style: undefined })}
-              >
-                {t("common.reset")}
-              </button>
-            )}
           </div>
         </div>
-      </div>
-      <div className="flex-grow-1 d-flex align-items-end">
-        <MessageAlert
-          message={
-            <>
-              <p className="text-center">{t("appearance.background.map.position_warning")}</p>
-              <button
-                className="gl-btn gl-btn-outline gl-btn-sm"
-                onClick={() => emitter.emit(EVENTS.openMenu, { menuId: `layout-geographic` })}
-              >
-                {t("appearance.background.map.open_geo_layout")}
-              </button>
-            </>
-          }
-          type="success"
-        />
+
+        <div className="panel-block">
+          <p className="gl-text-muted mb-0">{t("appearance.background.map.position_warning")}</p>
+          <button
+            className="gl-btn gl-btn-outline"
+            onClick={() => emitter.emit(EVENTS.openMenu, { menuId: `layout-geographic` })}
+          >
+            {t("appearance.background.map.open_geo_layout")}
+          </button>
+        </div>
       </div>
     </>
   );

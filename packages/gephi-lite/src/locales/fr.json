@@ -1,5 +1,22 @@
 {
   "appearance": {
+    "background": {
+      "layer_mode": "Calque d’arrière-plan",
+      "none": "Aucun",
+      "map": {
+        "label": "Cartographique",
+        "maplibre": {
+          "edit_style": "Modifier le style de la carte",
+          "reset_style": "Réinitialiser le style par défaut",
+          "style": "Style de la carte",
+          "style_description": "La carte est rendue à l'aide de <maplibreLink>MapLibre</maplibreLink> et suit la <maplibreStyleLink>spécification des styles MapLibre</maplibreStyleLink>. Consultez la <gephiLiteDocLink>documentation</gephiLiteDocLink> pour plus de détails.",
+          "style_editor_title": "Modifier le style de la carte"
+        },
+        "open_geo_layout": "Ouvrir la spatialisation Géographique",
+        "position_warning": "Pour afficher correctement la carte, vous devez appliquez une spatialisation géographique afin de convertir les coordonnées des nœuds en coordonnées géographiques.",
+        "title": "Cartographie"
+      }
+    },
     "color": {
       "color_all_items": "Couleur pour tous les {{items}}",
       "data": "Fichier de données",
@@ -7,8 +24,10 @@
       "default_value": "Couleur pour {{items}} sans valeur valide",
       "enable_color_shading": "Nuancer la couleur des {{items}}",
       "fixed": "Une couleur constante",
-      "quali": "en tant que chaînes de caractères",
-      "quanti": "en tant que nombres",
+      "palette": {
+        "expand": "Expand the palette",
+        "apply": "Apply {{paletteName}}"
+      },
       "ranking_intro": "Ajoutez des points de couleur sur cette échelle",
       "scale_point": "Point d'échelle",
       "set_color_from": "Définir la couleur à partir de...",
@@ -663,6 +682,47 @@
         }
       },
       "title": "Dirigée par la force"
+    },
+    "geographic": {
+      "background_warning": "Pour afficher et styliser le fond de carte, rendez-vous à la section Arrière-plan dans Apparence.",
+      "background_open": "Ouvrir l'apparence d'arrière-plan",
+      "description": "Positionne les nœuds selon leurs coordonnées géographiques (latitude/longitude)",
+      "buttons": {
+        "applyWithMap": {
+          "description": "Appliquer la mise en page et activer l’arrière-plan cartographique",
+          "title": "Appliquer avec la carte"
+        }
+      },
+      "parameters": {
+        "projection": {
+          "description": "Projection cartographique à appliquer aux coordonnées géographiques",
+          "title": "Projection",
+          "options": {
+            "webmercator": "Web Mercator",
+            "equirectangular": "Équirectangulaire",
+            "equalearth": "Equal Earth",
+            "naturalearth1": "Natural Earth 1"
+          }
+        },
+        "latitudeField": {
+          "description": "Attribut des nœuds contenant les valeurs de latitude",
+          "title": "Attribut de latitude"
+        },
+        "longitudeField": {
+          "description": "Attribut des nœuds contenant les valeurs de longitude",
+          "title": "Attribut de longitude"
+        },
+        "missingStrategy": {
+          "description": "Détermine comment traiter les nœuds sans coordonnées géographiques valides",
+          "title": "Coordonnées manquantes",
+          "options": {
+            "keep": "Conserver la position actuelle",
+            "grid": "Placer sur une grille (à gauche de la carte)",
+            "barycentergrid": "Barycentre des voisins + grille"
+          }
+        }
+      },
+      "title": "Géographique"
     },
     "noverlap": {
       "description": "Algorithme de disposition anti-collision",
