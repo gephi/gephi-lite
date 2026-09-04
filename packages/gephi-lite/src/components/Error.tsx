@@ -11,7 +11,9 @@ function errorToGithubLink(error: unknown): string {
   let body = `
 ## Description
 
-Please provide a description of what you were doing while the error occurs`;
+> [!WARNING]
+> Please provide a description of what you were doing when the error occurred, with as much detail as possible.
+> An issue created without any description cannot be investigated or fixed and will be closed.`;
 
   if (error instanceof Error) {
     body = `${body}
