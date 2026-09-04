@@ -1,7 +1,7 @@
 import { FieldModelType } from "@gephi/gephi-lite-sdk";
 import Graph from "graphology";
 import { ConnectedClosenessResult } from "graphology-metrics/layout-quality/connected-closeness";
-import { ComponentType } from "react";
+import { ComponentType, ReactElement } from "react";
 import { Coordinates } from "sigma/types";
 
 import { DataGraph, ItemData } from "../graph/types";
@@ -57,12 +57,19 @@ export interface LayoutScriptParameter extends BaseLayoutParameter {
   functionCheck: (fn?: LayoutScriptFunction) => void;
 }
 
+export interface LayoutComponentParameter extends BaseLayoutParameter {
+  type: "jsx";
+  defaultValue: string;
+  Component: () => ReactElement;
+}
+
 export type LayoutParameter =
   | LayoutScriptParameter
   | LayoutBooleanParameter
   | LayoutNumberParameter
   | LayoutAttributeParameter
-  | LayoutEnumParameter;
+  | LayoutEnumParameter
+  | LayoutComponentParameter;
 
 export interface LayoutButtonInstructions<P = unknown> {
   setSettings?: P;

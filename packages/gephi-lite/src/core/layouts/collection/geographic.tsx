@@ -1,9 +1,8 @@
 import { DataGraph } from "@gephi/gephi-lite-sdk";
+import { useTranslation } from "react-i18next";
 
-import { MapIcon } from "../../../components/common-icons";
 import { GeoProjectionType, applyGeoProjection } from "../../../utils/geo-projections";
-import { appearanceActions } from "../../appearance";
-import { EVENTS, emitter } from "../../context/eventsContext";
+import { EVENTS, useEventsContext } from "../../context/eventsContext";
 import { LayoutMapping, OneShotLayout } from "../types";
 
 const LAT_RE = /^(lat|latitude|y_?coord)$/i;
@@ -124,25 +123,6 @@ export const GeographicLayout = {
   description: true,
   hideReset: true,
   inferSettings: inferGeographicSettings,
-  buttons: [
-    {
-      id: "applyWithMap",
-      description: true,
-      icon: MapIcon,
-      disabled: (settings: GeographicLayoutSettings) => !!settings.projection && settings.projection !== "webmercator",
-      onClick() {
-        return {
-          applyLayout: true,
-          before() {
-            appearanceActions.setBackgroundLayer({ type: "map", map: { engine: "maplibre" } });
-          },
-          then() {
-            emitter.emit(EVENTS.openMenu, { menuId: "appearance-background" });
-          },
-        };
-      },
-    },
-  ],
   parameters: [
     {
       id: "projection",
@@ -173,6 +153,26 @@ export const GeographicLayout = {
       options: [{ id: "keep" }, { id: "grid" }, { id: "barycentergrid" }],
       defaultValue: "keep",
       description: true,
+    },
+    {
+      id: "background",
+      type: "jsx",
+      Component: () => {
+        const { t } = useTranslation();
+        const { emitter } = useEventsContext();
+        return (
+          <div className="panel-block">
+            <p className="gl-text-muted mb-0">{t("layouts.geographic.background_warning")}</p>
+            <button
+              type="button"
+              className="gl-btn gl-btn-outline"
+              onClick={() => emitter.emit(EVENTS.openMenu, { menuId: "appearance-background" })}
+            >
+              {t("layouts.geographic.background_open")}
+            </button>
+          </div>
+        );
+      },
     },
   ],
   run: runGeographic,

@@ -9,12 +9,10 @@
         "position_warning": "To display the map correctly, apply a Geographic layout to convert node coordinates to geographic ones.",
         "open_geo_layout": "Open Geographical layout settings",
         "maplibre": {
-          "custom_style": "Custom style",
           "edit_style": "Edit map style",
           "reset_style": "Reset to default style",
           "style": "Map style",
           "style_description": "The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
-          "style_default": "Default",
           "style_editor_title": "Edit map style"
         }
       }
@@ -24,6 +22,10 @@
       "default_value": "Color for {{items}} with no valid value",
       "enable_color_shading": "Shade {{items}} colors",
       "fixed": "A constant color",
+      "palette": {
+        "expand": "Expand the palette",
+        "apply": "Apply {{paletteName}}"
+      },
       "ranking_intro": "Add color points on this scale",
       "scale_point": "Scale point",
       "set_color_from": "Set color from...",
@@ -37,12 +39,7 @@
       "source_description": "Each edge is colored as its source.",
       "target": "Target nodes",
       "target_description": "Each edge is colored as its target.",
-      "title": "Color",
-      "palette": {
-        "expand": "Expand the palette",
-        "apply": "Apply {{paletteName}}",
-        "pastels": "Pastels"
-      }
+      "title": "Color"
     },
     "graph": {
       "background_color": "Background color",
@@ -613,6 +610,41 @@
         }
       },
       "title": "Force directed"
+    },
+    "geographic": {
+      "background_warning": "To display and style the map background, go to the Background section under Appearance.",
+      "background_open": "Open background appearance",
+      "description": "Positions nodes according to their geographic coordinates (latitude/longitude)",
+      "parameters": {
+        "projection": {
+          "description": "Map projection to apply to geographic coordinates",
+          "title": "Projection",
+          "options": {
+            "webmercator": "Web Mercator",
+            "equirectangular": "Equirectangular",
+            "equalearth": "Equal Earth",
+            "naturalearth1": "Natural Earth 1"
+          }
+        },
+        "latitudeField": {
+          "description": "Node attribute containing latitude values",
+          "title": "Latitude field"
+        },
+        "longitudeField": {
+          "description": "Node attribute containing longitude values",
+          "title": "Longitude field"
+        },
+        "missingStrategy": {
+          "description": "How to handle nodes without valid geographic coordinates",
+          "title": "Missing coordinates",
+          "options": {
+            "keep": "Keep current position",
+            "grid": "Place in grid (left of map)",
+            "barycentergrid": "Neighbors barycenter + grid"
+          }
+        }
+      },
+      "title": "Geographic"
     },
     "noverlap": {
       "description": "Anti-collision layout algorithm",

@@ -311,6 +311,7 @@ export const LayoutForm: FC<{
                     </>
                   </div>
                 )}
+                {param.type === "jsx" && <param.Component />}
               </div>
             );
           })}
