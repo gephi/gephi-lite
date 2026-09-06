@@ -1,6 +1,6 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
-import { sessionStorage } from "../../utils/storage";
+import { tabStorage } from "../../utils/storage";
 import { Session } from "./types";
 import { getEmptySession, serializeSession } from "./utils";
 
@@ -33,5 +33,5 @@ export const sessionActions = {
  * *********
  */
 sessionAtom.bind((session) => {
-  sessionStorage.setItem("session", serializeSession(session));
+  tabStorage.setItem("session", serializeSession(session));
 });

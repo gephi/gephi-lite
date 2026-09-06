@@ -1,7 +1,7 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 import { clamp, dropRight, inRange } from "lodash";
 
-import { sessionStorage } from "../../utils/storage";
+import { tabStorage } from "../../utils/storage";
 import { FilterType, FiltersState } from "./types";
 import { getEmptyFiltersState, serializeFiltersState } from "./utils";
 
@@ -110,5 +110,5 @@ export const filtersActions = {
  * *********
  */
 filtersAtom.bind((filtersState) => {
-  sessionStorage.setItem("filters", serializeFiltersState(filtersState));
+  tabStorage.setItem("filters", serializeFiltersState(filtersState));
 });

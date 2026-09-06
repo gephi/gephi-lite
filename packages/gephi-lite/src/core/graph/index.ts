@@ -23,7 +23,7 @@ import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omi
 import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
-import { sessionStorage } from "../../utils/storage";
+import { tabStorage } from "../../utils/storage";
 import { appearanceAtom } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { useGraphDataset } from "../context/dataContexts";
@@ -640,14 +640,18 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
     appearanceAtom.set(newState);
   }
 
-  // Only "small enough" graphs are stored in the sessionStorage, because this
-  // feature only helps to resist page reloads, basically:
+  // Only "small enough" graphs are stored, because this feature only helps to resist page reloads
+  // (and tab restores, see tabStorage), basically:
   if (graphDataset.fullGraph.order < 5000 && graphDataset.fullGraph.size < 25000) {
     try {
-      sessionStorage.setItem("dataset", datasetToString(graphDataset));
+      tabStorage.setItem("dataset", datasetToString(graphDataset));
     } catch (_e) {
       // nothing todo
     }
+  } else {
+    // Too big to be kept: forget any previous snapshot, which a reload would otherwise restore in
+    // place of the graph actually being worked on.
+    tabStorage.removeItem("dataset");
   }
 });
 
