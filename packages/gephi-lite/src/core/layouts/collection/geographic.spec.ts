@@ -8,6 +8,7 @@ vi.mock("../../appearance", () => ({ appearanceActions: { setBackgroundLayer: vi
 vi.mock("../../context/eventsContext", () => ({
   EVENTS: { openPanel: "openPanel" },
   emitter: { emit: vi.fn() },
+  useEventsContext: () => {},
 }));
 
 function makeGraph(

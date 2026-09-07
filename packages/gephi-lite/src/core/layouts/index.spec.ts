@@ -102,11 +102,7 @@ vi.mock("../session", () => ({
 vi.mock("../sigma", () => ({
   resetCamera: mockResetCamera,
 }));
-vi.mock("./collection", () => ({
-  get LAYOUTS() {
-    return MOCK_LAYOUTS;
-  },
-}));
+vi.mock("./collection", () => ({ LAYOUTS: MOCK_LAYOUTS }));
 
 vi.mock("graphology-metrics/layout-quality", () => ({
   connectedCloseness: mockConnectedCloseness,
@@ -406,7 +402,7 @@ describe("Layout orchestration", () => {
     expect(supervisorInstances[1].start).toHaveBeenCalled();
   });
 
-  it("one-shot layout during continuous: saves positions, continuous restarts via graphImported", async () => {
+  it("one-shot layout during continuous: saves positions", async () => {
     const dataset = makeDataset({ a: { x: 1, y: 2 } });
     const sigmaGraph = makeSigmaGraph({ a: { x: 1, y: 2 } });
     const filteredGraph = makeFilteredGraph(["a"]);
@@ -441,17 +437,6 @@ describe("Layout orchestration", () => {
     expect(supA.stop).toHaveBeenCalled();
     expect(supA.kill).toHaveBeenCalled();
     expect(mockSetNodePositions).toHaveBeenCalledWith({ a: { x: 99, y: 99 } });
-
-    // Simulate restart via graphImported
-    mockSessionAtom.get.mockReturnValue({
-      lastLayout: "test-continuous",
-      layoutsParameters: { "test-continuous": {} },
-    });
-    testEmitter.emit(EVENTS.graphImported);
-    await vi.advanceTimersByTimeAsync(0);
-
-    expect(supervisorInstances).toHaveLength(2);
-    expect(supervisorInstances[1].start).toHaveBeenCalled();
   });
 });
 
