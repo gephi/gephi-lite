@@ -22,11 +22,11 @@ import { sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
 import { LAYOUTS } from "./collection";
 import {
+  ContinuousLayoutSupervisorConstructor,
+  ContinuousLayoutSupervisorInterface,
   LayoutMapping,
   LayoutQuality,
   LayoutState,
-  ContinuousLayoutSupervisorConstructor,
-  ContinuousLayoutSupervisorInterface,
 } from "./types";
 
 /**
