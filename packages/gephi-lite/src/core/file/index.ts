@@ -5,7 +5,7 @@ import { write } from "graphology-gexf";
 import { isEmpty, isEqual } from "lodash";
 
 import { config } from "../../config";
-import { localStorage } from "../../utils/storage";
+import { localStorage, tabStorage } from "../../utils/storage";
 import { appearanceActions, appearanceAtom } from "../appearance";
 import { applyVisualProperties, inferAppearanceState } from "../appearance/utils";
 import { fingerprintContent } from "../cloud/remoteContent";
@@ -103,11 +103,12 @@ export const setRemoteContentFingerprint: Producer<FileState, [string | null]> =
   return (prev) => ({ ...prev, remoteContentFingerprint: fingerprint });
 };
 
-// Clears isDirty without touching the current file pointer: used after the graph dataset,
+// Sets isDirty explicitly, without touching the current file pointer: used after the graph dataset,
 // appearance or filters atoms get bulk-replaced by something other than an actual user edit (e.g.
-// the sessionStorage rehydration on page reload), which would otherwise flip isDirty back to true
-// through the markDirty bindings below, even though nothing was actually modified.
-export const clearDirty: Producer<FileState, []> = () => (prev) => (prev.isDirty ? { ...prev, isDirty: false } : prev);
+// the workspace rehydration on page reload), which would otherwise always flip isDirty to true
+// through the markDirty bindings below, whatever the workspace's actual state was.
+export const setDirty: Producer<FileState, [boolean]> = (isDirty) => (prev) =>
+  prev.isDirty === isDirty ? prev : { ...prev, isDirty };
 
 export const reset: Producer<FileState, [boolean]> = (full) => {
   return (prev) => {
@@ -229,7 +230,7 @@ export const fileActions = {
   exportAsGexf,
   reset: producerToAction(reset, fileAtom),
   setCurrentFile: producerToAction(setCurrentFile, fileAtom),
-  clearDirty: producerToAction(clearDirty, fileAtom),
+  setDirty: producerToAction(setDirty, fileAtom),
   setRemoteContentFingerprint: producerToAction(setRemoteContentFingerprint, fileAtom),
 };
 
@@ -246,4 +247,7 @@ filtersAtom.bind(markDirty);
 
 fileAtom.bind((file) => {
   localStorage.setItem("file", gephiLiteStringify(file));
+  // Per tab, next to the workspace snapshot it describes: the "unsaved changes" star has to come
+  // back with the graph it refers to when the browser restores the tab (see tabStorage).
+  tabStorage.setItem("isDirty", JSON.stringify(file.isDirty));
 });

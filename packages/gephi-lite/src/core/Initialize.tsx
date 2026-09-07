@@ -22,7 +22,7 @@ import { preferencesAtom } from "./preferences";
 import { getCurrentPreferences } from "./preferences/utils";
 import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
-import { resetCamera } from "./sigma";
+import { restoreCamera } from "./sigma";
 import { AuthInit } from "./user/AuthInit";
 
 // This awful flag helps to deal with the double rendering caused from
@@ -34,7 +34,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { modal, openModal, requestCloseModal } = useModal();
-  const { open, clearDirty } = useFileActions();
+  const { open, setDirty } = useFileActions();
   const { metadata } = useGraphDataset();
   const { isDirty } = useFile();
   const [broadcastID, setBroadcastID] = useState<string | null>(null);
@@ -206,10 +206,13 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     }
 
     if (!graphFound) {
-      // Load data from session storage
+      // Load the workspace snapshot left by this tab (see tabStorage). Everything is read up front:
+      // setting the atoms below flips isDirty through the markDirty bindings, which rewrites the
+      // stored flag - reading it afterwards would only ever read back that "true".
       const rawDataset = tabStorage.getItem("dataset");
       const rawFilters = tabStorage.getItem("filters");
       const rawAppearance = tabStorage.getItem("appearance");
+      const wasDirty = tabStorage.getItem("isDirty") === "true";
 
       if (rawDataset) {
         const dataset = parseDataset(rawDataset);
@@ -221,11 +224,12 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           graphDatasetAtom.set(ensureSystemDatesInDataset(dataset));
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
-          resetCamera({ forceRefresh: true });
-          // Restoring the previous session's state (e.g. after a page reload) is not a user edit:
-          // the atom updates above just flipped isDirty back to true through the markDirty
-          // bindings (new object references), so it must be cleared again here.
-          clearDirty();
+          restoreCamera({ forceRefresh: true });
+          // Restoring the workspace is not a user edit: the atom updates above just flipped isDirty
+          // to true, whatever it really was. Put back the flag the snapshot was taken with, so a
+          // graph left with unsaved changes comes back with its "unsaved changes" star, and a saved
+          // one comes back without.
+          setDirty(wasDirty);
 
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }
