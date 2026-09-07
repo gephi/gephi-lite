@@ -21,8 +21,10 @@ jobs:
     env:
       VITE_CHECK_LATEST_VERSION: "false"
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
 
       - name: Install
         run: npm install
