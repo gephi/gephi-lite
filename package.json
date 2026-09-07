@@ -57,5 +57,11 @@
   },
   "dependencies": {
     "luxon": "^3.6.1"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "msw": true,
+    "nx": true,
+    "@swc/core": true
   }
 }
