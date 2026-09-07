@@ -5,6 +5,7 @@ import { max } from "lodash";
 import Sigma from "sigma";
 import { CameraState } from "sigma/types";
 
+import { tabStorage } from "../../utils/storage";
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom } from "../graph";
 import { SigmaState } from "./types";
 import {
@@ -169,6 +170,41 @@ export const resetCamera = ({
   }
 
   if (forceRefresh) sigma.refresh();
+};
+
+/**
+ * Where the camera was left in this tab, kept next to the workspace snapshot (see tabStorage) so a
+ * page reload - or a tab the browser discarded and restored - comes back to the very same view
+ * instead of re-framing the whole graph.
+ *
+ * Camera coordinates only mean something relative to the graph's bounding box, which `resetCamera`
+ * recomputes identically from the same layout: restoring a state therefore always goes through
+ * `restoreCamera` below, never on its own.
+ */
+export function saveCameraState(state: CameraState): void {
+  tabStorage.setItem("camera", JSON.stringify(state));
+}
+
+function getSavedCameraState(): CameraState | null {
+  try {
+    const raw = tabStorage.getItem("camera");
+    if (!raw) return null;
+    const { x, y, ratio, angle } = JSON.parse(raw);
+    const state = { x, y, ratio, angle };
+    return Object.values(state).every((value) => typeof value === "number" && isFinite(value)) ? state : null;
+  } catch (_e) {
+    return null;
+  }
+}
+
+/**
+ * Frames the graph, then puts the camera back where this tab left it, if it is known. Called both
+ * when the workspace is restored and when sigma mounts, since either can happen last.
+ */
+export const restoreCamera = ({ forceRefresh }: { forceRefresh?: boolean } = {}) => {
+  resetCamera({ forceRefresh });
+  const state = getSavedCameraState();
+  if (state) sigmaAtom.get().getCamera().setState(state);
 };
 
 export const sigmaActions = {
@@ -339,7 +375,8 @@ function getCameraStateToFrameNodes(sigma: Sigma, nodeIds: string[]): CameraStat
     const vpFar = sigma.graphToViewport({ x: raws[far].x, y: raws[far].y });
     const dvx = vpFar.x - vp0.x;
     const dvy = vpFar.y - vp0.y;
-    const magnitude = farDist > 1e-6 ? Math.hypot(framed[far].x - framed[0].x, framed[far].y - framed[0].y) / farDist : 0;
+    const magnitude =
+      farDist > 1e-6 ? Math.hypot(framed[far].x - framed[0].x, framed[far].y - framed[0].y) / farDist : 0;
     // Per-axis signed framed-units-per-pixel (same magnitude on both axes; sigma flips Y).
     const framedPerPxX = Math.abs(dvx) > 1e-6 ? (framed[far].x - framed[0].x) / dvx : magnitude;
     const framedPerPxY = Math.abs(dvy) > 1e-6 ? (framed[far].y - framed[0].y) / dvy : -magnitude;
