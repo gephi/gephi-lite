@@ -6,7 +6,7 @@ import { DEFAULT_SETTINGS, Settings } from "sigma/settings";
 import { getDrawEdgeLabel, getDrawNodeLabel } from "../../../core/appearance/utils";
 import { useAppearance, useGraphDataset, usePreferences } from "../../../core/context/dataContexts";
 import { getAppliedTheme } from "../../../core/preferences/utils";
-import { GephiLiteSigma, resetCamera, sigmaAtom } from "../../../core/sigma";
+import { GephiLiteSigma, sigmaAtom } from "../../../core/sigma";
 import { drawDiscNodeHover } from "../../../core/sigma/utils";
 import { MERCATOR_PAN_BOUNDS } from "../../../utils/geo";
 import { inputToStateThreshold } from "../../../utils/labels";
@@ -16,9 +16,9 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
   const graphDataset = useGraphDataset();
   const graphAppearance = useAppearance();
   const { theme } = usePreferences();
+
   useEffect(() => {
     sigmaAtom.set(sigma);
-    resetCamera({ forceRefresh: true });
   }, [sigma]);
 
   useEffect(() => {

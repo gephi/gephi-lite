@@ -296,9 +296,16 @@ export const GraphRendering: FC = () => {
   const { quality } = useLayoutState();
   const { hoveredNode, hoveredEdge, customCursor } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
+
   const setReady = useCallback(() => {
     setIsReady(true);
   }, [setIsReady]);
+
+  useEffect(() => {
+    if (isReady) {
+      resetCamera({ forceRefresh: true });
+    }
+  }, [isReady]);
 
   return (
     <>
