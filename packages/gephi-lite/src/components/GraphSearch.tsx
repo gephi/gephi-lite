@@ -200,6 +200,16 @@ export const GraphSearch: FC<GraphSearchProps> = ({
   // input-change), so the menu has to be closed by hand: blurring is what does it, and the focus is
   // handed straight back so a new search can be typed right away (focusing alone does not reopen it).
   const selectRef = useRef<SelectInstance<Option, false>>(null);
+
+  // On mobile, this field stays mounted while its panel is hidden via CSS (see `visible`'s doc): a
+  // plain `autoFocus` only fires once, on mount, so it would never catch a panel that gets shown
+  // again later. Focus it by hand instead, each time it actually becomes visible again.
+  const wasVisible = useRef(visible);
+  useEffect(() => {
+    if (visible && !wasVisible.current) selectRef.current?.focus();
+    wasVisible.current = visible;
+  }, [visible]);
+
   const clearSearch = useCallback(() => {
     setRestoredOptions(undefined);
     onInputChange?.("");
