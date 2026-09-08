@@ -1,6 +1,7 @@
+import { useAtom } from "@ouestware/atoms";
 import cx from "classnames";
 import FileSaver from "file-saver";
-import { type FC, PropsWithChildren, useMemo, useState } from "react";
+import { type FC, PropsWithChildren, useCallback, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { PiList, PiX } from "react-icons/pi";
@@ -8,30 +9,87 @@ import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
+import { openFeedbackWidget } from "../../components/FeedbackWidget";
 import LocalSwitcher from "../../components/LocalSwitcher";
 import { ThemeSwitcher } from "../../components/ThemeSwitcher";
 import {
   BugIcon,
+  CreateNodeIcon,
   DataIcon,
   DataIconFill,
   ExternalLinkIcon,
+  FeedbackIcon,
   GraphIcon,
   GraphIconFill,
   HomeIcon,
+  PlayIconFill,
+  SaveIcon,
+  StopIconFill,
+  UnsavedChangesIcon,
 } from "../../components/common-icons";
+import { EditNodeModal } from "../../components/data/EditNode";
 import ConfirmModal from "../../components/modals/ConfirmModal";
 import { GithubLoginModal } from "../../components/modals/GithubLoginModal";
+import RemoteSaveConflictModal from "../../components/modals/RemoteSaveConflictModal";
 import { WelcomeModal } from "../../components/modals/WelcomeModal";
 import { ExportPNGModal } from "../../components/modals/export/ExportPNGModal";
 import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useDataTable, useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
+import { useDataTable, useFile, useFileActions, useLayoutActions, useLayoutState } from "../../core/context/dataContexts";
+import { useConfirmLeaveUnsaved } from "../../core/file/useConfirmLeaveUnsaved";
+import { useNewGraph } from "../../core/file/useNewGraph";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
+import { sessionAtom } from "../../core/session";
 import { useConnectedUser } from "../../core/user";
+
+// Toggles the last layout algorithm used in this session on/off, so it can be restarted without
+// reopening the layouts panel. Sits next to the "Data" nav link (rather than under the graph stats)
+// so it stays reachable on mobile without unfolding the left panel.
+const LastLayoutToggle: FC = () => {
+  const { t } = useTranslation();
+  const { notify } = useNotifications();
+  const [session] = useAtom(sessionAtom);
+  const layoutState = useLayoutState();
+  const { startLayout, stopLayout } = useLayoutActions();
+
+  const lastLayoutId = session.lastLayoutId;
+  const isRunning = layoutState.type === "running" && layoutState.layoutId === lastLayoutId;
+
+  if (!lastLayoutId) return null;
+
+  const layoutTitle = t(`layouts.${lastLayoutId}.title`);
+  const label = t(isRunning ? "layouts.exec.stop_last" : "layouts.exec.rerun_last", { layout: layoutTitle });
+
+  return (
+    <button
+      type="button"
+      className="gl-btn gl-btn-icon"
+      title={label}
+      aria-label={label}
+      onClick={async () => {
+        try {
+          if (isRunning) await stopLayout();
+          else await startLayout(lastLayoutId, session.layoutsParameters[lastLayoutId] || {});
+        } catch (e) {
+          notify({ type: "error", message: (e as Error).message });
+        }
+      }}
+    >
+      {isRunning ? <StopIconFill /> : <PlayIconFill />}
+    </button>
+  );
+};
+
+// Persist the mobile header menu (burger) open/closed state across page navigations: each page
+// mounts its own <Header>, so a plain useState would reset the bar every time the user switches
+// between the Graph and Data views. Starts expanded, so the toolbar (Workspace, save, theme...)
+// is visible right away on page load, without the user having to tap the burger icon first.
+let mobileMenuExpanded = true;
 
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
@@ -40,33 +98,97 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
-  const { resetGraph } = useGraphDatasetActions();
   const { saveFile } = useCloudProvider();
+  const { probeRemoteIsNewer, reloadFile } = useRemoteFileFreshnessCheck();
   const { exportAsGexf } = useFileActions();
-  const { current: currentFile } = useFile();
+  const { current: currentFile, isDirty } = useFile();
+  const confirmLeaveUnsaved = useConfirmLeaveUnsaved();
+  const openNewGraph = useNewGraph();
 
-  // For mobile burger menu:
-  const [expanded, setExpanded] = useState(false);
+  // For mobile burger menu (initialised from the persisted value so it survives view changes):
+  const [expanded, setExpanded] = useState(mobileMenuExpanded);
+  const toggleExpanded = useCallback(() => {
+    mobileMenuExpanded = !mobileMenuExpanded;
+    setExpanded(mobileMenuExpanded);
+  }, []);
+
+  // The classic "Save" action (silently re-saving the same file) only makes sense for an
+  // already-opened GitHub file; otherwise the save button falls back to "Save as...".
+  const canSaveToCloud = currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && !!user;
+
+  // The actual write to GitHub. On success `saveFile` refreshes the current file (and thus the
+  // reference date used by the freshness guard), so a subsequent save no longer sees a conflict.
+  const doSave = useCallback(async () => {
+    try {
+      await saveFile();
+      notify({
+        type: "success",
+        message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
+      });
+    } catch (e) {
+      console.error(e);
+      notify({ type: "error", message: t("graph.save.github.error").toString() });
+    }
+  }, [saveFile, notify, t, currentFile]);
+
+  const handleSave = useCallback(async () => {
+    // Freshness pre-check: never silently overwrite a remote version that was updated (by another
+    // user or session) since we opened/last saved it. On conflict, let the user choose to reload
+    // (discard local changes), overwrite anyway, or keep editing without saving. On error/offline
+    // the probe returns null and the save proceeds (it fails on its own if the network is down).
+    const conflictFile = await probeRemoteIsNewer();
+    if (conflictFile) {
+      openModal({
+        component: RemoteSaveConflictModal,
+        arguments: { filename: conflictFile.filename },
+        afterSubmit: ({ action }) => {
+          if (action === "reload") reloadFile(conflictFile);
+          else if (action === "overwrite") doSave();
+        },
+      });
+      return;
+    }
+    await doSave();
+  }, [probeRemoteIsNewer, openModal, reloadFile, doSave]);
+
+  const handleSaveClick = useCallback(() => {
+    if (canSaveToCloud) handleSave();
+    else openModal({ component: SaveAsModal, arguments: {} });
+  }, [canSaveToCloud, handleSave, openModal]);
+
+  // The save button is always available (it falls back to "Save as..." when there is no GitHub
+  // file to save back to); a star next to it flags unsaved changes, and disappears once saved.
+  const saveButton = (
+    <span className="d-inline-flex align-items-center gl-gap-1">
+      <button
+        className="gl-btn gl-btn-icon"
+        onClick={handleSaveClick}
+        disabled={canSaveToCloud && !isDirty}
+        title={t(canSaveToCloud ? "workspace.menu.save" : "workspace.menu.save_as")}
+      >
+        <SaveIcon />
+      </button>
+      {isDirty && (
+        <span className="gl-unsaved-changes-star" title={t("workspace.menu.unsaved_changes")}>
+          <UnsavedChangesIcon />
+        </span>
+      )}
+    </span>
+  );
 
   const workspaceMenuList = useMemo(
     () =>
       [
         {
           label: t("workspace.menu.open"),
-          onClick: () => openModal({ component: OpenModal, arguments: {} }),
+          onClick: () => {
+            if (!confirmLeaveUnsaved()) return;
+            openModal({ component: OpenModal, arguments: {} });
+          },
         },
         {
           label: t("workspace.menu.new"),
-          onClick: () =>
-            openModal({
-              component: ConfirmModal,
-              arguments: {
-                title: t(`graph.open.new.title`),
-                message: t(`graph.open.new.message`),
-                successMsg: t(`graph.open.new.success`),
-              },
-              beforeSubmit: () => resetGraph(),
-            }),
+          onClick: () => openNewGraph(),
         },
         {
           label: (
@@ -83,22 +205,11 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           },
         },
         { type: "divider" },
-        ...(currentFile?.type === "cloud" && currentFile?.format === "gephi-lite" && user
+        ...(canSaveToCloud
           ? [
               {
                 label: t("workspace.menu.save"),
-                onClick: async () => {
-                  try {
-                    await saveFile();
-                    notify({
-                      type: "success",
-                      message: t("graph.save.github.success", { filename: currentFile?.filename }).toString(),
-                    });
-                  } catch (e) {
-                    console.error(e);
-                    notify({ type: "error", message: t("graph.save.github.error").toString() });
-                  }
-                },
+                onClick: handleSave,
               },
             ]
           : []),
@@ -152,7 +263,19 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               },
             ]),
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile],
+    [
+      t,
+      user,
+      openModal,
+      notify,
+      setUser,
+      exportAsGexf,
+      currentFile,
+      canSaveToCloud,
+      handleSave,
+      confirmLeaveUnsaved,
+      openNewGraph,
+    ],
   );
 
   const logoMenuList = useMemo(
@@ -167,52 +290,64 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           }),
       },
       { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
+      { label: t("gephi-lite.report_issue_auto"), icon: <FeedbackIcon />, onClick: openFeedbackWidget },
     ],
     [t, openModal],
+  );
+
+  // Same trigger + menu on mobile and desktop: a single icon opening "Signaler" / "Signaler auto"
+  // (and Home), instead of duplicating that markup once per breakpoint.
+  const logoMenuButton = (
+    <Dropdown options={logoMenuList} side="right">
+      <button className="gl-btn dropdown-toggle">
+        <GephiLogo height="1em" width="1em" />
+      </button>
+    </Dropdown>
   );
 
   return (
     <header className="gl-container-high-bg container-fluid border-bottom">
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative d-sm-none" duration={400}>
         <div className="d-flex flex-column align-items-stretch">
-          <section className="d-flex flex-row">
-            <div className="flex-grow-1">
-              <Dropdown options={workspaceMenuList}>
-                <button className="gl-btn">Workspace</button>
-              </Dropdown>
-            </div>
+          <section className="d-flex flex-row align-items-center gl-gap-2">
+            <Dropdown options={workspaceMenuList}>
+              <button className="gl-btn">Workspace</button>
+            </Dropdown>
+            {saveButton}
+            <div className="flex-grow-1" />
+            <LastLayoutToggle />
             <ThemeSwitcher />
             <LocalSwitcher />
-            {logoMenuList.map(({ label, icon, onClick, url }, i) =>
-              url ? (
-                <a key={i} className="gl-btn" href={url} target="_blank" rel="noreferrer" title={label}>
-                  {icon}
-                </a>
-              ) : (
-                <button key={i} className="gl-btn" onClick={onClick} title={label}>
-                  {icon}
-                </button>
-              ),
-            )}
+            {logoMenuButton}
           </section>
         </div>
       </AnimateHeight>
 
       <section className="row gx-0">
-        <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center">
+        <div className="col-2 col-sm-4 d-flex justify-content-start align-items-center gl-gap-2">
           {/* Tablet and desktop display: */}
           <Dropdown options={workspaceMenuList} className="d-none d-sm-block">
             <button className="gl-btn dropdown-toggle">Workspace</button>
           </Dropdown>
+          <span className="d-none d-sm-block">{saveButton}</span>
           {/* Mobile display: */}
           {children}
+          <button
+            className="gl-btn gl-btn-icon d-sm-none"
+            title={t("edition.create_nodes")}
+            aria-label={t("edition.create_nodes")}
+            onClick={() => openModal({ component: EditNodeModal, arguments: {} })}
+          >
+            <CreateNodeIcon />
+          </button>
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
-          <Link to="/" className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
+          <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
             {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
           <Link
             to={`/data/${dataTableItemType}`}
+            replace
             className={cx("gl-btn", location.pathname.startsWith("/data") && "gl-btn-fill")}
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
@@ -221,16 +356,13 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}
           <div className="d-none d-sm-flex">
+            <LastLayoutToggle />
             <ThemeSwitcher />
             <LocalSwitcher />
-            <Dropdown options={logoMenuList} side="right">
-              <button className="gl-btn dropdown-toggle">
-                <GephiLogo height="1em" width="1em" />
-              </button>
-            </Dropdown>
+            {logoMenuButton}
           </div>
           {/* Mobile display: */}
-          <button className="gl-btn gl-btn-icon d-sm-none" onClick={() => setExpanded((v) => !v)}>
+          <button className="gl-btn gl-btn-icon d-sm-none" onClick={toggleExpanded}>
             {expanded ? <PiX /> : <PiList />}
           </button>
         </section>

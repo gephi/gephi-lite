@@ -4,6 +4,8 @@ import { Attributes } from "graphology-types";
 import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, sortBy, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
+import { CREATION_DATE_FIELD_ID, UPDATE_DATE_FIELD_ID, ensureSystemDateFields, stampCreationDates } from "./dates";
+import { computeAllDynamicAttributes, computeScriptFieldsData } from "./dynamicAttributes";
 import { inferFieldType } from "./fieldModel";
 import {
   DataGraph,
@@ -60,7 +62,11 @@ export function initializeGraphDataset(
 
   const nodeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachNode((node, attributes) => {
-    const { data, position } = cleanNode(node, attributes);
+    const { data: cleanedData, position } = cleanNode(node, attributes);
+    const data =
+      cleanedData[CREATION_DATE_FIELD_ID] && cleanedData[UPDATE_DATE_FIELD_ID]
+        ? cleanedData
+        : stampCreationDates(cleanedData);
 
     for (const key in data) {
       nodeAttributeValues[key] = nodeAttributeValues[key] || [];
@@ -74,7 +80,11 @@ export function initializeGraphDataset(
 
   const edgeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachEdge((edge, attributes, source, target) => {
-    const { data } = cleanEdge(edge, attributes);
+    const { data: cleanedData } = cleanEdge(edge, attributes);
+    const data =
+      cleanedData[CREATION_DATE_FIELD_ID] && cleanedData[UPDATE_DATE_FIELD_ID]
+        ? cleanedData
+        : stampCreationDates(cleanedData);
 
     for (const key in data) {
       edgeAttributeValues[key] = edgeAttributeValues[key] || [];
@@ -117,6 +127,16 @@ export function initializeGraphDataset(
   dataset.nodeFields = sortBy(dataset.nodeFields, getFieldScore) as typeof dataset.nodeFields;
   dataset.edgeFields = sortBy(dataset.edgeFields, getFieldScore) as typeof dataset.edgeFields;
 
+  // Enforce the canonical, read-only field models for the system date fields (always last):
+  dataset.nodeFields = ensureSystemDateFields(
+    "nodes",
+    dataset.nodeFields.filter((f) => f.id !== CREATION_DATE_FIELD_ID && f.id !== UPDATE_DATE_FIELD_ID),
+  );
+  dataset.edgeFields = ensureSystemDateFields(
+    "edges",
+    dataset.edgeFields.filter((f) => f.id !== CREATION_DATE_FIELD_ID && f.id !== UPDATE_DATE_FIELD_ID),
+  );
+
   return dataset;
 }
 
@@ -141,6 +161,31 @@ export function dataGraphToFullGraph(
   });
 
   return res;
+}
+
+/**
+ * Values of every attribute that is *not* stored in the item data but recomputed on the fly: the
+ * topology-based dynamic attributes (degree...) and the formula (scripted) fields. Both kinds live
+ * in the same "dynamic" data channel (see `isComputedField`), so anything that reads attribute
+ * values (filters, histograms, term lists...) must build that channel through this single helper:
+ * computing only the topology-based half leaves every formula field undefined, ie. indistinguishable
+ * from a missing value.
+ *
+ * The scripts are always taken from the dataset's *current* field models, so an edited formula is
+ * picked up even by a filter created before the edit (filters keep a snapshot of the field model).
+ */
+export function computeAllComputedAttributes<T extends ItemType>(
+  itemType: T,
+  dataset: GraphDataset,
+  graph: DatalessGraph = dataset.fullGraph,
+): Record<string, ItemData> {
+  const dynamicData = computeAllDynamicAttributes(itemType, graph);
+
+  const fields = (itemType === "nodes" ? dataset.nodeFields : dataset.edgeFields) as FieldModel<T>[];
+  if (!fields.some((field) => field.script)) return dynamicData;
+
+  const scriptData = computeScriptFieldsData(itemType, fields, dataGraphToFullGraph(dataset, graph));
+  return mapValues(dynamicData, (data, id) => ({ ...data, ...scriptData[id] }));
 }
 
 /**
@@ -259,4 +304,50 @@ export function uniqFieldValuesAsStrings(items: Record<string, ItemData>, field:
       return [];
     }),
   ) as string[];
+}
+
+/**
+ * All the edges linking two given nodes, whichever way they point (and however many there are, in
+ * a multigraph).
+ */
+export function getEdgesBetween(graph: DatalessGraph, source: string, target: string): string[] {
+  return graph.edges(source).filter((edge) => graph.opposite(source, edge) === target);
+}
+
+/**
+ * Edges of a shortest path between two nodes, or `null` when no path links them.
+ *
+ * Edge direction is ignored (graphology's `neighbors` yields both the inbound and the outbound
+ * ones): the point is to show *how* two nodes are connected, so a path that only exists against
+ * the arrows is still an answer worth showing. Every parallel edge of a hop is returned, since
+ * they are drawn one on top of the other anyway and picking one arbitrarily would hide the others.
+ */
+export function getShortestPathEdges(graph: DatalessGraph, source: string, target: string): string[] | null {
+  if (!graph.hasNode(source) || !graph.hasNode(target)) return null;
+  if (source === target) return getEdgesBetween(graph, source, source);
+
+  // Breadth-first search, level by level, keeping for each visited node the one it was reached
+  // from: the first time the target is visited it is through one of the shortest paths.
+  const previous: Record<string, string> = {};
+  const visited = new Set([source]);
+  let fringe = [source];
+  while (fringe.length && !visited.has(target)) {
+    const nextFringe: string[] = [];
+    fringe.forEach((node) =>
+      graph.neighbors(node).forEach((neighbor) => {
+        if (visited.has(neighbor)) return;
+        visited.add(neighbor);
+        previous[neighbor] = node;
+        nextFringe.push(neighbor);
+      }),
+    );
+    fringe = nextFringe;
+  }
+  if (!visited.has(target)) return null;
+
+  // Walk the path back from the target, collecting the edges of each hop.
+  const edges: string[] = [];
+  for (let node = target; node !== source; node = previous[node])
+    edges.unshift(...getEdgesBetween(graph, previous[node], node));
+  return edges;
 }

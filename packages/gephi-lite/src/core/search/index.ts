@@ -113,11 +113,18 @@ export const reset: Producer<SearchState, []> = () => {
   return () => getEmptySearchState();
 };
 
+// Raw text currently typed in the main fuzzy search box (see GraphSearchSelection): kept in its
+// own atom, separate from the MiniSearch index above, so that typing does not depend on - or get
+// wiped out by - index rebuilds (eg. `indexAll`, which replaces the whole SearchState).
+export const setQuery: Producer<string, [string]> = (query) => () => query;
+export const resetQuery: Producer<string, []> = () => () => "";
+
 /**
  * Public API:
  * ***********
  */
 export const searchAtom = atom<SearchState>(getEmptySearchState());
+export const searchQueryAtom = atom<string>("");
 
 export const searchActions = {
   indexAll: producerToAction(indexAll, searchAtom),
@@ -130,4 +137,6 @@ export const searchActions = {
   itemsRemove: producerToAction(itemsRemove, searchAtom),
   itemsIndex: producerToAction(itemsIndex, searchAtom),
   reset: producerToAction(reset, searchAtom),
+  setQuery: producerToAction(setQuery, searchQueryAtom),
+  resetQuery: producerToAction(resetQuery, searchQueryAtom),
 } as const;

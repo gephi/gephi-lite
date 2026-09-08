@@ -1,14 +1,17 @@
 import { useSigma } from "@react-sigma/core";
+import { debounce } from "lodash";
 import { FC, useEffect } from "react";
 import { drawDiscNodeLabel, drawStraightEdgeLabel } from "sigma/rendering";
-import { DEFAULT_SETTINGS, Settings } from "sigma/settings";
+import { Settings } from "sigma/settings";
 
 import { getDrawEdgeLabel, getDrawNodeLabel } from "../../../core/appearance/utils";
 import { useAppearance, useGraphDataset, usePreferences } from "../../../core/context/dataContexts";
 import { getAppliedTheme } from "../../../core/preferences/utils";
-import { GephiLiteSigma, resetCamera, sigmaAtom } from "../../../core/sigma";
+import { GephiLiteSigma, consumePendingFocus, restoreCamera, saveCameraState, sigmaAtom } from "../../../core/sigma";
 import { drawDiscNodeHover } from "../../../core/sigma/utils";
-import { inputToStateThreshold } from "../../../utils/labels";
+
+// Panning and zooming emit a camera update on every frame: only the resting position is stored.
+const CAMERA_PERSIST_DEBOUNCE = 300;
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
   const sigma = useSigma() as GephiLiteSigma;
@@ -18,7 +21,22 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
 
   useEffect(() => {
     sigmaAtom.set(sigma);
-    resetCamera({ forceRefresh: true });
+    // Frames the graph, and comes back to the view this tab was left on if there is one (page
+    // reload, or a tab the browser discarded and restored).
+    restoreCamera({ forceRefresh: true });
+    // If we arrived here from a "locate" action on another page (e.g. the data table), replay the
+    // pending focus now that sigma is mounted and the graph has been framed.
+    consumePendingFocus();
+
+    // Remember where the user leaves the camera, so the next load can come back to it. Debounced:
+    // panning and zooming emit this on every frame.
+    const camera = sigma.getCamera();
+    const persistCameraState = debounce(() => saveCameraState(camera.getState()), CAMERA_PERSIST_DEBOUNCE);
+    camera.on("updated", persistCameraState);
+    return () => {
+      persistCameraState.cancel();
+      camera.off("updated", persistCameraState);
+    };
   }, [sigma]);
 
   useEffect(() => {
@@ -32,10 +50,9 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     sigma.setSetting("defaultDrawNodeHover", getDrawNodeLabel(graphAppearance, drawDiscNodeHover));
     sigma.setSetting("defaultDrawEdgeLabel", getDrawEdgeLabel(graphAppearance, drawStraightEdgeLabel));
 
-    const labelThreshold = inputToStateThreshold(graphAppearance.nodesLabelSize.density);
-    const labelDensity = labelThreshold === 0 ? Infinity : DEFAULT_SETTINGS.labelDensity;
-    sigma.setSetting("labelRenderedSizeThreshold", labelThreshold);
-    sigma.setSetting("labelDensity", labelDensity);
+    // Labels are not picked by sigma anymore, but by LabelsController: an unreachable size
+    // threshold disables sigma's own selection, leaving only the labels we force.
+    sigma.setSetting("labelRenderedSizeThreshold", Infinity);
 
     setIsReady();
   }, [graphAppearance, graphDataset, setIsReady, sigma, theme]);

@@ -105,6 +105,12 @@ export type FieldModelTypeSpecCollection = {
 };
 export type FieldModelTypeSpec = FieldModelTypeSpecCollection[keyof FieldModelAbstraction];
 
+/**
+ * A user-provided function that computes the value of a "formula" (scripted) field for a given item.
+ * It receives the item id, its (static) attributes, its index in the graph and the full graph instance.
+ */
+export type FieldScriptFunction = (id: string, attributes: ItemData, index: number, graph: FullGraph) => Scalar;
+
 export type FieldModel<
   T extends ItemType = ItemType,
   Dynamic extends boolean = false,
@@ -114,6 +120,13 @@ export type FieldModel<
   itemType: T;
   label?: string;
   dynamic?: Dynamic;
+  // Value used to initialize this attribute's field when creating a new node/edge:
+  defaultValue?: Scalar;
+  // When true, this field is managed automatically by the app and cannot be edited, moved or deleted by the user:
+  readOnly?: boolean;
+  // When set, this field is a "formula" field: its value is (re)computed for each item by this
+  // function instead of being stored. It is persisted with the dataset and recomputed on the fly.
+  script?: FieldScriptFunction;
 } & FieldModelTypeSpecCollection[K];
 
 export type FieldModelWithStats<T extends ItemType = ItemType> = FieldModel<T> & {

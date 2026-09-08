@@ -9,7 +9,16 @@ export function deserializer(_: string, value: any): any {
   if (Array.isArray(value) && value.length === 3 && value[0] === "<<Function" && value[2] === "Function>>") {
     return new Function(`return ${value[1]}`)();
   }
-  if (value && typeof value === "object" && "nodes" in value && "edges" in value) {
+  // A serialized graphology graph always lists its nodes and edges as arrays. Checking the types
+  // and not just the key names matters: plenty of states are keyed by item type (`{ nodes: ...,
+  // edges: ... }`), and treating one of those as a graph makes `Graph.from` throw, which silently
+  // discards the whole document being parsed.
+  if (
+    value &&
+    typeof value === "object" &&
+    Array.isArray((value as SerializedGraph).nodes) &&
+    Array.isArray((value as SerializedGraph).edges)
+  ) {
     return Graph.from(value as SerializedGraph);
   }
   return value;

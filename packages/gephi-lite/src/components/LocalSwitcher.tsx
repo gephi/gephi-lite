@@ -6,7 +6,7 @@ import { usePreferences, usePreferencesActions } from "../core/context/dataConte
 import { useMobile } from "../hooks/useMobile";
 import { LOCALES } from "../locales/LOCALES";
 import Dropdown from "./Dropdown";
-import { CheckedIcon } from "./common-icons";
+import { CheckedIcon, LanguageIcon } from "./common-icons";
 
 const AVAILABLE_LOCALES = toPairs(LOCALES)
   .filter(([key]) => import.meta.env.MODE === "development" || key !== "dev")
@@ -36,7 +36,13 @@ const LocalSwitcher: FC = () => {
 
   return (
     <Dropdown options={localeOptions} side="right">
-      <button className={cx("lang-switcher-btn gl-btn w-100", !isMobile && "dropdown-toggle")}>{locale}</button>
+      <button
+        className={cx("lang-switcher-btn gl-btn gl-btn-icon", !isMobile && "dropdown-toggle")}
+        title={LOCALES[locale as keyof typeof LOCALES]?.label}
+        aria-label={LOCALES[locale as keyof typeof LOCALES]?.label}
+      >
+        <LanguageIcon />
+      </button>
     </Dropdown>
   );
 };

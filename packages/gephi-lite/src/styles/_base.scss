@@ -69,6 +69,15 @@
 .over-modal {
   z-index: $zindex-modal + 1 !important;
 }
+// A confirmation dialog stacked over an already open modal (see the Modal component): its own
+// backdrop has to cover the modal underneath, and the dialog itself to sit above that backdrop -
+// hence two levels rather than the single one `.over-modal` provides for tooltips and dropdowns.
+.stacked-modal-backdrop {
+  z-index: $zindex-modal + 1 !important;
+}
+.stacked-modal {
+  z-index: $zindex-modal + 2 !important;
+}
 .rectangle {
   height: 1em;
   width: 0.25em;

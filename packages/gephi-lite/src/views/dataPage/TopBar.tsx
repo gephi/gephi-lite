@@ -103,7 +103,7 @@ export const TopBar: FC = () => {
           <button
             key={itemType}
             className={cx("gl-btn", type === itemType && "gl-btn-fill")}
-            onClick={() => navigate(`/data/${itemType}`)}
+            onClick={() => navigate(`/data/${itemType}`, { replace: true })}
           >
             {capitalize(t(`graph.model.${itemType}`))}
           </button>
@@ -117,7 +117,10 @@ export const TopBar: FC = () => {
               {" "}
               (
               <Trans i18nKey={`selection.visible`} count={visible.length} />,{" "}
-              <Trans i18nKey={`selection.hidden`} count={hidden.length} />)
+              <span className="text-danger">
+                <Trans i18nKey={`selection.filtered`} count={hidden.length} />
+              </span>
+              )
             </>
           )}
           {visible.length > 0 && t("common.colon")}
@@ -129,7 +132,7 @@ export const TopBar: FC = () => {
               disabled={selectionActionDisabled}
               title={t("selection.open_in_graph")}
               onClick={() => {
-                navigate(`/`);
+                navigate(`/`, { replace: true });
                 emitter.once(EVENTS.sigmaMounted, () => {
                   emitter.emit(EVENTS.focusNodes, {
                     nodes:

@@ -2,6 +2,7 @@ import {
   DynamicItemDataSpec,
   DynamicItemsDataSpec,
   FieldModel,
+  FullGraph,
   ItemData,
   ItemType,
   Scalar,
@@ -59,6 +60,38 @@ export const computeAllDynamicAttributes = <T extends ItemType>(itemType: T, gra
     ]),
   );
 
+/**
+ * Computes the value of every "formula" (scripted) field, for every item of the given full graph.
+ * Returns a map { [itemId]: { [fieldId]: value } }, so it can be merged with the topology-based
+ * dynamic attributes. A failing script never breaks the whole computation: the faulty cell is left
+ * undefined.
+ */
+export const computeScriptFieldsData = <T extends ItemType>(
+  itemType: T,
+  fields: FieldModel<T>[],
+  fullGraph: FullGraph,
+): Record<string, ItemData> => {
+  const scriptFields = fields.filter((field) => !!field.script);
+  const ids = itemType === "nodes" ? fullGraph.nodes() : fullGraph.edges();
+  const getAttributes = (id: string) =>
+    itemType === "nodes" ? fullGraph.getNodeAttributes(id) : fullGraph.getEdgeAttributes(id);
+
+  return fromPairs(
+    ids.map((id, index) => {
+      const attributes = getAttributes(id);
+      const values: ItemData = {};
+      scriptFields.forEach((field) => {
+        try {
+          values[field.id] = field.script!(id, attributes, index, fullGraph);
+        } catch (_e) {
+          values[field.id] = undefined;
+        }
+      });
+      return [id, values];
+    }),
+  );
+};
+
 export const mergeStaticDynamicData = (
   staticData: Record<string, ItemData>,
   dynamicData: Record<string, ItemData>,
@@ -69,8 +102,13 @@ export const mergeStaticDynamicData = (
   }));
 };
 
+// A formula (scripted) field is computed on the fly and stored in the "dynamic" data channel, just
+// like the topology-based dynamic attributes (degree, ...):
+export const isComputedField = (field: Pick<FieldModel<ItemType, boolean>, "dynamic" | "script">) =>
+  !!field.dynamic || !!field.script;
+
 export const staticDynamicAttributeKey = (field: FieldModel<ItemType, boolean>) =>
-  `${field.dynamic ? "dynamic" : "static"}.${field.id}`;
+  `${isComputedField(field) ? "dynamic" : "static"}.${field.id}`;
 
 export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>) => {
   if (field.dynamic) {
@@ -81,7 +119,7 @@ export const staticDynamicAttributeLabel = (field: FieldModel<ItemType, boolean>
 
 export function getScalarFromStaticDynamicData(
   data: StaticDynamicItemData,
-  field: Pick<FieldModel<ItemType, boolean>, "id" | "dynamic">,
+  field: Pick<FieldModel<ItemType, boolean>, "id" | "dynamic" | "script">,
 ): Scalar {
-  return field.dynamic ? data.dynamic[field.id] : data.static[field.id];
+  return isComputedField(field) ? data.dynamic[field.id] : data.static[field.id];
 }

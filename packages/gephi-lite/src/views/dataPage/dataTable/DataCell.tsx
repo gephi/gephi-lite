@@ -1,13 +1,27 @@
 import { FieldModel, ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
 import { isNil } from "lodash";
-import { FC, MouseEventHandler, forwardRef, useEffect, useRef, useState } from "react";
+import { FC, MouseEventHandler, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiCheck } from "react-icons/pi";
 import TetherComponent from "react-tether";
 
+import { CancelIcon } from "../../../components/common-icons";
 import { EditItemAttribute, RenderItemAttribute } from "../../../components/data/Attribute";
 import { useGraphDatasetActions } from "../../../core/context/dataContexts";
+import { CellDirection, useDataCellNavigation } from "./dataCellNavigation";
+
+// Arrow-key navigation is only taken over for field types where arrow keys have no built-in meaning
+// of their own: overriding them for "category"/"keywords" would break react-select's own option
+// navigation, and for "color" the color picker's own key handling.
+const ARROW_NAV_FIELD_TYPES: FieldModel<ItemType, boolean>["type"][] = ["text", "url", "number", "date"];
+
+const ARROW_KEY_DIRECTIONS: Record<string, CellDirection> = {
+  ArrowUp: "up",
+  ArrowDown: "down",
+  ArrowLeft: "left",
+  ArrowRight: "right",
+};
 
 export const ReadDataCell = forwardRef<
   HTMLSpanElement,
@@ -56,15 +70,28 @@ export const EditDataCell: FC<{
   id: string;
   field: FieldModel<ItemType, boolean>;
   value: Scalar;
+  columnId: string;
   close: () => void;
-}> = ({ type, id, field, close, value: initialValue }) => {
+}> = ({ type, id, field, columnId, close, value: initialValue }) => {
   const { t } = useTranslation();
   const [value, setValue] = useState<Scalar>(initialValue);
   const { updateNode, updateEdge } = useGraphDatasetActions();
   const update = type === "nodes" ? updateNode : updateEdge;
+  const { moveTo } = useDataCellNavigation();
 
   const targetWrapper = useRef<HTMLDivElement>(null);
   const elementWrapper = useRef<HTMLFormElement>(null);
+
+  const commit = useCallback(
+    (committedValue: Scalar) => {
+      if (field.dynamic) {
+        update(id, {}, { merge: true, [field.id]: committedValue });
+      } else {
+        update(id, { [field.id]: committedValue }, { merge: true });
+      }
+    },
+    [field, id, update],
+  );
 
   // Handle interactions:
   useEffect(() => {
@@ -107,23 +134,37 @@ export const EditDataCell: FC<{
             ref={elementWrapper}
             onSubmit={(e) => {
               e.preventDefault();
-              if (field.dynamic) {
-                update(id, {}, { merge: true, [field.id]: value });
-              } else {
-                update(id, { [field.id]: value }, { merge: true });
-              }
+              commit(value);
               close();
             }}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 close();
+                return;
+              }
+              const direction = ARROW_KEY_DIRECTIONS[e.key];
+              if (direction && ARROW_NAV_FIELD_TYPES.includes(field.type)) {
+                e.preventDefault();
+                commit(value);
+                close();
+                moveTo({ rowId: id, columnId }, direction);
               }
             }}
           >
             <EditItemAttribute autoFocus inTooltip field={field} scalar={value} onChange={(value) => setValue(value)} />
-            <button className="gl-btn gl-btn-fill gl-btn-icon" title={t("datatable.save_cell")}>
-              <PiCheck />
-            </button>
+            <div className="data-cell-edition-actions">
+              <button type="submit" className="gl-btn gl-btn-fill gl-btn-icon" title={t("datatable.save_cell")}>
+                <PiCheck />
+              </button>
+              <button
+                type="button"
+                className="gl-btn gl-btn-outline gl-btn-icon"
+                title={t("datatable.cancel_cell")}
+                onClick={() => close()}
+              >
+                <CancelIcon />
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -137,12 +178,25 @@ export const DataCell: FC<{
   field: FieldModel<ItemType, boolean>;
   value: Scalar;
   readOnly?: boolean;
+  columnId: string;
 }> = (props) => {
-  const { readOnly } = props;
+  const { readOnly, id, columnId, field } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const { activeCell, clearActiveCell } = useDataCellNavigation();
+
+  // Auto-enter edit mode when arrow-key navigation (see EditDataCell) targets this cell - including
+  // when it was just mounted after being scrolled into view (see DataTable's moveTo). Clearing the
+  // request right after consuming it keeps it from lingering: react-virtual recycles row DOM nodes,
+  // so an un-cleared request could pop this same cell back into edit mode after an unrelated remount.
+  useEffect(() => {
+    if (!readOnly && activeCell?.rowId === id && activeCell?.columnId === columnId) {
+      setIsEditing(true);
+      clearActiveCell();
+    }
+  }, [activeCell, readOnly, id, columnId, clearActiveCell]);
 
   // Editable boolean fields are directly edited inline:
-  if (props.field.type === "boolean" && !readOnly) {
+  if (field.type === "boolean" && !readOnly) {
     return <InlineEditDataCell {...props} />;
   }
 

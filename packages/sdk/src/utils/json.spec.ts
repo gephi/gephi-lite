@@ -1,3 +1,4 @@
+import Graph from "graphology";
 import { describe, expect, it } from "vitest";
 
 import { gephiLiteParse, gephiLiteStringify } from "./json";
@@ -30,6 +31,25 @@ describe("JSON utilities", () => {
 
     it("should work with sets", () => {
       expect(gephiLiteParse(gephiLiteStringify(SETS_DATASET))).toEqual(SETS_DATASET);
+    });
+
+    it("should work with graphs", () => {
+      const graph = new Graph();
+      graph.addNode("a", { label: "A" });
+      graph.addNode("b");
+      graph.addEdgeWithKey("ab", "a", "b", { weight: 2 });
+      const parsed = gephiLiteParse<Graph>(gephiLiteStringify(graph));
+      expect(parsed).toBeInstanceOf(Graph);
+      expect(parsed.nodes().sort()).toEqual(["a", "b"]);
+      expect(parsed.edges()).toEqual(["ab"]);
+      expect(parsed.getNodeAttribute("a", "label")).toBe("A");
+    });
+
+    it("should keep an object merely keyed by item type as a plain object", () => {
+      // Anything but arrays under `nodes`/`edges` is not a serialized graph: mistaking one for a
+      // graph throws inside the reviver, which used to drop the whole parsed document.
+      const byItemType = { selectionSort: { nodes: "alphabetical", edges: "size" }, theme: "dark" };
+      expect(gephiLiteParse(gephiLiteStringify(byItemType))).toEqual(byItemType);
     });
   });
 

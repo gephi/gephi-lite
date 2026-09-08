@@ -3,14 +3,10 @@ import { subgraph } from "graphology-operators";
 import { isNil, isNumber } from "lodash";
 import { DateTime } from "luxon";
 
-import {
-  computeAllDynamicAttributes,
-  getScalarFromStaticDynamicData,
-  mergeStaticDynamicData,
-} from "../graph/dynamicAttributes";
+import { getScalarFromStaticDynamicData, isComputedField, mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { castScalarToModelValue, castScalarToQuantifiableValue } from "../graph/fieldModel";
 import { DatalessGraph, GraphDataset, SigmaGraph } from "../graph/types";
-import { dataGraphToFullGraph } from "../graph/utils";
+import { computeAllComputedAttributes, dataGraphToFullGraph } from "../graph/utils";
 import { FilterType, RangeFilterType, TermsFilterType, TopologicalFilterDefinition } from "./types";
 
 export { getEmptyFiltersState, parseFiltersState, serializeFiltersState } from "@gephi/gephi-lite-sdk";
@@ -108,7 +104,11 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
       );
     } else {
       if (filter.field) {
-        const dynamicNodeData = filter.field.dynamic ? computeAllDynamicAttributes("nodes", graph) : {};
+        // Computed fields (dynamic and formula ones) hold no stored value: they have to be evaluated
+        // on the graph this filter applies to, or every item would read as a missing value.
+        const dynamicNodeData = isComputedField(filter.field)
+          ? computeAllComputedAttributes("nodes", dataset, graph)
+          : {};
         const staticDynamicNodeData = mergeStaticDynamicData(nodeData, dynamicNodeData);
         const field = filter.field;
         nodes = graph.filterNodes((nodeID) => {
@@ -131,7 +131,9 @@ export function filterGraph<G extends DatalessGraph | SigmaGraph>(
       );
     } else {
       if (filter.field) {
-        const dynamicEdgeData = filter.field.dynamic ? computeAllDynamicAttributes("edges", graph) : {};
+        const dynamicEdgeData = isComputedField(filter.field)
+          ? computeAllComputedAttributes("edges", dataset, graph)
+          : {};
         const staticDynamicEdgeData = mergeStaticDynamicData(edgeData, dynamicEdgeData);
         const field = filter.field;
         edges = graph.filterEdges((edgeID) => {

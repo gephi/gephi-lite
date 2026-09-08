@@ -45,9 +45,11 @@ export interface CloudProvider {
   ): Promise<CloudFile>;
 
   /**
-   * Save/Update a file.
+   * Save/Update a file. Returns what the remote holds once written - its refreshed metadata, and
+   * the content read back from it, which may not be byte-identical to what was sent and is what
+   * later freshness checks will compare against.
    */
-  saveFile(file: CloudFile, content: string): Promise<CloudFile>;
+  saveFile(file: CloudFile, content: string): Promise<{ file: CloudFile; content: string }>;
 
   /**
    * Delete a file.

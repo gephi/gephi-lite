@@ -9,3 +9,22 @@
     box-shadow: none;
   }
 }
+
+// Number input with custom −/+ stepper buttons. We hide the browser's native spin buttons (which,
+// besides, are not rendered at all on mobile browsers) so only the custom buttons remain, giving a
+// consistent stepper on every platform.
+.gl-number-input {
+  flex-wrap: nowrap;
+
+  input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}

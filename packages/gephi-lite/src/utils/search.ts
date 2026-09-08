@@ -12,12 +12,14 @@ export function doesItemMatch(
   data: ItemData,
   fields: FieldModel[],
   query: string,
+  extraLabels: (string | null | undefined)[] = [],
 ): boolean {
   const normalizedQuery = normalize(query);
 
   return (
     normalize(id).includes(normalizedQuery) ||
     (label && normalize(label).includes(normalizedQuery)) ||
+    extraLabels.some((extraLabel) => extraLabel && normalize(extraLabel).includes(normalizedQuery)) ||
     fields.some(
       ({ type, id }) =>
         SEARCHABLE_TYPES.has(type) && typeof data[id] === "string" && normalize(data[id]).includes(normalizedQuery),

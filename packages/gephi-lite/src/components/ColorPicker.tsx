@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { SketchPicker } from "react-color";
 
 import { hexToRgba, rgbaToHex } from "../utils/colors";
@@ -34,13 +34,18 @@ const ColorPicker: FC<
   (
     | { color: string | undefined; onChange: (color: string | undefined) => void; clearable: true }
     | { color: string; onChange: (color: string) => void; clearable?: false }
-  ) & { className?: string }
-> = ({ color, onChange, clearable, className }) => {
+  ) & { className?: string; autoFocus?: boolean }
+> = ({ color, onChange, clearable, className, autoFocus }) => {
   const tooltipRef = useRef<TooltipAPI>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (buttonRef.current && autoFocus) buttonRef.current.focus();
+  }, [autoFocus]);
 
   return (
     <Tooltip ref={tooltipRef} attachment="top middle" targetAttachment="bottom middle" targetClassName={className}>
       <button
+        ref={buttonRef}
         type="button"
         className="gl-btn square border border-black border-2"
         style={{ background: color || "#ffffff" }}

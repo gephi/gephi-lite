@@ -154,6 +154,12 @@ $panel-width: $gl-sys-size-container-large;
       height: $selection-panel-height;
     }
 
+    // A deployed panel covers most of the screen height on mobile: the floating
+    // graph controls (zoom, selection mode...) would otherwise overlap its footer buttons.
+    .panel-expandable.deployed ~ .filler .sigma-controls {
+      display: none;
+    }
+
     .panel-left,
     .panel-right {
       border: 0;

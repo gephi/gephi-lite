@@ -16,6 +16,8 @@ export const SPECIFIC_COLUMNS = {
   preview: "preview",
   sourceId: "sourceId",
   targetId: "targetId",
+  sourceLabel: "sourceLabel",
+  targetLabel: "targetLabel",
   // add dynamic
   ...mapValues(DYNAMIC_ATTRIBUTES.nodes, identity),
   ...mapValues(DYNAMIC_ATTRIBUTES.edges, identity),

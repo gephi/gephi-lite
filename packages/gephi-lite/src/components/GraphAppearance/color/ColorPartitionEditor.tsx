@@ -1,6 +1,6 @@
 import { PartitionColor } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { map } from "lodash";
+import { sortBy, toPairs } from "lodash";
 import { FC, useEffect, useRef, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
@@ -48,7 +48,7 @@ export const ColorPartitionEditor: FC<{
         ref={rootRef}
       >
         <div className={cx(shouldShowButton && "pb-5")} ref={contentRef}>
-          {map(color.colorPalette, (c, value) => (
+          {sortBy(toPairs(color.colorPalette), ([value]) => value.toLowerCase()).map(([value, c]) => (
             <div
               key={value}
               className="d-inline-block w-50 d-inline-flex align-items-baseline flex-nowrap"
