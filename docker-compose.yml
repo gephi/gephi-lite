@@ -4,7 +4,7 @@ services:
         user: node
         hostname: gephi-lite
         volumes:
-            - .:/gephi-lite
+          - .:/gephi-lite:z
         entrypoint: /gephi-lite/entrypoint.sh
         ports:
-            - 5173:5173
+          - 5173:5173
