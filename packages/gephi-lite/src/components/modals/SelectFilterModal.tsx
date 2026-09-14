@@ -1,4 +1,4 @@
-import { FieldModel, FieldModelType, FilterType } from "@gephi/gephi-lite-sdk";
+import { FieldModel, FilterType } from "@gephi/gephi-lite-sdk";
 import { capitalize, sortBy } from "lodash";
 import { FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -11,19 +11,9 @@ import {
 } from "../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { ModalProps } from "../../core/modals/types";
+import { FILTER_TYPES_PER_FIELD_TYPES, createAttributeFilter } from "../GraphFilters/utils";
 import { FieldModelIcons, ItemTypeIcon, MissingValueFilterIcon } from "../common-icons";
 import { Modal } from "../modals";
-
-const FILTER_TYPES_PER_FIELD_TYPES: Record<FieldModelType, "range" | "terms" | null> = {
-  date: "range",
-  number: "range",
-  keywords: "terms",
-  category: "terms",
-  boolean: "terms",
-  color: null,
-  text: null,
-  url: null,
-};
 
 const SelectFilterModal: FC<
   ModalProps<{
@@ -99,14 +89,8 @@ const SelectFilterModal: FC<
                           className="gl-btn gl-btn-outline"
                           disabled={!filterType}
                           onClick={() => {
-                            if (filterType)
-                              createNewFilter({
-                                itemType: type,
-                                type: filterType,
-                                field,
-                                //Note: keepMissingValues is ignored when type is category or boolean
-                                keepMissingValues: true,
-                              });
+                            const filter = createAttributeFilter(type, field);
+                            if (filter) createNewFilter(filter);
                           }}
                         >
                           <Icon className="me-1" />

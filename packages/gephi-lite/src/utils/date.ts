@@ -12,6 +12,16 @@ export function displayDateTime(value: string | Date, options?: { time: boolean 
   return undefined;
 }
 
+export function getDateInputSpec(format: string): {
+  inputType: "date" | "datetime-local";
+  inputFormat: "yyyy-MM-dd" | "yyyy-MM-dd'T'HH:mm";
+} {
+  const hasTime = /[HhmsS]/.test(format);
+  return hasTime
+    ? { inputType: "datetime-local", inputFormat: "yyyy-MM-dd'T'HH:mm" }
+    : { inputType: "date", inputFormat: "yyyy-MM-dd" };
+}
+
 /**
  * Display the date to the "from ago" format.
  */

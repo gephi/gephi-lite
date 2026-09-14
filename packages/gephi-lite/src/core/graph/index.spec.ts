@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { extractGraphFromFile } from "../file/utils";
 import DIVIDED_THEY_BLOG from "./testGraphs/divided-they-blog.gexf?raw";
+import EDGE_DATES from "./testGraphs/edge-dates.gexf?raw";
 import GEPHI_LITE from "./testGraphs/gephi-lite.gexf?raw";
 import MARVEL from "./testGraphs/marvel-characters-by-stories.gexf?raw";
 import SPOTIFY_ESPINOZA from "./testGraphs/spotify-veronica-espinoza.gexf?raw";
@@ -20,6 +21,15 @@ const SAMPLES: {
   fileName: string;
   expectedTypes: Partial<Record<ItemType, Record<string, ExpectedType>>>;
 }[] = [
+  {
+    content: EDGE_DATES,
+    fileName: "edge-dates.gexf",
+    expectedTypes: {
+      edges: {
+        createdAt: { type: "date", options: { format: "yyyy-MM-dd" } },
+      },
+    },
+  },
   {
     /**
      * This is the dataset from the paper:

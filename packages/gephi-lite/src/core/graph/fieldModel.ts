@@ -206,7 +206,7 @@ export function castScalarToQuantifiableValue<F extends FieldModelType = FieldMo
     case "number":
       return value as number;
     case "date":
-      return value !== undefined && value instanceof DateTime ? value.toMillis() : undefined;
+      return value !== undefined && DateTime.isDateTime(value) ? value.toMillis() : undefined;
     case "text":
     case "color":
     case "boolean":
@@ -276,7 +276,7 @@ export function serializeModelValueToScalar(
       if (!Array.isArray(value) || value.some((v: unknown) => typeof v !== "string")) return originalScalar; // throw new CastValueError("Wrong keywords value");
       return value.join(fieldModel.separator);
     case "date":
-      if (!(value instanceof DateTime)) return originalScalar; // throw new CastValueError("Wrong Date value");
+      if (!DateTime.isDateTime(value)) return originalScalar; // throw new CastValueError("Wrong Date value");
       return value.toFormat(fieldModel.format);
     case "boolean":
       if (typeof value !== "boolean") return originalScalar;
