@@ -329,7 +329,7 @@
         "title": "Open a file from GitHub"
       },
       "local": {
-        "dragndrop_text": "Drag'n'drop a GEXF, GRAPHML or Graphology JSON file ",
+        "dragndrop_text": "Drag'n'drop a <a href='https://docs.gephi.org/lite/user-manual/file-formats'>GEXF, GRAPHML or Graphology JSON</a> file",
         "error": "An error occurred while opening the file. Please check that the file is a valid and compatible with the actual version.",
         "success": "File {{filename}} has been successfully loaded",
         "title": "Open a local file"
