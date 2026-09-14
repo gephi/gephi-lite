@@ -1,9 +1,14 @@
+import * as pmtiles from "pmtiles";
 import { useSigma } from "@react-sigma/core";
-import { LngLatBounds, Map, MercatorCoordinate, StyleSpecification } from "maplibre-gl";
+import MapLibreGL, { LngLatBounds, Map, MercatorCoordinate, StyleSpecification } from "maplibre-gl";
 import { FC, useCallback, useEffect, useRef } from "react";
 
 import { useAppearance, usePreferences } from "../../../core/context/dataContexts";
 import { getDefaultMapStyle } from "../../../utils/map-style";
+
+// add the PMTiles plugin to the maplibregl global.
+const protocol = new pmtiles.Protocol();
+MapLibreGL.addProtocol("pmtiles", protocol.tile);
 
 // Convert graph coordinates (with Y-flip) to geo coordinates
 function graphToLatlng(coords: { x: number; y: number }) {
