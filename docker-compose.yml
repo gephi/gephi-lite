@@ -3,8 +3,8 @@ services:
     image: node:lts
     user: node
     hostname: gephi-lite
-    volumes:
-      - .:/code
     entrypoint: /code/entrypoint.sh
+    volumes:
+      - .:/code:z
     ports:
       - 5173:5173
