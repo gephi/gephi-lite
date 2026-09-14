@@ -164,4 +164,11 @@ appearanceAtom.bind((appearanceState, previousAppearanceState) => {
       preferencesActions.newColorPaletteUsage(appearanceState.edgesColor);
     }
   }
+
+  // When map style on appearance changed, save it into preferences
+  if (previousAppearanceState.backgroundLayer !== appearanceState.backgroundLayer) {
+    if (appearanceState.backgroundLayer?.map.style) {
+      preferencesActions.setMapStyle(appearanceState.backgroundLayer.map.style);
+    }
+  }
 });

@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppearance, useAppearanceActions } from "../../core/context/dataContexts";
+import { useAppearance, useAppearanceActions, usePreferences, useSessionData } from "../../core/context/dataContexts";
 import { ItemType } from "../../core/types";
 import ColorPicker from "../ColorPicker";
 import { EnumInput } from "../forms/TypedInputs";
@@ -58,6 +58,8 @@ export const GraphBackgroundAppearance: FC<unknown> = () => {
   const { t } = useTranslation();
   const { backgroundColor, layoutGridColor, backgroundLayer } = useAppearance();
   const { setBackgroundColorAppearance, setLayoutGridColorAppearance, setBackgroundLayer } = useAppearanceActions();
+  const { layoutsParameters } = useSessionData();
+  const { mapStyle } = usePreferences();
 
   const layerMode: LayerMode = backgroundLayer?.type || "none";
 
@@ -70,7 +72,21 @@ export const GraphBackgroundAppearance: FC<unknown> = () => {
   );
 
   const enableMapLayer = useCallback(() => {
-    setBackgroundLayer({ type: "map", map: { engine: "maplibre" } });
+    let scale = 1;
+    if (layoutsParameters["geographic"] && layoutsParameters["geographic"].scale)
+      scale = +layoutsParameters["geographic"].scale;
+    setBackgroundLayer({
+      type: "map",
+      map: {
+        engine: "maplibre",
+        scale,
+        style: mapStyle,
+      },
+    });
+  }, [setBackgroundLayer, layoutsParameters, mapStyle]);
+
+  const disableMapLayer = useCallback(() => {
+    setBackgroundLayer(undefined);
   }, [setBackgroundLayer]);
 
   return (
@@ -107,7 +123,7 @@ export const GraphBackgroundAppearance: FC<unknown> = () => {
           options={layerModeOptions}
           onChange={(v) => {
             if (v === "map") enableMapLayer();
-            else setBackgroundLayer(undefined);
+            else disableMapLayer();
           }}
           required
         />

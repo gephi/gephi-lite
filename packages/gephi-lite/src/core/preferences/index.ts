@@ -44,6 +44,13 @@ const newColorPaletteUsage: Producer<Preferences, [PartitionColor | RankingColor
   });
 };
 
+const setMapStyle: Producer<Preferences, [Preferences["mapStyle"]]> = (mapStyle) => {
+  return (preferences) => ({
+    ...preferences,
+    mapStyle,
+  });
+};
+
 /**
  * Public API:
  * ***********
@@ -54,6 +61,7 @@ export const preferencesActions = {
   changeLocale: producerToAction(changeLocale, preferencesAtom),
   changeTheme: producerToAction(changeTheme, preferencesAtom),
   newColorPaletteUsage: producerToAction(newColorPaletteUsage, preferencesAtom),
+  setMapStyle: producerToAction(setMapStyle, preferencesAtom),
 };
 
 /**

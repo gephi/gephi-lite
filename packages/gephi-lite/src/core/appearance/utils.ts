@@ -11,11 +11,11 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity, isNil, keyBy } from "lodash";
+import { clamp, forEach, identity, isNil, keyBy } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { MAP_Y_LIMIT, MAP_Y_MARGIN, MERCATOR_SIZE_RATIO, smoothClamp, smoothClampInverse } from "../../utils/geo";
+import { MERCATOR_PAN_BOUNDS, MERCATOR_SIZE_RATIO } from "../../utils/geo";
 import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
@@ -305,7 +305,13 @@ export function getAllVisualGetters(
   dynamicNodeData: DynamicItemData,
   appearance: AppearanceState,
 ): VisualGetters {
-  const isMap = appearance.backgroundLayer?.type === "map";
+  let isMap = false;
+  let mapScale = 1;
+
+  if (appearance.backgroundLayer?.type === "map") {
+    isMap = true;
+    mapScale = appearance.backgroundLayer.map.scale || 1;
+  }
 
   // Base size getters
   const baseGetNodeSize = makeGetNumberAttr("nodes", "size", dataset, dynamicNodeData, appearance);
@@ -313,25 +319,22 @@ export function getAllVisualGetters(
 
   // Wrap size getters to apply sizeRatio in map mode
   const getNodeSize: NumberGetter | null =
-    baseGetNodeSize && isMap ? (data) => baseGetNodeSize(data) * MERCATOR_SIZE_RATIO : baseGetNodeSize;
+    baseGetNodeSize && isMap ? (data) => (baseGetNodeSize(data) * MERCATOR_SIZE_RATIO) / mapScale : baseGetNodeSize;
   const getEdgeSize: NumberGetter | null =
-    baseGetEdgeSize && isMap ? (data) => baseGetEdgeSize(data) * MERCATOR_SIZE_RATIO : baseGetEdgeSize;
+    baseGetEdgeSize && isMap ? (data) => (baseGetEdgeSize(data) * MERCATOR_SIZE_RATIO) / mapScale : baseGetEdgeSize;
 
   const getNodePosition: CoordinateGetter | null = isMap
-    ? (pos) => {
-        const y = smoothClamp(pos.y, MAP_Y_LIMIT, MAP_Y_MARGIN);
-        return { x: (pos.x + 180) / 360, y: (180 + y) / 360 };
-      }
+    ? (pos) => ({
+        x: clamp((pos.x / mapScale + 180) / 360, MERCATOR_PAN_BOUNDS.x[0], MERCATOR_PAN_BOUNDS.x[1]),
+        y: clamp((pos.y / mapScale + 180) / 360, MERCATOR_PAN_BOUNDS.y[0], MERCATOR_PAN_BOUNDS.y[1]),
+      })
     : null;
 
   const reverseNodePosition: CoordinateGetter | null = isMap
-    ? (pos) => {
-        const rawY = pos.y * 360 - 180;
-        return {
-          x: pos.x * 360 - 180,
-          y: smoothClampInverse(rawY, MAP_Y_LIMIT, MAP_Y_MARGIN),
-        };
-      }
+    ? (pos) => ({
+        x: (pos.x * 360 - 180) * mapScale,
+        y: (pos.y * 360 - 180) * mapScale,
+      })
     : null;
 
   const nodeVisualGetters: VisualGetters = {

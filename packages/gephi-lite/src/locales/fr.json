@@ -14,6 +14,10 @@
         },
         "open_geo_layout": "Ouvrir la spatialisation Géographique",
         "position_warning": "Pour afficher correctement la carte, vous devez appliquez une spatialisation géographique afin de convertir les coordonnées des nœuds en coordonnées géographiques.",
+        "scale": {
+          "title": "Échelle",
+          "description": "Contrôle la mise à l’échelle de la carte par rapport au graphe. Ajustez cette valeur jusqu’à ce que la carte soit correctement alignée avec votre graphe. Si vous avez appliqué une spatialisation géographique avec un facteur d’échelle, utilisez la même valeur ici."
+        },
         "title": "Cartographie"
       }
     },
@@ -720,6 +724,10 @@
             "grid": "Placer sur une grille (à gauche de la carte)",
             "barycentergrid": "Barycentre des voisins + grille"
           }
+        },
+        "scale": {
+          "description": "Ratio de mise à l'échelle",
+          "title": "Échelle"
         }
       },
       "title": "Géographique"

@@ -40,6 +40,7 @@ describe("Geographic layout", () => {
           latitudeField: "lat",
           longitudeField: "lng",
           missingStrategy: "keep",
+          scale: 1,
         },
       });
       expect(result).toEqual({
@@ -51,7 +52,7 @@ describe("Geographic layout", () => {
     it("should apply Mercator projection with default (webmercator)", () => {
       const graph = makeGraph({ a: { lat: 45, lng: 10 } });
       const result = runGeographic(graph, {
-        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep" },
+        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep", scale: 1 },
       });
       // x unchanged, y is Mercator-projected (y > lat for positive latitudes)
       expect(result.a.x).toBe(10);
@@ -67,7 +68,7 @@ describe("Geographic layout", () => {
         d: {},
       });
       const result = runGeographic(graph, {
-        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep" },
+        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep", scale: 1 },
       });
       expect(Object.keys(result)).toEqual(["a"]);
     });
@@ -83,6 +84,7 @@ describe("Geographic layout", () => {
           latitudeField: "lat",
           longitudeField: "lng",
           missingStrategy: "keep",
+          scale: 1,
         },
       });
       expect(result).toEqual({ a: { x: 2, y: 48 } });
@@ -101,6 +103,7 @@ describe("Geographic layout", () => {
           latitudeField: "lat",
           longitudeField: "lng",
           missingStrategy: "grid",
+          scale: 1,
         },
       });
       expect(result.a).toEqual({ x: 2, y: 48 });
@@ -131,6 +134,7 @@ describe("Geographic layout", () => {
           latitudeField: "lat",
           longitudeField: "lng",
           missingStrategy: "barycentergrid",
+          scale: 1,
         },
       });
       // c is connected to a and b, should be at barycenter
@@ -143,7 +147,7 @@ describe("Geographic layout", () => {
     it("should return only valid nodes when all missing nodes have no valid neighbors and missingStrategy is not grid", () => {
       const graph = makeGraph({ a: { lat: 48, lng: 2 }, b: {} });
       const resultKeep = runGeographic(graph, {
-        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep" },
+        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "keep", scale: 1 },
       });
       expect(Object.keys(resultKeep)).toEqual(["a"]);
     });
@@ -151,7 +155,7 @@ describe("Geographic layout", () => {
     it("should return empty mapping when no nodes have valid coords (even with grid strategy)", () => {
       const graph = makeGraph({ a: {}, b: {} });
       const result = runGeographic(graph, {
-        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "grid" },
+        settings: { latitudeField: "lat", longitudeField: "lng", missingStrategy: "grid", scale: 1 },
       });
       expect(result).toEqual({});
     });

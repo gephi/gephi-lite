@@ -6,6 +6,7 @@ import { debounce, identity, pick } from "lodash";
 import seedRandom from "seedrandom";
 
 import { localStorage } from "../../utils/storage";
+import { appearanceActions, appearanceAtom } from "../appearance";
 import { VisualGetters } from "../appearance/types";
 import { EVENTS, emitter } from "../context/eventsContext";
 import {
@@ -207,6 +208,21 @@ export const startLayout = asyncAction(
     const layout = LAYOUTS.find((l) => l.id === id);
 
     if (layout) {
+      // If the map is already displayed at the background, then we sync with it the scale variable
+      if (layout.id === "geographic") {
+        const appearance = appearanceAtom.get();
+        if (appearance.backgroundLayer?.type === "map") {
+          const { setBackgroundLayer } = appearanceActions;
+          setBackgroundLayer({
+            type: "map",
+            map: {
+              ...appearance.backgroundLayer.map,
+              scale: params.scale as number,
+            },
+          });
+        }
+      }
+
       // Sync layout
       if (layout.type === "oneshot") {
         layoutStateAtom.set((prev) => ({ ...prev, type: "computing", layoutId: id }));

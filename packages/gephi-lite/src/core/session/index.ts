@@ -21,7 +21,7 @@ export const reset: Producer<Session, []> = () => {
 const setLastLayout: Producer<Session, [Session["lastLayout"]]> = (layoutId) => {
   return (session) => ({
     ...session,
-    lastLayout: layoutId
+    lastLayout: layoutId,
   });
 };
 

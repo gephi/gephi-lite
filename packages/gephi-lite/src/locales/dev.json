@@ -14,6 +14,10 @@
           "style": "Map style",
           "style_description": "The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
           "style_editor_title": "Edit map style"
+        },
+        "scale": {
+          "title": "Scaling",
+          "description": "Controls how the map is scaled to fit the graph. Adjust this value until the map aligns correctly with your graph. If you applied a geographic layout with a scaling ratio, use the same value here."
         }
       }
     },
@@ -616,16 +620,6 @@
       "background_open": "Open background appearance",
       "description": "Positions nodes according to their geographic coordinates (latitude/longitude)",
       "parameters": {
-        "projection": {
-          "description": "Map projection to apply to geographic coordinates",
-          "title": "Projection",
-          "options": {
-            "webmercator": "Web Mercator",
-            "equirectangular": "Equirectangular",
-            "equalearth": "Equal Earth",
-            "naturalearth1": "Natural Earth 1"
-          }
-        },
         "latitudeField": {
           "description": "Node attribute containing latitude values",
           "title": "Latitude field"
@@ -642,6 +636,20 @@
             "grid": "Place in grid (left of map)",
             "barycentergrid": "Neighbors barycenter + grid"
           }
+        },
+        "projection": {
+          "description": "Map projection to apply to geographic coordinates",
+          "title": "Projection",
+          "options": {
+            "webmercator": "Web Mercator",
+            "equirectangular": "Equirectangular",
+            "equalearth": "Equal Earth",
+            "naturalearth1": "Natural Earth 1"
+          }
+        },
+        "scale": {
+          "title": "Scaling ratio",
+          "description": "Scale of the layout"
         }
       },
       "title": "Geographic"

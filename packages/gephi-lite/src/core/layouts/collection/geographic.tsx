@@ -1,4 +1,5 @@
 import { DataGraph } from "@gephi/gephi-lite-sdk";
+import { mapValues } from "lodash";
 import { useTranslation } from "react-i18next";
 
 import { GeoProjectionType, applyGeoProjection } from "../../../utils/geo-projections";
@@ -15,6 +16,7 @@ export interface GeographicLayoutSettings {
   latitudeField?: string;
   longitudeField?: string;
   missingStrategy: MissingStrategy;
+  scale: number;
 }
 
 function computeGridPositions(
@@ -45,6 +47,7 @@ export function runGeographic(graph: DataGraph, options?: { settings: Geographic
     latitudeField,
     longitudeField,
     missingStrategy = "keep",
+    scale = 1,
   } = options?.settings || {};
   const result: LayoutMapping = {};
 
@@ -64,47 +67,47 @@ export function runGeographic(graph: DataGraph, options?: { settings: Geographic
     }
   });
 
-  if (missingStrategy === "keep" || missingIds.length === 0 || validIds.length === 0) return result;
-
-  // Compute extent of geolocated nodes
-  let minX = Infinity,
-    maxX = -Infinity,
-    minY = Infinity,
-    maxY = -Infinity;
-  for (const id of validIds) {
-    const { x, y } = result[id];
-    if (x < minX) minX = x;
-    if (x > maxX) maxX = x;
-    if (y < minY) minY = y;
-    if (y > maxY) maxY = y;
-  }
-  const extent = { minX, maxX, minY, maxY };
-
-  if (missingStrategy === "grid") {
-    Object.assign(result, computeGridPositions(missingIds, extent));
-  } else if (missingStrategy === "barycentergrid") {
-    const validSet = new Set(validIds);
-    const gridIds: string[] = [];
-
-    for (const nodeId of missingIds) {
-      const geoNeighbors = graph.neighbors(nodeId).filter((n) => validSet.has(n));
-      if (geoNeighbors.length > 0) {
-        let sx = 0,
-          sy = 0;
-        for (const n of geoNeighbors) {
-          sx += result[n].x;
-          sy += result[n].y;
-        }
-        result[nodeId] = { x: sx / geoNeighbors.length, y: sy / geoNeighbors.length };
-      } else {
-        gridIds.push(nodeId);
-      }
+  if (missingStrategy !== "keep" && missingIds.length > 0 && validIds.length > 0) {
+    // Compute extent of geolocated nodes
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
+    for (const id of validIds) {
+      const { x, y } = result[id];
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
     }
+    const extent = { minX, maxX, minY, maxY };
 
-    Object.assign(result, computeGridPositions(gridIds, extent));
+    if (missingStrategy === "grid") {
+      Object.assign(result, computeGridPositions(missingIds, extent));
+    } else if (missingStrategy === "barycentergrid") {
+      const validSet = new Set(validIds);
+      const gridIds: string[] = [];
+
+      for (const nodeId of missingIds) {
+        const geoNeighbors = graph.neighbors(nodeId).filter((n) => validSet.has(n));
+        if (geoNeighbors.length > 0) {
+          let sx = 0,
+            sy = 0;
+          for (const n of geoNeighbors) {
+            sx += result[n].x;
+            sy += result[n].y;
+          }
+          result[nodeId] = { x: sx / geoNeighbors.length, y: sy / geoNeighbors.length };
+        } else {
+          gridIds.push(nodeId);
+        }
+      }
+
+      Object.assign(result, computeGridPositions(gridIds, extent));
+    }
   }
 
-  return result;
+  return mapValues(result, (coords) => ({ ...coords, x: coords.x * scale, y: coords.y * scale }));
 }
 
 function inferGeographicSettings(dataGraph: DataGraph): Partial<GeographicLayoutSettings> {
@@ -152,6 +155,12 @@ export const GeographicLayout = {
       type: "enum",
       options: [{ id: "keep" }, { id: "grid" }, { id: "barycentergrid" }],
       defaultValue: "keep",
+      description: true,
+    },
+    {
+      id: "scale",
+      type: "number",
+      defaultValue: 1,
       description: true,
     },
     {

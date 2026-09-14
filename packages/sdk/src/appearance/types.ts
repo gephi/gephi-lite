@@ -100,6 +100,7 @@ export type MapBackgroundLayer = {
   map: {
     engine: "maplibre";
     style?: Record<string, unknown>;
+    scale?: number;
   };
 };
 export type BackgroundLayer = MapBackgroundLayer; // TODO: ImageBackgroundLayer

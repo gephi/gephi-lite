@@ -6,8 +6,6 @@ import { Preferences } from "./types";
 
 export function getEmptyPreferences(): Preferences {
   return {
-    layoutsParameters: {},
-    metrics: {},
     colors: { partition: [], ranking: [] },
     // default is the local detected by i18n
     locale: i18n.language,
