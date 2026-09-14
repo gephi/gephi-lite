@@ -80,7 +80,10 @@ const {
   };
 });
 
-vi.mock("../../utils/storage", () => ({ localStorage: { getItem: () => null } }));
+vi.mock("../../utils/storage", () => ({
+  localStorage: { getItem: () => null },
+  sessionStorage: { getItem: () => null },
+}));
 vi.mock("../context/eventsContext", () => ({
   EVENTS,
   emitter: testEmitter,
@@ -95,12 +98,16 @@ vi.mock("../graph", () => ({
 }));
 vi.mock("../graph/utils", () => ({
   dataGraphToFullGraph: mockDataGraphToFullGraph,
+  initializeGraphDataset: {},
 }));
 vi.mock("../session", () => ({
   sessionAtom: mockSessionAtom,
+  sessionActions: {},
 }));
 vi.mock("../sigma", () => ({
   resetCamera: mockResetCamera,
+  sigmaActions: {},
+  sigmaAtom: {},
 }));
 vi.mock("./collection", () => ({ LAYOUTS: MOCK_LAYOUTS }));
 
