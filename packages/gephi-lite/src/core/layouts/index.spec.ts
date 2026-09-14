@@ -25,6 +25,7 @@ import { ContinuousLayoutSupervisorConstructor, ContinuousLayoutSupervisorInterf
 const {
   testEmitter,
   EVENTS,
+  mockAppearanceAtom,
   mockGraphDatasetAtom,
   mockSigmaGraphAtom,
   mockVisualGettersAtom,
@@ -35,6 +36,9 @@ const {
   mockResetCamera,
   mockConnectedCloseness,
   mockSessionAtom,
+  mockTopologicalFiltersAtom,
+  mockSigmaAtom,
+  mockSigmaStateAtom,
   MOCK_LAYOUTS,
 } = vi.hoisted(() => {
   type Listener = (...args: unknown[]) => void;
@@ -66,6 +70,7 @@ const {
   return {
     testEmitter,
     EVENTS,
+    mockAppearanceAtom: fn(),
     mockGraphDatasetAtom: fn(),
     mockSigmaGraphAtom: fn(),
     mockVisualGettersAtom: fn(),
@@ -76,6 +81,9 @@ const {
     mockResetCamera: vi.fn(),
     mockConnectedCloseness: vi.fn(),
     mockSessionAtom: fn(),
+    mockTopologicalFiltersAtom: fn(),
+    mockSigmaAtom: fn(),
+    mockSigmaStateAtom: fn(),
     MOCK_LAYOUTS: [] as Layout[],
   };
 });
@@ -95,6 +103,8 @@ vi.mock("../graph", () => ({
   filteredGraphAtom: mockFilteredGraphAtom,
   dynamicItemDataAtom: mockDynamicItemDataAtom,
   graphDatasetActions: { setNodePositions: mockSetNodePositions },
+  topologicalFiltersAtom: mockTopologicalFiltersAtom,
+  sigmaStateAtom: mockSigmaStateAtom,
 }));
 vi.mock("../graph/utils", () => ({
   dataGraphToFullGraph: mockDataGraphToFullGraph,
@@ -107,9 +117,14 @@ vi.mock("../session", () => ({
 vi.mock("../sigma", () => ({
   resetCamera: mockResetCamera,
   sigmaActions: {},
-  sigmaAtom: {},
+  sigmaAtom: mockSigmaAtom,
+  sigmaStateAtom: mockSigmaStateAtom,
 }));
 vi.mock("./collection", () => ({ LAYOUTS: MOCK_LAYOUTS }));
+vi.mock("../appearance", () => ({
+  appearanceActions: {},
+  appearanceAtom: mockAppearanceAtom,
+}));
 
 vi.mock("graphology-metrics/layout-quality", () => ({
   connectedCloseness: mockConnectedCloseness,
