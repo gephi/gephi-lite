@@ -17,15 +17,16 @@ import { isPlainObject } from "lodash";
 import { assert } from "typia";
 
 import { config } from "../../config";
-import { appearanceAtom } from "../appearance";
+import { appearanceAtom } from "../appearance/atom";
 import { resetStates } from "../context/dataContexts";
-import { fileAtom } from "../file";
-import { filtersAtom } from "../filters";
+import { fileAtom } from "../file/atom";
+import { filtersAtom } from "../filters/atom";
 import { FiltersState } from "../filters/types";
-import { graphDatasetActions, graphDatasetAtom } from "../graph";
+import { graphDatasetActions } from "../graph/actions";
+import { graphDatasetAtom } from "../graph/atom";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
-import { selectionAtom } from "../selection";
 import { selectionActions } from "../selection/actions";
+import { selectionAtom } from "../selection/atom";
 import { SelectionState } from "../selection/types";
 import {
   deserializeSelection,

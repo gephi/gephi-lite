@@ -22,7 +22,7 @@ import { filtersAtom } from "../filters/atom";
 import { edgeIndex, itemsIndex, itemsRemove, nodeIndex, searchActions } from "../search/actions";
 import { searchAtom } from "../search/atom";
 import { SearchState } from "../search/types";
-import { selectionAtom } from "../selection";
+import { selectionAtom } from "../selection/atom";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
 import { graphDatasetAtom } from "./atom";

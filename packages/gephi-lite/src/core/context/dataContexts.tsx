@@ -163,10 +163,6 @@ export const useLayoutActions = makeUseActions(layoutActions);
 export const useUserActions = makeUseActions(userActions);
 export const useSessionActions = makeUseActions(sessionActions);
 
-export const useResetStates = () => {
-  return resetStates;
-};
-
 export const useFilteredGraphAt = (index: number) => {
   const graphDataset = useGraphDataset();
   const filteredGraphs = useReadAtom(filteredGraphsAtom);

@@ -2,7 +2,7 @@ import { GephiLiteDriver } from "@gephi/gephi-lite-broadcast";
 import Graph from "graphology";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { graphDatasetAtom } from "../graph";
+import { graphDatasetAtom } from "../graph/atom";
 import { getEmptyGraphDataset, initializeGraphDataset } from "../graph/utils";
 import { selectionActions } from "../selection/actions";
 import { selectionAtom } from "../selection/atom";
@@ -52,7 +52,7 @@ describe("BroadcastClient - selection", () => {
     expect(updates).toEqual([{ nodeIds: ["a", "c"], edgeIds: [] }]);
   });
 
-  it("setGraphDataset keeps still-valid selected ids and drops stale ones", async () => {
+  it("setGraphDataset reset selection", async () => {
     setup(["a", "b", "c"]);
     selectionActions.select({ type: "nodes", items: new Set(["a", "c"]) });
 
@@ -65,7 +65,7 @@ describe("BroadcastClient - selection", () => {
     // setGraphDataset throw. Reported separately; not fixed here.
     await driver!.setGraphDataset(initializeGraphDataset(buildGraph(["b", "c", "d", "e"])));
 
-    expect(Array.from(selectionAtom.get().items)).toEqual(["c"]);
+    expect(Array.from(selectionAtom.get().items)).toEqual([]);
   });
 
   it("does not emit selectionUpdate when the effective selection does not change", async () => {

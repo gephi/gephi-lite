@@ -14,11 +14,14 @@
  * - testEmitter replaces the real event emitter, letting tests trigger
  *   graphImported / nodesDragged events directly.
  */
-import { VisualGetters } from "@gephi/gephi-lite-sdk";
+import { FullGraph, VisualGetters } from "@gephi/gephi-lite-sdk";
 import { MultiGraph } from "graphology";
+import { noop } from "lodash";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { resetStates } from "../context/dataContexts";
 import { DynamicItemData, GraphDataset, SigmaGraph } from "../graph/types";
+import { sessionAtom } from "../session";
 import { layoutActions } from "./actions";
 import { layoutStateAtom } from "./atom";
 import { ContinuousLayoutSupervisorConstructor, ContinuousLayoutSupervisorInterface, Layout } from "./types";
@@ -27,21 +30,16 @@ import { buildLayoutGraph, createLayoutSupervisor } from "./utils";
 const {
   testEmitter,
   EVENTS,
-  mockAppearanceAtom,
-  mockGraphDatasetAtom,
-  mockSigmaGraphAtom,
-  mockVisualGettersAtom,
-  mockFilteredGraphAtom,
-  mockDynamicItemDataAtom,
-  mockSetNodePositions,
-  mockDataGraphToFullGraph,
-  mockResetCamera,
-  mockConnectedCloseness,
-  mockSessionAtom,
-  mockTopologicalFiltersAtom,
-  mockSigmaAtom,
-  mockSigmaStateAtom,
   MOCK_LAYOUTS,
+  mockGraphDatasetAtom,
+  mockFilteredGraphAtom,
+  mockFilteredGraphsAtom,
+  mockDynamicItemDataAtom,
+  mockVisualGettersAtom,
+  mockTopologicalFiltersAtom,
+  mockSigmaGraphAtom,
+  mockDataGraphToFullGraph,
+  mockSetNodePositions,
 } = vi.hoisted(() => {
   type Listener = (...args: unknown[]) => void;
   const listeners: Record<string, Listener[]> = {};
@@ -68,69 +66,22 @@ const {
     openMenu: "openMenu",
   } as const;
 
-  const fn = () => ({ get: vi.fn() });
+  const fn = () => ({ get: vi.fn(), set: vi.fn(), bind: vi.fn(), bindEffect: vi.fn() });
   return {
     testEmitter,
     EVENTS,
-    mockAppearanceAtom: fn(),
-    mockGraphDatasetAtom: fn(),
-    mockSigmaGraphAtom: fn(),
-    mockVisualGettersAtom: fn(),
-    mockFilteredGraphAtom: fn(),
-    mockDynamicItemDataAtom: fn(),
-    mockSetNodePositions: vi.fn(),
-    mockDataGraphToFullGraph: vi.fn(),
-    mockResetCamera: vi.fn(),
-    mockConnectedCloseness: vi.fn(),
-    mockSessionAtom: fn(),
-    mockTopologicalFiltersAtom: fn(),
-    mockSigmaAtom: fn(),
-    mockSigmaStateAtom: fn(),
     MOCK_LAYOUTS: [] as Layout[],
+    mockGraphDatasetAtom: fn(),
+    mockFilteredGraphAtom: fn(),
+    mockFilteredGraphsAtom: fn(),
+    mockDynamicItemDataAtom: fn(),
+    mockVisualGettersAtom: fn(),
+    mockTopologicalFiltersAtom: fn(),
+    mockSigmaGraphAtom: fn(),
+    mockDataGraphToFullGraph: vi.fn(),
+    mockSetNodePositions: vi.fn(),
   };
 });
-
-vi.mock("../../utils/storage", () => ({
-  localStorage: { getItem: () => null },
-  sessionStorage: { getItem: () => null },
-}));
-vi.mock("../context/eventsContext", () => ({
-  EVENTS,
-  emitter: testEmitter,
-}));
-vi.mock("../graph", () => ({
-  graphDatasetAtom: mockGraphDatasetAtom,
-  sigmaGraphAtom: mockSigmaGraphAtom,
-  visualGettersAtom: mockVisualGettersAtom,
-  filteredGraphAtom: mockFilteredGraphAtom,
-  dynamicItemDataAtom: mockDynamicItemDataAtom,
-  graphDatasetActions: { setNodePositions: mockSetNodePositions },
-  topologicalFiltersAtom: mockTopologicalFiltersAtom,
-  sigmaStateAtom: mockSigmaStateAtom,
-}));
-vi.mock("../graph/utils", () => ({
-  dataGraphToFullGraph: mockDataGraphToFullGraph,
-  initializeGraphDataset: {},
-}));
-vi.mock("../session", () => ({
-  sessionAtom: mockSessionAtom,
-  sessionActions: {},
-}));
-vi.mock("../sigma", () => ({
-  resetCamera: mockResetCamera,
-  sigmaActions: {},
-  sigmaAtom: mockSigmaAtom,
-  sigmaStateAtom: mockSigmaStateAtom,
-}));
-vi.mock("./collection", () => ({ LAYOUTS: MOCK_LAYOUTS }));
-vi.mock("../appearance", () => ({
-  appearanceActions: {},
-  appearanceAtom: mockAppearanceAtom,
-}));
-
-vi.mock("graphology-metrics/layout-quality", () => ({
-  connectedCloseness: mockConnectedCloseness,
-}));
 
 // Helpers
 // -------
@@ -176,10 +127,10 @@ function makeDataset(
   } as unknown as GraphDataset;
 }
 
-function makeSigmaGraph(nodes: Record<string, Record<string, unknown>>): MultiGraph {
+function makeSigmaGraph(nodes: Record<string, Record<string, unknown>>): SigmaGraph {
   const g = new MultiGraph();
   for (const [id, attrs] of Object.entries(nodes)) g.addNode(id, attrs);
-  return g;
+  return g as SigmaGraph;
 }
 
 function makeFilteredGraph(nodeIds: string[], edges?: Array<[string, string]>): MultiGraph {
@@ -214,18 +165,62 @@ function MockSupervisorClass(graph: MultiGraph) {
 const getNodePosition = ({ x, y }: { x: number; y: number }) => ({ x: x * 2, y: y * 2 });
 const reverseNodePosition = ({ x, y }: { x: number; y: number }) => ({ x: x / 2, y: y / 2 });
 
+vi.mock("./collection", () => {
+  return {
+    LAYOUTS: MOCK_LAYOUTS,
+  };
+});
+
+vi.mock("../context/eventsContext", () => {
+  return {
+    EVENTS,
+    emitter: testEmitter,
+    useEventsContext: () => ({ emitter: testEmitter }),
+  };
+});
+
+vi.mock("../graph/atom", () => ({
+  graphDatasetAtom: mockGraphDatasetAtom,
+  filteredGraphAtom: mockFilteredGraphAtom,
+  filteredGraphsAtom: mockFilteredGraphsAtom,
+  visualGettersAtom: mockVisualGettersAtom,
+  sigmaGraphAtom: mockSigmaGraphAtom,
+  dynamicItemDataAtom: mockDynamicItemDataAtom,
+  topologicalFiltersAtom: mockTopologicalFiltersAtom,
+}));
+
+vi.mock("../graph/actions", () => {
+  // const actual = await vi.importActual<typeof import("../graph/actions")>("../graph/actions");
+  return {
+    graphDatasetActions: {
+      // ...actual.graphDatasetActions,
+      setNodePositions: mockSetNodePositions,
+      resetGraph: noop,
+    },
+  };
+});
+
+vi.mock("../graph/utils", async () => {
+  const actual = await vi.importActual<typeof import("../graph/utils")>("../graph/utils");
+  return {
+    ...actual,
+    dataGraphToFullGraph: mockDataGraphToFullGraph,
+  };
+});
+
 // Setup / teardown
 // ----------------
 beforeEach(() => {
   vi.useFakeTimers();
   MOCK_LAYOUTS.length = 0;
   supervisorInstances = [];
+  mockGraphDatasetAtom.get.mockReturnValue(makeDataset({}));
+  mockDynamicItemDataAtom.get.mockReturnValue(emptyDynamicData);
+  mockVisualGettersAtom.get.mockReturnValue(nullGetters);
   layoutStateAtom.set({ quality: { enabled: false, showGrid: true }, type: "idle" });
 
   // Default mock returns
-  mockVisualGettersAtom.get.mockReturnValue(nullGetters);
-  mockDynamicItemDataAtom.get.mockReturnValue(emptyDynamicData);
-  mockSessionAtom.get.mockReturnValue({ layoutsParameters: {} });
+  resetStates(true);
 });
 
 afterEach(() => {
@@ -240,7 +235,7 @@ describe("Layout orchestration", () => {
     const dataset = makeDataset({ a: { x: 1, y: 2 } });
     mockGraphDatasetAtom.get.mockReturnValue(dataset);
 
-    const fullGraph = new MultiGraph();
+    const fullGraph: FullGraph = new MultiGraph();
     fullGraph.addNode("a", { x: 1, y: 2 });
     mockDataGraphToFullGraph.mockReturnValue(fullGraph);
 
@@ -342,9 +337,10 @@ describe("Layout orchestration", () => {
     const supA = supervisorInstances[0];
 
     // Simulate session storing last layout
-    mockSessionAtom.get.mockReturnValue({
+    sessionAtom.set({
       lastLayout: "test-continuous",
       layoutsParameters: { "test-continuous": {} },
+      metrics: {},
     });
 
     // Emit graphImported — debounce fires leading edge synchronously
@@ -378,9 +374,10 @@ describe("Layout orchestration", () => {
     // First layout graph has both nodes
     expect(supervisorInstances[0].graph.nodes()).toEqual(["a", "b"]);
 
-    mockSessionAtom.get.mockReturnValue({
+    sessionAtom.set({
       lastLayout: "test-continuous",
       layoutsParameters: { "test-continuous": {} },
+      metrics: {},
     });
 
     // Simulate a filter that removes node "b"
@@ -435,7 +432,7 @@ describe("Layout orchestration", () => {
     mockSigmaGraphAtom.get.mockReturnValue(sigmaGraph);
     mockFilteredGraphAtom.get.mockReturnValue(filteredGraph);
 
-    const fullGraph = new MultiGraph();
+    const fullGraph: FullGraph = new MultiGraph();
     fullGraph.addNode("a", { x: 1, y: 2 });
     mockDataGraphToFullGraph.mockReturnValue(fullGraph);
 

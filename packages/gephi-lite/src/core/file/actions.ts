@@ -4,11 +4,14 @@ import { write } from "graphology-gexf";
 import { isEmpty, isEqual } from "lodash";
 
 import { config } from "../../config";
-import { appearanceActions, appearanceAtom } from "../appearance";
+import { appearanceActions } from "../appearance/actions";
+import { appearanceAtom } from "../appearance/atom";
 import { inferAppearanceState } from "../appearance/utils";
 import { resetStates } from "../context/dataContexts";
-import { filtersActions, filtersAtom } from "../filters";
-import { graphDatasetActions, graphDatasetAtom } from "../graph";
+import { filtersActions } from "../filters/actions";
+import { filtersAtom } from "../filters/atom";
+import { graphDatasetActions } from "../graph/actions";
+import { graphDatasetAtom } from "../graph/atom";
 import { initializeGraphDataset } from "../graph/utils";
 import { sigmaActions } from "../sigma/actions";
 import { fileAtom } from "./atom";
