@@ -19,8 +19,10 @@ import { MultiGraph } from "graphology";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DynamicItemData, GraphDataset, SigmaGraph } from "../graph/types";
-import { buildLayoutGraph, createLayoutSupervisor, layoutStateAtom, startLayout } from "./index";
+import { layoutActions } from "./actions";
+import { layoutStateAtom } from "./atom";
 import { ContinuousLayoutSupervisorConstructor, ContinuousLayoutSupervisorInterface, Layout } from "./types";
+import { buildLayoutGraph, createLayoutSupervisor } from "./utils";
 
 const {
   testEmitter,
@@ -250,7 +252,7 @@ describe("Layout orchestration", () => {
       run: () => positions,
     });
 
-    await startLayout("test-oneshot", {});
+    await layoutActions.startLayout("test-oneshot", {});
 
     expect(mockSetNodePositions).toHaveBeenCalledWith(positions);
   });
@@ -276,7 +278,7 @@ describe("Layout orchestration", () => {
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-continuous", {}, true);
+    await layoutActions.startLayout("test-continuous", {}, true);
 
     expect(supervisorInstances).toHaveLength(1);
     const shadow = supervisorInstances[0].graph;
@@ -303,7 +305,7 @@ describe("Layout orchestration", () => {
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-continuous", {});
+    await layoutActions.startLayout("test-continuous", {});
 
     const shadow = supervisorInstances[0].graph;
     // Shadow built from dataset (graph space)
@@ -335,7 +337,7 @@ describe("Layout orchestration", () => {
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-continuous", {});
+    await layoutActions.startLayout("test-continuous", {});
     expect(supervisorInstances).toHaveLength(1);
     const supA = supervisorInstances[0];
 
@@ -371,7 +373,7 @@ describe("Layout orchestration", () => {
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("test-continuous", {});
+    await layoutActions.startLayout("test-continuous", {});
 
     // First layout graph has both nodes
     expect(supervisorInstances[0].graph.nodes()).toEqual(["a", "b"]);
@@ -413,10 +415,10 @@ describe("Layout orchestration", () => {
       supervisor: MockSupervisorClass as never,
     });
 
-    await startLayout("continuous-a", {});
+    await layoutActions.startLayout("continuous-a", {});
     const supA = supervisorInstances[0];
 
-    await startLayout("continuous-b", {});
+    await layoutActions.startLayout("continuous-b", {});
 
     expect(supA.stop).toHaveBeenCalled();
     expect(supA.kill).toHaveBeenCalled();
@@ -451,11 +453,11 @@ describe("Layout orchestration", () => {
     });
 
     // Start continuous
-    await startLayout("test-continuous", {});
+    await layoutActions.startLayout("test-continuous", {});
     const supA = supervisorInstances[0];
 
     // Run one-shot layout — stops the continuous
-    await startLayout("test-oneshot", {});
+    await layoutActions.startLayout("test-oneshot", {});
     expect(supA.stop).toHaveBeenCalled();
     expect(supA.kill).toHaveBeenCalled();
     expect(mockSetNodePositions).toHaveBeenCalledWith({ a: { x: 99, y: 99 } });

@@ -1,16 +1,12 @@
 import { serializeAppearanceState } from "@gephi/gephi-lite-sdk";
 
 import { sessionStorage } from "../../utils/storage";
-import { startLayout } from "../layouts/actions";
+import { layoutActions } from "../layouts/actions";
 import { GeographicLayout } from "../layouts/collection/geographic";
 import { preferencesActions } from "../preferences/actions";
 import { sessionAtom } from "../session/atom";
 import { appearanceAtom } from "./atom";
 
-/**
- * Bindings:
- * *********
- */
 appearanceAtom.bind((appearanceState, previousAppearanceState) => {
   sessionStorage.setItem("appearance", serializeAppearanceState(appearanceState));
 
@@ -26,8 +22,6 @@ appearanceAtom.bind((appearanceState, previousAppearanceState) => {
     }
   }
 
-  console.log(sessionAtom.get().lastLayout);
-  console.log(previousAppearanceState.backgroundLayer, appearanceState.backgroundLayer);
   if (previousAppearanceState.backgroundLayer !== appearanceState.backgroundLayer) {
     if (appearanceState.backgroundLayer?.map) {
       // When map style on appearance changed, save it into preferences
@@ -41,8 +35,10 @@ appearanceAtom.bind((appearanceState, previousAppearanceState) => {
         previousAppearanceState.backgroundLayer?.map.scale !== appearanceState.backgroundLayer.map.scale
       ) {
         const layoutParameters = sessionAtom.get().layoutsParameters[GeographicLayout.id];
-        console.log(appearanceState.backgroundLayer.map.scale);
-        startLayout(GeographicLayout.id, { ...layoutParameters, scale: appearanceState.backgroundLayer.map.scale });
+        layoutActions.startLayout(GeographicLayout.id, {
+          ...layoutParameters,
+          scale: appearanceState.backgroundLayer.map.scale,
+        });
       }
     }
   }
