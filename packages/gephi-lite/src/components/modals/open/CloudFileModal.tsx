@@ -4,10 +4,10 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
+import { useConnectedUser } from "../../../core/context/dataContexts";
 import { errorToCode, errorToString } from "../../../core/errors";
 import { CloudFile } from "../../../core/file/types";
 import { useNotifications } from "../../../core/notifications";
-import { useConnectedUser } from "../../../core/user";
 import { displayDateTime } from "../../../utils/date";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
@@ -23,8 +23,8 @@ interface OpenCloudFileFormProps {
 }
 
 export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChange, status }) => {
-  const [user] = useConnectedUser();
   const { t } = useTranslation();
+  const user = useConnectedUser();
   const { notify } = useNotifications();
   const { loading, getFiles, openFile } = useCloudProvider();
   // list files retrived from the cloud

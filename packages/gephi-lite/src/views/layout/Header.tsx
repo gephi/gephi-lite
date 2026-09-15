@@ -27,16 +27,23 @@ import { OpenModal } from "../../components/modals/open/OpenModal";
 import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
-import { useDataTable, useFile, useFileActions, useGraphDatasetActions } from "../../core/context/dataContexts";
+import {
+  useConnectedUser,
+  useDataTable,
+  useFile,
+  useFileActions,
+  useGraphDatasetActions,
+  useUserActions,
+} from "../../core/context/dataContexts";
 import { getFilename } from "../../core/file/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
-import { useConnectedUser } from "../../core/user";
 
 export const Header: FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const { t } = useTranslation();
-  const [user, setUser] = useConnectedUser();
+  const user = useConnectedUser();
+  const { logout } = useUserActions();
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { type: dataTableItemType } = useDataTable();
@@ -134,7 +141,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
                   openModal({
                     component: ConfirmModal,
                     beforeSubmit: () => {
-                      setUser(null);
+                      logout();
                     },
                     arguments: {
                       title: t("cloud.github.disconnect.title"),
@@ -152,7 +159,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
               },
             ]),
       ] as Option[],
-    [t, user, openModal, notify, resetGraph, setUser, exportAsGexf, currentFile, saveFile],
+    [t, user, openModal, notify, resetGraph, logout, exportAsGexf, currentFile, saveFile],
   );
 
   const logoMenuList = useMemo(
