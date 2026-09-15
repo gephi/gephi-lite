@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Broadcast API playground</title>
+  </head>
+  <body>
+    <h1>Broadcast API playground</h1>
+    <p>Use the browser console to test the driver. Example:</p>
+    <pre><code>
+const driver = new GephiLiteDriver();
+await driver.openGephiLite({baseUrl:'/gephi-lite/'});
+await driver.importGraph({
+  attributes: {},
+  options: {},
+  nodes: [
+    { key: "A", attributes: { label:"A" } },
+    { key: "B", attributes: { label:"B" } },
+    { key: "C", attributes: { label:"C" } }
+  ],
+  edges: [
+    { key:"AB", source:"A", target:"B"},
+    { key:"BC", source:"B", target:"C"},
+    { key:"CA", source:"C", target:"A"},
+  ]
+});
+await driver.setSelection({nodeIds:[], edgeIds:["AB"]});
+    </code></pre>
+
+    <script type="module">
+      import { GephiLiteDriver } from "@gephi/gephi-lite-broadcast";
+
+      window.GephiLiteDriver = GephiLiteDriver;
+    </script>
+  </body>
+</html>

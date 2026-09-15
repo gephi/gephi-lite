@@ -29,7 +29,7 @@ async function openGraphInGephiLite(graph: Graph) {
 - [x] `setGraphDataset` / `getGraphDataset` / `mergeGraphDataset`
 - [x] `setGraphAppearance` / `getGraphAppearance` / `mergeGraphAppearance`
 - [x] `setFilters` / `getFilters`
-- [ ] `setSelection` / `getSelection`
+- [x] `setSelection` / `getSelection`
 
 ### 2. Other methods:
 
@@ -40,8 +40,7 @@ async function openGraphInGephiLite(graph: Graph) {
 - [ ] `computeLayout` / `startLayout` / `stopLayout`
 - [ ] `notify`
 - [ ] `exportGraph`
-- [ ] methods to handle UI elements (right panel, left tabs, caption,
-      fullscreen)
+- [ ] methods to handle UI elements (right panel, left tabs, caption, fullscreen)
 
 ### 3. Events
 
@@ -50,4 +49,16 @@ async function openGraphInGephiLite(graph: Graph) {
 - [ ] `graphModelUpdate`
 - [ ] `graphAppearanceUpdate`
 - [ ] `filtersUpdate`
-- [ ] `selectionUpdate`
+- [x] `selectionUpdate`
+
+## How to test it in dev
+
+In order to work properly, the **driver** and **gephi-lite** must be served from the same domain, including the port.
+
+A `broadcast-test.html` page has been included in the **gephi-lite** package to make testing easier.
+
+Here are the steps to test the driver:
+
+- Start the gephi-lite package with npm start.
+- Open your browser at the following URL: http://localhost:5173/gephi-lite/broadcast-test.html
+- Open the browser console and copy/paste the example code.
