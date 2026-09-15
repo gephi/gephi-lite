@@ -37,3 +37,13 @@
     }
   }
 }
+
+.missing-palette-color {
+  span.icon-container::before {
+    content: "?";
+    font-size: 0.8em;
+    font-weight: 600;
+    line-height: 0.8em;
+    vertical-align: super;
+  }
+}

@@ -1,12 +1,18 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useLayoutActions, useLayoutState } from "../../core/context/dataContexts";
+import { useLayoutActions, useLayoutState, useSessionActions } from "../../core/context/dataContexts";
 
 export const LayoutQualityForm: FC = () => {
   const { t } = useTranslation();
-  const { quality } = useLayoutState();
-  const { setQuality } = useLayoutActions();
+  const { setLastLayout } = useSessionActions();
+  const layoutState = useLayoutState();
+  const { setQuality, stopLayout } = useLayoutActions();
+
+  useEffect(() => {
+    setLastLayout("layout-quality");
+    if (layoutState.type === "running") stopLayout();
+  }, [layoutState, stopLayout, setLastLayout]);
 
   return (
     <div className="panel-body">
@@ -24,9 +30,9 @@ export const LayoutQualityForm: FC = () => {
           <input
             className="form-check-input"
             id="qualityEnabled"
-            checked={quality.enabled}
+            checked={layoutState.quality.enabled}
             type="checkbox"
-            onChange={(e) => setQuality({ ...quality, enabled: e.target.checked })}
+            onChange={(e) => setQuality({ ...layoutState.quality, enabled: e.target.checked })}
           />
           <label htmlFor="qualityEnabled" className="form-check-label">
             {t("layouts.quality.enable")}
@@ -36,9 +42,9 @@ export const LayoutQualityForm: FC = () => {
           <input
             className="form-check-input"
             id="qualityGrid"
-            checked={quality.showGrid}
+            checked={layoutState.quality.showGrid}
             type="checkbox"
-            onChange={(e) => setQuality({ ...quality, showGrid: e.target.checked })}
+            onChange={(e) => setQuality({ ...layoutState.quality, showGrid: e.target.checked })}
           />
           <label htmlFor="qualityGrid" className="form-check-label">
             {t("layouts.quality.showGrid")}

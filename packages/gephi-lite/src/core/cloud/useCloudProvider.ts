@@ -2,8 +2,8 @@ import { isNil } from "lodash";
 import { useCallback, useState } from "react";
 
 import { useFile, useFileActions } from "../context/dataContexts";
+import { CloudFile } from "../file/types";
 import { useConnectedUser } from "../user";
-import { CloudFile } from "./types";
 
 // TODO: need to be refacto by atom/action/producer pattern
 export function useCloudProvider() {
@@ -32,11 +32,11 @@ export function useCloudProvider() {
   );
 
   const openFile = useCallback(
-    async (file: Omit<CloudFile, "format">) => {
+    async (file: Omit<CloudFile, "format">, opts: { force?: boolean } = {}) => {
       setLoading(true);
       setError(null);
       try {
-        await open(file);
+        await open(file, opts);
       } catch (e) {
         setError(e as Error);
         throw e;

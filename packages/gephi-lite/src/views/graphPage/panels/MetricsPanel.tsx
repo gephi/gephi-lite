@@ -100,7 +100,7 @@ export const MetricForm: FC<{ metric: Metric<any>; onClose?: () => void }> = ({ 
       if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
       else if ("min" in param && param.min && !isNil(value) && (value as unknown as number) < param.min)
         errors[param.id] = t(`error.form.min`, { ...param, name });
-      else if ("max" in param && param.max && !isNil(value) && (value as unknown as number) < param.max)
+      else if ("max" in param && param.max && !isNil(value) && (value as unknown as number) > param.max)
         errors[param.id] = t(`error.form.max`, { ...param, name });
     });
     // Checking output, they are required

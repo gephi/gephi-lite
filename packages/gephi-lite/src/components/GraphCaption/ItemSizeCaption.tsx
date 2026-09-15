@@ -5,7 +5,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useSigmaAtom, useVisualGetters } from "../../core/context/dataContexts";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { CaptionItemTitle } from "./CaptionItemTitle";
-import { GraphCaptionProps, RangeExtends } from "./index";
+import { GraphCaptionProps, RangeExtends } from "./types";
 
 const ItemSizeCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {

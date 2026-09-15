@@ -53,11 +53,14 @@ import {
   PiMagnifyingGlass,
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
+  PiMapTrifold,
   PiMoonStars,
   PiMoonStarsFill,
   PiPaintBrush,
   PiPalette,
   PiPaletteFill,
+  PiPause,
+  PiPauseFill,
   PiPencilSimpleLine,
   PiPencilSimpleLineFill,
   PiPlay,
@@ -67,9 +70,12 @@ import {
   PiPolygon,
   PiPolygonFill,
   PiQuestion,
+  PiRocketLaunch,
   PiSelection,
   PiSelectionBold,
   PiSignIn,
+  PiSkipForwardFill,
+  PiSkipForwardLight,
   PiSpinner,
   PiSquare,
   PiStop,
@@ -128,6 +134,7 @@ export const GitHubIcon = PiGithubLogo;
 export const GraphIcon = PiGraph;
 export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
+export const HelpIcon = PiInfo;
 export const HomeIcon = PiHouseLine;
 export const InvalidDataIcon = PiWarningCircle;
 export const LassoIcon = PiLasso;
@@ -138,6 +145,7 @@ export const LightThemeIcon = PiSun;
 export const LightThemeSelectedIcon = PiSunFill;
 export const LockIcon = PiLock;
 export const LoginIcon = PiSignIn;
+export const MapIcon = PiMapTrifold;
 export const MarqueeIcon = PiSelection;
 export const MarqueeIconFill = PiSelectionBold;
 export const MenuCollapseIcon = PiCaretDown;
@@ -150,6 +158,10 @@ export const MouseIconFill = PiCursorFill;
 export const OpenInGraphIcon = PiCrosshair;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
+export const PlaySyncIcon = PiSkipForwardLight;
+export const PlaySyncIconFill = PiSkipForwardFill;
+export const PauseIcon = PiPause;
+export const PauseIconFill = PiPauseFill;
 export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
 export const SearchIcon = PiMagnifyingGlass;
@@ -165,6 +177,8 @@ export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
 export const ZoomResetIcon = PiGps;
 export const MissingValueFilterIcon = PiSpinner;
+export const NewsIcon = PiRocketLaunch;
+export const PaletteIcon = PiPalette;
 
 export const GraphSelectionModeIcons: Record<GraphSelectionMode, { normal: IconType; fill: IconType }> = {
   cursor: { normal: MouseIcon, fill: MouseIconFill },

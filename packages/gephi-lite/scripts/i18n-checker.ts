@@ -9,6 +9,7 @@ const IGNORE_MISSING: RegExp[] = [];
 
 const IGNORE_UNUSED: RegExp[] = [
   /appearance\.title/,
+  /appearance\.background\.map\.maplibre\.style_description/,
   /common\..*/,
   /datatable\..*_matching/,
   /datatable\.protected_columns\.degree/,

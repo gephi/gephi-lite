@@ -1,15 +1,4 @@
-import { AbstractFile } from "../file/types";
-
-export interface CloudFile extends AbstractFile {
-  type: "cloud";
-  id: string;
-  description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isPublic: boolean;
-  size: number;
-  webUrl?: string;
-}
+import { CloudFile } from "../file/types";
 
 export interface CloudProvider {
   /**

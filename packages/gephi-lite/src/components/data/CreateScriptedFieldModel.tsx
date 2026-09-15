@@ -2,16 +2,15 @@ import { FieldModel, FullGraph, ItemData, ItemType, Scalar } from "@gephi/gephi-
 import cx from "classnames";
 import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
 import { useFilteredGraph, useGraphDataset, useGraphDatasetActions } from "../../core/context/dataContexts";
 import { graphDatasetAtom } from "../../core/graph";
 import { inferFieldType } from "../../core/graph/fieldModel";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
-import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { isScalar } from "../../utils/check";
-import { CancelIcon } from "../common-icons";
-import { Modal } from "../modals";
+import { CancelIcon, ExternalLinkIcon } from "../common-icons";
 import { useFunctionEditor } from "../modals/FunctionEditor";
 
 export type CreateScriptedFieldModelFormProps = {
@@ -27,39 +26,43 @@ type ScriptedFieldModelFunction = (id: string, attributes: ItemData, index: numb
 const BASE_JS = {
   nodes: {
     doc: `/**
-* Function that return the metric value for the specified node.
+* Function that returns a new attribute value for the specified node.
 *
 * @param {string} id The ID of the node
-* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
-* @returns number|string The computed metric of the node
+* @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
+* @returns number|string|boolean|null|undefined" The value of the new node's attribute
 */`,
-    baseFn: `function nodeMetric(id, attributes, index, graph) {
+    baseFn: `function addNodeAttribute(id, attributes, index, graph) {
+  //
   // Your code goes here
+  //
   return Math.random();
 }`,
     check: (fn: ScriptedFieldModelFunction) => {
       if (!fn) throw new Error("Function is not defined");
       const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
       const id = fullGraph.nodes()[0];
-      const attributs = fullGraph.getNodeAttributes(id);
-      const result = fn(id, attributs, 0, fullGraph);
+      const attributes = fullGraph.getNodeAttributes(id);
+      const result = fn(id, attributes, 0, fullGraph);
       if (!isScalar(result)) throw new Error("Function must returns a number, a string, a boolean, null or undefined");
     },
   },
   edges: {
     doc: `/**
-* Function that return the metric value for the specified edge.
+* Function that returns a new attribute value for the specified edge.
 *
 * @param {string} id The ID of the edge
-* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/)
-* @returns number|string The computed metric of the edge
+* @param {AbstractGraph<GraphNode, GraphEdge>} graph Graphology instance (https://graphology.github.io/)
+* @returns number|string|boolean|null|undefined" The value of the new edge's attribute
 */`,
-    baseFn: `function edgeMetric(id, attributes, index, graph) {
+    baseFn: `function addEdgeAttribute(id, attributes, index, graph) {
+  //
   // Your code goes here
+  //
   return Math.random();
 }`,
     check: (fn: ScriptedFieldModelFunction) => {
@@ -91,8 +94,8 @@ export const useCreateScriptedFieldModelForm = ({
 
       const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
       const id = fullGraph[type]()[0];
-      const attributs = type === "nodes" ? fullGraph.getNodeAttributes(id) : fullGraph.getEdgeAttributes(id);
-      const result = fn(id, attributs, 0, fullGraph);
+      const attributes = type === "nodes" ? fullGraph.getNodeAttributes(id) : fullGraph.getEdgeAttributes(id);
+      const result = fn(id, attributes, 0, fullGraph);
       if (!isScalar(result)) throw new Error("Function must returns a number, a string, a boolean, null or undefined");
     },
     [type],
@@ -169,6 +172,20 @@ export const useCreateScriptedFieldModelForm = ({
     checkFunction,
     functionJsDoc: BASE_JS[type].doc,
     initialFunctionCode: BASE_JS[type].baseFn,
+    title: type === "nodes" ? t("edition.create_nodes_scripted_field") : t("edition.create_edges_scripted_field"),
+    description: (
+      <div className="m-3">
+        <p className="mb-0">
+          {type === "nodes"
+            ? t("edition.create_nodes_scripted_script_description")
+            : t("edition.create_edges_scripted_script_description")}
+        </p>
+        <Link to="https://docs.gephi.org/lite/user-manual/custom-scripts" title={t("common.help")} target="_blank">
+          {t("common.see-documentation")}
+          <ExternalLinkIcon className="ms-1" />
+        </Link>
+      </div>
+    ),
     onSubmit: isFormValid ? onSubmit : undefined,
     saveAndRunI18nKey: "datatable.save_and_create_column",
   });
@@ -182,7 +199,6 @@ export const useCreateScriptedFieldModelForm = ({
     main: (
       <div className="panel-body">
         <h2>{t(`edition.create_${type}_scripted_field`)}</h2>
-
         <div className="panel-block">
           <label htmlFor="column-id" className="form-label">
             {t("graph.model.field.id")}
@@ -204,7 +220,6 @@ export const useCreateScriptedFieldModelForm = ({
             </div>
           )}
         </div>
-
         {editorContent}
       </div>
     ),
@@ -222,34 +237,6 @@ export const useCreateScriptedFieldModelForm = ({
       </div>
     ),
   };
-};
-
-export const CreateScriptedFieldModelModal: FC<
-  ModalProps<Omit<CreateScriptedFieldModelFormProps, "onSubmitted" | "onCancel" | "fullEditor">>
-> = ({ cancel, submit, arguments: props }) => {
-  const { t } = useTranslation();
-  const {
-    main,
-    footer,
-    submit: submitForm,
-  } = useCreateScriptedFieldModelForm({
-    onSubmitted: () => submit({}),
-    onCancel: () => cancel(),
-    fullEditor: true,
-    ...props,
-  });
-
-  return (
-    <Modal
-      title={t(`edition.create_${props.type}_scripted_field`)}
-      onClose={() => cancel()}
-      className="modal-lg edit-attribute"
-      onSubmit={submitForm}
-    >
-      {main}
-      {footer}
-    </Modal>
-  );
 };
 
 export const CreateScriptedFieldModelForm: FC<Omit<CreateScriptedFieldModelFormProps, "fullEditor">> = (props) => {

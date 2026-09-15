@@ -16,7 +16,7 @@ export type RangeFilterType = BaseFilter & {
 export interface TermsFilterType extends BaseFilter {
   type: "terms";
   itemType: ItemType;
-  terms?: Set<string | null>;
+  terms?: Set<string | boolean | null>;
   keepMissingValues?: boolean;
 }
 

@@ -1,5 +1,26 @@
 {
   "appearance": {
+    "background": {
+      "layer_mode": "Calque d’arrière-plan",
+      "none": "Aucun",
+      "map": {
+        "label": "Cartographique",
+        "maplibre": {
+          "edit_style": "Modifier le style de la carte",
+          "reset_style": "Réinitialiser le style par défaut",
+          "style": "Style de la carte",
+          "style_description": "La carte est rendue à l'aide de <maplibreLink>MapLibre</maplibreLink> et suit la <maplibreStyleLink>spécification des styles MapLibre</maplibreStyleLink>. Consultez la <gephiLiteDocLink>documentation</gephiLiteDocLink> pour plus de détails.",
+          "style_editor_title": "Modifier le style de la carte"
+        },
+        "open_geo_layout": "Ouvrir la spatialisation Géographique",
+        "position_warning": "Pour afficher correctement la carte, vous devez appliquez une spatialisation géographique afin de convertir les coordonnées des nœuds en coordonnées géographiques.",
+        "scale": {
+          "title": "Échelle",
+          "description": "Contrôle la mise à l’échelle de la carte par rapport au graphe. Ajustez cette valeur jusqu’à ce que la carte soit correctement alignée avec votre graphe. Si vous avez appliqué une spatialisation géographique avec un facteur d’échelle, utilisez la même valeur ici."
+        },
+        "title": "Cartographie"
+      }
+    },
     "color": {
       "color_all_items": "Couleur pour tous les {{items}}",
       "data": "Fichier de données",
@@ -7,8 +28,10 @@
       "default_value": "Couleur pour {{items}} sans valeur valide",
       "enable_color_shading": "Nuancer la couleur des {{items}}",
       "fixed": "Une couleur constante",
-      "quali": "en tant que chaînes de caractères",
-      "quanti": "en tant que nombres",
+      "palette": {
+        "expand": "Expand the palette",
+        "apply": "Apply {{paletteName}}"
+      },
       "ranking_intro": "Ajoutez des points de couleur sur cette échelle",
       "scale_point": "Point d'échelle",
       "set_color_from": "Définir la couleur à partir de...",
@@ -144,6 +167,8 @@
     "expand": "Agrandir",
     "filename": "Nom du fichier",
     "from": "De",
+    "help": "Aide",
+    "here": "ici",
     "hide": "Masquer",
     "load-more": "Charger plus",
     "loading": "Chargement",
@@ -158,6 +183,7 @@
     "save": "Enregistrer",
     "save-and-run": "Enregistrer et exécuter",
     "select": "Sélectionner...",
+    "see-documentation": "Consulter la documentation",
     "show": "Afficher",
     "show_less": "Afficher moins",
     "show_more": "Afficher plus",
@@ -208,7 +234,6 @@
   "edition": {
     "all_edges": "Tous les liens",
     "all_nodes": "Tous les nœuds",
-    "code_editor": "Éditeur de code",
     "confirm_delete_attributes": "Celà va supprimer {{nbValues}} valeurs du graphe. Êtes-vous sûr(e) de vouloir supprimer l'attribut {{name}} ?",
     "confirm_delete_edges": "Êtes-vous sûr de vouloir supprimer {{count, number}} liens ?",
     "confirm_delete_edges_one": "Êtes-vous sûr de vouloir supprimer ce lien ?",
@@ -282,6 +307,8 @@
     "deprecated": {
       "gexf_search_params": "Le paramètre d'URL `gexf=` pour ouvrir un fichier automatiquement a été renommé `file=` dans la version 0.4.0. Utiliser le paramètre gexf est déprécié, et pourrait ne plus fonctionner dans une version future. Veuillez utiliser `file=` à la place."
     },
+    "IMPORT_BAD_FILE_FORMAT": "Le fichier {{fileName}} n'est pas reconnue.",
+    "IMPORT_BAD_VERSION": "Votre fichier provient d'une version précédente de Gephi-Lite ({{version}}) qui n'est pas compatible avec la version courante. Vous pouvez ouvrir le fichier en cliquant sur le bouton ci-dessous, toutefois vous perdrez les informations d'apparences, de filtre, ...",
     "form": {
       "field_already_exists": "La colonne avec le label \"{{label}}\" utilise déjà l'identifiant \"{{id}}\".",
       "max": "Le champ {{name}} doit être inférieur ou égal à {{max}}",
@@ -335,6 +362,7 @@
     "nodes_fields": "Attributs des nœuds",
     "range": "plage",
     "script": "Filtre personnalisé",
+    "script_description": "Implémentez la fonction de filtrage en JavaScript dans l’éditeur de code ci-dessous.",
     "terms": "valeurs exactes",
     "title": "Filtres",
     "topological": "Topologie",
@@ -361,7 +389,9 @@
       }
     },
     "using": "Utilisation",
-    "visible_graph": "Réseau visible"
+    "visible_graph": "Réseau visible",
+    "booleanTrueOption": "vrai",
+    "booleanFalseOption": "faux"
   },
   "gephi-lite": {
     "info": "Plus d'informations sur Gephi Lite",
@@ -389,6 +419,10 @@
     "control": {
       "fullscreenEnter": "Activer le mode plein écran",
       "fullscreenExit": "Quitter le mode plein écran",
+      "layout-run-latest": "Exécuter la spatialisation '{{name}}'",
+      "layout-start-latest": "Démarrer la spatialisation '{{name}}'",
+      "layout-stop-latest": "Arrêter la spatialisation '{{name}}'",
+      "layout-open-settings": "Ouvrir le panneau de paramétrage du layout '{{name}}'",
       "zoomIn": "Zoom avant",
       "zoomOut": "Zoom arrière",
       "zoomReset": "Afficher tout le graphe"
@@ -478,6 +512,8 @@
       }
     },
     "open": {
+      "force": "Ouvrir malgré tout",
+      "force_notification": "Votre fichier a été ouvert en mode dégradé car il n'est pas compatible avec la version courante. Uniquement les données de graphe ont pu être importé.",
       "github": {
         "error": "Une erreur technique s'est produite. Veuillez vérifier votre connexion ou réessayer ultérieurement.",
         "file-open-external": "Ouvrir {{filename}} sur GitHub",
@@ -602,6 +638,9 @@
           "description": "Influence des poids des liens sur la spatialisation",
           "title": "Influence du poids des liens"
         },
+        "getNodeFixedAttribut": {
+          "title": "Attribut indiquant si la position du nœud est fixée"
+        },
         "gravity": {
           "description": "Intensité de la gravité de la spatialisation",
           "title": "Gravité"
@@ -649,6 +688,51 @@
         }
       },
       "title": "Dirigée par la force"
+    },
+    "geographic": {
+      "background_warning": "Pour afficher et styliser le fond de carte, rendez-vous à la section Arrière-plan dans Apparence.",
+      "background_open": "Ouvrir l'apparence d'arrière-plan",
+      "description": "Positionne les nœuds selon leurs coordonnées géographiques (latitude/longitude)",
+      "buttons": {
+        "applyWithMap": {
+          "description": "Appliquer la mise en page et activer l’arrière-plan cartographique",
+          "title": "Appliquer avec la carte"
+        }
+      },
+      "parameters": {
+        "projection": {
+          "description": "Projection cartographique à appliquer aux coordonnées géographiques",
+          "title": "Projection",
+          "options": {
+            "webmercator": "Web Mercator",
+            "equirectangular": "Équirectangulaire",
+            "equalearth": "Equal Earth",
+            "naturalearth1": "Natural Earth 1"
+          }
+        },
+        "latitudeField": {
+          "description": "Attribut des nœuds contenant les valeurs de latitude",
+          "title": "Attribut de latitude"
+        },
+        "longitudeField": {
+          "description": "Attribut des nœuds contenant les valeurs de longitude",
+          "title": "Attribut de longitude"
+        },
+        "missingStrategy": {
+          "description": "Détermine comment traiter les nœuds sans coordonnées géographiques valides",
+          "title": "Coordonnées manquantes",
+          "options": {
+            "keep": "Conserver la position actuelle",
+            "grid": "Placer sur une grille (à gauche de la carte)",
+            "barycentergrid": "Barycentre des voisins + grille"
+          }
+        },
+        "scale": {
+          "description": "Ratio de mise à l'échelle",
+          "title": "Échelle"
+        }
+      },
+      "title": "Géographique"
     },
     "noverlap": {
       "description": "Algorithme de disposition anti-collision",
@@ -711,6 +795,17 @@
     "compute_one": "Calculer une métrique",
     "description": "Ce panneau permet de calculer de nouvelles attributs pour les nœuds ou les liens du graphe. Ces attributs peuvent ensuite être utilisés dans les autres panneaux, par exemple pour l'apparence ou le filtrage.",
     "edges": {
+      "chiSquare": {
+        "attributes": {
+          "chiSquareStrength": "Nom de l'attribut du khi carré"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Attribut de poids des liens"
+          }
+        },
+        "title": "Khi carré"
+      },
       "disparity": {
         "attributes": {
           "disparity": "Nom de l'attribut de disparité"
@@ -984,6 +1079,7 @@
     "disclaimer-2": "N'hésitez pas à consulter le projet GitHub pour en savoir plus sur les fonctionnalités à venir ou pour signaler des bugs.",
     "documentation": "documentation",
     "logo": "Logo de Gephi",
+    "new_version_available": "Une nouvelle version est disponible",
     "no_recent": "Aucun fichier distant n'a été ouvert dans ce navigateur pour le moment.",
     "open_graph": "Ouvrir un fichier de graphe",
     "open_recent": "Fichiers récemment ouverts",

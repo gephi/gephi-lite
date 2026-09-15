@@ -61,6 +61,7 @@ const SingleValue = ({ data, ...innerProps }: SingleValueProps<Option, false>) =
 interface GraphSearchProps {
   className?: string;
   value?: Option | null;
+  isDisabled?: boolean;
   /**
    * If not specified, we search on nodes & edges
    */
@@ -79,7 +80,14 @@ interface GraphSearchProps {
 /**
  * Search a node/edge
  */
-export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postProcessOptions, type, value }) => {
+export const GraphSearch: FC<GraphSearchProps> = ({
+  className,
+  onChange,
+  postProcessOptions,
+  type,
+  value,
+  isDisabled,
+}) => {
   const { t } = useTranslation();
   const { index } = useSearch();
   const { nodesLabel, edgesLabel } = useAppearance();
@@ -111,6 +119,7 @@ export const GraphSearch: FC<GraphSearchProps> = ({ className, onChange, postPro
     <AsyncSelect<Option>
       className={className}
       isClearable
+      isDisabled={isDisabled}
       controlShouldRenderValue={!!value}
       placeholder={t(`search.${type || "graph"}.placeholder`)}
       value={value || null}

@@ -18,6 +18,7 @@ import {
   GetFiltersMethod,
   GetGraphDatasetMethod,
   GetGraphMethod,
+  GetSelectionMethod,
   GetVersionMethod,
   ImportGraphMethod,
   MergeAppearanceMethod,
@@ -26,9 +27,11 @@ import {
   MethodBroadcastMessage,
   PingMethod,
   ReplyMessage,
+  SerializedSelectionState,
   SetAppearanceMethod,
   SetFiltersMethod,
   SetGraphDatasetMethod,
+  SetSelectionMethod,
   TypedEventEmitter,
 } from "./types";
 
@@ -141,6 +144,12 @@ export class GephiLiteDriver extends TypedEventEmitter<GephiLiteEvents> {
   }
   setFilters(filters: FiltersState) {
     return this.callMethod<SetFiltersMethod>("setFilters", filters);
+  }
+  getSelection() {
+    return this.callMethod<GetSelectionMethod>("getSelection");
+  }
+  setSelection(selection: SerializedSelectionState) {
+    return this.callMethod<SetSelectionMethod>("setSelection", selection);
   }
   getWindow() {
     return this.window;

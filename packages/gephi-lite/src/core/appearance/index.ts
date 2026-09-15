@@ -1,7 +1,17 @@
-import { getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
+import {
+  BackgroundLayer,
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_LAYOUT_GRID_COLOR,
+  PartitionColor,
+  getEmptyAppearanceState,
+  serializeAppearanceState,
+} from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
+import { Attributes } from "graphology-types";
 
 import { sessionStorage } from "../../utils/storage";
+import { castScalarToModelValue } from "../graph/fieldModel";
+import { preferencesActions } from "../preferences";
 import { ItemType } from "../types";
 import {
   AppearanceState,
@@ -14,7 +24,6 @@ import {
   StringAttr,
   ZIndexAttr,
 } from "./types";
-import { DEFAULT_BACKGROUND_COLOR, DEFAULT_LAYOUT_GRID_COLOR } from "./utils";
 
 const resetState: Producer<AppearanceState, []> = () => {
   return () => getEmptyAppearanceState();
@@ -41,6 +50,10 @@ const setBackgroundColorAppearance: Producer<AppearanceState, [string | undefine
 const setLayoutGridColorAppearance: Producer<AppearanceState, [string | undefined]> = (color) => {
   return (state) => ({ ...state, layoutGridColor: color || DEFAULT_LAYOUT_GRID_COLOR });
 };
+const setBackgroundLayer: Producer<AppearanceState, [BackgroundLayer | undefined]> = (backgroundLayer) => {
+  return (state) => ({ ...state, backgroundLayer });
+};
+
 const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemType, color) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
 };
@@ -78,6 +91,36 @@ const setEdgesLabelEllipsisAppearance: Producer<AppearanceState, [LabelEllipsis]
   return (state) => ({ ...state, edgesLabelEllipsis: labelEllipsis });
 };
 
+export const checkAppearanceAfterAttributeUpdate: Producer<AppearanceState, [ItemType, string, Attributes]> = (
+  itemType,
+  _id,
+  attributes,
+) => {
+  const colorStateVariableName = itemType === "nodes" ? "nodesColor" : "edgesColor";
+
+  return (appearanceState) => {
+    // PARTITION: colorPalette must sync attribute values
+    let newColorState: PartitionColor | undefined = undefined;
+    if (
+      appearanceState[colorStateVariableName].type === "partition" &&
+      !appearanceState[colorStateVariableName].field.dynamic
+    ) {
+      const partition = appearanceState[colorStateVariableName];
+      const value = castScalarToModelValue(attributes[partition.field.id], partition.field);
+      if (typeof value === "string" && !(value in partition.colorPalette)) {
+        newColorState = { ...partition, colorPalette: { ...partition.colorPalette, [value]: null } };
+      }
+    }
+
+    if (newColorState !== undefined)
+      return {
+        ...appearanceState,
+        [colorStateVariableName]: newColorState,
+      };
+    return appearanceState;
+  };
+};
+
 /**
  * Public API:
  * ***********
@@ -94,6 +137,7 @@ export const appearanceActions = {
   setShadingColorAppearance: producerToAction(setShadingColorAppearance, appearanceAtom),
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
   setLayoutGridColorAppearance: producerToAction(setLayoutGridColorAppearance, appearanceAtom),
+  setBackgroundLayer: producerToAction(setBackgroundLayer, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
   setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),
@@ -106,6 +150,25 @@ export const appearanceActions = {
  * Bindings:
  * *********
  */
-appearanceAtom.bind((appearanceState) => {
+appearanceAtom.bind((appearanceState, previousAppearanceState) => {
   sessionStorage.setItem("appearance", serializeAppearanceState(appearanceState));
+
+  // update color mapping LRU
+  if (previousAppearanceState.nodesColor !== appearanceState.nodesColor) {
+    if (appearanceState.nodesColor.type === "partition" || appearanceState.nodesColor.type === "ranking") {
+      preferencesActions.newColorPaletteUsage(appearanceState.nodesColor);
+    }
+  }
+  if (previousAppearanceState.edgesColor !== appearanceState.edgesColor) {
+    if (appearanceState.edgesColor.type === "partition" || appearanceState.edgesColor.type === "ranking") {
+      preferencesActions.newColorPaletteUsage(appearanceState.edgesColor);
+    }
+  }
+
+  // When map style on appearance changed, save it into preferences
+  if (previousAppearanceState.backgroundLayer !== appearanceState.backgroundLayer) {
+    if (appearanceState.backgroundLayer?.map.style) {
+      preferencesActions.setMapStyle(appearanceState.backgroundLayer.map.style);
+    }
+  }
 });

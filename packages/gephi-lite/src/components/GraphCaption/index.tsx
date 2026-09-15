@@ -25,25 +25,7 @@ import { AttributeRenderers } from "../data/Attribute";
 import { ItemsColorCaption } from "./ItemColorCaption";
 import ItemSizeCaption from "./ItemSizeCaption";
 import { LayoutQualityCaption } from "./LayoutQualityCaption";
-
-export interface GraphCaptionProps {
-  minimal?: boolean;
-}
-
-export interface RangeExtends {
-  field: FieldModel<ItemType, boolean>;
-  min: number;
-  minValue: StaticDynamicItemData;
-  max: number;
-  maxItemData: StaticDynamicItemData;
-  getLabel: (valueAsNumber: number, extendSize?: number) => string;
-  missing?: boolean;
-}
-export type PartitionExtends = {
-  field: FieldModel<ItemType, boolean>;
-  occurrences: Record<string, number>;
-  missing?: boolean;
-};
+import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./types";
 
 const getAttributeRanges = (
   itemIds: string[],

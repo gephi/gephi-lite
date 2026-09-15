@@ -2,7 +2,7 @@ import { MultiGraph } from "graphology";
 import { GraphType } from "graphology-types";
 
 import { gephiLiteParse, gephiLiteStringify } from "../utils";
-import { GraphDataset, SerializedGraphDataset } from "./types";
+import { type FieldModelType, GraphDataset, SerializedGraphDataset } from "./types";
 
 export * from "./types";
 
@@ -55,4 +55,38 @@ export function parseDataset(rawDataset: string): GraphDataset | null {
     console.error(e);
     return null;
   }
+}
+
+function fieldTypeToTypescript(fieldType: FieldModelType): string {
+  switch (fieldType) {
+    case "boolean":
+    case "number":
+      return fieldType;
+    case "date":
+      return "Date";
+    default:
+      return "string";
+  }
+}
+export function getGraphTypeScriptDefinition(dataset: GraphDataset): string {
+  return `
+  interface GraphNode {
+    x: number;
+    y: number;
+    label?: string | null;
+    color?: string;
+    size?: number;
+    rawSize?: number;
+    image?: string | null;
+    fixed?: boolean;
+    ${dataset.nodeFields.map((field) => `${field.id}: ${fieldTypeToTypescript(field.type)}`).join("\n")}
+  }
+  interface GraphEdge {
+    label?: string | null;
+    color?: string;
+    weight?: number;
+    rawWeight?: number;
+    ${dataset.edgeFields.map((field) => `${field.id}: ${fieldTypeToTypescript(field.type)}`).join("\n")}
+  }
+  `;
 }

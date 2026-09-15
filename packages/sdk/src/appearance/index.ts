@@ -1,9 +1,10 @@
 import { gephiLiteParse, gephiLiteStringify } from "../utils";
-import { type AppearanceState } from "./types";
+import { type AppearanceState, ColorScalePointType } from "./types";
 
 export * from "./types";
 
 export const DEFAULT_NODE_COLOR = "#999999";
+export const MISSING_PALETTE_COLOR = "#d0d0d0";
 export const DEFAULT_EDGE_COLOR = "#cccccc";
 export const DEFAULT_NODE_SIZE = 20;
 export const DEFAULT_EDGE_SIZE = 6;
@@ -12,6 +13,11 @@ export const DEFAULT_EDGE_LABEL_SIZE = 14;
 export const DEFAULT_BACKGROUND_COLOR = "#FFFFFF00";
 export const DEFAULT_LAYOUT_GRID_COLOR = "#666666";
 export const DEFAULT_SHADING_COLOR = "#ffffff";
+export const DEFAULT_COLOR_SCALE_POINTS: ColorScalePointType[] = [
+  { scalePoint: 0, color: "#fc8d59" },
+  { scalePoint: 0.5, color: "#ffffbf" },
+  { scalePoint: 1, color: "#91bfdb" },
+];
 
 export function getEmptyAppearanceState(): AppearanceState {
   return {
@@ -28,6 +34,7 @@ export function getEmptyAppearanceState(): AppearanceState {
     },
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     layoutGridColor: DEFAULT_LAYOUT_GRID_COLOR,
+    backgroundLayer: undefined,
     nodesColor: {
       type: "fixed",
       value: DEFAULT_NODE_COLOR,

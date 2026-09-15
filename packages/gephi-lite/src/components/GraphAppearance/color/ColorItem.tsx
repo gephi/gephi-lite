@@ -12,6 +12,7 @@ import {
 import { staticDynamicAttributeKey, staticDynamicAttributeLabel } from "../../../core/graph/dynamicAttributes";
 import { FieldModel } from "../../../core/graph/types";
 import { uniqFieldValuesAsStrings } from "../../../core/graph/utils";
+import { useColorPalette } from "../../../core/preferences/useColorHistoric";
 import { ItemType } from "../../../core/types";
 import { FieldModelIcons } from "../../common-icons";
 import { Select } from "../../forms/Select";
@@ -20,7 +21,6 @@ import { ColorFixedEditor } from "./ColorFixedEditor";
 import { ColorPartitionEditor } from "./ColorPartitionEditor";
 import { ColorRankingEditor } from "./ColorRankingEditor";
 import { ShadingColorEditor } from "./ShadingColorEditor";
-import { getPalette } from "./utils";
 
 type ColorOption = {
   value: string;
@@ -35,6 +35,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
   const { dynamicNodeData, dynamicEdgeData, dynamicNodeFields, dynamicEdgeFields } = useDynamicItemData();
   const appearance = useAppearance();
   const { setColorAppearance, setShadingColorAppearance } = useAppearanceActions();
+  const { getColorPartition, getColorRanking } = useColorPalette();
 
   const color = itemType === "nodes" ? appearance.nodesColor : appearance.edgesColor;
   const colorShading = itemType === "nodes" ? appearance.nodesShadingColor : appearance.edgesShadingColor;
@@ -156,16 +157,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 type: option.type, // this is here to trick TS for nodes
               } as Color);
             } else if (option.type === "ranking") {
-              setColorAppearance(itemType, {
-                type: "ranking",
-                field: option.field,
-                colorScalePoints: [
-                  { scalePoint: 0, color: "#fc8d59" },
-                  { scalePoint: 0.5, color: "#ffffbf" },
-                  { scalePoint: 1, color: "#91bfdb" },
-                ],
-                missingColor: baseValue,
-              });
+              setColorAppearance(itemType, getColorRanking(option.field));
             } else if (option.type === "partition") {
               const field = option.field;
               let values: string[];
@@ -178,12 +170,7 @@ export const ColorItem: FC<{ itemType: ItemType }> = ({ itemType }) => {
                 values = uniqFieldValuesAsStrings(itemsData, field.id);
               }
 
-              setColorAppearance(itemType, {
-                type: "partition",
-                field,
-                colorPalette: getPalette(values),
-                missingColor: baseValue,
-              });
+              setColorAppearance(itemType, getColorPartition(field, values));
             } else {
               const field = option.field;
 

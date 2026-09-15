@@ -65,17 +65,13 @@ Docker allows building and running Gephi lite in a controlled environment withou
 
 ### Docker compose for development
 
-The docker compose provided in this repository is designed for **local development** not for production.
+The docker compose provided in this repository runs Gephi Lite directly from sources and is designed for **local development** not for production.
 
 Make sure you have a fresh version of [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/linux/) plugin. Effective July 2023 Compose is now integrated into all current Docker Desktop versions.
 
-#### `docker compose build`
-
-Builds or rebuilds docker image from your git checkout
-
 #### `docker compose up`
 
-Starts Gephi Lite with previously prebuilt image
+Starts Gephi Lite in development mode at http://localhost:5173/gephi-lite/
 
 #### `docker compose down`
 

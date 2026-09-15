@@ -1,10 +1,35 @@
 {
   "appearance": {
+    "background": {
+      "layer_mode": "Background layer",
+      "none": "None",
+      "map": {
+        "label": "Map",
+        "title": "Map background",
+        "position_warning": "To display the map correctly, apply a Geographic layout to convert node coordinates to geographic ones.",
+        "open_geo_layout": "Open Geographical layout settings",
+        "maplibre": {
+          "edit_style": "Edit map style",
+          "reset_style": "Reset to default style",
+          "style": "Map style",
+          "style_description": "The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
+          "style_editor_title": "Edit map style"
+        },
+        "scale": {
+          "title": "Scaling",
+          "description": "Controls how the map is scaled to fit the graph. Adjust this value until the map aligns correctly with your graph. If you applied a geographic layout with a scaling ratio, use the same value here."
+        }
+      }
+    },
     "color": {
       "color_all_items": "Color for all {{items}}",
       "default_value": "Color for {{items}} with no valid value",
       "enable_color_shading": "Shade {{items}} colors",
       "fixed": "A constant color",
+      "palette": {
+        "expand": "Expand the palette",
+        "apply": "Apply {{paletteName}}"
+      },
       "ranking_intro": "Add color points on this scale",
       "scale_point": "Scale point",
       "set_color_from": "Set color from...",
@@ -123,6 +148,8 @@
     "false": "False",
     "filename": "Filename",
     "from": "From",
+    "help": "Help",
+    "here": "here",
     "hide": "Hide",
     "load-more": "Load more",
     "loading": "Loading",
@@ -136,6 +163,7 @@
     "reset": "Reset",
     "save": "Save",
     "save-and-run": "Save and run",
+    "see-documentation": "Check the documentation",
     "select": "Select...",
     "show": "Show",
     "show_less": "Show less",
@@ -186,7 +214,6 @@
   "edition": {
     "all_edges": "All edges",
     "all_nodes": "All nodes",
-    "code_editor": "Code editor",
     "confirm_delete_attributes": "This deletion will remove {{nbValues}} values from the graph. Are you sure you want to delete the attribute {{name}}?",
     "confirm_delete_edges": "Are you sure you want to delete {{count, number}} edges?",
     "confirm_delete_edges_one": "Are you sure you want to delete this one edge?",
@@ -197,12 +224,14 @@
     "create_edges_field_success": "The edge attribute has successfully been created.",
     "create_edges_scripted_field": "Create edges scripted attribute",
     "create_edges_scripted_field_success": "The scripted edge attribute has successfully been created.",
+    "create_edges_scripted_script_description": "Write the function in JavaScript in the code editor below. ",
     "create_edges_success": "The edge has successfully been created.",
     "create_nodes": "Create new node",
     "create_nodes_field": "Create nodes attribute",
     "create_nodes_field_success": "The node attribute has successfully been created.",
     "create_nodes_scripted_field": "Create nodes scripted attribute",
     "create_nodes_scripted_field_success": "The scripted node attribute has successfully been created.",
+    "create_nodes_scripted_script_description": "Write the function in JavaScript in the code editor below. ",
     "create_nodes_success": "The node has successfully been created.",
     "data_creation": "Data creation",
     "delete_attribute": "Delete attribute",
@@ -258,8 +287,8 @@
     "deprecated": {
       "gexf_search_params": "The `gexf=` url params to open a graph file has been renamed as `file=` in version 0.4.0. Using gexf params is deprecated  and might be removed in future version. Please use `file=` instead."
     },
-    "IMPORT_BAD_FORMAT": "Extension {{extension}} for file {{fileName}} is not recognized",
-    "IMPORT_BAD_VERSION": "Your file is from an older version of Gephi-Lite ({{version}}) which is not compatible with the actual version",
+    "IMPORT_BAD_FILE_FORMAT": "Format of file {{fileName}} is not recognized.",
+    "IMPORT_BAD_VERSION": "Your file comes from a previous version of Gephi-Lite ({{version}}) that is not compatible with the current version. You can open the file by clicking the button below; however, you will lose appearance and filter information, …",
     "form": {
       "field_already_exists": "The column with label \"{{label}}\" already uses the id \"{{id}}\".",
       "max": "Field {{name}} should be less than or equal to {{max}}",
@@ -303,6 +332,7 @@
     "keepMissingValues": "Keep missing values",
     "nodes_fields": "Nodes attributes",
     "script": "Custom filter",
+    "script_description": "Write the filter function in JavaScript in the code editor below.",
     "title": "Filters",
     "topological": "Topology",
     "topology": {
@@ -329,7 +359,9 @@
     },
     "visible_graph": "Visible graph",
     "missingValues": "Missing values",
-    "noValueOption": "No value"
+    "noValueOption": "No value",
+    "booleanTrueOption": "true",
+    "booleanFalseOption": "false"
   },
   "gephi-lite": {
     "open_welcome_modal": "Open welcome modal",
@@ -348,6 +380,11 @@
     "control": {
       "fullscreenEnter": "Enter fullscreen mode",
       "fullscreenExit": "Exit fullscreen",
+      "layout-open-settings": "Open '{{name}}' layout settings",
+      "layout-no-layout": "Disabled: there is no layout in your history",
+      "layout-run-latest": "Run layout '{{name}}'",
+      "layout-start-latest": "Start layout '{{name}}'",
+      "layout-stop-latest": "Stop layout '{{name}}'",
       "zoomIn": "Zoom In",
       "zoomOut": "Zoom Out",
       "zoomReset": "See the whole graph"
@@ -417,6 +454,8 @@
       "degree": "Degree"
     },
     "open": {
+      "force": "Open anyway",
+      "force_notification": "Your file was opened in degraded mode because it is not compatible with the current version. Only the graph data have been imported.",
       "github": {
         "error": "A technical error occurred. Please check your connectivity or try later.",
         "file-open-external": "Open {{filename}} on Gist",
@@ -497,9 +536,9 @@
     },
     "description": "This panel allows computing new coordinates to nodes of the graph. ",
     "exec": {
-      "started": "Layout {{layout}} is running",
-      "stopped": "Layout {{layout}} has been stopped",
-      "success": "Layout \"{{layout}}\" has successfully been applied."
+      "started": "Layout '{{layout}}' is running",
+      "stopped": "Layout '{{layout}}' has been stopped",
+      "success": "Layout '{{layout}}' has successfully been applied."
     },
     "fa2": {
       "buttons": {
@@ -524,6 +563,9 @@
         "edgeWeightInfluence": {
           "description": "Influence of the edge’s weights on the layout",
           "title": "Edge weight influence"
+        },
+        "getNodeFixedAttribut": {
+          "title": "Attribute indicating whether the node’s position is fixed"
         },
         "gravity": {
           "description": "Strength of the layout’s gravity",
@@ -572,6 +614,45 @@
         }
       },
       "title": "Force directed"
+    },
+    "geographic": {
+      "background_warning": "To display and style the map background, go to the Background section under Appearance.",
+      "background_open": "Open background appearance",
+      "description": "Positions nodes according to their geographic coordinates (latitude/longitude)",
+      "parameters": {
+        "latitudeField": {
+          "description": "Node attribute containing latitude values",
+          "title": "Latitude field"
+        },
+        "longitudeField": {
+          "description": "Node attribute containing longitude values",
+          "title": "Longitude field"
+        },
+        "missingStrategy": {
+          "description": "How to handle nodes without valid geographic coordinates",
+          "title": "Missing coordinates",
+          "options": {
+            "keep": "Keep current position",
+            "grid": "Place in grid (left of map)",
+            "barycentergrid": "Neighbors barycenter + grid"
+          }
+        },
+        "projection": {
+          "description": "Map projection to apply to geographic coordinates",
+          "title": "Projection",
+          "options": {
+            "webmercator": "Web Mercator",
+            "equirectangular": "Equirectangular",
+            "equalearth": "Equal Earth",
+            "naturalearth1": "Natural Earth 1"
+          }
+        },
+        "scale": {
+          "title": "Scaling ratio",
+          "description": "Scale of the layout"
+        }
+      },
+      "title": "Geographic"
     },
     "noverlap": {
       "description": "Anti-collision layout algorithm",
@@ -623,7 +704,7 @@
       "title": "Random"
     },
     "script": {
-      "description": "Write your own layout by creating a function that returns a {x,y} object for each node",
+      "description": "Write your own layout by creating a function that returns a {x,y} object for each node.",
       "parameters": {},
       "title": "Custom layout"
     },
@@ -635,6 +716,17 @@
     "compute_one": "Compute metric",
     "description": "This panel allows computing new attributes to the nodes or edges of the graph. These attributes can later be used in the other panels, for appearance or filtering for instance.",
     "edges": {
+      "chiSquare": {
+        "attributes": {
+          "chiSquareStrength": "Chi square attribute name"
+        },
+        "parameters": {
+          "getEdgeWeight": {
+            "title": "Edge weight attribute"
+          }
+        },
+        "title": "Chi square"
+      },
       "disparity": {
         "attributes": {
           "disparity": "Disparity attribute name"
@@ -878,6 +970,7 @@
   },
   "welcome": {
     "documentation": "documentation",
+    "new_version_available": "A new version is available",
     "open_graph": "Open a graph file",
     "samples": "Samples",
     "title": "Welcome to Gephi Lite",

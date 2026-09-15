@@ -5,21 +5,24 @@ import { ForceAtlas2LayoutParameters, ForceAtlas2Settings, inferSettings } from 
 import RAW_FA2_DEFAULT_SETTINGS from "graphology-layout-forceatlas2/defaults";
 import FA2Layout from "graphology-layout-forceatlas2/worker";
 
-import { WorkerLayout } from "../types";
+import { GuessSettingsIcon } from "../../../components/common-icons";
+import { ContinuousLayout } from "../types";
 
 const FA2_DEFAULT_SETTINGS = RAW_FA2_DEFAULT_SETTINGS as Required<ForceAtlas2Settings>;
 
 export const ForceAtlas2Layout = {
   id: "fa2",
-  type: "worker",
+  type: "continuous",
   supervisor: FA2Layout,
   buttons: [
     {
       id: "autoSettings",
+      icon: GuessSettingsIcon,
       description: true,
-      getSettings(_currentSettings, dataGraph: DataGraph) {
-        const infer = inferSettings(dataGraph);
-        return { ...FA2_DEFAULT_SETTINGS, ...infer };
+      onClick(_currentSettings, dataGraph: DataGraph) {
+        return {
+          setSettings: { ...FA2_DEFAULT_SETTINGS, ...inferSettings(dataGraph) },
+        };
       },
     },
   ],
@@ -58,7 +61,7 @@ export const ForceAtlas2Layout = {
       description: true,
       defaultValue: FA2_DEFAULT_SETTINGS.gravity,
       min: 0,
-      step: 0.01,
+      step: "any",
       required: true,
     },
     { id: "linLogMode", type: "boolean", description: true, defaultValue: FA2_DEFAULT_SETTINGS.linLogMode },
@@ -75,7 +78,14 @@ export const ForceAtlas2Layout = {
       step: 1,
       required: true,
     },
-    { id: "slowDown", type: "number", defaultValue: FA2_DEFAULT_SETTINGS.slowDown, min: 1, step: 1 },
+    { id: "slowDown", type: "number", defaultValue: FA2_DEFAULT_SETTINGS.slowDown, min: 1, step:"any"},
     { id: "strongGravityMode", type: "boolean", defaultValue: FA2_DEFAULT_SETTINGS.strongGravityMode },
+    {
+      id: "getNodeFixedAttribut",
+      type: "attribute",
+      itemType: "nodes",
+      restriction: ["boolean"],
+      required: false,
+    },
   ],
-} as WorkerLayout<ForceAtlas2LayoutParameters>;
+} as ContinuousLayout<ForceAtlas2LayoutParameters>;

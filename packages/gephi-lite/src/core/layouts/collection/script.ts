@@ -5,30 +5,32 @@ import { isNil, isObject } from "lodash";
 import { codeToFunction } from "../../../utils/functions";
 import { graphDatasetAtom } from "../../graph";
 import { dataGraphToFullGraph } from "../../graph/utils";
-import { LayoutMapping, LayoutScriptFunction, SyncLayout } from "../types";
+import { LayoutMapping, LayoutScriptFunction, OneShotLayout } from "../types";
 
 // definition of a custom layout function
 const nodeCoordinatesCustomFn =
   codeToFunction<LayoutScriptFunction>(`function nodeCoordinates(id, attributes, index, graph) {
-  // / Your code goes here
+  //
+  // Your code goes here
+  //
   return { x: Math.random() * 1000, y: Math.random() * 1000 };
 }`);
 
 export const ScriptLayout = {
   id: "script",
-  type: "sync",
+  type: "oneshot",
   description: true,
   parameters: [
     {
       id: "script",
       type: "script",
       functionJsDoc: `/**
-* Function that return coordinates for the specified node.
+* Function that returns coordinates for the specified node.
 *
 * @param {string} id The ID of the node
-* @param {Object.<string, number | string | boolean | undefined | null>} attributes Attributes of the node
+* @param {GraphNode} attributes Attributes of the node
 * @param {number} index The index position of the node in the graph
-* @param {Graph} graph The graphology instance (documentation: https://graphology.github.io/ )
+* @param {AbstractGraph<GraphNode, GraphEdge>} graph The graphology instance (https://graphology.github.io/)
 * @returns {x: number, y: number} The computed coordinates of the node
 */`,
       defaultValue: nodeCoordinatesCustomFn,
@@ -37,11 +39,11 @@ export const ScriptLayout = {
         // Check & test the function
         const fullGraph = dataGraphToFullGraph(graphDatasetAtom.get());
         const id = fullGraph.nodes()[0];
-        const attributs = fullGraph.getNodeAttributes(id);
-        const result = fn(id, attributs, 0, fullGraph);
-        if (!isObject(result)) throw new Error("Function must returned an object");
-        if (isNil(result.x)) throw new Error("Function must returned an object with a `x` property");
-        if (isNil(result.y)) throw new Error("Function must returned an object with a `y` property");
+        const attributes = fullGraph.getNodeAttributes(id);
+        const result = fn(id, attributes, 0, fullGraph);
+        if (!isObject(result)) throw new Error("Function must return an object");
+        if (isNil(result.x)) throw new Error("Function must return an object with a `x` property");
+        if (isNil(result.y)) throw new Error("Function must return an object with a `y` property");
       },
     },
   ],
@@ -61,6 +63,6 @@ export const ScriptLayout = {
     });
     return res;
   },
-} as SyncLayout<{
+} as OneShotLayout<{
   script?: (id: string, attributes: ItemData, index: number, graph: Graph) => { x: number; y: number };
 }>;

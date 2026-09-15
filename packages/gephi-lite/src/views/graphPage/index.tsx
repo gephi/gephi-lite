@@ -1,9 +1,9 @@
 import cx from "classnames";
-import { type ComponentType, FC, useEffect, useState } from "react";
+import { type ComponentType, FC, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiX } from "react-icons/pi";
 
-import { GraphGraphAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
+import { GraphBackgroundAppearance, GraphItemAppearance } from "../../components/GraphAppearance";
 import GraphFilters from "../../components/GraphFilters";
 import { GraphSearchSelection } from "../../components/GraphSearchSelection";
 import { GraphSummary } from "../../components/GraphSummary";
@@ -24,7 +24,8 @@ import {
   MetricsIconFill,
 } from "../../components/common-icons";
 import { LayoutQualityForm } from "../../components/forms/LayoutQualityForm";
-import { useSelection, useSelectionActions } from "../../core/context/dataContexts";
+import { useLayoutState, useSelection, useSelectionActions } from "../../core/context/dataContexts";
+import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { EDGE_METRICS, MIXED_METRICS, NODE_METRICS } from "../../core/metrics/collections";
 import { useMobile } from "../../hooks/useMobile";
@@ -36,7 +37,9 @@ import { LabelsPanel } from "./panels/LabelsPanel";
 import { MetricsPanel } from "./panels/MetricsPanel";
 import { LayoutPanel } from "./panels/layouts/LayoutPanel";
 
-const MENU: MenuItem<{ panel?: ComponentType }>[] = [
+type PanelMenuItem = MenuItem<{ panel?: ComponentType }>;
+
+const MENU: PanelMenuItem[] = [
   {
     id: "layout",
     i18nKey: "layouts.title",
@@ -73,7 +76,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       {
         id: "appearance-background",
         i18nKey: "appearance.menu.background",
-        panel: () => <GraphGraphAppearance />,
+        panel: () => <GraphBackgroundAppearance />,
       },
     ],
   },
@@ -93,7 +96,7 @@ const MENU: MenuItem<{ panel?: ComponentType }>[] = [
       { type: "mixed", metrics: MIXED_METRICS },
     ].flatMap(({ type, metrics }) => [
       {
-        id: type,
+        id: `metric-${type}`,
         type: "text",
         i18nKey: `graph.model.${type}`,
         className: "gl-heading-3",
@@ -112,8 +115,27 @@ export const GraphPage: FC = () => {
   const [selectedTool, setSelectedTool] = useState<undefined | { id: string; panel: ComponentType }>(undefined);
   const { items } = useSelection();
   const { emptySelection } = useSelectionActions();
+  const layoutState = useLayoutState();
   const { t } = useTranslation();
   const isMobile = useMobile();
+  const { emitter } = useEventsContext();
+
+  const menuExtended: MenuItem<{ panel?: ComponentType; isRunning?: boolean }>[] = useMemo(
+    () =>
+      MENU.map((section) => {
+        if (section.id === "layout" && layoutState.type === "running" && "children" in section) {
+          return {
+            ...section,
+            children: section.children.map((item) => ({
+              ...item,
+              isRunning: `layout-${layoutState.layoutId}` === item.id,
+            })),
+          };
+        }
+        return section;
+      }),
+    [layoutState],
+  );
 
   // Mobile display:
   const [expanded, setExpanded] = useState(false);
@@ -135,6 +157,29 @@ export const GraphPage: FC = () => {
   useEffect(() => {
     setExpanded(false);
   }, [items]);
+
+  /**
+   * Listening to events for opening a menu item.
+   * Used in the graph controller layout button
+   */
+  useEffect(() => {
+    const menu_items = MENU.flatMap((item) => {
+      if ("children" in item) return [item, ...item.children];
+      return item;
+    });
+    const fn = ({ menuId }: { menuId: string }) => {
+      const itemToOpen = menu_items.find((e) => e.id === menuId);
+      if (itemToOpen && itemToOpen.panel)
+        setSelectedTool({
+          id: itemToOpen.id,
+          panel: itemToOpen.panel,
+        });
+    };
+    emitter.on(EVENTS.openMenu, fn);
+    return () => {
+      emitter.off(EVENTS.openMenu, fn);
+    };
+  }, [emitter, setSelectedTool]);
 
   return (
     <>
@@ -165,7 +210,7 @@ export const GraphPage: FC = () => {
             <GraphSummary />
             <GraphSearchSelection />
             <SideMenu
-              menu={MENU}
+              menu={menuExtended}
               selected={selectedTool?.id}
               onSelectedChange={(item) =>
                 setSelectedTool(
@@ -187,7 +232,7 @@ export const GraphPage: FC = () => {
             <>
               <button
                 type="button"
-                className="gl-btn-close gl-btn d-none d-sm-block"
+                className="gl-btn-close gl-btn d-none d-sm-block  z-over-loader"
                 aria-label={t("common.close")}
                 onClick={() => setSelectedTool(undefined)}
               >

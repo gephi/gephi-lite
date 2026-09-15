@@ -1,3 +1,4 @@
+import { chiSquareMetric } from "./edges/chiSquare";
 import { disparityMetric } from "./edges/disparityMetric";
 import { simmelianStrengthMetric } from "./edges/simmelianStrength";
 import { louvainEdgeAmbiguity } from "./mixed/louvainEdgeAmbiguity";
@@ -18,7 +19,7 @@ export const NODE_METRICS: Metric<{ nodes: any }>[] = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const EDGE_METRICS: Metric<{ edges: any }>[] = [disparityMetric, simmelianStrengthMetric];
+export const EDGE_METRICS: Metric<{ edges: any }>[] = [disparityMetric, simmelianStrengthMetric, chiSquareMetric];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const MIXED_METRICS: Metric<{ edges: any; nodes: any }>[] = [louvainEdgeAmbiguity];

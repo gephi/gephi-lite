@@ -5,12 +5,14 @@ import { isNil, omit } from "lodash";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 
-import { LoaderFill } from "../../../../components/Loader";
+import { SpinnerIcon } from "../../../../components/Loader";
 import MessageAlert from "../../../../components/MessageAlert";
 import {
   CodeEditorIcon,
-  GuessSettingsIcon,
+  ExternalLinkIcon,
+  PauseIconFill,
   PlayIconFill,
   ResetIcon,
   StopIconFill,
@@ -19,17 +21,17 @@ import { BooleanInput, EnumInput, NumberInput } from "../../../../components/for
 import { FunctionEditorModal } from "../../../../components/modals/FunctionEditor";
 import { useGraphDataset, useSigmaGraph } from "../../../../core/context/dataContexts";
 import { getFilteredDataGraph } from "../../../../core/graph/utils";
-import { Layout, LayoutScriptParameter } from "../../../../core/layouts/types";
+import { Layout, LayoutScriptParameter, LayoutState } from "../../../../core/layouts/types";
 import { useModal } from "../../../../core/modals";
 import { sessionAtom } from "../../../../core/session";
 
 export const LayoutForm: FC<{
   layout: Layout;
   onCancel: () => void;
-  onStart: (params: Record<string, unknown>) => void;
+  onStart: (input: { params: Record<string, unknown>; then?: () => void; restart?: boolean }) => void;
   onStop: () => void;
-  isRunning: boolean;
-}> = ({ layout, onStart, onStop, isRunning }) => {
+  status: LayoutState["type"];
+}> = ({ layout, onStart, onStop, status }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();
   const dataset = useGraphDataset();
@@ -55,6 +57,11 @@ export const LayoutForm: FC<{
       ),
     [layout],
   );
+  // inferred parameters (smart defaults from graph data)
+  const inferredParameters = useMemo(() => {
+    if (!layout.inferSettings) return {};
+    return layout.inferSettings(getFilteredDataGraph(dataset, sigmaGraph));
+  }, [layout, dataset, sigmaGraph]);
 
   /**
    * When layout params changed
@@ -69,15 +76,23 @@ export const LayoutForm: FC<{
       if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
       else if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
         errors[param.id] = t(`error.form.min`, { ...param, name });
-      else if ("max" in param && param.max && !isNil(value) && (value as number) < param.max)
+      else if ("max" in param && param.max && !isNil(value) && (value as number) > param.max)
         errors[param.id] = t(`error.form.max`, { ...param, name });
     });
-    setErrors(Object.keys(errors).length > 0 ? errors : null);
-  }, [layout, layoutParameters, t]);
+
+    const hasError = Object.keys(errors).length > 0;
+    setErrors(hasError ? errors : null);
+
+    if (layout.type === "continuous" && !hasError && status === "running") {
+      onStart({ params: layoutParameters, restart: true });
+    }
+    // I don't want to trigger this useEffect when the status value changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layout, layoutParameters, t, onStart]);
 
   /**
    * When the layout change
-   * => we load the layout paramaters
+   * => we load the layout parameters
    */
   useEffect(() => {
     setSession((prev) => ({
@@ -86,11 +101,12 @@ export const LayoutForm: FC<{
         ...prev.layoutsParameters,
         [layout.id]: {
           ...layoutDefaultParameters,
+          ...inferredParameters,
           ...(prev.layoutsParameters[layout.id] || {}),
         },
       },
     }));
-  }, [layout, layoutDefaultParameters, setSession]);
+  }, [layout, layoutDefaultParameters, inferredParameters, setSession]);
 
   /**
    * OnChange function for parameters
@@ -142,22 +158,21 @@ export const LayoutForm: FC<{
       return;
     }
 
-    if (isRunning) onStop();
+    if (status !== "idle") onStop();
     else {
       try {
         // Read the latest layout parameters from the atom directly,
         // to ensure having up-to-date data:
         const latestSession = sessionAtom.get();
         const latestLayoutParameters = latestSession.layoutsParameters[layout.id] || {};
-        console.log(latestLayoutParameters);
-        onStart(latestLayoutParameters);
-        if (layout.type === "sync")
+        onStart({ params: latestLayoutParameters });
+        if (layout.type === "oneshot")
           setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
       } catch (e) {
         console.error(e);
       }
     }
-  }, [isRunning, layout.id, layout.type, onStart, onStop, setSuccessMessage, t, errors]);
+  }, [status, layout.id, layout.type, onStart, onStop, setSuccessMessage, t, errors]);
 
   return (
     <form
@@ -186,7 +201,6 @@ export const LayoutForm: FC<{
                       param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                     }
                     value={value as number}
-                    disabled={isRunning}
                     onChange={(v) => changeParameter(param.id, v)}
                     required={param.required || false}
                     min={param.min}
@@ -202,7 +216,6 @@ export const LayoutForm: FC<{
                       param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
                     }
                     value={!!value as boolean}
-                    disabled={isRunning}
                     onChange={(v) => changeParameter(param.id, v)}
                     required={param.required || false}
                   />
@@ -217,7 +230,6 @@ export const LayoutForm: FC<{
                     }
                     placeholder={t("common.none")}
                     value={value as string}
-                    disabled={isRunning}
                     onChange={(v) => changeParameter(param.id, v)}
                     options={((param.itemType === "nodes" ? nodeFields : edgeFields) as FieldModel[])
                       .filter((field) => (param.restriction ? param.restriction.includes(field.type) : true))
@@ -225,6 +237,23 @@ export const LayoutForm: FC<{
                         value: field.id,
                         label: field.id,
                       }))}
+                  />
+                )}
+                {param.type === "enum" && (
+                  <EnumInput
+                    id={id}
+                    label={t(`layouts.${layout.id}.parameters.${param.id}.title`)}
+                    description={
+                      param.description ? t(`layouts.${layout.id}.parameters.${param.id}.description`) : undefined
+                    }
+                    value={(value as string) ?? param.defaultValue}
+                    disabled={status === "running"}
+                    onChange={(v) => changeParameter(param.id, v)}
+                    options={param.options.map((opt) => ({
+                      value: opt.id,
+                      label: t(`layouts.${layout.id}.parameters.${param.id}.options.${opt.id}`),
+                    }))}
+                    required
                   />
                 )}
                 {param.type === "script" && (
@@ -248,7 +277,20 @@ export const LayoutForm: FC<{
                             openModal({
                               component: FunctionEditorModal<LayoutScriptParameter["defaultValue"]>,
                               arguments: {
-                                title: "Custom layout",
+                                title: t("layouts.script.title"),
+                                description: (
+                                  <div className="m-3">
+                                    <p className="mb-0">{t("layouts.script.description")}</p>
+                                    <Link
+                                      to="https://docs.gephi.org/lite/user-manual/custom-scripts"
+                                      title={t("common.help")}
+                                      target="_blank"
+                                    >
+                                      {t("common.see-documentation")}
+                                      <ExternalLinkIcon className="ms-1" />
+                                    </Link>
+                                  </div>
+                                ),
                                 withSaveAndRun: true,
                                 functionJsDoc: param.functionJsDoc,
                                 initialFunctionCode: value?.toString() ?? param.defaultValue.toString(),
@@ -269,10 +311,10 @@ export const LayoutForm: FC<{
                     </>
                   </div>
                 )}
+                {param.type === "jsx" && <param.Component />}
               </div>
             );
           })}
-          {isRunning && <LoaderFill />}
         </div>
       </div>
 
@@ -296,50 +338,68 @@ export const LayoutForm: FC<{
           />
         )}
         <div className="gl-actions">
-          {layout.buttons?.map(({ id, description, getSettings }) => (
+          {layout.buttons?.map((button) => {
+            const { id, description, icon: Icon, disabled, onClick } = button;
+            const title = description
+              ? t(`layouts.${layout.id}.buttons.${id}.description`)
+              : t(`layouts.${layout.id}.buttons.${id}.title`);
+            const graph = getFilteredDataGraph(dataset, sigmaGraph);
+            const isButtonDisabled = errors !== null || !!disabled?.(layoutParameters, graph);
+            return (
+              <button
+                key={id}
+                type="button"
+                className={cx("gl-btn gl-btn-outline", Icon && "gl-btn-icon")}
+                title={title}
+                disabled={isButtonDisabled}
+                onClick={() => {
+                  const instructions = onClick(layoutParameters, graph);
+                  if (instructions.setSettings) setParameters(instructions.setSettings as Record<string, unknown>);
+                  if (instructions.applyLayout) {
+                    if (errors || status !== "idle") return;
+                    instructions.before?.();
+                    const params = (instructions.setSettings ?? layoutParameters) as Record<string, unknown>;
+                    onStart({ params, then: instructions.then });
+                    if (layout.type === "oneshot")
+                      setSuccessMessage(t("layouts.exec.success", { layout: t(`layouts.${layout.id}.title`) }));
+                  } else {
+                    instructions.before?.();
+                    instructions.then?.();
+                  }
+                }}
+              >
+                {Icon ? <Icon /> : t(`layouts.${layout.id}.buttons.${id}.title`)}
+              </button>
+            );
+          })}
+          {!layout.hideReset && (
             <button
-              key={id}
               type="reset"
+              title={t("common.reset")}
               className="gl-btn gl-btn-outline gl-btn-icon"
-              title={
-                description
-                  ? t(`layouts.${layout.id}.buttons.${id}.description`)
-                  : t(`layouts.${layout.id}.buttons.${id}.title`)
-              }
-              onClick={() => {
-                const graph = getFilteredDataGraph(dataset, sigmaGraph);
-                setParameters(getSettings(layoutParameters, graph));
-              }}
-              disabled={isRunning}
+              onClick={() => setParameters()}
             >
-              <GuessSettingsIcon />
+              <ResetIcon />
             </button>
-          ))}
-          <button
-            type="reset"
-            title={t("common.reset")}
-            className="gl-btn gl-btn-outline gl-btn-icon"
-            onClick={() => setParameters()}
-            disabled={isRunning}
-          >
-            <ResetIcon />
-          </button>
-
+          )}
           <button type="submit" className="gl-btn gl-btn-fill" disabled={errors !== null}>
-            {layout.type === "sync" && <>{t("common.apply")}</>}
-            {layout.type === "worker" && (
+            {status === "running" && (
               <>
-                {isRunning ? (
-                  <>
-                    <StopIconFill />
-                    {t("common.stop")}
-                  </>
-                ) : (
-                  <>
-                    <PlayIconFill />
-                    {t("common.start")}
-                  </>
-                )}
+                <SpinnerIcon icon={PauseIconFill} />
+                {t("common.stop")}
+              </>
+            )}
+            {status === "computing" && (
+              <>
+                <SpinnerIcon icon={StopIconFill} />
+                {t("common.cancel")}
+              </>
+            )}
+            {status === "idle" && layout.type === "oneshot" && <>{t("common.apply")}</>}
+            {status === "idle" && layout.type === "continuous" && (
+              <>
+                <PlayIconFill />
+                {t("common.start")}
               </>
             )}
           </button>

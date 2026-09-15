@@ -1,7 +1,7 @@
 import { NodeCoordinates, getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
 import Graph, { MultiGraph } from "graphology";
 import { Attributes } from "graphology-types";
-import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, sortBy, uniq, values } from "lodash";
+import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, pick, sortBy, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
 import { inferFieldType } from "./fieldModel";
@@ -24,16 +24,22 @@ export function getRandomNodeCoordinate(): number {
   return Math.random() * 1000;
 }
 
-export function cleanNode(_node: string, attributes: Attributes): { data: ItemData; position: NodeCoordinates } {
-  const x = toNumber(attributes.x);
-  const y = toNumber(attributes.y);
+export function cleanNode(
+  _node: string,
+  attributes: Attributes,
+  coordinates?: { x: Scalar; y: Scalar },
+): { data: ItemData; position: NodeCoordinates } {
+  // ensure coordinate format
+  const x = toNumber(coordinates?.x);
+  const y = toNumber(coordinates?.y);
 
   const position: NodeCoordinates = {
     x: typeof x === "number" ? x : getRandomNodeCoordinate(),
     y: typeof y === "number" ? y : getRandomNodeCoordinate(),
   };
 
-  const data: ItemData = mapValues(omit(attributes, "x", "y"), (v) => toScalar(v));
+  // cast attributes to scalar
+  const data: ItemData = mapValues(attributes, (v) => toScalar(v));
 
   return { data, position };
 }
@@ -60,7 +66,7 @@ export function initializeGraphDataset(
 
   const nodeAttributeValues: Record<string, Scalar[]> = {};
   graph.forEachNode((node, attributes) => {
-    const { data, position } = cleanNode(node, attributes);
+    const { data, position } = cleanNode(node, omit(attributes, ["x", "y"]), pick(attributes, ["x", "y"]));
 
     for (const key in data) {
       nodeAttributeValues[key] = nodeAttributeValues[key] || [];

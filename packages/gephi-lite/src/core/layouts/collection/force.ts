@@ -1,10 +1,10 @@
 import ForceSupervisor, { ForceLayoutSupervisorParameters } from "graphology-layout-force/worker";
 
-import { WorkerLayout } from "../types";
+import { ContinuousLayout } from "../types";
 
 export const ForceLayout = {
   id: "force",
-  type: "worker",
+  type: "continuous",
   supervisor: ForceSupervisor,
   parameters: [
     { id: "attraction", type: "number", description: true, defaultValue: 0.0005, min: 0, step: 0.0001 },
@@ -13,4 +13,4 @@ export const ForceLayout = {
     { id: "inertia", type: "number", description: true, defaultValue: 0.6, min: 0, max: 1, step: 0.1 },
     { id: "maxMove", type: "number", description: true, defaultValue: 200 },
   ],
-} as WorkerLayout<ForceLayoutSupervisorParameters>;
+} as ContinuousLayout<ForceLayoutSupervisorParameters>;

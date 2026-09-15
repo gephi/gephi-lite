@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
+import { getGraphTypeScriptDefinition } from "@gephi/gephi-lite-sdk";
 import Editor, { Monaco } from "@monaco-editor/react";
-import { useCallback, useState } from "react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 
-import { usePreferences } from "../../core/context/dataContexts";
+import graphologyDts from "../../assets/graphology-types.txt?raw";
+import { useGraphDataset, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { getAppliedTheme } from "../../core/preferences/utils";
@@ -20,6 +22,8 @@ export interface FunctionEditorProps<T extends Function> {
   checkFunction: (fn: T) => void; // throw error for unvalid
   onSubmit?: (fn: T) => void;
   saveAndRunI18nKey?: string;
+  title: string;
+  description?: ReactNode;
 }
 
 export function useFunctionEditor<T extends Function>({
@@ -30,25 +34,49 @@ export function useFunctionEditor<T extends Function>({
   initialFunctionCode,
   onSubmit,
   saveAndRunI18nKey,
+  title,
+  description,
 }: FunctionEditorProps<T>) {
   const { theme } = usePreferences();
   const { t } = useTranslation();
   const { openModal } = useModal();
+  const graphDataset = useGraphDataset();
+
+  // TS types for graphology and graph items
+  const graphTypes = useMemo(() => getGraphTypeScriptDefinition(graphDataset), [graphDataset]);
+  const graphologyTypes = useMemo(() => {
+    const regexExport = new RegExp("export \\{(.*)\\};", "gs");
+    const regexDefaultExport = new RegExp("export default .*;", "gs");
+    return (
+      graphologyDts
+        // Remove export
+        .replace(regexExport, "")
+        // Remove default export
+        .replace(regexDefaultExport, "")
+    );
+  }, []);
 
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState<string>(initialFunctionCode);
 
-  const getFunction = useCallback(() => {
-    try {
-      if (!code.trim().length) throw new Error("Code is required");
-      const fn = codeToFunction<T>(code);
+  const toFunction = useCallback(
+    (text: string) => {
+      if (!text.trim().length) throw new Error("Code is required");
+      const fn = codeToFunction<T>(text);
       checkFunction(fn);
       return fn;
+    },
+    [checkFunction],
+  );
+
+  const getFunction = useCallback(() => {
+    try {
+      return toFunction(code);
     } catch (e) {
       setError(`${e}`);
       return null;
     }
-  }, [checkFunction, code]);
+  }, [toFunction, code]);
 
   if (!fullEditor)
     return {
@@ -74,7 +102,8 @@ export function useFunctionEditor<T extends Function>({
                       openModal({
                         component: FunctionEditorModal<T>,
                         arguments: {
-                          title: t("edition.code_editor"),
+                          title,
+                          description,
                           editorName,
                           functionJsDoc,
                           checkFunction,
@@ -106,33 +135,58 @@ export function useFunctionEditor<T extends Function>({
     getFunction,
     content: (
       <>
-        {error && <p className="text-danger text-center">{error}</p>}
+        {error && (
+          <div className="alert gl-m-0 gl-alert-error d-flex flex-column align-items-center mb-3">
+            <p className="mb-0">{error}</p>
+          </div>
+        )}
         <Editor
+          className=""
           height="40vh"
           theme={getAppliedTheme(theme) === "light" ? "light" : "vs-dark"}
-          defaultLanguage="javascript"
+          language="javascript"
           value={`${functionJsDoc}\n${code}`}
           onChange={(e) => {
             setError(null);
             setCode(codeToFunction(e || "").toString());
           }}
           onMount={(editor, monaco: Monaco) => {
+            const lines = editor.getValue().split("\n");
+            const nbLines = lines.length;
+            const headerLines = [0, functionJsDoc.split("\n").length + 2];
+            const footerLines = [nbLines, nbLines + 1];
+
             // Making read only the header & footer of the function
             editor.onKeyDown((e: KeyboardEvent) => {
+              const headerRange = new monaco.Range(headerLines[0], 0, headerLines[1], 0);
               if (!["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.code)) {
-                const fnHeaderRange = new monaco.Range(0, 0, functionJsDoc.split("\n").length + 2, 0);
-                const nbLines = editor.getValue().split("\n").length;
-                const fnFooterRange = new monaco.Range(nbLines, 0, nbLines + 1, 0);
-                const contains = (editor.getSelections() ?? []).findIndex(
-                  (range: Monaco["Range"]) =>
-                    fnHeaderRange.intersectRanges(range) || fnFooterRange.intersectRanges(range),
+                const contains = (editor.getSelections() ?? []).findIndex((range: Monaco["Range"]) =>
+                  headerRange.intersectRanges(range),
                 );
                 if (contains !== -1) {
                   e.stopPropagation();
                   e.preventDefault(); // for Ctrl+C, Ctrl+V
                 }
               }
+
+              // CTRL+Enter, submit the code execution
+              if (e.code === "Enter" && e.ctrlKey) {
+                const fn = toFunction(editor.getValue());
+                if (onSubmit && fn) onSubmit(fn);
+              }
             });
+
+            // Adding graph types
+            monaco.languages.typescript.javascriptDefaults.setExtraLibs([
+              { content: graphTypes },
+              { content: graphologyTypes },
+            ]);
+
+            // Select text of the function body (ie. the documentation)
+            editor.setSelection(
+              new monaco.Range(headerLines[1], 0, footerLines[0] - 1, lines[footerLines[0] - 2].length + 1),
+            );
+            editor.focus();
           }}
           options={{
             tabSize: 2,
@@ -150,6 +204,7 @@ export function FunctionEditorModal<T extends Function>(
   props: ModalProps<
     Omit<FunctionEditorProps<T>, "fullEditor"> & {
       title: string;
+      description?: ReactNode;
       withSaveAndRun?: boolean;
     },
     { run: boolean; fn: T }
@@ -157,8 +212,12 @@ export function FunctionEditorModal<T extends Function>(
 ) {
   const { t } = useTranslation();
   const { submit, cancel } = props;
-  const { title, withSaveAndRun, saveAndRunI18nKey = "common.save-and-run" } = props.arguments;
-  const { content, getFunction } = useFunctionEditor({ ...props.arguments, fullEditor: true });
+  const { title, description, withSaveAndRun, saveAndRunI18nKey = "common.save-and-run" } = props.arguments;
+  const { content, getFunction } = useFunctionEditor({
+    ...props.arguments,
+    onSubmit: (fn: T) => submit({ run: true, fn }),
+    fullEditor: true,
+  });
 
   const save = useCallback(
     (run: boolean) => {
@@ -172,7 +231,11 @@ export function FunctionEditorModal<T extends Function>(
 
   return (
     <Modal className="modal-xl" bodyClassName="p-0" title={title} onClose={() => cancel()} onSubmit={() => save(true)}>
-      {content}
+      <>
+        {description}
+        {content}
+      </>
+
       <div className="gl-gap-2 d-flex">
         <button type="button" title={t("common.cancel")} className="gl-btn gl-btn-outline" onClick={() => cancel()}>
           {t("common.cancel")}

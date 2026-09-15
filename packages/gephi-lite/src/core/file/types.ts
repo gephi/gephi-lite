@@ -1,6 +1,5 @@
 import { AppearanceState } from "@gephi/gephi-lite-sdk";
 
-import { CloudFile } from "../cloud/types";
 import { FiltersState } from "../filters/types";
 import { GraphDataset } from "../graph/types";
 
@@ -41,6 +40,17 @@ export interface LocalFile extends AbstractFile {
   updatedAt: Date;
   size: number;
   source: File;
+}
+
+export interface CloudFile extends AbstractFile {
+  type: "cloud";
+  id: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isPublic: boolean;
+  size: number;
+  webUrl?: string;
 }
 
 export type FileType = CloudFile | RemoteFile | LocalFile;

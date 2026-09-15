@@ -1,18 +1,21 @@
 import {
+  CoordinateGetter,
   DEFAULT_EDGE_COLOR,
   DEFAULT_EDGE_SIZE,
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
   DEFAULT_NODE_SIZE,
+  MISSING_PALETTE_COLOR,
   StaticDynamicItemData,
   toString,
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity, isNil, keyBy } from "lodash";
+import { clamp, forEach, identity, isNil, keyBy } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
+import { MERCATOR_PAN_BOUNDS, MERCATOR_SIZE_RATIO } from "../../utils/geo";
 import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
@@ -180,8 +183,12 @@ export function makeGetColor<
       break;
     case "partition":
       getColor = (data: StaticDynamicItemData) => {
-        const valueAsString = getFieldValue(data, colorsDef.field) + "";
-        return valueAsString in colorsDef.colorPalette ? colorsDef.colorPalette[valueAsString] : colorsDef.missingColor;
+        const valueAsString = getFieldValue(data, colorsDef.field) as string | undefined;
+        return valueAsString === undefined
+          ? colorsDef.missingColor
+          : valueAsString in colorsDef.colorPalette && colorsDef.colorPalette[valueAsString] !== null
+            ? colorsDef.colorPalette[valueAsString]
+            : MISSING_PALETTE_COLOR;
       };
       break;
     case "ranking": {
@@ -275,7 +282,7 @@ export function makeGetStringAttr<
   switch (stringAttrDef.type) {
     case "none":
       // using "" instead of null to workaround adge-node labels dependency see https://github.com/jacomyal/sigma.js/issues/1527
-      getLabel = () => "";
+      getLabel = itemKey === "images" ? null : () => "";
       break;
     case "fixed":
       getLabel = () => stringAttrDef.value;
@@ -298,11 +305,45 @@ export function getAllVisualGetters(
   dynamicNodeData: DynamicItemData,
   appearance: AppearanceState,
 ): VisualGetters {
+  let isMap = false;
+  let mapScale = 1;
+
+  if (appearance.backgroundLayer?.type === "map") {
+    isMap = true;
+    mapScale = appearance.backgroundLayer.map.scale || 1;
+  }
+
+  // Base size getters
+  const baseGetNodeSize = makeGetNumberAttr("nodes", "size", dataset, dynamicNodeData, appearance);
+  const baseGetEdgeSize = makeGetNumberAttr("edges", "size", dataset, dynamicNodeData, appearance);
+
+  // Wrap size getters to apply sizeRatio in map mode
+  const getNodeSize: NumberGetter | null =
+    baseGetNodeSize && isMap ? (data) => (baseGetNodeSize(data) * MERCATOR_SIZE_RATIO) / mapScale : baseGetNodeSize;
+  const getEdgeSize: NumberGetter | null =
+    baseGetEdgeSize && isMap ? (data) => (baseGetEdgeSize(data) * MERCATOR_SIZE_RATIO) / mapScale : baseGetEdgeSize;
+
+  const getNodePosition: CoordinateGetter | null = isMap
+    ? (pos) => ({
+        x: clamp((pos.x / mapScale + 180) / 360, MERCATOR_PAN_BOUNDS.x[0], MERCATOR_PAN_BOUNDS.x[1]),
+        y: clamp((pos.y / mapScale + 180) / 360, MERCATOR_PAN_BOUNDS.y[0], MERCATOR_PAN_BOUNDS.y[1]),
+      })
+    : null;
+
+  const reverseNodePosition: CoordinateGetter | null = isMap
+    ? (pos) => ({
+        x: (pos.x * 360 - 180) * mapScale,
+        y: (pos.y * 360 - 180) * mapScale,
+      })
+    : null;
+
   const nodeVisualGetters: VisualGetters = {
-    getNodeSize: makeGetNumberAttr("nodes", "size", dataset, dynamicNodeData, appearance),
+    getNodeSize,
     getNodeColor: makeGetColor("nodes", dataset, dynamicNodeData, appearance),
     getNodeLabel: makeGetStringAttr("nodes", "labels", dataset, appearance),
     getNodeImage: makeGetStringAttr("nodes", "images", dataset, appearance),
+    getNodePosition,
+    reverseNodePosition,
     getEdgeSize: null,
     getEdgeColor: null,
     getEdgeLabel: null,
@@ -311,7 +352,7 @@ export function getAllVisualGetters(
 
   return {
     ...nodeVisualGetters,
-    getEdgeSize: makeGetNumberAttr("edges", "size", dataset, dynamicNodeData, appearance),
+    getEdgeSize,
     getEdgeColor: makeGetColor("edges", dataset, dynamicNodeData, appearance, nodeVisualGetters),
     getEdgeLabel: makeGetStringAttr("edges", "labels", dataset, appearance),
     getEdgeZIndex: makeGetNumberAttr("edges", "zIndex", dataset, dynamicNodeData, appearance),
@@ -337,6 +378,14 @@ export function applyVisualProperties(
     if (getters.getNodeColor) attr.color = getters.getNodeColor(nodeData);
     if (getters.getNodeLabel) attr.label = getters.getNodeLabel(nodeData);
     if (getters.getNodeImage) attr.image = getters.getNodeImage(nodeData);
+    if (getters.getNodePosition) {
+      const pos = dataset.layout[node];
+      if (pos) {
+        const transformed = getters.getNodePosition(pos);
+        attr.x = transformed.x;
+        attr.y = transformed.y;
+      }
+    }
     graph.mergeNodeAttributes(node, attr);
   });
 

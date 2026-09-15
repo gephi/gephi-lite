@@ -5,6 +5,7 @@ import {
   FilteredGraph,
   FiltersState,
   ItemData,
+  NodeCoordinates,
   Scalar,
   getEmptyAppearanceState,
 } from "@gephi/gephi-lite-sdk";
@@ -24,7 +25,7 @@ import { Coordinates } from "sigma/types";
 
 import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { sessionStorage } from "../../utils/storage";
-import { appearanceAtom } from "../appearance";
+import { appearanceAtom, checkAppearanceAfterAttributeUpdate } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
 import { useGraphDataset } from "../context/dataContexts";
 import { EVENTS, emitter } from "../context/eventsContext";
@@ -166,7 +167,7 @@ const createFieldModel: Producer<GraphDataset, [FieldModel, { index?: number; va
       [dataKey]: values
         ? mapValues(state[dataKey], (data, itemId) => ({
             ...data,
-            [fieldModel.id]: values[itemId] || data[fieldModel.id],
+            [fieldModel.id]: !isNil(values[itemId]) ? values[itemId] : data[fieldModel.id],
           }))
         : state[dataKey],
     };
@@ -280,10 +281,13 @@ const deleteItemsAttribute: Producer<GraphDataset, [ItemType, string]> = (type, 
     };
   };
 };
-const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes]> = (node, attributes) => {
+const createNode: MultiProducer<
+  [GraphDataset, SearchState],
+  [string, { itemData: ItemData; technical: NodeCoordinates }]
+> = (node, { itemData = {}, technical }) => {
   return [
     (state) => {
-      const { data, position } = cleanNode(node, attributes);
+      const { data, position } = cleanNode(node, itemData, technical);
       state.fullGraph.addNode(node);
       const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
       return {
@@ -297,7 +301,7 @@ const createNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
   ];
 };
 
-const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes, string, string, boolean]> = (
+const createEdge: MultiProducer<[GraphDataset, SearchState], [string, ItemData, string, string, boolean]> = (
   edge,
   attributes,
   source,
@@ -327,14 +331,17 @@ const createEdge: MultiProducer<[GraphDataset, SearchState], [string, Attributes
     edgeIndex(edge),
   ];
 };
-const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes, { merge?: boolean }?]> = (
-  node,
-  attributes,
-  { merge } = {},
-) => {
+const updateNode: MultiProducer<
+  [GraphDataset, SearchState, AppearanceState],
+  [string, { itemData?: ItemData; technical?: NodeCoordinates; dynamic?: Attributes; merge?: boolean }]
+> = (node, { itemData = {}, technical, merge }) => {
   return [
-    (state) => {
-      const { data, position } = cleanNode(node, merge ? { ...state.nodeData[node], ...attributes } : attributes);
+    (state): GraphDataset => {
+      const { data, position } = cleanNode(
+        node,
+        merge ? { ...state.nodeData[node], ...itemData } : itemData,
+        technical || state.layout[node],
+      );
       const newNodeFieldModel = newItemModel<"nodes">("nodes", data, state.nodeFields);
       return {
         ...state,
@@ -344,15 +351,18 @@ const updateNode: MultiProducer<[GraphDataset, SearchState], [string, Attributes
       };
     },
     nodeIndex(node),
+    checkAppearanceAfterAttributeUpdate("nodes", node, itemData),
   ];
 };
 const updateEdge: MultiProducer<
-  [GraphDataset, SearchState],
-  [string, Attributes, { merge?: boolean; directed?: boolean }?]
-> = (edge, attributes, { merge, directed } = {}) => {
+  [GraphDataset, SearchState, AppearanceState],
+  [string, { itemData?: ItemData; technical?: NodeCoordinates; dynamic?: Attributes; merge?: boolean }]
+> = (edge, { itemData = {}, merge, dynamic }) => {
+  const directed = dynamic?.directed;
+
   return [
-    (state) => {
-      const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...attributes } : attributes);
+    (state): GraphDataset => {
+      const { data } = cleanEdge(edge, merge ? { ...state.edgeData[edge], ...itemData } : itemData);
       const newEdgeFieldModel = newItemModel<"edges">("edges", data, state.edgeFields);
 
       // Validate new edge direction:
@@ -373,8 +383,6 @@ const updateEdge: MultiProducer<
         fullGraph = newFullGraph;
       }
 
-      // Index the edge
-      searchActions.edgeIndex(edge);
       return {
         ...state,
         fullGraph,
@@ -383,6 +391,7 @@ const updateEdge: MultiProducer<
       };
     },
     edgeIndex(edge),
+    checkAppearanceAfterAttributeUpdate("edges", edge, itemData),
   ];
 };
 const updateItems: MultiProducer<[GraphDataset, SearchState], [ItemType, Set<string>, string, Scalar]> = (
@@ -494,8 +503,8 @@ export const graphDatasetActions = {
   // Graph items:
   createNode: multiProducerToAction(createNode, [graphDatasetAtom, searchAtom]),
   createEdge: multiProducerToAction(createEdge, [graphDatasetAtom, searchAtom]),
-  updateNode: multiProducerToAction(updateNode, [graphDatasetAtom, searchAtom]),
-  updateEdge: multiProducerToAction(updateEdge, [graphDatasetAtom, searchAtom]),
+  updateNode: multiProducerToAction(updateNode, [graphDatasetAtom, searchAtom, appearanceAtom]),
+  updateEdge: multiProducerToAction(updateEdge, [graphDatasetAtom, searchAtom, appearanceAtom]),
   updateItems: multiProducerToAction(updateItems, [graphDatasetAtom, searchAtom]),
   deleteItems: multiProducerToAction(deleteItems, [selectionAtom, graphDatasetAtom, searchAtom]),
   deleteItemsAttribute: producerToAction(deleteItemsAttribute, graphDatasetAtom),
@@ -553,6 +562,7 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
         if (
           appearanceElement &&
           !isString(appearanceElement) &&
+          "field" in appearanceElement &&
           appearanceElement.field &&
           // here we test only static field
           !appearanceElement.field.dynamic &&
@@ -571,7 +581,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
 
     // to keep appearance state in sync we must check at least partitions
     forEach(newState, (appearanceElement, key: keyof AppearanceState) => {
-      if (!appearanceElement || isString(appearanceElement) || !("type" in appearanceElement)) return appearanceElement;
+      if (
+        !appearanceElement ||
+        isString(appearanceElement) ||
+        !("type" in appearanceElement) ||
+        !("field" in appearanceElement)
+      )
+        return appearanceElement;
       // TODO
       // - check if data field quali/quanti is still the good one
 

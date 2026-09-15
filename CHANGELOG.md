@@ -1,5 +1,24 @@
 # Gephi Lite - Changelog:
 
+## 1.0.3 (WIP)
+
+### New features
+
+- Adding Ukrainian locale 
+- Display a message on the welcome modale if a newer version is available
+
+
+## 1.0.2
+
+### Debug
+
+- [#282](https://github.com/gephi/gephi-lite/pull/282): Get file format on remote file
+- [#285](https://github.com/gephi/gephi-lite/issues/285): Force-directed layout inertia field validation
+- [#276] (https://github.com/gephi/gephi-lite/issues/276): Term Filters shows missing values even if not selected in the UI
+- [#275](https://github.com/gephi/gephi-lite/issues/275): Can't filter on boolean attributes
+- [#274](https://github.com/gephi/gephi-lite/issues/274) & [#263](https://github.com/gephi/gephi-lite/issues/263): Layout performance issue
+- [265](https://github.com/gephi/gephi-lite/issues/265): No label in node hides edge label
+
 ## 1.0.1
 
 ### Debug

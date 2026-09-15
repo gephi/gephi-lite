@@ -1,0 +1,1905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+  <meta>
+    <title>Les Miserables.gexf</title>
+    <authors>Gephi 0.9.3</authors>
+  </meta>
+  <graph defaultedgetype="undirected">
+    <attributes class="node">
+      <attribute id="modularity_class" title="modularity_class" type="integer"/>
+    </attributes>
+    <attributes class="edge">
+      <attribute id="cooccurrence" title="cooccurrence" type="integer"/>
+    </attributes>
+    <nodes>
+      <node id="11" label="Valjean">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="100"/>
+        <viz:position x="-87.93029" y="6.8120565"/>
+      </node>
+      <node id="48" label="Gavroche">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="61.600006"/>
+        <viz:position x="387.89572" y="-110.462326"/>
+      </node>
+      <node id="55" label="Marius">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="53.37143"/>
+        <viz:position x="206.44687" y="13.805411"/>
+      </node>
+      <node id="27" label="Javert">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="47.88571"/>
+        <viz:position x="-81.46074" y="204.20204"/>
+      </node>
+      <node id="25" label="Thenardier">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="45.142853"/>
+        <viz:position x="82.80825" y="203.1144"/>
+      </node>
+      <node id="23" label="Fantine">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="42.4"/>
+        <viz:position x="-313.42786" y="289.44803"/>
+      </node>
+      <node id="58" label="Enjolras">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="42.4"/>
+        <viz:position x="355.78366" y="74.882454"/>
+      </node>
+      <node id="62" label="Courfeyrac">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="36.91429"/>
+        <viz:position x="436.17184" y="12.7286825"/>
+      </node>
+      <node id="64" label="Bossuet">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="36.91429"/>
+        <viz:position x="455.81955" y="115.45826"/>
+      </node>
+      <node id="63" label="Bahorel">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="34.17143"/>
+        <viz:position x="602.55225" y="-16.421427"/>
+      </node>
+      <node id="65" label="Joly">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="34.17143"/>
+        <viz:position x="516.40784" y="-47.242233"/>
+      </node>
+      <node id="24" label="MmeThenardier">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="31.428574"/>
+        <viz:position x="4.6313396" y="273.8517"/>
+      </node>
+      <node id="26" label="Cosette">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="31.428574"/>
+        <viz:position x="78.64646" y="31.512747"/>
+      </node>
+      <node id="41" label="Eponine">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="31.428574"/>
+        <viz:position x="238.36697" y="210.00926"/>
+      </node>
+      <node id="57" label="Mabeuf">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="31.428574"/>
+        <viz:position x="597.6618" y="-135.18481"/>
+      </node>
+      <node id="59" label="Combeferre">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="31.428574"/>
+        <viz:position x="515.2961" y="46.167564"/>
+      </node>
+      <node id="61" label="Feuilly">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="31.428574"/>
+        <viz:position x="550.1917" y="128.17537"/>
+      </node>
+      <node id="0" label="Myriel">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="28.685715"/>
+        <viz:position x="-266.82776" y="-299.6904"/>
+      </node>
+      <node id="66" label="Grantaire">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="28.685715"/>
+        <viz:position x="646.4313" y="151.06331"/>
+      </node>
+      <node id="68" label="Gueulemer">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="28.685715"/>
+        <viz:position x="78.4799" y="347.15146"/>
+      </node>
+      <node id="69" label="Babet">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="28.685715"/>
+        <viz:position x="150.35959" y="298.50797"/>
+      </node>
+      <node id="70" label="Claquesous">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="28.685715"/>
+        <viz:position x="137.3717" y="410.2809"/>
+      </node>
+      <node id="16" label="Tholomyes">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="25.942856"/>
+        <viz:position x="-385.2226" y="393.5572"/>
+      </node>
+      <node id="60" label="Prouvaire">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="25.942856"/>
+        <viz:position x="614.29285" y="69.3104"/>
+      </node>
+      <node id="71" label="Montparnasse">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="25.942856"/>
+        <viz:position x="234.87747" y="400.85983"/>
+      </node>
+      <node id="29" label="Bamatabois">
+        <attvalues>
+          <attvalue for="modularity_class" value="3"/>
+        </attvalues>
+        <viz:color r="194" g="245" b="91"/>
+        <viz:size value="23.2"/>
+        <viz:position x="-385.6842" y="20.206686"/>
+      </node>
+      <node id="17" label="Listolier">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="-516.55884" y="393.98975"/>
+      </node>
+      <node id="18" label="Fameuil">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="-464.79382" y="493.57944"/>
+      </node>
+      <node id="19" label="Blacheville">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="-515.1624" y="456.9891"/>
+      </node>
+      <node id="20" label="Favourite">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="-408.12122" y="464.5048"/>
+      </node>
+      <node id="21" label="Dahlia">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="-456.44113" y="425.13303"/>
+      </node>
+      <node id="22" label="Zephine">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="-459.1107" y="362.5133"/>
+      </node>
+      <node id="49" label="Gillenormand">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="126.4831" y="-68.10622"/>
+      </node>
+      <node id="51" label="MlleGillenormand">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="162.63559" y="-117.6565"/>
+      </node>
+      <node id="75" label="Brujon">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="238.79364" y="314.06345"/>
+      </node>
+      <node id="76" label="MmeHucheloup">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="20.457146"/>
+        <viz:position x="712.18353" y="-4.8131495"/>
+      </node>
+      <node id="34" label="Judge">
+        <attvalues>
+          <attvalue for="modularity_class" value="3"/>
+        </attvalues>
+        <viz:color r="194" g="245" b="91"/>
+        <viz:size value="17.714287"/>
+        <viz:position x="-387.84915" y="-58.7059"/>
+      </node>
+      <node id="35" label="Champmathieu">
+        <attvalues>
+          <attvalue for="modularity_class" value="3"/>
+        </attvalues>
+        <viz:color r="194" g="245" b="91"/>
+        <viz:size value="17.714287"/>
+        <viz:position x="-338.2307" y="-87.48405"/>
+      </node>
+      <node id="36" label="Brevet">
+        <attvalues>
+          <attvalue for="modularity_class" value="3"/>
+        </attvalues>
+        <viz:color r="194" g="245" b="91"/>
+        <viz:size value="17.714287"/>
+        <viz:position x="-453.26874" y="-58.94648"/>
+      </node>
+      <node id="37" label="Chenildieu">
+        <attvalues>
+          <attvalue for="modularity_class" value="3"/>
+        </attvalues>
+        <viz:color r="194" g="245" b="91"/>
+        <viz:size value="17.714287"/>
+        <viz:position x="-386.44904" y="-140.05937"/>
+      </node>
+      <node id="38" label="Cochepaille">
+        <attvalues>
+          <attvalue for="modularity_class" value="3"/>
+        </attvalues>
+        <viz:color r="194" g="245" b="91"/>
+        <viz:size value="17.714287"/>
+        <viz:position x="-446.7876" y="-123.38005"/>
+      </node>
+      <node id="28" label="Fauchelevent">
+        <attvalues>
+          <attvalue for="modularity_class" value="4"/>
+        </attvalues>
+        <viz:color r="245" g="194" b="91"/>
+        <viz:size value="12.228573"/>
+        <viz:position x="-225.73984" y="-82.41631"/>
+      </node>
+      <node id="31" label="Simplice">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="12.228573"/>
+        <viz:position x="-281.4253" y="158.45137"/>
+      </node>
+      <node id="54" label="LtGillenormand">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="12.228573"/>
+        <viz:position x="137.69348" y="-196.1069"/>
+      </node>
+      <node id="2" label="MlleBaptistine">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="9.485714"/>
+        <viz:position x="-212.76357" y="-245.29176"/>
+      </node>
+      <node id="3" label="MmeMagloire">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="9.485714"/>
+        <viz:position x="-242.82404" y="-235.26283"/>
+      </node>
+      <node id="39" label="Pontmercy">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="9.485714"/>
+        <viz:position x="336.49738" y="269.55914"/>
+      </node>
+      <node id="42" label="Anzelma">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="9.485714"/>
+        <viz:position x="189.69513" y="346.50662"/>
+      </node>
+      <node id="43" label="Woman2">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="9.485714"/>
+        <viz:position x="-187.00418" y="145.02663"/>
+      </node>
+      <node id="72" label="Toussaint">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="9.485714"/>
+        <viz:position x="40.942253" y="-113.78272"/>
+      </node>
+      <node id="12" label="Marguerite">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="-339.77908" y="184.69139"/>
+      </node>
+      <node id="30" label="Perpetue">
+        <attvalues>
+          <attvalue for="modularity_class" value="2"/>
+        </attvalues>
+        <viz:color r="91" g="194" b="245"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="-403.92447" y="197.69823"/>
+      </node>
+      <node id="33" label="Woman1">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="-234.6001" y="113.15067"/>
+      </node>
+      <node id="44" label="MotherInnocent">
+        <attvalues>
+          <attvalue for="modularity_class" value="4"/>
+        </attvalues>
+        <viz:color r="245" g="194" b="91"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="-252.99521" y="-129.87549"/>
+      </node>
+      <node id="47" label="MmeBurgon">
+        <attvalues>
+          <attvalue for="modularity_class" value="5"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="194"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="488.13535" y="-356.8573"/>
+      </node>
+      <node id="50" label="Magnon">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="127.07365" y="113.05923"/>
+      </node>
+      <node id="52" label="MmePontmercy">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="353.66415" y="205.89165"/>
+      </node>
+      <node id="56" label="BaronessT">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="194.82993" y="-224.78036"/>
+      </node>
+      <node id="73" label="Child1">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="437.939" y="-291.58234"/>
+      </node>
+      <node id="74" label="Child2">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="6.742859"/>
+        <viz:position x="466.04922" y="-283.3606"/>
+      </node>
+      <node id="1" label="Napoleon">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-418.08344" y="-446.8853"/>
+      </node>
+      <node id="4" label="CountessDeLo">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-379.30386" y="-429.06424"/>
+      </node>
+      <node id="5" label="Geborand">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-417.26337" y="-406.03506"/>
+      </node>
+      <node id="6" label="Champtercier">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-332.6012" y="-485.16974"/>
+      </node>
+      <node id="7" label="Cravatte">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-382.69568" y="-475.09113"/>
+      </node>
+      <node id="8" label="Count">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-320.384" y="-387.17325"/>
+      </node>
+      <node id="9" label="OldMan">
+        <attvalues>
+          <attvalue for="modularity_class" value="0"/>
+        </attvalues>
+        <viz:color r="91" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="-344.39832" y="-451.16772"/>
+      </node>
+      <node id="10" label="Labarre">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="-89.34107" y="-234.56128"/>
+      </node>
+      <node id="13" label="MmeDeR">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="-194.31313" y="-178.55301"/>
+      </node>
+      <node id="14" label="Isabeau">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="-158.05168" y="-201.99768"/>
+      </node>
+      <node id="15" label="Gervais">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="-127.701546" y="-242.55057"/>
+      </node>
+      <node id="32" label="Scaufflaire">
+        <attvalues>
+          <attvalue for="modularity_class" value="1"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="-122.41348" y="-210.37503"/>
+      </node>
+      <node id="40" label="Boulatruelle">
+        <attvalues>
+          <attvalue for="modularity_class" value="7"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="194"/>
+        <viz:size value="4"/>
+        <viz:position x="29.187843" y="460.13132"/>
+      </node>
+      <node id="45" label="Gribier">
+        <attvalues>
+          <attvalue for="modularity_class" value="4"/>
+        </attvalues>
+        <viz:color r="245" g="194" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="-296.07935" y="-163.11964"/>
+      </node>
+      <node id="46" label="Jondrette">
+        <attvalues>
+          <attvalue for="modularity_class" value="5"/>
+        </attvalues>
+        <viz:color r="245" g="91" b="194"/>
+        <viz:size value="4"/>
+        <viz:position x="550.3201" y="-522.4031"/>
+      </node>
+      <node id="53" label="MlleVaubois">
+        <attvalues>
+          <attvalue for="modularity_class" value="6"/>
+        </attvalues>
+        <viz:color r="194" g="91" b="245"/>
+        <viz:size value="4"/>
+        <viz:position x="165.43939" y="-339.7736"/>
+      </node>
+      <node id="67" label="MotherPlutarch">
+        <attvalues>
+          <attvalue for="modularity_class" value="8"/>
+        </attvalues>
+        <viz:color r="91" g="245" b="91"/>
+        <viz:size value="4"/>
+        <viz:position x="668.9568" y="-204.65488"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="geid_138_0" source="1" target="0">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_1" source="2" target="0" weight="8">
+        <attvalues>
+          <attvalue for="cooccurrence" value="8"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_2" source="3" target="0" weight="10">
+        <attvalues>
+          <attvalue for="cooccurrence" value="10"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_3" source="3" target="2" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_4" source="4" target="0">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_5" source="5" target="0">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_6" source="6" target="0">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_7" source="7" target="0">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_8" source="8" target="0" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_9" source="9" target="0">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_10" source="11" target="0" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_11" source="11" target="2" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_12" source="11" target="3" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_13" source="11" target="10">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_14" source="12" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_15" source="13" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_16" source="14" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_17" source="15" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_18" source="17" target="16" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_19" source="18" target="16" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_20" source="18" target="17" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_21" source="19" target="16" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_22" source="19" target="17" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_23" source="19" target="18" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_24" source="20" target="16" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_25" source="20" target="17" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_26" source="20" target="18" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_27" source="20" target="19" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_28" source="21" target="16" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_29" source="21" target="17" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_30" source="21" target="18" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_31" source="21" target="19" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_32" source="21" target="20" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_33" source="22" target="16" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_34" source="22" target="17" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_35" source="22" target="18" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_36" source="22" target="19" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_37" source="22" target="20" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_38" source="22" target="21" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_39" source="23" target="11" weight="9">
+        <attvalues>
+          <attvalue for="cooccurrence" value="9"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_40" source="23" target="12" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_41" source="23" target="16" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_42" source="23" target="17" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_43" source="23" target="18" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_44" source="23" target="19" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_45" source="23" target="20" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_46" source="23" target="21" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_47" source="23" target="22" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_48" source="24" target="11" weight="7">
+        <attvalues>
+          <attvalue for="cooccurrence" value="7"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_49" source="24" target="23" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_50" source="25" target="11" weight="12">
+        <attvalues>
+          <attvalue for="cooccurrence" value="12"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_51" source="25" target="23">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_52" source="25" target="24" weight="13">
+        <attvalues>
+          <attvalue for="cooccurrence" value="13"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_53" source="26" target="11" weight="31">
+        <attvalues>
+          <attvalue for="cooccurrence" value="31"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_54" source="26" target="16">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_55" source="26" target="24" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_56" source="26" target="25">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_57" source="27" target="11" weight="17">
+        <attvalues>
+          <attvalue for="cooccurrence" value="17"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_58" source="27" target="23" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_59" source="27" target="24">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_60" source="27" target="25" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_61" source="27" target="26">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_62" source="28" target="11" weight="8">
+        <attvalues>
+          <attvalue for="cooccurrence" value="8"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_63" source="28" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_64" source="29" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_65" source="29" target="23">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_66" source="29" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_67" source="30" target="23">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_68" source="31" target="11" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_69" source="31" target="23" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_70" source="31" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_71" source="31" target="30" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_72" source="32" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_73" source="33" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_74" source="33" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_75" source="34" target="11" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_76" source="34" target="29" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_77" source="35" target="11" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_78" source="35" target="29" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_79" source="35" target="34" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_80" source="36" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_81" source="36" target="29">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_82" source="36" target="34" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_83" source="36" target="35" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_84" source="37" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_85" source="37" target="29">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_86" source="37" target="34" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_87" source="37" target="35" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_88" source="37" target="36" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_89" source="38" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_90" source="38" target="29">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_91" source="38" target="34" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_92" source="38" target="35" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_93" source="38" target="36" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_94" source="38" target="37" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_95" source="39" target="25">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_96" source="40" target="25">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_97" source="41" target="24" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_98" source="41" target="25" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_99" source="42" target="24">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_100" source="42" target="25" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_101" source="42" target="41" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_102" source="43" target="11" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_103" source="43" target="26">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_104" source="43" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_105" source="44" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_106" source="44" target="28" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_107" source="45" target="28" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_108" source="47" target="46">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_109" source="48" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_110" source="48" target="25">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_111" source="48" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_112" source="48" target="47" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_113" source="49" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_114" source="49" target="26" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_115" source="50" target="24">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_116" source="50" target="49">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_117" source="51" target="11" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_118" source="51" target="26" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_119" source="51" target="49" weight="9">
+        <attvalues>
+          <attvalue for="cooccurrence" value="9"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_120" source="52" target="39">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_121" source="52" target="51">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_122" source="53" target="51">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_123" source="54" target="26">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_124" source="54" target="49">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_125" source="54" target="51" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_126" source="55" target="11" weight="19">
+        <attvalues>
+          <attvalue for="cooccurrence" value="19"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_127" source="55" target="16">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_128" source="55" target="25" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_129" source="55" target="26" weight="21">
+        <attvalues>
+          <attvalue for="cooccurrence" value="21"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_130" source="55" target="39">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_131" source="55" target="41" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_132" source="55" target="48" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_133" source="55" target="49" weight="12">
+        <attvalues>
+          <attvalue for="cooccurrence" value="12"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_134" source="55" target="51" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_135" source="55" target="54">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_136" source="56" target="49">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_137" source="56" target="55">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_138" source="57" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_139" source="57" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_140" source="57" target="55">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_141" source="58" target="11" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_142" source="58" target="27" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_143" source="58" target="48" weight="7">
+        <attvalues>
+          <attvalue for="cooccurrence" value="7"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_144" source="58" target="55" weight="7">
+        <attvalues>
+          <attvalue for="cooccurrence" value="7"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_145" source="58" target="57">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_146" source="59" target="48" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_147" source="59" target="55" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_148" source="59" target="57" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_149" source="59" target="58" weight="15">
+        <attvalues>
+          <attvalue for="cooccurrence" value="15"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_150" source="60" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_151" source="60" target="58" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_152" source="60" target="59" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_153" source="61" target="48" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_154" source="61" target="55">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_155" source="61" target="57">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_156" source="61" target="58" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_157" source="61" target="59" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_158" source="61" target="60" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_159" source="62" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_160" source="62" target="48" weight="7">
+        <attvalues>
+          <attvalue for="cooccurrence" value="7"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_161" source="62" target="55" weight="9">
+        <attvalues>
+          <attvalue for="cooccurrence" value="9"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_162" source="62" target="57" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_163" source="62" target="58" weight="17">
+        <attvalues>
+          <attvalue for="cooccurrence" value="17"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_164" source="62" target="59" weight="13">
+        <attvalues>
+          <attvalue for="cooccurrence" value="13"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_165" source="62" target="60" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_166" source="62" target="61" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_167" source="63" target="48" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_168" source="63" target="55">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_169" source="63" target="57" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_170" source="63" target="58" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_171" source="63" target="59" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_172" source="63" target="60" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_173" source="63" target="61" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_174" source="63" target="62" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_175" source="64" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_176" source="64" target="48" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_177" source="64" target="55" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_178" source="64" target="57">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_179" source="64" target="58" weight="10">
+        <attvalues>
+          <attvalue for="cooccurrence" value="10"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_180" source="64" target="59" weight="9">
+        <attvalues>
+          <attvalue for="cooccurrence" value="9"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_181" source="64" target="60" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_182" source="64" target="61" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_183" source="64" target="62" weight="12">
+        <attvalues>
+          <attvalue for="cooccurrence" value="12"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_184" source="64" target="63" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_185" source="65" target="48" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_186" source="65" target="55" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_187" source="65" target="57">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_188" source="65" target="58" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_189" source="65" target="59" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_190" source="65" target="60" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_191" source="65" target="61" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_192" source="65" target="62" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_193" source="65" target="63" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_194" source="65" target="64" weight="7">
+        <attvalues>
+          <attvalue for="cooccurrence" value="7"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_195" source="66" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_196" source="66" target="58" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_197" source="66" target="59">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_198" source="66" target="60">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_199" source="66" target="61">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_200" source="66" target="62" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_201" source="66" target="63">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_202" source="66" target="64" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_203" source="66" target="65" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_204" source="67" target="57" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_205" source="68" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_206" source="68" target="24">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_207" source="68" target="25" weight="5">
+        <attvalues>
+          <attvalue for="cooccurrence" value="5"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_208" source="68" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_209" source="68" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_210" source="68" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_211" source="69" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_212" source="69" target="24">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_213" source="69" target="25" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_214" source="69" target="27" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_215" source="69" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_216" source="69" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_217" source="69" target="68" weight="6">
+        <attvalues>
+          <attvalue for="cooccurrence" value="6"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_218" source="70" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_219" source="70" target="24">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_220" source="70" target="25" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_221" source="70" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_222" source="70" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_223" source="70" target="58">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_224" source="70" target="68" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_225" source="70" target="69" weight="4">
+        <attvalues>
+          <attvalue for="cooccurrence" value="4"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_226" source="71" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_227" source="71" target="25">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_228" source="71" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_229" source="71" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_230" source="71" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_231" source="71" target="68" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_232" source="71" target="69" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_233" source="71" target="70" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_234" source="72" target="11">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_235" source="72" target="26" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_236" source="72" target="27">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_237" source="73" target="48" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_238" source="74" target="48" weight="2">
+        <attvalues>
+          <attvalue for="cooccurrence" value="2"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_239" source="74" target="73" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_240" source="75" target="25" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_241" source="75" target="41">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_242" source="75" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_243" source="75" target="68" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_244" source="75" target="69" weight="3">
+        <attvalues>
+          <attvalue for="cooccurrence" value="3"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_245" source="75" target="70">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_246" source="75" target="71">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_247" source="76" target="48">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_248" source="76" target="58">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_249" source="76" target="62">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_250" source="76" target="63">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_251" source="76" target="64">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_252" source="76" target="65">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+      <edge id="geid_138_253" source="76" target="66">
+        <attvalues>
+          <attvalue for="cooccurrence" value="1"/>
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
