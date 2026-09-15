@@ -124,7 +124,7 @@ export const resetStates: Action<[boolean]> = (full = false) => {
   layoutActions.stopLayout();
 
   if (full) {
-    userActions.reset();
+    userActions.logout();
     sessionActions.reset();
   }
 };
@@ -145,7 +145,7 @@ export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useTopologicalFilters = makeUseAtom(CONTEXTS.topologicalFilters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
-export const useUser = makeUseAtom(CONTEXTS.user);
+export const useConnectedUser = makeUseAtom(CONTEXTS.user);
 export const useDynamicItemData = makeUseAtom(CONTEXTS.dynamicItemData);
 export const useSessionData = makeUseAtom(CONTEXTS.session);
 

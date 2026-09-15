@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next";
 import { localStorage } from "../../utils/storage";
 import { ghProviderDeserialize } from "../cloud/github/provider";
 import { useNotifications } from "../notifications";
-import { LS_USER_KEY, useConnectedUser } from "./index";
+import { userActions } from "./actions";
+
+export const LS_USER_KEY = "user";
 
 /**
  * Sync user saved in localstorage with the atom.
@@ -14,7 +16,6 @@ import { LS_USER_KEY, useConnectedUser } from "./index";
 export const AuthInit: FC = () => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
-  const [, setUser] = useConnectedUser();
 
   useEffect(() => {
     const lsUserString = localStorage.getItem(LS_USER_KEY);
@@ -23,7 +24,7 @@ export const AuthInit: FC = () => {
         const lsUser = JSON.parse(lsUserString);
         // TODO: need to check the validity of the user
         // before to set it and also to find a better way to deserialize provider
-        setUser({ ...lsUser, provider: ghProviderDeserialize(lsUser.provider) });
+        userActions.login({ ...lsUser, provider: ghProviderDeserialize(lsUser.provider) });
       } catch (e) {
         console.error("Failed to load user from localstorage", e);
         notify({
@@ -31,10 +32,10 @@ export const AuthInit: FC = () => {
           title: `${t("gephi-lite.title")}`,
           message: "TODO",
         });
-        setUser(null);
+        userActions.logout();
       }
     }
-  }, [setUser, notify, t]);
+  }, [notify, t]);
 
   return null;
 };

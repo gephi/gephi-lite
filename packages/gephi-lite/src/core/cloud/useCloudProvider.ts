@@ -1,13 +1,11 @@
 import { isNil } from "lodash";
 import { useCallback, useState } from "react";
 
-import { useFile, useFileActions } from "../context/dataContexts";
+import { useConnectedUser, useFile, useFileActions } from "../context/dataContexts";
 import { CloudFile } from "../file/types";
-import { useConnectedUser } from "../user";
 
-// TODO: need to be refacto by atom/action/producer pattern
 export function useCloudProvider() {
-  const [user] = useConnectedUser();
+  const user = useConnectedUser();
   const { current: currentFile } = useFile();
   const { open, exportAsGephiLite, setCurrentFile } = useFileActions();
 

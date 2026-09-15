@@ -2,11 +2,11 @@ import cx from "classnames";
 import { CSSProperties, FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useConnectedUser } from "../../core/user";
+import { useConnectedUser } from "../../core/context/dataContexts";
 import { UserIcon } from "../common-icons";
 
 export const UserAvatar: FC<{ className?: string; style?: CSSProperties }> = ({ className, style }) => {
-  const [user] = useConnectedUser();
+  const user = useConnectedUser();
   const { t } = useTranslation();
 
   return (

@@ -6,3 +6,5 @@ export interface User {
   avatar?: string;
   provider: CloudProvider;
 }
+
+export type UserState = User | null;

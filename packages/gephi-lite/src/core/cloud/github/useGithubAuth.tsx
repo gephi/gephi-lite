@@ -4,7 +4,7 @@ import { request } from "@octokit/request";
 import { useCallback, useMemo, useState } from "react";
 
 import { config } from "../../../config";
-import { useConnectedUser } from "../../user";
+import { useConnectedUser, useUserActions } from "../../context/dataContexts";
 import { GithubProvider } from "./provider";
 
 export function useGithubAuth() {
@@ -19,7 +19,8 @@ export function useGithubAuth() {
   // if there is an error during the process
   const [error, setError] = useState<string | null>(null);
   // the connected user
-  const [user, setUser] = useConnectedUser();
+  const user = useConnectedUser();
+  const userActions = useUserActions();
 
   // Create the auth device object and rtrieve the code+url
   const auth = useMemo(() => {
@@ -45,7 +46,7 @@ export function useGithubAuth() {
   const login = useCallback(async () => {
     setLoading(true);
     setWaiting(false);
-    setUser(null);
+    userActions.logout();
     setUrl(null);
     setCode(null);
     setError(null);
@@ -63,7 +64,7 @@ export function useGithubAuth() {
         auth: token,
       });
       const response = await octokit.request("GET /user", {});
-      setUser({
+      userActions.login({
         id: response.data.login,
         name: response.data.name || response.data.login,
         avatar: response.data.avatar_url,
@@ -75,7 +76,7 @@ export function useGithubAuth() {
       setWaiting(false);
       setLoading(false);
     }
-  }, [auth, setUser]);
+  }, [auth, userActions]);
 
   return { login, url, code, loading, error, user, waiting };
 }

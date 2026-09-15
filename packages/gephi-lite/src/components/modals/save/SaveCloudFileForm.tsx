@@ -3,10 +3,9 @@ import { useTranslation } from "react-i18next";
 import { PiCloudArrowUp } from "react-icons/pi";
 
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
-import { useFile, useFileActions } from "../../../core/context/dataContexts";
+import { useConnectedUser, useFile, useFileActions } from "../../../core/context/dataContexts";
 import { getFilename } from "../../../core/file/utils";
 import { useNotifications } from "../../../core/notifications";
-import { useConnectedUser } from "../../../core/user";
 import type { AsyncStatus } from "../../../utils/promises";
 import { Loader } from "../../Loader";
 import { PleaseSignIn } from "../../user/PleaseSignIn";
@@ -17,7 +16,7 @@ interface SaveCloudFileFormProps {
 }
 export const SaveCloudFileForm: FC<SaveCloudFileFormProps> = ({ id, onStatusChange }) => {
   const { t } = useTranslation();
-  const [user] = useConnectedUser();
+  const user = useConnectedUser();
   const { loading, error, createFile } = useCloudProvider();
   const { notify } = useNotifications();
   const { exportAsGephiLite } = useFileActions();
