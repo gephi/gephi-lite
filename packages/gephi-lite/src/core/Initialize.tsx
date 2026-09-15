@@ -21,7 +21,7 @@ import { preferencesAtom } from "./preferences";
 import { getCurrentPreferences } from "./preferences/utils";
 import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
-import { resetCamera } from "./sigma";
+import { sigmaActions } from "./sigma/actions";
 import { AuthInit } from "./user/AuthInit";
 
 // This awful flag helps to deal with the double rendering caused from
@@ -161,7 +161,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
           graphDatasetAtom.set(dataset);
           filtersAtom.set((prev) => filters || prev);
           appearanceAtom.set((prev) => appearance || prev);
-          resetCamera({ forceRefresh: true });
+          sigmaActions.resetCamera({ forceRefresh: true });
 
           if (dataset.fullGraph.order > 0) showWelcomeModal = false;
         }

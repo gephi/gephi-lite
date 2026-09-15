@@ -15,7 +15,7 @@ import {
 } from "../graph";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { sessionAtom } from "../session/atom";
-import { resetCamera } from "../sigma";
+import { sigmaActions } from "../sigma/actions";
 import { layoutStateAtom } from "./atom";
 import { LAYOUTS } from "./collection";
 import { LayoutQuality, LayoutState } from "./types";
@@ -89,7 +89,7 @@ export const startLayout = asyncAction(
         // To prevent resetting the camera before sigma receives new data, we
         // need to wait a frame, and also wait for it to trigger a refresh:
         setTimeout(() => {
-          resetCamera({ forceRefresh: true });
+          sigmaActions.resetCamera({ forceRefresh: true });
         }, 0);
       }
 
@@ -136,7 +136,7 @@ const restartLastLayout = asyncAction(async () => {
   }
 });
 
-export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
+const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
   return (state) => ({ ...state, quality });
 };
 

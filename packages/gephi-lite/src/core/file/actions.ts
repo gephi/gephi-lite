@@ -10,7 +10,7 @@ import { resetStates } from "../context/dataContexts";
 import { filtersActions, filtersAtom } from "../filters";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
 import { initializeGraphDataset } from "../graph/utils";
-import { resetCamera } from "../sigma";
+import { sigmaActions } from "../sigma/actions";
 import { fileAtom } from "./atom";
 import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
 import { getEmptyFileState, getFullDataGraph, openAndParseFile } from "./utils";
@@ -70,7 +70,7 @@ const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { force?: boo
     fileActions.setCurrentFile({ ...file, format });
 
     // Reset the camera
-    resetCamera({ forceRefresh: true });
+    sigmaActions.resetCamera({ forceRefresh: true });
     fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
