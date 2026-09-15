@@ -7,9 +7,40 @@ import { has, isArray, isFunction, isObject } from "lodash";
 import { parse as parseVersion } from "semver";
 
 import { config } from "../../config";
+import { applyVisualProperties } from "../appearance/utils";
 import { GephiLiteError } from "../errors";
+import { dynamicItemDataAtom, filteredGraphAtom, graphDatasetAtom, visualGettersAtom } from "../graph";
+import { dataGraphToFullGraph } from "../graph/utils";
 import { userAtom } from "../user";
-import { FileFormat, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
+import { FileFormat, FileState, FileTypeWithoutFormat, GephiLiteFileFormat, fileFormatExt } from "./types";
+
+export function getEmptyFileState(): FileState {
+  return { current: null, recentFiles: [], status: { type: "idle" } };
+}
+
+export function getLocalStorageFileState(): FileState {
+  const raw = localStorage.getItem("file");
+  const state = raw ? JSON.parse(raw) : null;
+  return {
+    ...getEmptyFileState(),
+    ...state,
+    status: { type: "idle" },
+  };
+}
+
+export function getFullDataGraph(): Graph {
+  // get the full graph
+  const graphDataset = graphDatasetAtom.get();
+  const filteredGraph = filteredGraphAtom.get();
+  const dynamicNodeData = dynamicItemDataAtom.get();
+  const fullDataGraph = dataGraphToFullGraph(graphDataset, filteredGraph);
+
+  // apply current appearance on the graph
+  const visualGetters = visualGettersAtom.get();
+  applyVisualProperties(fullDataGraph, graphDataset, dynamicNodeData, visualGetters);
+
+  return fullDataGraph;
+}
 
 /**
  * Returns the content of the given file.

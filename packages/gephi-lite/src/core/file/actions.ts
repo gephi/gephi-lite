@@ -1,0 +1,123 @@
+import { gephiLiteStringify } from "@gephi/gephi-lite-sdk";
+import { Producer, asyncAction, producerToAction } from "@ouestware/atoms";
+import { write } from "graphology-gexf";
+import { isEmpty, isEqual } from "lodash";
+
+import { config } from "../../config";
+import { appearanceActions, appearanceAtom } from "../appearance";
+import { inferAppearanceState } from "../appearance/utils";
+import { resetStates } from "../context/dataContexts";
+import { filtersActions, filtersAtom } from "../filters";
+import { graphDatasetActions, graphDatasetAtom } from "../graph";
+import { initializeGraphDataset } from "../graph/utils";
+import { resetCamera } from "../sigma";
+import { fileAtom } from "./atom";
+import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
+import { getEmptyFileState, getFullDataGraph, openAndParseFile } from "./utils";
+
+const setCurrentFile: Producer<FileState, [FileType | null]> = (file) => {
+  return (prev) => {
+    return {
+      ...prev,
+      current: file,
+      recentFiles:
+        file === null ? prev.recentFiles : [file, ...prev.recentFiles.filter((f) => !isEqual(f, file))].slice(0, 5),
+    };
+  };
+};
+
+const reset: Producer<FileState, [boolean]> = (full) => {
+  return (prev) => {
+    if (full) return getEmptyFileState();
+    return { ...prev, current: null };
+  };
+};
+
+const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { force?: boolean } = {}) => {
+  if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");
+  fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
+
+  try {
+    // Parse the file
+    const { data, metadata, format } = await openAndParseFile(file, opts);
+
+    // Do the import
+    resetStates(false);
+    if (format === "gephi-lite") {
+      const { graphDataset, appearance, filters } = data;
+      // Load the graph
+      const { setGraphDataset } = graphDatasetActions;
+      setGraphDataset(graphDataset);
+      // Load appearance
+      const { setFullState } = appearanceActions;
+      setFullState(appearance);
+      // Load filters
+      const { setFilters } = filtersActions;
+      setFilters(filters);
+    } else {
+      const { setGraphDataset } = graphDatasetActions;
+      const { mergeState } = appearanceActions;
+      data.setAttribute("title", file.filename);
+
+      const graphDataset = initializeGraphDataset(data, metadata);
+      setGraphDataset(graphDataset);
+
+      const appearanceState = inferAppearanceState(graphDataset);
+      if (!isEmpty(appearanceState)) mergeState(appearanceState);
+    }
+
+    // Add the new file in the history list
+    fileActions.setCurrentFile({ ...file, format });
+
+    // Reset the camera
+    resetCamera({ forceRefresh: true });
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+  } catch (e) {
+    fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
+    throw e;
+  }
+});
+
+const exportAsGephiLite = asyncAction(async (callback: (data: string) => void | Promise<void>) => {
+  // set loading
+  fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
+  try {
+    const data: GephiLiteFileFormat = {
+      type: "gephi-lite",
+      version: config.version.current.toString(),
+      graphDataset: graphDatasetAtom.get(),
+      filters: filtersAtom.get(),
+      appearance: appearanceAtom.get(),
+    };
+    const content = gephiLiteStringify(data);
+    await callback(content);
+    // idle state
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+  } catch (e) {
+    fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
+  }
+});
+
+const exportAsGexf = asyncAction(async (callback: (content: string) => void | Promise<void>) => {
+  // set loading
+  fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
+  try {
+    const graphToExport = getFullDataGraph();
+    // generate the gexf
+    const content = write(graphToExport, {});
+    // Calling the callback
+    await callback(content);
+    // idle state
+    fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+  } catch (e) {
+    fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
+  }
+});
+
+export const fileActions = {
+  open,
+  exportAsGephiLite,
+  exportAsGexf,
+  reset: producerToAction(reset, fileAtom),
+  setCurrentFile: producerToAction(setCurrentFile, fileAtom),
+};
