@@ -4,11 +4,15 @@ import { useTranslation } from "react-i18next";
 import { version } from "../../../package.json";
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
-import { useFile, useFileActions, useGraphDatasetActions, usePreferences } from "../../core/context/dataContexts";
+import { config } from "../../config";
+import { useFile, useFileActions, usePreferences } from "../../core/context/dataContexts";
+import { useConfirmLeaveUnsaved } from "../../core/file/useConfirmLeaveUnsaved";
+import { useNewGraph } from "../../core/file/useNewGraph";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
 import { getAppliedTheme } from "../../core/preferences/utils";
+import { displayDateTime } from "../../utils/date";
 import { Loader } from "../Loader";
 import { GitHubIcon } from "../common-icons";
 import { Modal } from "../modals";
@@ -21,11 +25,12 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { openModal } = useModal();
   const { notify } = useNotifications();
   const { theme } = usePreferences();
-  const { resetGraph } = useGraphDatasetActions();
   const {
     status: { type: fileStateType },
   } = useFile();
   const { open } = useFileActions();
+  const confirmLeaveUnsaved = useConfirmLeaveUnsaved();
+  const openNewGraph = useNewGraph();
 
   useEffect(() => {
     if (fileStateType === "error") {
@@ -53,6 +58,13 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
               changelog
             </a>
           </div>
+          {/* Discreet on purpose (see text-muted): only useful to confirm which build is actually
+              running, not something that should draw the eye like the version number above. */}
+          {config.gitCommitHash && config.buildDate && (
+            <div className="text-muted small">
+              {config.gitCommitHash} - {displayDateTime(config.buildDate)}
+            </div>
+          )}
           <div className="d-flex flex-wrap align-items-center gl-gap-2 justify-content-center mt-3">
             <a rel="noreferrer" target="_blank" className="gl-btn gl-btn-outline" href="https://gephi.org/lite">
               {t("welcome.website")}
@@ -78,6 +90,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="gl-btn text-start"
                 title={t(`graph.open.local.title`)}
                 onClick={() => {
+                  if (!confirmLeaveUnsaved()) return;
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "local" } });
                 }}
               >
@@ -89,6 +102,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 className="gl-btn text-start"
                 title={t(`graph.open.github.title`)}
                 onClick={() => {
+                  if (!confirmLeaveUnsaved()) return;
                   openModal({ component: OpenModal, arguments: { initialOpenedTab: "github" } });
                 }}
               >
@@ -98,11 +112,8 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             <li className="mb-1">
               <button
                 className="gl-btn text-start"
-                title={t(`graph.open.github.title`)}
-                onClick={() => {
-                  resetGraph();
-                  submit({});
-                }}
+                title={t(`graph.open.new.title`)}
+                onClick={() => openNewGraph(() => submit({}))}
               >
                 {t(`graph.open.new.title`)}
               </button>
@@ -116,6 +127,7 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 <button
                   className="gl-btn text-start"
                   onClick={async () => {
+                    if (!confirmLeaveUnsaved()) return;
                     await open({
                       type: "remote",
                       url: `${import.meta.env.BASE_URL}samples/${sample}`,

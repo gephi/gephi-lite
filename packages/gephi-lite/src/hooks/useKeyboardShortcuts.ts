@@ -47,8 +47,10 @@ export function useKeyboardShortcuts(shortcuts?: Shortcut[]) {
     // Listen keyboard event on document
     const handleKeyboardEvents = (event: KeyboardEvent) => {
       if (event.target instanceof Element) {
-        // prevent keyboard shortcut execution in text inputs.
-        if (event.target.matches("input, textarea")) return;
+        // prevent keyboard shortcut execution in text inputs, except Escape: it's the universal
+        // cancel/close key, and modals are full of text inputs, so blocking it there would make
+        // Escape unable to close a modal as soon as a field has focus.
+        if (event.code !== "Escape" && event.target.matches("input, textarea")) return;
 
         // disable the handler for chrome developer tools
         if (event.code === "KeyI" && event.metaKey && event.altKey) return;

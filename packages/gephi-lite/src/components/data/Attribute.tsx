@@ -16,14 +16,19 @@ import ReactLinkify from "react-linkify";
 import { MultiValueProps, OptionProps, SingleValueProps, components } from "react-select";
 import { GroupBase } from "react-select/dist/declarations/src/types";
 
-import { castScalarToModelValue, serializeModelValueToScalar } from "../../core/graph/fieldModel";
+import {
+  castScalarToEditableValue,
+  castScalarToModelValue,
+  serializeModelValueToScalar,
+} from "../../core/graph/fieldModel";
 import { useDataCollection } from "../../hooks/useDataCollection";
 import { prettifyURL } from "../../utils/linkify";
 import { DEFAULT_LINKIFY_PROPS } from "../../utils/url";
 import ColorPicker, { InlineColorPicker } from "../ColorPicker";
 import MessageTooltip from "../MessageTooltip";
-import { FieldModelIcon, InvalidDataIcon } from "../common-icons";
+import { CancelIcon, FieldModelIcon, InvalidDataIcon } from "../common-icons";
 import { Checkbox } from "../forms/Checkbox";
+import { NumberInput } from "../forms/NumberInput";
 import { CreatableSelect, StringOption, optionize } from "../forms/Select";
 
 /**
@@ -96,6 +101,35 @@ export const RenderKeywords = AttributeRenderers.keywords;
 export const RenderDate = AttributeRenderers.date;
 export const RenderColor = AttributeRenderers.color;
 
+// Order-sensitive "first empty field" autofocus: a value is considered empty when it's the
+// field's own no-value state (unset, blank, or an empty list) - 0 and false are real values, not emptiness.
+export const isEmptyFieldValue = (value: unknown): boolean =>
+  value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
+
+export const getFirstEmptyValueIndex = (values: unknown[]): number => values.findIndex(isEmptyFieldValue);
+
+/**
+ * The "no value" marker to store in a react-hook-form field when the user empties it.
+ *
+ * It cannot be `undefined`: react-hook-form falls back to a field's defaultValue whenever its value
+ * is `undefined`, so the original value would pop straight back the moment the input becomes empty -
+ * making the field impossible to clear (and thus to retype). `null` means the same thing, but being
+ * a *defined* value it is kept as-is, and every `castScalarToModelValue` branch reads it as empty.
+ */
+export const EMPTY_FIELD_VALUE = null;
+
+/** Normalizes what an editor emits into a value react-hook-form will not silently revert. */
+export const toFormFieldValue = (value: Scalar): Scalar => value ?? EMPTY_FIELD_VALUE;
+
+/**
+ * Whether a value can be stored in the given field. Emptiness is always valid (the attribute is
+ * simply not set); anything else must survive the field's cast, ie. actually be a URL, a number, a
+ * date... Used to validate on submit rather than while typing, so an incomplete entry never fights
+ * the user mid-input.
+ */
+export const isValidFieldValue = (scalar: Scalar, field: FieldModelTypeSpec): boolean =>
+  isEmptyFieldValue(scalar) || castScalarToModelValue(scalar, field) !== undefined;
+
 export const RenderItemAttribute: FC<{ field: FieldModelTypeSpec; value: Scalar }> = ({ field, value }) => {
   const castValue = castScalarToModelValue(value, field);
   const AttributeRenderer = AttributeRenderers[field.type] as FC<{ value?: ModelValueType }>;
@@ -132,6 +166,9 @@ const StringEditor = ({
       ref={ref}
       className="form-control"
       type="string"
+      // The browser's own "previously typed values" dropdown would cover the suggestions this form
+      // shows underneath (similar nodes, matching edges...), hiding the very thing the user needs.
+      autoComplete="off"
       value={value ?? ""}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value || undefined)}
@@ -152,25 +189,9 @@ export const AttributeEditors: {
 } = {
   text: StringEditor,
   url: StringEditor,
-  number: ({ value, onChange, id, autoFocus, placeholder }) => {
-    const ref = useRef<HTMLInputElement>(null);
-    useEffect(() => {
-      if (ref.current && autoFocus) ref.current.focus();
-    }, [autoFocus]);
-
-    return (
-      <input
-        id={id}
-        ref={ref}
-        className="form-control"
-        type="number"
-        value={value ?? ""}
-        step="any"
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
-      />
-    );
-  },
+  number: ({ value, onChange, id, autoFocus, placeholder }) => (
+    <NumberInput id={id} value={value} onChange={onChange} autoFocus={autoFocus} placeholder={placeholder} />
+  ),
   boolean: ({ value, onChange, id, autoFocus }) => (
     <div className="form-check h-100 ">
       <Checkbox
@@ -302,6 +323,7 @@ export const AttributeEditors: {
         ref={ref}
         className="form-control"
         type={inputType}
+        autoComplete="off"
         value={value?.toFormat(inputDateFormat) ?? ""}
         placeholder={placeholder}
         onChange={(e) => {
@@ -311,14 +333,14 @@ export const AttributeEditors: {
       />
     );
   },
-  color: ({ value, onChange, inTooltip }) => {
+  color: ({ value, onChange, inTooltip, autoFocus }) => {
     return inTooltip ? (
       <div className="custom-color-picker">
         <InlineColorPicker color={value} onChange={(v) => onChange(v)} />
       </div>
     ) : (
       <div className="d-flex">
-        <ColorPicker clearable color={value} onChange={(v) => onChange(v)} />
+        <ColorPicker clearable color={value} onChange={(v) => onChange(v)} autoFocus={autoFocus} />
       </div>
     );
   },
@@ -330,6 +352,11 @@ export const EditCategory = AttributeEditors.category;
 export const EditKeywords = AttributeEditors.keywords;
 export const EditDate = AttributeEditors.date;
 
+// Field types whose editor is a plain input, with no built-in way to empty it in one gesture: the
+// selects (category, keywords) and the color picker already provide their own clear control, and a
+// checkbox is never "empty".
+const CLEARABLE_WITH_BUTTON: FieldModelType[] = ["text", "url", "number", "date"];
+
 export const EditItemAttribute: FC<{
   field: FieldModel<ItemType, boolean>;
   scalar: Scalar;
@@ -338,7 +365,15 @@ export const EditItemAttribute: FC<{
   autoFocus?: boolean;
   inTooltip?: boolean;
   placeholder?: string;
-}> = ({ field, scalar, onChange, id, autoFocus, inTooltip, placeholder }) => {
+  /**
+   * Adds a button emptying the field in one click, for the plain-input types that have no such
+   * control of their own. Opt-in: it is meant for form-like editors (node/edge edition), and would
+   * be ambiguous next to a cancel button of the same shape (see the data table cell editor).
+   */
+  clearable?: boolean;
+}> = ({ field, scalar, onChange, id, autoFocus, inTooltip, placeholder, clearable }) => {
+  const { t } = useTranslation();
+  const editorWrapper = useRef<HTMLDivElement>(null);
   const EditComponent = AttributeEditors[field.type] as FC<{
     field: FieldModel<ItemType, boolean>;
     onChange: (value?: FieldModelAbstraction[FieldModelType]["expectedOutput"]) => void;
@@ -349,16 +384,44 @@ export const EditItemAttribute: FC<{
     inTooltip?: boolean;
   }>;
 
-  return (
+  const editor = (
     <EditComponent
       id={id}
       field={field}
       autoFocus={autoFocus}
       inTooltip={inTooltip}
       placeholder={placeholder}
-      value={castScalarToModelValue(scalar, field)}
-      onChange={(value) => onChange(serializeModelValueToScalar(value, field, scalar))}
+      value={castScalarToEditableValue(scalar, field)}
+      onChange={(value) => onChange(toFormFieldValue(serializeModelValueToScalar(value, field, scalar)))}
     />
+  );
+
+  if (!clearable || !CLEARABLE_WITH_BUTTON.includes(field.type)) return editor;
+
+  return (
+    <div className="d-flex align-items-center gl-gap-1">
+      {/* min-width:0 lets the editor shrink inside the flex row instead of overflowing it. */}
+      <div ref={editorWrapper} className="flex-grow-1" style={{ minWidth: 0 }}>
+        {editor}
+      </div>
+      <button
+        type="button"
+        className="gl-btn gl-btn-icon gl-btn-outline flex-shrink-0"
+        title={t("common.clear")}
+        aria-label={t("common.clear")}
+        disabled={isEmptyFieldValue(scalar)}
+        // Emptying a field is a step in retyping it, so the caret must stay where the user is going
+        // to type: don't take the focus on press, and hand it back to the field afterwards (it may
+        // not have had it, and the button gets disabled right after clearing anyway).
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => {
+          onChange(EMPTY_FIELD_VALUE);
+          editorWrapper.current?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input, textarea")?.focus();
+        }}
+      >
+        <CancelIcon />
+      </button>
+    </div>
   );
 };
 

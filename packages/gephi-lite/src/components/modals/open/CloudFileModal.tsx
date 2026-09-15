@@ -1,10 +1,11 @@
 import byteSize from "byte-size";
 import cx from "classnames";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
+import { useFile } from "../../../core/context/dataContexts";
 import { errorToString } from "../../../core/errors";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
@@ -27,6 +28,7 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { loading, getFiles, openFile } = useCloudProvider();
+  const { current } = useFile();
   // list files retrived from the cloud
   const [files, setFiles] = useState<Array<Omit<CloudFile, "format">>>([]);
   // the selected file by the user
@@ -47,6 +49,20 @@ export const OpenCloudFileForm: FC<OpenCloudFileFormProps> = ({ id, onStatusChan
       });
     }
   }, [getFiles, page, user]);
+
+  // Preselect the file currently open in the workspace, so it's immediately possible to hit "Open"
+  // again without having to click it in the list first - it looked selected already (it's the file
+  // you're working on), it should actually be. Only attempted once, right after the list first
+  // loads: this must never override a choice the user makes while browsing afterwards.
+  const triedPreselect = useRef(false);
+  useEffect(() => {
+    if (triedPreselect.current || files.length === 0) return;
+    triedPreselect.current = true;
+    if (current?.type === "cloud") {
+      const currentInList = files.find((file) => file.id === current.id);
+      if (currentInList) setSelected(currentInList);
+    }
+  }, [files, current]);
 
   const onSubmit = useCallback(
     async (selected: Omit<CloudFile, "format"> | null) => {

@@ -11,6 +11,8 @@ import {
   FilterDeleteIcon,
   FilterDisabledIcon,
   FilterEnabledIcon,
+  FilterMoveDownIcon,
+  FilterMoveUpIcon,
   GraphIcon,
   ItemTypeIcon,
 } from "../common-icons";
@@ -25,9 +27,10 @@ import { TopologicalFilter } from "./TopologicalFilter";
 const FilterInStack: FC<{
   filter: FilterType;
   filterIndex: number;
-}> = ({ filter, filterIndex }) => {
+  filtersCount: number;
+}> = ({ filter, filterIndex, filtersCount }) => {
   const { t } = useTranslation();
-  const { deleteFilter, updateFilter } = useFiltersActions();
+  const { deleteFilter, updateFilter, moveFilter } = useFiltersActions();
 
   return (
     <>
@@ -68,7 +71,35 @@ const FilterInStack: FC<{
           </div>
         )}
 
-        <div className="filter-buttons">
+        <div className="filter-buttons d-flex flex-wrap gl-gap-2">
+          {/* Filters apply in order, each one on the graph the previous ones produced, so their
+              order is meaningful and has to be editable. */}
+          <button
+            className="gl-btn gl-btn-icon gl-btn-outline"
+            title={t("filters.move_up")}
+            aria-label={t("filters.move_up")}
+            disabled={filterIndex === 0}
+            onClick={(e) => {
+              e.stopPropagation();
+              moveFilter(filterIndex, -1);
+            }}
+          >
+            <FilterMoveUpIcon />
+          </button>
+
+          <button
+            className="gl-btn gl-btn-icon gl-btn-outline"
+            title={t("filters.move_down")}
+            aria-label={t("filters.move_down")}
+            disabled={filterIndex === filtersCount - 1}
+            onClick={(e) => {
+              e.stopPropagation();
+              moveFilter(filterIndex, +1);
+            }}
+          >
+            <FilterMoveDownIcon />
+          </button>
+
           <button
             className="gl-btn gl-btn-outline"
             onClick={(e) => {
@@ -100,7 +131,7 @@ const GraphFilters: FC = () => {
         <FilteredGraphSummary />
 
         {filters.filters.map((f, i) => (
-          <FilterInStack key={i} filter={f} filterIndex={i} />
+          <FilterInStack key={i} filter={f} filterIndex={i} filtersCount={filters.filters.length} />
         ))}
 
         <div className="filter-item filter-creator gl-px-3 d-flex justify-content-center">

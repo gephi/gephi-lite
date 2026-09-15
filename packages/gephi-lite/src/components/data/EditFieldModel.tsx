@@ -12,6 +12,7 @@ import { DATE_FORMATS } from "../../utils/date";
 import { CancelIcon } from "../common-icons";
 import { BaseOption, Select } from "../forms/Select";
 import { Modal } from "../modals";
+import { EditItemAttribute } from "./Attribute";
 
 export type EditFieldModelFormProps = {
   onSubmitted: () => void;
@@ -95,6 +96,12 @@ export const useEditFieldModelForm = ({
   );
 
   const idCollisionLabel = errors.id ? fields.find((f) => f.id === fieldModel.id)?.label : undefined;
+
+  // The default value editor needs the type's required options (date format, keywords
+  // separator) to render and serialize correctly, so only show it once they are set.
+  const canEditDefaultValue =
+    (fieldModel.type !== "date" || ("format" in fieldModel && !!fieldModel.format)) &&
+    (fieldModel.type !== "keywords" || ("separator" in fieldModel && !!fieldModel.separator));
 
   return {
     submit,
@@ -219,6 +226,21 @@ export const useEditFieldModelForm = ({
                 <code>{["keyword 1", "keyword 2"].join(fieldModel.separator)}</code>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Default value, used to initialize the field when creating a new node/edge */}
+        {canEditDefaultValue && (
+          <div>
+            <label htmlFor={`${htmlIDPrefix}-column-default`} className="form-label">
+              {t("graph.model.field.default_value")}
+            </label>
+            <EditItemAttribute
+              id={`${htmlIDPrefix}-column-default`}
+              field={fieldModel}
+              scalar={fieldModel.defaultValue}
+              onChange={(value) => setValue("defaultValue", value)}
+            />
           </div>
         )}
       </div>

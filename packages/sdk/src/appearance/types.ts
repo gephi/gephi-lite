@@ -27,11 +27,17 @@ export type RankingSize = AppearanceBaseElement & {
         minSize: number;
         maxSize: number;
         transformationMethod?: TransformationMethod;
+        // When true, the min/max used to interpolate sizes are scanned only from the items
+        // currently kept by the filters, so filtering out values can change what counts as the
+        // extremum. When false/undefined (the default), they are scanned from the whole dataset,
+        // matching the Data view regardless of the current filters.
+        filterAware?: boolean;
       }
     | {
         minSize?: number;
         maxSize?: number;
         transformationMethod?: undefined;
+        filterAware?: undefined;
       }
   );
 export type Size = RankingSize | FixedSize;
@@ -84,7 +90,15 @@ export interface FieldStringAttr extends AppearanceBaseElement {
 }
 export type StringAttr = NoStringAttr | FixedStringAttr | FieldStringAttr;
 
-export type BaseLabelSize = { density: number; zoomCorrelation: number };
+export type BaseLabelSize = {
+  /**
+   * How many node labels should be displayed at once, on a reference-sized screen (the actual
+   * budget is scaled to the viewport, see `getNodeLabelsBudget`). It is optional, since states
+   * saved before this setting existed don't have it: always read it through `getLabelsCount`.
+   */
+  labelsCount?: number;
+  zoomCorrelation: number;
+};
 export type FixedLabelSize = NoFieldValue<"fixed"> & BaseLabelSize & { value: number };
 export type ItemLabelSize = NoFieldValue<"item"> & BaseLabelSize & { sizeCorrelation: number };
 export type LabelSize = FixedLabelSize | ItemLabelSize;
@@ -151,7 +165,7 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
 
 export type NumberGetter = (data: StaticDynamicItemData) => number;
 export type ColorGetter = (data: StaticDynamicItemData, edgeId?: string) => string;
-export type StringAttrGetter = (data: StaticDynamicItemData) => string | null;
+export type StringAttrGetter = (data: StaticDynamicItemData, id?: string) => string | null;
 
 /**
  * This state contains the visual getters, i.e. the functions to get a node or
