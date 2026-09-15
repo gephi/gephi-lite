@@ -2,9 +2,8 @@ import { countBy, flatMap, identity, sortBy } from "lodash";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFilteredGraphAt, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
-import { useFilteredGraphAt } from "../../core/graph";
 import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { getFieldValue } from "../../core/graph/fieldModel";
 import { BaseOption, Select } from "../forms/Select";

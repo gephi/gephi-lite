@@ -1,6 +1,6 @@
 import { NodeCoordinates, getEmptyGraphDataset, toNumber, toScalar } from "@gephi/gephi-lite-sdk";
 import Graph, { MultiGraph } from "graphology";
-import { Attributes } from "graphology-types";
+import { Attributes, GraphType } from "graphology-types";
 import { flatMap, forEach, isNil, isNumber, keyBy, keys, mapValues, omit, pick, sortBy, uniq, values } from "lodash";
 
 import { ItemType, Scalar } from "../types";
@@ -266,3 +266,28 @@ export function uniqFieldValuesAsStrings(items: Record<string, ItemData>, field:
     }),
   ) as string[];
 }
+
+export const GRAPH_TRANSFORMATION_METHODS: Record<GraphType, (g: DatalessGraph) => DatalessGraph> = {
+  mixed: (g) => {
+    const res = new MultiGraph({ type: "mixed" });
+    g.forEachNode((node) => res.addNode(node));
+    g.forEachEdge((edge, _, source, target) =>
+      g.isDirected(edge)
+        ? res.addDirectedEdgeWithKey(edge, source, target)
+        : res.addUndirectedEdgeWithKey(edge, source, target),
+    );
+    return res;
+  },
+  directed: (g) => {
+    const res = new MultiGraph({ type: "directed" });
+    g.forEachNode((node) => res.addNode(node));
+    g.forEachEdge((edge, _, source, target) => res.addDirectedEdgeWithKey(edge, source, target));
+    return res;
+  },
+  undirected: (g) => {
+    const res = new MultiGraph({ type: "undirected" });
+    g.forEachNode((node) => res.addNode(node));
+    g.forEachEdge((edge, _, source, target) => res.addUndirectedEdgeWithKey(edge, source, target));
+    return res;
+  },
+};
