@@ -5,14 +5,14 @@ import seedrandom from "seedrandom";
 
 import { appearanceActions } from "../appearance/actions";
 import { appearanceAtom } from "../appearance/atom";
+import { graphDatasetActions } from "../graph/actions";
 import {
   dynamicItemDataAtom,
   filteredGraphAtom,
-  graphDatasetActions,
   graphDatasetAtom,
   sigmaGraphAtom,
   visualGettersAtom,
-} from "../graph";
+} from "../graph/atom";
 import { dataGraphToFullGraph } from "../graph/utils";
 import { sessionAtom } from "../session/atom";
 import { sigmaActions } from "../sigma/actions";
@@ -41,87 +41,85 @@ const stopLayout = asyncAction(async (isForRestart = false) => {
   if (!isForRestart) layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
 });
 
-export const startLayout = asyncAction(
-  async (id: string, params: Record<string, unknown>, isForRestart: boolean = false) => {
-    // Stop the previous algo (the "if needed" is done in the function itself)
-    await stopLayout(isForRestart);
+const startLayout = asyncAction(async (id: string, params: Record<string, unknown>, isForRestart: boolean = false) => {
+  // Stop the previous algo (the "if needed" is done in the function itself)
+  await stopLayout(isForRestart);
 
-    const dataset = graphDatasetAtom.get();
-    const { setNodePositions } = graphDatasetActions;
+  const dataset = graphDatasetAtom.get();
+  const { setNodePositions } = graphDatasetActions;
 
-    // search the layout
-    const layout = LAYOUTS.find((l) => l.id === id);
+  // search the layout
+  const layout = LAYOUTS.find((l) => l.id === id);
 
-    if (layout) {
-      // If the map is already displayed at the background, then we sync with it the scale variable
-      if (layout.id === "geographic") {
-        const appearance = appearanceAtom.get();
-        if (appearance.backgroundLayer?.type === "map") {
-          const { setBackgroundLayer } = appearanceActions;
-          setBackgroundLayer({
-            type: "map",
-            map: {
-              ...appearance.backgroundLayer.map,
-              scale: params.scale as number,
-            },
-          });
-        }
-      }
-
-      // Sync layout
-      if (layout.type === "oneshot") {
-        layoutStateAtom.set((prev) => ({ ...prev, type: "computing", layoutId: id }));
-
-        // Generate positions
-        const filteredGraph = filteredGraphAtom.get();
-        const fullGraph = dataGraphToFullGraph(dataset, filteredGraph);
-        const positionsOrPromise = layout.run(fullGraph, { settings: params });
-        const positions = positionsOrPromise instanceof Promise ? await positionsOrPromise : positionsOrPromise;
-
-        // Check if layout has changed or has been aborted
-        const currentState = layoutStateAtom.get();
-        if (currentState.type !== "computing" || currentState.layoutId !== id || currentState.aborted) return;
-
-        // Save positions
-        setNodePositions(positions);
-        layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
-
-        // To prevent resetting the camera before sigma receives new data, we
-        // need to wait a frame, and also wait for it to trigger a refresh:
-        setTimeout(() => {
-          sigmaActions.resetCamera({ forceRefresh: true });
-        }, 0);
-      }
-
-      // Async layout
-      if (layout.type === "continuous") {
-        const sigmaGraph = sigmaGraphAtom.get();
-        const visualGetters = visualGettersAtom.get();
-        const filteredGraph = filteredGraphAtom.get();
-        const dynamicItemData = dynamicItemDataAtom.get();
-
-        const layoutGraph = buildLayoutGraph({
-          dataset,
-          filteredGraph,
-          visualGetters,
-          dynamicItemData,
-          sigmaGraph,
-          params,
-          useSigmaPositions: isForRestart,
+  if (layout) {
+    // If the map is already displayed at the background, then we sync with it the scale variable
+    if (layout.id === "geographic") {
+      const appearance = appearanceAtom.get();
+      if (appearance.backgroundLayer?.type === "map") {
+        const { setBackgroundLayer } = appearanceActions;
+        setBackgroundLayer({
+          type: "map",
+          map: {
+            ...appearance.backgroundLayer.map,
+            scale: params.scale as number,
+          },
         });
-        const { supervisor, getPositions } = createLayoutSupervisor(
-          layout.supervisor,
-          layoutGraph,
-          sigmaGraph,
-          params,
-          visualGetters.getNodePosition ?? undefined,
-        );
-        supervisor.start();
-        layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor, getPositions }));
       }
     }
-  },
-);
+
+    // Sync layout
+    if (layout.type === "oneshot") {
+      layoutStateAtom.set((prev) => ({ ...prev, type: "computing", layoutId: id }));
+
+      // Generate positions
+      const filteredGraph = filteredGraphAtom.get();
+      const fullGraph = dataGraphToFullGraph(dataset, filteredGraph);
+      const positionsOrPromise = layout.run(fullGraph, { settings: params });
+      const positions = positionsOrPromise instanceof Promise ? await positionsOrPromise : positionsOrPromise;
+
+      // Check if layout has changed or has been aborted
+      const currentState = layoutStateAtom.get();
+      if (currentState.type !== "computing" || currentState.layoutId !== id || currentState.aborted) return;
+
+      // Save positions
+      setNodePositions(positions);
+      layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+
+      // To prevent resetting the camera before sigma receives new data, we
+      // need to wait a frame, and also wait for it to trigger a refresh:
+      setTimeout(() => {
+        sigmaActions.resetCamera({ forceRefresh: true });
+      }, 0);
+    }
+
+    // Async layout
+    if (layout.type === "continuous") {
+      const sigmaGraph = sigmaGraphAtom.get();
+      const visualGetters = visualGettersAtom.get();
+      const filteredGraph = filteredGraphAtom.get();
+      const dynamicItemData = dynamicItemDataAtom.get();
+
+      const layoutGraph = buildLayoutGraph({
+        dataset,
+        filteredGraph,
+        visualGetters,
+        dynamicItemData,
+        sigmaGraph,
+        params,
+        useSigmaPositions: isForRestart,
+      });
+      const { supervisor, getPositions } = createLayoutSupervisor(
+        layout.supervisor,
+        layoutGraph,
+        sigmaGraph,
+        params,
+        visualGetters.getNodePosition ?? undefined,
+      );
+      supervisor.start();
+      layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor, getPositions }));
+    }
+  }
+});
 
 const restartLastLayout = asyncAction(async () => {
   // Get the algo and its parameters

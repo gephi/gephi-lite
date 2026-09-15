@@ -29,7 +29,7 @@
     "@preconstruct/cli": "^2.8.10",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/luxon": "^3.6.2",
-    "@vitest/browser": "^3.0.5",
+    "@vitest/browser": "^5.0.1",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-import": "^2.31.0",
@@ -44,7 +44,7 @@
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.22.0",
-    "vitest": "^3.0.5"
+    "vitest": "^5.0.1"
   },
   "preconstruct": {
     "packages": [
@@ -56,6 +56,7 @@
     }
   },
   "dependencies": {
+    "@vitest/browser-playwright": "^5.0.1",
     "luxon": "^3.6.1",
     "pmtiles": "^4.5.0"
   },

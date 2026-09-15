@@ -1,4 +1,5 @@
 import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -6,7 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     browser: {
-      provider: "playwright",
+      provider: playwright(),
       instances: [
         {
           browser: "chromium",

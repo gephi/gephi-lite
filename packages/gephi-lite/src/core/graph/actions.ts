@@ -16,14 +16,15 @@ import { Attributes, GraphType } from "graphology-types";
 import { clamp, isNil, keyBy, mapValues, omit } from "lodash";
 import { Coordinates } from "sigma/types";
 
-import { graphDatasetAtom } from ".";
-import { appearanceAtom, checkAppearanceAfterAttributeUpdate } from "../appearance";
-import { filtersAtom } from "../filters";
+import { checkAppearanceAfterAttributeUpdate } from "../appearance/actions";
+import { appearanceAtom } from "../appearance/atom";
+import { filtersAtom } from "../filters/atom";
 import { edgeIndex, itemsIndex, itemsRemove, nodeIndex, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
-import { selectionAtom } from "../selection";
+import { selectionAtom } from "../selection/atom";
 import { SelectionState } from "../selection/types";
 import { getEmptySelectionState } from "../selection/utils";
+import { graphDatasetAtom } from "./atom";
 import { GRAPH_TRANSFORMATION_METHODS, cleanEdge, cleanNode, newItemModel } from "./utils";
 
 const setGraphDataset: Producer<GraphDataset, [GraphDataset]> = (dataset) => {

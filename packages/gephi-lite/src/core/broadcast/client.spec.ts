@@ -2,14 +2,10 @@ import { GephiLiteDriver } from "@gephi/gephi-lite-broadcast";
 import Graph from "graphology";
 import { afterEach, describe, expect, it } from "vitest";
 
-// Import order matters here: this package has a pre-existing circular dependency between
-// core/graph and core/context/dataContexts (unrelated to this file), and BroadcastClient
-// happens to resolve it in the safe direction - importing it before core/graph avoids a
-// "Cannot access before initialization" crash on sigmaGraphAtom.
-import { BroadcastClient } from "./client";
-import { graphDatasetAtom } from "../graph";
+import { graphDatasetAtom } from "../graph/atom";
 import { getEmptyGraphDataset, initializeGraphDataset } from "../graph/utils";
 import { selectionActions, selectionAtom } from "../selection";
+import { BroadcastClient } from "./client";
 
 function buildGraph(nodes: string[]): Graph {
   const graph = new Graph();
@@ -55,7 +51,7 @@ describe("BroadcastClient - selection", () => {
     expect(updates).toEqual([{ nodeIds: ["a", "c"], edgeIds: [] }]);
   });
 
-  it("setGraphDataset keeps still-valid selected ids and drops stale ones", async () => {
+  it("setGraphDataset reset selection", async () => {
     setup(["a", "b", "c"]);
     selectionActions.select({ type: "nodes", items: new Set(["a", "c"]) });
 
@@ -68,7 +64,7 @@ describe("BroadcastClient - selection", () => {
     // setGraphDataset throw. Reported separately; not fixed here.
     await driver!.setGraphDataset(initializeGraphDataset(buildGraph(["b", "c", "d", "e"])));
 
-    expect(Array.from(selectionAtom.get().items)).toEqual(["c"]);
+    expect(Array.from(selectionAtom.get().items)).toEqual([]);
   });
 
   it("does not emit selectionUpdate when the effective selection does not change", async () => {

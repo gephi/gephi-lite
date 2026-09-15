@@ -10,7 +10,9 @@ import { DYNAMIC_ATTRIBUTES, computeAllDynamicAttributes } from "./dynamicAttrib
 import { dataGraphToSigmaGraph } from "./utils";
 
 export const graphDatasetAtom = atom<GraphDataset>(getEmptyGraphDataset());
+
 export const filteredGraphsAtom = atom<FilteredGraph[]>([]);
+
 export const filteredGraphAtom = derivedAtom(
   [filteredGraphsAtom, graphDatasetAtom],
   (filteredGraphCache, graphDataset) => last(filteredGraphCache)?.graph || graphDataset.fullGraph,
@@ -27,14 +29,17 @@ export const dynamicItemDataAtom = derivedAtom(
   }),
   { checkInput: false },
 );
+
 export const visualGettersAtom = derivedAtom(
   [graphDatasetAtom, dynamicItemDataAtom, appearanceAtom],
   getAllVisualGetters,
   { checkInput: false },
 );
+
 export const topologicalFiltersAtom = derivedAtom(graphDatasetAtom, ({ fullGraph }) => {
   return buildTopologicalFiltersDefinitions(fullGraph);
 });
+
 export const sigmaGraphAtom = derivedAtom(
   [graphDatasetAtom, filteredGraphAtom, visualGettersAtom],
   (dataset, filteredGraph, visualGetters, graph: SigmaGraph | undefined) => {

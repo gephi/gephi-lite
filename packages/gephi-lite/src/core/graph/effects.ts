@@ -9,12 +9,12 @@ import {
 } from "@gephi/gephi-lite-sdk";
 import { forEach, isString, keys, omitBy } from "lodash";
 
-import { topologicalFiltersAtom } from ".";
 import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { appearanceAtom } from "../appearance";
 import { filtersAtom } from "../filters";
 import { applyFilters } from "../filters/utils";
 import { searchActions } from "../search";
+import { topologicalFiltersAtom } from "./atom";
 import { filteredGraphsAtom, graphDatasetAtom } from "./atom";
 import { uniqFieldValuesAsStrings } from "./utils";
 
