@@ -6,9 +6,8 @@ import Highlight from "react-highlight";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
-import { useFiltersActions } from "../../core/context/dataContexts";
+import { useFilteredGraphAt, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { ScriptFilterType } from "../../core/filters/types";
-import { graphDatasetAtom, useFilteredGraphAt } from "../../core/graph";
 import { dataGraphToFullGraph } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
 import { CodeEditorIcon, ExternalLinkIcon } from "../common-icons";
@@ -51,6 +50,7 @@ export const ScriptFilter: FC<{
   const { openModal } = useModal();
   const { updateFilter } = useFiltersActions();
   const parentGraph = useFilteredGraphAt(filterIndex - 1);
+  const graphDataset = useGraphDataset();
 
   return (
     <div className="w-100">
@@ -95,8 +95,6 @@ export const ScriptFilter: FC<{
                     // Check/test the function
                     let id = null;
                     let attributes = null;
-                    const graphDataset = graphDatasetAtom.get();
-
                     const graphGraph = dataGraphToFullGraph(graphDataset, parentGraph);
 
                     if (filter.itemType === "nodes" && parentGraph.order > 0) {

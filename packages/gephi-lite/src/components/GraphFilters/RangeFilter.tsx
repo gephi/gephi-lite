@@ -4,10 +4,9 @@ import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFilteredGraphAt, useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
-import { useFilteredGraphAt } from "../../core/graph";
 import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import {
   castScalarToQuantifiableValue,

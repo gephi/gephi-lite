@@ -90,7 +90,7 @@ export interface LayoutButton<P = unknown> {
  * Layout types
  * ************
  */
-export type LayoutMapping = { [node: string]: Coordinates };
+export type LayoutMapping = Record<string, Coordinates>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface OneShotLayout<P = any> {

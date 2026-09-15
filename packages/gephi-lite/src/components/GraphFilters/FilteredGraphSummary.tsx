@@ -2,8 +2,7 @@ import { isNil } from "lodash";
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFilters, useFiltersActions, usePreferences } from "../../core/context/dataContexts";
-import { useFilteredGraphAt } from "../../core/graph";
+import { useFilteredGraphAt, useFilters, useFiltersActions, usePreferences } from "../../core/context/dataContexts";
 import { useModal } from "../../core/modals";
 import Dropdown from "../Dropdown";
 import { ThreeDotsVerticalIcon } from "../common-icons";

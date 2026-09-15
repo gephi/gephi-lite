@@ -15,6 +15,7 @@ import {
   topologicalFiltersAtom,
   visualGettersAtom,
 } from "../graph";
+import { filteredGraphsAtom } from "../graph/atom";
 import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { searchActions, searchAtom } from "../search";
@@ -164,4 +165,10 @@ export const useSessionActions = makeUseActions(sessionActions);
 
 export const useResetStates = () => {
   return resetStates;
+};
+
+export const useFilteredGraphAt = (index: number) => {
+  const graphDataset = useGraphDataset();
+  const filteredGraphs = useReadAtom(filteredGraphsAtom);
+  return filteredGraphs[index]?.graph || graphDataset.fullGraph;
 };
