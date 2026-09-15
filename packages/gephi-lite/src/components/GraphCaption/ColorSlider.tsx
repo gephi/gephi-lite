@@ -3,7 +3,7 @@ import { FC, HTMLProps, useCallback } from "react";
 import ReactSlider from "react-slider";
 
 import { ColorScalePointType } from "../../core/appearance/types";
-import { RangeExtends } from "./index";
+import { RangeExtends } from "./types";
 
 export const ColorSlider: FC<{
   colorScalePoints: ColorScalePointType[];

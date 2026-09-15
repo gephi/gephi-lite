@@ -1,6 +1,6 @@
 import { FieldModel, ItemType, gephiLiteParse, gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 
-import { i18n } from "../../locales/provider";
+import { DEFAULT_LOCALE } from "../../locales/LOCALES";
 import { localStorage } from "../../utils/storage";
 import { Preferences } from "./types";
 
@@ -8,7 +8,7 @@ export function getEmptyPreferences(): Preferences {
   return {
     colors: { partition: [], ranking: [] },
     // default is the local detected by i18n
-    locale: i18n.language,
+    locale: DEFAULT_LOCALE,
     theme: "auto",
   };
 }

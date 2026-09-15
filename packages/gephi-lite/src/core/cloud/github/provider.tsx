@@ -4,8 +4,9 @@ import { isNil } from "lodash";
 
 import { GitHubIcon } from "../../../components/common-icons";
 import { checkFilenameExtension } from "../../../utils/check";
+import { CloudFile } from "../../file/types";
 import { getFilename } from "../../file/utils";
-import { CloudFile, CloudProvider } from "../types";
+import { CloudProvider } from "../types";
 
 export type GistFile =
   | {

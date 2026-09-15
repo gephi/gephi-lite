@@ -8,7 +8,7 @@ import { Color, EdgeColor, ShadingColor } from "../../core/appearance/types";
 import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes";
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
-import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./index";
+import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./types";
 
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {

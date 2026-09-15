@@ -2,8 +2,8 @@ import { isNil } from "lodash";
 import { useCallback, useState } from "react";
 
 import { useFile, useFileActions } from "../context/dataContexts";
+import { CloudFile } from "../file/types";
 import { useConnectedUser } from "../user";
-import { CloudFile } from "./types";
 
 // TODO: need to be refacto by atom/action/producer pattern
 export function useCloudProvider() {

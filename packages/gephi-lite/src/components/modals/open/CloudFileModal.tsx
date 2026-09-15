@@ -3,9 +3,9 @@ import cx from "classnames";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CloudFile } from "../../../core/cloud/types";
 import { useCloudProvider } from "../../../core/cloud/useCloudProvider";
 import { errorToCode, errorToString } from "../../../core/errors";
+import { CloudFile } from "../../../core/file/types";
 import { useNotifications } from "../../../core/notifications";
 import { useConnectedUser } from "../../../core/user";
 import { displayDateTime } from "../../../utils/date";
