@@ -25,9 +25,15 @@ import { FiltersState } from "../filters/types";
 import { graphDatasetActions, graphDatasetAtom } from "../graph";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
 import { selectionAtom } from "../selection";
+import { selectionActions } from "../selection/actions";
 import { SelectionState } from "../selection/types";
-import { deserializeSelection, pruneSelectionToGraph, selectionStatesAreEqual, serializeSelection } from "../selection/utils";
-import { resetCamera } from "../sigma";
+import {
+  deserializeSelection,
+  pruneSelectionToGraph,
+  selectionStatesAreEqual,
+  serializeSelection,
+} from "../selection/utils";
+import { sigmaActions } from "../sigma/actions";
 
 /**
  * This collection lists all available methods Gephi Lite should be able to
@@ -51,10 +57,9 @@ const BROADCAST_METHODS: {
 
     try {
       const graph = Graph.from(data);
-      const { setGraphDataset } = graphDatasetActions;
       resetStates(false);
-      setGraphDataset({ ...initializeGraphDataset(graph) });
-      resetCamera({ forceRefresh: true });
+      graphDatasetActions.setGraphDataset({ ...initializeGraphDataset(graph) });
+      sigmaActions.resetCamera({ forceRefresh: true });
     } catch (e) {
       fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
       throw e;
@@ -72,13 +77,8 @@ const BROADCAST_METHODS: {
   },
   setGraphDataset: async (appearance: SerializedGraphDataset) => {
     graphDatasetAtom.set(deserializeDataset(appearance));
-    // A dataset replacement can drop nodes/edges that were selected under the previous
-    // dataset. Keep whichever selected ids still exist, drop the rest, and empty the
-    // selection entirely if none remain -- selectionAtom.set() only notifies listeners
-    // when the value actually changes (see pruneSelectionToGraph), so this is a no-op
-    // when the selection was already empty or entirely unaffected.
-    selectionAtom.set(pruneSelectionToGraph(selectionAtom.get(), graphDatasetAtom.get().fullGraph));
-    resetCamera({ forceRefresh: true });
+    selectionActions.emptySelection();
+    sigmaActions.resetCamera({ forceRefresh: true });
   },
   mergeGraphDataset: async (appearance: Partial<SerializedGraphDataset>) => {
     graphDatasetAtom.set((state) => ({ ...state, ...deserializeDataset(appearance) }));

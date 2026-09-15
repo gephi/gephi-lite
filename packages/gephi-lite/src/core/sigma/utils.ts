@@ -1,8 +1,10 @@
 import { Attributes } from "graphology-types";
+import { Sigma } from "sigma";
 import { drawDiscNodeLabel } from "sigma/rendering";
 import { Settings } from "sigma/settings";
 import { NodeDisplayData, PartialButFor } from "sigma/types";
 
+import { MERCATOR_WORLD } from "../../utils/geo";
 import { SigmaState } from "./types";
 
 /**
@@ -73,4 +75,54 @@ export function drawDiscNodeHover<
 
   // And finally we draw the label
   drawDiscNodeLabel(context, data, settings);
+}
+
+/**
+ * Sets MERCATOR_WORLD bbox and fits the camera to a Mercator extent.
+ */
+export function fitCameraToMercatorExtent(
+  sigma: Sigma,
+  extent: { minX: number; minY: number; maxX: number; maxY: number },
+) {
+  sigma.setCustomBBox(MERCATOR_WORLD);
+  sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
+
+  if (extent.minX > extent.maxX || extent.minY > extent.maxY) return;
+
+  const centerX = (extent.minX + extent.maxX) / 2;
+  const centerY = (extent.minY + extent.maxY) / 2;
+  const extentW = extent.maxX - extent.minX;
+  const extentH = extent.maxY - extent.minY;
+
+  // Visible range at ratio=1 with a 1×1 bbox: sigma fits the square to the
+  // viewport preserving aspect ratio, so the longer axis spans W/H or H/W.
+  const { width, height } = sigma.getDimensions();
+  const visibleW = width >= height ? width / height : 1;
+  const visibleH = width >= height ? 1 : height / width;
+
+  const margin = 1.1;
+  const ratio = Math.max((extentW * margin) / visibleW, (extentH * margin) / visibleH, 0.01);
+  sigma.getCamera().setState({ angle: 0, x: centerX, y: centerY, ratio });
+}
+
+/**
+ * Computes the Mercator extent of all nodes by projecting dataset positions
+ * through the given coordinate getter.
+ */
+export function computeMercatorExtent(
+  layout: Record<string, { x: number; y: number }>,
+  getNodePosition: (pos: { x: number; y: number }) => { x: number; y: number },
+) {
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+  for (const node in layout) {
+    const pos = getNodePosition(layout[node]);
+    minX = Math.min(minX, pos.x);
+    minY = Math.min(minY, pos.y);
+    maxX = Math.max(maxX, pos.x);
+    maxY = Math.max(maxY, pos.y);
+  }
+  return { minX, minY, maxX, maxY };
 }

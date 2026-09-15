@@ -27,6 +27,7 @@ import {
   useSelection,
   useSelectionActions,
   useSessionData,
+  useSigmaActions,
   useSigmaAtom,
   useSigmaGraph,
   useSigmaState,
@@ -34,7 +35,6 @@ import {
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { LAYOUTS } from "../../core/layouts/collection";
 import { GRAPH_SELECTION_MODES } from "../../core/selection/types";
-import { resetCamera } from "../../core/sigma";
 import NodeProgramBorder from "../../utils/bordered-node-program";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { EventsController } from "./controllers/EventsController";
@@ -79,6 +79,7 @@ const InteractionsController: FC = () => {
   const layoutState = useLayoutState();
   const { startLayout, stopLayout } = useLayoutActions();
   const session = useSessionData();
+  const { resetCamera } = useSigmaActions();
 
   const btnClassName = "gl-btn gl-btn-icon gl-btn-outline bg-body";
   const zoomOptions = { duration: 200, factor: 1.5 };
@@ -293,6 +294,7 @@ const sigmaSettings: Partial<Settings> = {
 export const GraphRendering: FC = () => {
   const { backgroundColor, layoutGridColor } = useAppearance();
   const sigmaGraph = useSigmaGraph();
+  const { resetCamera } = useSigmaActions();
   const { quality } = useLayoutState();
   const { hoveredNode, hoveredEdge, customCursor } = useSigmaState();
   const [isReady, setIsReady] = useState(false);
@@ -305,7 +307,7 @@ export const GraphRendering: FC = () => {
     if (isReady) {
       resetCamera({ forceRefresh: true });
     }
-  }, [isReady]);
+  }, [isReady, resetCamera]);
 
   return (
     <>

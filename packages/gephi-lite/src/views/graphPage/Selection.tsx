@@ -30,6 +30,7 @@ import {
   useGraphDatasetActions,
   useSelection,
   useSelectionActions,
+  useSigmaActions,
   useSigmaGraph,
   useVisualGetters,
 } from "../../core/context/dataContexts";
@@ -39,7 +40,6 @@ import {
   staticDynamicAttributeLabel,
 } from "../../core/graph/dynamicAttributes";
 import { useModal } from "../../core/modals";
-import { focusCameraOnEdge, focusCameraOnNode } from "../../core/sigma";
 
 function SelectedItem<
   // eslint-disable-next-line
@@ -72,6 +72,7 @@ function SelectedItem<
   const filteredGraph = useFilteredGraph();
   const { deleteItems } = useGraphDatasetActions();
   const { select, unselect } = useSelectionActions();
+  const { focusCameraOnNode, focusCameraOnEdge } = useSigmaActions();
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
     () => [
