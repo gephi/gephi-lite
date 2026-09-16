@@ -2,14 +2,11 @@ import { GephiLiteDriver } from "@gephi/gephi-lite-broadcast";
 import Graph from "graphology";
 import { afterEach, describe, expect, it } from "vitest";
 
-// Import order matters here: this package has a pre-existing circular dependency between
-// core/graph and core/context/dataContexts (unrelated to this file), and BroadcastClient
-// happens to resolve it in the safe direction - importing it before core/graph avoids a
-// "Cannot access before initialization" crash on sigmaGraphAtom.
-import { BroadcastClient } from "./client";
 import { graphDatasetAtom } from "../graph";
 import { getEmptyGraphDataset, initializeGraphDataset } from "../graph/utils";
-import { selectionActions, selectionAtom } from "../selection";
+import { selectionActions } from "../selection/actions";
+import { selectionAtom } from "../selection/atom";
+import { BroadcastClient } from "./client";
 
 function buildGraph(nodes: string[]): Graph {
   const graph = new Graph();
