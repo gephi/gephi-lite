@@ -132,13 +132,16 @@ export interface LayoutQuality {
   enabled: boolean;
   metric?: ConnectedClosenessResult;
 }
-export type LayoutState = { quality: LayoutQuality } & (
-  | { type: "idle" }
-  | { type: "computing"; layoutId: string; aborted?: boolean }
-  | {
-      type: "running";
-      layoutId: string;
-      supervisor: ContinuousLayoutSupervisorInterface;
-      getPositions: () => LayoutMapping;
-    }
-);
+export type LayoutState = {
+  quality: LayoutQuality;
+  lastRun?: { layoutId: string; params: Record<string, unknown> };
+  runState:
+    | { type: "idle" }
+    | { type: "computing"; layoutId: string; aborted?: boolean }
+    | {
+        type: "running";
+        layoutId: string;
+        supervisor: ContinuousLayoutSupervisorInterface;
+        getPositions: () => LayoutMapping;
+      };
+};

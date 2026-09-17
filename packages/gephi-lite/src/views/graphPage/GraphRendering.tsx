@@ -26,7 +26,6 @@ import {
   useLayoutState,
   useSelection,
   useSelectionActions,
-  useSessionData,
   useSigmaAtom,
   useSigmaGraph,
   useSigmaState,
@@ -76,32 +75,16 @@ const InteractionsController: FC = () => {
   const { graphSelectionMode } = useSelection();
   const { isFullScreen, toggle } = useFullScreen();
   const sigma = useSigmaAtom();
-  const layoutState = useLayoutState();
-  const { startLayout, stopLayout } = useLayoutActions();
-  const session = useSessionData();
+  const { runState, lastRun } = useLayoutState();
+  const { restartLastLayout, stopLayout } = useLayoutActions();
 
   const btnClassName = "gl-btn gl-btn-icon gl-btn-outline bg-body";
   const zoomOptions = { duration: 200, factor: 1.5 };
 
-  // Is layout is running ?
-  const isLayoutRunning = useMemo(() => {
-    return layoutState.type === "running";
-  }, [layoutState.type]);
-
   // Get the latest layout run in the history with its data
   const lastLayoutActive = useMemo(() => {
-    if (!session.lastLayout) return null;
-    const layoutId = session.lastLayout;
-
-    // Special case for layout quality
-    if (layoutId === "layout-quality")
-      return {
-        id: "quality",
-        name: t(`layouts.${layoutId}.title`),
-        type: "quality",
-        params: {},
-      };
-
+    if (!lastRun) return null;
+    const layoutId = lastRun.layoutId;
     const layout = LAYOUTS.find((e) => e.id === layoutId);
     if (!layout) return null;
 
@@ -109,9 +92,8 @@ const InteractionsController: FC = () => {
       id: layout.id,
       name: t(`layouts.${layout.id}.title`),
       type: layout.type,
-      params: session.layoutsParameters[layout.id] || {},
     };
-  }, [session.lastLayout, session.layoutsParameters, t]);
+  }, [lastRun, t]);
 
   // Get needed info to render the layout button
   const layoutButton = useMemo(() => {
@@ -122,14 +104,14 @@ const InteractionsController: FC = () => {
       className: "gl-btn gl-btn-icon gl-btn-outline",
     };
     if (lastLayoutActive) {
-      if (layoutState.type === "running") {
+      if (runState.type === "running") {
         result = {
           title: t("graph.control.layout-stop-latest", { name: lastLayoutActive.name }),
           icon: <SpinnerIcon icon={PauseIconFill} />,
           disabled: false,
           className: "gl-btn gl-btn-icon gl-btn-fill",
         };
-      } else if (layoutState.type === "computing") {
+      } else if (runState.type === "computing") {
         result = {
           title: t("graph.control.layout-stop-latest", { name: lastLayoutActive.name }),
           icon: <SpinnerIcon icon={CancelIcon} />,
@@ -144,13 +126,6 @@ const InteractionsController: FC = () => {
             disabled: false,
             className: "gl-btn gl-btn-icon gl-btn-outline bg-body",
           };
-        } else if (lastLayoutActive.type === "quality") {
-          result = {
-            title: t("graph.control.layout-run-latest", { name: lastLayoutActive.name }),
-            icon: <PlaySyncIcon />,
-            disabled: true,
-            className: "gl-btn gl-btn-icon gl-btn-outline bg-body",
-          };
         } else {
           result = {
             title: t("graph.control.layout-start-latest", { name: lastLayoutActive.name }),
@@ -162,15 +137,13 @@ const InteractionsController: FC = () => {
       }
     }
     return result;
-  }, [t, lastLayoutActive, layoutState.type]);
+  }, [t, lastLayoutActive, runState.type]);
 
   // Start / stop action for the layout button
   const startStopLayout = useCallback(() => {
-    if (isLayoutRunning) stopLayout();
-    else if (lastLayoutActive) {
-      startLayout(lastLayoutActive.id, lastLayoutActive.params);
-    }
-  }, [startLayout, stopLayout, isLayoutRunning, lastLayoutActive]);
+    if (runState.type === "running") stopLayout();
+    else if (lastRun) restartLastLayout();
+  }, [stopLayout, restartLastLayout, runState, lastRun]);
 
   // Open the settings of the latest layout
   // Default is FA2

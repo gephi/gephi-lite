@@ -19,7 +19,6 @@ import {
 } from "../graph";
 import { DatalessGraph, DynamicItemData, GraphDataset, SigmaGraph } from "../graph/types";
 import { dataGraphToFullGraph } from "../graph/utils";
-import { sessionAtom } from "../session";
 import { resetCamera } from "../sigma";
 import { LAYOUTS } from "./collection";
 import {
@@ -154,7 +153,10 @@ export function createLayoutSupervisor(
 }
 
 function getEmptyLayoutState(): LayoutState {
-  return { quality: { enabled: false, showGrid: true }, type: "idle" };
+  return {
+    quality: { enabled: false, showGrid: true },
+    runState: { type: "idle" },
+  };
 }
 
 function getLocalStorageLayoutState(): LayoutState {
@@ -178,22 +180,25 @@ export const layoutStateAtom = atom<LayoutState>(getLocalStorageLayoutState());
  */
 export const stopLayout = asyncAction(async (isForRestart = false) => {
   const { setNodePositions } = graphDatasetActions;
-  const layoutState = layoutStateAtom.get();
+  const { runState } = layoutStateAtom.get();
 
-  if (layoutState.type === "computing") {
-    layoutStateAtom.set({ ...layoutState, aborted: true });
-  } else if (layoutState.type === "running") {
-    layoutState.supervisor.stop();
-    layoutState.supervisor.kill();
+  if (runState.type === "computing") {
+    layoutStateAtom.set((prev) => ({
+      ...prev,
+      runState: { ...runState, aborted: true },
+    }));
+  } else if (runState.type === "running") {
+    runState.supervisor.stop();
+    runState.supervisor.kill();
 
     // Don't save position if it's for a restart
-    if (!isForRestart && layoutState.getPositions) {
-      setNodePositions(layoutState.getPositions());
+    if (!isForRestart && runState.getPositions) {
+      setNodePositions(runState.getPositions());
     }
   }
 
   // Don't set the state if it's for restart
-  if (!isForRestart) layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+  if (!isForRestart) layoutStateAtom.set((prev) => ({ ...prev, runState: { type: "idle" } }));
 });
 
 export const startLayout = asyncAction(
@@ -225,7 +230,10 @@ export const startLayout = asyncAction(
 
       // Sync layout
       if (layout.type === "oneshot") {
-        layoutStateAtom.set((prev) => ({ ...prev, type: "computing", layoutId: id }));
+        layoutStateAtom.set((prev) => ({
+          ...prev,
+          runState: { type: "computing", layoutId: id },
+        }));
 
         // Generate positions
         const filteredGraph = filteredGraphAtom.get();
@@ -234,12 +242,16 @@ export const startLayout = asyncAction(
         const positions = positionsOrPromise instanceof Promise ? await positionsOrPromise : positionsOrPromise;
 
         // Check if layout has changed or has been aborted
-        const currentState = layoutStateAtom.get();
-        if (currentState.type !== "computing" || currentState.layoutId !== id || currentState.aborted) return;
+        const { runState } = layoutStateAtom.get();
+        if (runState.type !== "computing" || runState.layoutId !== id || runState.aborted) return;
 
         // Save positions
         setNodePositions(positions);
-        layoutStateAtom.set((prev) => ({ ...prev, type: "idle" }));
+        layoutStateAtom.set((prev) => ({
+          ...prev,
+          runState: { type: "idle" },
+          lastRun: { layoutId: id, params },
+        }));
 
         // To prevent resetting the camera before sigma receives new data, we
         // need to wait a frame, and also wait for it to trigger a refresh:
@@ -272,7 +284,11 @@ export const startLayout = asyncAction(
           visualGetters.getNodePosition ?? undefined,
         );
         supervisor.start();
-        layoutStateAtom.set((prev) => ({ ...prev, type: "running", layoutId: id, supervisor, getPositions }));
+        layoutStateAtom.set((prev) => ({
+          ...prev,
+          runState: { type: "running", layoutId: id, supervisor, getPositions },
+          lastRun: { layoutId: id, params },
+        }));
       }
     }
   },
@@ -280,11 +296,11 @@ export const startLayout = asyncAction(
 
 export const restartLastLayout = asyncAction(async () => {
   // Get the algo and its parameters
-  const session = sessionAtom.get();
-  if (session.lastLayout) {
-    const layoutId = session.lastLayout;
+  const { lastRun } = layoutStateAtom.get();
+  if (lastRun) {
+    const layoutId = lastRun.layoutId;
     const layout = LAYOUTS.find((e) => e.id === layoutId);
-    const params = session.layoutsParameters[layoutId] || {};
+    const params = lastRun.params || {};
     if (layout) {
       await startLayout(layoutId, params, true);
     }
@@ -346,7 +362,7 @@ gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
 });
 
 layoutStateAtom.bindEffect((state) => {
-  if (state.type !== "running") return;
+  if (state.runState.type !== "running") return;
 
   const fnRestart = debounce(restartLastLayout, 100, { leading: true, trailing: true, maxWait: 100 });
   emitter.on(EVENTS.nodesDragged, fnRestart);

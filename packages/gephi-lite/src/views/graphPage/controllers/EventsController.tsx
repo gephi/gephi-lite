@@ -28,7 +28,7 @@ export const EventsController: FC = () => {
   const { setNodePositions } = useGraphDatasetActions();
   const { select, toggle, emptySelection } = useSelectionActions();
   const { setHoveredNode, resetHoveredNode, setHoveredEdge, resetHoveredEdge } = useSigmaActions();
-  const { type: layoutStatus } = useLayoutState();
+  const { runState } = useLayoutState();
   const { reverseNodePosition: reverseNodePositionOrNull } = useVisualGetters();
   const reverseNodePosition = useMemo(
     () => reverseNodePositionOrNull ?? ((pos: { x: number; y: number }) => pos),
@@ -162,7 +162,7 @@ export const EventsController: FC = () => {
           // Save new positions in graph dataset if layout is not running
           // Positions will be saved when the algo will be stopped and saving positions here
           // will retrigger the layout with the initial positions (#138)
-          if (layoutStatus !== "running") {
+          if (runState.type !== "running") {
             const positions = mapValues(dragState.initialNodesPosition, (_initialPosition, id) => {
               const pos = pick(graph.getNodeAttributes(id), ["x", "y"]) as { x: number; y: number };
               return reverseNodePosition(pos);
@@ -200,7 +200,7 @@ export const EventsController: FC = () => {
     toggle,
     setNodePositions,
     globalEmitter,
-    layoutStatus,
+    runState.type,
     reverseNodePosition,
   ]);
 

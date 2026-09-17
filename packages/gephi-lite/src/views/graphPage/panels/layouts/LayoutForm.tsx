@@ -30,7 +30,7 @@ export const LayoutForm: FC<{
   onCancel: () => void;
   onStart: (input: { params: Record<string, unknown>; then?: () => void; restart?: boolean }) => void;
   onStop: () => void;
-  status: LayoutState["type"];
+  status: LayoutState["runState"]["type"];
 }> = ({ layout, onStart, onStop, status }) => {
   const { t } = useTranslation();
   const { openModal } = useModal();

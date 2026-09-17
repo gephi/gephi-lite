@@ -218,7 +218,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   MOCK_LAYOUTS.length = 0;
   supervisorInstances = [];
-  layoutStateAtom.set({ quality: { enabled: false, showGrid: true }, type: "idle" });
+  layoutStateAtom.set({ quality: { enabled: false, showGrid: true }, runState: { type: "idle" } });
 
   // Default mock returns
   mockVisualGettersAtom.get.mockReturnValue(nullGetters);

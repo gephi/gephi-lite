@@ -1,18 +1,19 @@
 import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useLayoutActions, useLayoutState, useSessionActions } from "../../core/context/dataContexts";
+import { useLayoutActions, useLayoutState } from "../../core/context/dataContexts";
 
 export const LayoutQualityForm: FC = () => {
   const { t } = useTranslation();
-  const { setLastLayout } = useSessionActions();
   const layoutState = useLayoutState();
   const { setQuality, stopLayout } = useLayoutActions();
 
+  /**
+   * When opening the layout, if there is a running one we stop it
+   */
   useEffect(() => {
-    setLastLayout("layout-quality");
-    if (layoutState.type === "running") stopLayout();
-  }, [layoutState, stopLayout, setLastLayout]);
+    if (layoutState.runState.type === "running") stopLayout();
+  }, [layoutState, stopLayout]);
 
   return (
     <div className="panel-body">

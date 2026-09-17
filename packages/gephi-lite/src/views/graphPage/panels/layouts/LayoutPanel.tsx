@@ -1,7 +1,7 @@
 import { debounce } from "lodash";
 import { type FC, useCallback, useEffect, useMemo } from "react";
 
-import { useLayoutActions, useLayoutState, useSessionActions } from "../../../../core/context/dataContexts";
+import { useLayoutActions, useLayoutState } from "../../../../core/context/dataContexts";
 import type { Layout } from "../../../../core/layouts/types";
 import { useNotifications } from "../../../../core/notifications";
 import { LayoutForm } from "./LayoutForm";
@@ -9,20 +9,17 @@ import { LayoutForm } from "./LayoutForm";
 export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
   const { notify } = useNotifications();
   const { startLayout, stopLayout } = useLayoutActions();
-  const { setLastLayout } = useSessionActions();
   const layoutState = useLayoutState();
 
   /**
    * When the selected layout change
-   * => we set it as lastLayout in the session
    * => we stop the running the layout (if there is one)
    */
   useEffect(() => {
-    setLastLayout(layout.id);
-    if (layoutState.type === "running" && layoutState.layoutId !== layout.id) {
+    if (layoutState.runState.type === "running" && layoutState.runState.layoutId !== layout.id) {
       stopLayout();
     }
-  }, [layout.id, layoutState, stopLayout, setLastLayout]);
+  }, [layout.id, layoutState, stopLayout]);
 
   //eslint-disable-next-line react-hooks/exhaustive-deps
   const onStart = useCallback(
@@ -49,9 +46,9 @@ export const LayoutPanel: FC<{ layout: Layout }> = ({ layout }) => {
   );
 
   const status = useMemo(() => {
-    if ("layoutId" in layoutState && layoutState.layoutId !== layout.id) return "idle";
-    return layoutState.type;
-  }, [layout.id, layoutState]);
+    if (layoutState.runState.type === "running" && layoutState.runState.layoutId === layout.id) return "running";
+    return "idle";
+  }, [layout.id, layoutState.runState]);
 
   return <LayoutForm layout={layout} onStart={onStart} onStop={stopLayout} status={status} onCancel={stopLayout} />;
 };

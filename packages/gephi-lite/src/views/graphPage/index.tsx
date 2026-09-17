@@ -123,12 +123,13 @@ export const GraphPage: FC = () => {
   const menuExtended: MenuItem<{ panel?: ComponentType; isRunning?: boolean }>[] = useMemo(
     () =>
       MENU.map((section) => {
-        if (section.id === "layout" && layoutState.type === "running" && "children" in section) {
+        const layoutRunState = layoutState.runState;
+        if (section.id === "layout" && layoutRunState.type === "running" && "children" in section) {
           return {
             ...section,
             children: section.children.map((item) => ({
               ...item,
-              isRunning: `layout-${layoutState.layoutId}` === item.id,
+              isRunning: `layout-${layoutRunState.layoutId}` === item.id,
             })),
           };
         }
