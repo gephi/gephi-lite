@@ -8,7 +8,7 @@ import { useAppearance, useGraphDataset, usePreferences } from "../../../core/co
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { GephiLiteSigma, sigmaAtom } from "../../../core/sigma";
 import { drawDiscNodeHover } from "../../../core/sigma/utils";
-import { MERCATOR_PAN_BOUNDS } from "../../../utils/geo";
+import { MERCATOR_PAN_BOUNDS, isMapEnabled } from "../../../utils/geo";
 import { inputToStateThreshold } from "../../../utils/labels";
 
 export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady }) => {
@@ -37,7 +37,7 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     sigma.setSetting("labelRenderedSizeThreshold", labelThreshold);
     sigma.setSetting("labelDensity", labelDensity);
 
-    const isMapMode = graphAppearance.backgroundLayer?.type === "map";
+    const isMapMode = isMapEnabled(graphAppearance);
     sigma.setSetting("stagePadding", isMapMode ? 0 : 30);
     sigma.setSetting("enableCameraRotation", !isMapMode);
     sigma.setSetting("maxCameraRatio", isMapMode ? 1 : null);

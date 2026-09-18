@@ -66,24 +66,24 @@ const {
     openMenu: "openMenu",
   } as const;
 
-  const fn = () => ({ get: vi.fn() });
+  const mockAtom = () => ({ get: vi.fn(), set: vi.fn(), bind: vi.fn() });
   return {
     testEmitter,
     EVENTS,
-    mockAppearanceAtom: fn(),
-    mockGraphDatasetAtom: fn(),
-    mockSigmaGraphAtom: fn(),
-    mockVisualGettersAtom: fn(),
-    mockFilteredGraphAtom: fn(),
-    mockDynamicItemDataAtom: fn(),
+    mockAppearanceAtom: mockAtom(),
+    mockGraphDatasetAtom: mockAtom(),
+    mockSigmaGraphAtom: mockAtom(),
+    mockVisualGettersAtom: mockAtom(),
+    mockFilteredGraphAtom: mockAtom(),
+    mockDynamicItemDataAtom: mockAtom(),
     mockSetNodePositions: vi.fn(),
     mockDataGraphToFullGraph: vi.fn(),
     mockResetCamera: vi.fn(),
     mockConnectedCloseness: vi.fn(),
-    mockSessionAtom: fn(),
-    mockTopologicalFiltersAtom: fn(),
-    mockSigmaAtom: fn(),
-    mockSigmaStateAtom: fn(),
+    mockSessionAtom: mockAtom(),
+    mockTopologicalFiltersAtom: mockAtom(),
+    mockSigmaAtom: mockAtom(),
+    mockSigmaStateAtom: mockAtom(),
     MOCK_LAYOUTS: [] as Layout[],
   };
 });

@@ -135,7 +135,7 @@ export const GraphPage: FC = () => {
         }
         return section;
       }),
-    [layoutState],
+    [layoutState.runState],
   );
 
   // Mobile display:

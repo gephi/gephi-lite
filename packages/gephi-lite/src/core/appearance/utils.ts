@@ -15,7 +15,7 @@ import { clamp, forEach, identity, isNil, keyBy } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { MERCATOR_PAN_BOUNDS, MERCATOR_SIZE_RATIO } from "../../utils/geo";
+import { MERCATOR_PAN_BOUNDS, MERCATOR_SIZE_RATIO, isMapEnabled } from "../../utils/geo";
 import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
@@ -26,6 +26,7 @@ import {
   NodeRenderingData,
   SigmaGraph,
 } from "../graph/types";
+import { Preferences } from "../preferences/types";
 import { ItemType } from "../types";
 import {
   AppearanceState,
@@ -305,13 +306,8 @@ export function getAllVisualGetters(
   dynamicNodeData: DynamicItemData,
   appearance: AppearanceState,
 ): VisualGetters {
-  let isMap = false;
-  let mapScale = 1;
-
-  if (appearance.backgroundLayer?.type === "map") {
-    isMap = true;
-    mapScale = appearance.backgroundLayer.map.scale || 1;
-  }
+  const isMap = isMapEnabled(appearance);
+  const mapScale = isMap ? appearance.backgroundLayer?.scale || 1 : 1;
 
   // Base size getters
   const baseGetNodeSize = makeGetNumberAttr("nodes", "size", dataset, dynamicNodeData, appearance);
@@ -485,7 +481,7 @@ export function getItemAttributes(
   };
 }
 
-export function inferAppearanceState(graphDataset: GraphDataset): Partial<AppearanceState> {
+export function inferAppearanceState(graphDataset: GraphDataset, preferences: Preferences): Partial<AppearanceState> {
   const appearanceState: Partial<AppearanceState> = {};
 
   const nodeFieldsDict = keyBy(graphDataset.nodeFields, "id");
@@ -527,6 +523,8 @@ export function inferAppearanceState(graphDataset: GraphDataset): Partial<Appear
       field: edgeFieldsDict["color"],
       missingColor: DEFAULT_EDGE_COLOR,
     };
+
+  if (preferences.mapStyle) appearanceState.backgroundMapStyle = preferences.mapStyle;
 
   return appearanceState;
 }

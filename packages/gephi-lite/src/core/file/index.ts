@@ -2,7 +2,7 @@ import { gephiLiteStringify } from "@gephi/gephi-lite-sdk";
 import { Producer, asyncAction, atom, producerToAction } from "@ouestware/atoms";
 import Graph from "graphology";
 import { write } from "graphology-gexf";
-import { isEmpty, isEqual } from "lodash";
+import { isEmpty, isEqual, omit } from "lodash";
 
 import { config } from "../../config";
 import { localStorage } from "../../utils/storage";
@@ -18,6 +18,8 @@ import {
   visualGettersAtom,
 } from "../graph";
 import { dataGraphToFullGraph, initializeGraphDataset } from "../graph/utils";
+import { layoutActions, layoutStateAtom } from "../layouts";
+import { preferencesAtom } from "../preferences";
 import { resetCamera } from "../sigma";
 import { FileState, FileType, FileTypeWithoutFormat, GephiLiteFileFormat } from "./types";
 import { openAndParseFile } from "./utils";
@@ -93,7 +95,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { forc
     // Do the import
     resetStates(false);
     if (format === "gephi-lite") {
-      const { graphDataset, appearance, filters } = data;
+      const { graphDataset, appearance, filters, layout } = data;
       // Load the graph
       const { setGraphDataset } = graphDatasetActions;
       setGraphDataset(graphDataset);
@@ -103,6 +105,11 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { forc
       // Load filters
       const { setFilters } = filtersActions;
       setFilters(filters);
+      // Load layout
+      if (layout) {
+        const { setLayoutState } = layoutActions;
+        setLayoutState(layout);
+      }
     } else {
       const { setGraphDataset } = graphDatasetActions;
       const { mergeState } = appearanceActions;
@@ -111,7 +118,7 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { forc
       const graphDataset = initializeGraphDataset(data, metadata);
       setGraphDataset(graphDataset);
 
-      const appearanceState = inferAppearanceState(graphDataset);
+      const appearanceState = inferAppearanceState(graphDataset, preferencesAtom.get());
       if (!isEmpty(appearanceState)) mergeState(appearanceState);
     }
 
@@ -137,6 +144,7 @@ export const exportAsGephiLite = asyncAction(async (callback: (data: string) => 
       graphDataset: graphDatasetAtom.get(),
       filters: filtersAtom.get(),
       appearance: appearanceAtom.get(),
+      layout: omit(layoutStateAtom.get(), ["runState"]),
     };
     const content = gephiLiteStringify(data);
     await callback(content);

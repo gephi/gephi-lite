@@ -1,9 +1,7 @@
 import { DataGraph } from "@gephi/gephi-lite-sdk";
 import { mapValues } from "lodash";
-import { useTranslation } from "react-i18next";
 
 import { GeoProjectionType, applyGeoProjection } from "../../../utils/geo-projections";
-import { EVENTS, useEventsContext } from "../../context/eventsContext";
 import { LayoutMapping, OneShotLayout } from "../types";
 
 const LAT_RE = /^(lat|latitude|y_?coord)$/i;
@@ -162,26 +160,6 @@ export const GeographicLayout = {
       type: "number",
       defaultValue: 1,
       description: true,
-    },
-    {
-      id: "background",
-      type: "jsx",
-      Component: () => {
-        const { t } = useTranslation();
-        const { emitter } = useEventsContext();
-        return (
-          <div className="panel-block">
-            <p className="gl-text-muted mb-0">{t("layouts.geographic.background_warning")}</p>
-            <button
-              type="button"
-              className="gl-btn gl-btn-outline"
-              onClick={() => emitter.emit(EVENTS.openMenu, { menuId: "appearance-background" })}
-            >
-              {t("layouts.geographic.background_open")}
-            </button>
-          </div>
-        );
-      },
     },
   ],
   run: runGeographic,

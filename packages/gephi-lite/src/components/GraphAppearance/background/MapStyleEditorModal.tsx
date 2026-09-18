@@ -1,3 +1,4 @@
+import { BackgroundMapStyle } from "@gephi/gephi-lite-sdk";
 import Editor from "@monaco-editor/react";
 import { FC, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -7,7 +8,7 @@ import { ModalProps } from "../../../core/modals/types";
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { Modal } from "../../modals";
 
-export const MapStyleEditorModal: FC<ModalProps<{ initialStyle: string }, { style: Record<string, unknown> }>> = ({
+export const MapStyleEditorModal: FC<ModalProps<{ initialStyle: string }, { style: BackgroundMapStyle }>> = ({
   arguments: { initialStyle },
   cancel,
   submit,
@@ -24,7 +25,7 @@ export const MapStyleEditorModal: FC<ModalProps<{ initialStyle: string }, { styl
         setError("Style must be a JSON object");
         return;
       }
-      submit({ style: parsed as Record<string, unknown> });
+      submit({ style: parsed as BackgroundMapStyle });
     } catch (e) {
       setError(`${e}`);
     }

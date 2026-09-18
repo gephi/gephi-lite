@@ -2,8 +2,11 @@ import * as pmtiles from "pmtiles";
 import { useSigma } from "@react-sigma/core";
 import MapLibreGL, { LngLatBounds, Map, MercatorCoordinate, StyleSpecification } from "maplibre-gl";
 import { FC, useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAppearance, usePreferences } from "../../../core/context/dataContexts";
+import { useNotifications } from "../../../core/notifications";
+import { resetCamera } from "../../../core/sigma";
 import { getDefaultMapStyle } from "../../../utils/map-style";
 
 // add the PMTiles plugin to the maplibregl global.
@@ -17,9 +20,11 @@ function graphToLatlng(coords: { x: number; y: number }) {
 }
 
 export const MapLayerController: FC = () => {
+  const { notify } = useNotifications();
   const sigma = useSigma();
   const { theme } = usePreferences();
-  const { backgroundLayer } = useAppearance();
+  const { t } = useTranslation();
+  const { backgroundLayer, backgroundMapStyle } = useAppearance();
 
   const mapRef = useRef<Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -27,8 +32,8 @@ export const MapLayerController: FC = () => {
   const sigmaRef = useRef(sigma);
   sigmaRef.current = sigma;
 
-  const mapConfig = backgroundLayer?.type === "map" ? backgroundLayer.map : null;
-  const mapStyle = (mapConfig?.style || getDefaultMapStyle(theme)) as StyleSpecification;
+  const mapConfig = backgroundLayer?.type === "map" ? backgroundLayer : undefined;
+  const mapStyle = (backgroundMapStyle || getDefaultMapStyle(theme)) as StyleSpecification;
   const styleKey = JSON.stringify(mapStyle);
 
   // Sync map bounds to match sigma's viewport (skips if camera hasn't moved)
@@ -38,7 +43,7 @@ export const MapLayerController: FC = () => {
     if (!map) return;
 
     const { x, y, ratio, angle } = s.getCamera().getState();
-    const key = `${x},${y},${ratio},${angle}`;
+    const key = `${map._mapId}-${x},${y},${ratio},${angle}`;
     if (key === lastCameraStateRef.current) return;
     lastCameraStateRef.current = key;
 
@@ -53,43 +58,45 @@ export const MapLayerController: FC = () => {
   }, []);
 
   // Initialize or clean up map based on mapConfig
-  const isMapMode = !!mapConfig;
+  const isMapMode = mapConfig?.enabled === true;
   useEffect(() => {
-    if (!isMapMode) {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
+    if (isMapMode) {
+      // Create container for MapLibre
+      const sigmaContainer = sigmaRef.current.getContainer();
+      if (!containerRef.current) {
+        const container = document.createElement("div");
+        container.style.position = "absolute";
+        container.style.inset = "0";
+        container.style.pointerEvents = "none";
+        container.style.zIndex = "-1";
+        sigmaContainer.insertBefore(container, sigmaContainer.firstChild);
+        containerRef.current = container;
       }
-      if (containerRef.current) {
-        containerRef.current.remove();
-        containerRef.current = null;
-      }
-      return;
+
+      // Create MapLibre map
+      const style = JSON.parse(styleKey) as StyleSpecification;
+      const map = new Map({
+        container: containerRef.current,
+        style,
+        interactive: false,
+        attributionControl: false,
+      });
+      mapRef.current = map;
+      // we need to reset the camera when toggle on & off the map.
+      map.once("load", () => {
+        syncMapFromSigma();
+      });
+      map.on("error", (error) => {
+        console.error(error);
+        notify({
+          type: "error",
+          message: t("graph.control.error-map"),
+        });
+      });
+    } else {
+      // when toggle off the map, we need to refresh
+      setTimeout(() => resetCamera({ forceRefresh: true, source: "dataset" }), 0);
     }
-
-    // Create container for MapLibre
-    const sigmaContainer = sigmaRef.current.getContainer();
-    if (!containerRef.current) {
-      const container = document.createElement("div");
-      container.style.position = "absolute";
-      container.style.inset = "0";
-      container.style.pointerEvents = "none";
-      container.style.zIndex = "-1";
-      sigmaContainer.insertBefore(container, sigmaContainer.firstChild);
-      containerRef.current = container;
-    }
-
-    // Create MapLibre map
-    const style = JSON.parse(styleKey) as StyleSpecification;
-    const map = new Map({
-      container: containerRef.current,
-      style,
-      interactive: false,
-      attributionControl: false,
-    });
-    mapRef.current = map;
-
-    map.once("load", () => syncMapFromSigma());
 
     return () => {
       if (mapRef.current) {
@@ -100,8 +107,9 @@ export const MapLayerController: FC = () => {
         containerRef.current.remove();
         containerRef.current = null;
       }
+      lastCameraStateRef.current = null;
     };
-  }, [isMapMode, styleKey, syncMapFromSigma]);
+  }, [isMapMode, styleKey, syncMapFromSigma, notify, t]);
 
   // Sync map camera on sigma afterRender
   useEffect(() => {

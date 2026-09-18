@@ -1,5 +1,5 @@
 import {
-  BackgroundLayer,
+  BackgroundMapStyle,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LAYOUT_GRID_COLOR,
   PartitionColor,
@@ -33,7 +33,9 @@ const setFullState: Producer<AppearanceState, [AppearanceState]> = (newState) =>
   return () => newState;
 };
 const mergeState: Producer<AppearanceState, [Partial<AppearanceState>]> = (newPartialState) => {
-  return (state) => ({ ...state, ...newPartialState });
+  return (state) => {
+    return { ...state, ...newPartialState };
+  };
 };
 
 const setShowEdges: Producer<AppearanceState, [BooleanAppearance]> = (showEdges) => {
@@ -47,16 +49,29 @@ const setSizeAppearance: Producer<AppearanceState, [ItemType, Size]> = (itemType
 const setBackgroundColorAppearance: Producer<AppearanceState, [string | undefined]> = (color) => {
   return (state) => ({ ...state, backgroundColor: color || DEFAULT_BACKGROUND_COLOR });
 };
+
 const setLayoutGridColorAppearance: Producer<AppearanceState, [string | undefined]> = (color) => {
   return (state) => ({ ...state, layoutGridColor: color || DEFAULT_LAYOUT_GRID_COLOR });
 };
-const setBackgroundLayer: Producer<AppearanceState, [BackgroundLayer | undefined]> = (backgroundLayer) => {
-  return (state) => ({ ...state, backgroundLayer });
+
+const toggleBackgroundLayer: Producer<AppearanceState, []> = () => {
+  return (state) => ({
+    ...state,
+    backgroundLayer: { ...state.backgroundLayer, enabled: !state.backgroundLayer.enabled },
+  });
+};
+
+const setBackgroundMapStyle: Producer<AppearanceState, [style: BackgroundMapStyle | null]> = (style) => {
+  return (state) => ({
+    ...state,
+    backgroundMapStyle: style,
+  });
 };
 
 const setColorAppearance: Producer<AppearanceState, [ItemType, Color]> = (itemType, color) => {
   return (state) => ({ ...state, [itemType === "nodes" ? "nodesColor" : "edgesColor"]: color });
 };
+
 const setShadingColorAppearance: Producer<AppearanceState, [ItemType, ShadingColor | undefined]> = (
   itemType,
   shadingColor,
@@ -134,10 +149,11 @@ export const appearanceActions = {
   setShowEdges: producerToAction(setShowEdges, appearanceAtom),
   setSizeAppearance: producerToAction(setSizeAppearance, appearanceAtom),
   setColorAppearance: producerToAction(setColorAppearance, appearanceAtom),
+  setBackgroundMapStyle: producerToAction(setBackgroundMapStyle, appearanceAtom),
   setShadingColorAppearance: producerToAction(setShadingColorAppearance, appearanceAtom),
   setBackgroundColorAppearance: producerToAction(setBackgroundColorAppearance, appearanceAtom),
   setLayoutGridColorAppearance: producerToAction(setLayoutGridColorAppearance, appearanceAtom),
-  setBackgroundLayer: producerToAction(setBackgroundLayer, appearanceAtom),
+  toggleBackgroundLayer: producerToAction(toggleBackgroundLayer, appearanceAtom),
   setLabelAppearance: producerToAction(setLabelAppearance, appearanceAtom),
   setLabelSizeAppearance: producerToAction(setLabelSizeAppearance, appearanceAtom),
   setNodeImagesAppearance: producerToAction(setNodeImagesAppearance, appearanceAtom),
@@ -165,10 +181,11 @@ appearanceAtom.bind((appearanceState, previousAppearanceState) => {
     }
   }
 
-  // When map style on appearance changed, save it into preferences
-  if (previousAppearanceState.backgroundLayer !== appearanceState.backgroundLayer) {
-    if (appearanceState.backgroundLayer?.map.style) {
-      preferencesActions.setMapStyle(appearanceState.backgroundLayer.map.style);
-    }
+  // When map style on appearance changed, save it into preferences so it can be used on another workspace
+  if (
+    previousAppearanceState.backgroundMapStyle !== appearanceState.backgroundMapStyle &&
+    appearanceState.backgroundMapStyle
+  ) {
+    preferencesActions.setMapStyle(appearanceState.backgroundMapStyle);
   }
 });

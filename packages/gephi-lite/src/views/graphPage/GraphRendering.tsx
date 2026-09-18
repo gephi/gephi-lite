@@ -13,6 +13,7 @@ import {
   FullScreenIcon,
   GraphSelectionModeIcon,
   LayoutsIcon,
+  MapIcon,
   PauseIconFill,
   PlayIcon,
   PlaySyncIcon,
@@ -22,6 +23,7 @@ import {
 } from "../../components/common-icons";
 import {
   useAppearance,
+  useAppearanceActions,
   useLayoutActions,
   useLayoutState,
   useSelection,
@@ -35,6 +37,7 @@ import { LAYOUTS } from "../../core/layouts/collection";
 import { GRAPH_SELECTION_MODES } from "../../core/selection/types";
 import { resetCamera } from "../../core/sigma";
 import NodeProgramBorder from "../../utils/bordered-node-program";
+import { isMapFeatureAuthorized } from "../../utils/geo";
 import { AppearanceController } from "./controllers/AppearanceController";
 import { EventsController } from "./controllers/EventsController";
 import { GridController } from "./controllers/GridController";
@@ -75,16 +78,18 @@ const InteractionsController: FC = () => {
   const { graphSelectionMode } = useSelection();
   const { isFullScreen, toggle } = useFullScreen();
   const sigma = useSigmaAtom();
-  const { runState, lastRun } = useLayoutState();
+  const layoutState = useLayoutState();
   const { restartLastLayout, stopLayout } = useLayoutActions();
+  const { toggleBackgroundLayer } = useAppearanceActions();
+  const { backgroundLayer } = useAppearance();
 
   const btnClassName = "gl-btn gl-btn-icon gl-btn-outline bg-body";
   const zoomOptions = { duration: 200, factor: 1.5 };
 
   // Get the latest layout run in the history with its data
   const lastLayoutActive = useMemo(() => {
-    if (!lastRun) return null;
-    const layoutId = lastRun.layoutId;
+    if (!layoutState.lastRun) return null;
+    const layoutId = layoutState.lastRun.layoutId;
     const layout = LAYOUTS.find((e) => e.id === layoutId);
     if (!layout) return null;
 
@@ -93,7 +98,7 @@ const InteractionsController: FC = () => {
       name: t(`layouts.${layout.id}.title`),
       type: layout.type,
     };
-  }, [lastRun, t]);
+  }, [layoutState.lastRun, t]);
 
   // Get needed info to render the layout button
   const layoutButton = useMemo(() => {
@@ -104,14 +109,14 @@ const InteractionsController: FC = () => {
       className: "gl-btn gl-btn-icon gl-btn-outline",
     };
     if (lastLayoutActive) {
-      if (runState.type === "running") {
+      if (layoutState.runState.type === "running") {
         result = {
           title: t("graph.control.layout-stop-latest", { name: lastLayoutActive.name }),
           icon: <SpinnerIcon icon={PauseIconFill} />,
           disabled: false,
           className: "gl-btn gl-btn-icon gl-btn-fill",
         };
-      } else if (runState.type === "computing") {
+      } else if (layoutState.runState.type === "computing") {
         result = {
           title: t("graph.control.layout-stop-latest", { name: lastLayoutActive.name }),
           icon: <SpinnerIcon icon={CancelIcon} />,
@@ -137,13 +142,13 @@ const InteractionsController: FC = () => {
       }
     }
     return result;
-  }, [t, lastLayoutActive, runState.type]);
+  }, [t, lastLayoutActive, layoutState.runState.type]);
 
   // Start / stop action for the layout button
   const startStopLayout = useCallback(() => {
-    if (runState.type === "running") stopLayout();
-    else if (lastRun) restartLastLayout();
-  }, [stopLayout, restartLastLayout, runState, lastRun]);
+    if (layoutState.runState.type === "running") stopLayout();
+    else if (layoutState.lastRun) restartLastLayout();
+  }, [stopLayout, restartLastLayout, layoutState]);
 
   // Open the settings of the latest layout
   // Default is FA2
@@ -161,9 +166,23 @@ const InteractionsController: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const withMapButton = isMapFeatureAuthorized(layoutState);
+
   return (
     <div className="position-absolute d-flex sigma-controls gl-gap-2" style={{ right: 10, bottom: 10 }}>
       <div className="d-flex flex-column gl-gap-1">
+        {withMapButton && (
+          <>
+            <button
+              className={cx("gl-btn gl-btn-icon", backgroundLayer?.enabled ? "gl-btn-fill" : "gl-btn-outline bg-body")}
+              onClick={toggleBackgroundLayer}
+              title={t(backgroundLayer?.enabled ? `graph.control.disable-map` : `graph.control.enable-map`)}
+            >
+              <MapIcon />
+            </button>
+            <br />
+          </>
+        )}
         {GRAPH_SELECTION_MODES.map((mode) => (
           <button
             key={mode}
@@ -294,7 +313,7 @@ export const GraphRendering: FC = () => {
         <EventsController />
         <AppearanceController />
         <SettingsController setIsReady={setReady} />
-        <MapLayerController />
+        {isReady && <MapLayerController />}
         <div className="sigma-layers">
           {quality.enabled && quality.showGrid && quality.metric?.deltaMax && (
             <GridController

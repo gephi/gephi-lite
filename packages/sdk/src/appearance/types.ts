@@ -97,13 +97,10 @@ export interface BooleanAppearance extends AppearanceBaseElement {
 // Background management:
 export type MapBackgroundLayer = {
   type: "map";
-  map: {
-    engine: "maplibre";
-    style?: Record<string, unknown>;
-    scale?: number;
-  };
+  enabled: boolean;
+  scale?: number;
 };
-export type BackgroundLayer = MapBackgroundLayer; // TODO: ImageBackgroundLayer
+export type BackgroundLayer = MapBackgroundLayer;
 
 // Z-index management:
 export interface ZIndexFieldAttr extends AppearanceBaseElement {
@@ -113,6 +110,11 @@ export interface ZIndexFieldAttr extends AppearanceBaseElement {
 }
 
 export type ZIndexAttr = NoFieldValue<"none"> | ZIndexFieldAttr;
+
+// We don't want the SDK to be dependant to maplibre types, so we define it
+// To avoid issue with dynamic item, we add the field:never, which solve the related issue
+// check appearanceElement.field.dynamic for example
+export type BackgroundMapStyle = Record<string, unknown> & { field?: never; type?: never };
 
 /**
  * Describes how each visual variable should be used to render the graph in Gephi Lite.
@@ -124,7 +126,8 @@ export interface AppearanceState {
   edgesSize: Size;
   backgroundColor: string;
   layoutGridColor: string;
-  backgroundLayer?: BackgroundLayer;
+  backgroundMapStyle: BackgroundMapStyle | null;
+  backgroundLayer: BackgroundLayer;
   nodesColor: Color;
   nodesShadingColor?: ShadingColor;
   edgesColor: EdgeColor;
@@ -143,6 +146,7 @@ export const APPEARANCE_ITEM_TYPES: Record<keyof AppearanceState, ItemType | nul
   backgroundColor: null,
   layoutGridColor: null,
   backgroundLayer: null,
+  backgroundMapStyle: null,
 
   nodesSize: "nodes",
   nodesColor: "nodes",

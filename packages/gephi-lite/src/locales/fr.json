@@ -1,22 +1,14 @@
 {
   "appearance": {
     "background": {
-      "layer_mode": "Calque d’arrière-plan",
-      "none": "Aucun",
       "map": {
-        "label": "Cartographique",
+        "titre": "Cartographique",
         "maplibre": {
           "edit_style": "Modifier le style de la carte",
           "reset_style": "Réinitialiser le style par défaut",
           "style": "Style de la carte",
           "style_description": "La carte est rendue à l'aide de <maplibreLink>MapLibre</maplibreLink> et suit la <maplibreStyleLink>spécification des styles MapLibre</maplibreStyleLink>. Consultez la <gephiLiteDocLink>documentation</gephiLiteDocLink> pour plus de détails.",
           "style_editor_title": "Modifier le style de la carte"
-        },
-        "open_geo_layout": "Ouvrir la spatialisation Géographique",
-        "position_warning": "Pour afficher correctement la carte, vous devez appliquez une spatialisation géographique afin de convertir les coordonnées des nœuds en coordonnées géographiques.",
-        "scale": {
-          "title": "Échelle",
-          "description": "Contrôle la mise à l’échelle de la carte par rapport au graphe. Ajustez cette valeur jusqu’à ce que la carte soit correctement alignée avec votre graphe. Si vous avez appliqué une spatialisation géographique avec un facteur d’échelle, utilisez la même valeur ici."
         },
         "title": "Cartographie"
       }
@@ -415,6 +407,9 @@
       "title": "Dupliquer dans un nouvel onglet"
     },
     "control": {
+      "disable-map": "Désactiver le fond de carte",
+      "enable-map": "Activer le fond de carte",
+      "error-map": "Une erreur s'est produite lors du chargement de la carte",
       "fullscreenEnter": "Activer le mode plein écran",
       "fullscreenExit": "Quitter le mode plein écran",
       "layout-run-latest": "Exécuter la spatialisation '{{name}}'",
@@ -688,9 +683,7 @@
       "title": "Dirigée par la force"
     },
     "geographic": {
-      "background_warning": "Pour afficher et styliser le fond de carte, rendez-vous à la section Arrière-plan dans Apparence.",
-      "background_open": "Ouvrir l'apparence d'arrière-plan",
-      "description": "Positionne les nœuds selon leurs coordonnées géographiques (latitude/longitude)",
+      "description": "Positionne les nœuds selon leurs coordonnées géographiques (latitude/longitude).",
       "buttons": {
         "applyWithMap": {
           "description": "Appliquer la mise en page et activer l’arrière-plan cartographique",
@@ -699,7 +692,7 @@
       },
       "parameters": {
         "projection": {
-          "description": "Projection cartographique à appliquer aux coordonnées géographiques",
+          "description": "Projection cartographique à appliquer aux coordonnées géographiques. Avec 'Web Mercator' l'affichage d'un fond de carte est disponible",
           "title": "Projection",
           "options": {
             "webmercator": "Web Mercator",

@@ -20,7 +20,6 @@ export const chiSquareMetric: Metric<{ edges: ["chiSquareStrength"] }> = {
     },
     graph: FullGraph,
   ) {
-    console.log(chiSquare(graph, parameters.getEdgeWeight));
     return { edges: { chiSquareStrength: chiSquare(graph, parameters.getEdgeWeight) } };
   },
 };

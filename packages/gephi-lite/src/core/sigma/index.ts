@@ -4,7 +4,7 @@ import { Extent } from "graphology-metrics/graph/extent";
 import { max } from "lodash";
 import Sigma from "sigma";
 
-import { MERCATOR_WORLD } from "../../utils/geo";
+import { MERCATOR_WORLD, isMapEnabled } from "../../utils/geo";
 import { appearanceAtom } from "../appearance";
 import { filteredGraphAtom, graphDatasetAtom, sigmaGraphAtom, visualGettersAtom } from "../graph";
 import { SigmaState } from "./types";
@@ -120,10 +120,7 @@ export const sigmaStateAtom = atom<SigmaState>(getEmptySigmaState());
 /**
  * Sets MERCATOR_WORLD bbox and fits the camera to a Mercator extent.
  */
-function fitCameraToMercatorExtent(
-  sigma: Sigma,
-  extent: { minX: number; minY: number; maxX: number; maxY: number },
-) {
+function fitCameraToMercatorExtent(sigma: Sigma, extent: { minX: number; minY: number; maxX: number; maxY: number }) {
   sigma.setCustomBBox(MERCATOR_WORLD);
   sigma.getCamera().setState({ angle: 0, x: 0.5, y: 0.5, ratio: 1 });
 
@@ -140,8 +137,7 @@ function fitCameraToMercatorExtent(
   const visibleW = width >= height ? width / height : 1;
   const visibleH = width >= height ? 1 : height / width;
 
-  const margin = 1.1;
-  const ratio = Math.max((extentW * margin) / visibleW, (extentH * margin) / visibleH, 0.01);
+  const ratio = Math.max(extentW / visibleW, extentH / visibleH, 0.01);
   sigma.getCamera().setState({ angle: 0, x: centerX, y: centerY, ratio });
 }
 
@@ -153,7 +149,10 @@ function computeMercatorExtent(
   layout: Record<string, { x: number; y: number }>,
   getNodePosition: (pos: { x: number; y: number }) => { x: number; y: number },
 ) {
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
   for (const node in layout) {
     const pos = getNodePosition(layout[node]);
     minX = Math.min(minX, pos.x);
@@ -174,7 +173,7 @@ export const resetCamera = ({
   const sigma = sigmaAtom.get();
   const sigmaGraph = sigmaGraphAtom.get();
   const appearance = appearanceAtom.get();
-  const isMapMode = appearance.backgroundLayer?.type === "map";
+  const isMapMode = isMapEnabled(appearance);
 
   if (isMapMode) {
     const dataset = graphDatasetAtom.get();
@@ -231,7 +230,7 @@ export const resetCamera = ({
 let _prevIsMapMode: boolean | null = null;
 visualGettersAtom.bindEffect((visualGetters): undefined => {
   const appearance = appearanceAtom.get();
-  const isMapMode = appearance.backgroundLayer?.type === "map";
+  const isMapMode = isMapEnabled(appearance);
   const wasMapMode = _prevIsMapMode;
   _prevIsMapMode = isMapMode;
   if (wasMapMode === null || wasMapMode === isMapMode) return;

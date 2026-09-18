@@ -1,23 +1,14 @@
 {
   "appearance": {
     "background": {
-      "layer_mode": "Background layer",
-      "none": "None",
       "map": {
-        "label": "Map",
         "title": "Map background",
-        "position_warning": "To display the map correctly, apply a Geographic layout to convert node coordinates to geographic ones.",
-        "open_geo_layout": "Open Geographical layout settings",
         "maplibre": {
           "edit_style": "Edit map style",
           "reset_style": "Reset to default style",
           "style": "Map style",
           "style_description": "The map is rendered using <maplibreLink>MapLibre</maplibreLink>, and follows the <maplibreStyleLink>MapLibre Style Spec</maplibreStyleLink>. See the <gephiLiteDocLink>documentation</gephiLiteDocLink> for more details.",
           "style_editor_title": "Edit map style"
-        },
-        "scale": {
-          "title": "Scaling",
-          "description": "Controls how the map is scaled to fit the graph. Adjust this value until the map aligns correctly with your graph. If you applied a geographic layout with a scaling ratio, use the same value here."
         }
       }
     },
@@ -378,6 +369,9 @@
       "success": "Your graph clone has successfully been opened in a new tab."
     },
     "control": {
+      "disable-map": "Disable map layer",
+      "enable-map": "Enable map layer",
+      "error-map": "An error occured while loading the map",
       "fullscreenEnter": "Enter fullscreen mode",
       "fullscreenExit": "Exit fullscreen",
       "layout-open-settings": "Open '{{name}}' layout settings",
@@ -616,8 +610,6 @@
       "title": "Force directed"
     },
     "geographic": {
-      "background_warning": "To display and style the map background, go to the Background section under Appearance.",
-      "background_open": "Open background appearance",
       "description": "Positions nodes according to their geographic coordinates (latitude/longitude)",
       "parameters": {
         "latitudeField": {
@@ -638,7 +630,7 @@
           }
         },
         "projection": {
-          "description": "Map projection to apply to geographic coordinates",
+          "description": "Map projection to apply to geographic coordinates. With Web Mercator,  a map layer can be displayed at the background",
           "title": "Projection",
           "options": {
             "webmercator": "Web Mercator",

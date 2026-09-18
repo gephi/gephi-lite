@@ -1,11 +1,13 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppearance, useAppearanceActions, usePreferences, useSessionData } from "../../core/context/dataContexts";
+import { useAppearance, useAppearanceActions, usePreferences } from "../../core/context/dataContexts";
+import { useModal } from "../../core/modals";
 import { ItemType } from "../../core/types";
+import { getDefaultMapStyle } from "../../utils/map-style";
 import ColorPicker from "../ColorPicker";
-import { EnumInput } from "../forms/TypedInputs";
-import { MapBackgroundLayerForm } from "./background/MapBackgroundLayerForm";
+import { CodeEditorIcon, ResetIcon } from "../common-icons";
+import { MapStyleEditorModal } from "./background/MapStyleEditorModal";
 import { ColorItem } from "./color/ColorItem";
 import { StringAttrItem } from "./label/StringAttrItem";
 import { SizeItem } from "./size/SizeItem";
@@ -52,42 +54,12 @@ export const GraphItemAppearance: FC<{ itemType: ItemType }> = ({ itemType }) =>
   );
 };
 
-type LayerMode = "none" | "map";
-
 export const GraphBackgroundAppearance: FC<unknown> = () => {
   const { t } = useTranslation();
-  const { backgroundColor, layoutGridColor, backgroundLayer } = useAppearance();
-  const { setBackgroundColorAppearance, setLayoutGridColorAppearance, setBackgroundLayer } = useAppearanceActions();
-  const { layoutsParameters } = useSessionData();
-  const { mapStyle } = usePreferences();
-
-  const layerMode: LayerMode = backgroundLayer?.type || "none";
-
-  const layerModeOptions = useMemo(
-    () => [
-      { value: "none", label: t("appearance.background.none") },
-      { value: "map", label: t("appearance.background.map.label") },
-    ],
-    [t],
-  );
-
-  const enableMapLayer = useCallback(() => {
-    let scale = 1;
-    if (layoutsParameters["geographic"] && layoutsParameters["geographic"].scale)
-      scale = +layoutsParameters["geographic"].scale;
-    setBackgroundLayer({
-      type: "map",
-      map: {
-        engine: "maplibre",
-        scale,
-        style: mapStyle,
-      },
-    });
-  }, [setBackgroundLayer, layoutsParameters, mapStyle]);
-
-  const disableMapLayer = useCallback(() => {
-    setBackgroundLayer(undefined);
-  }, [setBackgroundLayer]);
+  const { theme } = usePreferences();
+  const { openModal } = useModal();
+  const { backgroundColor, backgroundMapStyle, layoutGridColor } = useAppearance();
+  const { setBackgroundColorAppearance, setLayoutGridColorAppearance, setBackgroundMapStyle } = useAppearanceActions();
 
   return (
     <div className="panel-body">
@@ -116,20 +88,41 @@ export const GraphBackgroundAppearance: FC<unknown> = () => {
       </div>
 
       <div className="panel-block">
-        <EnumInput
-          id="background-layer-mode"
-          label={t("appearance.background.layer_mode")}
-          value={layerMode}
-          options={layerModeOptions}
-          onChange={(v) => {
-            if (v === "map") enableMapLayer();
-            else disableMapLayer();
-          }}
-          required
-        />
-      </div>
+        <h3>{t("appearance.background.map.title")}</h3>
 
-      {layerMode === "map" && <MapBackgroundLayerForm />}
+        <div className="panel-block">
+          <label className="form-label">{t("appearance.background.map.maplibre.style")}</label>
+          <div className="w-100 d-flex gl-gap-1">
+            {backgroundMapStyle && (
+              <button
+                type="button"
+                className="gl-btn gl-btn-outline gl-btn-sm"
+                title={t("appearance.background.map.maplibre.reset_style")}
+                onClick={() => setBackgroundMapStyle(null)}
+              >
+                <ResetIcon />
+              </button>
+            )}
+            <button
+              type="button"
+              className="gl-btn gl-btn-outline gl-btn-sm flex-grow-1"
+              title={t("appearance.background.map.maplibre.edit_style")}
+              onClick={() =>
+                openModal({
+                  component: MapStyleEditorModal,
+                  arguments: {
+                    initialStyle: JSON.stringify(backgroundMapStyle || getDefaultMapStyle(theme), null, 2),
+                  },
+                  beforeSubmit: ({ style }) => setBackgroundMapStyle(style),
+                })
+              }
+            >
+              <CodeEditorIcon className="me-1" />
+              {t("common.edit")}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

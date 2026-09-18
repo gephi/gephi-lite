@@ -2,6 +2,7 @@ import { AppearanceState } from "@gephi/gephi-lite-sdk";
 
 import { FiltersState } from "../filters/types";
 import { GraphDataset } from "../graph/types";
+import { LayoutState } from "../layouts/types";
 
 /**
  * A serializable structure, to allow Gephi Lite to load and save graphs, with their surrounding context.
@@ -16,6 +17,7 @@ export type GephiLiteFileFormat = {
   graphDataset: GraphDataset;
   filters: FiltersState;
   appearance: AppearanceState;
+  layout?: Omit<LayoutState, "runState">;
 };
 
 export type FileFormat = "gexf" | "gephi-lite" | "graphology" | "graphml";

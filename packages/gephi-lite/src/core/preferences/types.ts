@@ -1,4 +1,4 @@
-import { MapBackgroundLayer, PartitionColor, RankingColor } from "@gephi/gephi-lite-sdk";
+import { AppearanceState, PartitionColor, RankingColor } from "@gephi/gephi-lite-sdk";
 
 export interface Preferences {
   // for color, we save last used partition/ranking specs
@@ -11,5 +11,5 @@ export interface Preferences {
   // theme
   theme: "light" | "dark" | "auto";
   // saving map style
-  mapStyle?: MapBackgroundLayer["map"]["style"];
+  mapStyle?: AppearanceState["backgroundMapStyle"];
 }

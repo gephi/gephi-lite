@@ -5,8 +5,9 @@ import { connectedCloseness } from "graphology-metrics/layout-quality";
 import { debounce, identity, pick } from "lodash";
 import seedRandom from "seedrandom";
 
+import { isMapFeatureAuthorized } from "../../utils/geo";
 import { localStorage } from "../../utils/storage";
-import { appearanceActions, appearanceAtom } from "../appearance";
+import { appearanceAtom } from "../appearance";
 import { VisualGetters } from "../appearance/types";
 import { EVENTS, emitter } from "../context/eventsContext";
 import {
@@ -213,21 +214,6 @@ export const startLayout = asyncAction(
     const layout = LAYOUTS.find((l) => l.id === id);
 
     if (layout) {
-      // If the map is already displayed at the background, then we sync with it the scale variable
-      if (layout.id === "geographic") {
-        const appearance = appearanceAtom.get();
-        if (appearance.backgroundLayer?.type === "map") {
-          const { setBackgroundLayer } = appearanceActions;
-          setBackgroundLayer({
-            type: "map",
-            map: {
-              ...appearance.backgroundLayer.map,
-              scale: params.scale as number,
-            },
-          });
-        }
-      }
-
       // Sync layout
       if (layout.type === "oneshot") {
         layoutStateAtom.set((prev) => ({
@@ -311,6 +297,10 @@ export const setQuality: Producer<LayoutState, [LayoutQuality]> = (quality) => {
   return (state) => ({ ...state, quality });
 };
 
+export const setLayoutState: Producer<LayoutState, [Partial<LayoutState>]> = (partialState) => {
+  return () => ({ ...getEmptyLayoutState(), ...partialState });
+};
+
 const _computeLayoutQualityMetric: Producer<LayoutState> = () => {
   const sigmaGraph = sigmaGraphAtom.get();
   try {
@@ -327,6 +317,7 @@ export const layoutActions = {
   stopLayout,
   startLayout,
   restartLastLayout,
+  setLayoutState: producerToAction(setLayoutState, layoutStateAtom),
   setQuality: producerToAction(setQuality, layoutStateAtom),
   computeLayoutQualityMetric: producerToAction(_computeLayoutQualityMetric, layoutStateAtom),
 };
@@ -371,4 +362,29 @@ layoutStateAtom.bindEffect((state) => {
     emitter.off(EVENTS.nodesDragged, fnRestart);
     emitter.off(EVENTS.graphImported, fnRestart);
   };
+});
+
+layoutStateAtom.bind((state, prev) => {
+  /**
+   * Sync appareance map background with the last run layout
+   */
+  if (state.lastRun !== prev.lastRun) {
+    if (isMapFeatureAuthorized(state)) {
+      appearanceAtom.set((prev) => ({
+        ...prev,
+        backgroundLayer: {
+          ...prev.backgroundLayer,
+          type: "map",
+          enabled: true,
+          scale: +(state.lastRun!.params.scale || 1),
+        },
+      }));
+    } else {
+      appearanceAtom.set((prev) => {
+        // We only change the ref if its needed
+        if (prev.backgroundLayer.enabled !== true) return prev;
+        return { ...prev, backgroundLayer: { ...prev.backgroundLayer, enabled: false } };
+      });
+    }
+  }
 });

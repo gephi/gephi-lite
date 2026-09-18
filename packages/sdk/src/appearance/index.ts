@@ -34,7 +34,8 @@ export function getEmptyAppearanceState(): AppearanceState {
     },
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     layoutGridColor: DEFAULT_LAYOUT_GRID_COLOR,
-    backgroundLayer: undefined,
+    backgroundLayer: { type: "map", enabled: false },
+    backgroundMapStyle: null,
     nodesColor: {
       type: "fixed",
       value: DEFAULT_NODE_COLOR,
