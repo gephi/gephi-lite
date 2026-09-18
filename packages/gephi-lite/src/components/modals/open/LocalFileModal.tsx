@@ -66,7 +66,9 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
       <DropInput
         value={file}
         onChange={(file) => setFile(file)}
-        helpElement=<DocumentationHelp/>
+        helpElement=<DocumentationHelp
+          title={t("graph.open.local.dragndrop_text")}
+          url="https://docs.gephi.org/lite/user-manual/file-formats/" />
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
       >
         {status.type === "error" && (
