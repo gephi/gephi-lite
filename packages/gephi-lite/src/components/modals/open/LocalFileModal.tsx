@@ -1,13 +1,13 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PiFolderOpen } from "react-icons/pi";
-import { HelpIcon } from "../../common-icons";
 
 import { useFileActions } from "../../../core/context/dataContexts";
 import { errorToCode, errorToString } from "../../../core/errors";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
+import { DocumentationHelp } from "../../DocumentationHelp";
 import { DropInput } from "../../DropInput";
 import { Loader } from "../../Loader";
 import { Modal } from "../../modals";
@@ -66,18 +66,7 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
       <DropInput
         value={file}
         onChange={(file) => setFile(file)}
-        helpElement={
-          <>
-            {t("graph.open.local.dragndrop_text")}
-            <a
-              href="https://docs.gephi.org/lite/user-manual/file-formats/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <HelpIcon/>
-            </a>
-          </>
-        }
+        helpElement=<DocumentationHelp/>
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
       >
         {status.type === "error" && (
