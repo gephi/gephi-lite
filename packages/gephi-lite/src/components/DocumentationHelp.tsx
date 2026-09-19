@@ -5,7 +5,7 @@ export function DocumentationHelp({title, url}: {title: string, url: string}) {
     <>
       {title}
       <a href={url} target="_blank" rel="noreferrer">
-        <HelpIcon/>
+        <HelpIcon onClick={(e) => e.stopPropagation()}/>
       </a>
     </>
   )
