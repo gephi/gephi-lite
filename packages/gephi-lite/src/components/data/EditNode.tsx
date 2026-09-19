@@ -1,17 +1,55 @@
 import { FieldModelTypeSpec, NodeCoordinates, Scalar, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, keyBy, pick } from "lodash";
-import { FC, useMemo } from "react";
+import { fromPairs, isEmpty, keyBy, pick } from "lodash";
+import { FC, ReactNode, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
+import {
+  useAppearance,
+  useGraphDataset,
+  useGraphDatasetActions,
+  useSearch,
+  useSearchQuery,
+  useSelectionActions,
+} from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
-import { CancelIcon, FieldModelIcon } from "../common-icons";
-import { Modal } from "../modals";
-import { EditItemAttribute } from "./Attribute";
+import { CancelIcon, FieldModelIcon, WarningIcon } from "../common-icons";
+import { CloseModalButton, Modal } from "../modals";
+import {
+  EditItemAttribute,
+  getFirstEmptyValueIndex,
+  isEmptyFieldValue,
+  isValidFieldValue,
+  toFormFieldValue,
+} from "./Attribute";
+import { NodeComponentById } from "./Node";
+
+// Existing nodes whose name (the current label field, or the id as a fallback) fuzzy-matches what
+// is being typed for a new node: surfaced so the user notices before creating an accidental
+// duplicate. Clicking one cancels the creation and locates that existing node instead, exactly
+// like picking a result from the main fuzzy search box.
+const SimilarNodesWarning: FC<{ nodeIds: string[]; onPick: () => void }> = ({ nodeIds, onPick }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="gl-alert-warning rounded gl-p-2 mt-1" role="alert">
+      <div className="d-flex align-items-center gl-gap-1 mb-1">
+        <WarningIcon />
+        <span>{t("edition.similar_nodes_warning")}</span>
+      </div>
+      <ul className="list-unstyled mb-0 d-flex flex-column gl-gap-1" onClick={onPick}>
+        {nodeIds.map((id) => (
+          <li key={id}>
+            <NodeComponentById id={id} locatable />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 interface UpdatedNodeState extends NodeCoordinates {
   id?: string;
@@ -22,18 +60,36 @@ const useEditNodeForm = ({
   nodeId,
   onSubmitted,
   onCancel,
+  submitLabel,
+  submitFirst,
 }: {
   nodeId?: string;
   onSubmitted: () => void;
   onCancel: () => void;
+  // The modal usage (see EditNodeModal) also shows a copy of this same submit button in its
+  // header, since on mobile the on-screen keyboard can cover the footer while a field is focused;
+  // there, it overrides the label to a short "OK" and is placed before the cancel button, to match
+  // the header's [submit, close] order.
+  submitLabel?: ReactNode;
+  submitFirst?: boolean;
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
   const { createNode, updateNode } = useGraphDatasetActions();
-  const { nodeData, layout, nodeFields } = useGraphDataset();
+  const { nodeData, layout, nodeFields: allNodeFields } = useGraphDataset();
+  // Read-only (eg. system date) and formula (scripted) fields are managed automatically, so they
+  // are not editable through this form:
+  const nodeFields = useMemo(() => allNodeFields.filter((nf) => !nf.readOnly && !nf.script), [allNodeFields]);
   const nodeFieldsIndex = useMemo(() => keyBy(nodeFields, "id"), [nodeFields]);
+
+  // Which field currently drives the node label (falling back to the id, when there is no label
+  // field configured): used both to fuzzy-match similar existing nodes below, and to pre-fill a
+  // new node's label with whatever was typed in the main fuzzy search box before hitting "+".
+  const { nodesLabel } = useAppearance();
+  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
+  const searchQuery = useSearchQuery();
 
   const isNew = typeof nodeId === "undefined";
   const defaultValues = useMemo(() => {
@@ -41,9 +97,10 @@ const useEditNodeForm = ({
       return {
         x: 0,
         y: 0,
+        id: labelFieldId === "id" ? searchQuery || undefined : undefined,
         attributes: nodeFields.map((nf) => ({
           key: nf.id,
-          value: undefined,
+          value: nf.id === labelFieldId && searchQuery ? searchQuery : nf.defaultValue,
           ...pick(nf, ["type", "format", "separator"]),
         })),
       };
@@ -57,18 +114,47 @@ const useEditNodeForm = ({
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [isNew, nodeId, layout, nodeData, nodeFields]);
+  }, [isNew, nodeId, layout, nodeData, nodeFields, labelFieldId, searchQuery]);
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<UpdatedNodeState>({
     defaultValues,
   });
   const attributes = watch("attributes");
+  const idValue = watch("id");
+
+  // Fuzzy-match existing nodes' names against what is being typed for this new node, using the
+  // same search index (and settings) as the main search box.
+  const { index } = useSearch();
+  // Extracted as a scalar (rather than depending on the whole `attributes` array below) because
+  // react-hook-form's `watch("attributes")` can mutate the same array reference in place instead
+  // of returning a fresh one, which would make the memo below miss the update.
+  const labelAttrValue = attributes.find((a) => a.key === labelFieldId)?.value;
+  const nameQuery = useMemo(() => {
+    if (!isNew) return "";
+    if (labelFieldId === "id") return idValue || "";
+    return labelAttrValue != null ? String(labelAttrValue) : "";
+  }, [isNew, labelFieldId, idValue, labelAttrValue]);
+  const similarNodeIds = useMemo(() => {
+    if (nameQuery.trim().length < 2) return [];
+    return index
+      .search(nameQuery, { prefix: true, fuzzy: 0.2, filter: (result) => result.type === "nodes" })
+      .slice(0, 5)
+      .map((result) => result.id as string);
+  }, [nameQuery, index]);
+
+  // Autofocus the first empty field on mount, in render order (attributes, then position, then
+  // id): computed once from the initial values, so filling a field never steals focus elsewhere.
+  const autoFocusIndex = useMemo(() => {
+    const { attributes: defaultAttributes, x, y, id } = defaultValues as UpdatedNodeState;
+    return getFirstEmptyValueIndex([...defaultAttributes.map((a) => a.value), x, y, id]);
+  }, [defaultValues]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -88,14 +174,16 @@ const useEditNodeForm = ({
 
         const allAttributes = {
           ...fromPairs(
-            data.attributes
-              .filter(({ value }) => value !== "" || value === undefined)
-              .map(({ key, value }) => {
-                // value are all string because input are all text whatever the data model
-                // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-                const valueAsNumber = toNumber(value);
-                return [key, valueAsNumber ? valueAsNumber : value];
-              }),
+            data.attributes.map(({ key, value }) => {
+              // An emptied field is written back as undefined rather than skipped: updateNode merges
+              // into the existing data, so dropping the key would silently keep the previous value
+              // and make clearing a field impossible to save.
+              if (isEmptyFieldValue(value)) return [key, undefined];
+              // value are all string because input are all text whatever the data model
+              // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+              const valueAsNumber = toNumber(value);
+              return [key, valueAsNumber ? valueAsNumber : value];
+            }),
           ),
           ...pick(data, "x", "y"),
         };
@@ -146,32 +234,61 @@ const useEditNodeForm = ({
 
   return {
     submit,
+    // Whether the user actually changed something, so closing the form would throw it away (the
+    // modal usage below turns that into a confirmation rather than a silent loss). Read from
+    // `dirtyFields` and not `formState.isDirty`: the latter is already true on opening, because a
+    // field whose default is undefined reports "" as soon as its input is registered.
+    hasUserInput: !isEmpty(dirtyFields),
     main: (
       <>
+        {/* Other attributes */}
         <div className="panel-block">
-          <div>
-            <label htmlFor="updateNode-id" className="form-label">
-              {t("graph.model.nodes-data.id")}
-            </label>
-            <input
-              type="text"
-              id="updateNode-id"
-              className={cx("form-control", errors.id && "is-invalid")}
-              disabled={!isNew}
-              {...register("id", {
-                required: !isNew,
-                validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
-              })}
-            />
-            {errors.id && (
-              <div className="invalid-feedback">
-                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-              </div>
-            )}
-          </div>
+          {attributes.map((field, i) => (
+            <div key={i}>
+              <label htmlFor={`node-${nodeId}-field-${i}`} className="form-label">
+                <FieldModelIcon type={nodeFieldsIndex[field.key].type} /> {field.key}
+              </label>
+              <Controller
+                name={`attributes.${i}.value`}
+                control={control}
+                // Validity is only checked here, on submit: while typing, an incomplete entry (a URL
+                // half written...) must never be fought or wiped, see castScalarToEditableValue.
+                rules={{ validate: (value) => isValidFieldValue(value, nodeFieldsIndex[field.key]) }}
+                render={(props) => (
+                  <EditItemAttribute
+                    id={`node-${nodeId}-field-${i}`}
+                    clearable
+                    field={nodeFieldsIndex[field.key]}
+                    scalar={props.field.value}
+                    onChange={(v) => props.field.onChange(toFormFieldValue(v))}
+                    autoFocus={i === autoFocusIndex}
+                  />
+                )}
+              />
+              {(errors.attributes || [])[i]?.value && (
+                <div className="text-danger">
+                  {t("error.form.invalid_value", { type: nodeFieldsIndex[field.key].type })}
+                </div>
+              )}
+              {(errors.attributes || [])[i]?.key && (
+                <div className="invalid-feedback">
+                  {t(
+                    `error.form.${
+                      (errors.attributes || [])[i]?.key?.type === "validate"
+                        ? "unique"
+                        : (errors.attributes || [])[i]?.key?.type
+                    }`,
+                  )}
+                </div>
+              )}
+              {isNew && field.key === labelFieldId && similarNodeIds.length > 0 && (
+                <SimilarNodesWarning nodeIds={similarNodeIds} onPick={onCancel} />
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Rendering attributes */}
+        {/* Position */}
         <div className="panel-block">
           <div>
             <label htmlFor="updateNode-x" className="form-label">
@@ -182,6 +299,8 @@ const useEditNodeForm = ({
               id="updateNode-x"
               className={cx("form-control", errors.x && "is-invalid")}
               step="any"
+              autoComplete="off"
+              autoFocus={attributes.length === autoFocusIndex}
               {...register("x")}
             />
           </div>
@@ -194,55 +313,60 @@ const useEditNodeForm = ({
               id="updateNode-y"
               className={cx("form-control", errors.y && "is-invalid")}
               step="any"
+              autoComplete="off"
+              autoFocus={attributes.length + 1 === autoFocusIndex}
               {...register("y")}
             />
           </div>
         </div>
 
-        {/* Other attributes */}
+        {/* ID */}
         <div className="panel-block">
-          {attributes.map((field, i) => (
-            <div key={i}>
-              <label htmlFor={`node-${nodeId}-field-${i}`} className="form-label">
-                <FieldModelIcon type={nodeFieldsIndex[field.key].type} /> {field.key}
-              </label>
-              <Controller
-                name={`attributes.${i}.value`}
-                control={control}
-                render={(props) => (
-                  <EditItemAttribute
-                    id={`node-${nodeId}-field-${i}`}
-                    field={nodeFieldsIndex[field.key]}
-                    scalar={props.field.value}
-                    onChange={(v) => props.field.onChange(v)}
-                  />
-                )}
-              />
-              {(errors.attributes || [])[i]?.key && (
-                <div className="invalid-feedback">
-                  {t(
-                    `error.form.${
-                      (errors.attributes || [])[i]?.key?.type === "validate"
-                        ? "unique"
-                        : (errors.attributes || [])[i]?.key?.type
-                    }`,
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
+          <div>
+            <label htmlFor="updateNode-id" className="form-label">
+              {t("graph.model.nodes-data.id")}
+            </label>
+            <input
+              type="text"
+              id="updateNode-id"
+              className={cx("form-control", errors.id && "is-invalid")}
+              disabled={!isNew}
+              autoComplete="off"
+              autoFocus={attributes.length + 2 === autoFocusIndex}
+              {...register("id", {
+                required: !isNew,
+                validate: (value) => !isNew || (!!value && !nodeData[value]) || (!value && isNew),
+              })}
+            />
+            {errors.id && (
+              <div className="invalid-feedback">
+                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+              </div>
+            )}
+            {isNew && labelFieldId === "id" && similarNodeIds.length > 0 && (
+              <SimilarNodesWarning nodeIds={similarNodeIds} onPick={onCancel} />
+            )}
+          </div>
         </div>
       </>
     ),
     footer: (
       <div className="gl-actions">
-        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+        {submitFirst && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {submitLabel ?? (isNew ? t("edition.create_nodes") : t("edition.update_nodes"))}
+          </button>
+        )}
+        {/* Same close request as the modal's own cross, so both get the unsaved-input
+            confirmation; falls back to onCancel when this form is rendered in a side panel. */}
+        <CloseModalButton className="gl-btn gl-btn-icon gl-btn-outline" onCancel={onCancel}>
           <CancelIcon />
-        </button>
-
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("edition.create_nodes") : t("edition.update_nodes")}
-        </button>
+        </CloseModalButton>
+        {!submitFirst && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {submitLabel ?? (isNew ? t("edition.create_nodes") : t("edition.update_nodes"))}
+          </button>
+        )}
       </div>
     ),
   };
@@ -251,14 +375,23 @@ const useEditNodeForm = ({
 export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, submit, arguments: { nodeId } }) => {
   const { t } = useTranslation();
   const isNew = typeof nodeId === "undefined";
+
+  // Probe the remote GitHub version as soon as the popup opens, so the user is warned before
+  // filling it in (rather than only when validating), avoiding losing their input on a reload.
+  const { check: checkRemoteFreshness } = useRemoteFileFreshnessCheck();
+  useEffect(() => checkRemoteFreshness(), [checkRemoteFreshness]);
+
   const {
     main,
     footer,
     submit: submitForm,
+    hasUserInput,
   } = useEditNodeForm({
     nodeId,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
+    submitLabel: t("common.ok"),
+    submitFirst: true,
   });
 
   return (
@@ -267,6 +400,9 @@ export const EditNodeModal: FC<ModalProps<{ nodeId?: string }>> = ({ cancel, sub
       onClose={() => cancel()}
       className="modal-lg edit-node"
       onSubmit={submitForm}
+      submitLabel={t("common.ok")}
+      doNotPreserveData
+      hasUnsavedInput={hasUserInput}
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 

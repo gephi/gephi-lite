@@ -2,4 +2,11 @@ header {
   .lang-switcher-btn {
     line-height: 1 !important;
   }
+
+  // Small badge flagging unsaved changes, shown right next to the save button:
+  .gl-unsaved-changes-star {
+    display: inline-flex;
+    color: var(--bs-warning, #f0ad4e);
+    font-size: 0.6em;
+  }
 }

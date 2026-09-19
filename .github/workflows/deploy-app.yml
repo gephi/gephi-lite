@@ -2,17 +2,24 @@ name: deploy-app
 on:
   push:
     branches:
-      - main
+      - main_jg
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       CI: false
       VITE_GITHUB_PROXY: "https://githubapi.gephi.org"
       VITE_MATOMO_URL: "https://matomo.ouestware.com"
       VITE_MATOMO_SITEID: 32
+      # feedback-widget-js / feedback-service (https://github.com/JeanGarf/feedback-widget-js).
+      # VITE_FEEDBACK_KEY is a public pk_live_... key, safe to commit here (gephi-lite is
+      # registered in feedback-service, see its README, "Enregistrer une application cliente").
+      VITE_FEEDBACK_ENDPOINT: "https://feedback-service-309423341322.europe-west3.run.app"
+      VITE_FEEDBACK_KEY: "pk_live_IyxD03XZA-7V0rZs6GR0zvhGGzA5ui7VM7tQ0maTIdM"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,9 +48,6 @@ jobs:
       - name: Copy gephi lite files
         run: cp -rf packages/gephi-lite/build/* website/v${{ env.PACKAGE_VERSION }}
 
-      - name: Copy CNAME files
-        run: cp CNAME website/CNAME
-
       - name: Create index page with redirection
         run: |
           cat <<EOF > website/index.html
@@ -56,16 +60,15 @@ jobs:
               <meta property="og:title" content="Gephi Lite" />
               <meta property="og:description" content="Gephi Lite is an open-source web application dedicated to visual network analysis" />
               <meta property="og:image" content="https://gephi.org/icons/gephi-lite-logo-inverted.svg" />
-              <meta property="og:url" content="https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/" />
               <noscript>
-              <meta http-equiv="refresh" content="0; url=https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/">
+              <meta http-equiv="refresh" content="0; url=v${{ env.PACKAGE_VERSION }}/">
               </noscript>
               <script type="text/javascript">
-                window.location.href = "https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
+                window.location.href = "v${{ env.PACKAGE_VERSION }}/"  + (window.location.search || '') + (window.location.hash || '')
               </script>
             </head>
             <body>
-                If you are not redirected automatically, follow this <a href='https://lite.gephi.org/v${{ env.PACKAGE_VERSION }}/'>link</a>.
+                If you are not redirected automatically, follow this <a href='v${{ env.PACKAGE_VERSION }}/'>link</a>.
             </body>
           </html>
           EOF

@@ -24,7 +24,9 @@ const ConfirmModal: FC<
       doNotPreserveData
       onSubmit={() => {
         submit({});
-        notify({ message: successMsg, type: "success" });
+        // Some callers (e.g. the remote-change guard) handle their own post-submit feedback and
+        // pass no successMsg: don't emit an empty success toast in that case.
+        if (successMsg) notify({ message: successMsg, type: "success" });
       }}
     >
       <>{message}</>

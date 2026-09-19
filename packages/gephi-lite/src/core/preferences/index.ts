@@ -1,7 +1,8 @@
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
 import { localStorage } from "../../utils/storage";
-import { Preferences } from "./types";
+import { ItemType } from "../types";
+import { Preferences, SelectionSortMode } from "./types";
 import { getAppliedTheme, getCurrentPreferences, serializePreferences } from "./utils";
 
 /**
@@ -23,6 +24,13 @@ const changeTheme: Producer<Preferences, [Preferences["theme"]]> = (theme) => {
   });
 };
 
+const changeSelectionSort: Producer<Preferences, [ItemType, SelectionSortMode]> = (itemType, mode) => {
+  return (preferences) => ({
+    ...preferences,
+    selectionSort: { ...preferences.selectionSort, [itemType]: mode },
+  });
+};
+
 /**
  * Public API:
  * ***********
@@ -32,6 +40,7 @@ export const preferencesAtom = atom<Preferences>(getCurrentPreferences());
 export const preferencesActions = {
   changeLocale: producerToAction(changeLocale, preferencesAtom),
   changeTheme: producerToAction(changeTheme, preferencesAtom),
+  changeSelectionSort: producerToAction(changeSelectionSort, preferencesAtom),
 };
 
 /**

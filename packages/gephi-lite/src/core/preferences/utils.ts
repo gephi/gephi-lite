@@ -11,6 +11,7 @@ export function getEmptyPreferences(): Preferences {
     // default is the local detected by i18n
     locale: i18n.language,
     theme: "auto",
+    selectionSort: { nodes: "alphabetical", edges: "alphabetical" },
   };
 }
 

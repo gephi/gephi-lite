@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { IconType } from "react-icons";
 import TetherComponent from "react-tether";
 
+import { useMobile } from "../hooks/useMobile";
 import { CaretDownIcon, CaretRightIcon } from "./common-icons";
 
 type MenuCommon<T = unknown> = {
@@ -83,11 +84,17 @@ function ExpandableItem<T = unknown>({
   selected?: string;
   onSelectedChange: (item: MenuItem<T>) => void;
 }) {
+  const isMobile = useMobile();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
+    // On touch devices, taps fire a "mouseenter" with no matching "mouseleave", which would
+    // otherwise leave this hover preview (meant for desktop only) stuck open indefinitely,
+    // floating on top of whichever panel is displayed next (see #reported bug).
+    if (isMobile) return;
+
     if (isHovered) {
       setShowTooltip(true);
       return;
@@ -99,7 +106,7 @@ function ExpandableItem<T = unknown>({
     return () => {
       clearTimeout(id);
     };
-  }, [isHovered]);
+  }, [isHovered, isMobile]);
 
   const childrenMenuContent = item.children.map((item) => (
     <li key={item.id}>
@@ -129,6 +136,7 @@ function ExpandableItem<T = unknown>({
           </button>
         )}
         renderElement={(ref) =>
+          !isMobile &&
           showTooltip &&
           !isExpanded && (
             <div
