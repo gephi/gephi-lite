@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://gexf.net/1.3" xmlns:viz="http://gexf.net/1.3/viz" version="1.3">
+  <meta>
+    <creator>Gephi Lite</creator>
+    <description>A fictional research collaboration network with dated edges from 2022 through 2025.</description>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="Research collaborations over time">
+    <attributes class="edge" mode="static">
+      <attribute id="createdAt" title="Collaboration date" type="string" />
+      <attribute id="project" title="Project" type="string" />
+      <attribute id="weight" title="Publications" type="float" />
+    </attributes>
+    <nodes>
+      <node id="alice" label="Alice"><viz:position x="-120" y="-40" z="0" /><viz:color r="76" g="114" b="176" /></node>
+      <node id="bob" label="Bob"><viz:position x="-40" y="-110" z="0" /><viz:color r="85" g="168" b="104" /></node>
+      <node id="carol" label="Carol"><viz:position x="60" y="-100" z="0" /><viz:color r="221" g="132" b="82" /></node>
+      <node id="diego" label="Diego"><viz:position x="130" y="-25" z="0" /><viz:color r="196" g="78" b="82" /></node>
+      <node id="emiko" label="Emiko"><viz:position x="105" y="75" z="0" /><viz:color r="129" g="114" b="179" /></node>
+      <node id="fatima" label="Fatima"><viz:position x="15" y="125" z="0" /><viz:color r="176" g="122" b="161" /></node>
+      <node id="grace" label="Grace"><viz:position x="-85" y="100" z="0" /><viz:color r="218" g="139" b="195" /></node>
+      <node id="hassan" label="Hassan"><viz:position x="-145" y="35" z="0" /><viz:color r="140" g="140" b="140" /></node>
+    </nodes>
+    <edges>
+      <edge id="collab-01" source="alice" target="bob"><attvalues><attvalue for="createdAt" value="2022-01-15" /><attvalue for="project" value="Atlas" /><attvalue for="weight" value="2" /></attvalues></edge>
+      <edge id="collab-02" source="bob" target="carol"><attvalues><attvalue for="createdAt" value="2022-04-10" /><attvalue for="project" value="Atlas" /><attvalue for="weight" value="1" /></attvalues></edge>
+      <edge id="collab-03" source="carol" target="diego"><attvalues><attvalue for="createdAt" value="2022-07-22" /><attvalue for="project" value="Beacon" /><attvalue for="weight" value="3" /></attvalues></edge>
+      <edge id="collab-04" source="alice" target="hassan"><attvalues><attvalue for="createdAt" value="2022-11-05" /><attvalue for="project" value="Beacon" /><attvalue for="weight" value="1" /></attvalues></edge>
+      <edge id="collab-05" source="diego" target="emiko"><attvalues><attvalue for="createdAt" value="2023-02-14" /><attvalue for="project" value="Canopy" /><attvalue for="weight" value="2" /></attvalues></edge>
+      <edge id="collab-06" source="emiko" target="fatima"><attvalues><attvalue for="createdAt" value="2023-05-30" /><attvalue for="project" value="Canopy" /><attvalue for="weight" value="4" /></attvalues></edge>
+      <edge id="collab-07" source="fatima" target="grace"><attvalues><attvalue for="createdAt" value="2023-09-18" /><attvalue for="project" value="Delta" /><attvalue for="weight" value="2" /></attvalues></edge>
+      <edge id="collab-08" source="grace" target="hassan"><attvalues><attvalue for="createdAt" value="2023-12-08" /><attvalue for="project" value="Delta" /><attvalue for="weight" value="1" /></attvalues></edge>
+      <edge id="collab-09" source="alice" target="carol"><attvalues><attvalue for="createdAt" value="2024-03-03" /><attvalue for="project" value="Echo" /><attvalue for="weight" value="3" /></attvalues></edge>
+      <edge id="collab-10" source="bob" target="fatima"><attvalues><attvalue for="createdAt" value="2024-06-21" /><attvalue for="project" value="Echo" /><attvalue for="weight" value="2" /></attvalues></edge>
+      <edge id="collab-11" source="carol" target="grace"><attvalues><attvalue for="createdAt" value="2024-09-12" /><attvalue for="project" value="Flux" /><attvalue for="weight" value="5" /></attvalues></edge>
+      <edge id="collab-12" source="diego" target="hassan"><attvalues><attvalue for="createdAt" value="2024-12-31" /><attvalue for="project" value="Flux" /><attvalue for="weight" value="2" /></attvalues></edge>
+      <edge id="collab-13" source="alice" target="emiko"><attvalues><attvalue for="createdAt" value="2025-01-15" /><attvalue for="project" value="Gaia" /><attvalue for="weight" value="4" /></attvalues></edge>
+      <edge id="collab-14" source="bob" target="grace"><attvalues><attvalue for="createdAt" value="2025-04-07" /><attvalue for="project" value="Gaia" /><attvalue for="weight" value="3" /></attvalues></edge>
+      <edge id="collab-15" source="carol" target="fatima"><attvalues><attvalue for="createdAt" value="2025-08-19" /><attvalue for="project" value="Helix" /><attvalue for="weight" value="2" /></attvalues></edge>
+      <edge id="undated-collaboration" source="emiko" target="hassan"><attvalues><attvalue for="project" value="Uncatalogued" /><attvalue for="weight" value="1" /></attvalues></edge>
+    </edges>
+  </graph>
+</gexf>

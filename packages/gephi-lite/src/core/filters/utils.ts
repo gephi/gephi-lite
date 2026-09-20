@@ -58,7 +58,7 @@ export function filterValue(
       const value = castScalarToModelValue(scalar, filter.field);
       if (filter.terms === undefined) return true;
       else {
-        if (value instanceof DateTime || isNumber(value)) {
+        if (DateTime.isDateTime(value) || isNumber(value)) {
           return !!filter.keepMissingValues;
         }
         const stringsOrBoolean = (Array.isArray(value) ? value : !isNil(value) ? [value] : []).filter(
@@ -80,7 +80,7 @@ export function filterValue(
  * @param max
  */
 export function inRangeIncluded(value: number, min: number | undefined, max: number | undefined) {
-  return (!min || min <= value) && (!max || value <= max);
+  return (min === undefined || min <= value) && (max === undefined || value <= max);
 }
 
 export function filterGraph<G extends DatalessGraph | SigmaGraph>(

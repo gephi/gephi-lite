@@ -301,6 +301,7 @@
     "insert": "Insert filter",
     "intermediate_graph": "Intermediate graph",
     "keepMissingValues": "Keep missing values",
+    "noValidRangeValues": "No valid values are available for this range.",
     "nodes_fields": "Nodes attributes",
     "script": "Custom filter",
     "title": "Filters",
@@ -879,6 +880,7 @@
     "avatar_alt": "{{name}}'s avatar"
   },
   "welcome": {
+    "edge_date_sample": "Edge dates demo",
     "documentation": "documentation",
     "open_graph": "Open a graph file",
     "samples": "Samples",

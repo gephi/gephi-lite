@@ -8,6 +8,10 @@ It is currently under active developments, so features can evolve quite quickly.
 
 You can read more about the intent of this project on the [Gephi blog](https://gephi.wordpress.com/2022/11/15/gephi-lite/).
 
+## Filtering edges by date
+
+Date attributes on edges can be filtered from the **Filters** panel with inclusive **From** and **To** bounds. If an imported date column is not detected automatically, change its field type to `date` and select the matching date format from the data table first. Invalid or empty dates follow the filter's **Keep missing values** setting.
+
 ## License
 
 Gephi Lite source code is distributed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl.html).
