@@ -158,7 +158,7 @@ export const GeographicLayout = {
     {
       id: "scale",
       type: "number",
-      defaultValue: 1,
+      defaultValue: 10,
       description: true,
     },
   ],

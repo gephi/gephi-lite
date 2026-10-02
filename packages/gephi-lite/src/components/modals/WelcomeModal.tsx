@@ -14,7 +14,7 @@ import { GitHubIcon, NewsIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { OpenModal } from "./open/OpenModal";
 
-const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf"];
+const SAMPLES = ["Les Miserables.json", "Java.gexf", "Power Grid.gexf", "airports.json"];
 
 export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
   const { t } = useTranslation();
