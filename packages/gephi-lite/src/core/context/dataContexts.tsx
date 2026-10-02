@@ -19,6 +19,7 @@ import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
 import { searchActions, searchAtom, searchQueryAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
+import { resetSelectionHistory } from "../selection/history";
 import { sessionActions, sessionAtom } from "../session";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
 import { userActions, userAtom } from "../user";
@@ -118,6 +119,9 @@ export const resetStates: Action<[boolean]> = (full = false) => {
   dataTableActions.reset();
   filtersActions.resetFilters();
   selectionActions.emptySelection();
+  // The nodes and edges visited so far belong to the graph being replaced: the back button must
+  // not walk back into a selection of items that are about to be gone (see selection/history).
+  resetSelectionHistory();
   appearanceActions.resetState();
   sigmaActions.resetState();
   searchActions.reset();

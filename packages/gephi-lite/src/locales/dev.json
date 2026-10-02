@@ -943,6 +943,7 @@
     "website": "website"
   },
   "workspace": {
+    "confirm_leave_press_back_again": "Press back again to leave Gephi Lite",
     "confirm_leave_unsaved": "Your graph has unsaved changes. Leave without saving?",
     "menu": {
       "duplicate": "Clone workspace",
