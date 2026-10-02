@@ -30,7 +30,7 @@ const resetState: Producer<AppearanceState, []> = () => {
 };
 
 const setFullState: Producer<AppearanceState, [AppearanceState]> = (newState) => {
-  return () => newState;
+  return () => ({ ...getEmptyAppearanceState(), ...newState });
 };
 const mergeState: Producer<AppearanceState, [Partial<AppearanceState>]> = (newPartialState) => {
   return (state) => {
