@@ -21,7 +21,7 @@ import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
 import { preferencesAtom } from "./preferences";
 import { getCurrentPreferences } from "./preferences/utils";
-import { goToPreviousSelection } from "./selection/history";
+import { SELECTION_ENTRY_KEY, getCurrentEntry, goToSelectionEntry, selectionHistoryAtom } from "./selection/history";
 import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { restoreCamera } from "./sigma";
@@ -59,60 +59,107 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   notifyRef.current = notify;
 
   /**
-   * Keep the browser/Android back button from leaving the app (and losing unsaved work):
-   * - A "guard" history entry is kept on top of the stack, so a back press lands on a popstate we
-   *   control instead of navigating away or stepping through the router's Graph/Data history.
-   * - When a modal is open, back closes it (and we keep guarding) - unless it holds unsaved input,
-   *   in which case it raises its own confirmation instead (see `requestCloseModal`).
-   * - Then back walks back through the nodes and edges visited in this tab, like following
-   *   hyperlinks in a browser (see core/selection/history).
-   * - Once there is nothing left to come back to, a first back only announces that the app is
-   *   about to be left; it is left for real when back is pressed again while that message is still
+   * Map the nodes and edges visited in this tab onto the browser's own history, so back and
+   * forward walk through them like through visited web pages (see core/selection/history), and so
+   * the app is not left on the first back press - which would lose unsaved work:
+   * - Every visited selection gets its own history entry, carrying its id. Landing on one, in
+   *   either direction, displays it back: the browser decides where the user wants to go (it may
+   *   well jump several entries at once), this only replays it.
+   * - When a modal is open, back closes it instead, and the navigation is undone: a modal is not a
+   *   step in the history. A modal holding unsaved input raises its own confirmation rather than
+   *   closing (see `requestCloseModal`).
+   * - Going back past the first visited selection means leaving the app: a first back only
+   *   announces it, and it is left for real when back is pressed again while that message is still
    *   on screen - and, with unsaved changes, after confirming it.
    * A beforeunload handler additionally covers reload / tab close (where mobile browsers, e.g.
    * Firefox Android, do not fire the back-button popstate at all).
    */
   useEffect(() => {
-    const pushGuard = () => window.history.pushState(tagHistoryState({ gephiLiteBackGuard: true }), "");
-    pushGuard();
+    // Browser entries only carry the id of the visited selection: their content lives in
+    // core/selection/history, which is free to forget the oldest ones without invalidating it.
+    const pushEntry = (id: number) => {
+      window.history.pushState(tagHistoryState({ [SELECTION_ENTRY_KEY]: id }), "");
+      pushedEntryIds.add(id);
+    };
+    const pushedEntryIds = new Set<number>();
+    const currentEntry = getCurrentEntry();
+    if (currentEntry) pushEntry(currentEntry.id);
+
     let leaving = false;
     // When the "press back again to leave" message was shown. Leaving is only confirmed while it
     // is still displayed, so the message and the window it opens always say the same thing.
     let leaveAnnouncedAt = 0;
+    // Set while we navigate the history ourselves, to undo a navigation we do not want to honour:
+    // the popstate it triggers in turn is ours, and lands back where we already are.
+    let undoingNavigation = false;
 
-    const handlePopState = () => {
-      // A back navigation just consumed our guard entry.
-      if (modalRef.current) {
-        // Priority: close an open modal, and keep guarding.
-        requestCloseModalRef.current();
-        pushGuard();
+    // Puts the browser back on the entry being displayed, after a navigation we chose not to
+    // honour. Which way depends on where the user was heading.
+    const undoNavigation = (targetIndex: number) => {
+      undoingNavigation = true;
+      if (targetIndex < selectionHistoryAtom.get().cursor) window.history.forward();
+      else window.history.back();
+    };
+
+    const handlePopState = (event: PopStateEvent) => {
+      if (undoingNavigation) {
+        undoingNavigation = false;
         return;
       }
-      if (goToPreviousSelection()) {
-        // Back to the previously visited node/edge: nothing to announce anymore.
+
+      const state = event.state as Record<string, unknown> | null;
+      const targetId = typeof state?.[SELECTION_ENTRY_KEY] === "number" ? (state[SELECTION_ENTRY_KEY] as number) : null;
+      // -1 when the entry is not one of ours anymore: the user went back past the first visited
+      // selection, i.e. out of the application.
+      const targetIndex =
+        targetId === null ? -1 : selectionHistoryAtom.get().visited.findIndex((entry) => entry.id === targetId);
+
+      if (modalRef.current) {
+        // Priority: close the open modal, and stay where we are.
+        requestCloseModalRef.current();
+        undoNavigation(targetIndex);
+        return;
+      }
+      if (targetId !== null && goToSelectionEntry(targetId)) {
+        // Back (or forward) to another visited node/edge: nothing to announce anymore.
         leaveAnnouncedAt = 0;
-        pushGuard();
         return;
       }
       if (Date.now() - leaveAnnouncedAt > config.notificationTimeoutMs) {
         // Nothing left to come back to: warn once, and stay.
         leaveAnnouncedAt = Date.now();
         notifyRef.current({ type: "info", message: tRef.current("workspace.confirm_leave_press_back_again") });
-        pushGuard();
+        undoNavigation(targetIndex);
         return;
       }
       if (isDirtyRef.current && !window.confirm(tRef.current("workspace.confirm_leave_unsaved"))) {
-        // Unsaved changes and the user chose to stay: keep guarding.
+        // Unsaved changes and the user chose to stay:
         leaveAnnouncedAt = 0;
-        pushGuard();
+        undoNavigation(targetIndex);
         return;
       }
       // Let the app be left for real (nothing unsaved, or the user confirmed): stop guarding and
-      // replay the back so the browser actually leaves.
+      // step back through what is left of our own entries, until the browser leaves this document
+      // - at which point this code is gone. A single back would only undo the last of them:
+      // selections visited before the graph was replaced still have an entry each.
       leaving = true;
       window.removeEventListener("popstate", handlePopState);
-      window.history.back();
+      let remainingSteps = pushedEntryIds.size + 1;
+      const stepOut = () => {
+        if (remainingSteps-- > 0) window.history.back();
+        else window.removeEventListener("popstate", stepOut);
+      };
+      window.addEventListener("popstate", stepOut);
+      stepOut();
     };
+
+    // A newly visited selection becomes a new browser entry, so back can come back to the one it
+    // replaces. Ids already pushed are the ones we are navigating through, nothing to add.
+    const handleVisitedSelection = () => {
+      const entry = getCurrentEntry();
+      if (entry && !pushedEntryIds.has(entry.id)) pushEntry(entry.id);
+    };
+    selectionHistoryAtom.bind(handleVisitedSelection);
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       // Skipped when we are intentionally leaving (the popstate handler already confirmed):
@@ -127,6 +174,7 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     return () => {
       window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      selectionHistoryAtom.unbind(handleVisitedSelection);
     };
     // Set up once; current values are read through refs.
   }, []);

@@ -15,12 +15,15 @@ const AVAILABLE_LOCALES = toPairs(LOCALES)
     label: <>{locale.label}</>,
   }));
 
-const LocalSwitcher: FC = () => {
+/**
+ * The language entries, shared by the switcher below and by the Gephi-Lite menu, which offers them
+ * directly on mobile (where there is no room for a switcher of its own).
+ */
+export function useLocaleOptions() {
   const { locale } = usePreferences();
   const { changeLocale } = usePreferencesActions();
-  const isMobile = useMobile();
 
-  const localeOptions = useMemo(
+  return useMemo(
     () =>
       AVAILABLE_LOCALES.map((l) => ({
         label: (
@@ -33,6 +36,12 @@ const LocalSwitcher: FC = () => {
       })),
     [locale, changeLocale],
   );
+}
+
+const LocalSwitcher: FC = () => {
+  const { locale } = usePreferences();
+  const isMobile = useMobile();
+  const localeOptions = useLocaleOptions();
 
   return (
     <Dropdown options={localeOptions} side="right">

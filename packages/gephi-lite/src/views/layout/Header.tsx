@@ -10,8 +10,9 @@ import { Link, useLocation } from "react-router";
 import GephiLogo from "../../assets/gephi-logo.svg?react";
 import Dropdown, { type Option } from "../../components/Dropdown";
 import { openFeedbackWidget } from "../../components/FeedbackWidget";
-import LocalSwitcher from "../../components/LocalSwitcher";
-import { ThemeSwitcher } from "../../components/ThemeSwitcher";
+import LocalSwitcher, { useLocaleOptions } from "../../components/LocalSwitcher";
+import { SelectionBackButton, SelectionForwardButton } from "../../components/SelectionNavigation";
+import { ThemeSwitcher, useThemeOptions } from "../../components/ThemeSwitcher";
 import {
   BugIcon,
   CreateNodeIcon,
@@ -38,7 +39,13 @@ import { SaveAsModal } from "../../components/modals/save/SaveAsModal";
 import { openInNewTab } from "../../core/broadcast/utils";
 import { useCloudProvider } from "../../core/cloud/useCloudProvider";
 import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
-import { useDataTable, useFile, useFileActions, useLayoutActions, useLayoutState } from "../../core/context/dataContexts";
+import {
+  useDataTable,
+  useFile,
+  useFileActions,
+  useLayoutActions,
+  useLayoutState,
+} from "../../core/context/dataContexts";
 import { useConfirmLeaveUnsaved } from "../../core/file/useConfirmLeaveUnsaved";
 import { useNewGraph } from "../../core/file/useNewGraph";
 import { getFilename } from "../../core/file/utils";
@@ -46,6 +53,7 @@ import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { sessionAtom } from "../../core/session";
 import { useConnectedUser } from "../../core/user";
+import { useMobile } from "../../hooks/useMobile";
 
 // Toggles the last layout algorithm used in this session on/off, so it can be restarted without
 // reopening the layouts panel. Sits next to the "Data" nav link (rather than under the graph stats)
@@ -102,6 +110,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   const { probeRemoteIsNewer, reloadFile } = useRemoteFileFreshnessCheck();
   const { exportAsGexf } = useFileActions();
   const { current: currentFile, isDirty } = useFile();
+  const isMobile = useMobile();
+  const themeOptions = useThemeOptions();
+  const localeOptions = useLocaleOptions();
   const confirmLeaveUnsaved = useConfirmLeaveUnsaved();
   const openNewGraph = useNewGraph();
 
@@ -279,20 +290,29 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
   );
 
   const logoMenuList = useMemo(
-    () => [
-      {
-        label: t("gephi-lite.open_welcome_modal"),
-        icon: <HomeIcon />,
-        onClick: () =>
-          openModal({
-            component: WelcomeModal,
-            arguments: {},
-          }),
-      },
-      { label: t("gephi-lite.report_issue"), icon: <BugIcon />, url: "https://github.com/gephi/gephi-lite/issues/new" },
-      { label: t("gephi-lite.report_issue_auto"), icon: <FeedbackIcon />, onClick: openFeedbackWidget },
-    ],
-    [t, openModal],
+    () =>
+      [
+        // On mobile, the theme and language switchers have no room of their own in the toolbar:
+        // their entries are offered here instead. Both lists come from the switchers themselves,
+        // so there is a single definition of what changing theme or language does.
+        ...(isMobile ? [...themeOptions, { type: "divider" }, ...localeOptions, { type: "divider" }] : []),
+        {
+          label: t("gephi-lite.open_welcome_modal"),
+          icon: <HomeIcon />,
+          onClick: () =>
+            openModal({
+              component: WelcomeModal,
+              arguments: {},
+            }),
+        },
+        {
+          label: t("gephi-lite.report_issue"),
+          icon: <BugIcon />,
+          url: "https://github.com/gephi/gephi-lite/issues/new",
+        },
+        { label: t("gephi-lite.report_issue_auto"), icon: <FeedbackIcon />, onClick: openFeedbackWidget },
+      ] as Option[],
+    [t, openModal, isMobile, themeOptions, localeOptions],
   );
 
   // Same trigger + menu on mobile and desktop: a single icon opening "Signaler" / "Signaler auto"
@@ -311,13 +331,21 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
         <div className="d-flex flex-column align-items-stretch">
           <section className="d-flex flex-row align-items-center gl-gap-2">
             <Dropdown options={workspaceMenuList}>
-              <button className="gl-btn">Workspace</button>
+              <button className="gl-btn gl-btn-icon" title="Workspace" aria-label="Workspace">
+                <PiList />
+              </button>
             </Dropdown>
             {saveButton}
+            <button
+              className="gl-btn gl-btn-icon"
+              title={t("edition.create_nodes")}
+              aria-label={t("edition.create_nodes")}
+              onClick={() => openModal({ component: EditNodeModal, arguments: {} })}
+            >
+              <CreateNodeIcon />
+            </button>
             <div className="flex-grow-1" />
             <LastLayoutToggle />
-            <ThemeSwitcher />
-            <LocalSwitcher />
             {logoMenuButton}
           </section>
         </div>
@@ -332,16 +360,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           <span className="d-none d-sm-block">{saveButton}</span>
           {/* Mobile display: */}
           {children}
-          <button
-            className="gl-btn gl-btn-icon d-sm-none"
-            title={t("edition.create_nodes")}
-            aria-label={t("edition.create_nodes")}
-            onClick={() => openModal({ component: EditNodeModal, arguments: {} })}
-          >
-            <CreateNodeIcon />
-          </button>
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
+          <SelectionBackButton />
           <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
             {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
@@ -352,6 +373,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
+          <SelectionForwardButton />
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}
