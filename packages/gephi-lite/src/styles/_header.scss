@@ -1,4 +1,13 @@
 header {
+  // The two slots framing the Graph/Data tabs, holding the back/forward arrows. Equal shares of
+  // the room left on either side (flex-basis: 0), so the tabs stay put whether an arrow is there
+  // or not - either one disappears as soon as there is nothing to navigate to.
+  .gl-nav-arrow-slot {
+    flex: 1 1 0;
+    display: flex;
+    justify-content: center;
+  }
+
   .lang-switcher-btn {
     line-height: 1 !important;
   }

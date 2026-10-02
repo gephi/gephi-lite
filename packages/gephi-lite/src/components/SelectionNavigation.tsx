@@ -21,9 +21,11 @@ const SelectionNavigationButton: FC<{
   const { t } = useTranslation();
   const { visited, cursor } = useReadAtom(selectionHistoryAtom);
   const isBack = direction === "back";
-  // Disabled at either end, so these buttons only ever move within the visited selections - in
-  // particular, the back one never reaches the "leaving the application" step.
-  const disabled = isBack ? cursor <= 0 : cursor >= visited.length - 1;
+  // Nothing to go back (or forward) to: the button disappears entirely rather than sitting there
+  // greyed out. It also means these buttons only ever move within the visited selections - the
+  // back one never reaches the "leaving the application" step.
+  if (isBack ? cursor <= 0 : cursor >= visited.length - 1) return null;
+
   const label = t(isBack ? "selection.navigate_back" : "selection.navigate_forward");
 
   return (
@@ -32,7 +34,6 @@ const SelectionNavigationButton: FC<{
       className="gl-btn gl-btn-icon d-sm-none"
       title={label}
       aria-label={label}
-      disabled={disabled}
       onClick={() => (isBack ? window.history.back() : window.history.forward())}
     >
       {isBack ? <NavigateBackIcon /> : <NavigateForwardIcon />}
