@@ -8,6 +8,12 @@ header {
     justify-content: center;
   }
 
+  // The back arrow is nudged away from the "Graph" tab it sat a bit too close to. A transform
+  // rather than a margin, so the tabs themselves do not move.
+  .gl-nav-arrow-slot-back {
+    transform: translateX(-0.4rem);
+  }
+
   .lang-switcher-btn {
     line-height: 1 !important;
   }
