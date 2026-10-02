@@ -19,7 +19,7 @@ import { MultiGraph } from "graphology";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DynamicItemData, GraphDataset, SigmaGraph } from "../graph/types";
-import { buildLayoutGraph, createLayoutSupervisor, layoutStateAtom, startLayout } from "./index";
+import { buildLayoutGraph, createLayoutSupervisor, layoutStateAtom, startLayout, stopLayout } from "./index";
 import { ContinuousLayoutSupervisorConstructor, ContinuousLayoutSupervisorInterface, Layout } from "./types";
 
 const {
@@ -459,6 +459,73 @@ describe("Layout orchestration", () => {
     expect(supA.stop).toHaveBeenCalled();
     expect(supA.kill).toHaveBeenCalled();
     expect(mockSetNodePositions).toHaveBeenCalledWith({ a: { x: 99, y: 99 } });
+  });
+
+  describe("restart after a running continuous layout", () => {
+    beforeEach(() => {
+      mockGraphDatasetAtom.get.mockReturnValue(makeDataset({ a: { x: 1, y: 2 } }));
+      // Sigma holds the dataset positions, as after a rebuild
+      mockSigmaGraphAtom.get.mockReturnValue(makeSigmaGraph({ a: { x: 1, y: 2 } }));
+      mockFilteredGraphAtom.get.mockReturnValue(makeFilteredGraph(["a"]));
+      MOCK_LAYOUTS.push({
+        id: "test-continuous",
+        type: "continuous",
+        parameters: [],
+        supervisor: MockSupervisorClass as never,
+      });
+    });
+
+    it("graphImported restarts from the running layout positions", async () => {
+      await startLayout("test-continuous", {});
+      supervisorInstances[0].graph.mergeNodeAttributes("a", { x: 50, y: 60 });
+
+      testEmitter.emit(EVENTS.graphImported);
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(supervisorInstances[1].graph.getNodeAttributes("a")).toEqual(expect.objectContaining({ x: 50, y: 60 }));
+    });
+
+    it("nodesDragged restarts from sigma positions", async () => {
+      await startLayout("test-continuous", {});
+      supervisorInstances[0].graph.mergeNodeAttributes("a", { x: 50, y: 60 });
+
+      testEmitter.emit(EVENTS.nodesDragged);
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(supervisorInstances[1].graph.getNodeAttributes("a")).toEqual(expect.objectContaining({ x: 1, y: 2 }));
+    });
+
+    it("pending debounced restart does not restart a stopped layout", async () => {
+      await startLayout("test-continuous", {});
+
+      // Leading call restarts, second call schedules a trailing restart
+      testEmitter.emit(EVENTS.nodesDragged);
+      testEmitter.emit(EVENTS.nodesDragged);
+      await vi.advanceTimersByTimeAsync(0);
+      await stopLayout();
+      await vi.advanceTimersByTimeAsync(200);
+
+      expect({ instances: supervisorInstances.length, runState: layoutStateAtom.get().runState }).toEqual({
+        instances: 2,
+        runState: { type: "idle" },
+      });
+    });
+  });
+
+  it("one-shot layout that throws goes back to idle", async () => {
+    mockGraphDatasetAtom.get.mockReturnValue(makeDataset({ a: { x: 1, y: 2 } }));
+    mockDataGraphToFullGraph.mockReturnValue(new MultiGraph());
+    MOCK_LAYOUTS.push({
+      id: "test-oneshot",
+      type: "oneshot",
+      parameters: [],
+      run: () => {
+        throw new Error("boom");
+      },
+    });
+
+    await expect(startLayout("test-oneshot", {})).rejects.toThrow("boom");
+    expect(layoutStateAtom.get().runState).toEqual({ type: "idle" });
   });
 });
 

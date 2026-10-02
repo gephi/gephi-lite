@@ -42,6 +42,7 @@ export function buildLayoutGraph({
   sigmaGraph,
   params,
   useSigmaPositions,
+  previousPositions,
 }: {
   dataset: GraphDataset;
   filteredGraph: DatalessGraph;
@@ -50,6 +51,8 @@ export function buildLayoutGraph({
   sigmaGraph: SigmaGraph;
   params: Record<string, unknown>;
   useSigmaPositions: boolean;
+  // Graph-space positions of a previous run, preferred over sigma positions for non-dragged nodes
+  previousPositions?: LayoutMapping;
 }): SigmaGraph {
   const layoutGraph = sigmaGraph.nullCopy();
   const reversePos = visualGetters.reverseNodePosition;
@@ -58,7 +61,11 @@ export function buildLayoutGraph({
 
   filteredGraph.forEachNode((node) => {
     let x: number, y: number;
-    if (useSigmaPositions) {
+    const previousPos = previousPositions?.[node];
+    if (previousPos && sigmaGraph.getNodeAttribute(node, "dragging") !== true) {
+      x = previousPos.x;
+      y = previousPos.y;
+    } else if (useSigmaPositions) {
       const sx = sigmaGraph.getNodeAttribute(node, "x");
       const sy = sigmaGraph.getNodeAttribute(node, "y");
       if (reversePos) {
@@ -203,7 +210,19 @@ export const stopLayout = asyncAction(async (isForRestart = false) => {
 });
 
 export const startLayout = asyncAction(
-  async (id: string, params: Record<string, unknown>, isForRestart: boolean = false) => {
+  async (
+    id: string,
+    params: Record<string, unknown>,
+    isForRestart: boolean = false,
+    keepLayoutPositions: boolean = false,
+  ) => {
+    // After a graph rebuild, sigma positions are reset, so we keep the running layout positions
+    const prevRunState = layoutStateAtom.get().runState;
+    const previousPositions =
+      isForRestart && keepLayoutPositions && prevRunState.type === "running"
+        ? prevRunState.getPositions?.()
+        : undefined;
+
     // Stop the previous algo (the "if needed" is done in the function itself)
     await stopLayout(isForRestart);
 
@@ -224,8 +243,19 @@ export const startLayout = asyncAction(
         // Generate positions
         const filteredGraph = filteredGraphAtom.get();
         const fullGraph = dataGraphToFullGraph(dataset, filteredGraph);
-        const positionsOrPromise = layout.run(fullGraph, { settings: params });
-        const positions = positionsOrPromise instanceof Promise ? await positionsOrPromise : positionsOrPromise;
+        let positions: LayoutMapping;
+        try {
+          const positionsOrPromise = layout.run(fullGraph, { settings: params });
+          positions = positionsOrPromise instanceof Promise ? await positionsOrPromise : positionsOrPromise;
+        } catch (e) {
+          // Don't stay stuck in "computing"
+          layoutStateAtom.set((prev) =>
+            prev.runState.type === "computing" && prev.runState.layoutId === id
+              ? { ...prev, runState: { type: "idle" } }
+              : prev,
+          );
+          throw e;
+        }
 
         // Check if layout has changed or has been aborted
         const { runState } = layoutStateAtom.get();
@@ -261,6 +291,7 @@ export const startLayout = asyncAction(
           sigmaGraph,
           params,
           useSigmaPositions: isForRestart,
+          previousPositions,
         });
         const { supervisor, getPositions } = createLayoutSupervisor(
           layout.supervisor,
@@ -280,7 +311,7 @@ export const startLayout = asyncAction(
   },
 );
 
-export const restartLastLayout = asyncAction(async () => {
+export const restartLastLayout = asyncAction(async (keepLayoutPositions: boolean = false) => {
   // Get the algo and its parameters
   const { lastRun } = layoutStateAtom.get();
   if (lastRun) {
@@ -288,7 +319,7 @@ export const restartLastLayout = asyncAction(async () => {
     const layout = LAYOUTS.find((e) => e.id === layoutId);
     const params = lastRun.params || {};
     if (layout) {
-      await startLayout(layoutId, params, true);
+      await startLayout(layoutId, params, true, keepLayoutPositions);
     }
   }
 });
@@ -355,12 +386,25 @@ gridEnabledAtom.bindEffect((connectedClosenessSettings) => {
 layoutStateAtom.bindEffect((state) => {
   if (state.runState.type !== "running") return;
 
-  const fnRestart = debounce(restartLastLayout, 100, { leading: true, trailing: true, maxWait: 100 });
+  let graphRebuilt = false;
+  // A trailing call can fire after the layout was stopped, so we check it's still running
+  const fnRestart = debounce(
+    () => {
+      if (layoutStateAtom.get().runState.type === "running") restartLastLayout(graphRebuilt);
+      graphRebuilt = false;
+    },
+    100,
+    { leading: true, trailing: true, maxWait: 100 },
+  );
+  const onGraphImported = () => {
+    graphRebuilt = true;
+    fnRestart();
+  };
   emitter.on(EVENTS.nodesDragged, fnRestart);
-  emitter.on(EVENTS.graphImported, fnRestart);
+  emitter.on(EVENTS.graphImported, onGraphImported);
   return () => {
     emitter.off(EVENTS.nodesDragged, fnRestart);
-    emitter.off(EVENTS.graphImported, fnRestart);
+    emitter.off(EVENTS.graphImported, onGraphImported);
   };
 });
 
