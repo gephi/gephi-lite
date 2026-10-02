@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import useKonami from "react-use-konami";
 
 import { WelcomeModal } from "../components/modals/WelcomeModal";
+import { config } from "../config";
 import { I18n } from "../locales/provider";
 import { pruneStaleTabStorage, tabStorage, tagHistoryState } from "../utils/storage";
 import { extractFilename } from "../utils/url";
@@ -20,6 +21,7 @@ import { useModal } from "./modals";
 import { useNotifications } from "./notifications";
 import { preferencesAtom } from "./preferences";
 import { getCurrentPreferences } from "./preferences/utils";
+import { goToPreviousSelection } from "./selection/history";
 import { sessionAtom } from "./session";
 import { getEmptySession, parseSession } from "./session/utils";
 import { restoreCamera } from "./sigma";
@@ -53,6 +55,8 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
   requestCloseModalRef.current = requestCloseModal;
   const tRef = useRef(t);
   tRef.current = t;
+  const notifyRef = useRef(notify);
+  notifyRef.current = notify;
 
   /**
    * Keep the browser/Android back button from leaving the app (and losing unsaved work):
@@ -60,8 +64,11 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
    *   control instead of navigating away or stepping through the router's Graph/Data history.
    * - When a modal is open, back closes it (and we keep guarding) - unless it holds unsaved input,
    *   in which case it raises its own confirmation instead (see `requestCloseModal`).
-   * - Otherwise, back only leaves the app after a confirmation when there are unsaved changes;
-   *   with nothing to save it leaves normally.
+   * - Then back walks back through the nodes and edges visited in this tab, like following
+   *   hyperlinks in a browser (see core/selection/history).
+   * - Once there is nothing left to come back to, a first back only announces that the app is
+   *   about to be left; it is left for real when back is pressed again while that message is still
+   *   on screen - and, with unsaved changes, after confirming it.
    * A beforeunload handler additionally covers reload / tab close (where mobile browsers, e.g.
    * Firefox Android, do not fire the back-button popstate at all).
    */
@@ -69,6 +76,9 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
     const pushGuard = () => window.history.pushState(tagHistoryState({ gephiLiteBackGuard: true }), "");
     pushGuard();
     let leaving = false;
+    // When the "press back again to leave" message was shown. Leaving is only confirmed while it
+    // is still displayed, so the message and the window it opens always say the same thing.
+    let leaveAnnouncedAt = 0;
 
     const handlePopState = () => {
       // A back navigation just consumed our guard entry.
@@ -78,8 +88,22 @@ export const Initialize: FC<PropsWithChildren<unknown>> = ({ children }) => {
         pushGuard();
         return;
       }
+      if (goToPreviousSelection()) {
+        // Back to the previously visited node/edge: nothing to announce anymore.
+        leaveAnnouncedAt = 0;
+        pushGuard();
+        return;
+      }
+      if (Date.now() - leaveAnnouncedAt > config.notificationTimeoutMs) {
+        // Nothing left to come back to: warn once, and stay.
+        leaveAnnouncedAt = Date.now();
+        notifyRef.current({ type: "info", message: tRef.current("workspace.confirm_leave_press_back_again") });
+        pushGuard();
+        return;
+      }
       if (isDirtyRef.current && !window.confirm(tRef.current("workspace.confirm_leave_unsaved"))) {
         // Unsaved changes and the user chose to stay: keep guarding.
+        leaveAnnouncedAt = 0;
         pushGuard();
         return;
       }

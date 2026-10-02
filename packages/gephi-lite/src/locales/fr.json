@@ -1047,6 +1047,7 @@
     "website": "Site internet"
   },
   "workspace": {
+    "confirm_leave_press_back_again": "Appuyez de nouveau sur Retour pour quitter Gephi Lite",
     "confirm_leave_unsaved": "Votre graphe a des modifications non enregistrées. Quitter sans enregistrer ?",
     "menu": {
       "duplicate": "Dupliquer dans un nouvel onglet",
