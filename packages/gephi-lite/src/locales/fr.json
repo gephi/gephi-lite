@@ -984,6 +984,8 @@
     "locate_selected_edges": "Zoomer sur tous les liens sélectionnés",
     "locate_selected_nodes": "Zoomer sur tous les nœuds sélectionnés",
     "marquee": "Sélection par rectangle",
+    "navigate_back": "Revenir à la sélection précédente",
+    "navigate_forward": "Aller à la sélection suivante",
     "no_path_between_nodes": "Aucun chemin ne relie ces deux nœuds",
     "no_value": "Pas de valeur",
     "node_no_label": "(libellé vide)",

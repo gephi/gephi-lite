@@ -15,13 +15,16 @@ import {
   LightThemeSelectedIcon,
 } from "./common-icons";
 
-export const ThemeSwitcher: FC<unknown> = () => {
+/**
+ * The theme entries, shared by the switcher below and by the Gephi-Lite menu, which offers them
+ * directly on mobile (where there is no room for a switcher of its own).
+ */
+export function useThemeOptions() {
   const { theme } = usePreferences();
   const { changeTheme } = usePreferencesActions();
   const { t } = useTranslation();
-  const isMobile = useMobile();
 
-  const themeOptions = useMemo(
+  return useMemo(
     () => [
       {
         label: (
@@ -56,6 +59,12 @@ export const ThemeSwitcher: FC<unknown> = () => {
     ],
     [t, theme, changeTheme],
   );
+}
+
+export const ThemeSwitcher: FC<unknown> = () => {
+  const { theme } = usePreferences();
+  const isMobile = useMobile();
+  const themeOptions = useThemeOptions();
 
   return (
     <Dropdown options={themeOptions} side="right">
