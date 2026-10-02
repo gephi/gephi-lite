@@ -24,6 +24,7 @@ import { getFilteredDataGraph } from "../../../../core/graph/utils";
 import { Layout, LayoutScriptParameter, LayoutState } from "../../../../core/layouts/types";
 import { useModal } from "../../../../core/modals";
 import { sessionAtom } from "../../../../core/session";
+import { getValidStoredParameters } from "./utils";
 
 export const LayoutForm: FC<{
   layout: Layout;
@@ -102,11 +103,11 @@ export const LayoutForm: FC<{
         [layout.id]: {
           ...layoutDefaultParameters,
           ...inferredParameters,
-          ...(prev.layoutsParameters[layout.id] || {}),
+          ...getValidStoredParameters(layout, prev.layoutsParameters[layout.id] || {}, nodeFields, edgeFields),
         },
       },
     }));
-  }, [layout, layoutDefaultParameters, inferredParameters, setSession]);
+  }, [layout, layoutDefaultParameters, inferredParameters, nodeFields, edgeFields, setSession]);
 
   /**
    * OnChange function for parameters
