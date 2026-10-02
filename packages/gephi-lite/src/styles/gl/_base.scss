@@ -27,6 +27,8 @@ body {
     overflow: hidden;
     display: flex;
     padding: 0;
+    // Positioning context of the notifications, which hang at its bottom right (see _toasts.scss).
+    position: relative;
   }
 
   // Mobile display:

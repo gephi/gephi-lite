@@ -329,7 +329,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
     <header className="gl-container-high-bg container-fluid border-bottom">
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative d-sm-none" duration={400}>
         <div className="d-flex flex-column align-items-stretch">
-          <section className="d-flex flex-row align-items-center gl-gap-2">
+          {/* Evenly spread: on a phone these are the buttons one reaches for, and clustering them
+              left and right left them cramped (the save button and its star especially). */}
+          <section className="d-flex flex-row align-items-center justify-content-between gl-gap-2">
             <Dropdown options={workspaceMenuList}>
               <button className="gl-btn gl-btn-icon" title="Workspace" aria-label="Workspace">
                 <PiList />
@@ -344,7 +346,6 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             >
               <CreateNodeIcon />
             </button>
-            <div className="flex-grow-1" />
             <LastLayoutToggle />
             {logoMenuButton}
           </section>
@@ -362,7 +363,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           {children}
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
-          <SelectionBackButton />
+          <span className="d-sm-none flex-grow-1 d-flex justify-content-center">
+            <SelectionBackButton />
+          </span>
           <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
             {location.pathname === "/" ? <GraphIconFill /> : <GraphIcon />} {t("pages.graph")}
           </Link>
@@ -373,7 +376,9 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
-          <SelectionForwardButton />
+          <span className="d-sm-none flex-grow-1 d-flex justify-content-center">
+            <SelectionForwardButton />
+          </span>
         </div>
         <section className="col-2 col-sm-4 d-flex justify-content-end align-items-center">
           {/* Tablet and desktop display: */}

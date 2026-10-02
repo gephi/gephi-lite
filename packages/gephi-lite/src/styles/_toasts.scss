@@ -1,12 +1,18 @@
 .toasts-container {
-  @extend .fixed-bottom;
+  // Anchored to <main> (see #root in gl/_base.scss), not to the viewport: on mobile the toolbars
+  // are pinned under it, and a viewport-anchored toast landed on top of their buttons. Inside
+  // <main>, "bottom right" is the bottom right of the graph, just above them - and on desktop,
+  // where the header is above <main> instead, that is the bottom right of the viewport as before.
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: $zindex-toast;
   padding: $gl-spacers-2;
-  left: unset;
   display: flex;
   flex-direction: column;
   align-items: end;
 
-  max-height: 100vh;
+  max-height: 100%;
   overflow-y: auto;
 
   & > .toast:not(:first-child) {
