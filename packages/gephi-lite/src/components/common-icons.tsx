@@ -7,9 +7,9 @@ import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowDown,
-  PiArrowLeft,
-  PiArrowRight,
+  PiArrowSquareLeft,
   PiArrowSquareOut,
+  PiArrowSquareRight,
   PiArrowUp,
   PiArrowsClockwise,
   PiArrowsInSimple,
@@ -111,9 +111,11 @@ export const CancelIcon = PiX;
 export const CaptionClose = PiArrowsInSimple;
 export const CaptionOpen = PiQuestion;
 export const CaretDownIcon = PiCaretDown;
-// Walking back and forth through the nodes and edges visited in this tab (see selection/history):
-export const NavigateBackIcon = PiArrowLeft;
-export const NavigateForwardIcon = PiArrowRight;
+// Walking back and forth through the nodes and edges visited in this tab (see selection/history).
+// Framed arrows: in the middle of the empty space around the Graph/Data tabs, a bare arrow did not
+// read as something to tap.
+export const NavigateBackIcon = PiArrowSquareLeft;
+export const NavigateForwardIcon = PiArrowSquareRight;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
 export const CaretUpIcon = PiCaretUp;

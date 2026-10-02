@@ -363,7 +363,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           {children}
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
-          <span className="d-sm-none flex-grow-1 d-flex justify-content-center">
+          <span className="gl-nav-arrow-slot d-sm-none">
             <SelectionBackButton />
           </span>
           <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
@@ -376,7 +376,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           >
             {location.pathname.startsWith("/data") ? <DataIconFill /> : <DataIcon />} {t("pages.data")}
           </Link>
-          <span className="d-sm-none flex-grow-1 d-flex justify-content-center">
+          <span className="gl-nav-arrow-slot d-sm-none">
             <SelectionForwardButton />
           </span>
         </div>
