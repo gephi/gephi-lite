@@ -10,7 +10,7 @@ import { useNotifications } from "../../core/notifications";
 import { getAppliedTheme } from "../../core/preferences/utils";
 import { useVersion } from "../../core/version/useVersion";
 import { Loader } from "../Loader";
-import { GitHubIcon, NewsIcon } from "../common-icons";
+import { DonateIcon, GitHubIcon, NewsIcon } from "../common-icons";
 import { Modal } from "../modals";
 import { OpenModal } from "./open/OpenModal";
 
@@ -69,6 +69,16 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
             </a>
             <a rel="noreferrer" target="_blank" className="gl-btn gl-btn-outline" href="https://docs.gephi.org/lite">
               {t("welcome.documentation")}
+            </a>
+          </div>
+          <div className="d-flex flex-wrap align-items-center gl-gap-2 justify-content-center">
+            <a
+              rel="noreferrer"
+              target="_blank"
+              className="gl-btn gl-btn-icon gl-btn-fill"
+              href="https://opencollective.com/gephi/donate?tags=gephi-lite&interval=oneTime&amount=5&contributeAs=me"
+            >
+              <DonateIcon /> {t("welcome.donate")}
             </a>
             <a
               rel="noreferrer"

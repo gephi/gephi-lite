@@ -42,6 +42,7 @@ import {
   PiGps,
   PiGraph,
   PiGraphFill,
+  PiHeartFill,
   PiHouseLine,
   PiInfo,
   PiLasso,
@@ -118,6 +119,7 @@ export const DataCreationIcon = PiPlusCircle;
 export const DataCreationIconFill = PiPlusCircleFill;
 export const DataIcon = PiTable;
 export const DataIconFill = PiTableFill;
+export const DonateIcon = PiHeartFill;
 export const DownloadIcon = PiDownload;
 export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
