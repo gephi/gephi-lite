@@ -898,6 +898,8 @@
     "locate_selected_edges": "Zoom on all selected edges",
     "locate_selected_nodes": "Zoom on all selected nodes",
     "marquee": "Rectangle selection",
+    "navigate_back": "Back to the previous selection",
+    "navigate_forward": "Forward to the next selection",
     "no_path_between_nodes": "No path links these two nodes",
     "no_value": "No value",
     "node_no_label": "(Empty label)",

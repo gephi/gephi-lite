@@ -7,6 +7,8 @@ import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
   PiArrowDown,
+  PiArrowLeft,
+  PiArrowRight,
   PiArrowSquareOut,
   PiArrowUp,
   PiArrowsClockwise,
@@ -109,6 +111,9 @@ export const CancelIcon = PiX;
 export const CaptionClose = PiArrowsInSimple;
 export const CaptionOpen = PiQuestion;
 export const CaretDownIcon = PiCaretDown;
+// Walking back and forth through the nodes and edges visited in this tab (see selection/history):
+export const NavigateBackIcon = PiArrowLeft;
+export const NavigateForwardIcon = PiArrowRight;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
 export const CaretUpIcon = PiCaretUp;
