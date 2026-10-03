@@ -28,6 +28,7 @@ $panel-width: $gl-sys-size-container-large;
     .panel-body {
       @extend .gl-p-3;
       padding-top: 2em;
+      --panel-body-padding-top: 2em; // read by sticky headers, to cancel this padding
     }
 
     .panel-body,
@@ -133,9 +134,11 @@ $panel-width: $gl-sys-size-container-large;
 
       .panel-body {
         padding: $gl-spacers-3;
+        --panel-body-padding-top: #{$gl-spacers-3};
       }
       &.panel-main .panel-body {
         padding: $gl-spacers-2;
+        --panel-body-padding-top: #{$gl-spacers-2};
       }
     }
 

@@ -514,77 +514,83 @@ export const Selection: FC = () => {
     <>
       {/* Selection main list */}
       <div className="panel-body gap-1" ref={panelBodyRef}>
-        <div className="d-flex flex-row align-items-start justify-content-between gl-gap-1">
-          <h2 className="mb-0">
-            {t(`selection.selected_${type}`)}
-            {hidden.length > 0 ? (
-              // Counts go on their own line, so the longer "(9, 10 filtered)" form is never
-              // truncated by the title next to it.
-              <span className="d-block">
-                ({visible.length},{" "}
-                <span className="text-danger">{t("selection.filtered", { count: hidden.length })}</span>)
-              </span>
-            ) : (
-              <> ({items.size})</>
+        {/* Title, buttons and filter stay in view while the list below scrolls. */}
+        <div className="selection-sticky-header d-flex flex-column gap-1">
+          <div className="d-flex flex-row align-items-start justify-content-between gl-gap-1">
+            <h2 className="mb-0 selection-title">
+              {t(`selection.selected_${type}`)}
+              {hidden.length > 0 ? (
+                // Counts go on their own line, so the longer "(9, 10 filtered)" form is never
+                // truncated by the title next to it.
+                <span className="d-block">
+                  ({visible.length},{" "}
+                  <span className="text-danger">{t("selection.filtered", { count: hidden.length })}</span>)
+                </span>
+              ) : (
+                <> ({items.size})</>
+              )}
+            </h2>
+            <button
+              className="gl-btn gl-btn-icon flex-shrink-0"
+              title={t(`selection.sort.${sortMode}`)}
+              aria-label={t(`selection.sort.${sortMode}`)}
+              onClick={() => changeSelectionSort(type, sortMode === "size" ? "alphabetical" : "size")}
+            >
+              {sortMode === "size" ? <SortBySizeIcon /> : <SortAlphabeticalIcon />}
+            </button>
+            {type === "nodes" && items.size === 2 && (
+              <button
+                className="gl-btn gl-btn-icon flex-shrink-0"
+                title={t("selection.select_path_between_nodes")}
+                aria-label={t("selection.select_path_between_nodes")}
+                onClick={selectPathBetweenNodes}
+              >
+                <SelectPathIcon />
+              </button>
             )}
-          </h2>
-          <button
-            className="gl-btn gl-btn-icon flex-shrink-0"
-            title={t(`selection.sort.${sortMode}`)}
-            aria-label={t(`selection.sort.${sortMode}`)}
-            onClick={() => changeSelectionSort(type, sortMode === "size" ? "alphabetical" : "size")}
-          >
-            {sortMode === "size" ? <SortBySizeIcon /> : <SortAlphabeticalIcon />}
-          </button>
-          {type === "nodes" && items.size === 2 && (
-            <button
-              className="gl-btn gl-btn-icon flex-shrink-0"
-              title={t("selection.select_path_between_nodes")}
-              aria-label={t("selection.select_path_between_nodes")}
-              onClick={selectPathBetweenNodes}
-            >
-              <SelectPathIcon />
-            </button>
-          )}
-          {visible.length > 0 && (
-            <button
-              className="gl-btn gl-btn-icon flex-shrink-0"
-              title={t(`selection.locate_selected_${type}`)}
-              onClick={() => (type === "nodes" ? focusCameraOnNodes(visible) : focusCameraOnEdges(visible))}
-            >
-              <OpenInGraphIcon />
-            </button>
-          )}
-          {/* Small screens only: there, the panel's own close button folds it back down without
+            {visible.length > 0 && (
+              <button
+                className="gl-btn gl-btn-icon flex-shrink-0"
+                title={t(`selection.locate_selected_${type}`)}
+                onClick={() => (type === "nodes" ? focusCameraOnNodes(visible) : focusCameraOnEdges(visible))}
+              >
+                <OpenInGraphIcon />
+              </button>
+            )}
+            {/* Small screens only: there, the panel's own close button folds it back down without
               touching the selection (see GraphPage), so emptying the selection needs its own
               button. Kept at arm's length from the one before it, to survive a fat finger. */}
-          <button
-            className="gl-btn gl-btn-icon flex-shrink-0 ms-3 d-sm-none"
-            title={t("selection.unselect_all")}
-            aria-label={t("selection.unselect_all")}
-            onClick={() => emptySelection()}
-          >
-            <CloseIcon />
-          </button>
+            <button
+              className="gl-btn gl-btn-icon flex-shrink-0 ms-3 d-sm-none"
+              title={t("selection.unselect_all")}
+              aria-label={t("selection.unselect_all")}
+              onClick={() => emptySelection()}
+            >
+              <CloseIcon />
+            </button>
+          </div>
+          {type === "edges" && (
+            <>
+              <ClearableInput
+                value={filterText}
+                onChange={setFilterText}
+                placeholder={t("selection.filter_edges_placeholder")}
+                clearTitle={t("selection.filter_clear")}
+              />
+              {isFiltering && (
+                <div className="small text-muted">
+                  {shownVisible.length + shownHidden.length
+                    ? t("selection.filter_count", {
+                        shown: shownVisible.length + shownHidden.length,
+                        total: items.size,
+                      })
+                    : t("selection.filter_no_match")}
+                </div>
+              )}
+            </>
+          )}
+          <hr className="gl-m-0" />
         </div>
-        {type === "edges" && (
-          <>
-            <ClearableInput
-              value={filterText}
-              onChange={setFilterText}
-              placeholder={t("selection.filter_edges_placeholder")}
-              clearTitle={t("selection.filter_clear")}
-            />
-            {isFiltering && (
-              <div className="small text-muted">
-                {shownVisible.length + shownHidden.length
-                  ? t("selection.filter_count", { shown: shownVisible.length + shownHidden.length, total: items.size })
-                  : t("selection.filter_no_match")}
-              </div>
-            )}
-          </>
-        )}
-        <hr className="gl-m-0" />
         <ul className="list-unstyled gl-m-0 gl-gap-1">
           <InfiniteScroll
             pageSize={50}
