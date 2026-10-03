@@ -11,6 +11,13 @@ import { edgeToDocument, getEmptySearchState, nodeToDocument } from "./utils";
  * Producers:
  * **********
  */
+/** Lowercases and strips accents, so searches ignore case and diacritics. */
+export const normalizeText = (text: string): string =>
+  text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
 export const indexAll: Producer<SearchState, []> = () => {
   const graphDataset = graphDatasetAtom.get();
   const sigmaGraph = sigmaGraphAtom.get();
@@ -27,11 +34,7 @@ export const indexAll: Producer<SearchState, []> = () => {
         .map((f) => `prop_edge_${f.id}`),
     ],
     storeFields: ["itemId", "id", "type"],
-    processTerm: (term, _fieldName) =>
-      term
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase(),
+    processTerm: (term, _fieldName) => normalizeText(term),
   });
 
   index.addAll(Object.keys(graphDataset.nodeData).map((id) => nodeToDocument(graphDataset, sigmaGraph, id)));
