@@ -4,7 +4,7 @@ import FileSaver from "file-saver";
 import { type FC, PropsWithChildren, useCallback, useMemo, useState } from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
-import { PiList, PiX } from "react-icons/pi";
+import { PiList } from "react-icons/pi";
 import { Link, useLocation } from "react-router";
 
 import GephiLogo from "../../assets/gephi-logo.svg?react";
@@ -23,6 +23,8 @@ import {
   GraphIcon,
   GraphIconFill,
   HomeIcon,
+  MenuCollapseIcon,
+  MenuExpandIcon,
   PlayIconFill,
   SaveIcon,
   StopIconFill,
@@ -390,7 +392,8 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           </div>
           {/* Mobile display: */}
           <button className="gl-btn gl-btn-icon d-sm-none" onClick={toggleExpanded}>
-            {expanded ? <PiX /> : <PiList />}
+            {/* The bar it folds sits above: a caret up folds it away, a caret down brings it back. */}
+            {expanded ? <MenuExpandIcon /> : <MenuCollapseIcon />}
           </button>
         </section>
       </section>
