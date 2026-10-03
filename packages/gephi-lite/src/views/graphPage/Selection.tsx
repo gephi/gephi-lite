@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { PiChecks } from "react-icons/pi";
 import { useNavigate } from "react-router";
 
+import { ClearableInput } from "../../components/ClearableInput";
 import Dropdown from "../../components/Dropdown";
 import { InfiniteScroll } from "../../components/InfiniteScroll";
 import {
@@ -53,8 +54,12 @@ import {
 import { getShortestPathEdges } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
+import { normalizeText } from "../../core/search";
 import { focusCameraOnEdges, focusCameraOnNode, focusCameraOnNodes } from "../../core/sigma";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
+
+/** Number of characters from which the selection filter applies. */
+const MIN_FILTER_LENGTH = 2;
 
 function SelectedItem<
   // eslint-disable-next-line
@@ -443,6 +448,28 @@ export const Selection: FC = () => {
     return grouped;
   }, [filteredGraph, items, type, compareItems]);
 
+  // Text filter (edges only, from 2 characters): it only narrows what the list shows. The selection
+  // itself, the graph and the panel's actions (locate, open in data, delete...) keep using all of it.
+  const [filterText, setFilterText] = useState("");
+  const query = normalizeText(filterText.trim());
+  const isFiltering = type === "edges" && query.length >= MIN_FILTER_LENGTH;
+
+  const matchesFilter = useCallback(
+    (id: string) =>
+      getAlphabeticalKey(id)
+        .concat(id)
+        .some((part) => normalizeText(part).includes(query)),
+    [getAlphabeticalKey, query],
+  );
+  const shownVisible = useMemo(
+    () => (isFiltering ? visible.filter(matchesFilter) : visible),
+    [isFiltering, visible, matchesFilter],
+  );
+  const shownHidden = useMemo(
+    () => (isFiltering ? hidden.filter(matchesFilter) : hidden),
+    [isFiltering, hidden, matchesFilter],
+  );
+
   const renderSelectedItem = useCallback(
     (item: string) => {
       const itemData = mergedStaticDynamicItemData[item];
@@ -475,7 +502,11 @@ export const Selection: FC = () => {
     const previous = previousSelectionRef.current;
     const isUnrelatedSelection =
       previous.type !== type || (items.size > 0 && Array.from(items).every((id) => !previous.items.has(id)));
-    if (isUnrelatedSelection) panelBodyRef.current?.scrollTo({ top: 0 });
+    if (isUnrelatedSelection) {
+      panelBodyRef.current?.scrollTo({ top: 0 });
+      // A fully different list also starts unfiltered (while unselecting one item keeps the filter).
+      setFilterText("");
+    }
     previousSelectionRef.current = { type, items };
   }, [type, items]);
 
@@ -536,17 +567,39 @@ export const Selection: FC = () => {
             <CloseIcon />
           </button>
         </div>
+        {type === "edges" && (
+          <>
+            <ClearableInput
+              value={filterText}
+              onChange={setFilterText}
+              placeholder={t("selection.filter_edges_placeholder")}
+              clearTitle={t("selection.filter_clear")}
+            />
+            {isFiltering && (
+              <div className="small text-muted">
+                {shownVisible.length + shownHidden.length
+                  ? t("selection.filter_count", { shown: shownVisible.length + shownHidden.length, total: items.size })
+                  : t("selection.filter_no_match")}
+              </div>
+            )}
+          </>
+        )}
         <hr className="gl-m-0" />
         <ul className="list-unstyled gl-m-0 gl-gap-1">
-          <InfiniteScroll pageSize={50} data={visible} scrollableTarget={"selection"} renderItem={renderSelectedItem} />
+          <InfiniteScroll
+            pageSize={50}
+            data={shownVisible}
+            scrollableTarget={"selection"}
+            renderItem={renderSelectedItem}
+          />
         </ul>
 
         {/* Selected items the filters exclude: collapsed by default, since they are not on the
             graph, but announced by a heading as prominent as the panel's title. */}
-        {!!hidden.length && (
+        {!!shownHidden.length && (
           <>
             <div className="d-flex flex-row align-items-center justify-content-between gl-gap-1 mt-3">
-              <h2 className="mb-0 text-danger">{t(`selection.filtered_${type}`, { count: hidden.length })}</h2>
+              <h2 className="mb-0 text-danger">{t(`selection.filtered_${type}`, { count: shownHidden.length })}</h2>
               <button
                 className="gl-btn gl-btn-icon flex-shrink-0"
                 title={t(showFiltered ? "common.collapse" : "common.expand")}
@@ -562,7 +615,7 @@ export const Selection: FC = () => {
                 <InfiniteScroll
                   scrollableTarget={"selection"}
                   pageSize={50}
-                  data={hidden}
+                  data={shownHidden}
                   renderItem={renderSelectedItem}
                 />
               </ul>
