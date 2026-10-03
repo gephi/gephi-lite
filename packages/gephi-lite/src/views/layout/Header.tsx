@@ -95,8 +95,8 @@ const LastLayoutToggle: FC = () => {
 
 // Persist the mobile header menu (burger) open/closed state across page navigations: each page
 // mounts its own <Header>, so a plain useState would reset the bar every time the user switches
-// between the Graph and Data views. Starts expanded, so the toolbar (Workspace, save, theme...)
-// is visible right away on page load, without the user having to tap the burger icon first.
+// between the Graph and Data views. Starts expanded, so the toolbar (panel toggle, save, create a
+// node...) is visible right away on page load, without the user having to tap the burger icon first.
 let mobileMenuExpanded = true;
 
 export const Header: FC<PropsWithChildren> = ({ children }) => {
@@ -332,11 +332,7 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
           {/* Evenly spread: on a phone these are the buttons one reaches for, and clustering them
               left and right left them cramped (the save button and its star especially). */}
           <section className="d-flex flex-row align-items-center justify-content-between gl-gap-2">
-            <Dropdown options={workspaceMenuList}>
-              <button className="gl-btn gl-btn-icon" title="Workspace" aria-label="Workspace">
-                <PiList />
-              </button>
-            </Dropdown>
+            {children}
             {saveButton}
             <button
               className="gl-btn gl-btn-icon"
@@ -359,11 +355,15 @@ export const Header: FC<PropsWithChildren> = ({ children }) => {
             <button className="gl-btn dropdown-toggle">Workspace</button>
           </Dropdown>
           <span className="d-none d-sm-block">{saveButton}</span>
-          {/* Mobile display: */}
-          {children}
+          {/* Mobile display: the same menu, as an icon - this row is never folded away. */}
+          <Dropdown options={workspaceMenuList} className="d-sm-none">
+            <button className="gl-btn gl-btn-icon" title="Workspace" aria-label="Workspace">
+              <PiList />
+            </button>
+          </Dropdown>
         </div>
         <div className="col-8 col-sm-4 d-flex justify-content-center align-items-center gl-gap-1">
-          <span className="gl-nav-arrow-slot d-sm-none">
+          <span className="gl-nav-arrow-slot gl-nav-arrow-slot-back d-sm-none">
             <SelectionBackButton />
           </span>
           <Link to="/" replace className={cx("gl-btn", location.pathname === "/" && "gl-btn-fill")}>
