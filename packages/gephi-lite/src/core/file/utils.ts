@@ -140,15 +140,21 @@ export async function extractGraphFromFile(
  * Parse the content of the given file and returns its data and its type.
  */
 export async function openAndParseFile(file: FileTypeWithoutFormat): Promise<
-  | {
-      format: "gexf" | "graphml" | "graphology";
-      data: Graph;
-      metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
-    }
-  | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
+  (
+    | {
+        format: "gexf" | "graphml" | "graphology";
+        data: Graph;
+        metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
+      }
+    | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
+  ) & {
+    // The raw file content, returned alongside the parsed graph so the caller can fingerprint it
+    // (see core/cloud/remoteContent) without downloading it a second time.
+    content: string;
+  }
 > {
   const content = await getFileContent(file);
-  return extractGraphFromFile(content, file.filename);
+  return { ...(await extractGraphFromFile(content, file.filename)), content };
 }
 
 /**

@@ -13,9 +13,11 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = ({ children, className
     <>
       <main id={id} className={cx("container-fluid", className)}>
         {children}
+        {/* Inside <main> so notifications hang at its bottom right, clear of the mobile toolbars
+            pinned below it (see _toasts.scss). */}
+        <Notifications />
       </main>
       <Modals />
-      <Notifications />
     </>
   );
 };

@@ -4,11 +4,9 @@ import Slider, { SliderProps } from "rc-slider";
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFiltersActions } from "../../core/context/dataContexts";
 import { RangeFilterType } from "../../core/filters/types";
 import { inRangeIncluded } from "../../core/filters/utils";
-import { useFilteredGraphAt } from "../../core/graph";
-import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import {
   castScalarToQuantifiableValue,
   getFieldValueForQuantification,
@@ -16,6 +14,7 @@ import {
   serializeModelValueToScalar,
 } from "../../core/graph/fieldModel";
 import { EditItemAttribute } from "../data/Attribute";
+import { useFilterItemData } from "./useFilterItemData";
 import { findRanges, shortenNumber } from "./utils";
 
 interface RangeValue {
@@ -29,6 +28,12 @@ interface RangeMetric {
   step: number;
   min: number;
   max: number;
+  // Actual min/max found in the data, as opposed to `min`/`max` above: those are the outer edges of
+  // the histogram's bins, rounded to the nearest `unit` for a readable chart, so they usually don't
+  // match a real data point (eg. a real max of 30 can fall inside a last bin of [30, 32)). Used only
+  // to display the "from"/"to" placeholders, so they show a value that actually exists in the data.
+  dataMin: number;
+  dataMax: number;
   maxCount: number;
   ranges: RangeValue[];
 }
@@ -41,9 +46,7 @@ const RANGE_STYLE = {
 };
 
 export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> = ({ filter, filterIndex }) => {
-  const parentGraph = useFilteredGraphAt(filterIndex - 1);
-
-  const { nodeData, edgeData } = useGraphDataset();
+  const { parentGraph, itemData } = useFilterItemData(filter.itemType, filterIndex);
 
   const { t } = useTranslation();
   const { updateFilter } = useFiltersActions();
@@ -51,14 +54,6 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
   const [rangeMetric, setRangeMetric] = useState<RangeMetric>();
 
   useEffect(() => {
-    const itemData = mergeStaticDynamicData(
-      filter.itemType === "nodes" ? nodeData : edgeData,
-      // dynamic field should be calculated from parent graph and not from the useDynamicItemData which provide data in the current graph
-      filter.itemType === "nodes"
-        ? computeAllDynamicAttributes("nodes", parentGraph)
-        : computeAllDynamicAttributes("edges", parentGraph),
-    );
-
     const values = flatMap(filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(), (itemId) => {
       const v = getFieldValueForQuantification(itemData[itemId], filter.field);
       if (v && (typeof v === "number" || !isNaN(+v))) return [v];
@@ -82,13 +77,15 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
       setRangeMetric({
         min: ranges[0][0],
         max: (last(ranges) || ranges[0])[1],
+        dataMin: minValue,
+        dataMax: maxValue,
         step,
         unit,
         ranges: rangeValues,
         maxCount: Math.max(...rangeValues.map((r) => r.values.length)),
       });
     }
-  }, [filter.itemType, filter.field, parentGraph, nodeData, edgeData]);
+  }, [filter.itemType, filter.field, parentGraph, itemData]);
 
   const marks: SliderProps["marks"] = rangeMetric
     ? mapValues(
@@ -177,11 +174,11 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
               id={`filter-${filterIndex}-min`}
               type="number"
               disabled={rangeMetric.min === rangeMetric.max}
-              min={rangeMetric?.min}
-              max={filter.max ?? rangeMetric.max}
+              min={rangeMetric?.dataMin}
+              max={filter.max ?? rangeMetric.dataMax}
               step={rangeMetric?.step}
               value={filter.min ?? ""}
-              placeholder={"" + rangeMetric?.min}
+              placeholder={"" + rangeMetric?.dataMin}
               onChange={(e) => {
                 updateFilter(filterIndex, { ...filter, min: e.target.value ? +e.target.value : undefined });
               }}
@@ -213,12 +210,10 @@ export const RangeFilter: FC<{ filter: RangeFilterType; filterIndex: number }> =
               id={`filter-${filterIndex}-max`}
               type="number"
               disabled={rangeMetric.min === rangeMetric.max}
-              min={filter.min ?? rangeMetric.min}
-              // max is shifted - step as slider exclude upper bound
-              max={rangeMetric?.max - rangeMetric.step}
+              min={filter.min ?? rangeMetric.dataMin}
+              max={rangeMetric?.dataMax}
               step={rangeMetric?.step}
-              // max is shifted - step as slider exclude upper bound
-              placeholder={"" + (rangeMetric?.max - rangeMetric.step)}
+              placeholder={"" + rangeMetric?.dataMax}
               value={filter.max ?? ""}
               onChange={(e) => {
                 updateFilter(filterIndex, { ...filter, max: e.target.value ? +e.target.value : undefined });

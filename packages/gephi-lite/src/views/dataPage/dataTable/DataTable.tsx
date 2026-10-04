@@ -2,7 +2,7 @@ import { ItemType, Scalar } from "@gephi/gephi-lite-sdk";
 import { Row, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { VirtualItem, Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import cx from "classnames";
-import { FC, useEffect, useMemo, useRef } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollSyncPane } from "react-scroll-sync";
 
 import {
@@ -15,6 +15,7 @@ import {
 import { EVENTS, useEventsContext } from "../../../core/context/eventsContext";
 import { DynamicEdgeAttributeId, DynamicNodeAttributeId } from "../../../core/graph/dynamicAttributes";
 import { ItemRow, SPECIFIC_COLUMNS, getCommonPinningStyles } from "./consts";
+import { CellCoord, DataCellNavigationContext } from "./dataCellNavigation";
 import { useDataTableColumns } from "./useDataTableColumns";
 
 const TableBodyRow: FC<{
@@ -48,7 +49,7 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
 
   const { type, dataTableState } = useDataTable();
   const { updateColumnSizing, updateColumnSizingInfo, setSort } = useDataTableActions();
-  const { columns, columnPinningState } = useDataTableColumns(itemIDs);
+  const { columns, columnPinningState, editableColumnIds } = useDataTableColumns(itemIDs);
 
   const data = useMemo(() => (type === "nodes" ? nodeData : edgeData), [edgeData, nodeData, type]);
   const dynamicData = useMemo(
@@ -110,6 +111,33 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
         : undefined,
   });
 
+  // Arrow-key navigation while editing a cell (see DataCell/EditDataCell): up/down keep the same
+  // column and move to the previous/next row (using the current sorted row order, so it works
+  // whichever row is currently virtualized in or out), left/right keep the same row and move to the
+  // previous/next editable column. Setting activeCell is enough even when the target row isn't
+  // currently mounted: the scroll below makes react-virtual mount it, and DataCell picks up the
+  // matching activeCell as soon as it renders.
+  const [activeCell, setActiveCell] = useState<CellCoord | null>(null);
+  const moveTo = useCallback(
+    (from: CellCoord, direction: "up" | "down" | "left" | "right") => {
+      if (direction === "up" || direction === "down") {
+        const rowIds = table.getRowModel().rows.map((r) => r.id);
+        const index = rowIds.indexOf(from.rowId);
+        const nextIndex = direction === "up" ? index - 1 : index + 1;
+        if (index === -1 || nextIndex < 0 || nextIndex >= rowIds.length) return;
+        rowVirtualizer.scrollToIndex(nextIndex, { align: "auto" });
+        setActiveCell({ rowId: rowIds[nextIndex], columnId: from.columnId });
+      } else {
+        const index = editableColumnIds.indexOf(from.columnId);
+        const nextIndex = direction === "left" ? index - 1 : index + 1;
+        if (index === -1 || nextIndex < 0 || nextIndex >= editableColumnIds.length) return;
+        setActiveCell({ rowId: from.rowId, columnId: editableColumnIds[nextIndex] });
+      }
+    },
+    [table, rowVirtualizer, editableColumnIds],
+  );
+  const clearActiveCell = useCallback(() => setActiveCell(null), []);
+
   useEffect(() => {
     const scrollToID = (id: string) => {
       const sortedRows = table.getRowModel().rows;
@@ -144,68 +172,70 @@ export const DataTable: FC<{ itemIDs: string[] }> = ({ itemIDs }) => {
   }, [emitter, rowVirtualizer, setSort, table, type]);
 
   return (
-    <div className="position-absolute inset-0">
-      <ScrollSyncPane innerRef={tableContainerRef}>
-        <table
-          ref={tableContainerRef}
-          className={cx(
-            "data-table table table-bordered",
-            table.getState().columnSizingInfo.isResizingColumn && "is-resizing",
-          )}
-        >
-          <thead className="table-light">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th
-                      key={header.id}
-                      style={{ ...getCommonPinningStyles(header.column, true) }}
-                      className={cx(header.id in SPECIFIC_COLUMNS && "protected")}
-                    >
-                      <div
-                        className={cx("content-wrapper", header.column.getCanSort() && "cursor-pointer select-none")}
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-
-                        {header.column.getCanResize() && (
-                          <div
-                            className={cx("resizer", header.column.getIsResizing() && "is-resizing")}
-                            onTouchStart={header.getResizeHandler()}
-                            onDoubleClick={() => header.column.resetSize()}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              header.getResizeHandler()(e);
-                            }}
-                          />
-                        )}
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-            }}
+    <DataCellNavigationContext.Provider value={{ activeCell, moveTo, clearActiveCell }}>
+      <div className="position-absolute inset-0">
+        <ScrollSyncPane innerRef={tableContainerRef}>
+          <table
+            ref={tableContainerRef}
+            className={cx(
+              "data-table table table-bordered",
+              table.getState().columnSizingInfo.isResizingColumn && "is-resizing",
+            )}
           >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => (
-              <TableBodyRow
-                key={tableRows[virtualRow.index].id}
-                row={tableRows[virtualRow.index]}
-                virtualRow={virtualRow}
-                rowVirtualizer={rowVirtualizer}
-              />
-            ))}
-          </tbody>
-        </table>
-      </ScrollSyncPane>
-    </div>
+            <thead className="table-light">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <th
+                        key={header.id}
+                        style={{ ...getCommonPinningStyles(header.column, true) }}
+                        className={cx(header.id in SPECIFIC_COLUMNS && "protected")}
+                      >
+                        <div
+                          className={cx("content-wrapper", header.column.getCanSort() && "cursor-pointer select-none")}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+
+                          {header.column.getCanResize() && (
+                            <div
+                              className={cx("resizer", header.column.getIsResizing() && "is-resizing")}
+                              onTouchStart={header.getResizeHandler()}
+                              onDoubleClick={() => header.column.resetSize()}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                header.getResizeHandler()(e);
+                              }}
+                            />
+                          )}
+                        </div>
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+                <TableBodyRow
+                  key={tableRows[virtualRow.index].id}
+                  row={tableRows[virtualRow.index]}
+                  virtualRow={virtualRow}
+                  rowVirtualizer={rowVirtualizer}
+                />
+              ))}
+            </tbody>
+          </table>
+        </ScrollSyncPane>
+      </div>
+    </DataCellNavigationContext.Provider>
   );
 };

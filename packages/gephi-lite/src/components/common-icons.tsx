@@ -6,9 +6,14 @@ import { IconBaseProps } from "react-icons/lib/iconBase";
 import {
   PiArrowClockwise,
   PiArrowCounterClockwise,
+  PiArrowDown,
+  PiArrowSquareLeft,
   PiArrowSquareOut,
+  PiArrowSquareRight,
+  PiArrowUp,
   PiArrowsClockwise,
   PiArrowsInSimple,
+  PiArrowsLeftRight,
   PiBinary,
   PiBinaryBold,
   PiBug,
@@ -18,6 +23,7 @@ import {
   PiCaretRight,
   PiCaretUp,
   PiChartBar,
+  PiChatCircleDots,
   PiCheck,
   PiCheckCircle,
   PiCheckSquare,
@@ -35,11 +41,11 @@ import {
   PiCursorFill,
   PiDotsThreeVerticalBold,
   PiDownload,
+  PiFloppyDisk,
   PiFunnel,
   PiFunnelFill,
   PiGear,
   PiGithubLogo,
-  PiGps,
   PiGraph,
   PiGraphFill,
   PiHouseLine,
@@ -58,6 +64,7 @@ import {
   PiPaintBrush,
   PiPalette,
   PiPaletteFill,
+  PiPath,
   PiPencilSimpleLine,
   PiPencilSimpleLineFill,
   PiPlay,
@@ -69,9 +76,13 @@ import {
   PiQuestion,
   PiSelection,
   PiSelectionBold,
+  PiShareNetwork,
   PiSignIn,
+  PiSortAscending,
+  PiSortDescending,
   PiSpinner,
   PiSquare,
+  PiStarFill,
   PiStop,
   PiStopFill,
   PiSun,
@@ -79,6 +90,7 @@ import {
   PiTable,
   PiTableFill,
   PiTextT,
+  PiTranslate,
   PiTrash,
   PiUser,
   PiWarning,
@@ -99,6 +111,11 @@ export const CancelIcon = PiX;
 export const CaptionClose = PiArrowsInSimple;
 export const CaptionOpen = PiQuestion;
 export const CaretDownIcon = PiCaretDown;
+// Walking back and forth through the nodes and edges visited in this tab (see selection/history).
+// Framed arrows: in the middle of the empty space around the Graph/Data tabs, a bare arrow did not
+// read as something to tap.
+export const NavigateBackIcon = PiArrowSquareLeft;
+export const NavigateForwardIcon = PiArrowSquareRight;
 export const CaretLeftIcon = PiCaretLeft;
 export const CaretRightIcon = PiCaretRight;
 export const CaretUpIcon = PiCaretUp;
@@ -106,6 +123,8 @@ export const CheckedIcon = PiCheck;
 export const ClipboardIcon = PiClipboard;
 export const CloseIcon = PiX;
 export const CodeEditorIcon = PiCode;
+export const CreateEdgeIcon = PiPlusCircle;
+export const CreateNodeIcon = PiPlusCircle;
 export const DarkThemeIcon = PiMoonStars;
 export const DarkThemeSelectedIcon = PiMoonStarsFill;
 export const DataCreationIcon = PiPlusCircle;
@@ -117,10 +136,13 @@ export const EditIcon = PiPencilSimpleLine;
 export const EditIconFill = PiPencilSimpleLineFill;
 export const ExitFullScreenIcon = PiCornersIn;
 export const ExternalLinkIcon = PiArrowSquareOut;
+export const FeedbackIcon = PiChatCircleDots;
 export const FilterAddIcon = PiPlusCircle;
 export const FilterDeleteIcon = PiTrash;
 export const FilterEnabledIcon = PiCheckSquare;
 export const FilterDisabledIcon = PiSquare;
+export const FilterMoveUpIcon = PiArrowUp;
+export const FilterMoveDownIcon = PiArrowDown;
 export const FiltersIcon = PiFunnel;
 export const FiltersIconFill = PiFunnelFill;
 export const FullScreenIcon = PiCornersOut;
@@ -130,6 +152,7 @@ export const GraphIconFill = PiGraphFill;
 export const GuessSettingsIcon = PiMagicWand;
 export const HomeIcon = PiHouseLine;
 export const InvalidDataIcon = PiWarningCircle;
+export const LanguageIcon = PiTranslate;
 export const LassoIcon = PiLasso;
 export const LassoIconFill = PiLassoBold;
 export const LayoutsIcon = PiPolygon;
@@ -148,14 +171,25 @@ export const MetricsIconFill = PiBinaryBold;
 export const MouseIcon = PiCursor;
 export const MouseIconFill = PiCursorFill;
 export const OpenInGraphIcon = PiCrosshair;
+// Same glyph as MenuCollapseIcon, and for the same reason: on a small screen both panels are
+// stacked at the bottom of the screen, so folding one back down is the same gesture.
+export const PanelCollapseIcon = PiCaretDown;
+export const SortAlphabeticalIcon = PiSortAscending;
+export const SortBySizeIcon = PiSortDescending;
+export const SelectPathIcon = PiPath;
 export const PlayIcon = PiPlay;
 export const PlayIconFill = PiPlayFill;
 export const ResetIcon = PiArrowCounterClockwise;
 export const RetryIcon = PiArrowClockwise;
+export const SaveIcon = PiFloppyDisk;
 export const SearchIcon = PiMagnifyingGlass;
+export const SelectEdgesIcon = PiLineSegment;
+export const SelectNeighborsIcon = PiShareNetwork;
+export const UnsavedChangesIcon = PiStarFill;
 export const SettingsIcon = PiGear;
 export const StopIcon = PiStop;
 export const StopIconFill = PiStopFill;
+export const SwapIcon = PiArrowsLeftRight;
 export const SyncIcon = PiArrowsClockwise;
 export const ThreeDotsVerticalIcon = PiDotsThreeVerticalBold;
 export const TrashIcon = PiTrash;
@@ -163,7 +197,10 @@ export const UnselectAllIcon = PiSpinner;
 export const UserIcon = PiUser;
 export const ZoomInIcon = PiMagnifyingGlassPlus;
 export const ZoomOutIcon = PiMagnifyingGlassMinus;
-export const ZoomResetIcon = PiGps;
+// Reuses the same glyph as OpenInGraphIcon (the "Locate on the graph" icon), for visual
+// consistency between the graph controls and the locate buttons elsewhere in the app. The button's
+// function is unchanged: it still resets/fits the camera.
+export const ZoomResetIcon = PiCrosshair;
 export const MissingValueFilterIcon = PiSpinner;
 
 export const GraphSelectionModeIcons: Record<GraphSelectionMode, { normal: IconType; fill: IconType }> = {
@@ -222,3 +259,4 @@ export const STATUS_ICONS = {
   warning: PiWarning,
   error: PiWarningOctagon,
 } as const;
+export const WarningIcon = PiWarning;

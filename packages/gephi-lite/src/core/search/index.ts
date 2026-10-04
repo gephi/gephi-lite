@@ -11,6 +11,13 @@ import { edgeToDocument, getEmptySearchState, nodeToDocument } from "./utils";
  * Producers:
  * **********
  */
+/** Lowercases and strips accents, so searches ignore case and diacritics. */
+export const normalizeText = (text: string): string =>
+  text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
 export const indexAll: Producer<SearchState, []> = () => {
   const graphDataset = graphDatasetAtom.get();
   const sigmaGraph = sigmaGraphAtom.get();
@@ -27,11 +34,7 @@ export const indexAll: Producer<SearchState, []> = () => {
         .map((f) => `prop_edge_${f.id}`),
     ],
     storeFields: ["itemId", "id", "type"],
-    processTerm: (term, _fieldName) =>
-      term
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase(),
+    processTerm: (term, _fieldName) => normalizeText(term),
   });
 
   index.addAll(Object.keys(graphDataset.nodeData).map((id) => nodeToDocument(graphDataset, sigmaGraph, id)));
@@ -113,11 +116,18 @@ export const reset: Producer<SearchState, []> = () => {
   return () => getEmptySearchState();
 };
 
+// Raw text currently typed in the main fuzzy search box (see GraphSearchSelection): kept in its
+// own atom, separate from the MiniSearch index above, so that typing does not depend on - or get
+// wiped out by - index rebuilds (eg. `indexAll`, which replaces the whole SearchState).
+export const setQuery: Producer<string, [string]> = (query) => () => query;
+export const resetQuery: Producer<string, []> = () => () => "";
+
 /**
  * Public API:
  * ***********
  */
 export const searchAtom = atom<SearchState>(getEmptySearchState());
+export const searchQueryAtom = atom<string>("");
 
 export const searchActions = {
   indexAll: producerToAction(indexAll, searchAtom),
@@ -130,4 +140,6 @@ export const searchActions = {
   itemsRemove: producerToAction(itemsRemove, searchAtom),
   itemsIndex: producerToAction(itemsIndex, searchAtom),
   reset: producerToAction(reset, searchAtom),
+  setQuery: producerToAction(setQuery, searchQueryAtom),
+  resetQuery: producerToAction(resetQuery, searchQueryAtom),
 } as const;

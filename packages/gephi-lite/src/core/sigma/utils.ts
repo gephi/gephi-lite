@@ -1,9 +1,24 @@
+import { SigmaGraph } from "@gephi/gephi-lite-sdk";
 import { Attributes } from "graphology-types";
+import Sigma from "sigma";
 import { drawDiscNodeLabel } from "sigma/rendering";
 import { Settings } from "sigma/settings";
 import { NodeDisplayData, PartialButFor } from "sigma/types";
 
+import { SelectionState } from "../selection/types";
 import { SigmaState } from "./types";
+
+/** The graph area left uncovered by the header and the panels (see `getVisibleBand`): */
+export const VISIBLE_BAND_SELECTOR = ".filler";
+
+/**
+ * Geometry of a node label as drawn by sigma (`drawDiscNodeLabel`), as ratios of its font size: the
+ * text baseline sits a third of that size below the center of the node, and the glyphs span from
+ * 0.8 above that baseline down to 0.3 below it.
+ */
+export const LABEL_BASELINE_RATIO = 1 / 3;
+export const LABEL_ASCENT_RATIO = 0.8;
+export const LABEL_DESCENT_RATIO = 0.3;
 
 /**
  * Returns an empty sigma state:
@@ -16,6 +31,60 @@ export function getEmptySigmaState(): SigmaState {
     hoveredEdge: null,
     highlightedNodes: null,
   };
+}
+
+/**
+ * Returns the part of the sigma canvas the user actually sees, in viewport coordinates (0,0 = canvas
+ * top-left): the header and the left/right panels are drawn on top of the canvas, and ".filler" is
+ * exactly the graph rectangle left visible between them, whatever panels happen to be open or
+ * closed. Falls back to the whole canvas when that element is absent.
+ */
+export interface VisibleBand {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+export function getVisibleBand(sigma: Sigma): VisibleBand {
+  const { width, height } = sigma.getDimensions();
+  const containerRect = sigma.getContainer().getBoundingClientRect();
+  const fillerRect = document.querySelector(VISIBLE_BAND_SELECTOR)?.getBoundingClientRect();
+
+  return {
+    left: fillerRect ? fillerRect.left - containerRect.left : 0,
+    top: fillerRect ? fillerRect.top - containerRect.top : 0,
+    width: fillerRect ? fillerRect.width : width,
+    height: fillerRect ? fillerRect.height : height,
+  };
+}
+
+/**
+ * Returns the nodes currently emphasized: the ones explicitly listed in the sigma state, or else
+ * the selected nodes (or the extremities of the selected edges), plus the hovered node and its
+ * neighbors. As soon as some nodes are emphasized, they are the only ones to be labelled.
+ */
+export function getEmphasizedNodes({
+  graph,
+  selection,
+  hoveredNode,
+  emphasizedNodes,
+}: {
+  graph: SigmaGraph;
+  selection: SelectionState;
+  hoveredNode: string | null;
+  emphasizedNodes: Set<string> | null;
+}): Set<string> {
+  if (emphasizedNodes) return emphasizedNodes;
+
+  return new Set([
+    ...(selection.type === "nodes" ? Array.from(selection.items) : []),
+    // When edges are selected, emphasize their source and target nodes so that only
+    // those node labels are shown (same treatment as selecting the nodes directly).
+    ...(selection.type === "edges"
+      ? Array.from(selection.items).flatMap((edge) => (graph.hasEdge(edge) ? [graph.source(edge), graph.target(edge)] : []))
+      : []),
+    ...(hoveredNode ? [hoveredNode, ...graph.neighbors(hoveredNode)] : []),
+  ]);
 }
 
 export function drawDiscNodeHover<

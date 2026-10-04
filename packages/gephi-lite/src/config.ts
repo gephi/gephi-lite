@@ -2,8 +2,20 @@ import { parse } from "semver";
 
 import { version } from "../package.json";
 
+// __GIT_COMMIT_HASH__/__BUILD_DATE__ are replaced at build time (see vite.config.mts) wherever
+// Vite actually transforms this module for the browser bundle. Some non-browser transform paths
+// (namely vitest running tests in Node rather than in a real browser) skip that substitution, in
+// which case the bare identifier would throw a ReferenceError as soon as this module is evaluated;
+// `typeof` guards against that without needing "unused expression" workarounds.
+const gitCommitHash = typeof __GIT_COMMIT_HASH__ !== "undefined" ? __GIT_COMMIT_HASH__ : null;
+const buildDate = typeof __BUILD_DATE__ !== "undefined" ? __BUILD_DATE__ : null;
+
 export const config = {
   version: parse(version)!,
+  // null both in an environment with no git checkout to read from (a source tarball, some Docker
+  // builds...) and wherever the build-time substitution above did not happen.
+  gitCommitHash,
+  buildDate,
   website_url: "https://github.com/gephi/gephi-lite#readme",
   notificationTimeoutMs: 3000,
   github_proxy: import.meta.env.VITE_GITHUB_PROXY || "/_github",
@@ -23,5 +35,13 @@ export const config = {
       setSecureCookie: true,
       setRequestMethod: "POST",
     },
+  },
+  feedbackWidget: {
+    // Public key for https://github.com/JeanGarf/feedback-widget-js, registered against
+    // https://github.com/JeanGarf/feedback-service (set via VITE_FEEDBACK_KEY in the deploy
+    // workflows). Locally, it stays undefined, so the widget is simply not loaded.
+    scriptUrl: "https://cdn.jsdelivr.net/gh/JeanGarf/feedback-widget-js@main/src/w.js",
+    endpoint: import.meta.env.VITE_FEEDBACK_ENDPOINT,
+    key: import.meta.env.VITE_FEEDBACK_KEY,
   },
 };

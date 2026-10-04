@@ -17,8 +17,9 @@ import {
 } from "../graph";
 import { layoutActions, layoutStateAtom } from "../layouts";
 import { preferencesActions, preferencesAtom } from "../preferences";
-import { searchActions, searchAtom } from "../search";
+import { searchActions, searchAtom, searchQueryAtom } from "../search";
 import { selectionActions, selectionAtom } from "../selection";
+import { resetSelectionHistory } from "../selection/history";
 import { sessionActions, sessionAtom } from "../session";
 import { sigmaActions, sigmaAtom, sigmaStateAtom } from "../sigma";
 import { userActions, userAtom } from "../user";
@@ -62,6 +63,7 @@ const ATOMS = {
   visualGetters: visualGettersAtom,
   topologicalFilters: topologicalFiltersAtom,
   search: searchAtom,
+  searchQuery: searchQueryAtom,
   layoutState: layoutStateAtom,
   session: sessionAtom,
   user: userAtom,
@@ -81,6 +83,7 @@ const CONTEXTS = {
   layoutState: createContext(ATOMS.layoutState),
   preferences: createContext(ATOMS.preferences),
   search: createContext(ATOMS.search),
+  searchQuery: createContext(ATOMS.searchQuery),
   selection: createContext(ATOMS.selection),
   session: createContext(ATOMS.session),
   sigma: createContext(ATOMS.sigma),
@@ -116,9 +119,13 @@ export const resetStates: Action<[boolean]> = (full = false) => {
   dataTableActions.reset();
   filtersActions.resetFilters();
   selectionActions.emptySelection();
+  // The nodes and edges visited so far belong to the graph being replaced: the back button must
+  // not walk back into a selection of items that are about to be gone (see selection/history).
+  resetSelectionHistory();
   appearanceActions.resetState();
   sigmaActions.resetState();
   searchActions.reset();
+  searchActions.resetQuery();
   graphDatasetActions.resetGraph();
   fileActions.reset(full);
   layoutActions.stopLayout();
@@ -144,6 +151,7 @@ export const useFilteredGraph = makeUseAtom(CONTEXTS.filteredGraph);
 export const useVisualGetters = makeUseAtom(CONTEXTS.visualGetters);
 export const useTopologicalFilters = makeUseAtom(CONTEXTS.topologicalFilters);
 export const useSearch = makeUseAtom(CONTEXTS.search);
+export const useSearchQuery = makeUseAtom(CONTEXTS.searchQuery);
 export const useLayoutState = makeUseAtom(CONTEXTS.layoutState);
 export const useUser = makeUseAtom(CONTEXTS.user);
 export const useDynamicItemData = makeUseAtom(CONTEXTS.dynamicItemData);

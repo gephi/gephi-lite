@@ -197,6 +197,25 @@ export function castScalarToModelValue<T extends FieldModelType = FieldModelType
   }
 }
 
+/**
+ * Same as `castScalarToModelValue`, but for a value being *edited* rather than displayed.
+ *
+ * `castScalarToModelValue` validates, and returns undefined for anything incomplete - which is right
+ * when rendering, but wrong while typing: "exampl" is not a URL yet, so a URL editor fed by the
+ * validating cast blanks itself at every keystroke, making the field impossible to fill. Free-text
+ * editors therefore get the raw text, and validity is only checked when the form is submitted (see
+ * `isValidFieldValue`).
+ */
+export function castScalarToEditableValue<T extends FieldModelType = FieldModelType>(
+  scalar: Scalar,
+  fieldModel: FieldModelTypeSpecCollection[T],
+): FieldModelAbstraction[T]["expectedOutput"] | undefined {
+  // Only "url" needs it: "text" is already raw, and the other types are edited through widgets
+  // (pickers, selects) that never see a partially typed value.
+  if (fieldModel.type === "url") return toString(scalar);
+  return castScalarToModelValue<T>(scalar, fieldModel);
+}
+
 export function castScalarToQuantifiableValue<F extends FieldModelType = FieldModelType>(
   scalar: Scalar,
   field: FieldModel<ItemType, boolean, F>,

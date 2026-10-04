@@ -1,7 +1,7 @@
 import { getEmptyAppearanceState, serializeAppearanceState } from "@gephi/gephi-lite-sdk";
 import { Producer, atom, producerToAction } from "@ouestware/atoms";
 
-import { sessionStorage } from "../../utils/storage";
+import { tabStorage } from "../../utils/storage";
 import { ItemType } from "../types";
 import {
   AppearanceState,
@@ -107,5 +107,5 @@ export const appearanceActions = {
  * *********
  */
 appearanceAtom.bind((appearanceState) => {
-  sessionStorage.setItem("appearance", serializeAppearanceState(appearanceState));
+  tabStorage.setItem("appearance", serializeAppearanceState(appearanceState));
 });

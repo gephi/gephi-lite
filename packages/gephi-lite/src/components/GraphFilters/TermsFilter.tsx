@@ -2,12 +2,11 @@ import { countBy, flatMap, identity, sortBy } from "lodash";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFiltersActions, useGraphDataset } from "../../core/context/dataContexts";
+import { useFiltersActions } from "../../core/context/dataContexts";
 import { TermsFilterType } from "../../core/filters/types";
-import { useFilteredGraphAt } from "../../core/graph";
-import { computeAllDynamicAttributes, mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { getFieldValue } from "../../core/graph/fieldModel";
 import { BaseOption, Select } from "../forms/Select";
+import { useFilterItemData } from "./useFilterItemData";
 import { toPairsCompatibleWithSymbol } from "./utils";
 
 const unavailableValue: unique symbol = Symbol("Not Available");
@@ -37,8 +36,7 @@ const valueToSymbol = (value: string | boolean | null): string | TermsFilterSymb
 };
 
 export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> = ({ filter, filterIndex }) => {
-  const parentGraph = useFilteredGraphAt(filterIndex - 1);
-  const { nodeData, edgeData } = useGraphDataset();
+  const { parentGraph, itemData } = useFilterItemData(filter.itemType, filterIndex);
 
   const { t } = useTranslation();
   const termLabel = useCallback(
@@ -64,13 +62,6 @@ export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> =
   });
 
   useEffect(() => {
-    const itemData = mergeStaticDynamicData(
-      filter.itemType === "nodes" ? nodeData : edgeData,
-      // dynamic field should be calculated from parent graph and not from the useDynamicItemData which provide data in the current graph
-      filter.itemType === "nodes"
-        ? computeAllDynamicAttributes("nodes", parentGraph)
-        : computeAllDynamicAttributes("edges", parentGraph),
-    );
     const terms = countBy(
       flatMap(
         filter.itemType === "nodes" ? parentGraph.nodes() : parentGraph.edges(),
@@ -89,7 +80,7 @@ export const TermsFilter: FC<{ filter: TermsFilterType; filterIndex: number }> =
       identity,
     );
     setDataTerms(terms as Record<string | symbol, number>);
-  }, [filter, parentGraph, nodeData, edgeData]);
+  }, [filter, parentGraph, itemData]);
 
   return (
     <div className="w-100">

@@ -4,16 +4,17 @@ import {
   DEFAULT_NODE_COLOR,
   DEFAULT_NODE_LABEL_SIZE,
   DEFAULT_NODE_SIZE,
+  MIN_RENDERED_LABEL_SIZE,
   StaticDynamicItemData,
   toString,
 } from "@gephi/gephi-lite-sdk";
 import chroma from "chroma-js";
 import { Attributes } from "graphology-types";
-import { forEach, identity, isNil, keyBy } from "lodash";
+import { forEach, identity, isNil, keyBy, pick } from "lodash";
 import { EdgeLabelDrawingFunction, NodeLabelDrawingFunction } from "sigma/rendering";
 import { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-import { mergeStaticDynamicData } from "../graph/dynamicAttributes";
+import { isComputedField, mergeStaticDynamicData } from "../graph/dynamicAttributes";
 import { getFieldValue, getFieldValueForQuantification } from "../graph/fieldModel";
 import {
   DatalessGraph,
@@ -23,6 +24,7 @@ import {
   NodeRenderingData,
   SigmaGraph,
 } from "../graph/types";
+import { computeAllComputedAttributes } from "../graph/utils";
 import { ItemType } from "../types";
 import {
   AppearanceState,
@@ -72,10 +74,11 @@ export function makeGetNumberAttr<
 >(
   itemType: T["itemType"],
   itemKey: "size" | "zIndex",
-  { nodeData, edgeData }: GraphDataset,
+  dataset: GraphDataset,
   { dynamicNodeData, dynamicEdgeData }: DynamicItemData,
   { nodesSize, edgesSize, edgesZIndex }: AppearanceState,
 ): null | NumberGetter {
+  const { nodeData, edgeData } = dataset;
   const numberAttrDef = itemKey === "zIndex" ? edgesZIndex : itemType === "nodes" ? nodesSize : edgesSize;
   const itemsValues =
     itemType === "nodes"
@@ -94,10 +97,27 @@ export function makeGetNumberAttr<
         const minSize = numberAttrDef.minSize as number;
         const maxSize = numberAttrDef.maxSize as number;
 
+        // The min/max SCALE used to interpolate sizes is scanned from a different item set than
+        // `itemsValues` above (which always reflects each item's own current value, used by the
+        // getter below): filtered-out items must not silently become the extremum of the scale.
+        // - filterAware (checked): restricted to the items currently kept by the filters - the
+        //   dynamic data channel is itself already scoped to those, so its keys give that set.
+        // - default (unchecked): the whole dataset, recomputing computed fields (dynamic
+        //   attributes, formula columns) over the full graph, since the passed-in dynamic data is
+        //   itself filtered-scoped and would otherwise silently apply the same restriction.
+        const scaleItemsValues = numberAttrDef.filterAware
+          ? pick(itemsValues, itemType === "nodes" ? Object.keys(dynamicNodeData) : Object.keys(dynamicEdgeData))
+          : isComputedField(numberAttrDef.field)
+            ? mergeStaticDynamicData(
+                itemType === "nodes" ? nodeData : edgeData,
+                computeAllComputedAttributes(itemType, dataset),
+              )
+            : itemsValues;
+
         const transformValue = makeTransformValue(numberAttrDef.transformationMethod);
         let min = Infinity,
           max = -Infinity;
-        forEach(itemsValues, (data) => {
+        forEach(scaleItemsValues, (data) => {
           const valueAsNumber = getFieldValueForQuantification(data, numberAttrDef.field);
           const transformedValue = transformValue(valueAsNumber);
           if (typeof transformedValue === "number") {
@@ -281,7 +301,10 @@ export function makeGetStringAttr<
       getLabel = () => stringAttrDef.value;
       break;
     case "field":
-      getLabel = (data) => {
+      getLabel = (data, id) => {
+        // "id" is a reserved virtual field (see StringAttrItem): it is not stored in the item's
+        // data, it always resolves to the item's own id.
+        if (stringAttrDef.field.id === "id") return id || "";
         const label = toString(
           stringAttrDef.field.dynamic ? data.dynamic[stringAttrDef.field.id] : data.static[stringAttrDef.field.id],
         );
@@ -335,7 +358,7 @@ export function applyVisualProperties(
       attr.rawSize = attr.size;
     }
     if (getters.getNodeColor) attr.color = getters.getNodeColor(nodeData);
-    if (getters.getNodeLabel) attr.label = getters.getNodeLabel(nodeData);
+    if (getters.getNodeLabel) attr.label = getters.getNodeLabel(nodeData, node);
     if (getters.getNodeImage) attr.image = getters.getNodeImage(nodeData);
     graph.mergeNodeAttributes(node, attr);
   });
@@ -352,7 +375,7 @@ export function applyVisualProperties(
       attr.rawWeight = attr.weight;
     }
     if (getters.getEdgeColor) attr.color = getters.getEdgeColor(edgeData, edge);
-    if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(edgeData);
+    if (getters.getEdgeLabel) attr.label = getters.getEdgeLabel(edgeData, edge);
     if (getters.getEdgeZIndex) attr.zIndex = getters.getEdgeZIndex(edgeData);
     graph.mergeEdgeAttributes(edge, attr);
   });
@@ -373,6 +396,8 @@ export function getDrawNodeLabel<N extends Attributes, E extends Attributes, G e
     if (nodesLabelSize.zoomCorrelation >= 1) labelSize = (labelSize * data.size) / data.rawSize;
     else if (nodesLabelSize.zoomCorrelation >= 0)
       labelSize = labelSize * Math.pow(data.size / data.rawSize, nodesLabelSize.zoomCorrelation);
+    // Small nodes must stay readable, typically the tiny neighbors of a hovered node:
+    labelSize = Math.max(labelSize, MIN_RENDERED_LABEL_SIZE);
 
     let nodeLabel = data.label;
     if (
@@ -429,7 +454,7 @@ export function getItemAttributes(
   const hidden = type === "nodes" ? !filteredGraph.hasNode(id) : !filteredGraph.hasEdge(id);
 
   return {
-    label: (getLabel && getLabel(itemData)) || undefined,
+    label: (getLabel && getLabel(itemData, id)) || undefined,
     color: (getColor && getColor(itemData, id)) || defaultColor,
     hidden,
     directed: type === "edges" ? graphDataset.fullGraph.isDirected(id) : undefined,

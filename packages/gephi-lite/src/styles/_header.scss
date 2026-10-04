@@ -1,5 +1,27 @@
 header {
+  // The two slots framing the Graph/Data tabs, holding the back/forward arrows. Equal shares of
+  // the room left on either side (flex-basis: 0), so the tabs stay put whether an arrow is there
+  // or not - either one disappears as soon as there is nothing to navigate to.
+  .gl-nav-arrow-slot {
+    flex: 1 1 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  // The back arrow is nudged away from the "Graph" tab it sat a bit too close to. A transform
+  // rather than a margin, so the tabs themselves do not move.
+  .gl-nav-arrow-slot-back {
+    transform: translateX(-0.4rem);
+  }
+
   .lang-switcher-btn {
     line-height: 1 !important;
+  }
+
+  // Small badge flagging unsaved changes, shown right next to the save button:
+  .gl-unsaved-changes-star {
+    display: inline-flex;
+    color: var(--bs-warning, #f0ad4e);
+    font-size: 0.6em;
   }
 }

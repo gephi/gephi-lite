@@ -1,20 +1,36 @@
 import { FieldModelTypeSpec, toNumber } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { fromPairs, keyBy, pick } from "lodash";
-import { FC, useMemo } from "react";
+import { fromPairs, isEmpty, keyBy, pick } from "lodash";
+import { FC, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router";
 
-import { useGraphDataset, useGraphDatasetActions, useSelectionActions } from "../../core/context/dataContexts";
+import { useRemoteFileFreshnessCheck } from "../../core/cloud/useRemoteFileGuard";
+import {
+  useAppearance,
+  useGraphDataset,
+  useGraphDatasetActions,
+  useSearchQuery,
+  useSelectionActions,
+} from "../../core/context/dataContexts";
 import { EVENTS, useEventsContext } from "../../core/context/eventsContext";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
+import { focusCameraOnEdges, requestFocusOnReady } from "../../core/sigma";
 import { Scalar } from "../../core/types";
-import { GraphSearch } from "../GraphSearch";
-import { CancelIcon, FieldModelIcon } from "../common-icons";
+import { GraphSearch, Option } from "../GraphSearch";
+import { CancelIcon, FieldModelIcon, SwapIcon, WarningIcon } from "../common-icons";
 import { Select } from "../forms/Select";
-import { Modal } from "../modals";
-import { EditItemAttribute } from "./Attribute";
+import { CloseModalButton, Modal } from "../modals";
+import {
+  EditItemAttribute,
+  getFirstEmptyValueIndex,
+  isEmptyFieldValue,
+  isValidFieldValue,
+  toFormFieldValue,
+} from "./Attribute";
+import { EdgeComponentById } from "./Edge";
 
 interface UpdatedEdgeState {
   id: string;
@@ -24,32 +40,122 @@ interface UpdatedEdgeState {
   attributes: ({ key: string; value: Scalar } & FieldModelTypeSpec)[];
 }
 
+// One or more edges already connect the selected source & target (in either direction): surfaced
+// so the user notices before creating an accidental duplicate. Clicking cancels the creation and
+// selects/locates the existing edge(s) instead.
+const DuplicateEdgeWarning: FC<{ edgeIds: string[]; onClick: () => void }> = ({ edgeIds, onClick }) => {
+  const { t } = useTranslation();
+  return (
+    <div
+      className="gl-alert-warning rounded gl-p-2 mt-1"
+      role="button"
+      tabIndex={0}
+      style={{ cursor: "pointer" }}
+      onClick={onClick}
+    >
+      <div className="d-flex align-items-center gl-gap-1 mb-1">
+        <WarningIcon />
+        <span>{t("edition.duplicate_edge_warning", { count: edgeIds.length })}</span>
+      </div>
+      <ul className="list-unstyled mb-0 d-flex flex-column gl-gap-1">
+        {edgeIds.map((id) => (
+          <li key={id}>
+            <EdgeComponentById id={id} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// Confirmation for creating a node on the fly from the source/target search box below, once the
+// user picked the "create node «X»" option. Mirrors the "discard unsaved input" dialog stacked
+// over an already open modal (see the Modal component's `stacked-modal` classes): going through
+// the app's single-slot modal stack (`useModal`/`openModal`) instead would unmount this very form
+// - EditEdge can itself be rendered as that one open modal - discarding whatever the user already
+// filled in.
+const ConfirmCreateNodeDialog: FC<{ label: string; onConfirm: () => void; onCancel: () => void }> = ({
+  label,
+  onConfirm,
+  onCancel,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <div role="dialog" className="modal fade show stacked-modal" style={{ display: "block" }}>
+        <div role="document" className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="gl-heading-2 gl-my-0">{t("edition.create_nodes")}</h5>
+            </div>
+            <div className="modal-body">{t("edition.confirm_create_node", { label })}</div>
+            <div className="modal-footer">
+              <div className="gl-actions">
+                <button type="button" className="gl-btn gl-btn-outline" onClick={onCancel}>
+                  {t("common.cancel")}
+                </button>
+                <button type="button" autoFocus className="gl-btn gl-btn-fill" onClick={onConfirm}>
+                  {t("common.confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal-backdrop fade show stacked-modal-backdrop"></div>
+    </>
+  );
+};
+
 const useEditEdgeForm = ({
   edgeId,
+  source: initialSource,
+  target: initialTarget,
   onSubmitted,
   onCancel,
+  submitLabel,
+  submitFirst,
 }: {
   edgeId?: string;
+  source?: string;
+  target?: string;
   onSubmitted: () => void;
   onCancel: () => void;
+  // The modal usage (see EditEdgeModal) also shows a copy of this same submit button in its
+  // header, since on mobile the on-screen keyboard can cover the footer while a field is focused;
+  // there, it overrides the label to a short "OK" and is placed before the cancel button, to match
+  // the header's [submit, close] order.
+  submitLabel?: ReactNode;
+  submitFirst?: boolean;
 }) => {
   const { t } = useTranslation();
   const { notify } = useNotifications();
   const { emitter } = useEventsContext();
   const { select } = useSelectionActions();
-  const { createEdge, updateEdge } = useGraphDatasetActions();
-  const { edgeData, layout, fullGraph, edgeFields } = useGraphDataset();
+  const { createEdge, updateEdge, createNode } = useGraphDatasetActions();
+  const { edgeData, layout, fullGraph, edgeFields: allEdgeFields } = useGraphDataset();
+  // Read-only (eg. system date) and formula (scripted) fields are managed automatically, so they
+  // are not editable through this form:
+  const edgeFields = useMemo(() => allEdgeFields.filter((ef) => !ef.readOnly && !ef.script), [allEdgeFields]);
   const edgeFieldsIndex = useMemo(() => keyBy(edgeFields, "id"), [edgeFields]);
+  const searchQuery = useSearchQuery();
+
+  // Which field drives a new node's label (falling back to the id, when there is no label field
+  // configured): same logic as EditNode, used below to create a node on the fly from the
+  // source/target search boxes.
+  const { nodesLabel } = useAppearance();
+  const labelFieldId = nodesLabel.type === "field" ? nodesLabel.field.id : "id";
 
   const isNew = typeof edgeId === "undefined";
   const defaultValues = useMemo(() => {
     if (isNew)
       return {
-        weight: 1,
+        source: initialSource,
+        target: initialTarget,
         isDirected: fullGraph.type !== "undirected",
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
-          value: undefined,
+          value: nf.defaultValue,
           ...pick(nf, ["type", "format", "separator"]),
         })),
       };
@@ -67,18 +173,115 @@ const useEditEdgeForm = ({
         ...pick(nf, ["type", "format", "separator"]),
       })),
     };
-  }, [edgeData, edgeId, fullGraph, isNew, edgeFields]);
+  }, [edgeData, edgeId, fullGraph, isNew, edgeFields, initialSource, initialTarget]);
   const {
     register,
     handleSubmit,
     control,
     setValue,
+    getValues,
     watch,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<UpdatedEdgeState>({
     defaultValues,
   });
   const attributes = watch("attributes");
+  const source = watch("source");
+  const target = watch("target");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Any edge already connecting these two nodes, in either direction (graphology's `edges(a, b)`
+  // already checks both, see its `in`/`out` adjacencies):
+  const existingEdgeIds = useMemo(() => {
+    if (!isNew || !source || !target || !fullGraph.hasNode(source) || !fullGraph.hasNode(target)) return [];
+    return fullGraph.edges(source, target);
+  }, [isNew, source, target, fullGraph]);
+
+  const selectExistingEdges = useCallback(() => {
+    select({ type: "edges", items: new Set(existingEdgeIds), replace: true });
+    // Only focus right away if already on the graph page: navigating there (even by "replace",
+    // see useLocateInGraph) only remounts sigma - and thus replays a pending focus - when it
+    // wasn't already mounted.
+    if (location.pathname === "/") {
+      focusCameraOnEdges(existingEdgeIds);
+    } else {
+      requestFocusOnReady("edges", existingEdgeIds[0]);
+      navigate("/", { replace: true });
+    }
+    onCancel();
+  }, [select, existingEdgeIds, location.pathname, navigate, onCancel]);
+
+  // Set when the user picked the "create node «X»" search option on the source or target field:
+  // holds off actually creating anything until confirmed (see the confirmation dialog below).
+  const [nodeToCreate, setNodeToCreate] = useState<{ field: "source" | "target"; label: string } | null>(null);
+
+  // Appended to the source/target search results when the typed text matches no existing node, so
+  // it can be created on the fly rather than forcing the user to cancel, create it from the node
+  // panel, then come back here. Kept local to this form rather than a generic GraphSearch feature,
+  // since it is meaningful only for a node search tied to an edge's extremity.
+  const makeNodeCreationOption = useCallback(
+    (field: "source" | "target") =>
+      (options: Option[], query: string): Option[] => {
+        const label = query.trim();
+        if (!label || fullGraph.hasNode(label)) return options;
+        return [
+          ...options,
+          {
+            type: "message" as const,
+            i18nCode: "nodes.create_option",
+            i18nParams: { label },
+            action: () => setNodeToCreate({ field, label }),
+          },
+        ];
+      },
+    [fullGraph],
+  );
+
+  // A "message" option (eg. the node-creation one above) carries its own `action` instead of a
+  // graph item: selecting it must run that action rather than being treated as picking a node.
+  const handleExtremityChange = useCallback((option: Option | null, onFieldChange: (id?: string) => void) => {
+    if (option === null) {
+      onFieldChange(undefined);
+    } else if (option.type === "message") {
+      option.action?.();
+    } else {
+      onFieldChange(option.id);
+    }
+  }, []);
+
+  const confirmNodeCreation = useCallback(() => {
+    if (!nodeToCreate) return;
+    const { field, label } = nodeToCreate;
+    // Below the label field, an id is only ever a free-form field, so re-using it is what makes
+    // the created node findable/mergeable with anything typed the same way later; otherwise the id
+    // is purely internal, so a random one avoids colliding with anything else.
+    const id = labelFieldId === "id" ? label : crypto.randomUUID();
+    try {
+      createNode(id, labelFieldId === "id" ? {} : { [labelFieldId]: label });
+      setValue(field, id, { shouldDirty: true });
+    } catch (e) {
+      notify({
+        type: "error",
+        title: t("edition.create_nodes"),
+        message: (e as Error).message || t("error.unknown"),
+      });
+    }
+    setNodeToCreate(null);
+  }, [nodeToCreate, labelFieldId, createNode, setValue, notify, t]);
+
+  // Autofocus the first empty field on mount, in render order (source, target, attributes, then
+  // id): computed once from the initial values, so filling a field never steals focus elsewhere.
+  const autoFocusIndex = useMemo(() => {
+    const {
+      source: defaultSource,
+      target: defaultTarget,
+      attributes: defaultAttributes,
+      id,
+    } = defaultValues as UpdatedEdgeState;
+    return getFirstEmptyValueIndex([defaultSource, defaultTarget, ...defaultAttributes.map((a) => a.value), id]);
+  }, [defaultValues]);
+
   const submit = useMemo(
     () =>
       handleSubmit((data) => {
@@ -96,19 +299,18 @@ const useEditEdgeForm = ({
           return;
         }
 
-        const allAttributes = {
-          ...fromPairs(
-            data.attributes
-              .filter(({ value }) => value !== "" || value === undefined)
-              .map(({ key, value }) => {
-                // value are all string because input are all text whatever the data model
-                // for now we cast value as number if they are number to help downstream algo to create appropriate data model
-                const valueAsNumber = toNumber(value);
-                return [key, valueAsNumber ? valueAsNumber : value];
-              }),
-          ),
-          ...pick(data, "label", "color", "weight"),
-        };
+        const allAttributes = fromPairs(
+          data.attributes.map(({ key, value }) => {
+            // An emptied field is written back as undefined rather than skipped: updateEdge merges
+            // into the existing data, so dropping the key would silently keep the previous value and
+            // make clearing a field impossible to save.
+            if (isEmptyFieldValue(value)) return [key, undefined];
+            // value are all string because input are all text whatever the data model
+            // for now we cast value as number if they are number to help downstream algo to create appropriate data model
+            const valueAsNumber = toNumber(value);
+            return [key, valueAsNumber ? valueAsNumber : value];
+          }),
+        );
 
         // Create new edge:
         if (isNew) {
@@ -134,7 +336,7 @@ const useEditEdgeForm = ({
         // Update existing edge:
         else {
           try {
-            updateEdge(id, allAttributes, { directed: data.isDirected });
+            updateEdge(id, allAttributes, { directed: data.isDirected, source: data.source, target: data.target });
             select({ type: "edges", items: new Set([id]), replace: true });
             notify({
               type: "success",
@@ -156,31 +358,13 @@ const useEditEdgeForm = ({
 
   return {
     submit,
+    // Whether the user actually changed something, so closing the form would throw it away (the
+    // modal usage below turns that into a confirmation rather than a silent loss). Read from
+    // `dirtyFields` and not `formState.isDirty`: the latter is already true on opening, because a
+    // field whose default is undefined reports "" as soon as its input is registered.
+    hasUserInput: !isEmpty(dirtyFields),
     main: (
       <>
-        <div className="panel-block">
-          <div>
-            <label htmlFor="updateEdge-id" className="form-label">
-              {t("graph.model.edges-data.id")}
-            </label>
-            <input
-              type="text"
-              id="updateEdge-id"
-              className={cx("form-control", errors.id && "is-invalid")}
-              disabled={!isNew}
-              {...register("id", {
-                required: !isNew,
-                validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
-              })}
-            />
-            {errors.id && (
-              <div className="invalid-feedback">
-                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Extremities */}
         <div className="panel-block">
           <div>
@@ -196,17 +380,31 @@ const useEditEdgeForm = ({
               }}
               render={({ field: { onChange, value } }) => (
                 <GraphSearch
-                  onChange={(option) => {
-                    if (option === null || "id" in option) {
-                      onChange(option?.id);
-                    }
-                  }}
+                  onChange={(option) => handleExtremityChange(option, onChange)}
+                  postProcessOptions={makeNodeCreationOption("source")}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
+                  autoFocus={autoFocusIndex === 0}
+                  defaultInputValue={isNew && !initialSource ? searchQuery : undefined}
                 />
               )}
             />
             {errors.source && <div className="invalid-feedback">{t(`error.form.${errors.source.type}`)}</div>}
+          </div>
+          <div className="d-flex justify-content-center">
+            <button
+              type="button"
+              className="gl-btn gl-btn-icon gl-btn-outline"
+              title={t("edition.swap_extremities")}
+              aria-label={t("edition.swap_extremities")}
+              onClick={() => {
+                const { source, target } = getValues();
+                setValue("source", target);
+                setValue("target", source);
+              }}
+            >
+              <SwapIcon />
+            </button>
           </div>
           <div>
             <label htmlFor="updateEdge-target" className="form-label">
@@ -221,19 +419,30 @@ const useEditEdgeForm = ({
               }}
               render={({ field: { onChange, value } }) => (
                 <GraphSearch
-                  onChange={(option) => {
-                    if (option === null || "id" in option) {
-                      onChange(option?.id);
-                    }
-                  }}
+                  onChange={(option) => handleExtremityChange(option, onChange)}
+                  postProcessOptions={makeNodeCreationOption("target")}
                   value={typeof value === "string" ? { type: "nodes", id: value } : null}
                   type="nodes"
+                  autoFocus={autoFocusIndex === 1}
                 />
               )}
             />
             {errors.target && <div className="invalid-feedback">{t(`error.form.${errors.target.type}`)}</div>}
           </div>
         </div>
+
+        {isNew && existingEdgeIds.length > 0 && (
+          <DuplicateEdgeWarning edgeIds={existingEdgeIds} onClick={selectExistingEdges} />
+        )}
+
+        {nodeToCreate && (
+          <ConfirmCreateNodeDialog
+            label={nodeToCreate.label}
+            onConfirm={confirmNodeCreation}
+            onCancel={() => setNodeToCreate(null)}
+          />
+        )}
+
         {fullGraph.type === "mixed" && (
           <div>
             <Controller
@@ -275,15 +484,25 @@ const useEditEdgeForm = ({
                 <Controller
                   name={`attributes.${i}.value`}
                   control={control}
+                  // Validity is only checked here, on submit: while typing, an incomplete entry (a
+                  // URL half written...) must never be fought or wiped, see castScalarToEditableValue.
+                  rules={{ validate: (value) => isValidFieldValue(value, edgeFieldsIndex[field.key]) }}
                   render={(props) => (
                     <EditItemAttribute
                       id={`edge-${edgeId}-field-${i}`}
+                      clearable
                       field={edgeFieldsIndex[field.key]}
                       scalar={props.field.value}
-                      onChange={(v) => props.field.onChange(v)}
+                      onChange={(v) => props.field.onChange(toFormFieldValue(v))}
+                      autoFocus={2 + i === autoFocusIndex}
                     />
                   )}
                 />
+                {(errors.attributes || [])[i]?.value && (
+                  <div className="text-danger">
+                    {t("error.form.invalid_value", { type: edgeFieldsIndex[field.key].type })}
+                  </div>
+                )}
                 {(errors.attributes || [])[i]?.key && (
                   <div className="invalid-feedback">
                     {t(
@@ -299,33 +518,82 @@ const useEditEdgeForm = ({
             </div>
           ))}
         </div>
+
+        {/* ID */}
+        <div className="panel-block">
+          <div>
+            <label htmlFor="updateEdge-id" className="form-label">
+              {t("graph.model.edges-data.id")}
+            </label>
+            <input
+              type="text"
+              id="updateEdge-id"
+              className={cx("form-control", errors.id && "is-invalid")}
+              disabled={!isNew}
+              autoComplete="off"
+              autoFocus={2 + attributes.length === autoFocusIndex}
+              {...register("id", {
+                required: !isNew,
+                validate: (value) => !isNew || (!!value && !edgeData[value]) || (!value && isNew),
+              })}
+            />
+            {errors.id && (
+              <div className="invalid-feedback">
+                {t(`error.form.${errors.id.type === "validate" ? "unique" : errors.id.type}`)}
+              </div>
+            )}
+          </div>
+        </div>
       </>
     ),
     footer: (
       <div className="gl-actions">
-        <button type="button" className="gl-btn gl-btn-icon gl-btn-outline" onClick={() => onCancel()}>
+        {submitFirst && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
+          </button>
+        )}
+        {/* Same close request as the modal's own cross, so both get the unsaved-input
+            confirmation; falls back to onCancel when this form is rendered in a side panel. */}
+        <CloseModalButton className="gl-btn gl-btn-icon gl-btn-outline" onCancel={onCancel}>
           <CancelIcon />
-        </button>
-
-        <button type="submit" className="gl-btn gl-btn-fill">
-          {isNew ? t("edition.create_edges") : t("edition.update_edges")}
-        </button>
+        </CloseModalButton>
+        {!submitFirst && (
+          <button type="submit" className="gl-btn gl-btn-fill">
+            {submitLabel ?? (isNew ? t("edition.create_edges") : t("edition.update_edges"))}
+          </button>
+        )}
       </div>
     ),
   };
 };
 
-export const EditEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, submit, arguments: { edgeId } }) => {
+export const EditEdgeModal: FC<ModalProps<{ edgeId?: string; source?: string; target?: string }>> = ({
+  cancel,
+  submit,
+  arguments: { edgeId, source, target },
+}) => {
   const { t } = useTranslation();
   const isNew = typeof edgeId === "undefined";
+
+  // Probe the remote GitHub version as soon as the popup opens, so the user is warned before
+  // filling it in (rather than only when validating), avoiding losing their input on a reload.
+  const { check: checkRemoteFreshness } = useRemoteFileFreshnessCheck();
+  useEffect(() => checkRemoteFreshness(), [checkRemoteFreshness]);
+
   const {
     main,
     footer,
     submit: submitForm,
+    hasUserInput,
   } = useEditEdgeForm({
     edgeId,
+    source,
+    target,
     onSubmitted: () => submit({}),
     onCancel: () => cancel(),
+    submitLabel: t("common.ok"),
+    submitFirst: true,
   });
 
   return (
@@ -334,6 +602,9 @@ export const EditEdgeModal: FC<ModalProps<{ edgeId?: string }>> = ({ cancel, sub
       onClose={() => cancel()}
       className="modal-lg edit-edge"
       onSubmit={submitForm}
+      submitLabel={t("common.ok")}
+      doNotPreserveData
+      hasUnsavedInput={hasUserInput}
     >
       <div className="d-flex flex-column gl-gap-3">{main}</div>
 

@@ -1,5 +1,5 @@
 import { gephiLiteParse, gephiLiteStringify } from "../utils";
-import { type AppearanceState } from "./types";
+import { type AppearanceState, type BaseLabelSize } from "./types";
 
 export * from "./types";
 
@@ -9,6 +9,13 @@ export const DEFAULT_NODE_SIZE = 20;
 export const DEFAULT_EDGE_SIZE = 6;
 export const DEFAULT_NODE_LABEL_SIZE = 14;
 export const DEFAULT_EDGE_LABEL_SIZE = 14;
+/** How many node labels are displayed at once, by default (on a reference-sized screen): */
+export const DEFAULT_LABELS_COUNT = 15;
+/**
+ * Smallest size (in pixels) a label may be rendered with: below that, labels of small nodes become
+ * unreadable, typically when zooming out or when hovering a big node with tiny neighbors.
+ */
+export const MIN_RENDERED_LABEL_SIZE = 10;
 export const DEFAULT_BACKGROUND_COLOR = "#FFFFFF00";
 export const DEFAULT_LAYOUT_GRID_COLOR = "#666666";
 export const DEFAULT_SHADING_COLOR = "#ffffff";
@@ -46,13 +53,12 @@ export function getEmptyAppearanceState(): AppearanceState {
       type: "fixed",
       value: DEFAULT_NODE_LABEL_SIZE,
       zoomCorrelation: 0,
-      density: 1,
+      labelsCount: DEFAULT_LABELS_COUNT,
     },
     edgesLabelSize: {
       type: "fixed",
       value: DEFAULT_EDGE_LABEL_SIZE,
       zoomCorrelation: 0,
-      density: 1,
     },
     nodesLabelEllipsis: {
       type: "ellipsis",
@@ -71,6 +77,14 @@ export function getEmptyAppearanceState(): AppearanceState {
       type: "none",
     },
   };
+}
+
+/**
+ * Reads how many labels should be displayed at once, falling back on the default value for states
+ * saved before that setting existed.
+ */
+export function getLabelsCount(labelSize: BaseLabelSize): number {
+  return labelSize.labelsCount ?? DEFAULT_LABELS_COUNT;
 }
 
 /**

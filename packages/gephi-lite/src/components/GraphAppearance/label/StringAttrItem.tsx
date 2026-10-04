@@ -36,6 +36,23 @@ export const StringAttrItem: FC<{ itemType: ItemType; itemKey: "images" | "label
     () => [
       { value: "none", type: "none", label: t(`appearance.${itemKey}.none`) },
       { value: "fixed", type: "fixed", label: t(`appearance.${itemKey}.fixed`) },
+      // The id is not a real field: it's not stored with the item's data, but it's always
+      // available, so it's offered as an explicit label source (see makeGetStringAttr).
+      ...(itemKey === "labels"
+        ? [
+            {
+              value: "field::id",
+              type: "field" as const,
+              field: { id: "id", itemType, type: "text" } as FieldModel<ItemType, boolean>,
+              label: (
+                <>
+                  <FieldModelIcon type="text" className="me-1" />
+                  {t("appearance.labels.id")}
+                </>
+              ),
+            },
+          ]
+        : []),
       ...sortBy(
         itemType === "nodes" ? [...nodeFields, ...dynamicNodeFields] : [...edgeFields, ...dynamicEdgeFields],
         (field: FieldModel) => (field.type === "text" ? 0 : field.type === "url" ? 1 : 2),
