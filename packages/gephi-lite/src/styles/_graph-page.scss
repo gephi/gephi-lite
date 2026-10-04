@@ -94,3 +94,19 @@ ul.attributes-list {
     margin-bottom: 1rem;
   }
 }
+
+// Selection panel: the header (title, buttons, filter) is pinned at the top of the scrolling body.
+// The body's own top padding is cancelled so the list never shows above it.
+.panel-body .selection-sticky-header {
+  position: sticky;
+  top: calc(-1 * var(--panel-body-padding-top));
+  margin-top: calc(-1 * var(--panel-body-padding-top));
+  padding-top: var(--panel-body-padding-top);
+  z-index: 5;
+  background-color: var(--gl-container-highest-bg);
+
+  // Small enough for a two-digit count to fit before the buttons.
+  .selection-title {
+    font-size: 1rem;
+  }
+}
