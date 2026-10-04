@@ -918,6 +918,10 @@
       "alphabetical": "Sorted alphabetically - click to sort by decreasing size",
       "size": "Sorted by decreasing size - click to sort alphabetically"
     },
+    "filter_clear": "Clear the filter",
+    "filter_count": "{{shown}} / {{total}} edges",
+    "filter_edges_placeholder": "Filter edges…",
+    "filter_no_match": "No edge matches",
     "unselect_all": "Unselect all",
     "unselect_all_hidden_edges": "Unselect all hidden edges",
     "unselect_all_hidden_nodes": "Unselect all hidden edges",

@@ -1004,6 +1004,10 @@
       "alphabetical": "Tri alphabétique - cliquer pour trier par taille décroissante",
       "size": "Tri par taille décroissante - cliquer pour trier alphabétiquement"
     },
+    "filter_clear": "Effacer le filtre",
+    "filter_count": "{{shown}} / {{total}} liens",
+    "filter_edges_placeholder": "Filtrer les liens…",
+    "filter_no_match": "Aucun lien ne correspond",
     "unselect_all": "Tout désélectionner",
     "unselect_all_hidden_edges": "Tout désélectionner pour les liens masqués",
     "unselect_all_hidden_nodes": "Tout désélectionner pour les nœuds masqués",
