@@ -180,7 +180,7 @@ const InteractionsController: FC = () => {
             >
               <MapIcon />
             </button>
-            <br />
+            <br className="mb-2" />
           </>
         )}
         {GRAPH_SELECTION_MODES.map((mode) => (
