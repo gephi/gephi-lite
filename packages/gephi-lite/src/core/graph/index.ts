@@ -20,10 +20,9 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, keys, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, isNil, isString, keyBy, last, map, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
-import { getPalette } from "../../components/GraphAppearance/color/utils";
 import { sessionStorage } from "../../utils/storage";
 import { appearanceAtom, checkAppearanceAfterAttributeUpdate } from "../appearance";
 import { applyVisualProperties, getAllVisualGetters } from "../appearance/utils";
@@ -601,15 +600,11 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
           // check if deprecated appearance state
           values = uniqFieldValuesAsStrings(itemsData, appearanceElement.field.id);
 
-          // checking with the actual palette miss some values. It's ok if it has more available.
-          if (
-            keys(appearanceElement.colorPalette).length < values.length ||
-            values.some((v) => appearanceElement.colorPalette[v] === undefined)
-          ) {
-            // new palette
-            // TODO: merge existing palette with the new values, i.e. keep existing colors
-            appearanceElement.colorPalette = getPalette(values);
-          }
+          // add missing values as null (like single attribute updates), keeping existing colors
+          appearanceElement.colorPalette = values.reduce(
+            (palette, v) => (v in palette ? palette : { ...palette, [v]: null }),
+            appearanceElement.colorPalette,
+          );
           break;
         // nothing to do for other cases
         // TODO: check if other cases need edits.
