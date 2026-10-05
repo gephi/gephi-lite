@@ -17,6 +17,7 @@
       "default_value": "Color for {{items}} with no valid value",
       "enable_color_shading": "Shade {{items}} colors",
       "fixed": "A constant color",
+      "other_values": "Other values",
       "palette": {
         "expand": "Expand the palette",
         "apply": "Apply {{paletteName}}"

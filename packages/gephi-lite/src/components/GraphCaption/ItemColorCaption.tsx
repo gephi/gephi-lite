@@ -1,6 +1,4 @@
-import { MISSING_PALETTE_COLOR } from "@gephi/gephi-lite-sdk";
 import cx from "classnames";
-import { sortBy, toPairs } from "lodash";
 import { FC, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +7,7 @@ import { staticDynamicAttributeLabel } from "../../core/graph/dynamicAttributes"
 import { CaptionItemTitle } from "./CaptionItemTitle";
 import { ColorSlider } from "./ColorSlider";
 import { GraphCaptionProps, PartitionExtends, RangeExtends } from "./types";
+import { getPartitionCaptionRows } from "./utils";
 
 export const ItemsColorCaption: FC<
   Pick<GraphCaptionProps, "minimal"> & {
@@ -55,24 +54,21 @@ export const ItemsColorCaption: FC<
         {/* PARTITION */}
         {extend && itemsColor.type === "partition" && "occurrences" in extend && (
           <div className={cx(minimal && "minimal", "item-colors partition")}>
-            {[
-              ...sortBy(
-                toPairs(itemsColor.colorPalette).filter(([label]) => extend.occurrences[label]),
-                ([label]) => -1 * extend.occurrences[label],
-              ),
-              ...(extend.missing ? [["N/A", itemsColor.missingColor]] : []),
-            ].map(([label, color]) => (
+            {getPartitionCaptionRows(
+              itemsColor.colorPalette,
+              itemsColor.missingColor,
+              extend,
+              t("appearance.color.other_values"),
+            ).map(({ label, color, count, isOther }) => (
               <div
-                key={label}
-                title={`${itemsColor.field}: ${label} ${extend.occurrences[label]} ${t(`graph.model.${itemType}`, {
-                  count: extend.occurrences[label],
-                })}`}
+                key={isOther ? "\0other" : label}
+                title={`${itemsColor.field}: ${label} ${count} ${t(`graph.model.${itemType}`, { count })}`}
               >
                 <span
                   className={cx(itemType === "nodes" && "disc", itemType === "edges" && "rectangle", "flex-shrink-0")}
-                  style={{ backgroundColor: color === null ? MISSING_PALETTE_COLOR : color }}
+                  style={{ backgroundColor: color }}
                 />
-                <span className="label">{label}</span>
+                <span className={cx("label", isOther && "fst-italic")}>{label}</span>
               </div>
             ))}
           </div>

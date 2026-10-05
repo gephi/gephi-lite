@@ -28,6 +28,7 @@
       "target": "Target nodes",
       "target_description": "Each edge is colored as its target.",
       "title": "Color",
+      "other_values": "Other values",
       "palette": {
         "expand": "Expand the palette",
         "apply": "Apply {{paletteName}}",

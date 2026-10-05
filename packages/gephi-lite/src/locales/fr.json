@@ -20,6 +20,7 @@
       "default_value": "Couleur pour {{items}} sans valeur valide",
       "enable_color_shading": "Nuancer la couleur des {{items}}",
       "fixed": "Une couleur constante",
+      "other_values": "Autres valeurs",
       "palette": {
         "expand": "Expand the palette",
         "apply": "Apply {{paletteName}}"
