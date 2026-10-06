@@ -1,6 +1,6 @@
 {
   "name": "@gephi/gephi-lite",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "private": true,
   "license": "gpl-3.0",
   "scripts": {
@@ -33,8 +33,8 @@
   },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "^0.5.1",
-    "@gephi/gephi-lite-broadcast": "^1.0.1",
-    "@gephi/gephi-lite-sdk": "^1.0.1",
+    "@gephi/gephi-lite-broadcast": "^1.1.0",
+    "@gephi/gephi-lite-sdk": "^1.1.0",
     "@monaco-editor/react": "^4.6.0",
     "@octokit/auth-oauth-device": "^7.1.2",
     "@octokit/core": "^6.1.3",
@@ -49,9 +49,9 @@
     "byte-size": "^9.0.1",
     "chroma-js": "^3.1.2",
     "classnames": "^2.5.1",
-    "d3-geo": "^3.1.1",
     "color": "^4.2.3",
     "copy-to-clipboard": "^3.3.3",
+    "d3-geo": "^3.1.1",
     "file-saver": "^2.0.5",
     "graphology": "^0.26.0",
     "graphology-communities-louvain": "^2.0.2",
