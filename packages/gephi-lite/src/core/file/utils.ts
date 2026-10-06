@@ -47,14 +47,15 @@ async function getFileContent(file: FileTypeWithoutFormat): Promise<string> {
 export async function extractGraphFromFile(
   fileContent: string,
   fileName: string,
-  opts: { force?: boolean } = {},
+  opts: { force?: boolean | "fallback" } = {},
 ): Promise<
   | {
       format: "gexf" | "graphml" | "graphology";
       data: Graph;
       metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
+      forced?: boolean;
     }
-  | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
+  | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined; forced?: boolean }
 > {
   // Read the file content line by line
   // so if file is heavy, we don't need to full parse/check it
@@ -143,15 +144,8 @@ export async function extractGraphFromFile(
  */
 export async function openAndParseFile(
   file: FileTypeWithoutFormat,
-  opts: { force?: boolean } = {},
-): Promise<
-  | {
-      format: "gexf" | "graphml" | "graphology";
-      data: Graph;
-      metadata?: { nodeFields?: FieldModel<"nodes">[]; edgeFields?: FieldModel<"edges">[] };
-    }
-  | { format: "gephi-lite"; data: GephiLiteFileFormat; metadata?: undefined }
-> {
+  opts: { force?: boolean | "fallback" } = {},
+): Promise<Awaited<ReturnType<typeof extractGraphFromFile>>> {
   const content = await getFileContent(file);
   return extractGraphFromFile(content, file.filename, opts);
 }
@@ -171,11 +165,12 @@ export function getFilename(filename: string, format: FileFormat): string {
  * Per default this function check if the given file is compatible with the current version, andf not it throw an exception.
  * You can give the option `force` and so instead of importing a gephi-lite file, it will do its best to be casted it to a graphology one,
  * so the user can import it, even if we loose filters, appareance, ... data.
+ * With `force: "fallback"`, it is only forced when the file is not compatible.
  * In the futur we should be able to use this function to cast an old file version into the current one.
  */
 export function parseGephiLiteJsonContent<T extends { type: "gephi-lite" } & { [key: string]: object }>(
   jsonContent: T,
-  opts: { force?: boolean } = {},
+  opts: { force?: boolean | "fallback" } = {},
 ): Awaited<ReturnTypeOf<typeof extractGraphFromFile>> {
   // Check version compatibility
   let isCompatibleVersion = true;
@@ -184,10 +179,11 @@ export function parseGephiLiteJsonContent<T extends { type: "gephi-lite" } & { [
     isCompatibleVersion = false;
   }
 
-  if (!isCompatibleVersion && opts?.force !== true)
+  const force = opts.force === true || (opts.force === "fallback" && !isCompatibleVersion);
+  if (!isCompatibleVersion && !force)
     throw new GephiLiteError("IMPORT_BAD_VERSION", { version: version?.toString() || "unknown" });
 
-  if (opts.force) {
+  if (force) {
     let graph = new Graph();
     if ("graphDataset" in jsonContent) {
       const graphDataset = jsonContent["graphDataset"];
@@ -229,11 +225,13 @@ export function parseGephiLiteJsonContent<T extends { type: "gephi-lite" } & { [
     return {
       format: "graphology",
       data: graph,
+      forced: true,
     };
   }
 
   return {
     format: "gephi-lite",
     data: jsonContent as unknown as GephiLiteFileFormat,
+    forced: false,
   };
 }

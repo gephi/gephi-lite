@@ -84,13 +84,16 @@ export const reset: Producer<FileState, [boolean]> = (full) => {
  * Actions:
  * ********
  */
-export const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { force?: boolean } = {}) => {
+export const open = async (
+  file: FileTypeWithoutFormat,
+  opts: { force?: boolean | "fallback" } = {},
+): Promise<{ forced: boolean }> => {
   if (fileAtom.get().status.type === "loading") throw new Error("A file is already being loaded");
   fileAtom.set((prev) => ({ ...prev, status: { type: "loading" } }));
 
   try {
     // Parse the file
-    const { data, metadata, format } = await openAndParseFile(file, opts);
+    const { data, metadata, format, forced } = await openAndParseFile(file, opts);
 
     // Do the import
     resetStates(false);
@@ -128,11 +131,12 @@ export const open = asyncAction(async (file: FileTypeWithoutFormat, opts: { forc
     // Reset the camera
     resetCamera({ forceRefresh: true });
     fileAtom.set((prev) => ({ ...prev, status: { type: "idle" } }));
+    return { forced: !!forced };
   } catch (e) {
     fileAtom.set((prev) => ({ ...prev, status: { type: "error", message: (e as Error).message } }));
     throw e;
   }
-});
+};
 
 export const exportAsGephiLite = asyncAction(async (callback: (data: string) => void | Promise<void>) => {
   // set loading

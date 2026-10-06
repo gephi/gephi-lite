@@ -1,9 +1,10 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
 
 import GephiLiteReversedLogo from "../../assets/gephi-lite-logo-reversed.svg?react";
 import GephiLiteLogo from "../../assets/gephi-lite-logo.svg?react";
 import { useFile, useFileActions, useGraphDatasetActions, usePreferences } from "../../core/context/dataContexts";
+import { errorToCode, errorToString } from "../../core/errors";
 import { useModal } from "../../core/modals";
 import { ModalProps } from "../../core/modals/types";
 import { useNotifications } from "../../core/notifications";
@@ -27,16 +28,6 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
     status: { type: fileStateType },
   } = useFile();
   const { open } = useFileActions();
-
-  useEffect(() => {
-    if (fileStateType === "error") {
-      notify({
-        type: "error",
-        message: t("graph.open.remote.error"),
-        title: t("gephi-lite.title"),
-      });
-    }
-  }, [fileStateType, notify, t]);
 
   return (
     <Modal showHeader={false} onClose={fileStateType === "loading" ? undefined : () => cancel()} className="modal-lg">
@@ -136,17 +127,29 @@ export const WelcomeModal: FC<ModalProps<unknown>> = ({ cancel, submit }) => {
                 <button
                   className="gl-btn text-start"
                   onClick={async () => {
-                    await open({
-                      type: "remote",
-                      url: `${import.meta.env.BASE_URL}samples/${sample}`,
-                      filename: sample,
-                    });
-                    notify({
-                      type: "success",
-                      message: t("graph.open.remote.success", { filename: sample }),
-                      title: t("gephi-lite.title"),
-                    });
-                    submit({});
+                    try {
+                      const { forced } = await open(
+                        { type: "remote", url: `${import.meta.env.BASE_URL}samples/${sample}`, filename: sample },
+                        { force: "fallback" },
+                      );
+                      notify(
+                        forced
+                          ? { type: "warning", message: t("graph.open.force_notification") }
+                          : {
+                              type: "success",
+                              message: t("graph.open.remote.success", { filename: sample }),
+                              title: t("gephi-lite.title"),
+                            },
+                      );
+                      submit({});
+                    } catch (e) {
+                      console.error(e);
+                      notify({
+                        type: "error",
+                        message: errorToCode(e) ? errorToString(e) : t("graph.open.remote.error"),
+                        title: t("gephi-lite.title"),
+                      });
+                    }
                   }}
                 >
                   {sample}
