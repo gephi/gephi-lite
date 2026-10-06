@@ -3,6 +3,7 @@ import type { ReturnTypeOf } from "@octokit/core/types";
 import Graph from "graphology";
 import gexf from "graphology-gexf/browser";
 import graphml from "graphology-graphml/browser";
+import isGraph from "graphology-utils/is-graph";
 import { has, isArray, isFunction, isObject } from "lodash";
 import { parse as parseVersion } from "semver";
 
@@ -187,14 +188,10 @@ export function parseGephiLiteJsonContent<T extends { type: "gephi-lite" } & { [
     let graph = new Graph();
     if ("graphDataset" in jsonContent) {
       const graphDataset = jsonContent["graphDataset"];
-      if (
-        "fullGraph" in graphDataset &&
-        isObject(graphDataset.fullGraph) &&
-        "nodes" in graphDataset.fullGraph &&
-        "edges" in graphDataset.fullGraph
-      ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        graph = Graph.from(graphDataset.fullGraph as any);
+
+      // fullGraph is revived by gephiLiteParse, possibly from another graphology copy (so no instanceof)
+      if ("fullGraph" in graphDataset && isGraph(graphDataset.fullGraph)) {
+        graph = Graph.from((graphDataset.fullGraph as Graph).export());
       }
 
       // Merging node's attributes

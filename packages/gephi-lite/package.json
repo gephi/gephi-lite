@@ -66,6 +66,7 @@
     "graphology-metrics": "^2.4.0",
     "graphology-operators": "^1.6.1",
     "graphology-types": "^0.24.8",
+    "graphology-utils": "^2.5.2",
     "highlight.js": "^11.11.1",
     "i18next": "^25.2.1",
     "i18next-browser-languagedetector": "^8.0.2",
