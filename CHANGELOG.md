@@ -1,12 +1,35 @@
 # Gephi Lite - Changelog:
 
-## 1.0.3 (WIP)
+## 1.1.0 aka "around the world"
 
 ### New features
 
-- Adding Ukrainian locale 
-- Display a message on the welcome modale if a newer version is available
+- [#70](https://github.com/gephi/gephi-lite/issues/70), [#298](https://github.com/gephi/gephi-lite/issues/298), [#323](https://github.com/gephi/gephi-lite/issues/323): New map background, with a new geographic layout
+- [#301](https://github.com/gephi/gephi-lite/issues/301): New layout controls on the graph, to start, stop or rerun the last layout
+- [#299](https://github.com/gephi/gephi-lite/issues/299): Fixed nodes in ForceAtlas2, from a boolean attribute
+- Continuous layouts keep running when the graph changes (filters, appearance...)
+- [#223](https://github.com/gephi/gephi-lite/issues/223): New edge chi² metric
+- New palette menu, with more choices
+- [#158](https://github.com/gephi/gephi-lite/issues/158): Color palettes are remembered per field
+- Color palettes can be expanded with new colors
+- [#330](https://github.com/gephi/gephi-lite/pull/330): New `getSelection` / `setSelection` methods and `selectionUpdate` event in **[`@gephi/gephi-lite-broadcast`](https://www.npmjs.com/package/@gephi/gephi-lite-broadcast)**
+- [#294](https://github.com/gephi/gephi-lite/issues/294): Proper autocompletion in script editor
+- New Ukrainian locale
+- New message on the welcome modal when a newer version is available
+- New donate link on the welcome modal
 
+### Debug
+
+- [#138](https://github.com/gephi/gephi-lite/issues/138): Clicking a node while a layout runs no longer resets node positions
+- [#268](https://github.com/gephi/gephi-lite/issues/268): JSON files from older Gephi Lite versions can be imported again
+- [#290](https://github.com/gephi/gephi-lite/issues/290): Graphology JSON files can be imported again
+- [#283](https://github.com/gephi/gephi-lite/issues/283): Color picker stays open when dragging the mouse outside of it
+- [#304](https://github.com/gephi/gephi-lite/issues/304): Fixed "attribut" typo in scripts, translations and docs
+
+### Technical
+
+- Upgrade to Node 24
+- [#341](https://github.com/gephi/gephi-lite/pull/341): Docker Compose docs, and fix for SELinux systems
 
 ## 1.0.2
 
@@ -14,10 +37,10 @@
 
 - [#282](https://github.com/gephi/gephi-lite/pull/282): Get file format on remote file
 - [#285](https://github.com/gephi/gephi-lite/issues/285): Force-directed layout inertia field validation
-- [#276] (https://github.com/gephi/gephi-lite/issues/276): Term Filters shows missing values even if not selected in the UI
+- [#276](https://github.com/gephi/gephi-lite/issues/276): Term Filters shows missing values even if not selected in the UI
 - [#275](https://github.com/gephi/gephi-lite/issues/275): Can't filter on boolean attributes
 - [#274](https://github.com/gephi/gephi-lite/issues/274) & [#263](https://github.com/gephi/gephi-lite/issues/263): Layout performance issue
-- [265](https://github.com/gephi/gephi-lite/issues/265): No label in node hides edge label
+- [#265](https://github.com/gephi/gephi-lite/issues/265): No label in node hides edge label
 
 ## 1.0.1
 
