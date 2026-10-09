@@ -7,6 +7,7 @@ import { errorToCode, errorToString } from "../../../core/errors";
 import { ModalProps } from "../../../core/modals/types";
 import { useNotifications } from "../../../core/notifications";
 import type { AsyncStatus } from "../../../utils/promises";
+import { DocumentationHelp } from "../../DocumentationHelp";
 import { DropInput } from "../../DropInput";
 import { Loader } from "../../Loader";
 import { Modal } from "../../modals";
@@ -65,7 +66,9 @@ export const OpenLocalFileForm: FC<OpenLocalFileFormProps> = ({ id, onStatusChan
       <DropInput
         value={file}
         onChange={(file) => setFile(file)}
-        helpText={t("graph.open.local.dragndrop_text")}
+        helpElement=<DocumentationHelp
+          title={t("graph.open.local.dragndrop_text")}
+          url="https://docs.gephi.org/lite/user-manual/file-formats/" />
         accept={{ "application/graph": [".gexf", ".graphml"], "application/json": [".json"] }}
       >
         {status.type === "error" && (
