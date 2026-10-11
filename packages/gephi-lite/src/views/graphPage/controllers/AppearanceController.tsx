@@ -19,7 +19,7 @@ import {
 import { GephiLiteSigma } from "../../../core/graph/types";
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { getEmphasizedNodes } from "../../../core/sigma/utils";
-import { memoizedBrighten, memoizedDarken } from "../../../utils/colors";
+import { DIMMED_BORDER_RATIO, memoizedBrighten, memoizedDarken } from "../../../utils/colors";
 
 export const AppearanceController: FC = () => {
   const sigma: GephiLiteSigma = useSigma();
@@ -67,11 +67,10 @@ export const AppearanceController: FC = () => {
 
       if (hasEmphasizedNodes && !allEmphasizedNodes.has(id)) {
         res.hideLabel = true;
-        res.borderColor = res.color;
-        res.color =
-          mode === "dark"
-            ? memoizedDarken(res.color || DEFAULT_NODE_COLOR)
-            : memoizedBrighten(res.color || DEFAULT_NODE_COLOR);
+        const dim = mode === "dark" ? memoizedDarken : memoizedBrighten;
+        const nodeColor = res.color || DEFAULT_NODE_COLOR;
+        res.borderColor = dim(nodeColor, DIMMED_BORDER_RATIO);
+        res.color = dim(nodeColor);
         res.zIndex = -1;
         res.type = "bordered";
       }
