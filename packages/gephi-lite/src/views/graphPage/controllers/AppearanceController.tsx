@@ -19,7 +19,7 @@ import {
 import { GephiLiteSigma } from "../../../core/graph/types";
 import { getAppliedTheme } from "../../../core/preferences/utils";
 import { getEmphasizedNodes } from "../../../core/sigma/utils";
-import { DIMMED_BORDER_RATIO, memoizedBrighten, memoizedDarken } from "../../../utils/colors";
+import { DIMMED_EDGE_RATIO, memoizedBrighten, memoizedDarken } from "../../../utils/colors";
 
 export const AppearanceController: FC = () => {
   const sigma: GephiLiteSigma = useSigma();
@@ -69,8 +69,9 @@ export const AppearanceController: FC = () => {
         res.hideLabel = true;
         const dim = mode === "dark" ? memoizedDarken : memoizedBrighten;
         const nodeColor = res.color || DEFAULT_NODE_COLOR;
-        res.borderColor = dim(nodeColor, DIMMED_BORDER_RATIO);
+        // The outline takes the same color as the surface, so a node set aside reads as one flat shape.
         res.color = dim(nodeColor);
+        res.borderColor = res.color;
         res.zIndex = -1;
         res.type = "bordered";
       }
@@ -100,8 +101,8 @@ export const AppearanceController: FC = () => {
             if (hasEmphasizedEdges && !allEmphasizedEdges.has(id)) {
               res.color =
                 mode === "dark"
-                  ? memoizedDarken(res.color || DEFAULT_EDGE_COLOR)
-                  : memoizedBrighten(res.color || DEFAULT_EDGE_COLOR);
+                  ? memoizedDarken(res.color || DEFAULT_EDGE_COLOR, DIMMED_EDGE_RATIO)
+                  : memoizedBrighten(res.color || DEFAULT_EDGE_COLOR, DIMMED_EDGE_RATIO);
               res.zIndex = -1;
             }
 

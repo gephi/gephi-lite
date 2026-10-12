@@ -4,10 +4,10 @@ import { memoize } from "lodash";
 import { RGBColor } from "react-color";
 import { HTML_COLORS } from "sigma/utils";
 
-/** How much of the theme's background tone is mixed into the color of the items set aside (0 to 1). */
+/** How much of the theme's background tone is mixed into the color of the nodes set aside (0 to 1). */
 export const DIMMING_RATIO = 0.9;
-/** Same, for the outline kept around the nodes set aside: softer, so they stay locatable. */
-export const DIMMED_BORDER_RATIO = 0.55;
+/** Same, for the edges set aside: they are thin, so they need to fade further to stay out of the way. */
+export const DIMMED_EDGE_RATIO = 0.96;
 
 // The cache key must include the ratio (memoize only keys on the first argument by default).
 const mixWith = (tone: string) =>
