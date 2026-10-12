@@ -4,8 +4,19 @@ import { memoize } from "lodash";
 import { RGBColor } from "react-color";
 import { HTML_COLORS } from "sigma/utils";
 
-export const memoizedBrighten = memoize((color: string) => chroma.mix(color, "white", 0.75).hex());
-export const memoizedDarken = memoize((color: string) => chroma.mix(color, "black", 0.75).hex());
+/** How much of the theme's background tone is mixed into the color of the nodes set aside (0 to 1). */
+export const DIMMING_RATIO = 0.9;
+/** Same, for the edges set aside: they are thin, so they need to fade further to stay out of the way. */
+export const DIMMED_EDGE_RATIO = 0.96;
+
+// The cache key must include the ratio (memoize only keys on the first argument by default).
+const mixWith = (tone: string) =>
+  memoize(
+    (color: string, ratio: number = DIMMING_RATIO) => chroma.mix(color, tone, ratio).hex(),
+    (color, ratio) => `${color}|${ratio}`,
+  );
+export const memoizedBrighten = mixWith("white");
+export const memoizedDarken = mixWith("black");
 
 export function hexToRgba(value: string): RGBColor {
   const parsed = Color(value);
