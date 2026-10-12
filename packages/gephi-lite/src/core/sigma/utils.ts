@@ -81,10 +81,44 @@ export function getEmphasizedNodes({
     // When edges are selected, emphasize their source and target nodes so that only
     // those node labels are shown (same treatment as selecting the nodes directly).
     ...(selection.type === "edges"
-      ? Array.from(selection.items).flatMap((edge) => (graph.hasEdge(edge) ? [graph.source(edge), graph.target(edge)] : []))
+      ? Array.from(selection.items).flatMap((edge) =>
+          graph.hasEdge(edge) ? [graph.source(edge), graph.target(edge)] : [],
+        )
       : []),
     ...(hoveredNode ? [hoveredNode, ...graph.neighbors(hoveredNode)] : []),
   ]);
+}
+
+/**
+ * Returns the edges currently emphasized: the ones explicitly listed in the sigma state, or else
+ * the edges linking two emphasized nodes, or else the selected edges, the hovered node's edges.
+ */
+export function getEmphasizedEdges({
+  graph,
+  selection,
+  hoveredNode,
+  emphasizedNodes,
+  emphasizedEdges,
+}: {
+  graph: SigmaGraph;
+  selection: SelectionState;
+  hoveredNode: string | null;
+  emphasizedNodes: Set<string> | null;
+  emphasizedEdges: Set<string> | null;
+}): Set<string> {
+  if (emphasizedNodes) {
+    return new Set(
+      graph.filterEdges((_edge, _attr, source, target) => emphasizedNodes.has(source) && emphasizedNodes.has(target)),
+    );
+  }
+
+  return (
+    emphasizedEdges ||
+    new Set([
+      ...(selection.type === "edges" ? Array.from(selection.items) : []),
+      ...(hoveredNode ? graph.edges(hoveredNode) : []),
+    ])
+  );
 }
 
 export function drawDiscNodeHover<

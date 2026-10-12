@@ -18,7 +18,7 @@ import {
 } from "../../../core/context/dataContexts";
 import { GephiLiteSigma } from "../../../core/graph/types";
 import { getAppliedTheme } from "../../../core/preferences/utils";
-import { getEmphasizedNodes } from "../../../core/sigma/utils";
+import { getEmphasizedEdges, getEmphasizedNodes } from "../../../core/sigma/utils";
 import { DIMMED_EDGE_RATIO, memoizedBrighten, memoizedDarken } from "../../../utils/colors";
 
 export const AppearanceController: FC = () => {
@@ -40,23 +40,7 @@ export const AppearanceController: FC = () => {
     //    the hover node plus its neighbor
     const allEmphasizedNodes = getEmphasizedNodes({ graph, selection, hoveredNode, emphasizedNodes });
 
-    // What we've got in state
-    //  or edges linked to an emphasizedNodes
-    //  or
-    //    edges in selection
-    //    edges hovered
-    //    edges in neighbor of the node hovered
-    const allEmphasizedEdges = emphasizedNodes
-      ? new Set(
-          graph.filterEdges(
-            (_edge, _attr, source, target) => emphasizedNodes.has(source) && emphasizedNodes.has(target),
-          ),
-        )
-      : emphasizedEdges ||
-        new Set([
-          ...(selection.type === "edges" ? Array.from(selection.items) : []),
-          ...(hoveredNode ? graph.edges(hoveredNode) : []),
-        ]);
+    const allEmphasizedEdges = getEmphasizedEdges({ graph, selection, hoveredNode, emphasizedNodes, emphasizedEdges });
     const hasEmphasizedNodes = !!allEmphasizedNodes.size;
     const hasEmphasizedEdges = !!allEmphasizedEdges.size;
 
