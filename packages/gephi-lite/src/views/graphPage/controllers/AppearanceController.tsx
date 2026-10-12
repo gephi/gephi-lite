@@ -103,7 +103,9 @@ export const AppearanceController: FC = () => {
                 mode === "dark"
                   ? memoizedDarken(res.color || DEFAULT_EDGE_COLOR, DIMMED_EDGE_RATIO)
                   : memoizedBrighten(res.color || DEFAULT_EDGE_COLOR, DIMMED_EDGE_RATIO);
+              // Set aside: drawn under the emphasized edges, and with no label so it vanishes with the color.
               res.zIndex = -1;
+              res.label = null;
             }
 
             return res;
