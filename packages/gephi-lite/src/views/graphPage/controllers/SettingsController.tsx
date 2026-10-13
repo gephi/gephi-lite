@@ -45,7 +45,6 @@ export const SettingsController: FC<{ setIsReady: () => void }> = ({ setIsReady 
     sigma.setSetting("edgeLabelColor", { color: mode === "dark" ? "#495057" : "#CCC" });
     sigma.setSetting("nodeHoverBackgroundColor" as keyof Settings, mode === "dark" ? "#000" : "#FFF");
     sigma.setSetting("renderEdgeLabels", graphAppearance.edgesLabel.type !== "none");
-    sigma.setSetting("zIndex", graphAppearance.edgesZIndex.type !== "none");
     sigma.setSetting("defaultDrawNodeLabel", getDrawNodeLabel(graphAppearance, drawDiscNodeLabel));
     sigma.setSetting("defaultDrawNodeHover", getDrawNodeLabel(graphAppearance, drawDiscNodeHover));
     sigma.setSetting("defaultDrawEdgeLabel", getDrawEdgeLabel(graphAppearance, drawStraightEdgeLabel));

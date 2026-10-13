@@ -27,6 +27,7 @@ import { GRAPH_SELECTION_MODES } from "../../core/selection/types";
 import { resetCamera } from "../../core/sigma";
 import NodeProgramBorder from "../../utils/bordered-node-program";
 import { AppearanceController } from "./controllers/AppearanceController";
+import { EmphasizedEdgesController } from "./controllers/EmphasizedEdgesController";
 import { EventsController } from "./controllers/EventsController";
 import { FocusOnSelectionController } from "./controllers/FocusOnSelectionController";
 import { GridController } from "./controllers/GridController";
@@ -174,6 +175,7 @@ export const GraphRendering: FC = () => {
         <AppearanceController />
         <SettingsController setIsReady={setReady} />
         <LabelsController />
+        <EmphasizedEdgesController />
         <FocusOnSelectionController />
         <div className="sigma-layers">
           {quality.enabled && quality.showGrid && quality.metric?.deltaMax && (
