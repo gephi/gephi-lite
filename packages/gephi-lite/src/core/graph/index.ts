@@ -20,7 +20,7 @@ import {
 } from "@ouestware/atoms";
 import { MultiGraph } from "graphology";
 import { Attributes, GraphType } from "graphology-types";
-import { clamp, forEach, isNil, isString, keyBy, last, map, mapValues, omit, omitBy } from "lodash";
+import { clamp, forEach, fromPairs, isNil, isString, keyBy, last, map, mapValues, omit, omitBy } from "lodash";
 import { Coordinates } from "sigma/types";
 
 import { sessionStorage } from "../../utils/storage";
@@ -30,7 +30,6 @@ import { useGraphDataset } from "../context/dataContexts";
 import { EVENTS, emitter } from "../context/eventsContext";
 import { filtersAtom } from "../filters";
 import { buildTopologicalFiltersDefinitions } from "../filters/topological";
-import { FilterType } from "../filters/types";
 import { applyFilters, getEmptyFiltersState } from "../filters/utils";
 import { edgeIndex, itemsIndex, itemsRemove, nodeIndex, searchActions, searchAtom } from "../search";
 import { SearchState } from "../search/types";
@@ -540,18 +539,26 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
   // When fields changed, check if filter or appearance use it
   // here we test only static field
   if (updatedKeys.has("edgeFields") || updatedKeys.has("nodeFields")) {
-    const nodeFields = graphDataset.nodeFields.map((nf) => nf.id);
-    const edgeFields = graphDataset.edgeFields.map((nf) => nf.id);
+    const nodeFieldsById = fromPairs(graphDataset.nodeFields.map((nf) => [nf.id, { ...nf }]));
+    const edgeFieldsById = fromPairs(graphDataset.edgeFields.map((nf) => [nf.id, { ...nf }]));
 
-    // filters
+    // FILTERS
+    // - remove filters that are not valid anymore because the field on which they are based has been removed.
+    // - update the field definition inside filter to have the last version (mainly for labels)
     const filtersState = filtersAtom.get();
-    const filterFilters = (f: FilterType) =>
-      // here we test only static field
-      !("field" in f) || f.field === undefined || nodeFields.includes(f.field.id) || edgeFields.includes(f.field.id);
     filtersAtom.set({
-      filters: filtersState.filters.filter(filterFilters),
+      filters: filtersState.filters
+        .map((f) => {
+          if (!("field" in f) || f.field === undefined) return f;
+          const field = f.field.itemType === "nodes" ? nodeFieldsById[f.field.id] : edgeFieldsById[f.field.id];
+          if (field) return { ...f, field };
+
+          return null;
+        })
+        .filter((f) => f !== null),
     });
-    // appearance
+
+    // APPEARANCE
     const appearanceState = appearanceAtom.get();
     const initialState = getEmptyAppearanceState();
 
@@ -565,8 +572,8 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
           appearanceElement.field &&
           // here we test only static field
           !appearanceElement.field.dynamic &&
-          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFields.includes(appearanceElement.field.id)) ||
-            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFields.includes(appearanceElement.field.id)))
+          ((APPEARANCE_ITEM_TYPES[key] === "edges" && !edgeFieldsById[appearanceElement.field.id]) ||
+            (APPEARANCE_ITEM_TYPES[key] === "nodes" && !nodeFieldsById[appearanceElement.field.id]))
         ) {
           // this appearance element is based on a field which is not in the model anymore
           // let's reset it
@@ -593,6 +600,13 @@ graphDatasetAtom.bind((graphDataset, previousGraphDataset) => {
       // utils variables
       const itemsData = graphDataset[APPEARANCE_ITEM_TYPES[key] === "nodes" ? "nodeData" : "edgeData"];
       let values: string[] = [];
+
+      // update the field definition inside the apperance item to have the latest version (mainly for labels)
+      if (appearanceElement.field && !appearanceElement.field.dynamic)
+        appearanceElement.field =
+          APPEARANCE_ITEM_TYPES[key] === "nodes"
+            ? nodeFieldsById[appearanceElement.field.id]
+            : edgeFieldsById[appearanceElement.field.id];
 
       switch (appearanceElement.type) {
         // - if partitions palette are still in sync with the field values
