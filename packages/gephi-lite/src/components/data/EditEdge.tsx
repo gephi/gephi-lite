@@ -45,7 +45,6 @@ const useEditEdgeForm = ({
   const defaultValues = useMemo(() => {
     if (isNew)
       return {
-        weight: 1,
         isDirected: fullGraph.type !== "undirected",
         attributes: edgeFields.map((nf) => ({
           key: nf.id,
@@ -268,34 +267,34 @@ const useEditEdgeForm = ({
         <div className="panel-block">
           {attributes.map((field, i) => (
             <div key={i}>
-              <div key={i}>
-                <label htmlFor={`edge-${edgeId}-field-${i}`} className="form-label">
-                  <FieldModelIcon type={edgeFieldsIndex[field.key].type} /> {field.key}
-                </label>
-                <Controller
-                  name={`attributes.${i}.value`}
-                  control={control}
-                  render={(props) => (
-                    <EditItemAttribute
-                      id={`edge-${edgeId}-field-${i}`}
-                      field={edgeFieldsIndex[field.key]}
-                      scalar={props.field.value}
-                      onChange={(v) => props.field.onChange(v)}
-                    />
-                  )}
-                />
-                {(errors.attributes || [])[i]?.key && (
-                  <div className="invalid-feedback">
-                    {t(
-                      `error.form.${
-                        (errors.attributes || [])[i]?.key?.type === "validate"
-                          ? "unique"
-                          : (errors.attributes || [])[i]?.key?.type
-                      }`,
-                    )}
-                  </div>
+              <label htmlFor={`edge-${edgeId}-field-${i}`} className="form-label">
+                <FieldModelIcon type={edgeFieldsIndex[field.key].type} /> {field.key}
+              </label>
+              <Controller
+                name={`attributes.${i}.value`}
+                control={control}
+                render={(props) => (
+                  <EditItemAttribute
+                    id={`edge-${edgeId}-field-${i}`}
+                    field={edgeFieldsIndex[field.key]}
+                    scalar={props.field.value}
+                    // https://react-hook-form.com/docs/usecontroller/controller
+                    // "Calling onChange with undefined is not valid. You should use null or the empty string as your default/cleared value instead."
+                    onChange={(v) => props.field.onChange(v || null)}
+                  />
                 )}
-              </div>
+              />
+              {(errors.attributes || [])[i]?.key && (
+                <div className="invalid-feedback">
+                  {t(
+                    `error.form.${
+                      (errors.attributes || [])[i]?.key?.type === "validate"
+                        ? "unique"
+                        : (errors.attributes || [])[i]?.key?.type
+                    }`,
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

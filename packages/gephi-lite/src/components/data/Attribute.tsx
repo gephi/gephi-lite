@@ -164,10 +164,10 @@ export const AttributeEditors: {
         ref={ref}
         className="form-control"
         type="number"
-        value={value ?? ""}
+        value={value}
         step="any"
         placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value ? +e.target.value : undefined)}
+        onChange={(e) => onChange(!isNaN(e.target.valueAsNumber) ? e.target.valueAsNumber : undefined)}
       />
     );
   },

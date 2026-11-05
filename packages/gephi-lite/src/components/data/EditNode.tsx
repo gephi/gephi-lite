@@ -212,7 +212,9 @@ const useEditNodeForm = ({
                     id={`node-${nodeId}-field-${i}`}
                     field={nodeFieldsIndex[field.key]}
                     scalar={props.field.value}
-                    onChange={(v) => props.field.onChange(v)}
+                    // https://react-hook-form.com/docs/usecontroller/controller
+                    // "Calling onChange with undefined is not valid. You should use null or the empty string as your default/cleared value instead."
+                    onChange={(v) => props.field.onChange(v || null)}
                   />
                 )}
               />
