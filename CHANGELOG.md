@@ -1,5 +1,13 @@
 # Gephi Lite - Changelog:
 
+## 1.1.1
+
+### Debug
+
+- [#311](https://github.com/gephi/gephi-lite/issues/311), [#318](https://github.com/gephi/gephi-lite/issues/318): Deleting Edge makes Gephi lite to crash
+- [#289](https://github.com/gephi/gephi-lite/issues/289): Using the field's label on caption & filters
+- [#322](https://github.com/gephi/gephi-lite/issues/322): Fix the number input fields in the node and edge editing forms.
+
 ## 1.1.0 aka "around the world"
 
 ### New features
