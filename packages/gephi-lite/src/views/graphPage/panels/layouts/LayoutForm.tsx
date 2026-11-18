@@ -74,11 +74,22 @@ export const LayoutForm: FC<{
       const name = t(`layouts.${layout.id}.parameters.${param.id}.title`);
       const value = layoutParameters[param.id];
 
-      if (param.required === true && isNil(value)) errors[param.id] = t(`error.form.required`, { ...param, name });
-      else if ("min" in param && param.min && !isNil(value) && (value as number) < param.min)
-        errors[param.id] = t(`error.form.min`, { ...param, name });
-      else if ("max" in param && param.max && !isNil(value) && (value as number) > param.max)
-        errors[param.id] = t(`error.form.max`, { ...param, name });
+      if (param.required === true && isNil(value)) {
+        errors[param.id] = t(`error.form.required`, { ...param, name });
+      } else if ("min" in param && !isNil(param.min) && !isNil(value)) {
+        if ("minExcluded" in param && param.minExcluded === true && (value as number) <= param.min) {
+          errors[param.id] = t(`error.form.minExcluded`, { ...param, name });
+        } else if ((value as number) < param.min) {
+          errors[param.id] = t(`error.form.minExcluded`, { ...param, name });
+        }
+      } else if ("max" in param && !isNil(param.max) && !isNil(value)) {
+        if ("maxExcluded" in param && param.maxExcluded === true && (value as number) >= param.max) {
+          errors[param.id] = t(`error.form.maxExcluded`, { ...param, name });
+        } else if ((value as number) > param.max) {
+          errors[param.id] = t(`error.form.maxExcluded`, { ...param, name });
+        }
+      }
+      console.log(param, value, errors[param.id]);
     });
 
     const hasError = Object.keys(errors).length > 0;

@@ -27,7 +27,9 @@ export interface LayoutBooleanParameter extends BaseLayoutParameter {
 export interface LayoutNumberParameter extends BaseLayoutParameter {
   type: "number";
   min?: number;
+  minExcluded?: boolean;
   max?: number;
+  maxExcluded?: boolean;
   step?: number;
   defaultValue: number;
 }

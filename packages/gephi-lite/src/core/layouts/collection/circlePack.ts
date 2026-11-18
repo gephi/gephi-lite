@@ -26,6 +26,8 @@ export const CirclePackLayout = {
       type: "number",
       description: true,
       defaultValue: 1,
+      min: 0,
+      minExcluded: true,
     },
   ],
   run(graph: Graph, options) {

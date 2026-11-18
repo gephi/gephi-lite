@@ -1,5 +1,11 @@
 # Gephi Lite - Changelog:
 
+## 1.1.2
+
+### Debug
+
+- [#348](https://github.com/gephi/gephi-lite/issues/348): Fix layout parameter with min value and set the min value of `slow-down` of FA2 to zero
+
 ## 1.1.1
 
 ### Debug

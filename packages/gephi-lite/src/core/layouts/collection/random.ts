@@ -18,6 +18,8 @@ export const RandomLayout = {
       type: "number",
       description: true,
       defaultValue: 1000,
+      min: 0,
+      minExcluded: true,
     },
   ],
   run: (graph, options) => random(graph, options?.settings) as unknown as LayoutMapping,
