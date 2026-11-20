@@ -1,5 +1,5 @@
 import cx from "classnames";
-import React, { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, ReactElement } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 
 import { CloseIcon } from "./common-icons";
@@ -8,10 +8,10 @@ export const DropInput: FC<
   PropsWithChildren<{
     value: File | null;
     onChange: (file: File | null) => void;
-    helpText: string;
+    helpElement: ReactElement;
     accept: Accept;
   }>
-> = ({ value, onChange, accept, helpText, children }) => {
+> = ({ value, onChange, accept, helpElement, children }) => {
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: accept,
@@ -43,7 +43,7 @@ export const DropInput: FC<
             </button>
           </>
         ) : (
-          helpText
+          helpElement
         )}
       </p>
     </div>
