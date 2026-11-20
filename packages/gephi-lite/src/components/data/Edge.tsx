@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { FC, ReactNode, useMemo } from "react";
+import { ComponentProps, FC, ReactNode, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getItemAttributes } from "../../core/appearance/utils";
@@ -11,7 +11,43 @@ import {
 } from "../../core/context/dataContexts";
 import { mergeStaticDynamicData } from "../../core/graph/dynamicAttributes";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
+import { ThreeDotsVerticalIcon } from "../common-icons";
 import { FILTERED_ITEM_COLOR, NodeComponent } from "./Node";
+
+/**
+ * One end of an edge: the node, and, when `actions` are given, a "more" button on its right that
+ * unfolds them (a row of buttons) under the node, so the row stays light until they are needed.
+ */
+const EdgeEnd: FC<{
+  className: string;
+  node: ComponentProps<typeof NodeComponent>;
+  actions?: ReactNode;
+  actionsTitle?: string;
+}> = ({ className, node, actions, actionsTitle }) => {
+  const [showActions, setShowActions] = useState(false);
+  return (
+    <div className={className}>
+      <div className="d-flex flex-row align-items-center">
+        <div className="flex-grow-1 flex-shrink-1 mw-0 text-ellipsis">
+          <NodeComponent {...node} />
+        </div>
+        {actions && (
+          <button
+            type="button"
+            className="gl-btn gl-btn-icon flex-shrink-0"
+            title={actionsTitle}
+            aria-label={actionsTitle}
+            aria-expanded={showActions}
+            onClick={() => setShowActions(!showActions)}
+          >
+            <ThreeDotsVerticalIcon />
+          </button>
+        )}
+      </div>
+      {actions && showActions && <div className="d-flex flex-row flex-wrap gl-gap-1 mt-1">{actions}</div>}
+    </div>
+  );
+};
 
 export const EdgeComponent: FC<{
   source: { label: ReactNode; color: string; hidden?: boolean };
@@ -26,6 +62,10 @@ export const EdgeComponent: FC<{
   onEdgeClick?: () => void;
   nodeButtonTitle?: string;
   edgeButtonTitle?: string;
+  /** Optional actions of each end node, unfolded under it by a button (see EdgeEnd). */
+  sourceActions?: ReactNode;
+  targetActions?: ReactNode;
+  actionsTitle?: string;
 }> = ({
   label,
   color,
@@ -39,6 +79,9 @@ export const EdgeComponent: FC<{
   onEdgeClick,
   nodeButtonTitle,
   edgeButtonTitle,
+  sourceActions,
+  targetActions,
+  actionsTitle,
 }) => {
   // A filtered out edge is drawn dotted and grey (see FILTERED_ITEM_COLOR) rather than keeping its
   // appearance color, and so are both its extremities (see below), even when those nodes pass the
@@ -62,14 +105,12 @@ export const EdgeComponent: FC<{
 
   return (
     <div className={cx("edge-component", className)}>
-      <div className="edge-source">
-        <NodeComponent
-          {...source}
-          hidden={hidden || source.hidden}
-          onClick={onSourceClick}
-          buttonTitle={nodeButtonTitle}
-        />
-      </div>
+      <EdgeEnd
+        className="edge-source"
+        node={{ ...source, hidden: hidden || source.hidden, onClick: onSourceClick, buttonTitle: nodeButtonTitle }}
+        actions={sourceActions}
+        actionsTitle={actionsTitle}
+      />
       {onEdgeClick ? (
         <button
           type="button"
@@ -82,14 +123,12 @@ export const EdgeComponent: FC<{
       ) : (
         middle
       )}
-      <div className="edge-target">
-        <NodeComponent
-          {...target}
-          hidden={hidden || target.hidden}
-          onClick={onTargetClick}
-          buttonTitle={nodeButtonTitle}
-        />
-      </div>
+      <EdgeEnd
+        className="edge-target"
+        node={{ ...target, hidden: hidden || target.hidden, onClick: onTargetClick, buttonTitle: nodeButtonTitle }}
+        actions={targetActions}
+        actionsTitle={actionsTitle}
+      />
     </div>
   );
 };
