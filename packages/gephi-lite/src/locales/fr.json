@@ -988,6 +988,7 @@
     "navigate_forward": "Aller à la sélection suivante",
     "no_path_between_nodes": "Aucun chemin ne relie ces deux nœuds",
     "no_value": "Pas de valeur",
+    "node_actions": "Actions du nœud",
     "node_no_label": "(libellé vide)",
     "nodes": "<strong>{{count, number}}</strong> nœuds sélectionnés",
     "nodes_one": "<strong>Un</strong> nœud sélectionné",

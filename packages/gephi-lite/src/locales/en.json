@@ -731,6 +731,7 @@
     "hidden_nodes_one": "One hidden selected node",
     "locate_on_graph": "Locate on the graph",
     "locate_selected_edges": "Zoom on all selected edges",
+    "node_actions": "Node actions",
     "node_no_label": "(Empty label)",
     "nodes": "{{count, number}} selected nodes",
     "nodes_one": "One selected node",
