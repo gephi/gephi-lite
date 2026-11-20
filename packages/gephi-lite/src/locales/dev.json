@@ -902,6 +902,7 @@
     "navigate_forward": "Forward to the next selection",
     "no_path_between_nodes": "No path links these two nodes",
     "no_value": "No value",
+    "node_actions": "Node actions",
     "node_no_label": "(Empty label)",
     "nodes": "<strong>{{count, number}}</strong> selected nodes",
     "nodes_one": "<strong>One</strong> selected node",

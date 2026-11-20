@@ -12,12 +12,9 @@ import {
   CaretDownIcon,
   CaretUpIcon,
   CloseIcon,
-  CreateEdgeIcon,
   EditIcon,
   FieldModelIcon,
   OpenInGraphIcon,
-  SelectEdgesIcon,
-  SelectNeighborsIcon,
   SelectPathIcon,
   SortAlphabeticalIcon,
   SortBySizeIcon,
@@ -28,7 +25,6 @@ import {
 import { RenderItemAttribute, RenderText } from "../../components/data/Attribute";
 import { EdgeComponent } from "../../components/data/Edge";
 import { EditEdgeModal } from "../../components/data/EditEdge";
-import { EditNodeModal } from "../../components/data/EditNode";
 import { NodeComponent } from "../../components/data/Node";
 import { Combobox } from "../../components/forms/Combobox";
 import ConfirmModal from "../../components/modals/ConfirmModal";
@@ -55,8 +51,9 @@ import { getShortestPathEdges } from "../../core/graph/utils";
 import { useModal } from "../../core/modals";
 import { useNotifications } from "../../core/notifications";
 import { normalizeText } from "../../core/search";
-import { focusCameraOnEdges, focusCameraOnNode, focusCameraOnNodes } from "../../core/sigma";
+import { focusCameraOnEdges, focusCameraOnNodes } from "../../core/sigma";
 import { useLocateInGraph } from "../../hooks/useLocateInGraph";
+import { NodeActions, useConfirmDeleteItem } from "./NodeActions";
 
 /** Number of characters from which the selection filter applies. */
 const MIN_FILTER_LENGTH = 2;
@@ -90,9 +87,9 @@ function SelectedItem<
 
   const visualGetters = useVisualGetters();
   const filteredGraph = useFilteredGraph();
-  const { deleteItems, updateEdge } = useGraphDatasetActions();
+  const { updateEdge } = useGraphDatasetActions();
+  const confirmDelete = useConfirmDeleteItem();
   const { select, unselect } = useSelectionActions();
-  const { items: selectionItems } = useSelection();
   const { locateNode, locateEdge } = useLocateInGraph();
 
   const attributes = useMemo<{ label: ReactNode; value: Scalar; field?: FieldModel }[]>(
@@ -119,11 +116,6 @@ function SelectedItem<
 
   const item = getItemAttributes(type, id, filteredGraph, data, graphDataset, visualGetters);
 
-  // Node's edges/neighbors are taken from the full graph, so the filtered out ones stay part of the
-  // resulting selection (reported as filtered) instead of being silently dropped. A node without
-  // any edge has nothing to select at all: keep both buttons disabled, so clicking them cannot
-  // replace this panel by an empty edges selection.
-  const isIsolated = type === "nodes" && fullGraph.hasNode(id) && !fullGraph.degree(id);
   let content: ReactNode;
   if (type === "nodes") {
     content = (
@@ -178,6 +170,9 @@ function SelectedItem<
         onSourceClick={() => locateNode(fullGraph.source(id))}
         onTargetClick={() => locateNode(fullGraph.target(id))}
         onEdgeClick={() => locateEdge(id)}
+        sourceActions={<NodeActions id={fullGraph.source(id)} hidden={!filteredGraph.hasNode(fullGraph.source(id))} />}
+        targetActions={<NodeActions id={fullGraph.target(id)} hidden={!filteredGraph.hasNode(fullGraph.target(id))} />}
+        actionsTitle={t("selection.node_actions")}
       />
     );
   }
@@ -231,99 +226,45 @@ function SelectedItem<
       </h4>
 
       <div className="d-flex flex-row align-items-center gl-gap-1 pb-2 mb-2 border-bottom">
-        <button
-          className="gl-btn gl-btn-icon"
-          title={t(`selection.locate_on_graph`)}
-          disabled={item.hidden}
-          onClick={() => {
-            if (type === "nodes") focusCameraOnNode(id);
-            // Focus on this single edge: keep only it selected (so only its source and target
-            // labels remain shown) then center the camera on it.
-            else locateEdge(id);
-          }}
-        >
-          <OpenInGraphIcon />
-        </button>
-        {type === "nodes" && (
-          <button
-            className="gl-btn gl-btn-icon"
-            title={t(`selection.select_node_edges`)}
-            disabled={item.hidden || isIsolated}
-            onClick={() => {
-              select({ type: "edges", items: new Set(fullGraph.edges(id)), replace: false });
-            }}
-          >
-            <SelectEdgesIcon />
-          </button>
+        {type === "nodes" ? (
+          <NodeActions id={id} hidden={item.hidden} />
+        ) : (
+          <>
+            <button
+              className="gl-btn gl-btn-icon"
+              title={t(`selection.locate_on_graph`)}
+              disabled={item.hidden}
+              // Focus on this single edge: keep only it selected (so only its source and target
+              // labels remain shown) then center the camera on it.
+              onClick={() => locateEdge(id)}
+            >
+              <OpenInGraphIcon />
+            </button>
+            <button
+              className="gl-btn gl-btn-icon"
+              title={t(`edition.update_this_edges`)}
+              onClick={() => openModal({ component: EditEdgeModal, arguments: { edgeId: id } })}
+            >
+              <EditIcon />
+            </button>
+            <button
+              className="gl-btn gl-btn-icon"
+              title={t("edition.invert_edge_direction")}
+              onClick={() => {
+                updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
+              }}
+            >
+              <SwapIcon />
+            </button>
+            <button
+              className="gl-btn gl-btn-icon"
+              title={t(`edition.delete_this_edges`)}
+              onClick={() => confirmDelete("edges", id)}
+            >
+              <TrashIcon />
+            </button>
+          </>
         )}
-        {type === "nodes" && (
-          <button
-            className="gl-btn gl-btn-icon"
-            title={t(`selection.select_node_neighbors`)}
-            disabled={item.hidden || isIsolated}
-            onClick={() => {
-              select({ type, items: new Set(fullGraph.neighbors(id)), replace: false });
-            }}
-          >
-            <SelectNeighborsIcon />
-          </button>
-        )}
-        <button
-          className="gl-btn gl-btn-icon"
-          title={t(`edition.update_this_${type}`)}
-          onClick={() =>
-            type === "nodes"
-              ? openModal({ component: EditNodeModal, arguments: { nodeId: id } })
-              : openModal({ component: EditEdgeModal, arguments: { edgeId: id } })
-          }
-        >
-          <EditIcon />
-        </button>
-        {type === "nodes" && (
-          <button
-            className="gl-btn gl-btn-icon"
-            title={t(`selection.create_edge_from_node`)}
-            disabled={item.hidden}
-            onClick={() => {
-              // When exactly two nodes are selected, pre-fill the edge target with the other
-              // one (source being this node), so only the attributes remain to fill in.
-              const others = Array.from(selectionItems).filter((n) => n !== id);
-              const target = selectionItems.size === 2 && others.length === 1 ? others[0] : undefined;
-              openModal({ component: EditEdgeModal, arguments: { source: id, target } });
-            }}
-          >
-            <CreateEdgeIcon />
-          </button>
-        )}
-        {type === "edges" && (
-          <button
-            className="gl-btn gl-btn-icon"
-            title={t("edition.invert_edge_direction")}
-            onClick={() => {
-              updateEdge(id, {}, { merge: true, source: fullGraph.target(id), target: fullGraph.source(id) });
-            }}
-          >
-            <SwapIcon />
-          </button>
-        )}
-        <button
-          className={`gl-btn gl-btn-icon${type === "nodes" ? " ms-3" : ""}`}
-          title={t(`edition.delete_this_${type}`)}
-          onClick={() => {
-            openModal({
-              component: ConfirmModal,
-              arguments: {
-                title: t(`edition.delete_${type}`, { count: 0 }),
-                message: t(`edition.confirm_delete_${type}`, { count: 1 }),
-              },
-              afterSubmit: () => {
-                deleteItems(type, [id]);
-              },
-            });
-          }}
-        >
-          <TrashIcon />
-        </button>
       </div>
 
       <AnimateHeight height={expanded ? "auto" : 0} className="position-relative" duration={400}>
